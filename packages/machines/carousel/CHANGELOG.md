@@ -94,6 +94,23 @@
   + itemSpacing: "16px"
   ```
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3515](https://github.com/chakra-ui/zag/pull/3515)
+  [`519feb9`](https://github.com/chakra-ui/zag/commit/519feb993326e9ff254e1eee989f85740bdc5604) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix a snap point refresh reverting a page change that hadn't
+  rendered yet.
+  - Fix a stale scroll-end timer ending a later scroll early.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/scroll-snap@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

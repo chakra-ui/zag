@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as avatar from "@zag-js/avatar"
   import { avatarData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

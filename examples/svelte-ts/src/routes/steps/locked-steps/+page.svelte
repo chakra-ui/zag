@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as steps from "@zag-js/steps"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import "@styles/steps.css"
 
   const backupCodes = ["7F3K-92QD", "M4XP-6TBR", "Q8WN-1JZC", "H2VL-5RYE"]

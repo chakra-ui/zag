@@ -2,8 +2,8 @@
   import * as asyncList from "@zag-js/async-list"
   import * as infiniteScroll from "@zag-js/infinite-scroll"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import "@styles/infinite-scroll.css"
 
   const PAGE_SIZE = 10

@@ -1,5 +1,5 @@
 import { getWindow } from "./node"
-import { isFirefox } from "./platform"
+import { isFirefox, isIPad, isMac, isWebKit } from "./platform"
 import { queueBeforeEvent } from "./raf"
 
 export interface NavigateOptions {
@@ -50,11 +50,52 @@ export function navigate<T extends HTMLElement>(
   return items[nextIdx] || null
 }
 
-export function clickIfLink(el: HTMLAnchorElement) {
+export interface ModifierKeys {
+  /**
+   * Whether the meta key (Cmd on macOS) is pressed
+   */
+  metaKey: boolean
+  /**
+   * Whether the ctrl key is pressed
+   */
+  ctrlKey: boolean
+  /**
+   * Whether the shift key is pressed
+   */
+  shiftKey: boolean
+  /**
+   * Whether the alt key (Option on macOS) is pressed
+   */
+  altKey: boolean
+}
+
+export function getModifierKeys(event?: Partial<ModifierKeys> | null): ModifierKeys {
+  return {
+    metaKey: !!event?.metaKey,
+    ctrlKey: !!event?.ctrlKey,
+    shiftKey: !!event?.shiftKey,
+    altKey: !!event?.altKey,
+  }
+}
+
+export function hasModifierKey(modifiers: ModifierKeys) {
+  return modifiers.metaKey || modifiers.ctrlKey || modifiers.shiftKey || modifiers.altKey
+}
+
+export function clickIfLink(el: HTMLAnchorElement, modifiers?: ModifierKeys) {
+  const init = getModifierKeys(modifiers)
+  const hasModifier = hasModifierKey(init)
+
   const click = () => {
     const win = getWindow(el)
-    el.dispatchEvent(new win.MouseEvent("click"))
+    // WebKit on macOS ignores modifiers on synthetic clicks, but honors them on a synthetic Enter keydown
+    if (hasModifier && isWebKit() && isMac() && !isIPad()) {
+      el.dispatchEvent(new win.KeyboardEvent("keydown", { keyIdentifier: "Enter", ...init } as KeyboardEventInit))
+    } else {
+      el.dispatchEvent(new win.MouseEvent("click", init))
+    }
   }
+
   if (isFirefox()) {
     queueBeforeEvent(el, "keyup", click)
   } else {

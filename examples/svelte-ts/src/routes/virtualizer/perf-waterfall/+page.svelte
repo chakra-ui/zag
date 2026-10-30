@@ -1,7 +1,7 @@
 <script lang="ts">
-  import PerfMetrics from "$lib/components/virtualizer-perf-metrics.svelte"
-  import type { ScrollBenchmarkMetrics } from "$lib/scroll-benchmark"
-  import { useWaterfallVirtualizer } from "$lib/use-virtualizer.svelte"
+  import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
+  import type { ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
+  import { useWaterfallVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { normalizeProps } from "@zag-js/svelte"
 
   const DEFAULT_ITEM_COUNT = 5_000

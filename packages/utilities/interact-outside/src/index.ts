@@ -1,5 +1,6 @@
 import { addDomEvent, isContextMenuEvent, isShadowRoot, isTouchDevice } from "@zag-js/dom-query"
 import {
+  AnimationFrame,
   contains,
   getDocument,
   getEventTarget,
@@ -219,12 +220,15 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
   }, 0)
 
+  const focusFrame = AnimationFrame.create()
+
   function onFocusin(event: FocusEvent) {
     // Skip focusin events during pointer interactions.
     // Safari doesn't focus buttons on pointerdown, which can cause
     // focusin-based dismissal to race with pointer-based interactions.
     if (isPointerDown) return
-    const func = defer ? raf : (v: any) => v()
+    // A newer focusin replaces the pending check
+    const func = defer ? (fn: VoidFunction) => focusFrame.request(fn) : (fn: VoidFunction) => fn()
     func(() => {
       const composedPath = event?.composedPath?.() ?? [event?.target]
       const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
@@ -256,6 +260,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   return () => {
     clearTimeout(timer)
+    focusFrame.cancel()
     pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())
   }

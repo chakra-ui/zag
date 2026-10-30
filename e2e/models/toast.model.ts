@@ -36,6 +36,15 @@ export class ToastModel extends Model {
     return box?.height ?? 0
   }
 
+  // Grows the content without changing the toast's width, like a late font load
+  async enlargeTitle(num = 0) {
+    await this.getToast(num)
+      .locator("[data-toast-title]")
+      .evaluate((el) => {
+        ;(el as HTMLElement).style.fontSize = "2em"
+      })
+  }
+
   seeAccessibleName(value: string, num = 0) {
     return expect(this.getToast(num)).toHaveAccessibleName(value)
   }
@@ -46,13 +55,13 @@ export class ToastModel extends Model {
 
   async dontSeeTitle(num = 0) {
     const toast = this.getToast(num)
-    await expect(toast.locator("[data-part=title]")).toHaveCount(0)
+    await expect(toast.locator("[data-toast-title]")).toHaveCount(0)
     await expect(toast).not.toHaveAttribute("aria-labelledby")
   }
 
   async dontSeeDescription(num = 0) {
     const toast = this.getToast(num)
-    await expect(toast.locator("[data-part=description]")).toHaveCount(0)
+    await expect(toast.locator("[data-toast-description]")).toHaveCount(0)
     await expect(toast).not.toHaveAttribute("aria-describedby")
   }
 
@@ -74,6 +83,11 @@ export class ToastModel extends Model {
 
   clickNthCloseButton(num: number) {
     return this.getCloseButton(num).click({ force: true })
+  }
+
+  // Waits for the toast to settle, so the click can't land on a toast that's still animating in
+  closeNthToast(num: number) {
+    return this.getCloseButton(num).click()
   }
 
   seeRegionIsFocused() {
@@ -101,6 +115,21 @@ export class ToastModel extends Model {
     for (const toast of toasts) {
       await expect(toast).toHaveAttribute("data-paused", "")
     }
+  }
+
+  async seeToastsAreNotPaused() {
+    const toasts = await this.page.getByRole("status").all()
+    for (const toast of toasts) {
+      await expect(toast).not.toHaveAttribute("data-paused")
+    }
+  }
+
+  seeToastIsFocused(num = 0) {
+    return expect(this.getToast(num)).toBeFocused()
+  }
+
+  seeButtonIsFocused(name: string) {
+    return expect(this.page.getByRole("button", { name, exact: true })).toBeFocused()
   }
 
   async seeToast(title: string) {

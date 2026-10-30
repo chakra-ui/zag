@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
+  import Output from "#lib/components/output.svelte"
   import * as combobox from "@zag-js/combobox"
   import { createFilter } from "@zag-js/i18n-utils"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

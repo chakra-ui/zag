@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { TreeViewModel } from "./models/tree-view.model"
 
 let I: TreeViewModel
@@ -115,6 +115,21 @@ test.describe("tree view / keyboard", () => {
     await page.keyboard.down("z")
 
     await I.seeItemIsFocused("zag-js")
+  })
+
+  test("typeahead: lowercase a should move focus to matching item", async () => {
+    await I.clickBranch("src")
+    await I.focusItem("index.ts")
+
+    await I.type("a")
+    await I.seeItemIsFocused("app.tsx")
+  })
+
+  test("typeahead: should match a prefix containing lowercase a", async () => {
+    await I.focusFirstNode()
+
+    await I.type("pac")
+    await I.seeItemIsFocused("package.json")
   })
 })
 

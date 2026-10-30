@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"
   import type { Snippet } from "svelte"

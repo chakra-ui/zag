@@ -291,13 +291,6 @@ export function useMachine<T extends MachineSchema>(
 
   let status = MachineStatus.NotStarted
 
-  onMount(() => {
-    const started = status === MachineStatus.Started
-    status = MachineStatus.Started
-    debug(started ? "rehydrating..." : "initializing...")
-    state.invoke(state.initial!, INIT_STATE)
-  })
-
   onCleanup(() => {
     if (status !== MachineStatus.Started) return
 
@@ -350,6 +343,13 @@ export function useMachine<T extends MachineSchema>(
   }
 
   machine.watch?.(getParams())
+
+  onMount(() => {
+    const started = status === MachineStatus.Started
+    status = MachineStatus.Started
+    debug(started ? "rehydrating..." : "initializing...")
+    state.invoke(state.initial!, INIT_STATE)
+  })
 
   notify = createEffectSync(reconcileEffects)
 

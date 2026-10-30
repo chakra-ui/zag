@@ -475,6 +475,32 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+### Loading and result announcements
+
+When the user types, the combobox announces the number of results to screen
+readers once the input and results settle ("3 results", "1 result", or "No
+results").
+
+When results load asynchronously, pass `loading` while the request is in flight.
+The listbox gets `aria-busy="true"`, the loading message is announced instead of
+the count, and "No results" is never announced until loading ends.
+
+```tsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  loading: isFetching,
+  translations: {
+    resultsCount: (count) => `${count} countries found`,
+    noResults: "No countries found",
+    loading: "Searching countries",
+  },
+})
+```
+
+> Set a message to an empty string (or return `""` from `resultsCount`) to turn
+> that announcement off.
+
 ## Recipes
 
 ### Command palette
@@ -536,6 +562,7 @@ const collection = useMemo(
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
+  loading: list.isLoading,
   onInputValueChange({ inputValue, reason }) {
     // Selecting an item fills the input; that shouldn't trigger a search
     if (reason === "item-select") return
@@ -544,12 +571,11 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-Mark the content busy while loading, and only show the empty message once the
-search has settled. Keep the empty part rendered, since it announces its text to
-screen readers.
+Only show the empty message once the search has settled. Keep the empty part
+rendered, since it announces its text to screen readers.
 
 ```tsx
-<div {...api.getContentProps()} aria-busy={list.isLoading || undefined}>
+<div {...api.getContentProps()}>
   <div {...api.getEmptyProps()}>
     {list.isEmpty && !list.isLoading && "No results"}
   </div>

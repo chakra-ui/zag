@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { MenuModel } from "./models/menu.model"
 
 let I: MenuModel
@@ -52,5 +52,20 @@ test.describe("context menu", () => {
     // the long-press timer opens the menu after 700ms
     await I.seeDropdown()
     await I.seeMenuIsPositionedNear(point)
+  })
+})
+
+test.describe("context menu / controlled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/context-menu/controlled")
+  })
+
+  test("should not open on tap", async ({ page }) => {
+    const point = await I.getContextTriggerPoint()
+    await I.tapContextTrigger(point)
+
+    await page.waitForTimeout(1000)
+    await I.dontSeeDropdown()
   })
 })

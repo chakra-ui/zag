@@ -1,5 +1,5 @@
 <script lang="ts">
-  import NumberFlow from "$lib/components/number-flow.svelte"
+  import NumberFlow from "#lib/components/number-flow.svelte"
   import "@styles/number-flow.css"
 
   const START = 90 * 60

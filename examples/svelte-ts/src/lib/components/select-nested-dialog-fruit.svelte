@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as select from "@zag-js/select"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ChevronsUpDownIcon } from "lucide-svelte"

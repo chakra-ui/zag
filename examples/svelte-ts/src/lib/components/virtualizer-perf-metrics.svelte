@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ScrollBenchmarkMetrics } from "$lib/scroll-benchmark"
+  import type { ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
   import type { Snippet } from "svelte"
 
   interface Props {

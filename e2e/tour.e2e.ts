@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { TourModel } from "./models/tour.model"
 
 let I: TourModel
@@ -84,6 +84,22 @@ test.describe("tour", () => {
     await I.seeContent()
     await I.pressKey("Escape")
     await I.dontSeeContent()
+  })
+
+  test("should restore focus to the start trigger on escape", async () => {
+    await I.clickStart()
+    await I.seeContent()
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeStartIsFocused()
+  })
+
+  test("should restore focus to the start trigger on close", async ({ page }) => {
+    await I.clickStart()
+    await I.seeContent()
+    await page.getByRole("button", { name: "close tour" }).click()
+    await I.dontSeeContent()
+    await I.seeStartIsFocused()
   })
 
   test.fixme("should align with spotlight (due to offset)", async () => {

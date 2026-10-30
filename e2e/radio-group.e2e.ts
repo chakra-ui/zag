@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { RadioGroupModel } from "./models/radio-group.model"
 
 let I: RadioGroupModel
@@ -85,4 +85,14 @@ test("should apply data-focus-visible after mouse click then arrow navigation", 
 
   await I.seeRadioIsFocused("grape")
   await I.seeRadioIsFocusVisible("grape")
+})
+
+test("should sync the native input when the value changes while disabled", async () => {
+  await I.clickRadio("apple")
+  await I.controls.bool("disabled")
+  await I.clickButton("Set to Mangoes")
+  await I.controls.bool("disabled", false)
+
+  await I.seeRadioIsChecked("mango")
+  await I.seeInputIsChecked("mango")
 })

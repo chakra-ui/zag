@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test, expect } from "./_test"
 import { DateInputModel } from "./models/date-input.model"
 
 let I: DateInputModel
@@ -1192,5 +1192,27 @@ test.describe("date-input [min/max]", () => {
 
     await I.clickOutsideToBlur()
     await I.seeSelectedValue("2/22/2000")
+  })
+})
+
+test.describe("date-input [focus tab]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DateInputModel(page)
+    await page.clock.install()
+    await I.goto("/date-picker/date-input-date-picker")
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("[focus] Tab after typing keeps focus outside the input", async ({ page }) => {
+    const trigger = I.getOpenCalendarTrigger()
+
+    await I.focusSegment("month")
+    await page.keyboard.type("01", { delay: 0 })
+    await I.pressKey("Tab", 3)
+    await expect(trigger).toBeFocused()
+
+    await page.clock.runFor(16)
+    await expect(trigger).toBeFocused()
   })
 })

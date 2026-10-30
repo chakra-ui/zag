@@ -10,6 +10,7 @@ import type {
   Machine,
   MachineSchema,
   InputProps,
+  Scope,
   Service,
 } from "@zag-js/core"
 import {
@@ -36,9 +37,22 @@ export function useMachine<T extends MachineSchema>(
   machine: Machine<T>,
   userProps: MaybeRef<InputProps<T>> = {} as InputProps<T>,
 ): Service<T> {
-  const scope = __computed(() => {
+  let scopeProps: Pick<Scope, "id" | "ids" | "getRootNode"> | undefined
+
+  // Reuse the scope so readers don't track every prop
+  const scope = __computed((prev?: Scope) => {
     const { id, ids, getRootNode } = toValue(userProps) as any
-    return createScope({ id, ids, getRootNode })
+    if (
+      prev &&
+      scopeProps &&
+      scopeProps.id === id &&
+      scopeProps.getRootNode === getRootNode &&
+      isEqual(scopeProps.ids, ids)
+    ) {
+      return prev
+    }
+    scopeProps = { id, ids, getRootNode }
+    return createScope(scopeProps)
   })
 
   const debug = (...args: any[]) => {

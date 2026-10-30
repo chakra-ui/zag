@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { UseControlsReturn } from "$lib/use-controls.svelte"
+  import type { UseControlsReturn } from "#lib/use-controls.svelte.ts"
   import { deepGet } from "@zag-js/shared"
 
   const { controls }: { controls: UseControlsReturn } = $props()

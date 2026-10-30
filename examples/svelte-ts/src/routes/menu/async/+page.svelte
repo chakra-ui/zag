@@ -2,8 +2,8 @@
   import * as asyncList from "@zag-js/async-list"
   import * as menu from "@zag-js/menu"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import LoadMore from "$lib/components/load-more.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import LoadMore from "#lib/components/load-more.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import "@styles/menu.css"
 
   interface Character {

@@ -1,7 +1,9 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   raf,
+  Timeout,
   trackFormControl,
   observeAttributes,
   scrollIntoView,
@@ -153,6 +155,15 @@ export const machine = createMachine<CascadeSelectSchema>({
     },
   },
 
+  refs() {
+    return {
+      initialFocusFrame: AnimationFrame.create(),
+      graceAreaTimeout: Timeout.create(),
+    }
+  },
+
+  exit: ["cancelInitialFocus", "cancelGraceAreaTimeout"],
+
   effects: ["trackFormControlState"],
 
   states: {
@@ -298,7 +309,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollContentToTop"],
+      exit: ["scrollContentToTop", "cancelInitialFocus", "clearGraceArea"],
       effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -609,6 +620,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             context.set("layer", layer)
           },
           defer: true,
+          getRootNode: scope.getRootNode,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
@@ -616,8 +628,8 @@ export const machine = createMachine<CascadeSelectSchema>({
             prop("onInteractOutside")?.(event)
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          onDismiss(event) {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -666,10 +678,12 @@ export const machine = createMachine<CascadeSelectSchema>({
           })
         }
 
-        raf(() => {
-          setInteractionModality("virtual")
-          exec(true)
-        })
+        cleanups.push(
+          raf(() => {
+            setInteractionModality("virtual")
+            exec(true)
+          }),
+        )
 
         const rafCleanup = raf(() => exec(true))
         cleanups.push(rafCleanup)
@@ -923,17 +937,21 @@ export const machine = createMachine<CascadeSelectSchema>({
         set.highlightedValue(params, parentPath)
       },
 
-      setInitialFocus({ scope }) {
-        raf(() => {
+      setInitialFocus({ scope, refs }) {
+        refs.get("initialFocusFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           contentEl?.focus({ preventScroll: true })
         })
       },
+      cancelInitialFocus({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+      },
       focusTriggerEl({ event, scope }) {
         if (!restoreFocusFn(event)) return
+        const focusOptions = getReturnFocusOptions(event)
         raf(() => {
           const triggerEl = dom.getTriggerEl(scope)
-          triggerEl?.focus({ preventScroll: true })
+          triggerEl?.focus(focusOptions)
         })
       },
       invokeOnOpen({ prop, context }) {
@@ -959,7 +977,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
 
-      createGraceArea({ context, event, scope }) {
+      createGraceArea({ context, event, scope, refs }) {
         const value = event.value.toString()
         const triggerElement = dom.getItemEl(scope, value)
 
@@ -981,13 +999,16 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         context.set("graceArea", graceArea)
 
-        // Set a timer to clear the grace area after a short delay
-        setTimeout(() => {
+        refs.get("graceAreaTimeout").start(300, () => {
           context.set("graceArea", null)
-        }, 300)
+        })
       },
-      clearGraceArea({ context }) {
+      clearGraceArea({ context, refs }) {
+        refs.get("graceAreaTimeout").clear()
         context.set("graceArea", null)
+      },
+      cancelGraceAreaTimeout({ refs }) {
+        refs.get("graceAreaTimeout").clear()
       },
       setHighlightingForHoveredItem(params) {
         const { prop, event } = params
@@ -1088,4 +1109,10 @@ const set = {
 function restoreFocusFn(event: Record<string, any>) {
   const v = event.restoreFocus ?? event.previousEvent?.restoreFocus
   return v == null || !!v
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }

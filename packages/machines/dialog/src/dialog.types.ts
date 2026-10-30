@@ -71,7 +71,7 @@ export interface DialogProps
   restoreFocus?: boolean | undefined
   /**
    * Whether to close the dialog when the outside is clicked
-   * @default true
+   * @default `true` for modal dialogs, `false` for non-modal dialogs
    */
   closeOnInteractOutside?: boolean | undefined
   /**
@@ -138,6 +138,9 @@ export interface DialogSchema {
     rendered: { title: boolean; description: boolean }
     triggerValue: string | null
   }
+  refs: {
+    returnFocusEl: HTMLElement | null
+  }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
   action:
@@ -147,9 +150,13 @@ export interface DialogSchema {
     | "invokeOnOpen"
     | "toggleVisibility"
     | "setTriggerValue"
+    | "setReturnFocusEl"
+    | "setFinalFocus"
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined
+    restoreFocus?: boolean | undefined
+    previousEvent?: any
   }
 }
 

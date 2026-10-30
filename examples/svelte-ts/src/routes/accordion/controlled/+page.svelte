@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
+  import Output from "#lib/components/output.svelte"
   import * as accordion from "@zag-js/accordion"
   import { accordionFaqData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect } from "./_test"
 import path from "node:path"
 import { FileUploadModel } from "./models/file-upload.model"
 

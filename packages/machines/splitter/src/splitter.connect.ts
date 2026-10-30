@@ -216,7 +216,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         "aria-valuemin": aria.valueMin,
         "aria-valuemax": aria.valueMax,
         "data-orientation": orientation,
-        "aria-orientation": orientation,
+        // Describes the separator line, which is perpendicular to the panel layout
+        "aria-orientation": horizontal ? "vertical" : "horizontal",
         "aria-controls":
           aria.beforeId && aria.afterId
             ? `${dom.getPanelId(scope, aria.beforeId)} ${dom.getPanelId(scope, aria.afterId)}`

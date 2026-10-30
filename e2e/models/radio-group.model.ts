@@ -47,6 +47,10 @@ export class RadioGroupModel extends Model {
     await expect(radio.control).toHaveAttribute("data-state", "checked")
   }
 
+  async seeInputIsChecked(value: string) {
+    await expect(this.getRadio(value).input).toBeChecked()
+  }
+
   async seeRadioIsFocused(value: string) {
     const radio = this.getRadio(value)
     await expect(radio.input).toBeFocused()

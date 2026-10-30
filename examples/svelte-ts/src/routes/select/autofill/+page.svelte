@@ -1,6 +1,6 @@
 <script lang="ts">
   // Manual test: save an address in Chrome, autofill the street input, and the State select should update
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as select from "@zag-js/select"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { ChevronsUpDownIcon } from "lucide-svelte"

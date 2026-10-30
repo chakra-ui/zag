@@ -59,6 +59,27 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Patch Changes
+
+- [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Move focus to the next toast when a focused toast is dismissed,
+  and back to the previously focused element after the last one.
+  - Fix toasts staying paused after a focused toast is dismissed, or after closing one with the mouse and moving the
+    pointer away.
+  - Fix new and queued toasts appearing collapsed while the stack is expanded.
+  - Fix toast height not updating when its content resizes.
+  - Fix swapped offsets when several toasts are created at once in adapters that batch renders (e.g. Vue).
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Minor Changes

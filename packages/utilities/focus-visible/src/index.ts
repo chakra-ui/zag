@@ -46,9 +46,7 @@ function isKeyboardFocusEvent(isTextInput: boolean, modality: Modality, e: Handl
   const doc = getDocument(eventTarget)
   const win = getWindow(eventTarget)
 
-  // For keyboard events that occur on a non-input element that will move focus into input element
-  // (e.g. ArrowLeft going from Datepicker button to the main input group), we need to rely on the
-  // user passing isTextInput. Use activeElement to detect the element that will receive focus.
+  // Keys that move focus into a text input rely on the caller's isTextInput, checked against activeElement
   const activeElement = getActiveElement(doc)
   isTextInput =
     isTextInput ||
@@ -81,8 +79,10 @@ let currentModality: Modality | null = null
 let changeHandlers = new Set<Handler>()
 
 interface GlobalListenerData {
-  /** Unset when the prototype's `focus` could not be read, so there is nothing to restore. */
+  /** Unset when the prototype's `focus` could not be read */
   focus: VoidFunction | undefined
+  /** The unreadable accessor to restore */
+  descriptor?: PropertyDescriptor | undefined
 }
 
 export let listenerMap = new Map<Window, GlobalListenerData>()
@@ -92,10 +92,7 @@ let pendingLabelControl: HTMLElement | null = null
 let hasBlurredWindowRecently = false
 let lastPointerPosition: { x: number; y: number } | null = null
 
-/**
- * When true, the next focus event will be ignored. Used by preventFocus() to avoid
- * focus rings when programmatically reverting focus.
- */
+/** Skip the next focus event, so preventFocus() doesn't show focus rings */
 export let ignoreFocusEvent = false
 
 // Only Tab or Esc keys will make focus visible on text input elements
@@ -143,16 +140,13 @@ function handleClickEvent(e: MouseEvent) {
 
   pendingLabelControl = null
 
-  // During label activation, pointerdown may focus a focusable ancestor before the
-  // click's default action focuses the associated control. Remember the expected
-  // control here so its focus is not mistaken for a virtual interaction.
+  // pointerdown may focus an ancestor before the label focuses its control; don't treat that as virtual
   const target = getEventTarget<Element>(e)
   const label = target?.closest<HTMLLabelElement>("label")
   const control = label?.control
   if (!label || !control || control.matches(":disabled")) return
 
-  // Activating interactive content nested in a label must not activate the label's
-  // control, unless the interactive content is the control itself.
+  // Interactive content in a label doesn't activate the label's control, unless it is the control
   const interactive = target?.closest(interactiveContentSelector)
   if (interactive && label.contains(interactive) && interactive !== control) return
 
@@ -176,8 +170,7 @@ function handleFocusEvent(e: FocusEvent) {
     return
   }
 
-  // If a focus event occurs without a preceding keyboard or pointer event, switch to virtual modality.
-  // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
+  // Focus without a prior keyboard/pointer event is virtual (e.g. iOS form next/previous buttons)
   if (!hasEventBeforeFocus && !isLabelActivationFocus && !hasBlurredWindowRecently) {
     currentModality = "virtual"
     triggerChangeHandlers("virtual", e)
@@ -191,43 +184,49 @@ function handleFocusEvent(e: FocusEvent) {
 function handleWindowBlur() {
   if (ignoreFocusEvent) return
 
-  // When the window is blurred, reset state. This is necessary when tabbing out of the window,
-  // for example, since a subsequent focus event won't be fired.
+  // Reset on window blur (e.g. tabbing out), since no focus event follows
   hasEventBeforeFocus = false
   pendingLabelControl = null
   hasBlurredWindowRecently = true
 }
 
-/**
- * Patch `HTMLElement.prototype.focus` to mark focus as programmatic, and return the native method
- * for teardown to restore. Returns `undefined` when the patch could not be applied - the read itself
- * can throw when tooling has replaced `focus` with an accessor that dereferences `this` (Storybook's
- * instrumenter does), and losing the patch must not take the caller's setup down with it.
- */
-function patchFocusMethod(win: Window & typeof globalThis): VoidFunction | undefined {
+function readPrototypeFocus(proto: HTMLElement): HTMLElement["focus"] | undefined {
   try {
-    const nativeFocus = win.HTMLElement.prototype.focus
+    return proto.focus
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Patch `HTMLElement.prototype.focus` to mark focus as programmatic. If `focus` is an accessor that
+ * throws off the prototype (e.g. Storybook's), resolve it per element instead. Never throws.
+ */
+function patchFocusMethod(win: Window & typeof globalThis): GlobalListenerData {
+  const proto = win.HTMLElement.prototype
+  try {
+    const nativeFocus = readPrototypeFocus(proto)
+    const descriptor = nativeFocus ? undefined : Object.getOwnPropertyDescriptor(proto, "focus")
+    const getFocus = descriptor?.get
+    if (!nativeFocus && !getFocus) return { focus: undefined }
 
     function patchedFocus(this: HTMLElement) {
-      // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
-      // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
-      // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
-      // When `options.focusVisible` is supported in most browsers, we can remove this.
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
+      // Keep the current modality on programmatic focus. Replace with `focusVisible` option once supported
       hasEventBeforeFocus = true
-      nativeFocus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
+      const focus: HTMLElement["focus"] = nativeFocus ?? getFocus!.call(this)
+      focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
     }
 
-    // Keep focus writable when replacing an accessor (e.g. Storybook's).
+    // Stay writable when replacing an accessor
     Object.defineProperty(win.HTMLElement.prototype, "focus", {
       configurable: true,
       writable: true,
       value: patchedFocus,
     })
 
-    return nativeFocus
+    return { focus: nativeFocus, descriptor }
   } catch {
-    return undefined
+    return { focus: undefined }
   }
 }
 
@@ -242,7 +241,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const win = getWindow(root)
   const doc = getDocument(root)
 
-  const nativeFocus = patchFocusMethod(win)
+  const focusData = patchFocusMethod(win)
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
@@ -261,7 +260,6 @@ function setupGlobalFocusEvents(root?: RootNode) {
     doc.addEventListener("mouseup", handlePointerEvent, true)
   }
 
-  // Add unmount handler
   win.addEventListener(
     "beforeunload",
     () => {
@@ -270,7 +268,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
     { once: true },
   )
 
-  listenerMap.set(win, { focus: nativeFocus })
+  listenerMap.set(win, focusData)
 }
 
 const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
@@ -286,16 +284,14 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     return
   }
 
-  if (listenerData.focus) {
+  if (listenerData.focus || listenerData.descriptor) {
     try {
-      Object.defineProperty(win.HTMLElement.prototype, "focus", {
-        configurable: true,
-        writable: true,
-        value: listenerData.focus,
-      })
-    } catch {
-      // Failed to restore - ignore silently
-    }
+      Object.defineProperty(
+        win.HTMLElement.prototype,
+        "focus",
+        listenerData.descriptor ?? { configurable: true, writable: true, value: listenerData.focus },
+      )
+    } catch {}
   }
 
   doc.removeEventListener("keydown", handleKeyboardEvent, true)
@@ -358,8 +354,7 @@ export function trackInteractionModality(props: InteractionModalityProps): VoidF
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export function isFocusVisible(): boolean {
-  // Focus is visible for keyboard and virtual (e.g. screen reader) modalities only.
-  // Excludes pointer (click/touch) and null (no prior interaction, e.g. focus-trap autofocus).
+  // Only keyboard and virtual (e.g. screen reader) modalities show focus
   return currentModality === "keyboard" || currentModality === "virtual"
 }
 

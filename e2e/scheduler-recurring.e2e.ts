@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { schedulerAnchor } from "@zag-js/shared"
 import { SchedulerModel } from "./models/scheduler.model"
 

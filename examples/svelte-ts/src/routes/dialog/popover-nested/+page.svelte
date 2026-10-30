@@ -1,6 +1,6 @@
 <script lang="ts">
-  import DialogWrapper from "$lib/components/dialog-nesting-dialog.svelte"
-  import PopoverWrapper from "$lib/components/dialog-nesting-popover.svelte"
+  import DialogWrapper from "#lib/components/dialog-nesting-dialog.svelte"
+  import PopoverWrapper from "#lib/components/dialog-nesting-popover.svelte"
   import "@styles/dialog.css"
   import "@styles/popover.css"
 </script>

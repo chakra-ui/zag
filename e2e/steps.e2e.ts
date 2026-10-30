@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { part } from "./_utils"
 import { StepsModel } from "./models/steps.model"
 
@@ -18,6 +18,14 @@ test.describe("steps / basic", () => {
     await I.seeCurrentStep("first")
     await I.seeStepState("second", "incomplete")
     await I.dontSeeCompletedContent()
+  })
+
+  test("aria-current marks the current step's trigger", async () => {
+    await I.seeAriaCurrentStep("first")
+    await I.dontSeeAriaCurrentStep("second")
+    await I.clickNext()
+    await I.seeAriaCurrentStep("second")
+    await I.dontSeeAriaCurrentStep("first")
   })
 
   test("next marks the departing step completed", async () => {

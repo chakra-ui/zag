@@ -2,6 +2,21 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [`cf44f87`](https://github.com/chakra-ui/zag/commit/cf44f87c75ffdb0992a5d6121152cf0465067550) Thanks
+  [@tad-bit-better](https://github.com/tad-bit-better)! - - Fix `aria-current="step"` being set on the item wrapper
+  instead of the current step's trigger.
+  - Add `data-current`, `data-complete` and `data-incomplete` to the item, as the styling guide documents.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

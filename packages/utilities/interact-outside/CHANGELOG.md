@@ -2,6 +2,18 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3514](https://github.com/chakra-ui/zag/pull/3514)
+  [`4f463ba`](https://github.com/chakra-ui/zag/commit/4f463bafa0b501a4060808a18a695d8118223c46) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus-outside firing after focus had already moved back
+  inside, which removed a navigation menu's links from the Tab order on a quick Tab and Shift+Tab.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

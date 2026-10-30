@@ -18,7 +18,7 @@
 
 <script lang="ts">
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import "@styles/listbox.css"
 
   const { virtualizer, init } = useListVirtualizer({

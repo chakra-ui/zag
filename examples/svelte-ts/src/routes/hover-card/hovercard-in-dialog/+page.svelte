@@ -1,6 +1,6 @@
 <script lang="ts">
-  import HoverCard from "$lib/components/hover-card-in-dialog-card.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import HoverCard from "#lib/components/hover-card-in-dialog-card.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/hover-card.css"

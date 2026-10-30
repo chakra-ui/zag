@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CollapsibleMultipleItem from "$lib/components/collapsible-multiple-item.svelte"
+  import CollapsibleMultipleItem from "#lib/components/collapsible-multiple-item.svelte"
   import "@styles/collapsible.css"
 
   let list = $state([1, 2, 3])

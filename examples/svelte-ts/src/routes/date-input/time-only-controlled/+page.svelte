@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { DateFormatter, type DateValue } from "@internationalized/date"
   import * as dateInput from "@zag-js/date-input"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

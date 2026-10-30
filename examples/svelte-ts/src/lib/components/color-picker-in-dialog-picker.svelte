@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as colorPicker from "@zag-js/color-picker"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 

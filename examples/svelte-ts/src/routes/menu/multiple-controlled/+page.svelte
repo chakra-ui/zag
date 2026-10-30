@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MenuMultipleControlled from "$lib/components/menu-multiple-controlled.svelte"
+  import MenuMultipleControlled from "#lib/components/menu-multiple-controlled.svelte"
   import "@styles/menu.css"
 </script>
 

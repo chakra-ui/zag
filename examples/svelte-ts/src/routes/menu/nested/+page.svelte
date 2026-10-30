@@ -1,10 +1,10 @@
 <script lang="ts">
   import * as menu from "@zag-js/menu"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { menuData } from "@zag-js/shared"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { onMount } from "svelte"
   import "@styles/menu.css"
 

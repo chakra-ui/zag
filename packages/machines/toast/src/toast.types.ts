@@ -170,11 +170,6 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
   index?: number | undefined
   /**
    * @internal
-   * Whether the toast is stacked
-   */
-  stacked?: boolean | undefined
-  /**
-   * @internal
    * The event to be dispatched
    */
   message?: any | undefined
@@ -415,6 +410,11 @@ export interface ToastStore<V = any> {
    * Collapse all toasts to their compact state (overlap mode)
    */
   collapse: VoidFunction
+  /**
+   * @internal
+   * Subscribe to expand and collapse requests
+   */
+  subscribeLayout: (subscriber: (stacked: boolean) => void) => VoidFunction
 }
 
 /* -----------------------------------------------------------------------------

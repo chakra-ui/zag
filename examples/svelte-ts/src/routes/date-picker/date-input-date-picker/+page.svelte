@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as dateInput from "@zag-js/date-input"
   import * as datePicker from "@zag-js/date-picker"
   import { getLocalTimeZone } from "@internationalized/date"

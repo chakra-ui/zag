@@ -7,7 +7,7 @@
 <script lang="ts">
   import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import styles from "@styles/drawer-indent-effect.module.css"
 
   const id = $props.id()

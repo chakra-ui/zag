@@ -21,6 +21,10 @@ export class ToggleGroupModel extends Model {
     return this.getItem(item).click()
   }
 
+  focusItem(item: Item) {
+    return this.getItem(item).focus()
+  }
+
   private get outsideButton() {
     return this.page.getByRole("button", { name: "Outside" })
   }

@@ -113,6 +113,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const hasInspector = useHasInspector(pathname)
   const [mode, setMode] = useState<PaletteMode>({ type: "all" })
 
+  // e2e waits for this before interacting
+  useEffect(() => {
+    document.documentElement.dataset.ready = ""
+  }, [])
+
   const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
 

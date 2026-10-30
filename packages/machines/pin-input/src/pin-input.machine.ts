@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
+import { AnimationFrame, dispatchInputValueEvent, raf } from "@zag-js/dom-query"
 import { ensureProps, isEqual, setValueAtIndex, warn } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
@@ -39,6 +39,13 @@ export const machine = createMachine({
     }
   },
 
+  refs() {
+    return {
+      pasteFrame: AnimationFrame.create(),
+      pasteFocusFrame: AnimationFrame.create(),
+    }
+  },
+
   computed: {
     _value: ({ context, prop }) => fill(context.get("value"), prop("count")),
     valueLength: ({ computed }) => computed("_value").length,
@@ -55,6 +62,8 @@ export const machine = createMachine({
     },
     { actions: ["warnOnCountMismatch"] },
   ]),
+
+  exit: ["cancelPasteFrames"],
 
   watch({ action, track, context, computed }) {
     track([() => context.get("focusedIndex")], () => {
@@ -91,6 +100,7 @@ export const machine = createMachine({
       },
     },
     focused: {
+      exit: ["cancelPasteFocus"],
       on: {
         "INPUT.CHANGE": {
           actions: ["setFocusedValue", "syncInputValue", "advanceFocusedIndex"],
@@ -226,10 +236,10 @@ export const machine = createMachine({
           dom.setInputValue(inputEl, value[index])
         })
       },
-      setPastedValue({ context, event, computed, flush }) {
-        raf(() => {
+      setPastedValue({ context, event, computed, flush, refs }) {
+        const focusedIndex = context.get("focusedIndex")
+        refs.get("pasteFrame").request(() => {
           const valueAsString = computed("valueAsString")
-          const focusedIndex = context.get("focusedIndex")
           const valueLength = computed("valueLength")
           const filledValueLength = computed("filledValueLength")
 
@@ -253,9 +263,7 @@ export const machine = createMachine({
       },
       clearValue({ context, prop }) {
         const nextValue = Array.from<string>({ length: prop("count") }).fill("")
-        queueMicrotask(() => {
-          context.set("value", nextValue)
-        })
+        context.set("value", nextValue)
       },
       clearFocusedValue({ context, computed }) {
         const focusedIndex = context.get("focusedIndex")
@@ -283,10 +291,17 @@ export const machine = createMachine({
       setPrevFocusedIndex({ context }) {
         context.set("focusedIndex", Math.max(context.get("focusedIndex") - 1, 0))
       },
-      setLastValueFocusIndex({ context, computed }) {
-        raf(() => {
+      setLastValueFocusIndex({ context, computed, refs }) {
+        refs.get("pasteFocusFrame").request(() => {
           context.set("focusedIndex", Math.min(computed("filledValueLength"), computed("valueLength") - 1))
         })
+      },
+      cancelPasteFocus({ refs }) {
+        refs.get("pasteFocusFrame").cancel()
+      },
+      cancelPasteFrames({ refs }) {
+        refs.get("pasteFrame").cancel()
+        refs.get("pasteFocusFrame").cancel()
       },
       blurFocusedInputIfNeeded({ context, computed, prop, scope }) {
         if (!prop("blurOnComplete") || !computed("isValueComplete")) return

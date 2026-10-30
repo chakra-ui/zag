@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as select from "@zag-js/select"
   import { selectData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"

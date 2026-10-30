@@ -5,6 +5,7 @@ import {
   disableTextSelection,
   dispatchInputValueEvent,
   getInitialFocus,
+  isFocusOutside,
   raf,
   setElementValue,
   trackFormControl,
@@ -402,6 +403,7 @@ export const machine = createMachine<ColorPickerSchema>({
           },
           exclude: dom.getTriggerEl(scope),
           defer: true,
+          getRootNode: scope.getRootNode,
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (event.defaultPrevented) return
@@ -409,8 +411,8 @@ export const machine = createMachine<ColorPickerSchema>({
           },
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
-          onDismiss() {
-            send({ type: "INTERACT_OUTSIDE" })
+          onDismiss(event) {
+            send({ type: "INTERACT_OUTSIDE", focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -651,9 +653,13 @@ export const machine = createMachine<ColorPickerSchema>({
           element.focus({ preventScroll: true })
         })
       },
-      setReturnFocus({ scope }) {
+      setReturnFocus({ scope, event }) {
+        const contentEl = dom.getContentEl(scope)
+        const focusOptions = getReturnFocusOptions(event)
         raf(() => {
-          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+          // Keep focus that moved elsewhere (e.g. from `onValueChange`)
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
+          dom.getTriggerEl(scope)?.focus(focusOptions)
         })
       },
       syncFormatSelectElement({ context, scope }) {
@@ -694,4 +700,10 @@ function syncFormatSelect(scope: Scope, format: ColorFormat) {
   const selectEl = dom.getFormatSelectEl(scope)
   if (!selectEl) return
   raf(() => setElementValue(selectEl, format))
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }

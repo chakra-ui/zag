@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { EditableModel } from "./models/editable.model"
 import { repeat } from "./_utils"
 
@@ -12,6 +12,11 @@ test.describe("editable", () => {
 
   test("should have no accessibility violation", async () => {
     await I.checkAccessibility()
+  })
+
+  test("input should be named by the rendered label", async () => {
+    await I.focusPreview()
+    await I.seeInputHasAccessibleName("Display name")
   })
 
   test("on focus, input should be visible and focus", async () => {
@@ -43,6 +48,20 @@ test.describe("editable", () => {
     await I.pressKey("Escape")
 
     await I.seePreviewHasText("Hello World")
+    await I.dontSeeInput()
+  })
+
+  test("on type and esc, should revert to an empty value", async () => {
+    await I.focusPreview()
+    await I.pressKey("Backspace")
+    await I.pressKey("Enter")
+    await I.seePreviewHasText("")
+
+    await I.focusPreview()
+    await I.type("Naruto")
+    await I.pressKey("Escape")
+
+    await I.seeInputHasValue("")
     await I.dontSeeInput()
   })
 

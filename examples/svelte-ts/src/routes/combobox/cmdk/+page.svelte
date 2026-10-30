@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ComboboxCommandMenu from "$lib/components/combobox-command-menu.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import ComboboxCommandMenu from "#lib/components/combobox-command-menu.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as combobox from "@zag-js/combobox"
   import * as dialog from "@zag-js/dialog"
   import { createHotkeyStore } from "@zag-js/hotkeys"

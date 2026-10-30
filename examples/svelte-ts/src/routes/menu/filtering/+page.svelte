@@ -3,9 +3,9 @@
   import * as menu from "@zag-js/menu"
   import { menuFilterData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import Portal from "$lib/components/portal.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/menu.css"
 
   const { contains } = createFilter({ sensitivity: "base" })

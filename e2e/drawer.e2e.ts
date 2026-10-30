@@ -1,5 +1,5 @@
-import { expect, test } from "@playwright/test"
-import { controls } from "./_utils"
+import { expect, test } from "./_test"
+import { controls, part } from "./_utils"
 import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
@@ -58,6 +58,18 @@ test.describe("drawer", () => {
     const dragDistance = Math.floor(initialHeight * 0.55)
 
     await I.mouseDragGrabber("down", dragDistance)
+    await I.dontSeeContent()
+  })
+
+  test("should close when dragged from the grabber over a scrolled list", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    await I.scrollContent(200)
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.mouseDragGrabberOverList(Math.floor(initialHeight * 0.55))
     await I.dontSeeContent()
   })
 
@@ -144,6 +156,48 @@ test.describe("drawer", () => {
     expect(finalHeight).toBe(initialHeight)
   })
 
+  test("should only block drags on the no-drag axis", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.setNoDragAxis("y")
+    await I.dragNoDragArea("down", 100, 500, false)
+    await I.waitForSnapComplete()
+    expect(await I.getContentVisibleHeight()).toBe(initialHeight)
+    await page.mouse.up()
+
+    // The blocked drag selects text, which would stop the next drag from starting
+    await page.evaluate(() => getSelection()?.removeAllRanges())
+
+    await I.setNoDragAxis("x")
+    await I.dragNoDragArea("down", 100, 500, false)
+    await I.waitForSnapComplete()
+    expect(await I.getContentVisibleHeight()).toBeLessThan(initialHeight)
+    await page.mouse.up()
+  })
+
+  test("should allow selecting text with the mouse", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const item = page.getByText("Item 3", { exact: true })
+    const box = (await item.boundingBox())!
+    const y = box.y + box.height / 2
+
+    // Hovering first must not leave text selection disabled
+    await page.mouse.move(box.x + box.width + 40, y, { steps: 5 })
+    await page.mouse.move(box.x + 1, y)
+    await page.mouse.down()
+    await page.mouse.move(box.x + box.width - 1, y, { steps: 8 })
+    await page.mouse.up()
+
+    expect(await page.evaluate(() => getSelection()?.toString())).toBe("Item 3")
+  })
+
   test("should not start dragging when text is selected in content", async () => {
     await I.clickTrigger()
     await I.seeContent()
@@ -164,6 +218,29 @@ test.describe("drawer", () => {
 
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
+  })
+})
+
+test.describe("drawer [non-modal]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DrawerModel(page)
+    await I.goto("/drawer/non-modal")
+  })
+
+  test("should restore focus to the trigger on escape", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
+  })
+
+  test("should restore focus to the trigger on close", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await page.locator(part("drawer", "close-trigger")).click()
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
   })
 })
 

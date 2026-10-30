@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { HalfStar, Star } from "$lib/components/rating-icons.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import { HalfStar, Star } from "#lib/components/rating-icons.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as rating from "@zag-js/rating-group"
   import { ratingControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

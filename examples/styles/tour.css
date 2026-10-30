@@ -138,8 +138,10 @@
   opacity: 0.72;
 }
 
+/* Step changes: the cutout, spotlight and tooltip move together */
 [data-tour-backdrop] {
   background-color: rgba(0, 0, 0, 0.5);
+  transition: clip-path 0.2s ease;
 }
 
 [data-tour-spotlight] {
@@ -149,6 +151,21 @@
     top 0.2s ease,
     width 0.2s ease,
     height 0.2s ease;
+}
+
+[data-tour-positioner] {
+  transition: transform 0.2s ease;
+}
+
+/* Snap into place when there's no visible previous step to move from */
+:is([data-tour-backdrop], [data-tour-spotlight], [data-tour-positioner])[data-instant] {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is([data-tour-backdrop], [data-tour-spotlight], [data-tour-positioner]) {
+    transition: none !important;
+  }
 }
 
 [data-tour-close-trigger] {

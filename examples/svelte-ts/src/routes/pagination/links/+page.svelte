@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page as currentPage } from "$app/state"
-  import ExampleProps from "$lib/components/example-props.svelte"
+  import ExampleProps from "#lib/components/example-props.svelte"
   import * as pagination from "@zag-js/pagination"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ChevronLeftIcon, ChevronRightIcon } from "lucide-svelte"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useWaterfallVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useWaterfallVirtualizer } from "#lib/use-virtualizer.svelte.ts"
 
   const ITEM_COUNT = 1_000
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Popover from "$lib/components/dismissable-popover.svelte"
+  import Popover from "#lib/components/dismissable-popover.svelte"
 </script>
 
 <div>

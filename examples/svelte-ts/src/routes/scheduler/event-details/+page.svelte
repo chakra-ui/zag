@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as popover from "@zag-js/popover"
   import * as scheduler from "@zag-js/scheduler"
   import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"

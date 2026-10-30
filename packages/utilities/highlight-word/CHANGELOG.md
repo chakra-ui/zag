@@ -8,6 +8,15 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3484](https://github.com/chakra-ui/zag/pull/3484)
+  [`887445d`](https://github.com/chakra-ui/zag/commit/887445d10e3768e8ef6ff2624d2f1ca363f4e253) Thanks
+  [@rjsgud49](https://github.com/rjsgud49)! - - Fix `exactMatch` for non-ASCII words and for queries that start or end
+  with punctuation (e.g. `C++`).
+
 ## 1.46.0
 
 No changes in this release.

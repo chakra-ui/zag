@@ -1,4 +1,4 @@
-import { dataAttr, getEventTarget, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
@@ -43,6 +43,10 @@ export function connect<T extends PropTypes>(
     }
   }
 
+  // Server render, or the indicator hasn't been measured yet (e.g. inside a hidden panel)
+  const indicatorRect = context.get("indicatorRect")
+  const indicatorPending = context.get("ssr") || (indicatorRect != null && isRectEmpty(indicatorRect))
+
   function getItemDataAttrs<T extends ItemProps>(props: T) {
     const itemState = getItemState(props)
     return {
@@ -54,7 +58,7 @@ export function connect<T extends PropTypes>(
       "data-hover": dataAttr(itemState.hovered),
       "data-invalid": dataAttr(itemState.invalid),
       "data-orientation": prop("orientation"),
-      "data-ssr": dataAttr(context.get("ssr")),
+      "data-indicator-pending": dataAttr(indicatorPending),
     }
   }
 
@@ -224,7 +228,6 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       const rect = context.get("indicatorRect")
-      const animateIndicator = context.get("animateIndicator")
 
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
@@ -232,21 +235,13 @@ export function connect<T extends PropTypes>(
         hidden: context.get("value") == null || isRectEmpty(rect),
         "data-disabled": dataAttr(groupDisabled),
         "data-orientation": prop("orientation"),
-        onTransitionEnd(event) {
-          if (getEventTarget(event) !== event.currentTarget) return
-          send({ type: "INDICATOR_TRANSITION_END" })
-        },
+        "data-instant": dataAttr(context.get("indicatorInstant")),
         style: {
-          "--transition-property": "left, top, width, height",
           "--left": toPx(rect?.x),
           "--top": toPx(rect?.y),
           "--width": toPx(rect?.width),
           "--height": toPx(rect?.height),
           position: "absolute",
-          willChange: animateIndicator ? "var(--transition-property)" : "auto",
-          transitionProperty: animateIndicator ? "var(--transition-property)" : "none",
-          transitionDuration: animateIndicator ? "var(--transition-duration, 150ms)" : "0ms",
-          transitionTimingFunction: "var(--transition-timing-function)",
           [prop("orientation") === "horizontal" ? "left" : "top"]:
             prop("orientation") === "horizontal" ? "var(--left)" : "var(--top)",
         },

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as avatar from "@zag-js/avatar"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"

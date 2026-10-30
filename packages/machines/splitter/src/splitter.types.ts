@@ -171,6 +171,7 @@ interface Refs {
   initialSize: number[] | null
   prevInitialLayout: string | null
   prevGroupSize: number | null
+  prevPropsKey: string | null
   lastRequestedSize: number[] | null
   suppressOnResize: boolean
 }

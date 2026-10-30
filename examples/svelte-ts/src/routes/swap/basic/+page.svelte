@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Swap from "$lib/components/swap.svelte"
+  import Swap from "#lib/components/swap.svelte"
   import "@styles/swap.css"
 
   let muted = $state(false)
