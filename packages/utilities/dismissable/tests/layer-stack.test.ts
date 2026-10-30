@@ -287,3 +287,151 @@ describe("layerStack", () => {
     })
   })
 })
+
+describe("layerStack snapshots", () => {
+  afterEach(async () => {
+    resetStack()
+    for (let i = 0; i < 3; i++) {
+      await nextTick()
+    }
+  })
+
+  function addLayer(type: LayerType = "popover", options: Partial<Layer> = {}) {
+    const node = document.createElement("div")
+    document.body.append(node)
+    const layer: Layer = { node, type, dismiss: () => layerStack.remove(node), ...options }
+    layerStack.add(layer)
+    return layer
+  }
+
+  // the per-layer helpers are the reference `syncLayers` must agree with
+  function expectSnapshotsMatchHelpers() {
+    layerStack.layers.forEach((layer, index) => {
+      const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+      expect(layer.snapshot).toEqual({
+        active: true,
+        type: layer.type,
+        index,
+        nested: layerStack.getParentLayerOfType(layer.node, layer.type) != null,
+        hasNested: nestedCount > 0,
+        nestedCount,
+        blocked: layerStack.isBelowPointerBlockingLayer(layer.node),
+      })
+    })
+  }
+
+  test("counts same-type descendants through layers of another type", () => {
+    const dialog = addLayer("dialog")
+    const menu = addLayer("menu")
+    const nestedDialog = addLayer("dialog")
+    addLayer("dialog")
+
+    expect(dialog.snapshot).toMatchObject({ nested: false, nestedCount: 2 })
+    expect(menu.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expect(nestedDialog.snapshot).toMatchObject({ nested: true, nestedCount: 1 })
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("menubar peers are siblings, not nested", () => {
+    const first = addLayer("menu", { group: "menubar" })
+    const second = addLayer("menu", { group: "menubar" })
+
+    expect(first.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expect(second.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("blocks only layers below the topmost pointer-blocking layer", () => {
+    let blocking = true
+    const below = addLayer("popover")
+    addLayer("dialog", { pointerBlocking: () => blocking })
+    const above = addLayer("popover")
+
+    expect(below.snapshot?.blocked).toBe(true)
+    expect(above.snapshot?.blocked).toBe(false)
+
+    blocking = false
+    layerStack.syncLayers()
+    expect(below.snapshot?.blocked).toBe(false)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("a missing parent ends the chain", () => {
+    addLayer("dialog")
+    const child = addLayer("dialog")
+    child.parentId = "missing"
+    layerStack.syncLayers()
+
+    expect(child.snapshot?.nested).toBe(false)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("a parent cycle does not hang", () => {
+    const a = addLayer("dialog")
+    const b = addLayer("dialog")
+    a.parentId = b.id
+    layerStack.syncLayers()
+
+    expect(layerStack.depthOf(a)).toBe(2)
+    expect(layerStack.getNestedLayers(a.node)).toHaveLength(2)
+    expectSnapshotsMatchHelpers()
+
+    // `add` never builds a cycle; break it so teardown's cascade can finish
+    a.parentId = undefined
+  })
+
+  test("reattached layers keep their index and nesting", () => {
+    const parent = addLayer("dialog")
+    const child = addLayer("dialog")
+    addLayer("dialog")
+
+    layerStack.remove(child.node, { reattach: true })
+    layerStack.add({ ...child, id: undefined, parentId: undefined })
+
+    expect(layerStack.indexOf(child.node)).toBe(1)
+    expect(parent.snapshot?.nestedCount).toBe(2)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("random stacks match the per-layer helpers", () => {
+    let seed = 1
+    const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+    const types: LayerType[] = ["dialog", "popover", "menu"]
+
+    for (let run = 0; run < 20; run++) {
+      resetStack()
+      for (let i = 0; i < 15; i++) {
+        const type = types[Math.floor(random() * types.length)]
+        if (random() < 0.2 && layerStack.count() > 0) {
+          const layer = layerStack.layers[Math.floor(random() * layerStack.count())]
+          layerStack.remove(layer.node, { reattach: random() < 0.5 })
+          if (!layerStack.layers.includes(layer) && layerStack.pendingReattach.has(layer.node)) {
+            layerStack.add({ ...layer, id: undefined })
+          }
+        } else {
+          addLayer(type, { pointerBlocking: random() < 0.2, group: random() < 0.2 ? "group" : undefined })
+        }
+        expectSnapshotsMatchHelpers()
+      }
+    }
+  })
+
+  test("many open layers mount and unmount quickly", () => {
+    const start = performance.now()
+    const layers = Array.from({ length: 200 }, () => addLayer("popover"))
+    layers.reverse().forEach((layer) => layerStack.remove(layer.node))
+
+    expect(layerStack.count()).toBe(0)
+    // was several seconds at 120 layers when each snapshot rescanned the stack
+    expect(performance.now() - start).toBeLessThan(1000)
+  })
+
+  test("removing the bottom of a long chain dismisses the rest", () => {
+    const layers = Array.from({ length: 200 }, () => addLayer("popover"))
+    const start = performance.now()
+    layerStack.remove(layers[0].node)
+
+    expect(layerStack.count()).toBe(0)
+    expect(performance.now() - start).toBeLessThan(1000)
+  })
+})
