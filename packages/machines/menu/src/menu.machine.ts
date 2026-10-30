@@ -139,10 +139,12 @@ export const machine = createMachine<MenuSchema>({
       typeaheadState: { ...getByTypeahead.defaultOptions },
       positioningOverride: {},
       focusMenuFrame: AnimationFrame.create(),
+      focusContextTriggerFrame: AnimationFrame.create(),
+      contextReturnFocusEl: null,
     }
   },
 
-  exit: ["cancelFocusMenu"],
+  exit: ["cancelFocusMenu", "cancelFocusContextTrigger"],
 
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
@@ -348,6 +350,7 @@ export const machine = createMachine<MenuSchema>({
     closed: {
       tags: ["closed"],
       entry: ["clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint"],
+      exit: ["cancelFocusContextTrigger"],
       on: {
         OPEN: openTransitions,
         "CONTROLLED.OPEN": [
@@ -717,8 +720,10 @@ export const machine = createMachine<MenuSchema>({
     },
 
     actions: {
-      setAnchorPoint({ context, event }) {
+      setAnchorPoint({ context, event, scope, refs }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
+        const activeElement = scope.getActiveElement()
+        refs.set("contextReturnFocusEl", contains(event.target, activeElement) ? activeElement : null)
       },
       setSubmenuPlacement({ context, computed, refs }) {
         if (!context.get("isSubmenu")) return
@@ -805,8 +810,9 @@ export const machine = createMachine<MenuSchema>({
       clearIntentPolygon({ context }) {
         context.set("intentPolygon", null)
       },
-      clearAnchorPoint({ context }) {
+      clearAnchorPoint({ context, refs }) {
         context.set("anchorPoint", null)
+        refs.set("contextReturnFocusEl", null)
       },
       unlockParentOnOpen({ refs, context, scope }) {
         const parent = refs.get("parent")
@@ -886,12 +892,23 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
-      focusTrigger({ scope, context, event }) {
-        if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+      focusTrigger({ scope, context, event, refs }) {
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        if (context.get("isSubmenu") || restoreFocus === false) return
+        if (context.get("anchorPoint")) {
+          const triggerEl = refs.get("contextReturnFocusEl")
+          refs.get("focusContextTriggerFrame").request(() => {
+            triggerEl?.focus({ preventScroll: true })
+          })
+          return
+        }
         queueMicrotask(() => {
           const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           triggerEl?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusContextTrigger({ refs }) {
+        refs.get("focusContextTriggerFrame").cancel()
       },
       highlightMatchedItem({ scope, context, event, refs }) {
         const node = dom.getElemByKey(scope, {
