@@ -305,6 +305,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         form: prop("form"),
         type: "text",
         hidden: true,
+        disabled,
         defaultValue: thumbState.value,
         id: dom.getHiddenInputId(scope, index),
       })

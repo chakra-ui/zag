@@ -72,6 +72,21 @@ test.describe("file-upload", () => {
     await I.seeHiddenInputIsDisabled()
   })
 
+  test("should keep the hidden input enabled when read-only", async () => {
+    await I.controls.bool("readOnly")
+    await I.seeHiddenInputIsEnabled()
+  })
+
+  test("should not open the picker through the hidden input when read-only", async () => {
+    await I.controls.bool("readOnly")
+
+    const tracker = I.trackFileChooserEvents()
+    await I.getHiddenInput().evaluate((input: HTMLInputElement) => input.click())
+    await I.waitForNextFrame()
+
+    expect(tracker.count).toBe(0)
+  })
+
   test("should not reopen file picker after ESC key", async () => {
     await I.page.click("main")
     await I.pressKey("Tab")

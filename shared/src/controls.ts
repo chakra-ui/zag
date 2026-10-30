@@ -366,6 +366,7 @@ export const fileUploadControls = defineControls({
   accept: { type: "string", defaultValue: "" },
   maxFiles: { type: "number", defaultValue: 1 },
   disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   dropzone: { type: "boolean", defaultValue: true },
 })
 

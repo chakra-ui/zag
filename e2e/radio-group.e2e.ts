@@ -1,4 +1,4 @@
-import { test } from "./_test"
+import { expect, test } from "./_test"
 import { RadioGroupModel } from "./models/radio-group.model"
 
 let I: RadioGroupModel
@@ -95,4 +95,29 @@ test("should sync the native input when the value changes while disabled", async
 
   await I.seeRadioIsChecked("mango")
   await I.seeInputIsChecked("mango")
+})
+
+test("should submit the value when read-only", async () => {
+  await I.clickRadio("apple")
+  await I.controls.bool("readOnly")
+
+  await I.seeFormValue("apple")
+  await expect(I.getRadio("apple").input).toBeEnabled()
+})
+
+test("should not change the value when read-only", async () => {
+  await I.clickRadio("apple")
+  await I.controls.bool("readOnly")
+
+  await I.clickRadio("grape")
+  await I.seeRadioIsChecked("apple")
+  await I.seeFormValue("apple")
+})
+
+test("should not submit the value when disabled", async () => {
+  await I.clickRadio("apple")
+  await I.seeFormValue("apple")
+
+  await I.controls.bool("disabled")
+  await I.seeFormValue(null)
 })

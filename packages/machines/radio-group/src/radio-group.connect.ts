@@ -220,7 +220,7 @@ export function connect<T extends PropTypes>(
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: itemState.disabled || readOnly,
+        disabled: itemState.disabled,
         defaultChecked: itemState.checked,
         style: visuallyHiddenStyle,
       })
