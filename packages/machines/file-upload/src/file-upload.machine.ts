@@ -155,9 +155,11 @@ export const machine = createMachine<FileUploadSchema>({
       },
       trackLiveRegion({ refs, scope }) {
         // Inside the root so it is announced when the file upload is rendered within a modal dialog.
-        // TODO: once `@zag-js/live-region` accepts a function for `root` (chakra-ui/zag#3479, not synced to v2 yet),
-        // pass `() => dom.getRootEl(scope)` so the region follows the root if it remounts.
-        const liveRegion = createLiveRegion({ level: "polite", document: scope.getDoc(), root: dom.getRootEl(scope) })
+        const liveRegion = createLiveRegion({
+          level: "polite",
+          document: scope.getDoc(),
+          root: () => dom.getRootEl(scope),
+        })
         refs.set("liveRegion", liveRegion)
         return () => liveRegion.destroy()
       },
