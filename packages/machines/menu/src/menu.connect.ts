@@ -195,6 +195,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CONTEXT_MENU",
             point,
             value,
+            target: event.currentTarget,
           })
           event.preventDefault()
         },
