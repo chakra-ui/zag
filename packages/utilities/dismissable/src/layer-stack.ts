@@ -48,6 +48,12 @@ export function isPointerBlocking(layer: Pick<Layer, "pointerBlocking">): boolea
   return typeof value === "function" ? value() : !!value
 }
 
+function indexById(layers: Layer[]) {
+  const byId = new Map<string, Layer>()
+  for (const layer of layers) if (layer.id && !byId.has(layer.id)) byId.set(layer.id, layer)
+  return byId
+}
+
 export const layerStack = {
   layers: [] as Layer[],
   branches: [] as HTMLElement[],
@@ -86,26 +92,28 @@ export const layerStack = {
     }
     return undefined
   },
-  isDescendantOf(layer: Layer, ancestorId: string | undefined): boolean {
+  isDescendantOf(layer: Layer, ancestorId: string | undefined, byId?: Map<string, Layer>): boolean {
     if (!ancestorId) return false
+    byId ??= indexById(this.layers)
     // `seen` guards against a malformed chain; a cycle would otherwise spin forever
     const seen = new Set<string>()
     let parentId = layer.parentId
     while (parentId && !seen.has(parentId)) {
       if (parentId === ancestorId) return true
       seen.add(parentId)
-      parentId = this.layers.find((l) => l.id === parentId)?.parentId
+      parentId = byId.get(parentId)?.parentId
     }
     return false
   },
-  depthOf(layer: Layer): number {
+  depthOf(layer: Layer, byId?: Map<string, Layer>): number {
+    byId ??= indexById(this.layers)
     const seen = new Set<string>()
     let depth = 0
     let parentId = layer.parentId
     while (parentId && !seen.has(parentId)) {
       depth++
       seen.add(parentId)
-      parentId = this.layers.find((l) => l.id === parentId)?.parentId
+      parentId = byId.get(parentId)?.parentId
     }
     return depth
   },
@@ -113,9 +121,10 @@ export const layerStack = {
   getNestedLayers(node: HTMLElement) {
     const id = this.layerFor(node)?.id
     if (!id) return []
-    return this.layers
-      .filter((layer) => this.isDescendantOf(layer, id))
-      .sort((a, b) => this.depthOf(a) - this.depthOf(b))
+    const byId = indexById(this.layers)
+    const nested = this.layers.filter((layer) => this.isDescendantOf(layer, id, byId))
+    const depth = new Map(nested.map((layer) => [layer, this.depthOf(layer, byId)]))
+    return nested.sort((a, b) => depth.get(a)! - depth.get(b)!)
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
@@ -230,9 +239,31 @@ export const layerStack = {
     if (index >= 0) this.branches.splice(index, 1)
   },
   syncLayers() {
+    // one pass over each parent chain; per-layer lookups made this O(n^4) with many open layers
+    const byId = indexById(this.layers)
+    // keyed by id like `getNestedLayers`, so layers sharing an id share a count
+    const nestedCounts = new Map<string | undefined, number>()
+    const parentsOfSameType = new Map<Layer, Layer>()
+    for (const layer of this.layers) {
+      const seen = new Set<string>()
+      let parentId = layer.parentId
+      while (parentId && !seen.has(parentId)) {
+        seen.add(parentId)
+        const parent = byId.get(parentId)
+        if (!parent) break
+        if (parent.type === layer.type) {
+          nestedCounts.set(parentId, (nestedCounts.get(parentId) ?? 0) + 1)
+          if (!parentsOfSameType.has(layer)) parentsOfSameType.set(layer, parent)
+        }
+        parentId = parent.parentId
+      }
+    }
+    const topBlocking = this.topMostPointerBlockingLayer()
+    const highestBlockingIndex = topBlocking ? this.indexOf(topBlocking.node) : -1
+
     this.layers.forEach((layer, index) => {
-      const parentOfSameType = layerStack.getParentLayerOfType(layer.node, layer.type)
-      const nestedCount = layerStack.countNestedLayersOfType(layer.node, layer.type)
+      const parentOfSameType = parentsOfSameType.get(layer)
+      const nestedCount = nestedCounts.get(layer.id) ?? 0
       const snapshot: LayerSnapshot = {
         active: true,
         type: layer.type,
@@ -240,7 +271,7 @@ export const layerStack = {
         nested: parentOfSameType != null,
         hasNested: nestedCount > 0,
         nestedCount,
-        blocked: layerStack.isBelowPointerBlockingLayer(layer.node),
+        blocked: index < highestBlockingIndex,
       }
 
       if (!isEqual(layer.snapshot, snapshot)) {
@@ -271,8 +302,7 @@ export const layerStack = {
       originalIndex: index,
       targetIndex: parent ? this.indexOf(parent) : -1,
     })
-
-    this.syncLayers()
+    // no sync here: dismissing changes nothing until the layer is removed, and `remove` syncs
   },
   clear() {
     this.remove(this.layers[0].node)
