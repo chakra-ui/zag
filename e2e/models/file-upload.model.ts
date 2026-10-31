@@ -67,6 +67,10 @@ export class FileUploadModel extends Model {
     await expect(this.getHiddenInput()).toBeDisabled()
   }
 
+  async seeHiddenInputIsEnabled() {
+    await expect(this.getHiddenInput()).toBeEnabled()
+  }
+
   async openFilePicker() {
     const fileChooserPromise = this.page.waitForEvent("filechooser")
     await this.clickTrigger()

@@ -1,4 +1,4 @@
-import { test } from "./_test"
+import { expect, test } from "./_test"
 import { SliderModel } from "./models/slider.model"
 
 let I: SliderModel
@@ -11,6 +11,20 @@ test.describe("slider", () => {
 
   test("should have no accessibility violation", async () => {
     await I.checkAccessibility()
+  })
+
+  test("should have a disabled hidden input when disabled", async () => {
+    const input = I.page.locator("input[hidden]").first()
+    await expect(input).toHaveJSProperty("disabled", false)
+
+    await I.controls.bool("disabled")
+    // toBeDisabled would also pass through the aria-disabled thumb, the property is the native rule
+    await expect(input).toHaveJSProperty("disabled", true)
+  })
+
+  test("should keep the hidden input enabled when read-only", async () => {
+    await I.controls.bool("readOnly")
+    await expect(I.page.locator("input[hidden]").first()).toHaveJSProperty("disabled", false)
   })
 
   test("[keyboard] should work with arrow left/right keys", async () => {

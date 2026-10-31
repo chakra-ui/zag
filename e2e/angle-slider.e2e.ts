@@ -13,6 +13,19 @@ test.describe("angle-slider", () => {
     await I.checkAccessibility()
   })
 
+  test("should have a disabled hidden input when disabled", async () => {
+    const input = I.page.locator("input[type='hidden']")
+    await expect(input).toBeEnabled()
+
+    await I.controls.bool("disabled")
+    await expect(input).toBeDisabled()
+  })
+
+  test("should keep the hidden input enabled when read-only", async () => {
+    await I.controls.bool("readOnly")
+    await expect(I.page.locator("input[type='hidden']")).toBeEnabled()
+  })
+
   test("[pointer] should jump to clicked position on control", async () => {
     // Click directly on the control (not on thumb) should jump to that position
     await I.seeValueText("0deg")

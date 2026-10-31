@@ -262,7 +262,7 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         id: dom.getHiddenInputId(scope),
         tabIndex: -1,
-        disabled: disabled || readOnly,
+        disabled,
         type: "file",
         required: prop("required"),
         capture: prop("capture"),
@@ -274,6 +274,11 @@ export function connect<T extends PropTypes>(
         "aria-hidden": true,
         onClick(event) {
           event.stopPropagation()
+          // keep the selected files and the native picker closed (e.g. via label click)
+          if (readOnly) {
+            event.preventDefault()
+            return
+          }
           // allow for re-selection of the same file
           event.currentTarget.value = ""
         },
