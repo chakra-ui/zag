@@ -377,13 +377,16 @@ allowing you to show loading states in your UI.
 
 ### Customizing accessibility labels
 
-Use `translations` to customize dropzone and item action labels.
+Use `translations` to customize dropzone and item action labels, and the
+messages announced to screen readers when files are added or removed.
 
 ```tsx
 const service = useMachine(fileUpload.machine, {
   translations: {
     dropzone: "Drop files here",
     deleteFile: (file) => `Remove ${file.name}`,
+    filesAdded: (files) => `${files.length} files added`,
+    fileDeleted: (file) => `${file.name} removed`,
   },
 })
 ```

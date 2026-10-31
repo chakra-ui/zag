@@ -66,6 +66,46 @@ test.describe("file-upload", () => {
     await I.seeNoFiles()
   })
 
+  test("should focus the next item's delete trigger after deleting an item", async () => {
+    await I.controls.num("maxFiles", "3")
+    await I.uploadFiles(["a.txt", "b.txt", "c.txt"])
+
+    await I.deleteFileAt(0)
+    await I.seeDeleteTriggerIsFocused(0)
+    await expect(I.getItem()).toContainText("b.txt")
+  })
+
+  test("should focus the previous item's delete trigger after deleting the last item", async () => {
+    await I.controls.num("maxFiles", "3")
+    await I.uploadFiles(["a.txt", "b.txt"])
+
+    await I.deleteFileAt(1)
+    await I.seeDeleteTriggerIsFocused(0)
+  })
+
+  test("should focus the trigger after deleting the only item", async () => {
+    await I.uploadFile(path.join(__dirname, "fixtures/text.txt"))
+
+    await I.deleteFile()
+    await I.seeNoFiles()
+    await I.seeTriggerIsFocused()
+  })
+
+  test("should announce added files", async () => {
+    await I.controls.num("maxFiles", "3")
+    await I.uploadFiles(["a.txt", "b.txt", "c.txt"])
+
+    await I.seeAnnouncement("a.txt, b.txt and c.txt added")
+  })
+
+  test("should announce the deleted file", async () => {
+    await I.controls.num("maxFiles", "3")
+    await I.uploadFiles(["a.txt", "b.txt", "c.txt"])
+
+    await I.deleteFileAt(0)
+    await I.seeAnnouncement("a.txt deleted")
+  })
+
   test("should have disabled attributes when disabled", async () => {
     await I.controls.bool("disabled")
     await I.seeTriggerIsDisabled()

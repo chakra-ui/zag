@@ -1,7 +1,7 @@
 import { contains, dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getFileEntries } from "@zag-js/file-utils"
 import { formatBytes } from "@zag-js/i18n-utils"
-import { type NormalizeProps, type PropTypes, type Required } from "@zag-js/types"
+import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { flatArray, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
@@ -9,7 +9,6 @@ import type {
   DropzoneState,
   FileUploadApi,
   FileUploadService,
-  IntlTranslations,
   ItemGroupProps,
   ItemGroupState,
   ItemProps,
@@ -18,13 +17,8 @@ import type {
   RootState,
   TriggerState,
 } from "./file-upload.types"
+import { defaultTranslations } from "./file-upload.translations"
 import { isEventWithFiles } from "./file-upload.utils"
-
-const defaultTranslations: Required<IntlTranslations> = {
-  dropzone: "dropzone",
-  itemPreview: (file) => `preview of ${file.name}`,
-  deleteFile: (file) => `delete file ${file.name}`,
-}
 
 const DEFAULT_ITEM_TYPE: ItemType = "accepted"
 

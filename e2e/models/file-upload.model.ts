@@ -33,6 +33,14 @@ export class FileUploadModel extends Model {
     return this.page.locator(part("file-upload", "item-delete-trigger")).first()
   }
 
+  getDeleteTriggers() {
+    return this.page.locator(part("file-upload", "item-delete-trigger"))
+  }
+
+  getLiveRegion() {
+    return this.page.locator(part("file-upload", "root")).locator("[data-live-announcer]")
+  }
+
   async focusDropzone() {
     await this.getDropzone().focus()
   }
@@ -97,6 +105,27 @@ export class FileUploadModel extends Model {
   async uploadFile(filePath: string) {
     const fileChooser = await this.openFilePicker()
     await fileChooser.setFiles(filePath)
+  }
+
+  async uploadFiles(names: string[]) {
+    const fileChooser = await this.openFilePicker()
+    await fileChooser.setFiles(names.map((name) => ({ name, mimeType: "text/plain", buffer: Buffer.from(name) })))
+  }
+
+  async deleteFileAt(index: number) {
+    await this.getDeleteTriggers().nth(index).click()
+  }
+
+  async seeDeleteTriggerIsFocused(index: number) {
+    await expect(this.getDeleteTriggers().nth(index)).toBeFocused()
+  }
+
+  async seeTriggerIsFocused() {
+    await expect(this.getTrigger()).toBeFocused()
+  }
+
+  async seeAnnouncement(text: string) {
+    await expect(this.getLiveRegion()).toHaveText(text)
   }
 
   async uploadFileViaDropzone(filePath: string) {

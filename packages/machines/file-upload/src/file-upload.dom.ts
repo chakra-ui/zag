@@ -1,6 +1,7 @@
 import { hash } from "@zag-js/utils"
 import type { Scope } from "@zag-js/core"
 import { parts } from "./file-upload.anatomy"
+import type { ItemType } from "./file-upload.types"
 
 // ID generators — only for parts referenced by ARIA attributes
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
@@ -21,3 +22,7 @@ export const getFileId = (file: File) => hash(`${file.name}-${file.size}`)
 export const getRootEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.root))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
 export const getDropzoneEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.dropzone))
+export const getTriggerEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.trigger))
+export const getClearTriggerEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.clearTrigger))
+export const getItemDeleteTriggerEls = (ctx: Scope, type: ItemType) =>
+  ctx.queryAll<HTMLElement>(`${ctx.selector(parts.itemDeleteTrigger)}[data-type="${type}"]`)
