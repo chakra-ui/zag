@@ -244,6 +244,77 @@ describe("hideOthers", () => {
   })
 })
 
+describe("live regions", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  test("keeps a live region nested inside a wrapper visible", () => {
+    document.body.innerHTML = `
+      <main id="main"></main>
+      <div id="wrapper"><div id="sibling"></div><div id="toasts" aria-live="polite"><div id="toast"></div></div></div>
+      <div id="portal"><div id="dialog"></div></div>
+    `
+    const get = (id: string) => document.getElementById(id)!
+    const undo = hideOthers(get("dialog"))!
+
+    expect(isHidden(get("main"))).toBe(true)
+    expect(isHidden(get("wrapper"))).toBe(false)
+    expect(isHidden(get("sibling"))).toBe(true)
+    expect(isHidden(get("toasts"))).toBe(false)
+    expect(isHidden(get("toast"))).toBe(false)
+
+    undo()
+    expect(document.querySelectorAll("[aria-hidden], [data-aria-hidden]")).toHaveLength(0)
+  })
+
+  test("keeps nested status and announcer regions visible", () => {
+    document.body.innerHTML = `
+      <div id="app"><div id="status" role="status"></div><div id="announcer" data-live-announcer></div><div id="content"></div></div>
+      <div id="portal"><div id="dialog"></div></div>
+    `
+    const get = (id: string) => document.getElementById(id)!
+    const undo = hideOthers(get("dialog"))!
+
+    expect(isHidden(get("status"))).toBe(false)
+    expect(isHidden(get("announcer"))).toBe(false)
+    expect(isHidden(get("content"))).toBe(true)
+
+    undo()
+  })
+
+  test("still hides around a target inside a live region", () => {
+    document.body.innerHTML = `
+      <div id="app" aria-live="polite"><div id="content"></div><div id="dialog"></div></div>
+      <main id="main"></main>
+    `
+    const get = (id: string) => document.getElementById(id)!
+    const undo = hideOthers(get("dialog"))!
+
+    expect(isHidden(get("content"))).toBe(true)
+    expect(isHidden(get("main"))).toBe(true)
+    expect(isHidden(get("dialog"))).toBe(false)
+
+    undo()
+    expect(document.querySelectorAll("[aria-hidden], [data-aria-hidden]")).toHaveLength(0)
+  })
+
+  test("inert keeps nested live regions interactive", () => {
+    document.body.innerHTML = `
+      <div id="wrapper"><div id="sibling"></div><div id="toasts" aria-live="polite"></div></div>
+      <div id="portal"><div id="dialog"></div></div>
+    `
+    const get = (id: string) => document.getElementById(id)!
+    const undo = inertOthers(get("dialog"))!
+
+    expect(get("wrapper").hasAttribute("inert")).toBe(false)
+    expect(get("sibling").hasAttribute("inert")).toBe(true)
+    expect(get("toasts").hasAttribute("inert")).toBe(false)
+
+    undo()
+  })
+})
+
 describe("inertOthers", () => {
   afterEach(() => {
     document.body.innerHTML = ""

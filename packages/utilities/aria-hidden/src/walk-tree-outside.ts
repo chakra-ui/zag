@@ -31,13 +31,8 @@ interface WalkTreeOutsideOptions {
   followControlledElements?: boolean
 }
 
-const ignoreableNodes = new Set<string>(["script", "output", "status", "next-route-announcer"])
-const isIgnoredNode = (node: Element) => {
-  if (ignoreableNodes.has(node.localName)) return true
-  if (node.role === "status") return true
-  if (node.hasAttribute("aria-live")) return true
-  return node.matches("[data-live-announcer]")
-}
+const LIVE_REGION_SELECTOR = 'output, status, next-route-announcer, [role="status"], [aria-live], [data-live-announcer]'
+const isIgnoredNode = (node: Element) => node.localName === "script" || node.matches(LIVE_REGION_SELECTOR)
 
 const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOptions): VoidFunction => {
   const { parentNode, markerName, attribute, followControlledElements = true } = props
@@ -61,6 +56,14 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
     elementsToKeep.add(el)
     keep(el.parentNode!)
   }
+
+  // Live regions keep announcing even when nested, e.g. inside a portal's wrapper element.
+  // Skip ones wrapping a target: stopping there would leave everything around the target exposed.
+  parentNode.querySelectorAll(LIVE_REGION_SELECTOR).forEach((region) => {
+    if (targets.some((target) => target.contains(region) || region.contains(target))) return
+    keep(region)
+    elementsToStop.add(region)
+  })
 
   targets.forEach((target) => {
     keep(target)
