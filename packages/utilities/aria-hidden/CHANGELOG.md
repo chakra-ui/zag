@@ -1,5 +1,16 @@
 # @zag-js/aria-hidden
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [`2b87add`](https://github.com/chakra-ui/zag/commit/2b87add9198b6f7587a166ebf96961b985e29d88) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Keep live regions nested inside a wrapper, such as a framework
+  portal's element, visible to screen readers while a modal is open. Toasts shown over a modal dialog are now announced
+  in Solid.
+- Updated dependencies []:
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

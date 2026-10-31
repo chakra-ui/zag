@@ -1,5 +1,55 @@
 # @zag-js/toast
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [`f41d558`](https://github.com/chakra-ui/zag/commit/f41d558c4e57087ba0e7afbcfd6bf8b52575e415) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add the `content` part (`api.getContentProps()`). Render the
+  title, description and other content inside it; the toast's height now follows it with one observer instead of one per
+  child.
+  - Add swipe to dismiss. Toasts swipe toward the nearest edges of their placement by default; set `swipeDirections` on
+    the store or a toast to change them, or pass `[]` to turn swiping off.
+  - Add `data-swiping`, `data-swipe-direction` and the `--swipe-x` and `--swipe-y` CSS variables to the root.
+
+  **Migration**
+
+  Wrap the toast's content in the content part, so its height keeps updating after mount:
+
+  ```diff
+    <div {...api.getRootProps()}>
+  -   <h3 {...api.getTitleProps()}>{api.title}</h3>
+  -   <p {...api.getDescriptionProps()}>{api.description}</p>
+  +   <div {...api.getContentProps()}>
+  +     <h3 {...api.getTitleProps()}>{api.title}</h3>
+  +     <p {...api.getDescriptionProps()}>{api.description}</p>
+  +   </div>
+    </div>
+  ```
+
+  Turn transitions off while swiping, so the toast follows the pointer:
+
+  ```css
+  [data-toast-root][data-swiping] {
+    transition: none;
+  }
+  ```
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`56c6ba6`](https://github.com/chakra-ui/zag/commit/56c6ba6ad2d96623d7b4bf551889fd6ebb0cceac) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where a progress bar driven by `--duration`
+  jumped when the toast was paused and resumed. `--duration` is now the toast's total duration instead of the remaining
+  time, so pausing the animation with `animation-play-state` stays in sync with the dismiss timer.
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
