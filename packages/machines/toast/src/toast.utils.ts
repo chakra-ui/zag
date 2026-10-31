@@ -1,7 +1,16 @@
 import type { Service } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
+import { toPx } from "@zag-js/utils"
 import type { Style } from "@zag-js/types"
-import type { Placement, ToastGroupSchema, ToastGroupService, ToastHeight, ToastSchema, Type } from "./toast.types"
+import type {
+  Placement,
+  SwipeDirection,
+  ToastGroupSchema,
+  ToastGroupService,
+  ToastHeight,
+  ToastSchema,
+  Type,
+} from "./toast.types"
 
 export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
@@ -39,8 +48,8 @@ export function getGroupPlacementStyle(service: ToastGroupService, placement: Pl
     pointerEvents: computed("count") > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
-    "--gap": `${gap}px`,
-    "--first-height": `${heights[0]?.height || 0}px`,
+    "--gap": toPx(gap),
+    "--first-height": toPx(heights[0]?.height || 0),
     "--viewport-offset-left": computedOffset.left,
     "--viewport-offset-right": computedOffset.right,
     "--viewport-offset-top": computedOffset.top,
@@ -100,19 +109,26 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const duration = type === "loading" || !Number.isFinite(totalDuration) ? Number.MAX_SAFE_INTEGER : totalDuration
   const offset = computed("heightIndex") * gap + computed("heightBefore")
 
+  const swipeOffset = context.get("swipeOffset")
+  // Dismissed by a swipe: leave the way it was thrown instead of the default exit
+  const swipedOut = !visible ? context.get("swipeDirection") : null
+  const exiting = !visible && !swipedOut
+
   const styles: Style = {
     position: "absolute",
     pointerEvents: "auto",
     "--opacity": "0",
     "--remove-delay": `${prop("removeDelay")}ms`,
     "--duration": `${duration}ms`,
-    "--initial-height": `${height}px`,
-    "--offset": `${offset}px`,
+    "--initial-height": toPx(height),
+    "--offset": toPx(offset),
     "--index": prop("index"),
     "--z-index": computed("zIndex"),
     "--lift-amount": "calc(var(--lift) * var(--gap))",
     "--y": "100%",
-    "--x": "0",
+    "--x": "0px",
+    "--swipe-x": toPx(swipeOffset.x),
+    "--swipe-y": toPx(swipeOffset.y),
   }
 
   const assign = (overrides: Style) => Object.assign(styles, overrides)
@@ -165,26 +181,39 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
       "--height": "var(--first-height)",
     })
 
-    if (!visible) {
+    if (exiting) {
       assign({
         "--y": "calc(var(--sign) * 40%)",
       })
     }
   }
 
-  if (sibling && stacked && !visible) {
+  if (sibling && stacked && exiting) {
     assign({
       "--y": "calc(var(--lift) * var(--offset) + var(--lift) * -100%)",
     })
   }
 
-  if (frontmost && !visible) {
+  if (frontmost && exiting) {
     assign({
       "--y": "calc(var(--lift) * -100%)",
     })
   }
 
+  const [throwX, throwY] = swipedOut ? swipeThrow[swipedOut] : ["0px", "0px"]
+  assign({
+    "--x": `calc(${styles["--x"]} + var(--swipe-x) + ${throwX})`,
+    "--y": `calc(${styles["--y"]} + var(--swipe-y) + ${throwY})`,
+  })
+
   return styles
+}
+
+const swipeThrow: Record<SwipeDirection, [string, string]> = {
+  up: ["0px", "-100%"],
+  down: ["0px", "100%"],
+  left: ["-100%", "0px"],
+  right: ["100%", "0px"],
 }
 
 export function getGhostBeforeStyle(service: Service<ToastSchema>, visible: boolean): Style {

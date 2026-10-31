@@ -1,4 +1,12 @@
-import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
+import type {
+  CommonProperties,
+  Direction,
+  DirectionProperty,
+  Point,
+  PropTypes,
+  Required,
+  RequiredBy,
+} from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 
@@ -13,6 +21,8 @@ export type ToastQueuePriority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
 export type Status = "visible" | "dismissing" | "unmounted"
+
+export type SwipeDirection = "up" | "down" | "left" | "right"
 
 export interface StatusChangeDetails {
   /**
@@ -73,6 +83,14 @@ export interface RootState {
    * The horizontal alignment of the toast placement
    */
   align: string
+  /**
+   * Whether the toast is being swiped
+   */
+  swiping: boolean
+  /**
+   * The direction the toast is being swiped or was swiped away in
+   */
+  swipeDirection: SwipeDirection | null
 }
 
 export interface ActionOptions {
@@ -141,6 +159,11 @@ export interface Options<T = any> {
    */
   closable?: boolean | undefined
   /**
+   * The directions the toast can be swiped to dismiss. Pass `[]` to disable swiping.
+   * Defaults to the edges nearest the toast's placement, e.g. `["down", "right"]` for `bottom-end`.
+   */
+  swipeDirections?: SwipeDirection[] | undefined
+  /**
    * The metadata of the toast
    */
   meta?: Record<string, any> | undefined
@@ -203,6 +226,8 @@ export type ToastSchema<O = any> = {
     initialHeight: number
     remainingTime: number
     rendered: { title: boolean; description: boolean }
+    swipeOffset: Point
+    swipeDirection: SwipeDirection | null
   }
   computed: {
     height: number
@@ -211,12 +236,14 @@ export type ToastSchema<O = any> = {
     frontmost: boolean
     zIndex: number
     shouldPersist: boolean
+    swipeDirections: SwipeDirection[]
   }
   refs: {
     closeTimerStartTime: number
     lastCloseStartTimerStartTime: number
+    swipeStart: { point: Point; pointerId: number } | null
   }
-  state: "visible" | "visible:updating" | "dismissing" | "unmounted" | "visible:persist"
+  state: "visible" | "visible:updating" | "visible:swiping" | "dismissing" | "unmounted" | "visible:persist"
   tag: "visible" | "paused" | "updating"
   guard: string
   action: string
@@ -279,6 +306,11 @@ export interface ToastStoreProps {
    * @default true
    */
   pauseOnPageIdle?: boolean | undefined
+  /**
+   * The directions toasts can be swiped to dismiss. Pass `[]` to disable swiping.
+   * Defaults to the edges nearest the placement, e.g. `["down", "right"]` for `bottom-end`.
+   */
+  swipeDirections?: SwipeDirection[] | undefined
 }
 
 export interface ToastGroupProps extends DirectionProperty, CommonProperties {
@@ -521,6 +553,7 @@ export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
    */
   getRootState: () => RootState
   getRootProps: () => T["element"]
+  getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
   getGhostBeforeProps: () => T["element"]
   getGhostAfterProps: () => T["element"]

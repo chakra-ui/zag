@@ -2338,7 +2338,19 @@
       "data-first": "",
       "data-sibling": "",
       "data-stack": "",
-      "data-overlap": "Present when overlapping"
+      "data-overlap": "Present when overlapping",
+      "data-swiping": "",
+      "data-swipe-direction": ""
+    },
+    "Content": {
+      "data-toast-content": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-first": "",
+      "data-sibling": "",
+      "data-stack": "",
+      "data-overlap": "Present when overlapping",
+      "data-nested": "dialog",
+      "data-has-nested": "dialog"
     },
     "GhostBefore": {
       "data-toast-ghost-before": "<uid>",

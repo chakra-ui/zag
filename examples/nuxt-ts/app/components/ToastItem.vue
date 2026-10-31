@@ -38,7 +38,7 @@ const Description = () => api.value.description
     <span v-if="icon" data-scope="toast" data-part="indicator">
       <component :is="icon" />
     </span>
-    <div data-scope="toast" data-part="content">
+    <div v-bind="api.getContentProps()">
       <div v-if="api.title" v-bind="api.getTitleProps()"><Title /></div>
       <div v-if="api.description" v-bind="api.getDescriptionProps()"><Description /></div>
     </div>

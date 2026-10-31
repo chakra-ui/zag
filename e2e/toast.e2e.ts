@@ -45,14 +45,18 @@ test.describe("toast / basic", () => {
     await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
   })
 
+  // Shows the toast first: at 200px the example's toolbar covers the trigger
   test("updates the height when the content wraps onto fewer lines", async () => {
-    await I.resizeWindow({ width: 200, height: 720 })
     await I.clickExact("Show toast")
     await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
-    const initialHeight = await I.getToastHeight()
+    const baseHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 200, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(baseHeight)
+    const wrappedHeight = await I.getToastHeight()
 
     await I.resizeWindow({ width: 1024, height: 720 })
-    await expect.poll(() => I.getToastHeight()).toBeLessThan(initialHeight)
+    await expect.poll(() => I.getToastHeight()).toBeLessThan(wrappedHeight)
   })
 
   test("updates the height when the content grows without a resize", async () => {
@@ -148,11 +152,7 @@ test.describe("toast / list", () => {
   test("lays toasts out without overlap", async () => {
     await I.clickExact("Show toast", 3)
     await I.seeToastsStacked()
-
-    const boxes = await Promise.all([0, 1, 2].map((i) => I.getToast(i).boundingBox()))
-    const sorted = boxes.map((box) => box!).sort((a, b) => a.y - b.y)
-    expect(sorted[0].y + sorted[0].height).toBeLessThanOrEqual(sorted[1].y)
-    expect(sorted[1].y + sorted[1].height).toBeLessThanOrEqual(sorted[2].y)
+    await I.seeToastsDontOverlap(3)
   })
 
   test("pauses on hover and resumes on leave", async () => {

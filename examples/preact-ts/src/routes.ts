@@ -274,6 +274,7 @@ export const routes: RouteDefinition[] = [
   { path: "/toast/programmatic", component: lazy(() => import("./pages/toast/programmatic")) },
   { path: "/toast/with-dialog", component: lazy(() => import("./pages/toast/with-dialog")) },
   { path: "/toast/conditional-content", component: lazy(() => import("./pages/toast/conditional-content")) },
+  { path: "/toast/swipe", component: lazy(() => import("./pages/toast/swipe")) },
   { path: "/toggle-group/basic", component: lazy(() => import("./pages/toggle-group/basic")) },
   { path: "/toc/basic", component: lazy(() => import("./pages/toc/basic")) },
   { path: "/toc/indicator", component: lazy(() => import("./pages/toc/indicator")) },

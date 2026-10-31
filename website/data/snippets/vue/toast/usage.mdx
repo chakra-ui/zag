@@ -23,8 +23,10 @@
 
 <template>
   <div v-bind="api.getRootProps()">
-    <h3 v-bind="api.getTitleProps()">{{ api.title }}</h3>
-    <p v-bind="api.getDescriptionProps()">{{ api.description }}</p>
+    <div v-bind="api.getContentProps()">
+      <h3 v-bind="api.getTitleProps()">{{ api.title }}</h3>
+      <p v-bind="api.getDescriptionProps()">{{ api.description }}</p>
+    </div>
     <button @click="api.dismiss()">Close</button>
   </div>
 </template>

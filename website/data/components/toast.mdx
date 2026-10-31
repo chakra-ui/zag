@@ -357,6 +357,27 @@ toaster.info({
 })
 ```
 
+### Swipe to dismiss
+
+Toasts can be swiped away toward the nearest edges of their placement, for
+example down or right for `bottom-end`. A swipe dismisses once it passes 40px;
+pulling back before you let go cancels it.
+
+Set `swipeDirections` on the store, or on a single toast, to change the
+directions. Pass `[]` to turn swiping off.
+
+```tsx
+const toaster = toast.createStore({
+  placement: "bottom-end",
+  swipeDirections: ["right"],
+})
+
+toaster.create({ title: "Pinned", swipeDirections: [] })
+```
+
+Swiping never starts on buttons, links or form fields. Add `data-swipe-ignore`
+to any other element that should keep its own pointer behavior.
+
 ### Changing the gap between toasts
 
 When multiple toasts are rendered, a gap of `16px` is applied between each
@@ -397,6 +418,10 @@ work. You need to connect these variables in your styles.
 }
 ```
 
+Render the title, description and other content inside `api.getContentProps()`.
+The toast's height follows the content part, so put anything that can change
+size inside it.
+
 To make transitions smooth, include `transition` properties.
 
 ```css
@@ -414,6 +439,16 @@ To make transitions smooth, include `transition` properties.
     scale 400ms,
     opacity 200ms;
   transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+}
+```
+
+Turn transitions off while the toast is being swiped, so it follows the pointer.
+The snap-back and exit still animate. While swiping, the toast also has
+`data-swipe-direction` and the `--swipe-x` and `--swipe-y` CSS variables.
+
+```css
+[data-toast-root][data-swiping] {
+  transition: none;
 }
 ```
 

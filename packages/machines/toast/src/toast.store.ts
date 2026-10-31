@@ -140,6 +140,7 @@ export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastSto
         id,
         duration: attrs.duration,
         removeDelay: attrs.removeDelay,
+        swipeDirections: attrs.swipeDirections,
         type: DEFAULT_TYPE,
         ...data,
         gap: attrs.gap,

@@ -35,6 +35,10 @@
         opacity 200ms;
       transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
     }
+
+    &[data-swiping] {
+      transition: none;
+    }
   }
 
   .CloseTrigger {

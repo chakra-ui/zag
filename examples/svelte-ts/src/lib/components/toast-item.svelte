@@ -38,7 +38,7 @@
       <Icon />
     </span>
   {/if}
-  <div data-scope="toast" data-part="content">
+  <div {...api.getContentProps()}>
     {#if api.title}
       <div {...api.getTitleProps()}>{@render content(api.title)}</div>
     {/if}

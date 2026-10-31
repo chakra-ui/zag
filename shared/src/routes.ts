@@ -724,6 +724,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "programmatic", title: "Programmatic" },
       { slug: "with-dialog", title: "With Dialog" },
       { slug: "conditional-content", title: "Conditional Title and Description" },
+      { slug: "swipe", title: "Swipe to Dismiss" },
     ],
   },
   {

@@ -20,7 +20,7 @@ const api = computed(() => toast.connect(service, normalizeProps))
 
 <template>
   <div v-bind="api.getRootProps()">
-    <div data-scope="toast" data-part="content">
+    <div v-bind="api.getContentProps()">
       <p>Your draft is ready.</p>
       <div v-if="showTitle" v-bind="api.getTitleProps()">{{ api.title }}</div>
       <div v-if="showDescription" v-bind="api.getDescriptionProps()">{{ api.description }}</div>

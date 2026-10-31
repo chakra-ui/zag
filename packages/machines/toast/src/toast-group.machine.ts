@@ -98,6 +98,9 @@ export const groupMachine = createMachine({
     "TOAST.PAUSE": {
       actions: ["pauseToasts"],
     },
+    "TOAST.SWIPE_END": {
+      actions: ["resumeToasts"],
+    },
   },
 
   states: {

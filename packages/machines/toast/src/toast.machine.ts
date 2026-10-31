@@ -1,9 +1,10 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { contains, raf } from "@zag-js/dom-query"
-import { ensureProps, setRafTimeout } from "@zag-js/utils"
+import { addDomEvent, contains, raf } from "@zag-js/dom-query"
+import { callAll, ensureProps, setRafTimeout, warn } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastSchema } from "./toast.types"
 import { getToastDuration, setHeight } from "./toast.utils"
+import { createSwipeTracker, getDefaultSwipeDirections } from "./utils/swipe"
 
 const { not, and } = createGuards<ToastSchema>()
 
@@ -41,6 +42,12 @@ export const machine = createMachine<ToastSchema>({
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
       })),
+      swipeOffset: bindable(() => ({
+        defaultValue: { x: 0, y: 0 },
+      })),
+      swipeDirection: bindable<ToastSchema["context"]["swipeDirection"]>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
@@ -48,6 +55,7 @@ export const machine = createMachine<ToastSchema>({
     return {
       closeTimerStartTime: Date.now(),
       lastCloseStartTimerStartTime: 0,
+      swipeStart: null,
     }
   },
 
@@ -76,6 +84,8 @@ export const machine = createMachine<ToastSchema>({
       }, 0)
     },
     shouldPersist: ({ prop }) => prop("type") === "loading" || prop("duration") === Infinity,
+    swipeDirections: ({ prop }) =>
+      prop("swipeDirections") ?? getDefaultSwipeDirections(prop("parent").computed("placement"), prop("dir")),
   },
 
   watch({ track, prop, send }) {
@@ -143,6 +153,11 @@ export const machine = createMachine<ToastSchema>({
         DISMISS: {
           target: "dismissing",
         },
+        "SWIPE.START": {
+          guard: "canSwipe",
+          target: "visible:swiping",
+          actions: ["setSwipeStart"],
+        },
       },
     },
 
@@ -156,6 +171,58 @@ export const machine = createMachine<ToastSchema>({
         PAUSE: {
           target: "visible:persist",
           actions: ["syncRemainingTime"],
+        },
+        "SWIPE.START": {
+          guard: "canSwipe",
+          target: "visible:swiping",
+          actions: ["syncRemainingTime", "setSwipeStart"],
+        },
+      },
+    },
+
+    "visible:swiping": {
+      tags: ["visible", "paused"],
+      entry: ["pauseGroup"],
+      exit: ["resumeGroup"],
+      effects: ["trackSwipe"],
+      on: {
+        "SWIPE.MOVE": {
+          actions: ["setSwipeOffset"],
+        },
+        "SWIPE.END": [
+          {
+            guard: "isSwipeDismiss",
+            target: "dismissing",
+            actions: ["setSwipeDirection"],
+          },
+          {
+            guard: "shouldPause",
+            target: "visible:persist",
+            actions: ["resetSwipe"],
+          },
+          {
+            target: "visible",
+            actions: ["resetSwipe", "setCloseTimer"],
+          },
+        ],
+        "SWIPE.CANCEL": [
+          {
+            guard: "shouldPause",
+            target: "visible:persist",
+            actions: ["resetSwipe"],
+          },
+          {
+            target: "visible",
+            actions: ["resetSwipe", "setCloseTimer"],
+          },
+        ],
+        DISMISS: {
+          target: "dismissing",
+          actions: ["resetSwipe"],
+        },
+        // Stay in the gesture; the timer restarts on release
+        UPDATE: {
+          actions: ["resetCloseTimer"],
         },
       },
     },
@@ -218,21 +285,106 @@ export const machine = createMachine<ToastSchema>({
 
           syncRenderedElements()
 
-          return dom.observeContent(rootEl, {
-            filter: (el) => !el.hasAttribute("data-ghost"),
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) {
+            warn(
+              "[zag-js/toast] Render the content part (`api.getContentProps()`) so the toast height follows its content.",
+            )
+            return
+          }
+
+          return dom.observeContent(contentEl, {
             onChange: syncHeight,
             onMutate: syncRenderedElements,
           })
         })
+      },
+
+      trackSwipe({ scope, refs, send, computed }) {
+        const rootEl = dom.getRootEl(scope)
+        const start = refs.get("swipeStart")
+        if (!rootEl || !start) return
+
+        const doc = scope.getDoc()
+        const tracker = createSwipeTracker(computed("swipeDirections"), start.point)
+
+        try {
+          rootEl.setPointerCapture(start.pointerId)
+        } catch {}
+
+        const isActivePointer = (event: PointerEvent) => event.pointerId === start.pointerId
+
+        const onPointerMove = (event: PointerEvent) => {
+          if (!isActivePointer(event)) return
+          // Keeps Safari from selecting text during the drag
+          event.preventDefault()
+          const { offset, direction } = tracker.move({ x: event.clientX, y: event.clientY })
+          send({ type: "SWIPE.MOVE", offset, direction })
+        }
+
+        const onPointerUp = (event: PointerEvent) => {
+          if (!isActivePointer(event)) return
+          send({ type: "SWIPE.END", direction: tracker.end() })
+        }
+
+        const onPointerCancel = (event: PointerEvent) => {
+          if (!isActivePointer(event)) return
+          send({ type: "SWIPE.CANCEL" })
+        }
+
+        const onVisibilityChange = () => {
+          if (doc.visibilityState === "hidden") send({ type: "SWIPE.CANCEL" })
+        }
+
+        // `preventDefault` on pointermove doesn't stop iOS from scrolling the page
+        const onTouchMove = (event: TouchEvent) => event.preventDefault()
+
+        return callAll(
+          addDomEvent(doc, "pointermove", onPointerMove),
+          addDomEvent(doc, "pointerup", onPointerUp),
+          addDomEvent(doc, "pointercancel", onPointerCancel),
+          addDomEvent(doc, "visibilitychange", onVisibilityChange),
+          addDomEvent(rootEl, "touchmove", onTouchMove, { passive: false }),
+        )
       },
     },
 
     guards: {
       isVisible: ({ state }) => state.hasTag("visible"),
       shouldPause: ({ computed, prop }) => computed("shouldPersist") || !!prop("paused"),
+      canSwipe: ({ computed }) => computed("swipeDirections").length > 0,
+      isSwipeDismiss: ({ event }) => event.direction != null,
     },
 
     actions: {
+      setSwipeStart({ refs, event }) {
+        refs.set("swipeStart", { point: event.point, pointerId: event.pointerId })
+      },
+
+      setSwipeOffset({ context, event }) {
+        context.set("swipeOffset", event.offset)
+        context.set("swipeDirection", event.direction)
+      },
+
+      setSwipeDirection({ context, event }) {
+        context.set("swipeDirection", event.direction)
+      },
+
+      resetSwipe({ context, refs }) {
+        context.set("swipeOffset", { x: 0, y: 0 })
+        context.set("swipeDirection", null)
+        refs.set("swipeStart", null)
+      },
+
+      // Keep the other toasts from expiring and shifting under the pointer
+      pauseGroup({ prop }) {
+        prop("parent").send({ type: "TOAST.PAUSE" })
+      },
+
+      resumeGroup({ prop }) {
+        prop("parent").send({ type: "TOAST.SWIPE_END" })
+      },
+
       setMounted({ context }) {
         raf(() => {
           context.set("mounted", true)
