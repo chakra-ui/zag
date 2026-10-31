@@ -679,3 +679,22 @@ test.describe("combobox [highlight frame]", () => {
     await expect(page.locator("[data-scope=combobox][data-part=item][data-highlighted]")).toHaveCount(0)
   })
 })
+
+test.describe("combobox / highlighted on mount", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox/highlighted-on-mount")
+  })
+
+  test("does not scroll the document on mount", async ({ page }) => {
+    await I.seeItemIsHighlighted("Zambia")
+    await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(resolve))
+        }),
+    )
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+    expect(await I.content.evaluate((el) => el.scrollTop)).toBe(0)
+  })
+})

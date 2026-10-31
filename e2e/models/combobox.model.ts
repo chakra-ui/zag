@@ -27,7 +27,7 @@ export class ComboboxModel extends Model {
     return this.page.locator("[data-part=clear-trigger]")
   }
 
-  private get content() {
+  get content() {
     return this.page.locator("[data-part=content]")
   }
 
