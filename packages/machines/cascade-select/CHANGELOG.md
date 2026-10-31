@@ -1,5 +1,62 @@
 # @zag-js/cascade-select
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Added filter inputs and "no results" messages to menu and
+  select. You filter the items; the input keeps focus while the arrow keys move the highlight.
+
+  ```tsx
+  // popupType: "dialog" on menu and select
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
+    <div {...api.getListProps()}>{/* items */}</div>
+  </div>
+  ```
+
+  - `getEmptyProps()` is a polite live region, so keep it rendered and toggle its text. Combobox and listbox have it
+    too.
+  - **Breaking:** Select, combobox, listbox and cascade select now set the highlight with `setHighlightedValue`, like
+    menu. Pass `null` to clear it.
+
+    ```diff
+    - api.setHighlightValue("react") // select, combobox, cascade select
+    - api.highlightValue("react") // listbox
+    + api.setHighlightedValue("react")
+
+    - api.clearHighlightValue()
+    + api.setHighlightedValue(null)
+    ```
+
+  - **Menu**
+    - **Breaking:** Replaced `composite` with `popupType: "menu" | "dialog"` (default `"menu"`), matching select and
+      combobox. Migrate `composite: false` to `popupType: "dialog"`.
+    - `autoHighlight` highlights the first item as the query changes. A submenu can have its own input; `Escape`,
+      `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's.
+    - `onHighlightChange` reports a `reason` (`keyboard`, `pointer` or `programmatic`), and `setHighlightedValue`
+      accepts `null`.
+  - **Select**
+    - `Home` and `End` jump to the first or last item when the input is empty, and `Shift+Tab` closes the select. A
+      dialog popup opens below the trigger.
+    - `alignItemWithTrigger` keeps the selected item of a long or wrapping list next to the trigger.
+  - Fixed issue where a lazily mounted popup inside nested dialogs rendered behind the dialog.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/collection@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/popper@2.0.0-next.4
+  - @zag-js/rect-utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

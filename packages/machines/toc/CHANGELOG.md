@@ -1,5 +1,23 @@
 # @zag-js/toc
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`cd1ec22`](https://github.com/chakra-ui/zag/commit/cd1ec221a9a4ce8c83675ef3fcb87322d02e50e3) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Default `multiple` to `false`, so only the topmost
+  visible heading is active. Pass `multiple: true` to keep every visible heading active.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
