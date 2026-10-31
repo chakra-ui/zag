@@ -1,18 +1,12 @@
 "use client"
 
-import { DateFormatter, type DateValue } from "@internationalized/date"
+import type { DateValue } from "@internationalized/date"
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/date-input.css"
-
-const timeFormatter = new DateFormatter("en-US", {
-  hour: "2-digit",
-  minute: "2-digit",
-  hourCycle: "h23",
-})
 
 export default function Page() {
   const [value, setValue] = useState<DateValue[]>([])
@@ -21,8 +15,8 @@ export default function Page() {
     id: useId(),
     locale: "en-US",
     granularity: "minute",
+    maxGranularity: "hour",
     hourCycle: 24,
-    formatter: timeFormatter,
     value,
     onValueChange: ({ value }) => setValue(value),
   })
