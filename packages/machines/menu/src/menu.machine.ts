@@ -16,7 +16,7 @@ import {
   isOpeningInNewTab,
   observeAttributes,
   raf,
-  scrollIntoView,
+  scrollToNearest,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
@@ -695,7 +695,7 @@ export const machine = createMachine<MenuSchema>({
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
 
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollToNearest(itemEl, { rootEl: contentEl })
         }
         const rafCleanup = raf(() => {
           setInteractionModality("virtual")
