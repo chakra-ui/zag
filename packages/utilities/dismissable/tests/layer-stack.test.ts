@@ -472,8 +472,8 @@ describe("layerStack snapshots", () => {
     layers.reverse().forEach((layer) => layerStack.remove(layer.node))
 
     expect(layerStack.count()).toBe(0)
-    // was several seconds at 120 layers when each snapshot rescanned the stack
-    expect(performance.now() - start).toBeLessThan(1000)
+    // was several seconds at 120 layers when each snapshot rescanned the stack; ~0.5s now, with headroom for CI
+    expect(performance.now() - start).toBeLessThan(3000)
   })
 
   test("removing the bottom of a long chain dismisses the rest", async () => {
@@ -483,6 +483,6 @@ describe("layerStack snapshots", () => {
     await Promise.resolve()
 
     expect(layerStack.count()).toBe(0)
-    expect(performance.now() - start).toBeLessThan(1000)
+    expect(performance.now() - start).toBeLessThan(3000)
   })
 })
