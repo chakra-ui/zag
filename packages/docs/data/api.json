@@ -1498,10 +1498,6 @@
         "type": "boolean",
         "description": "Whether the date input is invalid"
       },
-      "resolvedHourCycle": {
-        "type": "ResolvedHourCycle",
-        "description": "The resolved hour cycle used by the date input formatter."
-      },
       "value": {
         "type": "DateValue[]",
         "description": "The selected date(s)."

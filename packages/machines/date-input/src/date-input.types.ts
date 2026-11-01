@@ -47,8 +47,6 @@ export type HourCycle = 12 | 24
 
 export type MaxGranularity = "year" | "month" | DateGranularity
 
-export type ResolvedHourCycle = "h11" | "h12" | "h23" | "h24"
-
 export interface IntlTranslations {
   placeholder?: ((locale: string) => Record<EditableSegmentType, string>) | undefined
 }
@@ -441,10 +439,6 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    * Whether the date input is invalid
    */
   invalid: boolean
-  /**
-   * The resolved hour cycle used by the date input formatter.
-   */
-  resolvedHourCycle: ResolvedHourCycle
   /**
    * The selected date(s).
    */

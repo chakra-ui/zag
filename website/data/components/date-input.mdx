@@ -378,6 +378,9 @@ Set `maxGranularity` to `"hour"` and `granularity` to `"hour"`, `"minute"`, or
 `"second"` to display only time segments. The hour cycle and day period are
 determined by the locale unless `hourCycle` is provided.
 
+The value is still a full date and time. Its date comes from `placeholderValue`
+(today by default), so read only the time fields from it.
+
 ```tsx
 const service = useMachine(dateInput.machine, {
   locale: "en-US",

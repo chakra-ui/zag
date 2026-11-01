@@ -23,7 +23,6 @@ export type {
   HiddenInputProps,
   HourCycle,
   MaxGranularity,
-  ResolvedHourCycle,
   IntlTranslations,
   LabelProps,
   PlaceholderChangeDetails,
