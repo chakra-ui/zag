@@ -835,11 +835,12 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
-      focusMenu({ scope, refs }) {
+      focusMenu({ scope, refs, prop }) {
         refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
+            getInitialEl: prop("initialFocusEl"),
             enabled: !contains(contentEl, scope.getActiveElement()),
             filter(node) {
               return !node.role?.startsWith("menuitem")
@@ -895,22 +896,25 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
-      focusTrigger({ scope, context, event, refs }) {
+      focusTrigger({ scope, context, event, refs, prop }) {
         const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
         if (context.get("isSubmenu") || restoreFocus === false) return
+
+        const getFinalFocusEl = () => prop("finalFocusEl")?.()
 
         // Context menus return focus to whatever was focused when they opened
         if (context.get("anchorPoint")) {
           const returnFocusEl = refs.get("returnFocusEl")
           refs.get("returnFocusFrame").request(() => {
-            returnFocusEl?.focus({ preventScroll: true })
+            const el = getFinalFocusEl() || returnFocusEl
+            el?.focus({ preventScroll: true })
           })
           return
         }
 
         queueMicrotask(() => {
-          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-          triggerEl?.focus({ preventScroll: true })
+          const el = getFinalFocusEl() || dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+          el?.focus({ preventScroll: true })
         })
       },
       cancelReturnFocus({ refs }) {
