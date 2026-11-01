@@ -1,10 +1,11 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, contains, getEventTarget, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget, raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
+import { createLiveRegion } from "@zag-js/live-region"
 import { callAll, warn } from "@zag-js/utils"
 import * as dom from "./file-upload.dom"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
-import { getEventFiles, setInputFiles } from "./file-upload.utils"
+import { announce, getEventFiles, setInputFiles } from "./file-upload.utils"
 
 export const machine = createMachine<FileUploadSchema>({
   props({ props }) {
@@ -21,6 +22,13 @@ export const machine = createMachine<FileUploadSchema>({
 
   initialState() {
     return "idle"
+  },
+
+  refs() {
+    return {
+      liveRegion: null,
+      focusFrame: AnimationFrame.create(),
+    }
   },
 
   context({ prop, bindable, getContext }) {
@@ -71,18 +79,21 @@ export const machine = createMachine<FileUploadSchema>({
     "FILE.SELECT": {
       actions: ["setEventFiles"],
     },
+    // focus first: the delete trigger unmounts with its item
     "FILE.DELETE": {
-      actions: ["removeFile"],
+      actions: ["restoreFocusAfterDelete", "removeFile", "announceFileDeleted"],
     },
     "FILES.CLEAR": {
-      actions: ["clearFiles"],
+      actions: ["restoreFocusAfterClear", "clearFiles"],
     },
     "REJECTED_FILES.CLEAR": {
       actions: ["clearRejectedFiles"],
     },
   },
 
-  effects: ["preventDocumentDrop"],
+  exit: ["cancelFocusFrame"],
+
+  effects: ["preventDocumentDrop", "trackLiveRegion"],
 
   states: {
     idle: {
@@ -146,6 +157,16 @@ export const machine = createMachine<FileUploadSchema>({
         }
         return callAll(addDomEvent(doc, "dragover", onDragOver, false), addDomEvent(doc, "drop", onDrop, false))
       },
+      trackLiveRegion({ refs, scope }) {
+        // inside the root so a modal doesn't hide it
+        const liveRegion = createLiveRegion({
+          level: "polite",
+          document: scope.getDoc(),
+          root: () => dom.getRootEl(scope),
+        })
+        refs.set("liveRegion", liveRegion)
+        return () => liveRegion.destroy()
+      },
     },
 
     actions: {
@@ -186,22 +207,15 @@ export const machine = createMachine<FileUploadSchema>({
         )
 
         const set = (files: File[]) => {
-          if (computed("multiple")) {
-            context.set("acceptedFiles", (prev) => [...prev, ...files])
-            context.set("rejectedFiles", rejectedFiles)
-            return
-          }
+          const multiple = computed("multiple")
+          const added = multiple ? files : files.slice(0, 1)
+          if (!multiple && !added.length && !rejectedFiles.length) return
 
-          if (files.length) {
-            context.set("acceptedFiles", [files[0]])
-            context.set("rejectedFiles", rejectedFiles)
-            return
-          }
+          if (multiple) context.set("acceptedFiles", (prev) => [...prev, ...added])
+          else if (added.length) context.set("acceptedFiles", added)
+          context.set("rejectedFiles", rejectedFiles)
 
-          if (rejectedFiles.length) {
-            context.set("acceptedFiles", context.get("acceptedFiles"))
-            context.set("rejectedFiles", rejectedFiles)
-          }
+          if (added.length) announce(params, (t) => t.filesAdded(added))
         }
 
         const transform = prop("transformFiles")
@@ -221,12 +235,28 @@ export const machine = createMachine<FileUploadSchema>({
       },
       removeFile({ context, event }) {
         if (event.itemType === "rejected") {
-          const rejectedFiles = context.get("rejectedFiles").filter((item) => !isFileEqual(item.file, event.file))
-          context.set("rejectedFiles", rejectedFiles)
+          context.set("rejectedFiles", (prev) => prev.filter((item) => !isFileEqual(item.file, event.file)))
         } else {
-          const files = context.get("acceptedFiles").filter((file) => !isFileEqual(file, event.file))
-          context.set("acceptedFiles", files)
+          context.set("acceptedFiles", (prev) => prev.filter((file) => !isFileEqual(file, event.file)))
         }
+      },
+      announceFileDeleted(params) {
+        announce(params, (t) => t.fileDeleted(params.event.file))
+      },
+      restoreFocusAfterDelete({ context, event, scope, refs }) {
+        const itemType = event.itemType === "rejected" ? "rejected" : "accepted"
+        const files =
+          itemType === "rejected" ? context.get("rejectedFiles").map((item) => item.file) : context.get("acceptedFiles")
+        const index = files.findIndex((file) => isFileEqual(file, event.file))
+        // skip programmatic deletes
+        const triggerEl = dom.getItemDeleteTriggerEls(scope, itemType)[index]
+        if (index === -1 || !contains(triggerEl, scope.getActiveElement())) return
+        // next item, or the previous one if the last was removed
+        refs.get("focusFrame").request(() => {
+          const remaining = dom.getItemDeleteTriggerEls(scope, itemType)
+          const target = remaining[Math.min(index, remaining.length - 1)] ?? dom.getFallbackFocusEl(scope)
+          target?.focus()
+        })
       },
       clearRejectedFiles({ context }) {
         context.set("rejectedFiles", [])
@@ -234,6 +264,14 @@ export const machine = createMachine<FileUploadSchema>({
       clearFiles({ context }) {
         context.set("acceptedFiles", [])
         context.set("rejectedFiles", [])
+      },
+      restoreFocusAfterClear({ scope, refs }) {
+        // the clear trigger hides once the list is empty
+        if (!contains(dom.getClearTriggerEl(scope), scope.getActiveElement())) return
+        refs.get("focusFrame").request(() => dom.getFallbackFocusEl(scope)?.focus())
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
     },
   },
