@@ -40,6 +40,7 @@ export const machine = createMachine<DateInputSchema>({
     const timeZone = props.timeZone || "UTC"
     const selectionMode = props.selectionMode || "single"
     const granularity = props.granularity || "day"
+    const maxGranularity = props.maxGranularity || "year"
 
     const calendar = resolveCalendar(locale, props.createCalendar)
 
@@ -64,6 +65,7 @@ export const machine = createMachine<DateInputSchema>({
         locale,
         getFormatterOptions({
           granularity,
+          maxGranularity,
           digitStyle,
           hourCycle,
           timeZone,
@@ -82,6 +84,7 @@ export const machine = createMachine<DateInputSchema>({
       value,
       defaultValue,
       granularity,
+      maxGranularity,
       shouldForceLeadingZeros,
       formatter,
       placeholderValue: typeof props.placeholderValue === "undefined" ? undefined : placeholderValue,

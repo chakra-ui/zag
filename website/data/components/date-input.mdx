@@ -372,6 +372,23 @@ const service = useMachine(dateInput.machine, {
 
 By default, this is determined by the locale.
 
+### Time-only input
+
+Set `maxGranularity` to `"hour"` and `granularity` to `"hour"`, `"minute"`, or
+`"second"` to display only time segments. The hour cycle and day period are
+determined by the locale unless `hourCycle` is provided.
+
+The value is still a full date and time. Its date comes from `placeholderValue`
+(today by default), so read only the time fields from it.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  locale: "en-US",
+  maxGranularity: "hour",
+  granularity: "minute",
+})
+```
+
 ### Custom formatter
 
 Provide a `formatter` to customize how dates are parsed and formatted.
