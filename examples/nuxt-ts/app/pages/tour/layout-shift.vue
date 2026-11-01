@@ -2,7 +2,8 @@
 import { tourLayoutShiftData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, ref, useId } from "vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/tour.css"
 
 const wide = ref(false)
 const expanded = ref(false)
@@ -46,7 +47,7 @@ const api = computed(() => tour.connect(service, normalizeProps))
         </div>
 
         <button v-bind="api.getCloseTriggerProps()">
-          <span aria-hidden="true">×</span>
+          <XIcon />
         </button>
       </div>
     </div>

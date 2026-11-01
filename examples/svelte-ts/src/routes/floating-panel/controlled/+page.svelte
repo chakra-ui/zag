@@ -1,6 +1,4 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
   import * as floatingPanel from "@zag-js/floating-panel"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
@@ -10,7 +8,7 @@
   const id = $props.id()
   let open = $state(false)
   let size = $state({ width: 360, height: 260 })
-  let position = $state({ x: 120, y: 120 })
+  let position = $state({ x: 120, y: 240 })
   let observedSize = $state({ width: 0, height: 0 })
 
   let observedEl = $state<HTMLDivElement | null>(null)
@@ -65,7 +63,7 @@
     <button
       onclick={() => {
         size = { width: 360, height: 260 }
-        position = { x: 120, y: 120 }
+        position = { x: 120, y: 240 }
       }}
     >
       Reset rect
@@ -127,7 +125,3 @@
     </div>
   </div>
 </main>
-
-<Toolbar>
-  <StateVisualizer state={service} />
-</Toolbar>

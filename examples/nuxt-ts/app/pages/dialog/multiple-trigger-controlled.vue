@@ -1,6 +1,8 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/dialog.css"
 
 interface User {
   id: number
@@ -104,7 +106,9 @@ const api = computed(() => dialog.connect(service, normalizeProps))
                 </select>
               </div>
             </div>
-            <button v-bind="api.getCloseTriggerProps()">Close</button>
+            <button v-bind="api.getCloseTriggerProps()">
+              <XIcon />
+            </button>
           </template>
           <div v-else>No user selected</div>
         </Presence>

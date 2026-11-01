@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import * as radio from "@zag-js/radio-group"
-import { radioControls, radioData } from "@zag-js/shared"
+import { segmentControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/segmented-control.css"
+import "@styles/radio-group.css"
 
-const controls = useControls(radioControls)
+const controls = useControls(segmentControls)
 
 const service = useMachine(
   radio.machine,

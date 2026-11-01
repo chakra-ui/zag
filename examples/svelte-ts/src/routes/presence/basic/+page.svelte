@@ -7,6 +7,12 @@
 
   const service = useMachine(presence.machine, () => ({
     present,
+    onEnterComplete() {
+      console.log("enter complete")
+    },
+    onExitComplete() {
+      console.log("exit complete")
+    },
   }))
   const api = $derived(presence.connect(service, normalizeProps))
 
@@ -18,6 +24,8 @@
 <main class="presence">
   <button onclick={() => (present = !present)}>Toggle</button>
   {#if api.present}
-    <div {@attach setNode} data-scope="presence" data-state={present ? "open" : "closed"}>Content</div>
+    <div {@attach setNode} data-scope="presence" data-state={api.skip ? undefined : present ? "open" : "closed"}>
+      Content
+    </div>
   {/if}
 </main>

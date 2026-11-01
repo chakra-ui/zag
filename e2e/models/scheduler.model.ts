@@ -27,8 +27,8 @@ export class SchedulerModel extends Model {
     return this.page.locator(`[data-scheduler-day-column]:has([data-scheduler-event][data-event-id='${id}'])`)
   }
 
-  get prevTrigger() {
-    return this.page.locator("[data-scheduler-prev-trigger]")
+  get previousTrigger() {
+    return this.page.locator("[data-scheduler-previous-trigger]")
   }
 
   get nextTrigger() {
@@ -204,7 +204,7 @@ export class SchedulerModel extends Model {
   }
 
   clickPrev() {
-    return this.prevTrigger.click()
+    return this.previousTrigger.click()
   }
 
   clickNext() {

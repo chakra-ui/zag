@@ -1,8 +1,10 @@
 import { tourLayoutShiftData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-solid"
 import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
+import "@styles/tour.css"
 
 export default function Page() {
   const [wide, setWide] = createSignal(false)
@@ -50,7 +52,7 @@ export default function Page() {
               </div>
 
               <button {...api().getCloseTriggerProps()}>
-                <span aria-hidden="true">×</span>
+                <XIcon />
               </button>
             </div>
           </div>

@@ -7,7 +7,7 @@ const props = defineProps<{ name: string; offset: number }>()
 
 const service = useMachine(floatingPanel.machine, {
   id: useId(),
-  defaultPosition: { x: 100 + props.offset, y: 100 + props.offset },
+  defaultPosition: { x: 100 + props.offset, y: 160 + props.offset },
 })
 
 const api = computed(() => floatingPanel.connect(service, normalizeProps))

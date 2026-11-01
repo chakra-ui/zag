@@ -21,7 +21,7 @@ export interface StepEffectArgs {
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
 
-export type StepActionType = "next" | "prev" | "dismiss" | "skip"
+export type StepActionType = "next" | "previous" | "dismiss" | "skip"
 
 export type StepActionFn = (actionMap: StepActionMap) => void
 
@@ -86,6 +86,11 @@ export interface StepBaseDetails {
   actions?: StepAction[] | undefined
 }
 
+export interface ScrollToTargetDetails {
+  target: HTMLElement
+  step: StepDetails
+}
+
 export interface StepDetails extends StepBaseDetails {
   /**
    * The unique identifier of the step
@@ -113,7 +118,7 @@ export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismiss
 
 export interface StepActionMap {
   next: VoidFunction
-  prev: VoidFunction
+  previous: VoidFunction
   dismiss: VoidFunction
   skip: VoidFunction
   goto: (id: string) => void
@@ -133,7 +138,7 @@ export interface ProgressTextDetails {
 export interface IntlTranslations {
   progressText?: ((details: ProgressTextDetails) => string) | undefined
   nextStep?: string | undefined
-  prevStep?: string | undefined
+  previousStep?: string | undefined
   close?: string | undefined
   skip?: string | undefined
 }
@@ -206,6 +211,11 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
    * @default 4
    */
   spotlightRadius?: number | undefined
+  /**
+   * Function to scroll the step target into view.
+   * Defaults to `scrollIntoView` with the nearest alignment.
+   */
+  scrollToTargetFn?: ((details: ScrollToTargetDetails) => void) | undefined
   /**
    * The translations for the tour
    */
@@ -282,6 +292,10 @@ interface Refs {
    * The last positioned rect, including updates not yet rendered by the framework
    */
   prevSpotlightRect?: Rect | undefined
+  /**
+   * The element that had focus when the tour started, to restore focus when it ends
+   */
+  restoreFocusEl?: HTMLElement | null | undefined
 }
 
 type ComputedContext = Readonly<{
@@ -300,7 +314,7 @@ type ComputedContext = Readonly<{
   /**
    * Whether there is a previous step
    */
-  hasPrevStep: boolean
+  hasPreviousStep: boolean
   /**
    * Whether the current step is the first step
    */
@@ -425,7 +439,7 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Whether there is a previous step
    */
-  hasPrevStep: boolean
+  hasPreviousStep: boolean
   /**
    * Whether the current step is the first step
    */
@@ -473,7 +487,7 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Move to the previous step
    */
-  prev: VoidFunction
+  previous: VoidFunction
   /**
    * Returns the progress text
    */

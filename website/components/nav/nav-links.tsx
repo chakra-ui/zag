@@ -16,7 +16,7 @@ export function NavLinks() {
           className={css({
             fontWeight: "medium",
             textStyle: "sm",
-            _hover: { color: "fg" },
+            _hover: { color: "text" },
             _currentPage: {
               fontWeight: "semibold",
               textDecoration: "underline",
@@ -46,6 +46,11 @@ const navLinks: NavLink[] = [
       pathname.startsWith("/components") ||
       pathname.startsWith("/guides") ||
       pathname.startsWith("/utilities"),
+  },
+  {
+    href: "/blog",
+    label: "Blog",
+    isActive: (pathname) => pathname.startsWith("/blog"),
   },
   {
     href: "/showcase",

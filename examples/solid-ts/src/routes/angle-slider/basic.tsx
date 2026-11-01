@@ -18,7 +18,8 @@ export default function Page() {
       <main class="angle-slider">
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>
-            Angle Slider: <div {...api().getValueTextProps()}>{api().valueAsDegree}</div>
+            Rotation
+            <span {...api().getValueTextProps()}>{api().valueAsDegree}</span>
           </label>
           <div {...api().getControlProps()}>
             <div {...api().getThumbProps()}></div>

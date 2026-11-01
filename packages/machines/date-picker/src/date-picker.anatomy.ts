@@ -10,7 +10,7 @@ export const anatomy = createAnatomy("date-picker").parts(
   "nextTrigger",
   "positioner",
   "presetTrigger",
-  "prevTrigger",
+  "previousTrigger",
   "rangeText",
   "root",
   "table",

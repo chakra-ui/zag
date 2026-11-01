@@ -18,7 +18,7 @@
     height: 2.5rem;
     padding-inline: 1rem;
     background: var(--colors-bg-primary-subtle);
-    color: #ffffff;
+    color: var(--colors-text-inverse);
 
     &:hover {
       background: var(--colors-bg-primary-bold);

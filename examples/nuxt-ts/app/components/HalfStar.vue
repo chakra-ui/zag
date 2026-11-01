@@ -10,7 +10,7 @@
       fill-rule="evenodd"
       clip-rule="evenodd"
       d="M135.977 213.039L219.826 258.546L202.352 164.181L271.957 98.1082L176.808 85.5661L135.977 0V213.039Z"
-      fill="#bdbdbd"
+      class="star-empty-half"
     />
   </svg>
 </template>

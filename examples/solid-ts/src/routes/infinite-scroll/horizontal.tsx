@@ -28,8 +28,9 @@ export default function Page() {
   })
   const list = createMemo(() => asyncList.connect(listService))
 
+  const id = createUniqueId()
   const service = useMachine(infiniteScroll.machine, () => ({
-    id: createUniqueId(),
+    id,
     orientation: "horizontal" as const,
     count: list().items.length,
     hasMore: list().hasMore,

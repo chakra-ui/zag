@@ -3,11 +3,14 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import styles from "../styles/machines/pin-input.module.css"
 
-interface PinInputProps extends Omit<pinInput.Props, "id"> {}
+interface PinInputProps extends Omit<pinInput.Props, "id" | "count"> {
+  count?: number
+}
 
 export function PinInput(props: PinInputProps) {
   const service = useMachine(pinInput.machine, {
     id: useId(),
+    count: 3,
     ...props,
   })
 

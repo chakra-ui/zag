@@ -1,11 +1,11 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { ChevronRight } from "lucide-svelte"
+  import { ArrowRightIcon } from "lucide-svelte"
   import "@styles/accordion.css"
 
   const controls = useControls(accordionControls)
@@ -20,17 +20,19 @@
   <div {...api.getRootProps()}>
     {#each accordionData as item}
       <div {...api.getItemProps({ value: item.id })}>
-        <h3>
+        <h3 {...api.getItemHeaderProps({ value: item.id })}>
           <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
             {item.label}
             <div {...api.getItemIndicatorProps({ value: item.id })}>
-              <ChevronRight />
+              <ArrowRightIcon />
             </div>
           </button>
         </h3>
         <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua.
+          <div class="accordion-item-body">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </div>
         </div>
       </div>
     {/each}

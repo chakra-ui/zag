@@ -26,6 +26,7 @@ export function connect<T extends PropTypes>(
   const hasCollapsedSize = hasCollapsedHeight || hasCollapsedWidth
 
   const skip = !context.get("initial") && open
+  const hiddenValue = prop("hiddenUntilFound") ? "until-found" : true
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -72,7 +73,7 @@ export function connect<T extends PropTypes>(
         "data-state": skip ? undefined : contentState.open ? "open" : "closed",
         "data-disabled": dataAttr(contentState.disabled),
         "data-has-collapsed-size": dataAttr(contentState.hasCollapsedSize),
-        hidden: !contentState.visible && !contentState.hasCollapsedSize,
+        hidden: !contentState.visible && !contentState.hasCollapsedSize ? hiddenValue : false,
         dir: prop("dir"),
         style: {
           "--height": toPx(height),

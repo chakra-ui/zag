@@ -5,6 +5,7 @@ import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import styles from "@styles/drawer.module.css"
+import { XIcon } from "lucide-solid"
 
 interface User {
   id: number
@@ -86,7 +87,9 @@ export default function Page() {
                     <label>Email</label>
                     <input type="email" value={activeUser()!.email} style={{ display: "block", width: "100%" }} />
                   </div>
-                  <button {...api().getCloseTriggerProps()}>Close</button>
+                  <button {...api().getCloseTriggerProps()}>
+                    <XIcon />
+                  </button>
                 </div>
               </>
             ) : (

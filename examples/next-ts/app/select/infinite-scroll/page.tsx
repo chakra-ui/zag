@@ -2,6 +2,7 @@
 
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
+import { ChevronsUpDownIcon, XIcon } from "lucide-react"
 import { useId, useMemo } from "react"
 import { LoadMore } from "@/components/load-more"
 import { useAsyncList } from "@/hooks/use-async-list"
@@ -41,10 +42,19 @@ export default function Page() {
   return (
     <main className="select">
       <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Pokemon</label>
         <div {...api.getControlProps()}>
-          <label {...api.getLabelProps()}>Pokemon</label>
-          <button {...api.getTriggerProps()}>{api.valueAsString || "Select a Pokemon"}</button>
-          <button {...api.getClearTriggerProps()}>✕</button>
+          <button {...api.getTriggerProps()}>
+            <span>{api.valueAsString || "Select a Pokemon"}</span>
+          </button>
+          <div className="select-indicator-group">
+            <button {...api.getClearTriggerProps()}>
+              <XIcon />
+            </button>
+            <span {...api.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
+          </div>
         </div>
 
         {api.open && (

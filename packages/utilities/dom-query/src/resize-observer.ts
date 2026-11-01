@@ -1,4 +1,5 @@
 import { getWindow } from "./node"
+import { noop } from "./shared"
 
 type Subscriber<T> = (entry: T) => void
 
@@ -32,12 +33,15 @@ function createSharedResizeObserver(options?: ResizeObserverOptions): SharedResi
   }
 
   const observe = (element: Element, listener: Subscriber<ResizeObserverEntry>) => {
+    const win = getWindow(element)
+    // e.g. jsdom
+    if (typeof win.ResizeObserver !== "function") return noop
+
     let elementListeners = listeners.get(element) || new Set()
     elementListeners.add(listener)
 
     listeners.set(element, elementListeners)
 
-    const win = getWindow(element)
     getObserver(win).observe(element, options)
 
     return () => {

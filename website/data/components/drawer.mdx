@@ -176,6 +176,15 @@ const service = useMachine(drawer.machine, {
 })
 ```
 
+Use `api.modal` to skip the backdrop, since it would block interaction with the
+page.
+
+```tsx
+{
+  api.modal && <div {...api.getBackdropProps()} />
+}
+```
+
 ### Swipe area
 
 Use `getSwipeAreaProps` to render a region outside the drawer that users can
@@ -242,6 +251,20 @@ restrict dragging to only the grabber, pass `draggable: false` to
     <div {...api.getGrabberIndicatorProps()} />
   </div>
   {/* Content here is not draggable */}
+</div>
+```
+
+### Excluding elements from dragging
+
+Add `data-no-drag` to an element to stop drags that start on it from moving the
+drawer. Set it to `x` or `y` to block only drawers that swipe along that axis.
+For example, a horizontal carousel marked `x` won't start a drag in a left or
+right drawer, but vertical drags on it still move a bottom sheet.
+
+```tsx
+<div {...api.getContentProps()}>
+  <div data-no-drag>Never starts a drag</div>
+  <div data-no-drag="x">Carousel</div>
 </div>
 ```
 

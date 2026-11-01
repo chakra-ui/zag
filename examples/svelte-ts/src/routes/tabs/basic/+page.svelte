@@ -1,7 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import { tabsControls, tabsData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tabs from "@zag-js/tabs"
@@ -24,7 +24,7 @@
 <main class="tabs">
   <div {...api.getRootProps()}>
     <div {...api.getIndicatorProps()}></div>
-    <div {...api.getListProps()}>
+    <div data-stretch="" {...api.getListProps()}>
       {#each tabsData as data}
         <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
           {data.label}

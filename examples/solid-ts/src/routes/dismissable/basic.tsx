@@ -27,7 +27,7 @@ function Popover(props: PopoverProps) {
   createEffect(() => {
     if (!open()) return
     const cleanups = [
-      getPlacement(triggerRef, contentRef, { placement: "right" }),
+      getPlacement(triggerRef ?? null, contentRef ?? null, { placement: "right" }),
       trackDismissableElement(contentRef ?? null, {
         pointerBlocking: props.pointerBlocking,
         onLayerChange: setLayer,

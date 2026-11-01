@@ -182,12 +182,12 @@ export const machine = createMachine<MenubarSchema>({
         const nextEl = activeId
           ? dom.getNextTriggerEl(scope, activeId, prop("loopFocus"))
           : dom.getFirstTriggerEl(scope)
-        focusTrigger(context, scope, nextEl)
+        focusTrigger(context, nextEl)
       },
       focusPrevTrigger({ context, scope, prop }) {
         const activeId = context.get("activeId")
         const prevEl = activeId ? dom.getPrevTriggerEl(scope, activeId, prop("loopFocus")) : dom.getLastTriggerEl(scope)
-        focusTrigger(context, scope, prevEl)
+        focusTrigger(context, prevEl)
       },
       focusMatchingTrigger({ context, scope, event, refs }) {
         const matched = getByTypeahead(dom.getTriggerEls(scope), {
@@ -195,13 +195,13 @@ export const machine = createMachine<MenubarSchema>({
           key: event.key,
           activeId: context.get("activeId"),
         })
-        focusTrigger(context, scope, matched)
+        focusTrigger(context, matched)
       },
       focusFirstTrigger({ context, scope }) {
-        focusTrigger(context, scope, dom.getFirstTriggerEl(scope))
+        focusTrigger(context, dom.getFirstTriggerEl(scope))
       },
       focusLastTrigger({ context, scope }) {
-        focusTrigger(context, scope, dom.getLastTriggerEl(scope))
+        focusTrigger(context, dom.getLastTriggerEl(scope))
       },
       switchToNextMenu({ context, scope, prop }) {
         const activeId = context.get("activeId")
@@ -233,7 +233,7 @@ function setActiveTrigger(context: Params<MenubarSchema>["context"], id: string)
   context.set("activeId", id)
 }
 
-function focusTrigger(context: Params<MenubarSchema>["context"], scope: Scope, el: HTMLElement | null | undefined) {
+function focusTrigger(context: Params<MenubarSchema>["context"], el: HTMLElement | null | undefined) {
   if (!el) return
   setActiveTrigger(context, el.id)
   raf(() => el.focus())

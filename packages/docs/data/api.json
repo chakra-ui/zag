@@ -35,7 +35,7 @@
       "collapsible": {
         "type": "boolean | undefined",
         "description": "Whether an accordion item can be closed after it has been expanded.",
-        "defaultValue": "false"
+        "defaultValue": "true"
       },
       "value": {
         "type": "string[] | undefined",
@@ -62,10 +62,9 @@
         "description": "The orientation of the accordion items.",
         "defaultValue": "\"vertical\""
       },
-      "loopFocus": {
+      "hiddenUntilFound": {
         "type": "boolean | undefined",
-        "description": "Whether to loop focus back to the first/last trigger when navigating\npast the end/start with the arrow keys.",
-        "defaultValue": "true"
+        "description": "Whether closed items stay searchable with the browser's find-in-page.\nUses `hidden=\"until-found\"`, and expands an item when a match is found inside it."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",
@@ -351,7 +350,7 @@
         "type": "boolean",
         "description": "Whether the carousel is can scroll to the next view"
       },
-      "canScrollPrev": {
+      "canScrollPrevious": {
         "type": "boolean",
         "description": "Whether the carousel is can scroll to the previous view"
       },
@@ -367,7 +366,7 @@
         "type": "(instant?: boolean) => void",
         "description": "Function to scroll to the next page"
       },
-      "scrollPrev": {
+      "scrollPrevious": {
         "type": "(instant?: boolean) => void",
         "description": "Function to scroll to the previous page"
       },
@@ -569,13 +568,9 @@
         "type": "(open: boolean) => void",
         "description": "Function to open the cascade-select"
       },
-      "setHighlightValue": {
-        "type": "(value: string | string[]) => void",
-        "description": "Function to set the highlighted value (path or single value to find)"
-      },
-      "clearHighlightValue": {
-        "type": "() => void",
-        "description": "Function to clear the highlighted value"
+      "setHighlightedValue": {
+        "type": "(value: string | string[] | null) => void",
+        "description": "Function to set the highlighted value (path or single value to find), or clear it with `null`"
       },
       "selectValue": {
         "type": "(value: string[]) => void",
@@ -961,6 +956,10 @@
         "type": "number | string | undefined",
         "description": "The width of the content when collapsed."
       },
+      "hiddenUntilFound": {
+        "type": "boolean | undefined",
+        "description": "Whether the closed content stays searchable with the browser's find-in-page.\nUses `hidden=\"until-found\"`, and opens the collapsible when a match is found inside it."
+      },
       "id": {
         "type": "string",
         "description": "The unique identifier of the machine."
@@ -1185,6 +1184,14 @@
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether the list renders inline"
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Whether the results are being loaded"
+      },
       "inputValue": {
         "type": "string",
         "description": "The value of the combobox input"
@@ -1197,13 +1204,9 @@
         "type": "V | null",
         "description": "The highlighted item"
       },
-      "setHighlightValue": {
-        "type": "(value: string) => void",
-        "description": "The value of the combobox input"
-      },
-      "clearHighlightValue": {
-        "type": "VoidFunction",
-        "description": "Function to clear the highlighted value"
+      "setHighlightedValue": {
+        "type": "(value: string | null) => void",
+        "description": "Function to highlight a value, or clear the highlight with `null`"
       },
       "syncSelectedItems": {
         "type": "VoidFunction",
@@ -1437,9 +1440,9 @@
         "type": "((details: ScrollToIndexDetails) => void) | undefined",
         "description": "Function to scroll to a specific index"
       },
-      "disableLayer": {
+      "inline": {
         "type": "boolean | undefined",
-        "description": "Whether to disable registering this a dismissable layer"
+        "description": "Whether the list renders inline: always open, not positioned or dismissable"
       },
       "navigate": {
         "type": "((details: NavigateDetails) => void) | null | undefined",
@@ -1449,6 +1452,10 @@
         "type": "\"listbox\" | \"dialog\" | undefined",
         "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the\n`role` of the content element, the trigger's keyboard handling, and the\nlabel's click target.\n- `\"listbox\"` (default) — input-driven combobox; popup is a passive listbox.\n- `\"dialog\"` — popover-style combobox; popup is announced as a dialog,\n  trigger is keyboard-active, label-click focuses the trigger.",
         "defaultValue": "\"listbox\""
+      },
+      "loading": {
+        "type": "boolean | undefined",
+        "description": "Whether the results are being loaded (e.g. fetched from a server).\n\nWhile loading, the listbox is marked with `aria-busy`, the loading message is\nannounced instead of the result count, and \"no results\" is never announced."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",
@@ -1869,7 +1876,7 @@
         "type": "VoidFunction",
         "description": "Goes to the next month/year/decade."
       },
-      "goToPrev": {
+      "goToPrevious": {
         "type": "VoidFunction",
         "description": "Goes to the previous month/year/decade."
       },
@@ -2101,6 +2108,10 @@
         "type": "boolean",
         "description": "Whether the dialog is open"
       },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether the dialog is modal"
+      },
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the dialog"
@@ -2165,7 +2176,7 @@
       "closeOnInteractOutside": {
         "type": "boolean | undefined",
         "description": "Whether to close the dialog when the outside is clicked",
-        "defaultValue": "true"
+        "defaultValue": "`true` for modal dialogs, `false` for non-modal dialogs"
       },
       "closeOnEscape": {
         "type": "boolean | undefined",
@@ -2377,6 +2388,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the drawer is open."
+      },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether the drawer is modal."
       },
       "dragging": {
         "type": "boolean",
@@ -3856,9 +3871,9 @@
         "type": "V | null",
         "description": "The highlighted item"
       },
-      "highlightValue": {
-        "type": "(value: string) => void",
-        "description": "Function to highlight a value"
+      "setHighlightedValue": {
+        "type": "(value: string | null) => void",
+        "description": "Function to highlight a value, or clear the highlight with `null`"
       },
       "highlightFirst": {
         "type": "VoidFunction",
@@ -3875,10 +3890,6 @@
       "highlightPrevious": {
         "type": "VoidFunction",
         "description": "Function to highlight the previous value"
-      },
-      "clearHighlightedValue": {
-        "type": "VoidFunction",
-        "description": "Function to clear the highlighted value"
       },
       "selectedItems": {
         "type": "V[]",
@@ -4176,7 +4187,7 @@
         "description": "The id of the currently highlighted menuitem"
       },
       "setHighlightedValue": {
-        "type": "(value: string) => void",
+        "type": "(value: string | null) => void",
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
@@ -4276,10 +4287,15 @@
         "description": "Whether the pressing printable characters should trigger typeahead navigation",
         "defaultValue": "true"
       },
-      "composite": {
-        "type": "boolean | undefined",
-        "description": "Whether the menu is a composed with other composite widgets like a combobox or tabs",
-        "defaultValue": "true"
+      "autoHighlight": {
+        "type": "boolean | \"always\" | undefined",
+        "description": "Whether a filter input highlights the first item when its query changes.\n- `true`: highlight it while the query is not empty\n- `\"always\"`: highlight it even when the query is empty, and keep a highlight when the pointer leaves",
+        "defaultValue": "false"
+      },
+      "popupType": {
+        "type": "\"menu\" | \"dialog\" | undefined",
+        "description": "The type of popup the trigger opens.\n- `\"menu\"`: the content is the menu and manages keyboard focus across its items.\n- `\"dialog\"`: the content is a dialog holding the menu list, for widgets that keep focus such as a filter input.",
+        "defaultValue": "\"menu\""
       },
       "navigate": {
         "type": "((details: NavigateDetails) => void) | null | undefined",
@@ -5015,7 +5031,7 @@
         "type": "VoidFunction",
         "description": "Function to go to the next page."
       },
-      "goToPrevPage": {
+      "goToPreviousPage": {
         "type": "VoidFunction",
         "description": "Function to go to the previous page."
       },
@@ -6030,7 +6046,7 @@
         "type": "() => void",
         "description": "Advance by one view-sized step."
       },
-      "goToPrev": {
+      "goToPrevious": {
         "type": "() => void",
         "description": "Go back by one view-sized step."
       },
@@ -6372,13 +6388,9 @@
         "type": "V | null",
         "description": "The highlighted item"
       },
-      "setHighlightValue": {
-        "type": "(value: string) => void",
-        "description": "Function to highlight a value"
-      },
-      "clearHighlightValue": {
-        "type": "VoidFunction",
-        "description": "Function to clear the highlighted value"
+      "setHighlightedValue": {
+        "type": "(value: string | null) => void",
+        "description": "Function to highlight a value, or clear the highlight with `null`"
       },
       "selectedItems": {
         "type": "V[]",
@@ -6773,14 +6785,6 @@
         "type": "ElementIds | undefined",
         "description": "The ids of the elements in the slider. Useful for composition."
       },
-      "aria-label": {
-        "type": "string[] | undefined",
-        "description": "The aria-label of each slider thumb. Useful for providing an accessible name to the slider"
-      },
-      "aria-labelledby": {
-        "type": "string[] | undefined",
-        "description": "The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider"
-      },
       "name": {
         "type": "string | undefined",
         "description": "The name associated with each slider thumb (when used in a form)"
@@ -6825,6 +6829,14 @@
         "type": "((details: ValueTextDetails) => string) | undefined",
         "description": "Function that returns a human readable value for the slider thumb"
       },
+      "getAriaLabel": {
+        "type": "((details: ThumbLabelDetails) => string) | undefined",
+        "description": "Function that returns the accessible name of each thumb, e.g. \"Minimum price\""
+      },
+      "getAriaLabelledBy": {
+        "type": "((details: ThumbLabelDetails) => string) | undefined",
+        "description": "Function that returns the `id` of the element that labels each thumb.\nDefaults to the label part when no `getAriaLabel` is provided."
+      },
       "min": {
         "type": "number | undefined",
         "description": "The minimum value of the slider",
@@ -6866,8 +6878,8 @@
         "defaultValue": "\"contain\""
       },
       "thumbSize": {
-        "type": "{ width: number; height: number } | undefined",
-        "description": "The slider thumbs dimensions"
+        "type": "number | { width: number; height: number } | undefined",
+        "description": "The slider thumbs dimensions. A number sets both the width and height."
       },
       "thumbCollisionBehavior": {
         "type": "\"none\" | \"push\" | \"swap\" | undefined",
@@ -7027,57 +7039,81 @@
   },
   "steps": {
     "api": {
-      "value": {
-        "type": "number",
-        "description": "The value of the stepper."
+      "items": {
+        "type": "V[]",
+        "description": "The steps in the flow, excluding disabled ones"
       },
-      "percent": {
+      "value": {
+        "type": "string | null",
+        "description": "The value of the current step, `COMPLETE` past the last step, or `null` when there are no steps"
+      },
+      "index": {
         "type": "number",
-        "description": "The percentage of the stepper."
+        "description": "The position of the current step in the flow"
+      },
+      "item": {
+        "type": "V | null",
+        "description": "The current step item"
       },
       "count": {
         "type": "number",
-        "description": "The total number of steps."
+        "description": "The number of steps in the flow, excluding disabled ones"
+      },
+      "percent": {
+        "type": "number",
+        "description": "The percentage of the stepper"
+      },
+      "complete": {
+        "type": "boolean",
+        "description": "Whether the stepper has moved past the last step"
+      },
+      "completedValues": {
+        "type": "string[]",
+        "description": "The values of the completed steps"
       },
       "hasNextStep": {
         "type": "boolean",
-        "description": "Whether the stepper has a next step."
+        "description": "Whether the stepper has a next step"
       },
-      "hasPrevStep": {
+      "hasPreviousStep": {
         "type": "boolean",
-        "description": "Whether the stepper has a previous step."
+        "description": "Whether the stepper has a previous step"
       },
-      "isCompleted": {
+      "canSkip": {
         "type": "boolean",
-        "description": "Whether the stepper is completed."
+        "description": "Whether the current step is optional and can be skipped"
       },
-      "isStepValid": {
-        "type": "(index: number) => boolean",
-        "description": "Check if a specific step is valid (lazy evaluation)"
-      },
-      "isStepSkippable": {
-        "type": "(index: number) => boolean",
-        "description": "Check if a specific step can be skipped"
-      },
-      "setStep": {
-        "type": "(step: number) => void",
-        "description": "Function to set the value of the stepper."
-      },
-      "goToNextStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to the next step."
-      },
-      "goToPrevStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to the previous step."
-      },
-      "resetStep": {
-        "type": "VoidFunction",
-        "description": "Function to go to reset the stepper."
+      "canComplete": {
+        "type": "boolean",
+        "description": "Whether `goToNextStep` would complete the stepper"
       },
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
-        "description": "Returns the state of the item at the given index."
+        "description": "Returns the state of the item with the given value"
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the value of the stepper"
+      },
+      "goToNextStep": {
+        "type": "VoidFunction",
+        "description": "Function to go to the next step"
+      },
+      "goToPreviousStep": {
+        "type": "VoidFunction",
+        "description": "Function to go to the previous step"
+      },
+      "skipStep": {
+        "type": "VoidFunction",
+        "description": "Function to skip the current step. Only works when the step is optional."
+      },
+      "resetStep": {
+        "type": "VoidFunction",
+        "description": "Function to reset the stepper to its initial state"
+      },
+      "setCompletedValues": {
+        "type": "(values: string[]) => void",
+        "description": "Function to set the completed steps"
       }
     },
     "context": {
@@ -7085,21 +7121,45 @@
         "type": "ElementIds | undefined",
         "description": "The custom ids for the stepper elements"
       },
-      "step": {
-        "type": "number | undefined",
-        "description": "The controlled value of the stepper"
+      "translations": {
+        "type": "IntlTranslations | undefined",
+        "description": "The localized messages to use"
       },
-      "defaultStep": {
-        "type": "number | undefined",
+      "items": {
+        "type": "T[]",
+        "description": "The steps of the stepper"
+      },
+      "value": {
+        "type": "string | undefined",
+        "description": "The controlled value of the stepper. `COMPLETE` is the position past the last step."
+      },
+      "defaultValue": {
+        "type": "string | undefined",
         "description": "The initial value of the stepper when rendered.\nUse when you don't need to control the value of the stepper."
       },
-      "onStepChange": {
-        "type": "((details: StepChangeDetails) => void) | undefined",
+      "onValueChange": {
+        "type": "((details: ValueChangeDetails) => void) | undefined",
         "description": "Callback to be called when the value changes"
       },
-      "onStepComplete": {
-        "type": "VoidFunction | undefined",
-        "description": "Callback to be called when a step is completed"
+      "completedValues": {
+        "type": "string[] | undefined",
+        "description": "The controlled values of the completed steps"
+      },
+      "defaultCompletedValues": {
+        "type": "string[] | undefined",
+        "description": "The initial values of the completed steps when rendered.\nUse when you don't need to control the completed steps."
+      },
+      "onCompletedChange": {
+        "type": "((details: CompletedChangeDetails) => void) | undefined",
+        "description": "Callback to be called when the completed steps change.\nAlso fires on `goToNext`, which marks the step it leaves as completed."
+      },
+      "onNavigationBlocked": {
+        "type": "((details: NavigationBlockedDetails) => void) | undefined",
+        "description": "Callback to be called when navigation is blocked"
+      },
+      "onComplete": {
+        "type": "((details: CompleteDetails) => void) | undefined",
+        "description": "Callback to be called when the user moves past the last step.\nWith a controlled value, it fires on each request, whether or not you apply it."
       },
       "linear": {
         "type": "boolean | undefined",
@@ -7109,24 +7169,6 @@
         "type": "\"horizontal\" | \"vertical\" | undefined",
         "description": "The orientation of the stepper",
         "defaultValue": "\"horizontal\""
-      },
-      "count": {
-        "type": "number | undefined",
-        "description": "The total number of steps"
-      },
-      "isStepValid": {
-        "type": "((index: number) => boolean) | undefined",
-        "description": "Whether a step is valid. Invalid steps block forward navigation in linear mode.",
-        "defaultValue": "() => true"
-      },
-      "isStepSkippable": {
-        "type": "((index: number) => boolean) | undefined",
-        "description": "Whether a step can be skipped during navigation.\nSkippable steps are bypassed when using next/prev.",
-        "defaultValue": "() => false"
-      },
-      "onStepInvalid": {
-        "type": "((details: StepInvalidDetails) => void) | undefined",
-        "description": "Called when navigation is blocked due to an invalid step."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",
@@ -7269,7 +7311,7 @@
         "type": "(fromValue?: string) => void",
         "description": "Selects the next tab"
       },
-      "selectPrev": {
+      "selectPrevious": {
         "type": "(fromValue?: string) => void",
         "description": "Selects the previous tab"
       },
@@ -7375,6 +7417,10 @@
       "atMax": {
         "type": "boolean",
         "description": "Whether the tags have reached the max limit."
+      },
+      "highlightedValue": {
+        "type": "string | null",
+        "description": "The value of the highlighted tag."
       },
       "setValue": {
         "type": "(value: string[]) => void",
@@ -7684,11 +7730,11 @@
       },
       "create": {
         "type": "(data: Options<V>) => string",
-        "description": "Create a new toast with the given options"
+        "description": "Create a toast or update an existing toast with the same ID.\nCalls targeting closing toasts are ignored."
       },
       "update": {
-        "type": "(id: string, data: Partial<ToastProps<V>>) => string",
-        "description": "Update an existing toast with new properties"
+        "type": "(id: string, data: MaybeFunction<Partial<ToastProps<V>>, Partial<ToastProps<V>>>) => string",
+        "description": "Update a toast with new properties or a function of its current properties.\nUpdates to closing toasts are ignored.\nFunctional updates are also ignored when the toast does not exist."
       },
       "remove": {
         "type": "(id?: string) => void",
@@ -7820,6 +7866,11 @@
         "description": "The default scroll behavior used when auto-scrolling the TOC container\nand when scrolling to a heading (via link click or `api.scrollTo`).\nCan be overridden per-call by passing `behavior` to `api.scrollTo`.",
         "defaultValue": "\"smooth\""
       },
+      "multiple": {
+        "type": "boolean | undefined",
+        "description": "Whether every visible heading can be active at once.\nWhen `false`, only the topmost visible heading is active.",
+        "defaultValue": "false"
+      },
       "onActiveChange": {
         "type": "((details: ActiveChangeDetails) => void) | undefined",
         "description": "Callback when the active (visible) headings change."
@@ -7890,6 +7941,14 @@
       "onPressedChange": {
         "type": "((pressed: boolean) => void) | undefined",
         "description": "Event handler called when the pressed state of the toggle changes."
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
   },
@@ -8173,7 +8232,7 @@
         "type": "boolean",
         "description": "Whether there is a next step"
       },
-      "hasPrevStep": {
+      "hasPreviousStep": {
         "type": "boolean",
         "description": "Whether there is a previous step"
       },
@@ -8221,7 +8280,7 @@
         "type": "VoidFunction",
         "description": "Move to the next step"
       },
-      "prev": {
+      "previous": {
         "type": "VoidFunction",
         "description": "Move to the previous step"
       },
@@ -8304,6 +8363,10 @@
         "type": "number | undefined",
         "description": "The radius of the spotlight clip path",
         "defaultValue": "4"
+      },
+      "scrollToTargetFn": {
+        "type": "((details: ScrollToTargetDetails) => void) | undefined",
+        "description": "Function to scroll the step target into view.\nDefaults to `scrollIntoView` with the nearest alignment."
       },
       "translations": {
         "type": "IntlTranslations | undefined",

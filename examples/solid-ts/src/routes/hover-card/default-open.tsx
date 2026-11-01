@@ -11,7 +11,10 @@ import "@styles/hover-card.css"
 export default function Page() {
   const controls = useControls(hoverCardControls)
 
-  const service = useMachine(hoverCard.machine, { id: createUniqueId(), defaultOpen: true })
+  const service = useMachine(
+    hoverCard.machine,
+    controls.mergeProps<hoverCard.Props>({ id: createUniqueId(), defaultOpen: true }),
+  )
 
   const api = createMemo(() => hoverCard.connect(service, normalizeProps))
 
@@ -37,7 +40,7 @@ export default function Page() {
               </div>
             </Portal>
           </Show>
-          <div data-part="test-text">Test text</div>
+          <div data-testid="test-text">Test text</div>
         </div>
       </main>
 

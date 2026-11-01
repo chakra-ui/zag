@@ -55,7 +55,7 @@
     }
 
     & span:nth-child(2) {
-      color: var(--colors-fg-subtle);
+      color: var(--colors-text-subtle);
     }
   }
 
@@ -74,7 +74,7 @@
       }
 
       & span:nth-child(2) {
-        color: var(--colors-fg-subtle);
+        color: var(--colors-text-subtle);
       }
     }
   }

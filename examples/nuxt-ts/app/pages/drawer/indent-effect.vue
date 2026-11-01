@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import Presence from "~/components/Presence.vue"
 import { computed } from "vue"
 
@@ -34,7 +35,7 @@ const stackApi = computed(() => drawer.connectStack(snapshot.value, normalizePro
         </div>
       </div>
 
-      <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" />
+      <Presence v-bind="api.getBackdropProps()" :class="styles.backdrop" data-testid="drawer-backdrop" />
       <div v-bind="api.getPositionerProps()" :class="styles.positioner">
         <Presence v-bind="api.getContentProps()" :class="styles.content">
           <div v-bind="api.getGrabberProps()" :class="styles.grabber">
@@ -44,7 +45,9 @@ const stackApi = computed(() => drawer.connectStack(snapshot.value, normalizePro
             <h2 v-bind="api.getTitleProps()" :class="styles.title">Notifications</h2>
             <p v-bind="api.getDescriptionProps()" :class="styles.description">You are all caught up. Good job!</p>
             <div :class="styles.actions">
-              <button v-bind="api.getCloseTriggerProps()" :class="styles.close">Close</button>
+              <button v-bind="api.getCloseTriggerProps()" :class="styles.close">
+                <XIcon />
+              </button>
             </div>
           </div>
         </Presence>

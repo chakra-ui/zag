@@ -1,47 +1,70 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
-import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
+import { ChevronsUpDownIcon, XIcon } from "lucide-vue-next"
 import "@styles/select.css"
+
+interface Item {
+  label: string
+  value: string
+}
 
 const controls = useControls(selectControls)
 
 const service = useMachine(
-  select.machine,
-  controls.mergeProps<select.Props>({
+  select.machine as select.Machine<Item>,
+  controls.mergeProps<select.Props<Item>>({
     collection: select.collection({ items: selectData }),
     id: useId(),
+    name: "country",
     defaultOpen: true,
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
+    },
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
   }),
 )
 
 const api = computed(() => select.connect(service, normalizeProps))
+
+function onFormChange(e: Event) {
+  const formData = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+  console.log(formData)
+}
 </script>
 
 <template>
   <main class="select">
     <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Label</label>
       <div v-bind="api.getControlProps()">
-        <label v-bind="api.getLabelProps()">Label</label>
         <button v-bind="api.getTriggerProps()">
           <span>{{ api.valueAsString || "Select option" }}</span>
-          <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
+        <div class="select-indicator-group">
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon />
+          </button>
+          <span v-bind="api.getIndicatorProps()">
+            <ChevronsUpDownIcon />
+          </span>
+        </div>
       </div>
-      <form
-        @input="
-          (e) => {
-            const form = e.currentTarget as HTMLFormElement
-            const formData = serialize(form, { hash: true })
-            console.log(formData)
-          }
-        "
-      >
+
+      <form @change="onFormChange">
         <select v-bind="api.getHiddenSelectProps()">
+          <option v-if="api.empty" value="" />
           <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
       </form>
+
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
@@ -58,7 +81,7 @@ const api = computed(() => select.connect(service, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" :omit="['collection']" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

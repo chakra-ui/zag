@@ -9,7 +9,9 @@ import * as tree from "@zag-js/tree-view"
 import type { VirtualItem } from "@zag-js/virtualizer"
 import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
-import { type CSSProperties, type JSX, useEffect, useId, useMemo, useState } from "react"
+import { type CSSProperties, type JSX, useId, useMemo, useState } from "react"
+
+const estimateSize = () => ROW_HEIGHT
 
 interface Node {
   id: string
@@ -185,12 +187,6 @@ export default function Page() {
     return collection.filter((node) => node.name.toLowerCase().includes(normalized))
   }, [collection, query])
 
-  const { virtualizer, ref } = useListVirtualizer({
-    count: 0,
-    estimatedSize: () => ROW_HEIGHT,
-    overscan: 8,
-  })
-
   const dndService = useMachine(dnd.machine, {
     id: dndId,
     orientation: "vertical",
@@ -261,9 +257,11 @@ export default function Page() {
   const visibleNodes = api.getVisibleNodes()
   const visibleNodeCount = visibleNodes.length
 
-  useEffect(() => {
-    virtualizer.updateOptions({ count: visibleNodeCount })
-  }, [virtualizer, visibleNodeCount])
+  const { virtualizer, ref } = useListVirtualizer({
+    count: visibleNodeCount,
+    estimatedSize: estimateSize,
+    overscan: 8,
+  })
 
   const virtualItems = virtualizer.getVirtualItems()
   const range = virtualizer.getRange()

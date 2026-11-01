@@ -1,19 +1,13 @@
-/**
- * Pure formatting + counter math for `@zag-js/number-flow`.
- *
- * No DOM, no machine. Digits are keyed by their place exponent relative to the decimal
- * point (never by array index), so segment identity survives digit-count changes -
- * `999 -> 1000` enters a new place instead of re-keying every segment. See design doc §5.
- */
+/** Formatting and counter math for number-flow. Digits are keyed by place, so identity survives digit-count changes. */
 
 /* -----------------------------------------------------------------------------
- * Formatter cache - module-level LRU, shared by every instance on the page (§9.8)
+ * Formatter cache (module-level LRU, shared by every instance)
  * -----------------------------------------------------------------------------*/
 
 const FORMATTER_CACHE_LIMIT = 16
 const formatterCache = new Map<string, Intl.NumberFormat>()
 
-function stableOptionsKey(locale: string, options: Intl.NumberFormatOptions | undefined) {
+export function stableOptionsKey(locale: string, options: Intl.NumberFormatOptions | undefined) {
   if (!options) return locale
   const keys = Object.keys(options).sort()
   return `${locale}|${keys.map((key) => `${key}:${JSON.stringify((options as Record<string, unknown>)[key])}`).join(",")}`
@@ -74,12 +68,7 @@ export interface DigitCell {
 
 const stripCache = new Map<string, readonly DigitCell[]>()
 
-/**
- * The full list of cells to render inside one digit track: `cycles` repetitions of `0-9`.
- *
- * Cached and frozen, so every digit on the page shares one array and re-renders allocate
- * nothing - the strip only ever depends on the locale and the cycle count.
- */
+/** Cells for one digit track: `cycles` repetitions of 0-9. Cached and frozen, so every digit shares one array. */
 export function getDigitCells(locale: string, cycles: number): readonly DigitCell[] {
   const key = `${locale}:${cycles}`
   const cached = stripCache.get(key)
@@ -98,8 +87,11 @@ export function getDigitCells(locale: string, cycles: number): readonly DigitCel
 }
 
 /* -----------------------------------------------------------------------------
- * Segment model (§5.1, §5.2)
+ * Segment model
  * -----------------------------------------------------------------------------*/
+
+/** `entering` and `exiting` segments animate their width and opacity in or out. */
+export type SegmentPresence = "entering" | "exiting"
 
 export interface DigitSegment {
   kind: "digit"
@@ -107,6 +99,7 @@ export interface DigitSegment {
   place: number
   digit: number
   key: string
+  presence?: SegmentPresence | undefined
 }
 
 export interface SymbolSegment {
@@ -114,6 +107,7 @@ export interface SymbolSegment {
   type: Intl.NumberFormatPartTypes
   value: string
   key: string
+  presence?: SegmentPresence | undefined
 }
 
 export type Segment = DigitSegment | SymbolSegment
@@ -121,16 +115,7 @@ export type Segment = DigitSegment | SymbolSegment
 export const isDigitSegment = (segment: Segment): segment is DigitSegment => segment.kind === "digit"
 export const isSymbolSegment = (segment: Segment): segment is SymbolSegment => segment.kind === "symbol"
 
-/**
- * Splits `integer` and `fraction` parts into place-keyed digit segments. Everything else
- * passes through as a symbol segment. Group separators anchor to the integer place
- * immediately to their left, so they enter/exit in lockstep with the digit run that
- * introduces them (e.g. the comma in `999 -> 1,000`). Other static types are keyed by
- * their occurrence index among parts of the same type.
- *
- * Digits are read through `glyphs`, not `Number(char)` - `Intl` emits the locale's own
- * numerals, and `Number("١")` is `NaN`.
- */
+/** Splits integer/fraction parts into place-keyed digits; everything else is a symbol. A group separator keys off the place to its left, so it enters with that digit. */
 export function toSegments(parts: Intl.NumberFormatPart[], glyphs: string[]): Segment[] {
   const totalIntegerDigits = parts.reduce((sum, part) => (part.type === "integer" ? sum + part.value.length : sum), 0)
 
@@ -172,10 +157,7 @@ export function toSegments(parts: Intl.NumberFormatPart[], glyphs: string[]): Se
   return result
 }
 
-/**
- * Cheap structural signature - a run-length encoding of segment kinds. Equal signatures mean
- * the DOM tree is unchanged, so the update can skip reconciliation entirely (§9.3).
- */
+/** Run-length signature of segment kinds. Equal signatures mean the DOM shape is unchanged. */
 export function getSignature(segments: Segment[]): string {
   const runs: string[] = []
   let currentKind: string | null = null
@@ -230,7 +212,7 @@ export function getRenderResult(options: RenderOptions): RenderResult {
 }
 
 /* -----------------------------------------------------------------------------
- * Counter math (§5.3)
+ * Counter math
  * -----------------------------------------------------------------------------*/
 
 export type Trend = boolean | 1 | -1
@@ -250,12 +232,7 @@ export function resolveTrend(trend: Trend | undefined, prevValue: number, nextVa
 /** The number of cells rendered in one digit strip. */
 export const getStripSize = (cycles: number): number => cycles * 10
 
-/**
- * Shifts `target` by whole `0-9` cycles until it lands on a rendered cell. Whole-cycle
- * shifts never change the landing digit, so the roll still ends on the right glyph - it
- * just spins fewer times. Every counter handed to the DOM goes through here, which is what
- * makes a blank digit impossible rather than merely unlikely (§9.7).
- */
+/** Shifts `target` by whole cycles until it lands on a rendered cell: same digit, fewer spins. */
 export function boundToStrip(target: number, cycles: number): number {
   const max = getStripSize(cycles) - 1
   if (target > max) return target - Math.ceil((target - max) / 10) * 10
@@ -268,15 +245,7 @@ function alignToDigit(counter: number, digit: number, direction: 1 | -1): number
   return direction === 1 ? counter + mod10(digit - mod10(counter)) : counter - mod10(mod10(counter) - digit)
 }
 
-/**
- * Picks the counter value nearest in the direction of travel. With no forced trend, each
- * digit takes its own shortest path - `9 -> 0` rolls forward one step, not backward nine.
- *
- * When the preferred direction would leave the strip - only reachable by stacking rolls
- * faster than they settle - the congruent target in the *opposite* direction is taken
- * instead. That is at most 9 cells away and lands on the same digit, so the worst case is a
- * short roll the other way rather than the full-cycle backspin a whole-strip rebase causes.
- */
+/** The nearest counter in the direction of travel. At the strip edge it takes the short opposite path instead of a full backspin. */
 export function nextCounter(prev: number, digit: number, trend: 1 | -1 | undefined, cycles: number): number {
   const up = alignToDigit(prev, digit, 1)
   const down = alignToDigit(prev, digit, -1)
@@ -290,26 +259,15 @@ export function nextCounter(prev: number, digit: number, trend: 1 | -1 | undefin
   return boundToStrip(preferred, cycles)
 }
 
-/**
- * The integer formed by the digits at and above `place` - `getPlaceValue(1234.56, -1)` is
- * `12345`. Read off the magnitude, since the rendered digits are unsigned.
- */
+/** The integer formed by the digits at and above `place`, e.g. `getPlaceValue(1234.56, -1)` is `12345`. */
 export function getPlaceValue(value: number, place: number): number {
   const magnitude = Math.abs(value)
   const scaled = place >= 0 ? magnitude / 10 ** place : magnitude * 10 ** -place
-  // `1234.5 * 10` is `12344.999999999998` in binary floating point, and flooring that lands
-  // a whole digit short. Round the representation noise off first.
+  // Round off float noise (`1234.5 * 10` is `12344.999999999998`) before flooring
   return Math.floor(Number(scaled.toPrecision(12)))
 }
 
-/**
- * `continuous` mode: advances the counter by the true numeric delta at this place instead of
- * the nearest representative, so the digit spins through every intermediate value.
- *
- * The delta is re-aligned onto `digit` before being bounded, so the digit always comes to rest
- * on the glyph that is actually rendered even when the formatter rounds the value
- * (`maximumFractionDigits`) or the sign flips.
- */
+/** `continuous` mode: moves by the true delta at this place so the digit spins through every value, then lands on the rendered digit. */
 export function nextCounterContinuous(
   prevValue: number,
   nextValue: number,
@@ -330,14 +288,7 @@ export function normalizeCounter(counter: number, cycles: number): number {
   return middleCycle * 10 + digit
 }
 
-/**
- * The middle cycle is "home", and every roll is bounded into the strip regardless, so this
- * is a quality knob rather than a correctness one: it buys headroom for rolls that stack up
- * before one settles, and each spare cycle is one more same-direction roll that can be
- * honoured before `nextCounter` has to take the opposite path. `3` leaves a full spare cycle
- * on both sides of home; `continuous` gets more because it also spends cells spinning
- * through intermediate values.
- */
+/** Strip cycles. Spare cycles absorb rolls that stack up before one settles. */
 export function getCycles(continuous: boolean | undefined): number {
   return continuous ? 5 : 3
 }
@@ -356,14 +307,7 @@ export interface CounterUpdateOptions {
   continuous?: boolean | undefined
 }
 
-/**
- * Computes the next counter for every digit segment in `segments`. Segments with no previous counter
- * are entering - placed at the middle cycle directly, no roll.
- *
- * The previous counter is used as-is, never rebased. Rebasing a counter that is still
- * mid-roll moves its target by a whole cycle, which the browser renders as a full backspin
- * - the strip is what gets bounded instead, inside `nextCounter` (§9.7).
- */
+/** The next counter for every digit. New digits start at the middle cycle; existing counters are never rebased, which would backspin. */
 export function computeCounters(options: CounterUpdateOptions): Map<number, number> {
   const { prevCounters, segments, prevValue, nextValue, trend, continuous } = options
   const cycles = getCycles(continuous)

@@ -54,6 +54,36 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3531](https://github.com/chakra-ui/zag/pull/3531)
+  [`cfdcfb7`](https://github.com/chakra-ui/zag/commit/cfdcfb7a1fc03b7de458f2282532948903455f35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix a pending thumb measurement running after the scroll area
+  unmounts.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
+### Patch Changes
+
+- [#3419](https://github.com/chakra-ui/zag/pull/3419)
+  [`3e4e068`](https://github.com/chakra-ui/zag/commit/3e4e068e4fadc0f15482ca663f71d1a35be3f6cc) Thanks
+  [@guiepifanio](https://github.com/guiepifanio)! - Fixed issue where `data-dragging` was set on both scrollbars and
+  thumbs when only one axis was dragged.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

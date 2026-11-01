@@ -25,6 +25,30 @@
 
 ## 2.0.0-next.1
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3449](https://github.com/chakra-ui/zag/pull/3449)
+  [`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4) Thanks
+  [@aaron-easygo](https://github.com/aaron-easygo)! - - Fix programmatic focus turning on focus-visible styles when
+  `HTMLElement.prototype.focus` is an accessor, as in Storybook 10.0–10.5.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+
+## 1.46.0
+
+### Patch Changes
+
+- [#3396](https://github.com/chakra-ui/zag/pull/3396)
+  [`0afddfa`](https://github.com/chakra-ui/zag/commit/0afddfae6e4f9fea790d4321bf2d0bb37160f4a1) Thanks
+  [@BleedingDev](https://github.com/BleedingDev)! - Keep `HTMLElement.prototype.focus` writable when patching and
+  restoring it. When another tool had already defined `focus` as an accessor (for example Storybook's preview), the
+  redefined method became read-only, so later assignments (such as react-aria restoring `focus` on `beforeunload`) threw
+  `Cannot assign to read only property 'focus'`.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

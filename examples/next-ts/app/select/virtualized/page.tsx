@@ -3,9 +3,12 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/select.css"
+
+const estimateSize = () => 32
 
 const collection = select.collection({
   items: selectData,
@@ -16,7 +19,7 @@ const collection = select.collection({
 export default function Page() {
   const { virtualizer, ref } = useListVirtualizer({
     count: selectData.length,
-    estimatedSize: () => 32,
+    estimatedSize: estimateSize,
     observeScrollElementSize: true,
   })
 
@@ -35,7 +38,12 @@ export default function Page() {
       <div {...api.getRootProps()}>
         <div {...api.getControlProps()}>
           <label {...api.getLabelProps()}>Label</label>
-          <button {...api.getTriggerProps()}>{api.valueAsString || "Select a country"}</button>
+          <button {...api.getTriggerProps()}>
+            <span>{api.valueAsString || "Select a country"}</span>
+            <span {...api.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
+          </button>
         </div>
 
         <Portal>
@@ -46,17 +54,8 @@ export default function Page() {
                   {virtualizer.getVirtualItems().map((vi) => {
                     const item = selectData[vi.index]
                     return (
-                      <div
-                        key={item.value}
-                        {...api.getItemProps({ item })}
-                        style={{
-                          ...virtualizer.getItemStyle(vi),
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        <span>{item.label}</span>
+                      <div key={item.value} {...api.getItemProps({ item })} style={virtualizer.getItemStyle(vi)}>
+                        <span {...api.getItemTextProps({ item })}>{item.label}</span>
                         <span {...api.getItemIndicatorProps({ item })}>✓</span>
                       </div>
                     )

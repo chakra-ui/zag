@@ -1,7 +1,11 @@
 export interface LiveRegionOptions {
   level: "polite" | "assertive"
   document?: Document | undefined
-  root?: HTMLElement | null | undefined
+  /**
+   * Where to add the region. Defaults to `document.body`. Inside a modal dialog, pass an element
+   * in the dialog, since screen readers can ignore regions outside it.
+   */
+  root?: HTMLElement | null | (() => HTMLElement | null) | undefined
   delay?: number | undefined
   timeout?: number | undefined
   debug?: boolean | undefined
@@ -21,7 +25,17 @@ const DEBUG_STYLES =
 // keeping it makes stale text readable as page content long afterwards
 const CLEAR_DELAY = 7000
 
-const HIDDEN_STYLES = {
+/**
+ * How long a cleared region stays empty before the next message, so the change is noticed
+ */
+const MIN_DELAY = 100
+
+/**
+ * How long a new region waits before its first message, since Safari VoiceOver can miss earlier changes
+ */
+const INITIAL_DELAY = 200
+
+const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
   border: "0",
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -35,6 +49,9 @@ const HIDDEN_STYLES = {
   wordWrap: "normal",
 }
 
+// when each region (shared across instances) can first be announced into
+const readyAt = new WeakMap<Element, number>()
+
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const {
     level = "polite",
@@ -46,27 +63,33 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   } = opts
 
   const win = doc.defaultView ?? window
-  const parent = root ?? doc.body
+  const getParent = () => (typeof root === "function" ? root() : root) ?? doc.body
   const ID = getId(level)
 
   let announceTimer: number | undefined
   let clearTimer: number | undefined
 
   // Screen readers only announce a change to a region they already know about,
-  // so the region is created up front and kept. Creating it and filling it in
-  // the same tick is unreliable -- VoiceOver in particular misses it.
+  // so the region is created up front and kept.
   function getRegion() {
+    const parent = getParent()
     let region = doc.getElementById(ID)
-    if (region) return region
 
-    region = doc.createElement("span")
-    region.id = ID
-    region.dataset.liveAnnouncer = "true"
-    region.setAttribute("aria-live", level)
-    region.setAttribute("aria-atomic", "true")
-    region.setAttribute("role", level === "assertive" ? "alert" : "status")
-    Object.assign(region.style, HIDDEN_STYLES)
-    parent.appendChild(region)
+    if (!region) {
+      region = doc.createElement("span")
+      region.id = ID
+      region.dataset.liveAnnouncer = "true"
+      region.setAttribute("aria-live", level)
+      region.setAttribute("aria-atomic", "true")
+      region.setAttribute("role", level === "assertive" ? "alert" : "status")
+      Object.assign(region.style, HIDDEN_STYLES)
+    }
+
+    // a moved region is new to screen readers too
+    if (region.parentElement !== parent) {
+      parent.appendChild(region)
+      readyAt.set(region, Date.now() + INITIAL_DELAY)
+    }
 
     return region
   }
@@ -74,42 +97,59 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   function getDebugRegion() {
     if (!debug) return
 
-    let region = doc.getElementById(DEBUG_ID)
-    if (region) return region
+    let debugRegion = doc.getElementById(DEBUG_ID)
+    if (debugRegion) return debugRegion
 
-    region = doc.createElement("div")
-    region.id = DEBUG_ID
-    region.dataset.liveAnnouncerDebug = "true"
-    region.setAttribute("aria-hidden", "true")
-    region.style.cssText = DEBUG_STYLES
-    parent.appendChild(region)
+    debugRegion = doc.createElement("div")
+    debugRegion.id = DEBUG_ID
+    debugRegion.dataset.liveAnnouncerDebug = "true"
+    debugRegion.setAttribute("aria-hidden", "true")
+    debugRegion.style.cssText = DEBUG_STYLES
+    getParent().appendChild(debugRegion)
 
-    return region
+    return debugRegion
   }
 
-  function announce(message: string, delay?: number) {
-    const region = getRegion()
-    delay = delay ?? _delay
-
+  /**
+   * Cancels the pending announcement, if any.
+   */
+  function cancel() {
     win.clearTimeout(announceTimer)
+    announceTimer = undefined
+  }
+
+  /**
+   * Announces the message after `delay`, replacing this instance's pending announcement.
+   */
+  function announce(message: string, delay = _delay) {
+    const region = getRegion()
+
+    cancel()
     win.clearTimeout(clearTimer)
 
     // empty it first so re-announcing the same message is still a change
     region.textContent = ""
 
-    announceTimer = win.setTimeout(() => {
-      if (!region.isConnected) return
-      region.textContent = message
+    announceTimer = win.setTimeout(
+      () => {
+        announceTimer = undefined
+        if (!region.isConnected) return
+        region.textContent = message
 
-      const debugRegion = getDebugRegion()
-      if (debugRegion) debugRegion.textContent = message
+        const debugRegion = getDebugRegion()
+        if (debugRegion) debugRegion.textContent = message
 
-      if (message) clearTimer = win.setTimeout(clear, timeout)
-    }, delay)
+        if (message) clearTimer = win.setTimeout(clear, timeout)
+      },
+      Math.max(delay, MIN_DELAY, (readyAt.get(region) ?? 0) - Date.now()),
+    )
   }
 
+  /**
+   * Cancels the pending announcement and empties the region.
+   */
   function clear() {
-    win.clearTimeout(announceTimer)
+    cancel()
     win.clearTimeout(clearTimer)
 
     const region = doc.getElementById(ID)
@@ -119,12 +159,15 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
     if (debugRegion) debugRegion.textContent = ""
   }
 
+  /**
+   * Cancels pending work and removes the region.
+   */
   function destroy() {
-    win.clearTimeout(announceTimer)
+    cancel()
     win.clearTimeout(clearTimer)
 
     doc.getElementById(ID)?.remove()
-    doc.getElementById(DEBUG_ID)?.remove()
+    if (debug) doc.getElementById(DEBUG_ID)?.remove()
   }
 
   // the region has to exist well before the first announcement
@@ -132,10 +175,11 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
 
   return {
     announce,
+    cancel,
     clear,
     destroy,
     toJSON() {
-      return ID
+      return "live-region"
     },
   }
 }

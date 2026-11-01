@@ -1,197 +1,98 @@
-<a href="https://zagjs.com/" >
-  <img alt="Zag.js hero image" src="https://repository-images.githubusercontent.com/383777434/87c5d462-1c65-45d7-9561-3f3f64d814f4"></img>
+<a href="https://zagjs.com/">
+  <img alt="Zag.js" src="https://repository-images.githubusercontent.com/383777434/87c5d462-1c65-45d7-9561-3f3f64d814f4" />
 </a>
 
 # Zag
 
+Accessible component logic for React, Vue, Solid, and Svelte.
+
+Build dialogs, menus, comboboxes, date pickers, and more with state machines that handle keyboard interactions, focus
+management, and ARIA attributes. You control the markup and styling; Zag handles the behavior.
+
 <p>
-  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@zag-js/core.svg?style=flat"/>
-  <img alt="Github Stars" src="https://badgen.net/github/stars/chakra-ui/zag" />
+  <a href="https://www.npmjs.com/package/@zag-js/core">
+    <img alt="@zag-js/core monthly downloads" src="https://img.shields.io/npm/dm/@zag-js/core?label=%40zag-js%2Fcore%20downloads&style=flat" />
+  </a>
+  <a href="https://github.com/chakra-ui/zag/stargazers">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/chakra-ui/zag?style=flat" />
+  </a>
   <a href="https://zagjs.com/discord">
-    <img alt="Discord" src="https://img.shields.io/discord/660863154703695893.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" />
+    <img alt="Join the Zag Discord community" src="https://img.shields.io/badge/Discord-Join%20community-5865F2?logo=discord&logoColor=white&style=flat" />
   </a>
 </p>
 
-Finite state machines for accessible JavaScript components
+[Documentation](https://zagjs.com/) · [Getting started](https://zagjs.com/overview/installation) ·
+[Changelog](./CHANGELOG.md) · [Discord](https://zagjs.com/discord)
 
-- **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
-  adapters for JS frameworks like React, Solid, Svelte, or Vue.
-- **Focus on accessibility ♿️**: Zag is built with accessibility in mind. We handle many details related to keyboard
-  interactions, focus management, aria roles and attributes.
-- **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
-  prefer.
-- **Powered by state machines 🌳**: Zag is built on top of the latest ideas in Statecharts. We don't follow the SCXML
-  specifications, but we've created an API that we think will help us build more complex components fast.
+## Why Zag?
 
----
+- **Bring your own design.** Headless APIs give you control over the rendered elements and any styling solution.
+- **Reuse behavior across frameworks.** The same component machines power React, Vue, Solid, and Svelte, with adapters
+  for Preact and vanilla JavaScript too.
+- **Build on accessible interactions.** Keyboard navigation, focus management, and ARIA behavior follow the
+  [WAI-ARIA authoring practices](https://www.w3.org/WAI/ARIA/apg/).
+- **Make complex behavior predictable.** State machines describe how components respond to interactions, with Playwright
+  tests checking behavior across frameworks.
 
-## Documentation
+## Quick start
 
-To see the documentation, visit [zagjs.com/](https://zagjs.com/)
-
-## Releases
-
-For changelog, Check [CHANGELOG.md](./CHANGELOG.md)
-
----
-
-## Problem
-
-With the rise of design systems and component-driven development, there's an endless re-implementation of common
-component patterns (Tabs, Menu, Modal, etc.) in multiple frameworks.
-
-Most of these implementations seem to be fairly similar in spirit, the differences being around the reactivity and
-effects systems for the framework (e.g. `useState`, `useEffect` in React.js). Framework specific solutions tend to grow
-in complexity over time and often become hard to understand, debug, improve or test.
-
-## Solution
-
-**Zag** is a JavaScript API that implements common component patterns using the state machine methodology.
-
-### Installation
+Install a component machine and the adapter for your framework. For a React toggle group:
 
 ```sh
-npm i --save @zag-js/{component}
-
-# or
-
-yarn add @zag-js/{component}
+npm install @zag-js/toggle-group @zag-js/react
 ```
 
-> `{component}` represents any component machine like dialog (`@zag-js/dialog`), tooltip (`@zag-js/tooltip`) , etc.
+Connect the machine to your markup:
 
-For framework specific solutions, we provide simple wrappers to help you consume the component state machines.
-
-- ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
-- 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
-- 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
-- 🎷 `@zag-js/svelte` - Svelte utilities for consuming machines in Svelte applications
-
-## Usage
-
-```jsx
+```tsx
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as toggle from "@zag-js/toggle-group"
 import { useId } from "react"
 
 export function ToggleGroup() {
-  const service = useMachine(toggle.machine({ id: useId() }))
+  const service = useMachine(toggle.machine, { id: useId() })
   const api = toggle.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>
-      <button {...api.getItemProps({ value: "bold" })}>B</button>
-      <button {...api.getItemProps({ value: "italic" })}>I</button>
-      <button {...api.getItemProps({ value: "underline" })}>U</button>
+      <button {...api.getItemProps({ value: "bold" })} aria-label="Bold">
+        B
+      </button>
+      <button {...api.getItemProps({ value: "italic" })} aria-label="Italic">
+        I
+      </button>
+      <button {...api.getItemProps({ value: "underline" })} aria-label="Underline">
+        U
+      </button>
     </div>
   )
 }
 ```
 
----
+Add your styles, then explore the [toggle group docs](https://zagjs.com/components/toggle-group) for the full API and
+examples in other frameworks.
 
-## Guiding Principles
+| Framework          | Adapter           |
+| ------------------ | ----------------- |
+| React              | `@zag-js/react`   |
+| Vue                | `@zag-js/vue`     |
+| Solid              | `@zag-js/solid`   |
+| Svelte             | `@zag-js/svelte`  |
+| Preact             | `@zag-js/preact`  |
+| Vanilla JavaScript | `@zag-js/vanilla` |
 
-- All component machines and tests are modelled according to the
-  [WAI-ARIA authoring practices](https://www.w3.org/TR/wai-aria-practices/)
-- Write end-to-end tests for every component based on the WAI-ARIA spec. **Regardless of the framework, users expect
-  component patterns to work the same way!**
-- All machines should be light-weight, simple, and easy to understand. Avoid using complex machine concepts like spawn,
-  nested states, etc.
+## Contributing
 
----
+Bug reports, documentation improvements, and new component ideas are welcome. Read the
+[contributing guide](./CONTRIBUTING.md) for local setup, development commands, and how to submit changes.
 
-## Fun Facts
+## Acknowledgments
 
-**Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
-power the logic behind UI components.
-
-### Teasers
-
-- When you see someone using classic react, vue, solid or svelte to build an interactive UI component that exists in
-  Zag, tell them to **"zag it!"** ⚡️
-
-- Anyone using Zag will be called a **"zagger"** 💥
-
-- The feeling you get when you use Zag will be called **"zagadat!"** 🚀
-
-- The Zag community will be called **"zag nation"** 🔥
-
----
-
-## Commands
-
-### Build commands
-
-Our build is managed with esbuild and turborepo to provide fast, concurrent builds across the packages.
-
-- `build` : Build the CJS, ESM and DTS files. This is the actual production build that we run in the CI.
-
-### Examples
-
-Since zag is framework agnostic, we need a way to test it within a framework. The `examples/` directory includes starter
-projects for the frameworks we support.
-
-- `start-react` : Starts the Next.js TypeScript project
-- `start-vue` : Starts the Vue 3 TypeScript project
-- `start-solid` : Starts the Solid TypeScript project
-- `start-svelte` : Starts the Svelte TypeScript project
-
-### E2E Tests
-
-We've setup end-to-end tests for every machine we built. We use [Playwright](https://playwright.dev/) for testing and we
-ensure that the component works the same way regardless of the framework.
-
-- `e2e-react` : Starts the E2E tests for the React project
-- `e2e-vue` : Starts the E2E tests for the Vue project
-- `e2e-solid` : Starts the E2E tests for the Solid project
-
-### Contributing new machines/features
-
-- `generate-machine` : Generates a new machine package in the `packages/` directory. It sets up the required files and
-  structure for new machine.
-- `generate-util` : Generates a new utility package in the `packages/utilities` directory.
-
-### Other commands
-
-- `test` : Run the tests for all packages
-- `lint` : Lint all packages
-
-### Website
-
-- `start-website`: Starts the website
-
----
-
-## Inspirations
-
-- Duplicate code in Chakra UI [React](https://chakra-ui.com/) and [Vue](https://vue.chakra-ui.com/) 😅
-- [Thoughts on Pure UI](https://rauchg.com/2015/pure-ui) - Guillermo Rauch
-- [Pure UI Control](https://asolove.medium.com/pure-ui-control-ac8d1be97a8d) - Adam Solve
-- [Material Components Web](https://github.com/material-components/material-components-web) for inspiring my first
-  prototype
-- [Radix UI](https://radix-ui.com/) for inspiring the dimissable and presence pattern
-- [XState](https://xstate.js.org/) for inspiring the base implementation of the state machine
-- [Vue.js](https://vuejs.org/) and [Lit](https://lit-element.polymer-project.org/) for inspiring new patterns in the
-  machine (`computed` and `watch`)
-- [Sonner](https://sonner.emilkowal.ski/toaster) for inspiring the toast machine
-
----
-
-## Contributions
-
-Looking to contribute? Look for the **Good First Issue** label.
-
-### 🐛 Bugs
-
-Please file an issue for bugs, missing documentation, or unexpected behavior.
-
-### 💡 Feature Requests
-
-Please file an issue to suggest new features. Vote on feature requests by adding a 👍. This helps maintainers prioritize
-what to work on.
-
----
+Zag grew out of building [Chakra UI](https://chakra-ui.com/) and draws inspiration from
+[Pure UI](https://rauchg.com/2015/pure-ui), [Pure UI Control](https://asolove.medium.com/pure-ui-control-ac8d1be97a8d),
+[Material Components Web](https://github.com/material-components/material-components-web),
+[Radix UI](https://radix-ui.com/), [XState](https://xstate.js.org/), [Vue](https://vuejs.org/), [Lit](https://lit.dev/),
+and [Sonner](https://sonner.emilkowal.ski/).
 
 ## License
 

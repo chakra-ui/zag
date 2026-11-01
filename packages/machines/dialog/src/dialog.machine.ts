@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { getInitialFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -51,6 +51,12 @@ export const machine = createMachine<DialogSchema>({
     }
   },
 
+  refs() {
+    return {
+      returnFocusEl: null,
+    }
+  },
+
   watch({ track, action, prop }) {
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
@@ -59,11 +65,12 @@ export const machine = createMachine<DialogSchema>({
 
   states: {
     open: {
-      entry: ["checkRenderedElements", "setInitialFocus"],
+      entry: ["checkRenderedElements", "setReturnFocusEl", "setInitialFocus"],
       effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
+          actions: ["setFinalFocus"],
         },
         CLOSE: [
           {
@@ -72,7 +79,7 @@ export const machine = createMachine<DialogSchema>({
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "setFinalFocus"],
           },
         ],
         TOGGLE: [
@@ -82,7 +89,7 @@ export const machine = createMachine<DialogSchema>({
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "setFinalFocus"],
           },
         ],
         "TRIGGER_VALUE.SET": {
@@ -133,9 +140,11 @@ export const machine = createMachine<DialogSchema>({
         // pointerBlocking is read at setup, so `modal` has to re-run this
         return watchEffect([() => prop("modal")], () => {
           const getContentEl = () => dom.getContentEl(scope)
+          let restoreFocus = true
           return trackDismissableElement(getContentEl, {
             type: "dialog",
             defer: true,
+            getRootNode: scope.getRootNode,
             pointerBlocking: prop("modal"),
             onLayerChange(layer) {
               context.set("layer", layer)
@@ -146,6 +155,8 @@ export const machine = createMachine<DialogSchema>({
               if (!prop("closeOnInteractOutside")) {
                 event.preventDefault()
               }
+              // Keep focus on what the user pressed outside
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
             },
             persistentElements: prop("persistentElements"),
             onFocusOutside: prop("onFocusOutside"),
@@ -158,7 +169,7 @@ export const machine = createMachine<DialogSchema>({
               }
             },
             onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         })
@@ -184,25 +195,11 @@ export const machine = createMachine<DialogSchema>({
                 root: dom.getContentEl(scope),
                 getInitialEl: prop("initialFocusEl"),
               }),
-            setReturnFocus: (el) => {
-              // If finalFocusEl is provided, use it
-              const finalFocusEl = prop("finalFocusEl")?.()
-              if (finalFocusEl) return finalFocusEl
-
-              // If there's an active trigger, focus it
-              const triggerValue = context.get("triggerValue")
-              if (triggerValue) {
-                const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
-                if (activeTriggerEl) return activeTriggerEl
-              }
-
-              // Fallback: try first available trigger
-              const fallbackTrigger = dom.getTriggerEls(scope)[0]
-              if (fallbackTrigger) return fallbackTrigger
-
-              // Otherwise, use default behavior
-              return el
-            },
+            setReturnFocus: (el) =>
+              dom.getReturnFocusEl(scope, {
+                finalFocusEl: prop("finalFocusEl"),
+                triggerValue: context.get("triggerValue"),
+              }) ?? el,
             getShadowRoot: true,
           })
 
@@ -220,6 +217,31 @@ export const machine = createMachine<DialogSchema>({
     },
 
     actions: {
+      setReturnFocusEl({ refs, scope }) {
+        // Read on the next frame, like a focus trap, so an opener that closes (e.g. a menu) has restored focus first
+        raf(() => refs.set("returnFocusEl", scope.getActiveElement()))
+      },
+
+      setFinalFocus({ event, prop, refs, scope, context }) {
+        // A focus trap returns focus on its own
+        if (prop("trapFocus") || !prop("restoreFocus")) return
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        if (restoreFocus === false) return
+
+        const contentEl = dom.getContentEl(scope)
+        const returnFocusEl =
+          dom.getReturnFocusEl(scope, {
+            finalFocusEl: prop("finalFocusEl"),
+            triggerValue: context.get("triggerValue"),
+          }) ?? refs.get("returnFocusEl")
+
+        raf(() => {
+          // Don't take focus back from an element the user moved to
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
+          returnFocusEl?.focus({ preventScroll: true })
+        })
+      },
+
       setInitialFocus({ prop, scope }) {
         if (prop("trapFocus")) return
         raf(() => {

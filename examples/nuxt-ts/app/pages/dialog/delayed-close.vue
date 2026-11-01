@@ -1,6 +1,8 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/dialog.css"
 
 const open = ref(false)
 
@@ -14,7 +16,6 @@ const service = useMachine(
     },
   })),
 )
-
 const api = computed(() => dialog.connect(service, normalizeProps))
 
 function delayedClose() {
@@ -36,7 +37,9 @@ function delayedClose() {
           <h2 v-bind="api.getTitleProps()">Edit profile</h2>
           <p v-bind="api.getDescriptionProps()">Make changes to your profile here. Click save when you are done.</p>
           <button @click="delayedClose">Delayed close</button>
-          <button v-bind="api.getCloseTriggerProps()">Close</button>
+          <button v-bind="api.getCloseTriggerProps()">
+            <XIcon />
+          </button>
         </Presence>
       </div>
     </Teleport>

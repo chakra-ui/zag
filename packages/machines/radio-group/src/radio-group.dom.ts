@@ -25,7 +25,7 @@ export const getFirstEnabledAndCheckedInputEl = (ctx: Scope) =>
   getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled):checked")
 
 export const getInputEls = (ctx: Scope) => {
-  return ctx.queryAll<HTMLInputElement>(`${ctx.selector(parts.item)} input[type=radio]:not([disabled])`)
+  return ctx.queryAll<HTMLInputElement>(`${ctx.selector(parts.item)} input[type=radio]`)
 }
 
 export const getRadioEl = (ctx: Scope, value: string | null) => {

@@ -3,6 +3,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/select.css"
 
@@ -38,7 +39,9 @@ export default function Page() {
           <label {...api.getLabelProps()}>Countries</label>
           <button {...api.getTriggerProps()}>
             <span>{api.hasSelectedItems ? `${api.value.length} selected` : "Select countries"}</span>
-            <span {...api.getIndicatorProps()}>▼</span>
+            <span {...api.getIndicatorProps()}>
+              <ChevronsUpDownIcon />
+            </span>
           </button>
         </div>
 

@@ -25,15 +25,15 @@ export default function Page() {
       <main className="tabs">
         <div {...api.getRootProps()}>
           <div {...api.getIndicatorProps()} />
-          <div {...api.getListProps()}>
+          <div data-stretch="" {...api.getListProps()}>
             {tabsData.map((data) => (
-              <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+              <button key={data.id} {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
                 {data.label}
               </button>
             ))}
           </div>
           {tabsData.map((data) => (
-            <div {...api.getContentProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab-panel`}>
+            <div key={data.id} {...api.getContentProps({ value: data.id })} data-testid={`${data.id}-tab-panel`}>
               <p>{data.content}</p>
               {data.id === "agnes" ? <input placeholder="Agnes" /> : null}
             </div>

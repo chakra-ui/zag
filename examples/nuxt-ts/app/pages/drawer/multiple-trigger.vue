@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import styles from "@styles/drawer.module.css"
 
 interface User {
@@ -22,6 +23,7 @@ const activeUser = ref<User | null>(null)
 
 const service = useMachine(drawer.machine, {
   id: useId(),
+  swipeDirection: "end",
   onTriggerValueChange({ value }) {
     activeUser.value = users.find((u) => `${u.id}` === value) ?? null
   },
@@ -78,7 +80,17 @@ const api = computed(() => drawer.connect(service, normalizeProps))
               <label>Email</label>
               <input type="email" :value="activeUser.email" style="display: block; width: 100%" />
             </div>
-            <button v-bind="api.getCloseTriggerProps()">Close</button>
+            <div style="margin-bottom: 12px">
+              <label>Role</label>
+              <select :value="activeUser.role" style="display: block; width: 100%">
+                <option value="Admin">Admin</option>
+                <option value="Editor">Editor</option>
+                <option value="Viewer">Viewer</option>
+              </select>
+            </div>
+            <button v-bind="api.getCloseTriggerProps()">
+              <XIcon />
+            </button>
           </div>
         </template>
         <div v-else style="padding: 16px">No user selected</div>
@@ -86,7 +98,7 @@ const api = computed(() => drawer.connect(service, normalizeProps))
     </div>
   </main>
 
-  <Toolbar>
-    <StateVisualizer :state="service" />
+  <Toolbar viz>
+    <StateVisualizer :state="service" :context="['triggerValue', 'snapPoint']" />
   </Toolbar>
 </template>

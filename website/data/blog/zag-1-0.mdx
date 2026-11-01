@@ -1,0 +1,117 @@
+---
+title: Zag 1.0
+description:
+  A rewritten runtime that mounts up to 82% faster, a core that's 98% smaller,
+  and an API built on each framework's own reactivity.
+type: release
+date: 2025-02-22
+authors:
+  - name: Segun Adebayo
+    github: segunadebayo
+---
+
+Today we're releasing Zag 1.0.
+
+Since our first release, Zag has grown from 17 machines to 41, picked up Svelte
+and Preact adapters, and become the foundation for [Ark UI](https://ark-ui.com)
+and [Chakra UI](https://chakra-ui.com) v3. Running it in that many places taught
+us where the runtime was slow and where the API got in the way. 1.0 fixes both.
+
+The short version:
+
+- **A rewritten machine runtime**, roughly 1.5× to 4× faster across components.
+- **A 98% smaller core**: 13.78 KB down to 1.52 KB minified.
+- **Native reactivity.** Machines use each framework's own reactive primitives
+  instead of an external store.
+- **A simpler API.** `useMachine` returns a service, and controlled props look
+  like every other component library's: `value` and `defaultValue`, `open` and
+  `defaultOpen`.
+
+## Faster, smaller
+
+In 0.x, every machine ran on its own store, and every framework subscribed to
+that store. That worked, but it meant two layers of reactivity for every
+component, and a lot of work at mount time.
+
+In 1.0, the machine work moves into each framework's `useMachine`. React uses
+React state, Vue uses refs, Solid uses signals, Svelte uses runes. The core
+package shrinks to a set of types and helpers, and `createMachine` is now just
+an identity function that gives you type checking.
+
+We measured mounting 10,000 instances of each component:
+
+| Component   | Faster mount |
+| ----------- | ------------ |
+| Tooltip     | ~82%         |
+| Dialog      | ~80%         |
+| Collapsible | ~65%         |
+| Presence    | ~64%         |
+| Accordion   | ~61%         |
+| Editable    | ~56%         |
+| Avatar      | ~27%         |
+| Tabs        | ~6%          |
+
+Avatar updates are ~99% faster too.
+
+## A simpler API
+
+`useMachine` now returns a service object instead of a `[state, send]` tuple,
+and the machine is passed as an object with its props next to it:
+
+```tsx
+// Before
+const [state, send] = useMachine(avatar.machine({ id: useId() }))
+
+// After
+const service = useMachine(avatar.machine, { id: useId() })
+```
+
+`connect` takes the service:
+
+```tsx
+const api = avatar.connect(service, normalizeProps)
+```
+
+Controlled and uncontrolled state follow the convention you already know.
+Instead of passing `context: { value }` or `"open.controlled": true`, use
+`value` and `defaultValue`, or `open` and `defaultOpen`.
+
+Types follow the same idea. `<component>.Context` is now `<component>.Props`,
+and a new `<component>.Machine` type helps with generic components:
+
+```tsx
+const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+  id: useId(),
+  collection,
+})
+```
+
+## For machine authors
+
+If you write your own machines, the machine definition changes too:
+
+- Props, context and refs are separate. Everything used to live in `context`,
+  which made every read expensive.
+- `activities` are now `effects`.
+- `watch` works like React's `useEffect`: you track the values you depend on and
+  run actions when they change.
+
+## Breaking changes
+
+- `useMachine` returns a service, and `machine` is no longer a function.
+- `open.controlled` is removed in favor of `open` and `defaultOpen`.
+- `Context` types are renamed to `Props`.
+- `useActor` is removed. Use `useMachine` everywhere.
+- Pagination's `api.setCount` is removed. Set the `count` prop.
+- Select and Combobox's `api.setCollection` is removed. Set the `collection`
+  prop.
+- Toast needs a store from `toast.createStore()`, passed as `store`.
+
+The [v0 to v1 migration guide](https://zagjs.com/guides/migration) covers each
+one with before and after code.
+
+## Thanks
+
+Thanks to everyone who tried the 1.0 pre-releases and reported what broke, and
+to [Christian Schroeter](https://github.com/cschroeter) for the feedback that
+shaped the new API.

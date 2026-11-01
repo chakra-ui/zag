@@ -33,7 +33,7 @@ and Preact.
 
 ### Package Manager
 
-- **pnpm** is the required package manager (version 10.15.0+)
+- **pnpm** is the required package manager (version 12+)
 - Use `pnpm` for all dependency management
 - Avoid npm/yarn commands
 

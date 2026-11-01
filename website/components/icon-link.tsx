@@ -22,12 +22,12 @@ const StyledLink = styled("a", {
   variants: {
     variant: {
       plain: {
-        color: "gray.500",
+        color: "text.muted",
         _hover: { color: "gray.600" },
       },
       solid: {
         bg: "bg.primary.subtle",
-        color: "white",
+        color: "text.inverse",
         _hover: {
           filter: "brightness(0.9)",
         },

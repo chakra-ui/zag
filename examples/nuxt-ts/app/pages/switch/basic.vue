@@ -19,8 +19,9 @@ const api = computed(() => zagSwitch.connect(service, normalizeProps))
 
 <template>
   <main class="switch">
+    <button @click="api.toggleChecked()">Toggle</button>
     <label v-bind="api.getRootProps()">
-      <input v-bind="api.getHiddenInputProps()" />
+      <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
       <span v-bind="api.getControlProps()">
         <span v-bind="api.getThumbProps()" />
       </span>

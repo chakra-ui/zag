@@ -6,6 +6,7 @@ import { parts } from "./select.anatomy"
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
 export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `${ctx.id}:trigger`
 export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `${ctx.id}:clear-trigger`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`

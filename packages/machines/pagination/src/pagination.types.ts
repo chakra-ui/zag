@@ -31,7 +31,7 @@ export interface PageUrlDetails {
 export interface IntlTranslations {
   rootLabel?: string | undefined
   firstTriggerLabel?: string | undefined
-  prevTriggerLabel?: string | undefined
+  previousTriggerLabel?: string | undefined
   nextTriggerLabel?: string | undefined
   lastTriggerLabel?: string | undefined
   itemLabel?: ((details: ItemLabelDetails) => string) | undefined
@@ -41,7 +41,7 @@ export interface ElementIds {
   root?: string | undefined
   ellipsis?: ((index: number) => string) | undefined
   firstTrigger?: string | undefined
-  prevTrigger?: string | undefined
+  previousTrigger?: string | undefined
   nextTrigger?: string | undefined
   lastTrigger?: string | undefined
   item?: ((page: number) => string) | undefined
@@ -247,7 +247,7 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
   /**
    * Function to go to the previous page.
    */
-  goToPrevPage: VoidFunction
+  goToPreviousPage: VoidFunction
   /**
    * Function to go to the first page.
    */
@@ -265,7 +265,7 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
   getItemState: (props: ItemProps) => ItemState
   getItemProps: (props: ItemProps) => T["element"]
   getFirstTriggerProps: () => T["element"]
-  getPrevTriggerProps: () => T["element"]
+  getPreviousTriggerProps: () => T["element"]
   getNextTriggerProps: () => T["element"]
   getLastTriggerProps: () => T["element"]
 }

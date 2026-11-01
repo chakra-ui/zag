@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { TreeViewModel } from "./models/tree-view.model"
 
 let I: TreeViewModel
@@ -116,6 +116,21 @@ test.describe("tree view / keyboard", () => {
 
     await I.seeItemIsFocused("zag-js")
   })
+
+  test("typeahead: lowercase a should move focus to matching item", async () => {
+    await I.clickBranch("src")
+    await I.focusItem("index.ts")
+
+    await I.type("a")
+    await I.seeItemIsFocused("app.tsx")
+  })
+
+  test("typeahead: should match a prefix containing lowercase a", async () => {
+    await I.focusFirstNode()
+
+    await I.type("pac")
+    await I.seeItemIsFocused("package.json")
+  })
 })
 
 test.describe("tree view / multiple selection", () => {
@@ -207,5 +222,40 @@ test.describe("tree view / expand all + collapse all", () => {
 
     await I.clickButton("Collapse all")
     await I.seeAllBranchesAreCollapsed()
+  })
+})
+
+test.describe("tree view / rename", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/rename")
+  })
+
+  test("F2 focuses the rename input with the node label", async () => {
+    await I.clickItem("README.md")
+    await I.pressKey("F2")
+    await I.seeRenameInputIsFocused("README.md")
+  })
+
+  test("typing a new name and pressing Enter renames the node", async ({ page }) => {
+    await I.clickItem("README.md")
+    await I.pressKey("F2")
+    await I.seeRenameInputIsFocused("README.md")
+    await page.keyboard.type("CHANGELOG.md")
+    await I.pressKey("Enter")
+    await I.seeItem("CHANGELOG.md")
+  })
+})
+
+test.describe("tree view / actions", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/actions")
+  })
+
+  test("clicking a nested button should not toggle the branch", async () => {
+    await I.clickNodeMenuTrigger("node_modules")
+    await I.seeMenuIsOpen()
+    await I.seeBranchIsCollapsed("node_modules")
   })
 })

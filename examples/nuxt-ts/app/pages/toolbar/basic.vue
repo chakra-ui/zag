@@ -43,7 +43,7 @@ const alignmentApi = computed(() => toggleGroup.connect(alignmentService, normal
 
 const fontId = useId()
 const fontService = useMachine(
-  select.machine,
+  select.machine as select.Machine<Font>,
   computed(() => ({
     id: fontId,
     ids: { trigger: api.value.getItemId("font") },
@@ -73,17 +73,21 @@ const fontApi = computed(() => select.connect(fontService, normalizeProps))
 
       <div v-bind="api.getSeparatorProps()" />
 
+      <!-- the trigger points aria-labelledby at this, so it has to be rendered even though the toolbar shows no label -->
+      <label v-bind="fontApi.getLabelProps()" class="sr-only">Font</label>
       <button v-bind="mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: 'font' }))">
         <span>{{ fontApi.valueAsString || "Font" }}</span>
         <span aria-hidden>▾</span>
       </button>
       <Teleport to="#teleports">
         <div v-bind="fontApi.getPositionerProps()">
-          <ul v-bind="fontApi.getContentProps()">
-            <li v-for="item in fonts" :key="item.value" v-bind="fontApi.getItemProps({ item })">
-              <span v-bind="fontApi.getItemTextProps({ item })">{{ item.label }}</span>
-            </li>
-          </ul>
+          <div v-bind="fontApi.getContentProps()">
+            <ul v-bind="fontApi.getListProps()">
+              <li v-for="item in fonts" :key="item.value" v-bind="fontApi.getItemProps({ item })">
+                <span v-bind="fontApi.getItemTextProps({ item })">{{ item.label }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
@@ -96,7 +100,7 @@ const fontApi = computed(() => select.connect(fontService, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" :context="['focusedValue']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

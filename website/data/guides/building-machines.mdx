@@ -210,6 +210,57 @@ The `bindable` pattern automatically:
 - Handles change notifications with equality checks
 - Provides a consistent API across all frameworks
 
+### Composing Bindables
+
+A bindable is a plain object, so you can wrap it to add behavior. Helpers
+receive the `bindable` function from `context` and return a new bindable.
+
+This one resets the value to its initial value after a delay:
+
+```tsx
+import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
+
+function withAutoreset<T>(
+  bindable: BindableFn,
+  props: () => BindableParams<T> & { resetAfter: number },
+): Bindable<T> {
+  const value = bindable(props)
+  // Non-reactive storage for the timer
+  const timer = bindable.ref<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  // Clear the pending timer when the machine stops
+  bindable.cleanup(() => clearTimeout(timer.get()))
+
+  return {
+    ...value,
+    set(valueOrFn) {
+      value.set(valueOrFn)
+      clearTimeout(timer.get())
+      timer.set(
+        setTimeout(() => value.set(value.initial as T), props().resetAfter),
+      )
+    },
+  }
+}
+```
+
+Use it like any other bindable:
+
+```tsx
+context({ bindable }) {
+  return {
+    status: withAutoreset<string>(bindable, () => ({
+      defaultValue: "idle",
+      resetAfter: 2000,
+    })),
+  }
+}
+```
+
+`context.set("status", "copied")` now returns to `"idle"` after two seconds.
+
 ## Watch
 
 The `watch` function allows you to reactively respond to changes in props or

@@ -1,8 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
   import * as menu from "@zag-js/menu"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/menu.css"
 
   const id = $props.id()
@@ -10,23 +8,17 @@
   const api = $derived(menu.connect(service, normalizeProps))
 </script>
 
-<main>
-  <div>
-    <p>Use a screen reader to navigate to the menu.</p>
-    <button {...api.getTriggerProps()}>
-      Actions <span {...api.getIndicatorProps()}>▾</span>
-    </button>
-    <div use:portal {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>
-        <a {...api.getItemProps({ value: "edit" })} href="https://google.com"> Google </a>
-        <a {...api.getItemProps({ value: "duplicate" })} href="https://bing.com"> Bing </a>
-        <a {...api.getItemProps({ value: "delete" })} href="https://github.com" target="_blank"> GitHub </a>
-        <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank"> YouTube </a>
-      </div>
+<div style="padding: 20px">
+  <p>Use a screen reader to navigate to the menu.</p>
+  <button {...api.getTriggerProps()}>
+    Actions <span {...api.getIndicatorProps()}>▾</span>
+  </button>
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <a {...api.getItemProps({ value: "edit" })} href="https://google.com">Google</a>
+      <a {...api.getItemProps({ value: "duplicate" })} href="https://bing.com">Bing</a>
+      <a {...api.getItemProps({ value: "delete" })} href="https://github.com" target="_blank">GitHub</a>
+      <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">YouTube</a>
     </div>
   </div>
-</main>
-
-<Toolbar controls={null}>
-  <StateVisualizer state={service} />
-</Toolbar>
+</div>

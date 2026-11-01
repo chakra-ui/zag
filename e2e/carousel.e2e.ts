@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { CarouselModel } from "./models/carousel.model"
 
 let I: CarouselModel
@@ -22,10 +22,10 @@ test.describe("carousel", () => {
   })
 
   test("next/prev buttons navigate carousel", async () => {
-    await I.seePrevTriggerIsDisabled()
+    await I.seePreviousTriggerIsDisabled()
     await I.clickNextTrigger()
     await I.seeIndicatorIsActive(1)
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
   })
 
   test.skip("[loop=true] autoplay start/stop", async ({ page }) => {
@@ -81,6 +81,21 @@ test.describe("carousel", () => {
     await I.seeIndicatorIsActive(0)
     await I.seeItemInView(0)
     await I.seeItemInView(1)
+  })
+
+  test("slide content and size changes do not interrupt an active drag", async ({ page }) => {
+    await I.swipeCarousel("left", 200, 300, false)
+    const position = await I.carousel.evaluate((el) => el.scrollLeft)
+    expect(position).toBeGreaterThan(100)
+
+    await I.getItem(0).evaluate((el) => {
+      el.appendChild(document.createElement("span"))
+      el.style.height = `${el.offsetHeight + 20}px`
+    })
+    await page.waitForTimeout(100)
+
+    await expect.poll(() => I.carousel.evaluate((el) => el.scrollLeft)).toBeCloseTo(position, 0)
+    await I.releaseDrag()
   })
 
   test("drag interruption and immediate restart resolves to final drag target", async () => {
@@ -172,13 +187,13 @@ test.describe("carousel", () => {
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(2)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.seeIndicatorIsActive(1)
   })
 
   test("loop=false boundary stress keeps page clamped at first and last pages", async () => {
     await I.controls.bool("loop", false)
-    await I.seePrevTriggerIsDisabled()
+    await I.seePreviousTriggerIsDisabled()
     await I.seeIndicatorIsActive(0)
 
     await I.swipeCarousel("right", 420, 450, false)
@@ -218,7 +233,7 @@ test.describe("carousel", () => {
     await I.seeIndicatorIsActive(2)
     await I.seeNextTriggerIsDisabled()
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.seeIndicatorIsActive(1)
 
     await I.controls.select("orientation", "horizontal")
@@ -266,7 +281,7 @@ test.describe("carousel", () => {
     await I.controls.num("slidesPerPage", "1")
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(1)
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
     await I.seeNextTriggerIsEnabled()
 
     await I.clickNextTrigger()
@@ -351,7 +366,7 @@ test.describe("carousel", () => {
     await I.seeItemInView(2)
     await I.seeItemInView(3)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(0)
 
@@ -369,7 +384,7 @@ test.describe("carousel", () => {
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(0)
 
-    await I.clickPrevTrigger()
+    await I.clickPreviousTrigger()
     await I.waitForScrollSettle()
     await I.seeIndicatorIsActive(2)
     await I.seeItemInView(4)
@@ -437,7 +452,7 @@ test.describe("carousel", () => {
 
   test("[loop=true] should loop slides", async () => {
     await I.controls.bool("loop")
-    await I.seePrevTriggerIsEnabled()
+    await I.seePreviousTriggerIsEnabled()
 
     await I.clickNextTrigger()
     await I.clickNextTrigger()

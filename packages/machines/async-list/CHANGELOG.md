@@ -2,6 +2,16 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -146,6 +156,9 @@
   ```ts
   async load({ items, cursor, signal }) { ... }
   ```
+
+  - @zag-js/core@1.46.0
+  - @zag-js/utils@1.46.0
 
 ## 1.45.0
 

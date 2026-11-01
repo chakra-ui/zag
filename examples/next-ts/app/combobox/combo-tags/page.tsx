@@ -27,7 +27,7 @@ export default function Page() {
    * -----------------------------------------------------------------------------*/
 
   const [options, setOptions] = useState(comboboxData)
-  const [value, setValue] = useState([])
+  const [value, setValue] = useState<string[]>([])
 
   const collection = combobox.collection({
     items: options,

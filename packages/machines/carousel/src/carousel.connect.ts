@@ -3,6 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/t
 import { clampValue, mergeWithDefault, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
+import { getSlidesPerMove, isSnapTarget } from "./carousel.utils"
 import type {
   CarouselApi,
   CarouselService,
@@ -15,7 +16,7 @@ import type {
 
 const defaultTranslations: Required<IntlTranslations> = {
   nextTrigger: "Next slide",
-  prevTrigger: "Previous slide",
+  previousTrigger: "Previous slide",
   indicator: (index) => `Go to slide ${index + 1}`,
   item: (index, count) => `${index + 1} of ${count}`,
   autoplayStart: "Start slide rotation",
@@ -31,7 +32,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const isSettling = state.matches("settling")
 
   const canScrollNext = computed("canScrollNext")
-  const canScrollPrev = computed("canScrollPrev")
+  const canScrollPrevious = computed("canScrollPrevious")
   const horizontal = computed("isHorizontal")
   const autoSize = prop("autoSize")
 
@@ -65,7 +66,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
     page: activePage,
     pageSnapPoints,
     canScrollNext,
-    canScrollPrev,
+    canScrollPrevious,
     getProgress() {
       return activePage / pageSnapPoints.length
     },
@@ -82,7 +83,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
     scrollNext(instant) {
       send({ type: "PAGE.NEXT", instant })
     },
-    scrollPrev(instant) {
+    scrollPrevious(instant) {
       send({ type: "PAGE.PREV", instant })
     },
     play() {
@@ -146,7 +147,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           const axis = prop("orientation") === "horizontal" ? "deltaX" : "deltaY"
 
           const isScrollingLeft = event[axis] < 0
-          if (isScrollingLeft && !computed("canScrollPrev")) return
+          if (isScrollingLeft && !computed("canScrollPrevious")) return
 
           const isScrollingRight = event[axis] > 0
           if (isScrollingRight && !computed("canScrollNext")) return
@@ -188,13 +189,9 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         style: {
           flex: "0 0 auto",
           [horizontal ? "maxWidth" : "maxHeight"]: "100%",
-          scrollSnapAlign: (() => {
-            const snapAlign = props.snapAlign ?? "start"
-            const slidesPerMove = prop("slidesPerMove")
-            const perMove = slidesPerMove === "auto" ? Math.floor(prop("slidesPerPage")) : slidesPerMove
-            const shouldSnap = (props.index + perMove) % perMove === 0
-            return shouldSnap ? snapAlign : undefined
-          })(),
+          scrollSnapAlign: isSnapTarget(props.index, getSlidesPerMove(prop("slidesPerMove"), prop("slidesPerPage")))
+            ? (props.snapAlign ?? "start")
+            : undefined,
         },
       })
     },
@@ -206,14 +203,14 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
       })
     },
 
-    getPrevTriggerProps() {
+    getPreviousTriggerProps() {
       return normalize.button({
-        ...parts.prevTrigger.attrs(scope.id),
-        id: dom.getPrevTriggerId(scope),
+        ...parts.previousTrigger.attrs(scope.id),
+        id: dom.getPreviousTriggerId(scope),
         type: "button",
-        disabled: !canScrollPrev,
+        disabled: !canScrollPrevious,
         dir: prop("dir"),
-        "aria-label": translations.prevTrigger,
+        "aria-label": translations.previousTrigger,
         "data-orientation": prop("orientation"),
         "aria-controls": dom.getItemGroupId(scope),
         onClick(event) {

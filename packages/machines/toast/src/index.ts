@@ -26,6 +26,7 @@ export type {
   RootState,
   Status,
   StatusChangeDetails,
+  SwipeDirection,
   Type,
   ToastHeight,
 } from "./toast.types"

@@ -70,10 +70,10 @@
 
   <button data-testid="outside">outside button</button>
 
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
     bind:this={gridEl}
     tabindex="0"
-    role="grid"
     data-testid="grid"
     style="border: 2px solid #999; border-radius: 0.5rem; padding: 1rem; margin: 1rem 0"
   >

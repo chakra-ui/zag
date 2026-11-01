@@ -6,7 +6,7 @@ export const anatomy = createAnatomy("carousel").parts(
   "item",
   "control",
   "nextTrigger",
-  "prevTrigger",
+  "previousTrigger",
   "indicatorGroup",
   "indicator",
   "autoplayTrigger",

@@ -36,12 +36,18 @@ const api = computed(() => collapsible.connect(service, normalizeProps))
         </p>
       </div>
     </div>
+
+    <div>
+      <div>Toggle Controls</div>
+      <button @click="api.setOpen(true)">Open</button>
+      <button @click="api.setOpen(false)">Close</button>
+    </div>
   </main>
 
-  <Toolbar>
-    <StateVisualizer :state="service" />
+  <Toolbar viz>
+    <StateVisualizer :state="service" :omit="['stylesRef']" />
     <template #controls>
-      <Controls :control="controls" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

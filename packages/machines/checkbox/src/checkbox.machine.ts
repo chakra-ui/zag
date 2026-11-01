@@ -36,6 +36,8 @@ export const machine = createMachine<CheckboxSchema>({
     }
   },
 
+  entry: ["syncInputElement"],
+
   watch({ track, context, prop, action }) {
     track([() => prop("disabled")], () => {
       action(["removeFocusIfNeeded"])

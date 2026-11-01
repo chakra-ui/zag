@@ -96,10 +96,11 @@ export function connect<T extends PropTypes>(
     },
 
     getHiddenInputProps() {
-      return normalize.element({
+      return normalize.input({
         type: "hidden",
         value,
         name: prop("name"),
+        disabled,
         id: dom.getHiddenInputId(scope),
         dir: prop("dir"),
       })

@@ -258,6 +258,7 @@ export interface DrawerSchema {
   refs: {
     swipeSession: DrawerSwipeSession
     snapBackFrame: AnimationFrame
+    returnFocusEl: HTMLElement | null
   }
   computed: {
     drawerId: string
@@ -424,6 +425,10 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
    * Whether the drawer is open.
    */
   open: boolean
+  /**
+   * Whether the drawer is modal.
+   */
+  modal: boolean
   /**
    * Whether the drawer is currently being dragged.
    */

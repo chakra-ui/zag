@@ -29,7 +29,7 @@ export default function Page() {
       <main className="scheduler">
         <div {...mergeProps(api.getRootProps(), { style: { maxWidth: 520 } })}>
           <div {...api.getHeaderProps()}>
-            <button {...api.getPrevTriggerProps()}>
+            <button {...api.getPreviousTriggerProps()}>
               <ChevronLeft />
             </button>
             <button {...api.getTodayTriggerProps()}>Today</button>

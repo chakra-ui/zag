@@ -126,6 +126,15 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
   return activeElement
 }
 
+/**
+ * Whether the active element is outside all `containers` (the document body doesn't count).
+ * Use it before restoring focus, so focus that app code or the user moved elsewhere is kept.
+ */
+export function isFocusOutside(activeEl: Element | null, containers: Target[]) {
+  if (!activeEl || activeEl === getDocument(activeEl).body) return false
+  return !containers.some((container) => contains(container, activeEl))
+}
+
 export function getParentNode(node: Node): Node {
   if (getNodeName(node) === "html") return node
   const result =

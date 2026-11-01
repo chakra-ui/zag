@@ -4,7 +4,7 @@ export const anatomy = createAnatomy("scheduler").parts(
   "root",
   "header",
   "headerTitle",
-  "prevTrigger",
+  "previousTrigger",
   "nextTrigger",
   "todayTrigger",
   "viewSelect",

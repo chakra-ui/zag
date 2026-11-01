@@ -78,10 +78,12 @@ function Toast(props: ToastProps) {
     <div className={styles.Root} {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
-      <div {...api.getTitleProps()}>
-        {api.type === "loading" && "<...>"}[{api.type}] {api.title}
+      <div {...api.getContentProps()}>
+        <div {...api.getTitleProps()}>
+          {api.type === "loading" && "<...>"}[{api.type}] {api.title}
+        </div>
+        <div {...api.getDescriptionProps()}>{api.description}</div>
       </div>
-      <div {...api.getDescriptionProps()}>{api.description}</div>
       <button className={styles.CloseTrigger} {...api.getCloseTriggerProps()}>
         <HiX />
       </button>

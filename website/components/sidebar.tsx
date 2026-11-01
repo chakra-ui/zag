@@ -1,56 +1,56 @@
 import { Link } from "components/ui/link"
-import { formatUrl } from "lib/pagination-utils"
+import { docHref, getActiveTab, isCurrentDoc } from "lib/pagination-utils"
 import { type LinkProps } from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
-import sidebar from "sidebar.config"
-import { HStack, Stack, styled } from "styled-system/jsx"
+import { tabs } from "sidebar.config"
+import { Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
-import { Icon } from "./ui/icon"
 
 interface DocLinkProps {
   href: LinkProps["href"]
+  current: boolean
+  scrollIntoView: boolean
   children: React.ReactNode
-}
-
-const sanitize = (href: string) =>
-  href.replace(/#.*/, "").split("/").filter(Boolean)
-
-function test(href: string, asPath: string) {
-  const a = sanitize(href)
-  const b = sanitize(asPath)
-
-  return a[a.length - 1] === b[b.length - 1]
 }
 
 const StyledLink = styled(Link, {
   base: {
-    display: "inline-block",
+    display: "block",
     paddingY: "1",
+    paddingStart: "4",
+    marginStart: "-1px",
+    borderStartWidth: "1px",
+    borderStartColor: "transparent",
     textStyle: "sm",
+    color: "text.muted",
     _hover: {
-      textDecoration: "underline",
-      textUnderlineOffset: "2px",
+      color: "text",
+      borderStartColor: "border.bold",
     },
     _currentPage: {
-      textDecoration: "underline",
-      textUnderlineOffset: "2px",
-      fontWeight: "bold",
+      color: "text.primary.bold",
+      fontWeight: "semibold",
+      borderStartColor: "green.500",
     },
   },
 })
 
 const DocLink = (props: DocLinkProps) => {
   const asPath = usePathname()
-  const { href, children } = props
-  const current = test(href.toString(), asPath)
+  const { href, current, scrollIntoView, children } = props
   const linkRef = useRef<HTMLAnchorElement>(null)
 
   useLayoutEffect(() => {
-    if (current && linkRef.current) {
-      linkRef.current.scrollIntoView({ block: "center" })
-    }
-  }, [current, asPath])
+    const link = linkRef.current
+    if (!scrollIntoView || !current || !link) return
+    // scroll only the sidebar column; scrollIntoView would also move the page
+    const container = link.closest<HTMLElement>("[data-sidebar-scroll]")
+    if (!container) return
+    const linkTop = link.getBoundingClientRect().top
+    const containerTop = container.getBoundingClientRect().top
+    container.scrollTop += linkTop - containerTop - container.clientHeight / 2
+  }, [scrollIntoView, current, asPath])
 
   return (
     <li>
@@ -65,84 +65,87 @@ const DocLink = (props: DocLinkProps) => {
   )
 }
 
-export function Sidebar() {
+/**
+ * Only the active tab's groups. The mobile menu passes `tabId` to show another
+ * tab, and keeps its own scroll so the tab switcher stays in view.
+ */
+export function Sidebar(props: { tabId?: string }) {
   const { framework } = useFramework()
+  const pathname = usePathname()
+  const tab =
+    tabs.find((tab) => tab.id === props.tabId) ?? getActiveTab(pathname)
 
   return (
-    <nav aria-label="Sidebar Navigation">
-      <Stack as="ul" listStyleType="none" direction="column" gap="10">
-        {sidebar.docs.map((item) => {
-          if (item.type === "category") {
-            return (
-              <li className="sidebar__category" key={item.id}>
-                <HStack mb="3" color="green.500" gap="2">
-                  <Icon as={item.icon} />
-                  <styled.h5
-                    fontSize="xs"
-                    fontWeight="semibold"
-                    textTransform="uppercase"
-                  >
-                    {item.label}
-                  </styled.h5>
-                </HStack>
+    <nav aria-label={`${tab.label} navigation`}>
+      <Stack as="ul" listStyleType="none" direction="column" gap="8">
+        {tab.groups.map((group) => (
+          <li key={group.label}>
+            <styled.h5
+              mb="2"
+              fontSize="xs"
+              fontWeight="semibold"
+              textTransform="uppercase"
+              letterSpacing="wide"
+              color="text.subtle"
+            >
+              {group.label}
+            </styled.h5>
 
-                <Stack as="ul" listStyleType="none" gap="0">
-                  {item.items.map((subItem, index) => {
-                    const href = formatUrl(item.id, subItem.id, framework)
-                    if (subItem.type === "doc") {
-                      return (
-                        <DocLink
-                          key={subItem.id + index}
-                          href={subItem.href ?? href}
-                        >
-                          {subItem.label}{" "}
-                          {subItem.new && (
-                            <styled.span
-                              bg="purple.500"
-                              color="white"
-                              ms="2"
-                              px="1"
-                              py="0.5"
-                              rounded="sm"
-                              fontSize="xs"
-                              fontWeight="medium"
-                            >
-                              New
-                            </styled.span>
-                          )}
-                          {subItem.beta && (
-                            <styled.span
-                              bg="purple.50"
-                              borderWidth="1px"
-                              borderColor="purple.200"
-                              color="purple.500"
-                              ms="2"
-                              px="1"
-                              py="0.5"
-                              rounded="xs"
-                              fontSize="xs"
-                              fontWeight="medium"
-                              _dark={{
-                                bg: "purple.900/50",
-                                color: "purple.200",
-                                borderColor: "purple.800",
-                              }}
-                            >
-                              Beta
-                            </styled.span>
-                          )}
-                        </DocLink>
-                      )
-                    }
-                    return null
-                  })}
-                </Stack>
-              </li>
-            )
-          }
-
-          return null
-        })}
+            <Stack
+              as="ul"
+              listStyleType="none"
+              gap="0"
+              borderStartWidth="1px"
+              borderStartColor="border.subtle"
+            >
+              {group.items.map((item) => (
+                <DocLink
+                  key={`${item.section}/${item.id}`}
+                  href={docHref(item, framework)}
+                  current={isCurrentDoc(item, pathname)}
+                  scrollIntoView={!props.tabId}
+                >
+                  {item.label}
+                  {item.new && (
+                    <styled.span
+                      bg="purple.600"
+                      color="white"
+                      ms="2"
+                      px="1"
+                      py="0.5"
+                      rounded="sm"
+                      fontSize="xs"
+                      fontWeight="medium"
+                    >
+                      New
+                    </styled.span>
+                  )}
+                  {item.beta && (
+                    <styled.span
+                      bg="purple.50"
+                      borderWidth="1px"
+                      borderColor="purple.200"
+                      color="purple.600"
+                      ms="2"
+                      px="1"
+                      py="0.5"
+                      rounded="xs"
+                      fontSize="xs"
+                      fontWeight="medium"
+                      _dark={{
+                        bg: "purple.900/50",
+                        color: "purple.200",
+                        borderColor: "purple.800",
+                      }}
+                    >
+                      Beta
+                    </styled.span>
+                  )}
+                </DocLink>
+              ))}
+            </Stack>
+          </li>
+        ))}
       </Stack>
     </nav>
   )

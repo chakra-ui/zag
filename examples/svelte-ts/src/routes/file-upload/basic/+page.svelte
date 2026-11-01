@@ -2,9 +2,9 @@
   import * as fileUpload from "@zag-js/file-upload"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { fileUploadControls } from "@zag-js/shared"
-  import { useControls } from "$lib/use-controls.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import "@styles/file-upload.css"
 
   const controls = useControls(fileUploadControls)
@@ -17,15 +17,13 @@
 
 <main class="file-upload">
   <div {...api.getRootProps()}>
-    <div {...api.getDropzoneProps()}>
-      <input {...api.getHiddenInputProps()} data-testid="input" />
-      Drag your files here
-    </div>
+    <input data-testid="input" {...api.getHiddenInputProps()} />
+    <div {...api.getDropzoneProps()}>Drag your files here</div>
 
     <button {...api.getTriggerProps()}>Choose Files...</button>
 
     <ul {...api.getItemGroupProps()}>
-      {#each api.acceptedFiles as file}
+      {#each api.acceptedFiles as file (file.name)}
         <li class="file" {...api.getItemProps({ file })}>
           <div>
             <b>{file.name}</b>

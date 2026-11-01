@@ -1,13 +1,14 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as radio from "@zag-js/radio-group"
-  import { radioControls, radioData } from "@zag-js/shared"
+  import { segmentControls, radioData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/segmented-control.css"
+  import "@styles/radio-group.css"
 
-  const controls = useControls(radioControls)
+  const controls = useControls(segmentControls)
 
   const id = $props.id()
   const service = useMachine(

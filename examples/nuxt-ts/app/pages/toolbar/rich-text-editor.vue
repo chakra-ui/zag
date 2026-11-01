@@ -20,6 +20,7 @@ const fonts: Font[] = [
 ]
 
 const format = ref<string[]>([])
+const align = ref("left")
 const font = ref("sans-serif")
 const fontSize = ref("16")
 
@@ -28,7 +29,7 @@ const api = computed(() => toolbar.connect(service, normalizeProps))
 
 const fontId = useId()
 const fontService = useMachine(
-  select.machine,
+  select.machine as select.Machine<Font>,
   computed(() => ({
     id: fontId,
     ids: { trigger: api.value.getItemId("font") },
@@ -36,7 +37,7 @@ const fontService = useMachine(
     disabled: api.value.disabled,
     defaultValue: ["sans-serif"],
     onValueChange(details) {
-      font.value = details.value[0]
+      if (details.value[0]) font.value = details.value[0]
     },
   })),
 )
@@ -74,6 +75,21 @@ const formatService = useMachine(
   })),
 )
 const formatApi = computed(() => toggleGroup.connect(formatService, normalizeProps))
+
+const alignId = useId()
+const alignService = useMachine(
+  toggleGroup.machine,
+  computed(() => ({
+    id: alignId,
+    disabled: api.value.disabled,
+    orientation: api.value.orientation,
+    defaultValue: ["left"],
+    onValueChange(details: toggleGroup.ValueChangeDetails) {
+      if (details.value[0]) align.value = details.value[0]
+    },
+  })),
+)
+const alignApi = computed(() => toggleGroup.connect(alignService, normalizeProps))
 </script>
 
 <template>
@@ -82,7 +98,7 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
       <div v-bind="api.getRootProps()">
         <button v-bind="mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: 'font' }))">
           <span>{{ fontApi.valueAsString }}</span>
-          <span aria-hidden>v</span>
+          <span aria-hidden>▾</span>
         </button>
         <Teleport to="#teleports">
           <div v-bind="fontApi.getPositionerProps()">
@@ -99,7 +115,7 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
         <div v-bind="api.getSeparatorProps()" />
 
         <div v-bind="sizeApi.getControlProps()">
-          <button v-bind="sizeApi.getDecrementTriggerProps()" aria-label="Decrease font size">-</button>
+          <button v-bind="sizeApi.getDecrementTriggerProps()" aria-label="Decrease font size">−</button>
           <input
             class="toolbar-number-input"
             v-bind="mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: 'font-size' }))"
@@ -114,6 +130,14 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
           <button v-bind="formatApi.getItemProps({ value: 'italic' })" aria-label="Italic"><em>I</em></button>
           <button v-bind="formatApi.getItemProps({ value: 'underline' })" aria-label="Underline"><u>U</u></button>
         </div>
+
+        <div v-bind="api.getSeparatorProps()" />
+
+        <div v-bind="alignApi.getRootProps()">
+          <button v-bind="alignApi.getItemProps({ value: 'left' })" aria-label="Align left">⯇</button>
+          <button v-bind="alignApi.getItemProps({ value: 'center' })" aria-label="Align center">≡</button>
+          <button v-bind="alignApi.getItemProps({ value: 'right' })" aria-label="Align right">⯈</button>
+        </div>
       </div>
 
       <div
@@ -122,6 +146,7 @@ const formatApi = computed(() => toggleGroup.connect(formatService, normalizePro
           fontWeight: format.includes('bold') ? 'bold' : 'normal',
           fontStyle: format.includes('italic') ? 'italic' : 'normal',
           textDecoration: format.includes('underline') ? 'underline' : 'none',
+          textAlign: align as 'left' | 'center' | 'right',
           fontFamily: font,
           fontSize: `${fontSize}px`,
         }"

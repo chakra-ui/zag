@@ -1,0 +1,119 @@
+---
+title: Introducing Zag
+description:
+  UI components powered by finite state machines. Write the logic once, use it
+  in React, Vue and Solid.
+type: release
+date: 2022-04-27
+authors:
+  - name: Segun Adebayo
+    github: segunadebayo
+---
+
+Today we're releasing Zag `0.1.0`, a set of framework-agnostic UI component
+patterns built on finite state machines.
+
+Zag gives you the logic behind components like a menu, a dialog or a slider. It
+handles the states, the keyboard interactions, the focus management and the ARIA
+attributes. You bring the markup and the styles, in React, Vue or Solid.
+
+## Why we built it
+
+In [Chakra UI](https://chakra-ui.com), most of the bugs we fix aren't about how
+components look. They're about how components behave: events firing in the wrong
+order, state drifting out of sync, effects running when they shouldn't. Most of
+that logic lives in `useEffect`, `useMemo` and `useCallback`, spread across
+hooks that are hard to follow and harder to change.
+
+When we built [Chakra UI Vue](https://vue.chakra-ui.com), we ran into the same
+bugs again in a different framework. We wrote every component twice and fixed
+every bug twice.
+
+A menu should work the same way whether React or Vue renders it. So we pulled
+the logic out of the framework.
+
+## Components as state machines
+
+Every Zag component is a state machine. The machine lists the states a component
+can be in, the events it listens for, and what happens on each transition.
+
+A tooltip, for example, is `closed`, `opening`, `open` or `closing`. Pointing at
+the trigger moves it from `closed` to `opening`, and after a delay to `open`.
+Moving away starts `closing`. Pressing `Escape` closes it right away.
+
+Written this way, the behavior is explicit. There's no combination of booleans
+that leaves the tooltip half open, because the machine can only be in one state
+at a time. And when something goes wrong, you can see which state the machine
+was in and which event moved it.
+
+The machines are plain TypeScript, built on a small finite state machine runtime
+inspired by [XState](https://xstate.js.org). They don't know about React or Vue.
+A thin adapter connects them to each framework.
+
+## How it looks
+
+Each component is its own package. In React, you start the machine with
+`useMachine`, attach it to the DOM with `useSetup`, and turn its state into
+props with `connect`:
+
+```tsx
+import * as tooltip from "@zag-js/tooltip"
+import { useMachine, useSetup } from "@zag-js/react"
+
+function Tooltip() {
+  const [state, send] = useMachine(tooltip.machine())
+  const ref = useSetup({ send, id: "tooltip" })
+  const api = tooltip.connect(state, send)
+
+  return (
+    <div ref={ref}>
+      <button {...api.triggerProps}>Hover me</button>
+      {api.isOpen && (
+        <div {...api.positionerProps}>
+          <div {...api.contentProps}>Tooltip content</div>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+`api.triggerProps` and `api.contentProps` carry the event handlers, the ARIA
+attributes and the `data-*` attributes you style against. `api.isOpen`,
+`api.open()` and `api.close()` let you read and control the component from your
+own code.
+
+The Vue and Solid versions look the same, with each framework's own primitives.
+
+## What's in the first release
+
+- **Machines** for accordion, combobox, dialog, editable, menu, number input,
+  pin input, popover, range slider, rating, slider, splitter, tabs, tags input,
+  toast, toggle and tooltip.
+- **Adapters** for React, Vue 3 and Solid.
+- **Accessibility built in**: keyboard interactions, focus management, and ARIA
+  roles and attributes follow the
+  [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/).
+- **Headless**: the machines render nothing and ship no styles. Use any styling
+  solution you like.
+- **Incremental adoption**: install only the machines you need.
+
+This is a `0.x` release. The machines work, but the API will change as we learn
+from using them in real projects, including the next version of Chakra UI.
+
+## Why "Zag"
+
+Zag means to take a sharp change in direction. That's what a state machine does
+on every transition, and it's the change in direction we're taking in how we
+build components.
+
+## Try it
+
+```bash
+npm install @zag-js/react @zag-js/tooltip
+```
+
+Every machine has a page in the [docs](/overview/introduction) with examples for
+each framework. We'd love to hear what you build. Come say hi on
+[Discord](/discord) or open an issue on
+[GitHub](https://github.com/chakra-ui/zag).

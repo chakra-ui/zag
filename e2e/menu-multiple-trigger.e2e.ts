@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { rect } from "./_utils"
 
 const trigger = (id: number) => `[data-menu-trigger][data-value="${id}"]`
@@ -37,9 +37,11 @@ test.describe("menu / multiple triggers", () => {
     await page.click(trigger(1))
     await expect(page.locator(menu)).toBeVisible()
 
-    const menuRect2 = await rect(page.locator(positioner))
     // Y position should be different (trigger 1 is above trigger 5)
-    expect(menuRect2.y).toBeLessThan(menuRect1.y)
+    await expect(async () => {
+      const menuRect2 = await rect(page.locator(positioner))
+      expect(menuRect2.y).toBeLessThan(menuRect1.y)
+    }).toPass()
   })
 
   test("should close menu on escape and focus active trigger", async ({ page }) => {
@@ -49,6 +51,27 @@ test.describe("menu / multiple triggers", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(menu)).toBeHidden()
     await expect(page.locator(trigger(3))).toBeFocused()
+  })
+
+  test("should keep focus on the trigger when Escape follows ArrowDown", async ({ page }) => {
+    const t0 = new Date("2025-06-01T12:00:00")
+    await page.clock.install({ time: t0 })
+    await page.goto("/menu/multiple-trigger")
+    await page.click(trigger(3))
+    await expect(page.locator(menu)).toBeVisible()
+    await expect(page.locator(menu)).toBeFocused()
+
+    await page.clock.pauseAt(new Date(t0.getTime() + 60_000))
+
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Escape")
+    await expect(page.locator(trigger(3))).toBeFocused()
+
+    await page.clock.runFor(32)
+    await expect(page.locator(menu)).toBeHidden()
+    await expect(page.locator(trigger(3))).toBeFocused()
+    await page.keyboard.press("Tab")
+    await expect(page.locator(trigger(4))).toBeFocused()
   })
 
   test("should close menu on item selection", async ({ page }) => {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { InfoIcon } from "lucide-vue-next"
 import "@styles/tooltip.css"
 
 interface Product {
@@ -33,50 +34,54 @@ const api = computed(() => tooltip.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main style="padding: 40px">
-    <h2>Product Catalog</h2>
+  <main style="padding: 40px; font-family: system-ui">
+    <section style="margin-bottom: 40px">
+      <h2>Product Catalog</h2>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
-      <thead>
-        <tr style="background-color: #f3f4f6; text-align: left">
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Product</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Price</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Stock</th>
-          <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Info</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="product in products" :key="product.id" style="border-bottom: 1px solid #e5e7eb">
-          <td style="padding: 12px">{{ product.name }}</td>
-          <td style="padding: 12px">${{ product.price }}</td>
-          <td style="padding: 12px">{{ product.stock }} units</td>
-          <td style="padding: 12px">
-            <button v-bind="api.getTriggerProps({ value: `${product.id}` })">ℹ️</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px">
+        <thead>
+          <tr style="background-color: #f3f4f6; text-align: left">
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Product</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Price</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Stock</th>
+            <th style="padding: 12px; border-bottom: 2px solid #e5e7eb">Info</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="product in products" :key="product.id" style="border-bottom: 1px solid #e5e7eb">
+            <td style="padding: 12px">{{ product.name }}</td>
+            <td style="padding: 12px">${{ product.price }}</td>
+            <td style="padding: 12px">{{ product.stock }} units</td>
+            <td style="padding: 12px">
+              <button v-bind="api.getTriggerProps({ value: `${product.id}` })">
+                <InfoIcon :size="18" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
-      <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
-      <strong>Active Product:</strong>
-      {{ activeProduct ? `${activeProduct.name} ($${activeProduct.price})` : "-" }}
-    </div>
+      <div style="margin-top: 20px; padding: 12px; background-color: #f9fafb; border-radius: 6px">
+        <strong>Active Trigger:</strong> {{ api.triggerValue || "-" }} <br />
+        <strong>Active Product:</strong>
+        {{ activeProduct ? `${activeProduct.name} ($${activeProduct.price})` : "-" }}
+      </div>
+    </section>
 
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
         <Presence v-bind="api.getContentProps()">
-          <template v-if="activeProduct">
+          <div v-if="activeProduct">
             <strong>{{ activeProduct.name }}</strong>
             <p>{{ activeProduct.description }}</p>
-          </template>
+          </div>
           <div v-else>No product selected</div>
         </Presence>
       </div>
     </Teleport>
   </main>
 
-  <Toolbar>
-    <StateVisualizer :state="service" />
+  <Toolbar viz>
+    <StateVisualizer :state="service" :context="['triggerValue', 'hasPointerMoveOpened']" />
   </Toolbar>
 </template>

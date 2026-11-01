@@ -4,8 +4,9 @@ import * as checkbox from "@zag-js/checkbox"
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import * as radio from "@zag-js/radio-group"
-import * as zagSwitch from "@zag-js/switch"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import * as zagSwitch from "@zag-js/switch"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 
 // Repro for chakra-ui#10918 / PR #3265.
@@ -107,7 +108,9 @@ export default function Page() {
                 <Switch label="Switch B" testId="dlg-sw-b" />
                 <RadioGroup testId="dlg-radio" />
               </div>
-              <button {...dlg.getCloseTriggerProps()}>Close</button>
+              <button {...dlg.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

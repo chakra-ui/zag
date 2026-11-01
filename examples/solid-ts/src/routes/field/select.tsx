@@ -8,8 +8,9 @@ import "@styles/field.css"
 const frameworks = ["React", "Solid", "Svelte", "Vue", "Preact"]
 
 export default function Page() {
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     required: true,
   }))
 

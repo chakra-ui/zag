@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { MenuModel } from "./models/menu.model"
 
 let I: MenuModel

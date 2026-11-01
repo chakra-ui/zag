@@ -34,7 +34,7 @@
     }
 
     &[data-highlighted][data-disabled] .Star {
-      color: var(--colors-fg-subtle);
+      color: var(--colors-text-subtle);
       filter: grayscale(100%);
     }
   }

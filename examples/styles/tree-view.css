@@ -1,36 +1,53 @@
 [data-tree-view-tree] {
-  margin-top: 20px;
-  width: 240px;
+  --tree-indent: 16px;
+  /* Chevron width + gap; leaves indent by it so their icons line up with branches' */
+  --tree-chevron-space: 24px;
+  width: 280px;
+  margin-top: 8px;
 }
 
 [data-tree-view-node] {
-  user-select: none;
-  --padding-inline: 16px;
-  padding-inline-start: calc(var(--depth) * var(--padding-inline));
-  padding-inline-end: var(--padding-inline);
+  --node-start: calc((var(--depth) - 1) * var(--tree-indent) + 8px);
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 2px;
+  gap: 4px;
   min-height: 32px;
+  padding-inline: var(--node-start) 8px;
+  border-radius: var(--z-radius-sm);
+  font-size: var(--z-text-md);
+  outline: none;
+  user-select: none;
 
   & svg {
+    flex-shrink: 0;
     width: 16px;
     height: 16px;
-    opacity: 0.5;
+    color: var(--z-fg-muted);
   }
 
   &:hover {
-    background: rgb(243, 243, 243);
+    background: var(--z-bg-muted);
   }
 
   &[data-selected] {
-    background: rgb(226, 226, 226);
+    background: var(--z-accent-subtle);
   }
 
   &:focus-visible {
-    outline: 1px solid rgb(148, 148, 148);
-    outline-offset: -1px;
+    box-shadow: inset 0 0 0 2px var(--z-ring);
+  }
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
+
+  &[data-loading] {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  &:not([data-branch]) {
+    padding-inline-start: calc(var(--node-start) + var(--tree-chevron-space));
   }
 }
 
@@ -38,10 +55,73 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+
+  /* The text cell fills the row, so actions sit at the end */
+  &:has([data-tree-view-node-text]) {
+    flex: 1;
+  }
+}
+
+/* Link rows (tree-view/links): the row is the affordance, not the underline */
+[data-tree-view-node] a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Search box above the tree (tree-view/filtering), as wide as the tree */
+.tree-view-search {
+  width: 280px;
 }
 
 [data-tree-view-node-text] {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Leads the row, whatever its position in the markup */
+[data-tree-view-node-indicator] {
+  order: -1;
+  display: flex;
+  align-items: center;
+  transition: rotate var(--z-duration) var(--z-ease);
+
+  &[data-state="open"] {
+    rotate: 90deg;
+  }
+}
+
+/* Loading indicator at the end of a branch row (tree-view/async) */
+.tree-view-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+[data-tree-view-node-expand-trigger] {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: var(--z-radius-xs);
+  background: transparent;
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-emphasis);
+  }
+
+  & svg {
+    transition: rotate var(--z-duration) var(--z-ease);
+  }
+
+  &[data-state="open"] svg {
+    rotate: 90deg;
+  }
+
+  &[data-loading] {
+    opacity: 0.6;
+    cursor: wait;
+  }
 }
 
 [data-tree-view-node-group-content] {
@@ -49,62 +129,29 @@
   isolation: isolate;
 }
 
+/* Under the parent row's chevron */
 [data-tree-view-indent-guide] {
   position: absolute;
-  content: "";
-  border-left: 1px solid rgb(226, 226, 226);
-  height: 100%;
-  translate: calc(var(--depth) * 1.25rem);
   z-index: 0;
-}
-
-[data-tree-view-node-indicator] {
-  display: flex;
-  align-items: center;
-
-  &[data-state="open"] svg {
-    transform: rotate(90deg);
-  }
-
-  &[data-loading] svg {
-    animation: spin 1s linear infinite;
-  }
-}
-
-[data-tree-view-node-expand-trigger] {
-  background: none;
-  border: 1px solid rgb(226, 226, 226);
-  border-radius: 2px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-
-  &[data-loading] {
-    opacity: 0.6;
-    cursor: wait;
-  }
+  height: 100%;
+  border-left: 1px solid var(--z-border);
+  translate: calc(var(--depth) * var(--tree-indent));
 }
 
 [data-tree-view-node-checkbox] {
-  cursor: pointer;
   display: flex;
   align-items: center;
+  border-radius: var(--z-radius-xs);
 
   &:focus-visible {
-    outline: 1px solid rgb(148, 148, 148);
-    outline-offset: 1px;
-    border-radius: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--z-ring);
   }
 }
 
-[data-tree-view-node] {
-  &[data-loading] {
-    opacity: 0.6;
-    cursor: wait;
-  }
-
-  &[data-loading]:hover {
-    background: rgb(243, 243, 243);
-  }
+[data-tree-view-node-rename-input] {
+  flex: 1;
+  height: 24px;
+  padding: 0 6px;
+  font-size: var(--z-text-md);
 }

@@ -8,11 +8,15 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
 import "@styles/popover.css"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const controls = useControls(popoverControls)
 
-  const service = useMachine(popover.machine, { id: createUniqueId(), defaultOpen: true })
+  const service = useMachine(
+    popover.machine,
+    controls.mergeProps<popover.Props>({ id: createUniqueId(), defaultOpen: true }),
+  )
 
   const api = createMemo(() => popover.connect(service, normalizeProps))
 
@@ -41,7 +45,7 @@ export default function Page() {
                   </a>
                   <input data-testid="input" placeholder="input" />
                   <button data-testid="popover-close-button" {...api().getCloseTriggerProps()}>
-                    X
+                    <XIcon />
                   </button>
                 </div>
               </Presence>

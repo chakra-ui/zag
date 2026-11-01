@@ -1,0 +1,47 @@
+<script lang="ts">
+  import Portal from "#lib/components/portal.svelte"
+  import ToastItem from "#lib/components/toast-item.svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as toast from "@zag-js/toast"
+  import "@styles/toast.css"
+
+  const toaster = toast.createStore({ placement: "bottom-end" })
+
+  const uid = $props.id()
+  const service = useMachine(toast.group.machine, { id: uid, store: toaster })
+  const api = $derived(toast.group.connect(service, normalizeProps))
+
+  function upload(options: { reject?: boolean; description?: string } = {}) {
+    const request = new Promise<string>((resolve, reject) => {
+      setTimeout(() => {
+        if (options.reject) reject(new Error("The upload failed. Try again."))
+        else resolve("photo.png")
+      }, 1200)
+    })
+
+    const result = toaster.promise(request, {
+      loading: { title: "Uploading photo…", description: "Please wait." },
+      success: (name) => ({ title: "Upload complete", description: `${name} is ready.` }),
+      error: (error) => ({ title: "Upload failed", description: (error as Error).message }),
+    })
+
+    if (options.description !== undefined && result?.id) {
+      toaster.create({ id: result.id, description: options.description })
+    }
+  }
+</script>
+
+<main>
+  <div class="hstack">
+    <button onclick={() => upload()}>Upload</button>
+    <button onclick={() => upload({ description: "Sending photo.png…" })}>Upload with message</button>
+    <button onclick={() => upload({ reject: true })}>Fail upload</button>
+  </div>
+  <Portal>
+    <div {...api.getGroupProps()}>
+      {#each api.getToasts() as actor, index (actor.id)}
+        <ToastItem {actor} {index} parent={service} />
+      {/each}
+    </div>
+  </Portal>
+</main>

@@ -104,7 +104,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "async-list",
     label: "Async List",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sorting", title: "Sorting" },
+      { slug: "server-sorting", title: "Server Sorting" },
+      { slug: "filters", title: "Filters" },
+      { slug: "infinite-scroll", title: "Infinite Scroll" },
+    ],
   },
   {
     slug: "password-input",
@@ -176,13 +182,26 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "steps",
     label: "Steps",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "async-items", title: "Async Items" },
+      { slug: "validation", title: "Validation: Create Project" },
+      { slug: "conditional-steps", title: "Conditional & Optional Steps: Onboarding" },
+      { slug: "url-sync", title: "URL Sync: Checkout" },
+      { slug: "locked-steps", title: "Locked Steps: 2FA Setup" },
+      { slug: "persisted-progress", title: "Persisted Progress: Store Setup" },
+    ],
   },
   {
     slug: "qr-code",
     label: "QR Code",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "with-logo", title: "With Logo" },
+      { slug: "live-input", title: "Live Input" },
+      { slug: "error-correction", title: "Error Correction" },
+      { slug: "wifi", title: "Wi-Fi" },
       { slug: "download", title: "Download" },
     ],
   },
@@ -224,6 +243,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "uncontrolled", title: "Uncontrolled" },
       { slug: "nested", title: "Nested" },
+      { slug: "find-in-page", title: "Find in Page" },
     ],
   },
   {
@@ -252,7 +272,14 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "progress",
     label: "Progress",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Linear" },
+      { slug: "circular", title: "Circular" },
+      { slug: "indeterminate", title: "Indeterminate" },
+      { slug: "vertical", title: "Vertical" },
+      { slug: "value-format", title: "Value Format" },
+      { slug: "simulated", title: "Simulated Upload" },
+    ],
   },
   {
     slug: "meter",
@@ -334,6 +361,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "thumbnail", title: "Thumbnail" },
+      { slug: "auto-size", title: "Auto Size" },
+      { slug: "mutation", title: "Add and Remove Slides" },
       { slug: "dialog", title: "With Dialog" },
     ],
   },
@@ -408,13 +437,23 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Accordion",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "disabled-item", title: "Disabled Item" },
+      { slug: "nested", title: "Nested" },
+      { slug: "find-in-page", title: "Find in Page" },
       { slug: "collapsible", title: "With Collapsible" },
     ],
   },
   {
     slug: "checkbox",
     label: "Checkbox",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "indeterminate", title: "Select All (Indeterminate)" },
+      { slug: "states", title: "States" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "combobox",
@@ -486,14 +525,17 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
       { slug: "nested", title: "Nested" },
+      { slug: "filtering", title: "Filtering" },
+      { slug: "filtering-submenu", title: "Filtering Submenu" },
       { slug: "options", title: "With options" },
       { slug: "async", title: "Async + Infinite Scroll" },
-      { slug: "combobox", title: "With Combobox" },
       { slug: "in-dialog", title: "With Dialog" },
       { slug: "lazy-mounted", title: "Lazy Mounted" },
+      { slug: "presence", title: "Presence" },
       { slug: "links", title: "Links" },
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "multiple-nested", title: "Multiple Nested" },
+      { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
     ],
   },
@@ -513,6 +555,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "lazy-mount", title: "Lazy Mounted" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "controlled", title: "Controlled" },
     ],
   },
   {
@@ -542,8 +585,10 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Number Flow",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "formatting", title: "Formatting" },
+      { slug: "countdown", title: "Countdown" },
+      { slug: "compact", title: "Compact Notation" },
       { slug: "continuous", title: "Continuous" },
+      { slug: "formatting", title: "Formatting" },
     ],
   },
   {
@@ -558,7 +603,13 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "pagination",
     label: "Pagination",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "first-last", title: "First and Last" },
+      { slug: "page-size", title: "Page Size" },
+      { slug: "compact", title: "Compact" },
+      { slug: "links", title: "Links" },
+    ],
   },
   {
     slug: "pin-input",
@@ -598,24 +649,35 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [{ slug: "basic", title: "Basic" }],
   },
   {
-    slug: "range-slider",
-    label: "Range Slider",
-    examples: [{ slug: "basic", title: "Basic" }],
-  },
-  {
     slug: "rating-group",
     label: "Rating Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "read-only", title: "Read Only" },
+      { slug: "custom-icon", title: "Custom Icon" },
+      { slug: "sizes", title: "Sizes" },
+      { slug: "controlled", title: "Controlled" },
+    ],
   },
   {
     slug: "slider",
     label: "Slider",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "steps", title: "Steps" },
+      { slug: "origin", title: "Origin" },
+      { slug: "marks", title: "Marks" },
+      { slug: "form", title: "Form" },
+      { slug: "range", title: "Range" },
+      { slug: "range-controlled", title: "Range Controlled" },
+      { slug: "range-marks", title: "Range Marks" },
+      { slug: "range-prevent-overlap", title: "Range Prevent Overlap" },
       { slug: "change-end", title: "Change End" },
       { slug: "number-input", title: "With Number Input" },
       { slug: "in-popover", title: "With Popover" },
       { slug: "tooltip", title: "With Tooltip" },
+      { slug: "dragging-indicator", title: "Dragging Indicator" },
     ],
   },
   {
@@ -632,10 +694,10 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "editable", title: "Editable" },
-      { slug: "form", title: "Form" },
       { slug: "validate", title: "Validate" },
       { slug: "allow-duplicates", title: "Allow Duplicates" },
       { slug: "sentence-builder", title: "Builder" },
+      { slug: "sortable", title: "Sortable" },
     ],
   },
   {
@@ -650,14 +712,30 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "toast",
     label: "Toast",
     examples: [
-      { slug: "stacked", title: "Stacked" },
+      { slug: "basic", title: "Basic" },
       { slug: "overlap", title: "Overlap" },
+      { slug: "list", title: "List" },
+      { slug: "duration", title: "Duration" },
+      { slug: "placement", title: "Placement" },
+      { slug: "action", title: "Action" },
+      { slug: "promise", title: "Promise" },
+      { slug: "update", title: "Update" },
+      { slug: "max", title: "Max Visible" },
+      { slug: "programmatic", title: "Programmatic" },
+      { slug: "with-dialog", title: "With Dialog" },
+      { slug: "conditional-content", title: "Conditional Title and Description" },
+      { slug: "swipe", title: "Swipe to Dismiss" },
     ],
   },
   {
     slug: "toggle-group",
     label: "Toggle Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "alignment", title: "Text Alignment" },
+      { slug: "view-switcher", title: "View Switcher" },
+      { slug: "vertical", title: "Vertical" },
+    ],
   },
   {
     slug: "toolbar",
@@ -682,6 +760,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "indicator", title: "Indicator" },
       { slug: "scroll-element", title: "Scroll Element" },
+      { slug: "nested-nav", title: "Nav Inside Scroll Container" },
+      { slug: "long-sections", title: "Long Sections" },
     ],
   },
   {
@@ -696,6 +776,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "follow-cursor", title: "Follow Cursor" },
       { slug: "interactive", title: "Interactive" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "aria-label", title: "Aria Label" },
+      { slug: "disabled", title: "Disabled" },
     ],
   },
   {
@@ -777,15 +859,6 @@ export const componentRoutes: ComponentRoute[] = [
     slug: "focus-visible",
     label: "Focus Visible",
     examples: [{ slug: "basic", title: "Basic" }],
-  },
-  {
-    slug: "sandbox",
-    label: "Sandbox",
-    examples: [
-      { slug: "basic", title: "Basic" },
-      { slug: "composable", title: "Composable" },
-      { slug: "nested-states", title: "Nested States" },
-    ],
   },
   {
     slug: "swap",

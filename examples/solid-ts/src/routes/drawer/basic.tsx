@@ -36,7 +36,7 @@ export default function Page() {
             <div data-no-drag="true" class={styles.noDrag}>
               No drag area
             </div>
-            <div class={styles.scrollable}>
+            <div class={styles.scrollable} data-testid="scrollable">
               <For each={Array.from({ length: 100 })}>{(_element, index) => <div>Item {index()}</div>}</For>
             </div>
           </Presence>

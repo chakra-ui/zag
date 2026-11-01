@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
-import type { TypeaheadState } from "@zag-js/dom-query"
+import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -32,19 +32,33 @@ export interface SelectionDetails {
    * The value of the selected menu item
    */
   value: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
+
+export type HighlightChangeReason = "keyboard" | "pointer" | "programmatic"
 
 export interface HighlightChangeDetails {
   /**
    * The value of the highlighted menu item
    */
   highlightedValue: string | null
+  /**
+   * What caused the highlight to change
+   */
+  reason: HighlightChangeReason
 }
 
 export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
   href: string
+  /**
+   * The modifier keys held when the item was activated
+   */
+  modifiers: ModifierKeys
 }
 
 export interface ElementIds {
@@ -55,6 +69,8 @@ export interface ElementIds {
   group?: ((id: string) => string) | undefined
   positioner?: string | undefined
   arrow?: string | undefined
+  input?: string | undefined
+  list?: string | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -124,10 +140,19 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   typeahead?: boolean | undefined
   /**
-   * Whether the menu is a composed with other composite widgets like a combobox or tabs
-   * @default true
+   * Whether a filter input highlights the first item when its query changes.
+   * - `true`: highlight it while the query is not empty
+   * - `"always"`: highlight it even when the query is empty, and keep a highlight when the pointer leaves
+   * @default false
    */
-  composite?: boolean | undefined
+  autoHighlight?: boolean | "always" | undefined
+  /**
+   * The type of popup the trigger opens.
+   * - `"menu"`: the content is the menu and manages keyboard focus across its items.
+   * - `"dialog"`: the content is a dialog holding the menu list, for widgets that keep focus such as a filter input.
+   * @default "menu"
+   */
+  popupType?: "menu" | "dialog" | undefined
   /**
    * Function to navigate to the selected item if it's an anchor element
    */
@@ -173,7 +198,7 @@ export interface MenubarContext {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
+type PropsWithDefault = "closeOnSelect" | "typeahead" | "popupType" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
   props: MenuProps
@@ -185,6 +210,7 @@ export interface MenuSchema {
     layer: LayerSnapshot | null
     highlightedValue: string | null
     lastHighlightedValue: string | null
+    isWebKit: boolean
     currentPlacement: Placement | undefined
     intentPolygon: Point[] | null
     anchorPoint: Point | null
@@ -208,6 +234,8 @@ export interface MenuSchema {
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
     menubarCloseReason: string | null
+    pointerType: string | null
+    focusMenuFrame: AnimationFrame
   }
 
   action: string
@@ -215,7 +243,7 @@ export interface MenuSchema {
   guard: string
   event: EventObject
 
-  state: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+  state: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu" | "opening:requested"
 
   tag: "open" | "closed"
 }
@@ -421,7 +449,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the highlighted menuitem
    */
-  setHighlightedValue: (value: string) => void
+  setHighlightedValue: (value: string | null) => void
   /**
    * Function to register a parent menu. This is used for submenus
    */
@@ -468,6 +496,9 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   getContentState: () => ContentState
   getContentProps: () => T["element"]
   getSeparatorProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getListProps: () => T["element"]
+  getEmptyProps: () => T["element"]
   getItemProps: (options: ItemProps) => T["element"]
   getOptionItemProps: (option: OptionItemProps) => T["element"]
   getItemIndicatorProps: (option: ItemBaseProps) => T["element"]

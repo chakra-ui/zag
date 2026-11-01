@@ -1,19 +1,38 @@
-[data-pin-input-control] {
-  width: 300px;
+[data-pin-input-root] {
   display: flex;
-  margin-bottom: 12px;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 [data-pin-input-label] {
-  display: block;
-  margin-bottom: 8px;
+  font-size: var(--z-text-md);
+  font-weight: 500;
+
+  &[data-invalid] {
+    color: var(--z-danger-fg);
+  }
+}
+
+[data-pin-input-control] {
+  display: flex;
+  gap: 8px;
 }
 
 [data-pin-input-input] {
-  width: 48px;
+  width: 44px;
   height: 48px;
+  padding: 0;
   text-align: center;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   caret-color: transparent;
+
+  &[data-complete] {
+    border-color: var(--z-accent);
+  }
+
+  &[data-invalid] {
+    border-color: var(--z-danger);
+  }
 }

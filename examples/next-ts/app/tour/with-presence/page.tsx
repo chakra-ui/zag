@@ -26,7 +26,7 @@ const steps: tour.StepDetails[] = [
     description: "Find anything from here.",
     target: () => document.querySelector<HTMLElement>("#tour-search"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -37,7 +37,7 @@ const steps: tour.StepDetails[] = [
     description: "Finish here to watch the tooltip exit animation.",
     target: () => document.querySelector<HTMLElement>("#tour-profile"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Finish", action: "dismiss" },
     ],
   },

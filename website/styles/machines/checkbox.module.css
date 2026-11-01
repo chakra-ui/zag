@@ -18,7 +18,7 @@
     border-radius: 0.275rem;
     border: solid 1px;
     border-color: var(--colors-border-bold);
-    color: #ffffff;
+    color: var(--colors-text-inverse);
 
     &[data-hover] {
       background: var(--colors-bg-bold);
@@ -36,7 +36,7 @@
     }
 
     &[data-invalid] {
-      border-color: #e53e3e;
+      border-color: var(--colors-border-error);
     }
 
     &[data-state="indeterminate"] {

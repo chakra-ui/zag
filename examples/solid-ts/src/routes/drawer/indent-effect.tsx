@@ -3,6 +3,7 @@ import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer-indent-effect.module.css"
+import { XIcon } from "lucide-solid"
 
 const stack = drawer.createStack()
 
@@ -51,7 +52,7 @@ export default function Page() {
               </p>
               <div class={styles.actions}>
                 <button class={styles.close} {...api().getCloseTriggerProps()}>
-                  Close
+                  <XIcon />
                 </button>
               </div>
             </div>

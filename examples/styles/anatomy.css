@@ -1,27 +1,60 @@
 .anatomy {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  overflow: auto;
-  max-height: 100%;
-}
-
-.anatomy .anatomy__item {
   display: flex;
-  overflow: auto;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
-  position: relative;
+  max-width: 1200px;
 }
 
-.anatomy span {
-  position: absolute;
-  top: 2;
-  left: 2;
+.anatomy-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  & button[aria-pressed="true"] {
+    background: var(--z-bg-emphasis);
+  }
+}
+
+.anatomy-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--z-radius-full);
+}
+
+.anatomy-count {
+  margin-inline-start: auto;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+}
+
+.anatomy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anatomy-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--z-text-sm);
   font-weight: 500;
 }
 
-.anatomy svg {
-  width: calc(100vw / 3);
-  height: fit-content;
+/* The icons are fixed 1456x812 artboards; scale them to the card */
+.anatomy-preview {
+  overflow: hidden;
+  border-radius: var(--z-radius);
+  aspect-ratio: 1456 / 812;
+
+  & svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 }

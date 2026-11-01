@@ -224,4 +224,37 @@ describe("focus-visible", () => {
       expect(isFocusVisible()).toBe(true)
     })
   })
+
+  describe("prototype focus", () => {
+    test("keeps focus writable when it was an accessor", () => {
+      window.dispatchEvent(new Event("beforeunload"))
+      const descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")!
+
+      // Storybook's preview defines `focus` as an accessor with a setter
+      let current = HTMLElement.prototype.focus
+      Object.defineProperty(HTMLElement.prototype, "focus", {
+        configurable: true,
+        get: () => current,
+        set: (next) => {
+          current = next
+        },
+      })
+
+      const assignFocus = () => {
+        const focus = HTMLElement.prototype.focus
+        HTMLElement.prototype.focus = focus
+      }
+
+      const cleanup = trackFocusVisible()
+      expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.writable).toBe(true)
+      expect(assignFocus).not.toThrow()
+
+      cleanup()
+      window.dispatchEvent(new Event("beforeunload"))
+      expect(Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.writable).toBe(true)
+      expect(assignFocus).not.toThrow()
+
+      Object.defineProperty(HTMLElement.prototype, "focus", descriptor)
+    })
+  })
 })

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const OUTSIDE = "[data-testid=outside-input]"
 const OPEN = "[data-testid=open-button]"

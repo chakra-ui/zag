@@ -17,6 +17,7 @@ export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
   ctx.ids?.itemGroupLabel?.(id) ?? `${ctx.id}:optgroup-label:${id}`
 export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `${ctx.id}:option:${id}`
 
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
 export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))

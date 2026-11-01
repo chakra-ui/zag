@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { rect } from "./_utils"
 
 const trigger = (id: number) => `[data-hover-card-trigger][data-value="${id}"]`
@@ -52,10 +52,8 @@ test.describe("hover-card / multiple triggers", () => {
     // Hover last trigger
     await page.hover(trigger(4))
     await expect(page.locator(content)).toBeVisible()
-    const pos2 = await rect(page.locator(positioner))
-
-    // X position should be different (triggers are side by side)
-    expect(pos2.x).not.toBe(pos1.x)
+    // X position should change (triggers are side by side); the positioner updates async
+    await expect.poll(async () => (await rect(page.locator(positioner))).x).not.toBe(pos1.x)
   })
 
   test("should close hover card on mouse leave", async ({ page }) => {

@@ -19,10 +19,10 @@ const typeRef = ref<string[]>([])
 
 const radios = computed(() =>
   menuOptionData.order.map((item) => ({
-    label: item.label,
-    id: item.value,
     type: "radio" as const,
+    name: "order",
     value: item.value,
+    label: item.label,
     checked: item.value === orderRef.value,
     onCheckedChange(v: boolean) {
       orderRef.value = v ? item.value : ""
@@ -32,10 +32,10 @@ const radios = computed(() =>
 
 const checkboxes = computed(() =>
   menuOptionData.type.map((item) => ({
-    id: item.value,
-    label: item.label,
     type: "checkbox" as const,
+    name: "type",
     value: item.value,
+    label: item.label,
     checked: typeRef.value.includes(item.value),
     onCheckedChange(v: boolean) {
       typeRef.value = v ? [...typeRef.value, item.value] : typeRef.value.filter((x) => x !== item.value)
@@ -47,7 +47,9 @@ const checkboxes = computed(() =>
 <template>
   <main>
     <div>
-      <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
+      <button data-testid="trigger" v-bind="api.getTriggerProps()">
+        Actions <span v-bind="api.getIndicatorProps()">▾</span>
+      </button>
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
@@ -55,7 +57,7 @@ const checkboxes = computed(() =>
               <span v-bind="api.getItemIndicatorProps(item)">✅</span>
               <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
             </div>
-            <hr v-bind="api.getSeparatorProps()" />
+            <hr />
             <div v-for="item in checkboxes" :key="item.value" v-bind="api.getOptionItemProps(item)">
               <span v-bind="api.getItemIndicatorProps(item)">✅</span>
               <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>

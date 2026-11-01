@@ -1,0 +1,112 @@
+.emoji-picker-trigger {
+  gap: 6px;
+  font-size: var(--z-text-md);
+}
+
+.emoji-picker {
+  --emoji-cell: 40px;
+  --emoji-header: 32px;
+  display: flex;
+  flex-direction: column;
+  /* 8 cells + row padding + scrollbar */
+  width: calc(var(--emoji-cell) * 8 + 24px);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-lg);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-popover);
+  overflow: hidden;
+}
+
+.emoji-picker-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.emoji-search {
+  margin: 8px 8px 4px;
+}
+
+.emoji-viewport {
+  position: relative;
+  height: 320px;
+
+  /* The list is the scroll container: vertical only */
+  & [data-listbox-list] {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: none;
+  }
+}
+
+.emoji-category {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--emoji-header);
+  padding-inline: 12px;
+  background: var(--z-bg);
+  font-size: var(--z-text-xs);
+  font-weight: 500;
+  color: var(--z-fg-muted);
+
+  &[data-sticky] {
+    position: absolute;
+    z-index: 1;
+    inset-inline: 0 12px;
+    top: 0;
+  }
+}
+
+.emoji-row {
+  display: flex;
+  padding-inline: 4px;
+}
+
+.emoji-item {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--emoji-cell);
+  height: var(--emoji-cell);
+  border-radius: var(--z-radius-sm);
+  font-size: 22px;
+  cursor: default;
+  user-select: none;
+
+  &[data-highlighted] {
+    background: var(--z-bg-emphasis);
+  }
+}
+
+.emoji-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+}
+
+/* Active emoji and its name, like a native picker's status bar */
+.emoji-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding-inline: 12px;
+  border-top: 1px solid var(--z-border-subtle);
+}
+
+.emoji-footer-glyph {
+  font-size: 24px;
+}
+
+.emoji-footer-label {
+  overflow: hidden;
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

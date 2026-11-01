@@ -1,5 +1,6 @@
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 
 interface Props extends Omit<dialog.Props, "id"> {}
@@ -30,7 +31,9 @@ export function Dialog(props: Props = {}) {
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

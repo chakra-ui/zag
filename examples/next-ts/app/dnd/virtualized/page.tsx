@@ -9,6 +9,8 @@ import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import styles from "@styles/dnd-list.module.css"
 
+const estimateSize = () => 40
+
 const initialItems = Array.from({ length: 500 }, (_, i) => ({
   id: String(i + 1),
   label: `Item ${i + 1}`,
@@ -18,13 +20,10 @@ export default function Page() {
   const [items, setItems] = useState(initialItems)
 
   const { virtualizer, ref } = useListVirtualizer({
-    count: initialItems.length,
-    estimatedSize: () => 40,
+    count: items.length,
+    estimatedSize: estimateSize,
     overscan: 10,
   })
-
-  // Sync count before render
-  virtualizer.updateOptions({ count: items.length })
 
   const service = useMachine(dnd.machine, {
     id: useId(),
@@ -45,6 +44,7 @@ export default function Page() {
             <div className={styles.virtualSizer} style={{ height: virtualizer.getTotalSize() }}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = items[vi.index]
+                if (!item) return null
                 return (
                   <div key={item.id} style={virtualizer.getItemStyle(vi)}>
                     <div className={styles.virtualRowInner}>

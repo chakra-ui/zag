@@ -11,6 +11,7 @@ import {
   isCtrlOrMetaKey,
   isEditableElement,
   isFocusable,
+  isInteractiveDescendant,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -163,8 +164,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-multiselectable": contentState.multiple ? true : undefined,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-colcount": isGrid ? contentState.columnCount : undefined,
-        tabIndex: contentState.empty ? 0 : undefined,
+        // Tab stop until an item is remembered
+        tabIndex: contentState.empty || focusedValue == null ? 0 : -1,
         style: isGrid ? { "--column-count": contentState.columnCount } : undefined,
+        onFocus(event) {
+          if (event.target !== event.currentTarget) return
+          send({ type: "GRID.FOCUS" })
+        },
         onKeyDown(event) {
           if (!interactive) return
           if (!contains(event.currentTarget, getEventTarget(event))) return
@@ -381,7 +387,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         role: "row",
         ...parts.item.attrs(scope.id),
         dir: prop("dir"),
-        tabIndex: itemState.focused ? 0 : -1,
+        tabIndex: focusedValue === itemState.value ? 0 : -1,
         "data-value": itemState.value,
         "data-layout": layout,
         "data-href": isLink ? href : undefined,
@@ -410,6 +416,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onClick(event) {
           if (event.defaultPrevented) return
           if (itemState.disabled) return
+          // A nested button or link handles its own click
+          if (isInteractiveDescendant(event.currentTarget, getEventTarget(event))) return
           if (isLink) {
             const shouldNavigate = invokeNavigate(itemState.value, href!, event.currentTarget as HTMLElement)
             if (!shouldNavigate) event.preventDefault()

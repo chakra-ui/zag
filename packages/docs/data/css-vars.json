@@ -181,7 +181,6 @@
   },
   "radio-group": {
     "Indicator": {
-      "--transition-property": "The transition property value for the Indicator",
       "--left": "The left position value",
       "--top": "The top position value",
       "--width": "The width of the element",
@@ -225,12 +224,11 @@
   },
   "steps": {
     "Root": {
-      "--percent": "The percent value for the Root"
+      "--steps-percent": "The steps percent value for the Root"
     }
   },
   "tabs": {
     "Indicator": {
-      "--transition-property": "The transition property value for the Indicator",
       "--left": "The left position value",
       "--top": "The top position value",
       "--width": "The width of the element",

@@ -28,8 +28,10 @@ function Toast(props) {
 
   return (
     <div {...api().getRootProps()}>
-      <h3 {...api().getTitleProps()}>{api().title}</h3>
-      <p {...api().getDescriptionProps()}>{api().description}</p>
+      <div {...api().getContentProps()}>
+        <h3 {...api().getTitleProps()}>{api().title}</h3>
+        <p {...api().getDescriptionProps()}>{api().description}</p>
+      </div>
       <button onClick={api().dismiss}>Close</button>
     </div>
   )

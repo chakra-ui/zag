@@ -30,7 +30,7 @@ const numberApi = computed(() => numberInput.connect(numberService, normalizePro
       <button v-bind="api.getItemProps({ value: 'copy' })">Copy</button>
       <div v-bind="api.getSeparatorProps()" />
       <div v-bind="numberApi.getControlProps()">
-        <button v-bind="numberApi.getDecrementTriggerProps()" aria-label="Zoom out">-</button>
+        <button v-bind="numberApi.getDecrementTriggerProps()" aria-label="Zoom out">−</button>
         <input
           class="toolbar-number-input"
           v-bind="mergeProps(numberApi.getInputProps(), api.getInputProps({ value: 'zoom' }))"
@@ -38,6 +38,11 @@ const numberApi = computed(() => numberInput.connect(numberService, normalizePro
         <button v-bind="numberApi.getIncrementTriggerProps()" aria-label="Zoom in">+</button>
       </div>
     </div>
+    <p>
+      A vertical toolbar contests ArrowUp/ArrowDown with the number-input's own spin behavior. Focus the zoom field and
+      press ArrowUp/ArrowDown — it should always change the value, never move roving focus away. ArrowUp/ArrowDown still
+      move between Cut/Copy/the field when focus is elsewhere.
+    </p>
   </main>
 
   <Toolbar>

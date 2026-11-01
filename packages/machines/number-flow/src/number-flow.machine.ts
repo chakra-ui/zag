@@ -3,7 +3,7 @@ import { getEventTarget } from "@zag-js/dom-query"
 import * as dom from "./number-flow.dom"
 import type { NumberFlowSchema } from "./number-flow.types"
 import { cancelScheduledWrite, scheduleWrite, trackReducedMotion } from "./utils/scheduler"
-import { DIGIT_TRACK_TRANSITION } from "./number-flow.style"
+import { getPresenceCounters, mergeSegments, settleSegments } from "./utils/presence"
 import {
   computeCounters,
   getCycles,
@@ -11,58 +11,48 @@ import {
   getRenderResult,
   isDigitSegment,
   normalizeCounter,
+  stableOptionsKey,
+  type Segment,
 } from "./utils/segments"
-import { getSettleTimeoutMs } from "./utils/timing"
+import { getSettleTimeoutMs, parseDurationMs } from "./utils/timing"
 
 type Ctx = Params<NumberFlowSchema>
 
-/**
- * Resolves a place's track element, refreshing the cache on a miss.
- *
- * The cache is filled by `syncTrackEls`, which runs off a `watch` on the structural key. That
- * fires on the initial key in some renderers and not others, so treating the cache as the only
- * source drops every transform write on the ones where it doesn't - the digits then sit still
- * and jump at settle. Falling back to a query keeps the cache an optimisation rather than a
- * correctness dependency, and `isConnected` drops elements a structural change replaced.
- */
-function getTrackEl(params: Pick<Ctx, "refs" | "scope">, place: number): HTMLElement | undefined {
-  const { refs, scope } = params
-  const cache = refs.get("trackEls")
+const render = (prop: Ctx["prop"], value: number) =>
+  getRenderResult({
+    value,
+    locale: prop("locale"),
+    formatOptions: prop("formatOptions"),
+    prefix: prop("prefix"),
+    suffix: prop("suffix"),
+  })
 
+// The cache is an optimisation: some renderers skip the initial `syncTrackEls`, so fall back to a query
+function getTrackEl({ refs, scope }: Pick<Ctx, "refs" | "scope">, place: number): HTMLElement | undefined {
+  const cache = refs.get("trackEls")
   const cached = cache.get(place)
   if (cached?.isConnected) return cached
-
   const el = dom.getDigitTrackEl(scope, place)
   if (el) cache.set(place, el)
   return el ?? undefined
 }
 
-/**
- * Computes the next counters and writes changed transforms through the shared scheduler.
- * `instant` (reduced-motion) skips the roll math entirely and snaps counters to rest.
- */
-function writeCounters(params: Pick<Ctx, "context" | "computed" | "refs" | "prop" | "scope">, instant: boolean) {
+function writeCounters(
+  params: Pick<Ctx, "context" | "computed" | "refs" | "prop" | "scope" | "send">,
+  instant: boolean,
+) {
   const { context, computed, refs, prop, scope } = params
   const result = computed("result")
   const nextValue = context.get("value")
   const prevValue = refs.get("prevValue")
-
-  if (result.signature !== context.get("structuralKey")) {
-    context.set("structuralKey", result.signature)
-  }
-
-  // Reduced motion snaps straight to rest - nothing to debounce until a real settle.
-  if (instant) context.set("announcedValueText", result.valueText)
-
   const prevCounters = refs.get("counters")
   const cycles = getCycles(prop("continuous"))
 
-  const nextCounters = instant
-    ? new Map(
-        result.segments
-          .filter(isDigitSegment)
-          .map((segment) => [segment.place, normalizeCounter(segment.digit, cycles)]),
-      )
+  if (result.signature !== context.get("structuralKey")) context.set("structuralKey", result.signature)
+  if (instant) context.set("announcedValueText", result.valueText)
+
+  const rolledCounters = instant
+    ? new Map(result.segments.filter(isDigitSegment).map((s) => [s.place, normalizeCounter(s.digit, cycles)]))
     : computeCounters({
         prevCounters,
         segments: result.segments,
@@ -72,54 +62,73 @@ function writeCounters(params: Pick<Ctx, "context" | "computed" | "refs" | "prop
         continuous: prop("continuous"),
       })
 
-  const changedPlaces: number[] = []
-  for (const [place, counter] of nextCounters) {
-    if (prevCounters.has(place) && prevCounters.get(place) !== counter) {
-      changedPlaces.push(place)
-    }
-  }
+  const segments = instant ? settleSegments(result.segments) : mergeSegments(context.get("segments"), result.segments)
+  const nextCounters = getPresenceCounters(segments, prevCounters, rolledCounters, nextValue >= prevValue ? 1 : -1)
+  context.set("segments", segments)
+  if (!instant) schedulePresence(params, segments)
+
+  const changedPlaces = [...nextCounters].filter(
+    ([place, c]) => prevCounters.has(place) && prevCounters.get(place) !== c,
+  )
+  const changed = changedPlaces.map(([place]) => place)
 
   refs.set("counters", nextCounters)
   refs.set("prevValue", nextValue)
   if (nextValue !== prevValue) refs.set("trend", nextValue > prevValue ? "up" : "down")
 
-  if (!instant && changedPlaces.length > 0) {
-    for (const place of changedPlaces) {
-      getTrackEl(params, place)?.style.setProperty("will-change", "transform")
-    }
+  if (!instant && changed.length > 0) {
+    for (const place of changed) getTrackEl(params, place)?.style.setProperty("will-change", "transform")
 
-    // A retarget continues the roll already in flight, so `onAnimationStart` fires once per
-    // roll - on the first digit to move - and `onAnimationComplete` once on settle, with
-    // every place that moved along the way. Firing per retarget would leave a burst of
-    // clicks with many starts and a single complete.
+    // One start per roll (retargets continue it), one complete on settle
     const animating = refs.get("animatingPlaces")
-    if (animating.length === 0) prop("onAnimationStart")?.({ places: changedPlaces })
-    refs.set("animatingPlaces", getPlaceOrder([...animating, ...changedPlaces]))
+    if (animating.length === 0) prop("onAnimationStart")?.({ places: changed })
+    refs.set("animatingPlaces", getPlaceOrder([...animating, ...changed]))
 
-    // Digits retargeted at different moments finish at different moments, so the roll is only
-    // over once every one of them has reported in. Dropping places that no longer exist keeps
-    // a digit that exited mid-roll from holding the settle open until the timeout.
-    const pending = new Set(changedPlaces)
-    for (const place of refs.get("pendingPlaces")) {
-      if (nextCounters.has(place)) pending.add(place)
-    }
+    // Settle once every moved digit reports in; drop places that no longer exist
+    const pending = new Set(changed)
+    for (const place of refs.get("pendingPlaces")) if (nextCounters.has(place)) pending.add(place)
     refs.set("pendingPlaces", pending)
   }
 
   scheduleWrite(scope, () => {
-    for (const place of changedPlaces) {
+    for (const place of changed) {
       const el = getTrackEl(params, place)
       if (!el) continue
-      if (instant) el.style.transition = "none"
-      el.style.transform = `translateY(${-nextCounters.get(place)!}lh)`
-      if (instant) {
-        void el.offsetHeight
-        // Restore the exact declarative value - frameworks only re-apply a style property
-        // when it *changes* across renders, so clearing to `""` would desync it forever.
-        el.style.transition = DIGIT_TRACK_TRANSITION
-      }
+      const counter = nextCounters.get(place)!
+      if (instant) dom.snapTrack(el, counter)
+      else dom.setTrackTransform(el, counter)
     }
   })
+}
+
+// Entering segments need one painted frame at zero width; exiting ones leave on transitionend (or timeout)
+function schedulePresence(
+  { refs, prop, scope, send }: Pick<Ctx, "refs" | "prop" | "scope" | "send">,
+  segments: Segment[],
+) {
+  const win = scope.getWin()
+
+  if (segments.some((s) => s.presence === "entering")) {
+    win.cancelAnimationFrame(refs.get("presenceFrame"))
+    refs.set(
+      "presenceFrame",
+      win.requestAnimationFrame(() => {
+        refs.set(
+          "presenceFrame",
+          win.requestAnimationFrame(() => send({ type: "PRESENCE.COMMIT" })),
+        )
+      }),
+    )
+  }
+
+  if (segments.some((s) => s.presence === "exiting")) {
+    win.clearTimeout(refs.get("presenceTimer"))
+    const timeoutMs = parseDurationMs(prop("transformTiming")?.duration, 900) + 200
+    refs.set(
+      "presenceTimer",
+      win.setTimeout(() => send({ type: "PRESENCE.EXITED" }), timeoutMs),
+    )
+  }
 }
 
 export const machine = createMachine<NumberFlowSchema>({
@@ -150,6 +159,8 @@ export const machine = createMachine<NumberFlowSchema>({
       pendingPlaces: new Set<number>(),
       reducedMotion: false,
       trend: "none",
+      presenceFrame: 0,
+      presenceTimer: 0,
     }
   },
 
@@ -164,32 +175,28 @@ export const machine = createMachine<NumberFlowSchema>({
       })),
       structuralKey: bindable<string>(() => ({ defaultValue: "" })),
       announcedValueText: bindable<string>(() => ({ defaultValue: "" })),
+      // Seeded from props so the first (and server) render has segments
+      segments: bindable<Segment[]>(() => ({
+        defaultValue: render(prop, prop("value") ?? prop("defaultValue")).segments,
+      })),
     }
   },
 
   computed: {
-    result: ({ context, prop }) =>
-      getRenderResult({
-        value: context.get("value"),
-        locale: prop("locale"),
-        formatOptions: prop("formatOptions"),
-        prefix: prop("prefix"),
-        suffix: prop("suffix"),
-      }),
+    result: ({ context, prop }) => render(prop, context.get("value")),
   },
 
   entry: ["initialize"],
 
-  exit: ["cancelWrite"],
+  exit: ["cancelWrite", "cancelPresence"],
 
-  effects: ["trackReducedMotionPreference"],
+  effects: ["trackReducedMotionPreference", "trackPresenceExit"],
 
   watch({ context, prop, track, action, send }) {
     track(
       [
         () => context.get("value"),
-        () => prop("locale"),
-        () => JSON.stringify(prop("formatOptions")),
+        () => stableOptionsKey(prop("locale"), prop("formatOptions")),
         () => prop("prefix"),
         () => prop("suffix"),
       ],
@@ -205,6 +212,12 @@ export const machine = createMachine<NumberFlowSchema>({
   on: {
     "VALUE.SET": {
       actions: ["setValue"],
+    },
+    "PRESENCE.COMMIT": {
+      actions: ["commitEntering"],
+    },
+    "PRESENCE.EXITED": {
+      actions: ["removeExiting"],
     },
   },
 
@@ -222,8 +235,7 @@ export const machine = createMachine<NumberFlowSchema>({
       on: {
         "VALUE.CHANGE": [
           { guard: "isReducedMotionActive", target: "idle", actions: ["applyCountersInstant"] },
-          // Re-enter so the settle window restarts - a retarget begins a fresh transition,
-          // and the previous window's timeout would otherwise cut it short mid-roll.
+          // Re-enter to restart the settle timeout for the new transition
           { reenter: true, actions: ["applyCounters"] },
         ],
         SETTLE: {
@@ -249,8 +261,7 @@ export const machine = createMachine<NumberFlowSchema>({
         context.set("structuralKey", result.signature)
         context.set("announcedValueText", result.valueText)
 
-        // Start each counter at the middle cycle (not the raw 0-9 digit) so the very first
-        // roll always has headroom in both directions - see `computeCounters` (§9.7).
+        // Middle cycle, so the first roll has headroom both ways
         const cycles = getCycles(prop("continuous"))
         const counters = new Map<number, number>()
         for (const segment of result.segments) {
@@ -281,32 +292,19 @@ export const machine = createMachine<NumberFlowSchema>({
         const { context, computed, refs, prop } = params
         context.set("announcedValueText", computed("result").valueText)
 
+        // Snap every track to the same digit in the middle cycle, invisibly
         const cycles = getCycles(prop("continuous"))
-        const counters = refs.get("counters")
-
         const normalized = new Map<number, number>()
-        for (const [place, counter] of counters) {
-          normalized.set(place, normalizeCounter(counter, cycles))
-        }
-
-        for (const [place, target] of normalized) {
+        for (const [place, counter] of refs.get("counters")) {
+          const target = normalizeCounter(counter, cycles)
+          normalized.set(place, target)
           const el = getTrackEl(params, place)
           if (!el) continue
           el.style.removeProperty("will-change")
-
-          // Suppress the transition, snap to the equivalent position in the middle cycle,
-          // force a flush, then restore - so the reset is visually silent (§7, §9.6). Restoring
-          // to the exact declarative string (not `""`) keeps the DOM in sync with the framework's
-          // style object, which only re-applies a property when its value changes across renders.
-          el.style.transition = "none"
-          el.style.transform = `translateY(${-target}lh)`
-          void el.offsetHeight
-          el.style.transition = DIGIT_TRACK_TRANSITION
+          dom.snapTrack(el, target)
         }
-
         refs.set("counters", normalized)
-        // A settle forced by the timeout or a hidden tab suppresses transitions rather than
-        // letting them end, so nothing else will report these in.
+        // Forced settles (timeout, hidden tab) never fire transitionend
         refs.get("pendingPlaces").clear()
 
         const animating = refs.get("animatingPlaces")
@@ -316,13 +314,74 @@ export const machine = createMachine<NumberFlowSchema>({
 
       cancelWrite({ scope }) {
         cancelScheduledWrite(scope)
+        cancelScheduledWrite(`${scope.id}:enter`)
+      },
+
+      cancelPresence({ refs, scope }) {
+        const win = scope.getWin()
+        win.cancelAnimationFrame(refs.get("presenceFrame"))
+        win.clearTimeout(refs.get("presenceTimer"))
+      },
+
+      commitEntering(params) {
+        const { context, refs, prop, scope } = params
+        const segments = context.get("segments")
+        if (!segments.some((s) => s.presence === "entering")) return
+
+        // Roll each entering digit its last cell onto its own glyph
+        const counters = refs.get("counters")
+        const cycles = getCycles(prop("continuous"))
+        const rolls: number[] = []
+        for (const segment of segments) {
+          if (segment.presence !== "entering" || !isDigitSegment(segment)) continue
+          const target = normalizeCounter(segment.digit, cycles)
+          if (counters.get(segment.place) === target) continue
+          counters.set(segment.place, target)
+          rolls.push(segment.place)
+        }
+        // Own key, so it can't replace a value write queued for the same frame
+        scheduleWrite(`${scope.id}:enter`, () => {
+          for (const place of rolls) {
+            const el = getTrackEl(params, place)
+            if (el) dom.setTrackTransform(el, counters.get(place)!)
+          }
+        })
+
+        context.set(
+          "segments",
+          segments.map((s) => (s.presence === "entering" ? { ...s, presence: undefined } : s)),
+        )
+      },
+
+      // Drops one exited segment by key, or all of them on timeout
+      removeExiting({ context, refs, event }) {
+        const segments = context.get("segments")
+        const isGone = (s: Segment) => s.presence === "exiting" && (event.key == null || s.key === event.key)
+        const gone = segments.filter(isGone)
+        if (gone.length === 0) return
+        for (const segment of gone) if (isDigitSegment(segment)) refs.get("counters").delete(segment.place)
+        context.set(
+          "segments",
+          segments.filter((s) => !isGone(s)),
+        )
       },
     },
 
     effects: {
+      trackPresenceExit({ scope, send }) {
+        const rootEl = dom.getRootEl(scope)
+        const onTransitionEnd = (event: TransitionEvent) => {
+          if (event.propertyName !== "grid-template-columns") return
+          const target = getEventTarget<HTMLElement>(event)
+          const key = target?.hasAttribute("data-exiting") ? target.dataset.key : undefined
+          if (key) send({ type: "PRESENCE.EXITED", key })
+        }
+        rootEl?.addEventListener("transitionend", onTransitionEnd)
+        return () => rootEl?.removeEventListener("transitionend", onTransitionEnd)
+      },
+
       trackReducedMotionPreference({ refs, scope }) {
-        const win = scope.getWin()
-        return trackReducedMotion(win, (matches) => {
+        return trackReducedMotion(scope.getWin(), (matches) => {
           refs.set("reducedMotion", matches)
         })
       },
@@ -337,10 +396,7 @@ export const machine = createMachine<NumberFlowSchema>({
           return () => win.cancelAnimationFrame(rafId)
         }
 
-        // `transitionend` bubbles, so one listener on the root covers every track - including
-        // tracks added by a structural change after this effect started.
         const rootEl = dom.getRootEl(scope)
-
         const onTransitionEnd = (event: TransitionEvent) => {
           if (event.propertyName !== "transform") return
           const target = getEventTarget<Element>(event)
@@ -350,11 +406,8 @@ export const machine = createMachine<NumberFlowSchema>({
           pending.delete(place)
           if (pending.size === 0) send({ type: "SETTLE", src: "transitionend" })
         }
-
         const onVisibilityChange = () => {
-          if (doc.visibilityState === "hidden") {
-            send({ type: "SETTLE", src: "visibilitychange" })
-          }
+          if (doc.visibilityState === "hidden") send({ type: "SETTLE", src: "visibilitychange" })
         }
 
         rootEl?.addEventListener("transitionend", onTransitionEnd)

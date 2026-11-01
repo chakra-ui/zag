@@ -5,11 +5,11 @@ import { nanoid } from "nanoid"
 import { Steps } from "../src/steps"
 
 document.querySelectorAll<HTMLElement>(".steps-root").forEach((rootEl) => {
-  const stepsComponent = new Steps(rootEl, {
-    id: nanoid(),
-    count: 4,
-    defaultStep: 0,
-  })
+  const items = Array.from(rootEl.querySelectorAll<HTMLElement>(".steps-item")).map((el) => ({
+    value: el.dataset.value!,
+  }))
+
+  const stepsComponent = new Steps(rootEl, { id: nanoid(), items })
 
   stepsComponent.init()
 })

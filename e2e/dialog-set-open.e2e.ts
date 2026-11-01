@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const content = "[data-dialog-content]"
 const openState = "[data-testid=open-state]"

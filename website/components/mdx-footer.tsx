@@ -1,36 +1,22 @@
-import { styled, Box } from "styled-system/jsx"
-import siteConfig from "site.config"
+import { Box } from "styled-system/jsx"
+import { EditPageLink } from "./mdx/edit-page-link"
 import { Pagination } from "./pagination"
 
-export function MdxFooter() {
+/** Prev/next cards, then page actions. The credits live in the full-width docs footer. */
+export function MdxFooter(props: { editUrl?: string }) {
   return (
-    <styled.footer mt="12">
-      <Pagination />
-      <Box
+    <footer>
+      <Pagination
+        mt="20"
         pt="10"
         borderTopWidth="1px"
-        display={{ sm: "flex" }}
-        justifyContent="space-between"
-      >
-        <Box fontSize="sm" mb={{ base: "6", sm: "0" }}>
-          A project by{" "}
-          <a
-            href="https://chakra-ui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Chakra Systems
-          </a>
-        </Box>
-      </Box>
-
-      <Box
-        fontSize="sm"
-        mt="4"
-        mb="28"
-        opacity={0.5}
-        dangerouslySetInnerHTML={{ __html: siteConfig.copyright }}
+        borderColor="border.subtle"
       />
-    </styled.footer>
+      {props.editUrl && (
+        <Box mt="6">
+          <EditPageLink href={props.editUrl} />
+        </Box>
+      )}
+    </footer>
   )
 }

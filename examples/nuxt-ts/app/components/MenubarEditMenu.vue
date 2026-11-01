@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, inject, onMounted } from "vue"
+import { computed, inject, onMounted, type ComputedRef } from "vue"
 
-const menubarContext = inject<menu.MenubarContext | undefined>("menubar", undefined)
-const service = useMachine(menu.machine, { id: "edit", menubar: menubarContext })
+const menubarContext = inject<ComputedRef<menu.MenubarContext> | undefined>("menubar", undefined)
+const service = useMachine(
+  menu.machine,
+  computed(() => ({ id: "edit", menubar: menubarContext?.value })),
+)
 const api = computed(() => menu.connect(service, normalizeProps))
 
 // The submenu is not a menubar menu (no `menubar` prop) — it's linked via setParent/setChild.
@@ -19,7 +22,7 @@ onMounted(() => {
 
 <template>
   <button data-testid="edit:trigger" v-bind="api.getTriggerProps()">Edit</button>
-  <Teleport to="body" v-if="api.open">
+  <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
       <ul data-testid="edit:content" v-bind="api.getContentProps()">
         <li data-testid="undo" v-bind="api.getItemProps({ value: 'undo' })">Undo</li>
@@ -28,7 +31,7 @@ onMounted(() => {
       </ul>
     </div>
   </Teleport>
-  <Teleport to="body" v-if="sub.open">
+  <Teleport v-if="sub.open" to="#teleports">
     <div v-bind="sub.getPositionerProps()">
       <ul data-testid="find:content" v-bind="sub.getContentProps()">
         <li data-testid="find-text" v-bind="sub.getItemProps({ value: 'find-text' })">Find...</li>

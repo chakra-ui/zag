@@ -15,25 +15,23 @@ const service = useMachine(
 )
 
 const api = computed(() => rating.connect(service, normalizeProps))
-
-const items = computed(() =>
-  api.value.items.map((index) => {
-    return [index, api.value.getItemState({ index })] as const
-  }),
-)
 </script>
 
 <template>
   <main class="rating">
-    <div v-bind="api.getRootProps()">
-      <div v-bind="api.getControlProps()">
-        <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })">
-          <HalfStar v-if="state.half" />
-          <Star v-else="" />
-        </span>
+    <form action="" class="vstack gap-4">
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Rate:</label>
+        <div v-bind="api.getControlProps()">
+          <span v-for="index in api.items" :key="index" v-bind="api.getItemProps({ index })">
+            <HalfStar v-if="api.getItemState({ index }).half" />
+            <Star v-else />
+          </span>
+        </div>
+        <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
       </div>
-      <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
-    </div>
+      <button type="reset">Reset</button>
+    </form>
   </main>
 
   <Toolbar>

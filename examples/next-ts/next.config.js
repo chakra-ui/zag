@@ -1,5 +1,4 @@
 module.exports = {
-  // next writes AGENTS.md / CLAUDE.md into the example on every dev start
   agentRules: false,
   typescript: { ignoreBuildErrors: true },
   experimental: {

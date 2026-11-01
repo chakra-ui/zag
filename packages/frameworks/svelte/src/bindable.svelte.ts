@@ -11,17 +11,14 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const controlled = () => props().value !== undefined
 
   let valueRef = { current: untrack(() => value) }
-  let prevValue = { current: undefined as T | undefined }
 
   $effect.pre(() => {
-    const v = controlled() ? props().value : value
-    valueRef = { current: v }
-    prevValue = { current: v as T }
+    valueRef = { current: controlled() ? props().value : value }
   })
 
   const setValueFn = (v: T | ((prev: T) => T)) => {
-    const next = isFunction(v) ? v(valueRef.current as T) : v
-    const prev = prevValue.current as T | undefined
+    const prev = (controlled() ? props().value : value) as T
+    const next = isFunction(v) ? v(prev) : v
     if (props().debug) {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }

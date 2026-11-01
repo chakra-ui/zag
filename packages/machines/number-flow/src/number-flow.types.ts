@@ -123,26 +123,18 @@ type PropsWithDefault =
   | "live"
 
 interface PrivateContext {
-  /**
-   * The resolved value (controlled or uncontrolled).
-   */
+  /** The resolved value (controlled or uncontrolled). */
   value: number
-  /**
-   * A hash of the current render shape. Changes only when segments enter/exit, or the
-   * format shape changes - the only events that require adding/removing DOM nodes.
-   */
+  /** The render shape; changes only when segments enter or exit. */
   structuralKey: string
-  /**
-   * The text announced by the `live` region. Debounced to the settle event so a fast
-   * counter doesn't spam assistive technology with every intermediate value.
-   */
+  /** The value announced to assistive tech, updated on settle. */
   announcedValueText: string
+  /** The rendered segments, including ones still animating out. */
+  segments: Segment[]
 }
 
 interface ComputedContext {
-  /**
-   * The formatted render parts, structural signature, and value text for the current value.
-   */
+  /** The formatted parts, signature and value text for the current value. */
   result: RenderResult
 }
 
@@ -162,6 +154,10 @@ export interface NumberFlowRefs {
   reducedMotion: boolean
   /** The direction of the most recent value change, exposed as `data-trend`. */
   trend: "up" | "down" | "none"
+  /** The pending frame that commits entering segments. */
+  presenceFrame: number
+  /** The fallback timer that drops exiting segments. */
+  presenceTimer: number
 }
 
 export interface NumberFlowSchema {

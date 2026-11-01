@@ -1,22 +1,30 @@
 import { AccordionAnatomy } from "./accordion"
+import { AngleSliderAnatomy } from "./angle-slider"
 import { AvatarAnatomy } from "./avatar"
 import { CarouselAnatomy } from "./carousel"
+import { CascadeSelectAnatomy } from "./cascade-select"
 import { CheckboxAnatomy } from "./checkbox"
 import { CircularProgressAnatomy } from "./circular-progress"
 import { ClipboardAnatomy } from "./clipboard"
+import { CollapsibleAnatomy } from "./collapsible"
 import { ColorPickerAnatomy } from "./color-picker"
 import { ComboboxAnatomy } from "./combobox"
 import { DateInputAnatomy } from "./date-input"
 import { DatePickerAnatomy } from "./date-picker"
 import { DialogAnatomy } from "./dialog"
+import { DrawerAnatomy } from "./drawer"
 import { EditableAnatomy } from "./editable"
 import { FieldAnatomy } from "./field"
 import { FieldsetAnatomy } from "./fieldset"
 import { FileUploadAnatomy } from "./file-upload"
 import { FloatingPanelAnatomy } from "./floating-panel"
 import { HoverCardAnatomy } from "./hover-card"
+import { ImageCropperAnatomy } from "./image-cropper"
 import { LinearProgressAnatomy } from "./linear-progress"
+import { ListboxAnatomy } from "./listbox"
+import { MarqueeAnatomy } from "./marquee"
 import { MenuAnatomy } from "./menu"
+import { NavigationMenuAnatomy } from "./navigation-menu"
 import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
 import { PasswordInputAnatomy } from "./password-input"
@@ -35,6 +43,7 @@ import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
+import { TimerAnatomy } from "./timer"
 import { ToastAnatomy } from "./toast"
 import { TocAnatomy } from "./toc"
 import { ToggleAnatomy } from "./toggle"
@@ -44,6 +53,15 @@ import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
 
 export const allComponents = {
+  "angle-slider": AngleSliderAnatomy,
+  "cascade-select": CascadeSelectAnatomy,
+  collapsible: CollapsibleAnatomy,
+  drawer: DrawerAnatomy,
+  "image-cropper": ImageCropperAnatomy,
+  listbox: ListboxAnatomy,
+  marquee: MarqueeAnatomy,
+  "navigation-menu": NavigationMenuAnatomy,
+  timer: TimerAnatomy,
   "date-input": DateInputAnatomy,
   toc: TocAnatomy,
   "scroll-area": ScrollAreaAnatomy,

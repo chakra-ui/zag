@@ -1,12 +1,6 @@
 import type { Params } from "@zag-js/core"
-import {
-  clampValue,
-  getNextStepValue,
-  getPreviousStepValue,
-  getValuePercent,
-  getValueRanges,
-  snapValueToStep,
-} from "@zag-js/utils"
+import { clampValue, getValuePercent, getValueRanges, setValueAtIndex, snapValueToStep } from "@zag-js/utils"
+import type { Size } from "@zag-js/types"
 import type { SliderOrigin, SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
@@ -163,30 +157,11 @@ export function constrainValue(params: Pick<Ctx, "context" | "prop">, value: num
   return clampValue(snapValue, range.min, range.max)
 }
 
-export function decrement(params: Pick<Ctx, "context" | "prop">, index?: number, step?: number) {
-  const { context, prop } = params
+export function stepThumb(params: Pick<Ctx, "context" | "prop">, delta: number, index?: number) {
+  const { context } = params
   const idx = index ?? context.get("focusedIndex")
-  const range = getRangeAtIndex(params, idx)
-  const nextValues = getPreviousStepValue(idx, {
-    ...range,
-    step: step ?? prop("step"),
-    values: context.get("value"),
-  })
-  nextValues[idx] = clampValue(nextValues[idx], range.min, range.max)
-  return nextValues
-}
-
-export function increment(params: Pick<Ctx, "context" | "prop">, index?: number, step?: number) {
-  const { context, prop } = params
-  const idx = index ?? context.get("focusedIndex")
-  const range = getRangeAtIndex(params, idx)
-  const nextValues = getNextStepValue(idx, {
-    ...range,
-    step: step ?? prop("step"),
-    values: context.get("value"),
-  })
-  nextValues[idx] = clampValue(nextValues[idx], range.min, range.max)
-  return nextValues
+  const values = context.get("value")
+  return setValueAtIndex(values, idx, constrainValue(params, values[idx] + delta, idx))
 }
 
 export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValue: number) {
@@ -226,13 +201,6 @@ export function selectMovableThumb(params: Pick<Ctx, "context" | "prop">, index:
   return index
 }
 
-export function assignArray(current: number[], next: number[]) {
-  for (let i = 0; i < next.length; i++) {
-    const value = next[i]
-    current[i] = value
-  }
-}
-
 /** Resolves the `origin` prop to a percent position (0-100) within `min`-`max`. */
 export function getOriginPercent(origin: SliderOrigin, min: number, max: number): number {
   if (typeof origin === "number") {
@@ -249,11 +217,23 @@ export function getOriginPercent(origin: SliderOrigin, min: number, max: number)
   }
 }
 
-/** Track-fill insets (from the left/right edges) needed to fill between origin and value. */
-export function getFillRange(valuePercent: number, originPercent: number): { start: number; end: number } {
-  const isBeforeOrigin = valuePercent < originPercent
-  return {
-    start: isBeforeOrigin ? valuePercent : originPercent,
-    end: isBeforeOrigin ? 100 - originPercent : 100 - valuePercent,
-  }
+export function getFillSpan(params: Pick<Ctx, "computed" | "prop">): [number, number] {
+  const { computed, prop } = params
+  const percents = computed("valuePercent")
+  if (percents.length > 1) return [percents[0], percents[percents.length - 1]]
+  const origin = getOriginPercent(prop("origin"), prop("min"), prop("max"))
+  const value = percents[0]
+  return value < origin ? [value, origin] : [origin, value]
+}
+
+export function getThumbExtent(params: Pick<Ctx, "context" | "prop">) {
+  const { context, prop } = params
+  if (prop("thumbAlignment") !== "contain") return 0
+  const size = context.get("thumbSize")
+  return (prop("orientation") === "vertical" ? size?.height : size?.width) ?? 0
+}
+
+export const toThumbSize = (size: number | Size | undefined): Size | null => {
+  if (size == null) return null
+  return typeof size === "number" ? { width: size, height: size } : size
 }

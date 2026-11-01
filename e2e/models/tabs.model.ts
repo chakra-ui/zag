@@ -35,6 +35,10 @@ export class TabsModel extends Model {
     await this.getTabTrigger(id).click()
   }
 
+  focusTab = async (id: string) => {
+    await this.getTabTrigger(id).focus()
+  }
+
   seeTabContent = async (id: string) => {
     await expect(this.getTabContent(id)).toBeVisible()
   }

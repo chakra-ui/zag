@@ -22,21 +22,18 @@ export default function Page() {
   return (
     <>
       <main className="progress">
-        <div {...api.getRootProps()}>
-          <div {...api.getLabelProps()}>Upload progress</div>
-
-          <svg {...api.getCircleProps()}>
-            <circle {...api.getCircleTrackProps()} />
-            <circle {...api.getCircleRangeProps()} />
-          </svg>
-
-          <div {...api.getTrackProps()}>
-            <div {...api.getRangeProps()} />
+        <div className="vstack gap-4">
+          <div {...api.getRootProps()}>
+            <div className="progress-header">
+              <span {...api.getLabelProps()}>Upload progress</span>
+              <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+            </div>
+            <div {...api.getTrackProps()}>
+              <div {...api.getRangeProps()} />
+            </div>
           </div>
 
-          <div {...api.getValueTextProps()}>{api.valueAsString}</div>
-
-          <div>
+          <div className="hstack">
             <button onClick={() => api.setValue((api.value ?? 0) - 20)}>Decrease</button>
             <button onClick={() => api.setValue((api.value ?? 0) + 20)}>Increase</button>
             <button onClick={() => api.setValue(null)}>Indeterminate</button>

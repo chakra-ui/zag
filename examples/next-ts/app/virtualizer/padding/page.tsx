@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
+const estimateSize = () => 40
+
 const ITEM_COUNT = 1000
 
 const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
@@ -16,16 +18,15 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => 40,
-    paddingStart: 40,
-    paddingEnd: 40,
+    estimatedSize: estimateSize,
+    paddingStart,
+    paddingEnd,
     overscan: 5,
   })
 
   const updatePadding = (start: number, end: number) => {
     setPaddingStart(start)
     setPaddingEnd(end)
-    virtualizer.updateOptions({ paddingStart: start, paddingEnd: end })
   }
 
   const virtualItems = virtualizer.getVirtualItems()

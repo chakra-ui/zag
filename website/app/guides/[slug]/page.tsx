@@ -1,7 +1,7 @@
-import { getGuideDoc, getGuidePaths } from "lib/contentlayer-utils"
+import { getGuideDoc, getGuidePaths } from "lib/source"
 import { createPageMetadata } from "lib/seo"
 import type { Metadata } from "next"
-import GuidePageClient from "./client"
+import { DocPage } from "components/doc-page"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -19,6 +19,7 @@ export async function generateMetadata({
     title: doc.title,
     description: doc.description,
     path: `/guides/${slug}`,
+    image: `/og/guides/${slug}.png`,
   })
 }
 
@@ -30,5 +31,5 @@ export default async function GuidePage({ params }: PageProps) {
   const { slug } = await params
   const doc = getGuideDoc(slug)
 
-  return <GuidePageClient doc={doc} />
+  return <DocPage category="guides" doc={doc} />
 }

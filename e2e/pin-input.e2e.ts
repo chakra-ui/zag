@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PinInputModel } from "./models/pin-input.model"
 
 let I: PinInputModel
@@ -7,6 +7,10 @@ test.describe("pin input", () => {
   test.beforeEach(async ({ page }) => {
     I = new PinInputModel(page)
     await I.goto()
+  })
+
+  test("should group the inputs under the label", async () => {
+    await I.seeInputsAreGroupedUnderLabel("Enter code:")
   })
 
   test("on type: should move focus to the next input", async () => {
@@ -146,6 +150,31 @@ test.describe("pin input", () => {
 
     await I.pressKey("End")
     await I.seeInputIsFocused(2)
+  })
+
+  test("ctrl/meta + arrow: should navigate to first and last", async () => {
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ControlOrMeta+ArrowLeft")
+    await I.seeInputIsFocused(1)
+
+    await I.pressKey("ControlOrMeta+ArrowRight")
+    await I.seeInputIsFocused(3)
+    await I.seeValues("1", "2", "3")
+  })
+
+  test("arrow up/down: should navigate to first and last", async () => {
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ArrowUp")
+    await I.seeInputIsFocused(1)
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputIsFocused(3)
   })
 
   // --- No-holes splice+shift ---
@@ -395,6 +424,55 @@ test.describe("pin input", () => {
     await I.pressKey("ArrowLeft")
     await I.seeInputIsFocused(3)
   })
+
+  test("rtl: ctrl/meta + arrow should be reversed", async () => {
+    await I.controls.select("dir", "rtl")
+
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+
+    await I.pressKey("ControlOrMeta+ArrowRight")
+    await I.seeInputIsFocused(1)
+    await I.pressKey("ControlOrMeta+ArrowLeft")
+    await I.seeInputIsFocused(3)
+  })
+
+  // --- Form validation ---
+
+  test("enter: should report an incomplete required value", async () => {
+    await I.controls.bool("required")
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 0, invalid: true })
+    await I.seeInputIsFocused(2)
+  })
+
+  test("enter: should submit a complete value", async () => {
+    await I.controls.bool("required")
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 1, invalid: false })
+  })
+
+  test("enter: should submit an empty optional value", async () => {
+    await I.trackFormEvents()
+    await I.focusInput(1)
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 1, invalid: false })
+  })
+
+  test("enter: should report an incomplete optional value", async () => {
+    await I.trackFormEvents()
+    await I.fillInput(1, "1")
+    await I.pressKey("Enter")
+    await I.seeFormEvents({ submits: 0, invalid: true })
+    await I.seeInputIsFocused(2)
+  })
 })
 
 // --- Controlled ---
@@ -459,5 +537,28 @@ test.describe("pin input / transform paste", () => {
     await I.paste("1-2-3")
 
     await I.seeValues("1", "2", "3")
+  })
+})
+
+test.describe("pin input [paste focus]", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new PinInputModel(page)
+    await page.clock.install()
+    await I.goto()
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
+
+  test("should keep focus outside when leaving right after paste", async ({ page }) => {
+    await I.focusInput(1)
+    await I.paste("123")
+    await page.keyboard.press("Shift+Tab")
+    await I.seeInputIsNotFocused(1)
+
+    await page.clock.runFor(32)
+    await I.seeValues("1", "2", "3")
+    await I.seeInputIsNotFocused(1)
+    await I.seeInputIsNotFocused(3)
   })
 })

@@ -2,6 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createSignal } from "solid-js"
 import { Portal } from "solid-js/web"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const [open, setOpen] = createSignal(false)
@@ -32,7 +33,9 @@ export default function Page() {
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api().getCloseTriggerProps()}>Close</button>
+              <button {...api().getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

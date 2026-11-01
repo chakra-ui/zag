@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/dialog.css"
 
@@ -114,7 +115,9 @@ export default function Page() {
               nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim
               veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
             </p>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
         </div>
       </Portal>

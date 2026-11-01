@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as field from "@zag-js/field"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import "@styles/field.css"
 
   const TAKEN_EMAILS = ["taken@example.com"]
@@ -13,7 +13,7 @@
   let timer: ReturnType<typeof setTimeout> | undefined
 
   const id = $props.id()
-  const service = useMachine(field.machine, () => ({
+  const service = useMachine(field.machine, (): field.Props => ({
     id,
     required: true,
     validationMode: "onChange",

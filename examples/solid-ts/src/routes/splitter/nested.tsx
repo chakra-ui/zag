@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as splitter from "@zag-js/splitter"
-import { createContext, createMemo, createUniqueId, useContext, type ParentProps } from "solid-js"
+import { createContext, createMemo, createUniqueId, splitProps, useContext, type ParentProps } from "solid-js"
 import "@styles/splitter.css"
 
 const registry = splitter.registry({
@@ -10,16 +10,18 @@ const registry = splitter.registry({
 const PanelContext = createContext<() => splitter.Api>()
 
 function PanelGroup(props: ParentProps<Omit<splitter.Props, "id">>) {
+  // Spreading props would eagerly render children outside the provider
+  const [local, machineProps] = splitProps(props, ["children"])
   const id = createUniqueId()
   const service = useMachine(splitter.machine, {
-    ...props,
+    ...machineProps,
     id,
     registry,
   })
   const api = createMemo(() => splitter.connect(service, normalizeProps))
   return (
     <PanelContext.Provider value={api}>
-      <div {...api().getRootProps()}>{props.children}</div>
+      <div {...api().getRootProps()}>{local.children}</div>
     </PanelContext.Provider>
   )
 }

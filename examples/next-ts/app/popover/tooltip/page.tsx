@@ -3,6 +3,7 @@
 import * as popover from "@zag-js/popover"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/popover.css"
 import "@styles/tooltip.css"
@@ -47,7 +48,9 @@ export default function Page() {
                   Focusable Link
                 </a>
                 <input placeholder="input" />
-                <button {...popoverApi.getCloseTriggerProps()}>X</button>
+                <button {...popoverApi.getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </div>
             </div>
           </div>

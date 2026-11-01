@@ -16,20 +16,22 @@ export function TableOfContents() {
   const api = createMemo(() => toc.connect(service, normalizeProps))
 
   return (
-    <nav {...api().getRootProps()}>
-      <h5 {...api().getTitleProps()}>On this page</h5>
-      <ul {...api().getListProps()}>
-        <For each={api().items}>
-          {(item) => (
-            <li {...api().getItemProps({ item })}>
-              <a href={`#${item.value}`} {...api().getLinkProps({ item })}>
-                {item.value}
-              </a>
-            </li>
-          )}
-        </For>
-      </ul>
-    </nav>
+    <div {...api().getRootProps()}>
+      <nav {...api().getNavProps()}>
+        <h5 {...api().getTitleProps()}>On this page</h5>
+        <ul {...api().getListProps()}>
+          <For each={api().items}>
+            {(item) => (
+              <li {...api().getItemProps({ item })}>
+                <a href={`#${item.value}`} {...api().getLinkProps({ item })}>
+                  {item.value}
+                </a>
+              </li>
+            )}
+          </For>
+        </ul>
+      </nav>
+    </div>
   )
 }
 ```

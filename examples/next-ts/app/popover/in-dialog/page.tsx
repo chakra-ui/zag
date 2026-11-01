@@ -3,6 +3,7 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import "@styles/popover.css"
 import "@styles/dialog.css"
@@ -47,7 +48,7 @@ function NestedPopover() {
                 Open Second Popover
               </button>
               <button data-testid="popover-close-button-1" {...api1.getCloseTriggerProps()}>
-                Close
+                <XIcon />
               </button>
             </div>
           </div>
@@ -70,7 +71,7 @@ function NestedPopover() {
                 Open Third Popover
               </button>
               <button data-testid="popover-close-button-2" {...api2.getCloseTriggerProps()}>
-                Close
+                <XIcon />
               </button>
             </div>
           </div>
@@ -92,7 +93,7 @@ function NestedPopover() {
                 Focusable Link
               </a>
               <button data-testid="popover-close-button-3" {...api3.getCloseTriggerProps()}>
-                Close
+                <XIcon />
               </button>
             </div>
           </div>

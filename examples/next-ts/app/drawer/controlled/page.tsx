@@ -1,10 +1,11 @@
 "use client"
 
+import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import { Presence } from "@/components/presence"
-import styles from "@styles/drawer.module.css"
 
 function AlwaysOpenDrawer() {
   const service = useMachine(drawer.machine, {
@@ -70,7 +71,9 @@ function ControlledDrawer() {
           <p style={{ fontSize: 14 }}>
             Open: <strong>{String(open)}</strong>
           </p>
-          <button {...api.getCloseTriggerProps()}>Close</button>
+          <button {...api.getCloseTriggerProps()}>
+            <XIcon />
+          </button>
         </Presence>
       </div>
     </div>

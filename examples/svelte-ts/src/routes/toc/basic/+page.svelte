@@ -2,9 +2,9 @@
   import * as toc from "@zag-js/toc"
   import { tocControls, tocData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import "@styles/toc.css"
 
   const controls = useControls(tocControls)
@@ -22,8 +22,8 @@
 </script>
 
 <main class="toc">
-  <div style="display: flex; gap: 2rem;">
-    <nav {...api.getRootProps()}>
+  <div {...api.getRootProps()}>
+    <nav {...api.getNavProps()}>
       <h5 {...api.getTitleProps()}>On this page</h5>
       <ul {...api.getListProps()}>
         {#each tocData as item}

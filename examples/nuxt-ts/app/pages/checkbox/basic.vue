@@ -3,6 +3,7 @@ import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
+import { CheckIcon } from "lucide-vue-next"
 import "@styles/checkbox.css"
 
 const controls = useControls(checkboxControls)
@@ -10,36 +11,36 @@ const controls = useControls(checkboxControls)
 const service = useMachine(
   checkbox.machine,
   controls.mergeProps<checkbox.Props>({
-    name: "checkbox",
     id: useId(),
   }),
 )
 
 const api = computed(() => checkbox.connect(service, normalizeProps))
+
+const onFormChange = (e: Event) => {
+  const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+  console.log(result)
+}
 </script>
 
 <template>
   <main class="checkbox">
-    <form
-      @change="
-        (e) => {
-          const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
-          console.log(result)
-        }
-      "
-    >
-      <fieldset>
-        <label v-bind="api.getRootProps()">
-          <div v-bind="api.getControlProps()" />
-          <span v-bind="api.getLabelProps()">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
-          <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
-          <div v-bind="api.getIndicatorProps()">Indicator</div>
-        </label>
+    <form class="vstack gap-4" @change="onFormChange">
+      <label v-bind="api.getRootProps()">
+        <div v-bind="api.getControlProps()">
+          <span v-bind="api.getIndicatorProps()">
+            <CheckIcon />
+          </span>
+        </div>
+        <span v-bind="api.getLabelProps()">Accept terms and conditions</span>
+        <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
+      </label>
 
-        <button type="button" :disabled="api.checked" @click="() => api.setChecked(true)">Check</button>
-        <button type="button" :disabled="!api.checked" @click="() => api.setChecked(false)">Uncheck</button>
+      <div class="hstack">
+        <button type="button" :disabled="api.checked" @click="api.setChecked(true)">Check</button>
+        <button type="button" :disabled="!api.checked" @click="api.setChecked(false)">Uncheck</button>
         <button type="reset">Reset Form</button>
-      </fieldset>
+      </div>
     </form>
   </main>
 

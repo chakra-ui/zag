@@ -18,6 +18,10 @@ export class Model {
     return controls(this.page)
   }
 
+  liveRegion(level: "polite" | "assertive" = "polite") {
+    return this.page.locator(`[data-live-announcer][aria-live=${level}]`)
+  }
+
   clickViz() {
     return clickViz(this.page)
   }
@@ -44,6 +48,13 @@ export class Model {
 
   pressKeyUp(key: string, times = 1) {
     return repeat(times, () => this.page.keyboard.up("ArrowUp"))
+  }
+
+  // Unlike `hover`, this fires `pointermove` along the way
+  async movePointerTo(selector: string, steps = 1) {
+    const box = await this.page.locator(selector).boundingBox()
+    if (!box) throw new Error(`Cannot move pointer to ${selector}`)
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps })
   }
 
   rightClick(selector: string) {
@@ -120,6 +131,22 @@ export class Model {
 
   async wait(time: number) {
     return new Promise<void>((resolve) => setTimeout(resolve, time))
+  }
+
+  // Let work deferred to animation frames run
+  waitForFrames(count = 2) {
+    return this.page.evaluate(
+      (count) =>
+        new Promise<void>((resolve) => {
+          const next = (n: number) => (n === 0 ? resolve() : requestAnimationFrame(() => next(n - 1)))
+          next(count)
+        }),
+      count,
+    )
+  }
+
+  seeElementIsFocused(testId: string) {
+    return expect(this.page.getByTestId(testId)).toBeFocused()
   }
 
   async mouseup() {

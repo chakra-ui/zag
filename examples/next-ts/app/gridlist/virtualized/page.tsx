@@ -9,6 +9,8 @@ import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import "@styles/gridlist.css"
 
+const estimateSize = () => ROW_HEIGHT
+
 interface Row {
   id: string
   index: number
@@ -37,7 +39,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: () => ROW_HEIGHT,
+    estimatedSize: estimateSize,
     overscan: 8,
   })
 

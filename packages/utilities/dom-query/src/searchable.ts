@@ -1,24 +1,20 @@
 import { defaultItemToId, indexOfId, type ItemToId } from "./query"
 import { wrap } from "./shared"
 
-const sanitize = (str: string) =>
-  str
-    .split("")
-    .map((char) => {
-      const code = char.charCodeAt(0)
-      if (code > 0 && code < 128) return char
-      if (code >= 128 && code <= 255) return `/x${code.toString(16)}`.replace("/", "\\")
-      return ""
-    })
-    .join("")
-    .trim()
+let collator: Intl.Collator | undefined
+
+// Locale-aware prefix match that ignores case and accents ("e" finds "Éditer")
+const getCollator = () => (collator ??= new Intl.Collator(undefined, { usage: "search", sensitivity: "base" }))
+
+const normalize = (str: string) => str.normalize("NFC").trim()
 
 const getValueText = <T extends SearchableItem>(el: T) => {
-  return sanitize(el.dataset?.valuetext ?? el.textContent ?? "")
+  return normalize(el.dataset?.valuetext ?? el.textContent ?? "")
 }
 
 const match = (valueText: string, query: string) => {
-  return valueText.trim().toLowerCase().startsWith(query.toLowerCase())
+  const text = query.normalize("NFC")
+  return getCollator().compare(valueText.slice(0, text.length), text) === 0
 }
 
 export interface SearchableItem {

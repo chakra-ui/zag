@@ -6,8 +6,9 @@ import { Toolbar } from "../../components/toolbar"
 import "@styles/field.css"
 
 export default function Page() {
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     required: true,
     validationMode: "onBlur" as const,
   }))

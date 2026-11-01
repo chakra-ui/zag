@@ -10,6 +10,7 @@ interface Node {
   id: string
   name: string
   children?: Node[]
+  disabled?: boolean
 }
 
 const collection = tree.collection<Node>({
@@ -76,7 +77,7 @@ const api = computed(() => tree.connect(service, normalizeProps))
       </div>
       <div v-bind="api.getTreeProps()">
         <TreeNode
-          v-for="(node, index) in api.collection.rootNode.children"
+          v-for="(node, index) in collection.rootNode.children"
           :key="node.id"
           :node="node"
           :index-path="[index]"
@@ -87,7 +88,7 @@ const api = computed(() => tree.connect(service, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="service" :omit="['collection']" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

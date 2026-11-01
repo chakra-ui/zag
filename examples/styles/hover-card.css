@@ -1,11 +1,73 @@
 [data-hover-card-trigger] {
-  width: fit-content;
-  padding: 6px;
+  color: var(--z-fg);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 [data-hover-card-content] {
-  background: rgb(225, 223, 228);
-  padding: 6px;
-  min-height: 150px;
-  width: 300px;
+  --arrow-background: var(--z-bg);
+  --arrow-size: 10px;
+  width: 320px;
+  padding: 16px;
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-popover);
+  color: var(--z-fg);
+  font-size: var(--z-text-md);
+}
+
+.profile {
+  display: flex;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: var(--z-radius-full);
+  display: grid;
+  place-items: center;
+  object-fit: cover;
+  background: var(--z-accent);
+  color: var(--z-accent-contrast);
+  font-weight: 600;
+}
+
+.profile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-name {
+  font-weight: 600;
+}
+
+.profile-handle,
+.profile-meta {
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-sm);
+}
+
+.profile-bio {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border-radius: var(--z-radius-full);
+  background: var(--z-bg-muted);
+  text-decoration: none;
+
+  & img {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--z-radius-full);
+  }
 }

@@ -78,6 +78,7 @@ import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
 import { Virtualizer } from "./virtualizer"
+import { FrameworkWheel, TimeWheel } from "./wheel/wheel-picker"
 
 const components = {
   Accordion: () => (
@@ -691,6 +692,9 @@ const components = {
       hideControls
     />
   ),
+  // demos for the wheel picker guide
+  FrameworkWheel: () => <FrameworkWheel />,
+  TimeWheel: () => <TimeWheel />,
 }
 
 export const Showcase = (props: { id: keyof typeof components }) => {

@@ -1,6 +1,7 @@
 "use client"
 
 import { GithubIcon, HeartIcon } from "components/icons"
+import { Search } from "components/search-dialog"
 import { ThemeToggle } from "components/theme-toggle"
 import siteConfig from "site.config"
 import { Box, Flex, HStack } from "styled-system/jsx"
@@ -28,19 +29,25 @@ export function TopNav() {
       <Flex
         alignItems="center"
         justifyContent="space-between"
+        gap={{ base: "3", md: "6" }}
         maxW="8xl"
         w="full"
         mx="auto"
         px={{ base: "4", sm: "6", md: "8" }}
       >
-        <HStack gap="3">
-          <LogoWithLink />
-          <VersionSelect />
-        </HStack>
-        <HStack gap="4">
-          <HStack as="nav" hideBelow="md" gap="6" me="6">
+        <HStack gap="6">
+          <HStack gap="3">
+            <LogoWithLink />
+            <VersionSelect />
+          </HStack>
+          <HStack as="nav" hideBelow="lg" gap="6">
             <NavLinks />
           </HStack>
+        </HStack>
+        <HStack gap="4" ms="auto">
+          <Box w={{ md: "56" }}>
+            <Search />
+          </Box>
           <HStack gap="4">
             <IconLink
               variant="solid"

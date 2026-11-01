@@ -2,24 +2,35 @@ import { MetaProvider, Title } from "@solidjs/meta"
 import { Router } from "@solidjs/router"
 import { FileRoutes } from "@solidjs/start/router"
 import "@styles/global.css"
-import { Suspense } from "solid-js"
-import { Sidebar } from "~/components/sidebar"
+import "@styles/playground.css"
+import { Suspense, onMount } from "solid-js"
+import { Shell } from "~/components/shell/shell"
 
 export default function App() {
   return (
-    <div class="page">
-      <Router
-        preload
-        root={(props) => (
-          <MetaProvider>
-            <Title>Zag.js + Solid</Title>
-            <Sidebar />
-            <Suspense>{props.children}</Suspense>
-          </MetaProvider>
-        )}
-      >
-        <FileRoutes />
-      </Router>
-    </div>
+    <Router
+      preload
+      root={(props) => (
+        <MetaProvider>
+          <Title>Zag Playground</Title>
+          <Shell>
+            <Suspense>
+              {props.children}
+              <Ready />
+            </Suspense>
+          </Shell>
+        </MetaProvider>
+      )}
+    >
+      <FileRoutes />
+    </Router>
   )
+}
+
+// e2e waits for this before interacting
+function Ready() {
+  onMount(() => {
+    document.documentElement.dataset.ready = ""
+  })
+  return null
 }

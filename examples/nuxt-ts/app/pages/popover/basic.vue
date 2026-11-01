@@ -2,6 +2,7 @@
 import * as popover from "@zag-js/popover"
 import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import "@styles/popover.css"
 
 const controls = useControls(popoverControls)
@@ -17,13 +18,16 @@ const api = computed(() => popover.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main>
+  <main class="popover">
     <div data-part="root">
       <button data-testid="button-before">Button :before</button>
       <button data-testid="popover-trigger" v-bind="api.getTriggerProps()">
         Click me
         <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
       </button>
+
+      <div v-bind="api.getAnchorProps()">anchor</div>
+
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <Presence data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
@@ -33,9 +37,11 @@ const api = computed(() => popover.connect(service, normalizeProps))
             <div data-testid="popover-title" v-bind="api.getTitleProps()">Popover Title</div>
             <div data-part="body" data-testid="popover-body">
               <a>Non-focusable Link</a>
-              <a href="#" data-testid="focusable-link"> Focusable Link </a>
+              <a href="#" data-testid="focusable-link">Focusable Link</a>
               <input data-testid="input" placeholder="input" />
-              <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()">X</button>
+              <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()">
+                <XIcon />
+              </button>
             </div>
           </Presence>
         </div>

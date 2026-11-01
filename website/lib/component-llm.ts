@@ -1,6 +1,9 @@
-import { components as allComponents, snippets as allSnippets } from ".velite"
 import sidebar from "sidebar.config"
-import { getOverviewDoc } from "./contentlayer-utils"
+import {
+  components as allComponents,
+  getOverviewDoc,
+  snippets as allSnippets,
+} from "./source"
 import { frameworks } from "./framework-utils"
 import {
   expandResources,
@@ -29,11 +32,9 @@ export function transformComponentDoc(itemId: string, framework?: string) {
   content = content.replace(
     /<CodeSnippet\s+id="([^"]*)"\s*\/>/g,
     (_: string, id: string) => {
-      const snippet = allSnippets.find((s) => {
-        const [_, __, ...rest] = s.params
-        const str = rest.join("/") + ".mdx"
-        return str === id && s.framework === framework
-      })
+      const snippet = allSnippets.find(
+        (s) => s.id === id && s.framework === framework,
+      )
 
       return snippet?.body.raw ?? ""
     },

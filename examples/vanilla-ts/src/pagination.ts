@@ -44,8 +44,8 @@ export class Pagination extends Component<pagination.Props, pagination.Api> {
   render() {
     this.spreadProps(this.rootEl, this.api.getRootProps())
 
-    const prevButton = this.rootEl.querySelector<HTMLElement>(".pagination-prev-trigger")
-    if (prevButton) this.spreadProps(prevButton, this.api.getPrevTriggerProps())
+    const prevButton = this.rootEl.querySelector<HTMLElement>(".pagination-previous-trigger")
+    if (prevButton) this.spreadProps(prevButton, this.api.getPreviousTriggerProps())
 
     const nextButton = this.rootEl.querySelector<HTMLElement>(".pagination-next-trigger")
     if (nextButton) this.spreadProps(nextButton, this.api.getNextTriggerProps())

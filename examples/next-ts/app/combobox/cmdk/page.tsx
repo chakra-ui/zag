@@ -2,12 +2,12 @@
 
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
+import { createHotkeyStore } from "@zag-js/hotkeys"
 import { createFilter } from "@zag-js/i18n-utils"
-import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { commandData } from "@zag-js/shared"
 import { useEffect, useId, useMemo, useState } from "react"
-import "@styles/combobox.css"
-import "@styles/dialog.css"
+import "@styles/cmdk.css"
 
 const { allItems, commands, applications, suggestions } = commandData
 const { contains } = createFilter({ sensitivity: "base" })
@@ -33,8 +33,7 @@ function Combobox(props: Partial<combobox.Props> & { matches: Record<string, com
   const matchEntries = Object.entries(matches)
 
   const service = useMachine(combobox.machine, {
-    open: true,
-    disableLayer: true,
+    inline: true,
     placeholder: "Type a command or search term...",
     loopFocus: false,
     ...context,
@@ -46,11 +45,11 @@ function Combobox(props: Partial<combobox.Props> & { matches: Record<string, com
   const comboApi = combobox.connect(service, normalizeProps)
 
   return (
-    <div {...mergeProps(comboApi.getRootProps(), { style: { width: "100%" } })}>
-      <input {...mergeProps(comboApi.getInputProps(), { style: { marginBottom: "12px" } })} />
-      <div {...mergeProps(comboApi.getContentProps(), { style: { minHeight: "120px" } })}>
+    <div {...comboApi.getRootProps()}>
+      <input {...comboApi.getInputProps()} />
+      <div {...comboApi.getContentProps()}>
+        <div {...comboApi.getEmptyProps()}>{matchEntries.length === 0 && "No results found"}</div>
         <div {...comboApi.getListProps()}>
-          {matchEntries.length === 0 && <div>No results found</div>}
           {matchEntries.map(([group, items]) => (
             <div key={group} {...comboApi.getItemGroupProps({ id: group })}>
               <div {...comboApi.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
@@ -88,26 +87,20 @@ export default function Page() {
    * Dialog machine
    * -----------------------------------------------------------------------------*/
 
-  const service = useMachine(dialog.machine, { id: useId() })
+  const service = useMachine(dialog.machine, {
+    id: useId(),
+    onOpenChange({ open }) {
+      if (!open) setInputValue("")
+    },
+  })
 
   const dialogApi = dialog.connect(service, normalizeProps)
 
   useEffect(() => {
-    const fn = (event: KeyboardEvent) => {
-      if (dialogApi.open) return
-
-      const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator?.platform)
-      const hotkey = isMac ? "metaKey" : "ctrlKey"
-
-      if (event.key?.toLowerCase() === "k" && event[hotkey]) {
-        event.preventDefault()
-        dialogApi.setOpen(true)
-      }
-    }
-    document.addEventListener("keydown", fn, true)
-    return () => {
-      document.removeEventListener("keydown", fn, true)
-    }
+    const store = createHotkeyStore()
+    store.register({ id: "cmdk", hotkey: "/", action: () => dialogApi.setOpen(true) })
+    store.init({ target: document })
+    return () => store.destroy()
   }, [dialogApi])
 
   /* -----------------------------------------------------------------------------
@@ -117,9 +110,9 @@ export default function Page() {
   return (
     <main>
       <button {...dialogApi.getTriggerProps()}>Open Command Menu</button>
-      <div style={{ background: "lightgray", padding: "12px" }}>
-        or press <kbd> Cmd+K</kbd>
-      </div>
+      <p>
+        or press <kbd>/</kbd>
+      </p>
 
       {selectedAction && (
         <div>

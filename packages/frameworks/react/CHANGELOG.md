@@ -2,6 +2,22 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3475](https://github.com/chakra-ui/zag/pull/3475)
+  [`1d4728d`](https://github.com/chakra-ui/zag/commit/1d4728d036cbd374995aaf7e0a4e8c36c0ac6fd3) Thanks
+  [@mattd-tg](https://github.com/mattd-tg)! - - Fix controlled prop changes being missed after a hidden `<Activity>` is
+  shown again.
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/store@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -89,6 +105,11 @@
   - @zag-js/utils@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/core@1.46.0
+- @zag-js/store@1.46.0
+- @zag-js/types@1.46.0
+- @zag-js/utils@1.46.0
 
 ## 1.45.0
 

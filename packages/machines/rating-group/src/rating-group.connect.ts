@@ -138,7 +138,8 @@ export function connect<T extends PropTypes>(
     getItemProps(props) {
       const { index } = props
       const itemState = getItemState(props)
-      const valueText = translations.ratingValueText(index)
+      const checked = Math.ceil(value) === index
+      const valueText = translations.ratingValueText(checked ? value : index)
 
       return normalize.element({
         ...parts.item.attrs(scope.id),
@@ -156,7 +157,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "aria-setsize": prop("count"),
-        "aria-checked": itemState.checked,
+        "aria-checked": checked,
         "data-checked": dataAttr(itemState.checked),
         "aria-posinset": index,
         "data-highlighted": dataAttr(itemState.highlighted),

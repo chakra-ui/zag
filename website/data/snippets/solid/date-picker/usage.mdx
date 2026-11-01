@@ -22,7 +22,7 @@ function DatePicker() {
             {/*  Day View  */}
             <div hidden={api().view !== "day"}>
               <div {...api().getViewControlProps()}>
-                <button {...api().getPrevTriggerProps()}>Prev</button>
+                <button {...api().getPreviousTriggerProps()}>Prev</button>
                 <button {...api().getViewTriggerProps()}>
                   {api().visibleRangeText.start}
                 </button>
@@ -72,7 +72,7 @@ function DatePicker() {
             {/*  Month View  */}
             <div hidden={api().view !== "month"}>
               <div {...api().getViewControlProps({ view: "month" })}>
-                <button {...api().getPrevTriggerProps({ view: "month" })}>
+                <button {...api().getPreviousTriggerProps({ view: "month" })}>
                   Prev
                 </button>
                 <button {...api().getViewTriggerProps({ view: "month" })}>
@@ -113,7 +113,7 @@ function DatePicker() {
             {/*  Year View  */}
             <div hidden={api().view !== "year"}>
               <div {...api().getViewControlProps({ view: "year" })}>
-                <button {...api().getPrevTriggerProps({ view: "year" })}>
+                <button {...api().getPreviousTriggerProps({ view: "year" })}>
                   Prev
                 </button>
                 <span>

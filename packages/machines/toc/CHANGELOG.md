@@ -43,6 +43,44 @@
   // { value: "confirm", current: true, open: true }
   ```
 
+## 1.47.0
+
+### Minor Changes
+
+- [#3520](https://github.com/chakra-ui/zag/pull/3520)
+  [`4a2c1bb`](https://github.com/chakra-ui/zag/commit/4a2c1bb6a1e01f45baa6f69bb56b8fd96aa6298f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add a `multiple` prop. Set it to `false` to keep only the
+  topmost visible heading active.
+  - Activate the clicked item right away and keep it active while the page scrolls to it.
+  - Activate the section the reader is in when its heading has scrolled out of view, instead of keeping a stale item.
+  - Fix `autoScroll` interrupting the smooth scroll to a heading when the TOC sits inside the content's scroll
+    container.
+
+### Patch Changes
+
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
+### Minor Changes
+
+- [#3403](https://github.com/chakra-ui/zag/pull/3403)
+  [`803909e`](https://github.com/chakra-ui/zag/commit/803909e72edbd811b5935fd9b25e9468d571dee0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added a `nav` part (`getNavProps()`) so the root can wrap the
+  page content without sharing the nav's id or label.
+  - Moved `aria-labelledby` from `getRootProps()` to `getNavProps()`.
+
+  ```tsx
+  <div {...api.getRootProps()}>
+    <nav {...api.getNavProps()}>...</nav>
+  </div>
+  ```
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -53,6 +91,12 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/anatomy@1.46.0
+- @zag-js/core@1.46.0
+- @zag-js/types@1.46.0
+- @zag-js/utils@1.46.0
+- @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 

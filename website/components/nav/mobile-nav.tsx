@@ -1,15 +1,21 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import * as tabs from "@zag-js/tabs"
 import { Button } from "components/ui/button"
+import { Icon } from "components/ui/icon"
+import { getActiveTab } from "lib/pagination-utils"
 import { useRouteChange } from "lib/use-route-change"
+import { usePathname } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
+import { tabs as docsTabs } from "sidebar.config"
 import { Box, Flex, HStack, Spacer, Stack, styled } from "styled-system/jsx"
 import useMatchMedia from "use-match-media-hook"
 import { FrameworkSelect } from "../framework-select"
 import { LogoWithLink } from "../logo"
 import { Sidebar } from "../sidebar"
 import { NavLinks } from "./nav-links"
+import { VersionSelect } from "./version-select"
 
 export function MobileNav() {
   const service = useMachine(dialog.machine, {
@@ -37,6 +43,7 @@ export function MobileNav() {
         size="sm"
         px="2"
         bg="bg.subtle"
+        aria-label="Menu"
         {...api.getTriggerProps()}
       >
         <HStack>
@@ -54,7 +61,7 @@ export function MobileNav() {
               {...api.getContentProps()}
               position="fixed"
               inset="0"
-              zIndex="modal"
+              zIndex="100"
               pb="10"
               overflowY="auto"
               bg="bg.subtle"
@@ -64,7 +71,10 @@ export function MobileNav() {
                 py="4"
                 px={{ base: "4", sm: "6", md: "8" }}
               >
-                <LogoWithLink />
+                <HStack gap="3">
+                  <LogoWithLink />
+                  <VersionSelect />
+                </HStack>
                 <Button
                   ref={initialRef}
                   size="sm"
@@ -84,12 +94,70 @@ export function MobileNav() {
                   <FrameworkSelect />
                   <NavLinks />
                 </Stack>
-                <Sidebar />
+                <MobileDocsTabs />
               </Box>
             </Box>
           </div>
         </Portal>
       )}
     </>
+  )
+}
+
+/** Pick a docs section, then browse its sidebar, without leaving the page */
+function MobileDocsTabs() {
+  const pathname = usePathname()
+  const service = useMachine(tabs.machine, {
+    id: "mobile-docs-tabs",
+    defaultValue: getActiveTab(pathname).id,
+  })
+  const api = tabs.connect(service, normalizeProps)
+
+  return (
+    <Box {...api.getRootProps()}>
+      <HStack
+        {...api.getListProps()}
+        gap="1"
+        mb="6"
+        pb="2"
+        flexWrap="wrap"
+        borderBottomWidth="1px"
+        borderBottomColor="border.subtle"
+      >
+        {docsTabs.map((tab) => (
+          <styled.button
+            key={tab.id}
+            display="inline-flex"
+            alignItems="center"
+            gap="2"
+            px="3"
+            py="1.5"
+            rounded="md"
+            fontSize="sm"
+            fontWeight="medium"
+            color="text.muted"
+            flexShrink="0"
+            _selected={{
+              color: "text",
+              bg: "bg.muted",
+              fontWeight: "semibold",
+            }}
+            _focusVisible={{
+              outline: "2px solid",
+              outlineColor: "green.500",
+            }}
+            {...api.getTriggerProps({ value: tab.id })}
+          >
+            <Icon as={tab.icon} />
+            {tab.label}
+          </styled.button>
+        ))}
+      </HStack>
+      {docsTabs.map((tab) => (
+        <Box key={tab.id} {...api.getContentProps({ value: tab.id })}>
+          <Sidebar tabId={tab.id} />
+        </Box>
+      ))}
+    </Box>
   )
 }

@@ -1,6 +1,8 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as dialog from "@zag-js/dialog"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
+import "@styles/dialog.css"
 
 const service = useMachine(dialog.machine, { id: useId() })
 const api = computed(() => dialog.connect(service, normalizeProps))
@@ -116,7 +118,9 @@ const contentProps = computed(() =>
             magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
             lobortis nisl ut aliquip ex ea commodo
           </p>
-          <button v-bind="api.getCloseTriggerProps()">Close</button>
+          <button v-bind="api.getCloseTriggerProps()">
+            <XIcon />
+          </button>
         </div>
       </div>
     </Teleport>

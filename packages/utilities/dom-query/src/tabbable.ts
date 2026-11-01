@@ -1,4 +1,13 @@
-import { getActiveElement, isEditableElement, isElementVisible, isHTMLElement, isInputElement } from "./node"
+import {
+  contains,
+  getActiveElement,
+  getParentElement,
+  isEditableElement,
+  isElement,
+  isElementVisible,
+  isHTMLElement,
+  isInputElement,
+} from "./node"
 
 type IncludeContainerType = boolean | "if-empty"
 export type GetShadowRootOption = boolean | ((node: HTMLElement) => ShadowRoot | boolean | undefined) | undefined
@@ -213,6 +222,20 @@ export function isTabbable(el: HTMLElement | EventTarget | null): el is HTMLElem
   if (isHTMLElement(el) && el.tabIndex > 0) return true
   if (!isFocusable(el) || hasNegativeTabIndex(el)) return false
   return isTabbableRadio(el)
+}
+
+/**
+ * Whether `target` is, or sits inside, a tabbable element nested in `container` (e.g. a button in a list row),
+ * so the container can leave the interaction to it. Crosses shadow roots.
+ */
+export function isInteractiveDescendant(container: HTMLElement | null, target: EventTarget | null): boolean {
+  if (!container || !isElement(target) || !contains(container, target)) return false
+  let el: Element | null = target
+  while (el && el !== container) {
+    if (isTabbable(el)) return true
+    el = getParentElement(el)
+  }
+  return false
 }
 
 export function getFirstTabbable(container: HTMLElement | null, options: TabbableOptions = {}): HTMLElement | null {

@@ -1,15 +1,69 @@
 [data-toggle-group-root] {
-  display: flex;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
+
+  &[data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
 }
 
 [data-toggle-group-item] {
-  border-radius: 0px;
-  border: 0;
-  width: 40px;
-  height: 40px;
+  gap: 6px;
+  min-width: 30px;
+  height: 30px;
+  padding-inline: 7px;
+  background: transparent;
+  color: var(--z-fg-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-muted);
+    color: var(--z-fg);
+  }
+
+  &[data-pressed] {
+    background: var(--z-bg-emphasis);
+    color: var(--z-fg);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--z-ring);
+  }
 }
 
-[data-toggle-group-item][data-pressed] {
-  background-color: blue;
-  color: white;
+.toggle-group-preview {
+  max-width: 320px;
+  margin: 0;
+  font-size: var(--z-text-md);
+  color: var(--z-fg-muted);
+}
+
+/* Cards for the view switcher */
+.toggle-group-items {
+  display: grid;
+  gap: 8px;
+  width: 320px;
+
+  &[data-view="grid"] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  & div {
+    height: 48px;
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg-muted);
+  }
+
+  &[data-view="list"] div {
+    height: 28px;
+  }
 }

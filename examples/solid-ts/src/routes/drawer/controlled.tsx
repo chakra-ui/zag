@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, Show } from "solid-js"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer.module.css"
+import { XIcon } from "lucide-solid"
 
 function AlwaysOpenDrawer() {
   const id = createUniqueId()
@@ -67,7 +68,9 @@ function ControlledDrawer() {
           <p style={{ "font-size": "14px" }}>
             Open: <strong>{String(open())}</strong>
           </p>
-          <button {...api().getCloseTriggerProps()}>Close</button>
+          <button {...api().getCloseTriggerProps()}>
+            <XIcon />
+          </button>
         </Presence>
       </div>
     </div>

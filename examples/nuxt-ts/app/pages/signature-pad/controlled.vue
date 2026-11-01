@@ -2,6 +2,7 @@
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { RotateCcw } from "lucide-vue-next"
+import "@styles/signature-pad.css"
 
 const paths = ref<string[]>([])
 const url = ref("")
@@ -33,6 +34,7 @@ const api = computed(() => signaturePad.connect(service, normalizeProps))
 <template>
   <main class="signature-pad">
     <div v-bind="api.getRootProps()">
+      <input v-bind="api.getHiddenInputProps({ value: url })" />
       <label v-bind="api.getLabelProps()">Controlled Signature Pad</label>
 
       <div v-bind="api.getControlProps()">

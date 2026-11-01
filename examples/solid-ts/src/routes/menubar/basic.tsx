@@ -1,13 +1,14 @@
+import { useSearchParams } from "@solidjs/router"
 import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createContext, For, createMemo, createUniqueId, useContext } from "solid-js"
+import { type Accessor, createContext, For, createMemo, createUniqueId, useContext } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
 
-const MenubarContext = createContext<menu.MenubarContext>()
+const MenubarContext = createContext<Accessor<menu.MenubarContext>>()
 
 interface MenuProps {
   id: string
@@ -17,7 +18,7 @@ interface MenuProps {
 
 function Menu(props: MenuProps) {
   const menubarContext = useContext(MenubarContext)
-  const service = useMachine(menu.machine, { id: props.id, menubar: menubarContext })
+  const service = useMachine(menu.machine, () => ({ id: props.id, menubar: menubarContext?.() }))
   const api = createMemo(() => menu.connect(service, normalizeProps))
   return (
     <>
@@ -73,13 +74,14 @@ const menus: MenuProps[] = [
 ]
 
 export default function Page() {
-  const service = useMachine(menubar.machine, { id: createUniqueId() })
+  const [searchParams] = useSearchParams()
+  const service = useMachine(menubar.machine, { id: createUniqueId(), disabled: searchParams.disabled === "true" })
   const api = createMemo(() => menubar.connect(service, normalizeProps))
 
   return (
     <>
       <main class="menubar">
-        <MenubarContext.Provider value={api().getMenuContext()}>
+        <MenubarContext.Provider value={() => api().getMenuContext()}>
           <div {...api().getRootProps()} style={{ display: "inline-flex", gap: "4px" }}>
             <For each={menus}>{(m) => <Menu {...m} />}</For>
           </div>

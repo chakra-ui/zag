@@ -14,7 +14,7 @@
     border-radius: 8px;
 
     &[data-invalid] {
-      border-color: #e53e3e;
+      border-color: var(--colors-border-error);
     }
 
     &[data-disabled] {
@@ -30,12 +30,12 @@
 
   .HelperText {
     font-size: 0.8125rem;
-    color: var(--colors-fg-muted);
+    color: var(--colors-text-muted);
   }
 
   .ErrorText {
     font-size: 0.8125rem;
-    color: #e53e3e;
+    color: var(--colors-text-error);
   }
 
   .Field {
@@ -63,7 +63,7 @@
     }
 
     &[data-invalid] {
-      border-color: #e53e3e;
+      border-color: var(--colors-border-error);
     }
 
     &[data-disabled] {
@@ -73,12 +73,12 @@
   }
 
   .Required {
-    color: #e53e3e;
+    color: var(--colors-text-error);
   }
 
   .FieldError {
     font-size: 0.8125rem;
-    color: #e53e3e;
+    color: var(--colors-text-error);
   }
 
   .Submit {
@@ -88,7 +88,7 @@
     padding-inline: 1rem;
     border-radius: 6px;
     background: var(--colors-bg-primary-bold);
-    color: #fff;
+    color: var(--colors-text-inverse);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;

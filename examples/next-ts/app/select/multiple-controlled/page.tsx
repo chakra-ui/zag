@@ -3,6 +3,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-react"
 import { useState } from "react"
 import "@styles/select.css"
 
@@ -24,7 +25,9 @@ const Select = (props: { id: string }) => {
       <div {...api.getControlProps()}>
         <button {...api.getTriggerProps()}>
           <span>{api.valueAsString || "Select option"}</span>
-          <span {...api.getIndicatorProps()}>▼</span>
+          <span {...api.getIndicatorProps()}>
+            <ChevronsUpDownIcon />
+          </span>
         </button>
       </div>
       <Portal>

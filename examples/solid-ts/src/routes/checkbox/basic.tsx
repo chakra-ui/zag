@@ -2,6 +2,7 @@ import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
+import { CheckIcon } from "lucide-solid"
 import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -25,29 +26,31 @@ export default function Page() {
     <>
       <main class="checkbox">
         <form
+          class="vstack gap-4"
           onChange={(e) => {
             const result = serialize(e.currentTarget, { hash: true })
             console.log(result)
           }}
         >
-          <fieldset>
-            <label {...api().getRootProps()}>
-              <div {...api().getControlProps()} />
-              <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
-              <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
-              <div {...api().getIndicatorProps()}>Indicator</div>
-            </label>
-
-            <div>
-              <button type="button" disabled={api().checked} onClick={() => api().setChecked(true)}>
-                Check
-              </button>
-              <button type="button" disabled={!api().checked} onClick={() => api().setChecked(false)}>
-                Uncheck
-              </button>
-              <button type="reset">Reset Form</button>
+          <label {...api().getRootProps()}>
+            <div {...api().getControlProps()}>
+              <span {...api().getIndicatorProps()}>
+                <CheckIcon />
+              </span>
             </div>
-          </fieldset>
+            <span {...api().getLabelProps()}>Accept terms and conditions</span>
+            <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
+          </label>
+
+          <div class="hstack">
+            <button type="button" disabled={api().checked} onClick={() => api().setChecked(true)}>
+              Check
+            </button>
+            <button type="button" disabled={!api().checked} onClick={() => api().setChecked(false)}>
+              Uncheck
+            </button>
+            <button type="reset">Reset Form</button>
+          </div>
         </form>
       </main>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import Presence from "~/components/Presence.vue"
 import styles from "@styles/drawer.module.css"
 
@@ -20,7 +21,9 @@ const api = computed(() => drawer.connect(service, normalizeProps))
         </div>
         <div v-bind="api.getTitleProps()">Drawer</div>
         <p v-bind="api.getDescriptionProps()">Swipe up from the bottom edge to open this drawer.</p>
-        <button v-bind="api.getCloseTriggerProps()">Close</button>
+        <button v-bind="api.getCloseTriggerProps()">
+          <XIcon />
+        </button>
         <div :class="styles.scrollable" data-testid="scrollable">
           <div v-for="(_element, index) in Array.from({ length: 100 })" :key="index">Item {{ index }}</div>
         </div>

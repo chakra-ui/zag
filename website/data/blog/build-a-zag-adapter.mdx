@@ -1,0 +1,275 @@
+---
+title: Build a Zag adapter for your framework
+description:
+  Zag machines are plain TypeScript. An adapter is the small piece that connects
+  them to a framework. Here's what it does and how to build one.
+type: article
+date: 2026-10-11
+authors:
+  - name: Adebesin Tolulope
+    github: Adebesin-Cell
+---
+
+Zag ships official adapters for React, Vue, Solid, Svelte, Preact and vanilla
+JavaScript. Lately, the community has been building the rest:
+
+- [zag-angular](https://github.com/makuko/zag-angular) for Angular
+- [marko-zag](https://github.com/svallory/marko-zag) for Marko
+- [ZagJs-Lit](https://github.com/RampantDespair/ZagJs-Lit) for Lit
+- [zag-ripple](https://github.com/anubra266/zag-ripple) for Ripple
+
+That's possible because the machines don't know about any framework. A dialog's
+states, keyboard handling, focus management and ARIA attributes live in plain
+TypeScript. The only framework-specific code is the adapter, and it's smaller
+than you'd think.
+
+This post walks through what an adapter does, using code from the official
+adapters, so you can build one for the framework you use.
+
+## What an adapter does
+
+Here's the whole flow, from a machine to props on an element:
+
+```text
+machine + user props
+  -> useMachine()
+  -> service
+  -> connect(service, normalizeProps)
+  -> element props
+```
+
+The adapter owns three steps of it:
+
+1. **Run the machine** with your framework's reactivity, and return a service.
+2. **Normalize props** so the props `connect` returns match what your framework
+   expects.
+3. **Apply props** to elements, if your framework can't spread an object onto an
+   element.
+
+Everything else, like the machine definitions and `connect`, is shared.
+
+## Start from the closest adapter
+
+Don't write a machine runtime from scratch. Pick the official adapter whose
+reactivity model is closest to yours, and port it:
+
+- **Hook-based rendering**, like React and Preact: start from
+  [React](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/react).
+- **Signals**: start from
+  [Solid](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/solid).
+- **Refs and watchers**: start from
+  [Vue](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vue).
+- **Compiler-managed reactivity**: start from
+  [Svelte](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/svelte).
+- **No reactivity at all**, just subscriptions: start from
+  [vanilla](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vanilla).
+
+If you're unsure, start from vanilla. It's the smallest, and every other piece
+of this post points at it.
+
+## Step 1: run the machine
+
+The runtime in each adapter is built from a few small contracts. Each one maps a
+machine concept to a framework primitive.
+
+### Bindable: controlled and uncontrolled values
+
+Machines keep their state in bindables. A bindable holds a value the component
+owns, unless the user passes one in, in which case the user's value wins. That's
+how `defaultValue` and `value` both work on every Zag component.
+
+Here's the core of the vanilla bindable, which stores the value in a small proxy
+store:
+
+```ts
+export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
+  const initial = props().value ?? props().defaultValue
+  const eq = props().isEqual ?? Object.is
+  const store = proxy({ value: initial as T })
+  const controlled = () => props().value !== undefined
+
+  return {
+    initial,
+    ref: store,
+    get() {
+      return controlled() ? (props().value as T) : store.value
+    },
+    set(nextValue) {
+      const prev = controlled() ? (props().value as T) : store.value
+      const next = isFunction(nextValue) ? nextValue(prev) : nextValue
+      if (!controlled()) store.value = next
+      if (!eq(next, prev)) props().onChange?.(next, prev)
+    },
+    // ...
+  }
+}
+```
+
+The React version is the same logic with `useState` in place of the store. Your
+version uses whatever your framework uses for reactive state: a signal, a ref,
+an observable.
+
+Two details matter:
+
+- **Read props through a function.** `props()` is called every time, so a
+  controlled value is always current.
+- **Only call `onChange` when the value changes.** Otherwise a controlled
+  component loops.
+
+### Refs: values that don't render
+
+Some machine data, like timers or the last pointer position, changes often and
+should never trigger a render. Refs hold it:
+
+```ts
+export function createRefs<T>(refs: T) {
+  const ref = { current: refs }
+  return {
+    get: (key) => ref.current[key],
+    set: (key, value) => {
+      ref.current[key] = value
+    },
+  }
+}
+```
+
+### Track: reacting to prop changes
+
+Machines watch values and run actions when they change:
+
+```ts
+watch({ track, prop, action }) {
+  track([() => prop("disabled")], () => {
+    action(["syncDisabled"])
+  })
+}
+```
+
+Map `track` to your framework's effect primitive: `useEffect` in React, `watch`
+in Vue, `createEffect` in Solid. The dependencies always return primitives, so a
+shallow comparison is enough.
+
+### useMachine: the lifecycle
+
+`useMachine` ties it together. It creates the bindables and refs, starts the
+machine when the component mounts, re-renders when state changes, and stops the
+machine when the component unmounts. It returns the service that `connect`
+reads.
+
+The vanilla adapter shows that lifecycle without any framework in the way:
+
+```ts
+import * as toggle from "@zag-js/toggle"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+
+const machine = new VanillaMachine(toggle.machine, { id: "bold" })
+machine.start()
+
+const render = () => {
+  const api = toggle.connect(machine.service, normalizeProps)
+  spreadProps(button, api.getRootProps())
+}
+
+machine.subscribe(render)
+render()
+
+// when the component goes away
+machine.stop()
+```
+
+Your `useMachine` does the same three things at your framework's mount, update
+and unmount points. Keep Zag's transition helpers and effect ordering exactly as
+the adapter you ported has them. That's where subtle bugs come from.
+
+If your framework renders into shadow DOM, pass `getRootNode` in the machine
+props. Machines look up their elements through it, so they find them inside the
+shadow root instead of the document.
+
+## Step 2: normalize props
+
+`connect` returns props in one canonical, React-like shape: `onChange`,
+`htmlFor`, `className`, style objects. Your framework probably wants something
+slightly different.
+
+`createNormalizer` from `@zag-js/types` takes a function that converts one props
+object. Here's most of the vanilla one:
+
+```ts
+const propMap = {
+  onFocus: "onFocusin",
+  onBlur: "onFocusout",
+  onChange: "onInput",
+  onDoubleClick: "onDblclick",
+  htmlFor: "for",
+  className: "class",
+  defaultValue: "value",
+  defaultChecked: "checked",
+}
+
+export const normalizeProps = createNormalizer((props) => {
+  return Object.entries(props).reduce((acc, [key, value]) => {
+    if (value === undefined) return acc
+    if (key in propMap) key = propMap[key]
+    acc[key.toLowerCase()] = value
+    return acc
+  }, {})
+})
+```
+
+Some of these mappings are about behavior, not spelling:
+
+- **`onChange` becomes `onInput`.** React's `onChange` fires on every keystroke,
+  like the DOM's `input` event. The DOM's `change` event only fires on blur.
+- **`onFocus` becomes `onFocusin`.** React's focus events bubble. The DOM's
+  `focus` doesn't, `focusin` does.
+- **Some SVG attributes keep their case**, like `viewBox`. Lowercasing them
+  breaks the SVG.
+
+## Step 3: apply props
+
+If your framework can spread an object onto an element, you're done:
+
+```tsx
+<button {...api.getTriggerProps()}>Open</button>
+```
+
+If it can't, provide a directive, action or helper that does it. The vanilla
+adapter's `spreadProps` is a good reference. It handles what's easy to miss:
+
+- **Removing what disappears.** When `aria-expanded` is no longer in the props,
+  it has to come off the element.
+- **Swapping event listeners** without leaving the old ones attached.
+- **Properties, not attributes,** for `value`, `checked` and `selected`.
+- **Patching styles one property at a time.** Zag writes some styles directly,
+  like the positioning variables `--x` and `--y`. Replacing the whole `style`
+  attribute would wipe them.
+
+## Test it
+
+Three machines cover most of what can go wrong:
+
+- **Checkbox** for controlled and uncontrolled state.
+- **Tooltip** for effects, timers and cleanup.
+- **Combobox** for keyboard events, collections and positioning.
+
+Before you publish, check that:
+
+- user props update the machine while it's running
+- effects clean up when the component unmounts
+- event listeners don't pile up across renders
+- server rendering doesn't touch the DOM before mount
+
+Declare Zag and your framework as peer dependencies, and write down which
+versions you test against. Adapter internals follow the machine contract, so
+compare yours with the official one you started from when you upgrade Zag.
+
+## Share it
+
+Built an adapter? We'd love to feature it. The
+[community page](/community#ecosystem) has an Ecosystem section for adapters and
+libraries built on Zag. Open a pull request that adds yours to
+`website/lib/community.ts`, with a link to the source and a short description,
+and mention which Zag and framework versions it supports.
+
+The [framework adapters guide](/guides/framework-adapters) has the full
+contract, including the exact types for each piece.

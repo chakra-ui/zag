@@ -31,6 +31,7 @@ const api = computed(() => signaturePad.connect(service, normalizeProps))
 <template>
   <main class="signature-pad">
     <div v-bind="api.getRootProps()">
+      <input v-bind="api.getHiddenInputProps({ value: url })" />
       <label v-bind="api.getLabelProps()">Signature Pad</label>
 
       <div v-bind="api.getControlProps()">

@@ -4,6 +4,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
 import "@styles/floating-panel.css"
+import "@styles/popover.css"
 
 const service = useMachine(floatingPanel.machine, {
   id: useId(),

@@ -2,6 +2,24 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3457](https://github.com/chakra-ui/zag/pull/3457)
+  [`91d421e`](https://github.com/chakra-ui/zag/commit/91d421eebe8d1307b1c5452856bac5d351450aef) Thanks
+  [@hellodamii](https://github.com/hellodamii)! - - Fix `aria-checked` being set on unselected items.
+  - Announce half ratings with their actual value.
+  - Fix focus being pulled back to the rating when tabbing away right after an arrow key.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -53,6 +71,12 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/anatomy@1.46.0
+- @zag-js/core@1.46.0
+- @zag-js/types@1.46.0
+- @zag-js/utils@1.46.0
+- @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 

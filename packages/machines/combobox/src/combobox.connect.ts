@@ -3,16 +3,15 @@ import {
   ariaAttr,
   dataAttr,
   getEventKey,
+  getModifierKeys,
   isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
-  isDownloadingEvent,
   isLeftClick,
-  isOpeningInNewTab,
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
@@ -21,18 +20,13 @@ import type {
   ComboboxApi,
   ComboboxService,
   ContentState,
-  IntlTranslations,
   ItemProps,
   ItemState,
   RootState,
   TriggerProps,
   TriggerState,
 } from "./combobox.types"
-
-const defaultTranslations: Required<IntlTranslations> = {
-  triggerLabel: "Toggle suggestions",
-  clearTriggerLabel: "Clear value",
-}
+import { defaultTranslations } from "./combobox.translations"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -51,6 +45,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
+  const loading = !!prop("loading")
   const focused = state.hasTag("focused")
   const highlightedValue = context.get("highlightedValue")
   const popupType = prop("popupType")
@@ -97,6 +92,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   function getContentState(): ContentState {
     return {
       open,
+      inline: !!prop("inline"),
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
@@ -112,6 +108,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   return {
     focused,
     open,
+    inline: !!prop("inline"),
+    loading,
     inputValue: context.get("inputValue"),
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
@@ -128,11 +126,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
-    setHighlightValue(value) {
+    setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
-    },
-    clearHighlightValue() {
-      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
@@ -154,6 +149,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       dom.getInputEl(scope)?.focus()
     },
     setOpen(nextOpen, reason = "script") {
+      if (prop("inline")) return
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
@@ -204,8 +200,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         ...getDismissableLayerAttrs(layer),
         style: {
-          ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...(prop("inline") ? undefined : popperStyles.floating),
+          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
     },
@@ -257,7 +253,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
+          if (isComposingEvent(event)) return
+          if ((event.ctrlKey || event.shiftKey) && event.key !== "Enter") return
 
           const openOnKeyPress = prop("openOnKeyPress")
           const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
@@ -289,7 +286,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
               const alwaysSubmit = prop("alwaysSubmitOnEnter")
@@ -303,7 +300,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                prop("navigate")?.({ value: highlightedValue, node: itemEl, href: itemEl.href })
+                prop("navigate")?.({
+                  value: highlightedValue,
+                  node: itemEl,
+                  href: itemEl.href,
+                  modifiers: getModifierKeys(event),
+                })
               }
             },
             Escape() {
@@ -396,6 +398,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-side": contentState.side,
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(contentState.empty),
+        "data-inline": dataAttr(contentState.inline),
+        "data-loading": dataAttr(loading),
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {
@@ -403,6 +407,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
         },
+      })
+    },
+
+    getEmptyProps() {
+      return normalize.element({
+        ...parts.empty.attrs(scope.id),
+        dir: prop("dir"),
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": true,
       })
     },
 
@@ -414,6 +428,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") ? true : undefined,
+        "aria-busy": ariaAttr(loading),
+        "data-loading": dataAttr(loading),
       })
     },
 
@@ -454,7 +470,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
-        "aria-selected": ariaAttr(itemState.selected),
+        "aria-selected": itemState.selected,
         "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "data-value": itemState.value,
@@ -473,11 +489,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onClick(event) {
-          if (isDownloadingEvent(event)) return
-          if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "item-select", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
         },
       })
     },

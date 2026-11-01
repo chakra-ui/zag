@@ -15,7 +15,7 @@ title, content snippet, or thumbnail representing a section of content.
 
 - Full keyboard navigation
 - Supports single and multiple expanded items
-- Supports collapsible items
+- Supports keeping one item always open
 - Supports horizontal and vertical orientation
 
 ## Installation
@@ -91,16 +91,16 @@ Use `value` and `onValueChange` to control expanded items externally.
 
 <CodeSnippet id="accordion/controlled.mdx" />
 
-### Making items collapsible
+### Keeping one item open
 
-Set `collapsible` to `true` to allow closing an expanded item by clicking it
-again.
+Items can be closed by clicking them again. Set `collapsible` to `false` to
+always keep one item open.
 
-> Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
+> Note: If `multiple` is `true`, items are always collapsible.
 
 ```tsx {2}
 const service = useMachine(accordion.machine, {
-  collapsible: true,
+  collapsible: false,
 })
 ```
 
@@ -171,6 +171,25 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
+### Searching closed items with find-in-page
+
+Set `hiddenUntilFound` to keep closed items searchable with the browser's
+find-in-page. When a match is found inside a closed item, the item expands and
+the match shows without the open animation.
+
+```tsx {2}
+const service = useMachine(accordion.machine, {
+  hiddenUntilFound: true,
+})
+```
+
+In controlled mode, the expansion goes through `onValueChange`. If `value` isn't
+updated, the item is hidden again.
+
+> With server-side rendering, frameworks like React render `hidden` as a
+> boolean, so closed content ships as `hidden=""` and only becomes searchable
+> after hydration.
+
 ## Styling guide
 
 Each part includes a component-scoped data attribute you can target in CSS.
@@ -210,6 +229,18 @@ the item and content.
 
 [data-accordion-item-content][data-focus] {
   /* styles for the content's focus state */
+}
+```
+
+### Find-in-page and CSS resets
+
+`hiddenUntilFound` renders closed content with `hidden="until-found"`. A reset
+like `[hidden] { display: none }` overrides it and stops find-in-page from
+searching closed items. Exclude `until-found` from the rule:
+
+```css
+[hidden]:not([hidden="until-found"]) {
+  display: none;
 }
 ```
 

@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { DigitSegment } from "./utils/segments"
 import { parts } from "./number-flow.anatomy"
 import * as dom from "./number-flow.dom"
-import { getDigitCellStyle, getRootStyle, getDigitStyle, getDigitTrackStyle } from "./number-flow.style"
+import { getDigitCellStyle, getDigitStyle, getDigitTrackStyle, getRootStyle, getSymbolStyle } from "./number-flow.style"
 import type {
   DigitCellProps,
   DigitProps,
@@ -47,7 +47,8 @@ export function connect<T extends PropTypes>(
     value,
     valueText: result.valueText,
     announcedValueText: context.get("announcedValueText"),
-    segments: result.segments,
+    // Includes segments still animating out, so they can shrink away in place
+    segments: context.get("segments"),
     digitCells: getDigitCells(prop("locale"), cycles),
     digitGlyphs: getDigitGlyphs(prop("locale")),
     animating,
@@ -87,7 +88,11 @@ export function connect<T extends PropTypes>(
         ...parts.symbol.attrs(scope.id),
         "aria-hidden": true,
         "data-type": segment.type,
+        "data-key": segment.key,
+        "data-entering": dataAttr(segment.presence === "entering"),
+        "data-exiting": dataAttr(segment.presence === "exiting"),
         dir: prop("dir"),
+        style: getSymbolStyle(segment.presence),
       })
     },
 
@@ -97,8 +102,11 @@ export function connect<T extends PropTypes>(
         ...parts.digit.attrs(scope.id),
         "aria-hidden": true,
         "data-place": segment.place,
+        "data-key": segment.key,
+        "data-entering": dataAttr(segment.presence === "entering"),
+        "data-exiting": dataAttr(segment.presence === "exiting"),
         dir: prop("dir"),
-        style: getDigitStyle(),
+        style: getDigitStyle(segment.presence),
       })
     },
 

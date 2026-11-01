@@ -1,4 +1,4 @@
-import { snippets } from ".velite"
+import { snippets } from "./source"
 import apiJson, {
   getAccessibilityDoc,
   getDataAttrDoc,
@@ -23,11 +23,7 @@ export function expandCodeSnippets(
 
     const expandedSnippets = frameworks
       .map((fw) => {
-        const snippet = snippets.find((s) => {
-          const [_, __, ...rest] = s.params
-          const str = rest.join("/") + ".mdx"
-          return str === id && s.framework === fw
-        })
+        const snippet = snippets.find((s) => s.id === id && s.framework === fw)
 
         if (snippet?.body.raw) {
           // Only show framework header if showing multiple frameworks

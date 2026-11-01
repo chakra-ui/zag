@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as gridlist from "@zag-js/gridlist"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/gridlist.css"
 
   interface Resource {
@@ -46,7 +46,7 @@
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>Resources</label>
       <div {...api.getContentProps()}>
-        {#each resources as item}
+        {#each resources as item (item.id)}
           <div
             {...api.getItemProps({ item, href: item.href, target: "_blank", rel: "noreferrer", focusOnHover: true })}
           >
@@ -71,5 +71,5 @@
 </main>
 
 <Toolbar>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["focusedValue"]} />
 </Toolbar>

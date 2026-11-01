@@ -29,8 +29,9 @@ export default function Page() {
   const list = createMemo(() => asyncList.connect(listService))
 
   // No viewport part is rendered — the page itself is the scroller.
+  const id = createUniqueId()
   const service = useMachine(infiniteScroll.machine, () => ({
-    id: createUniqueId(),
+    id,
     count: list().items.length,
     hasMore: list().hasMore,
     loading: list().isLoading,

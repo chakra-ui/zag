@@ -2,7 +2,7 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { numberFlowControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, ref, useId } from "vue"
+import { MinusIcon, PlusIcon } from "lucide-vue-next"
 import "@styles/number-flow.css"
 
 const controls = useControls(numberFlowControls)
@@ -30,7 +30,7 @@ const randomDelta = () => Math.round(Math.random() * 900 + 1)
 
 <template>
   <main class="number-flow">
-    <div v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()" class="nf-hero">
       <template v-for="segment in api.segments" :key="segment.key">
         <span v-if="segment.kind === 'digit'" v-bind="api.getDigitProps({ segment })">
           <span v-bind="api.getDigitTrackProps({ segment })">
@@ -44,18 +44,20 @@ const randomDelta = () => Math.round(Math.random() * 900 + 1)
       <span v-bind="api.getValueTextProps()">{{ api.announcedValueText }}</span>
     </div>
 
-    <div class="number-flow__actions">
-      <button @click="api.setValue(api.value - randomDelta())">Decrement</button>
-      <button @click="api.setValue(api.value + randomDelta())">Increment</button>
+    <div class="hstack">
+      <button class="nf-stepper" aria-label="Decrement" @click="api.setValue(api.value - randomDelta())">
+        <MinusIcon />
+      </button>
+      <button class="nf-stepper" aria-label="Increment" @click="api.setValue(api.value + randomDelta())">
+        <PlusIcon />
+      </button>
       <button @click="api.setValue(Math.round(Math.random() * 99999))">Randomize</button>
       <button @click="api.setValue(0)">Reset</button>
-      <span class="number-flow__value" data-testid="value">
-        value: {{ api.value }} {{ api.animating ? "(rolling)" : "" }}
-      </span>
-      <span class="number-flow__value" data-testid="animations">
-        animations: {{ animations.started }} started / {{ animations.completed }} completed
-      </span>
     </div>
+
+    <p class="nf-caption" data-testid="animations">
+      animations: {{ animations.started }} started / {{ animations.completed }} completed
+    </p>
   </main>
 
   <Toolbar>

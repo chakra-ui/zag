@@ -139,6 +139,7 @@ export function connect<T extends PropTypes>(
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
         "aria-label": translations?.input,
+        "aria-labelledby": dom.getLabelId(scope),
         name: prop("name"),
         form: prop("form"),
         id: dom.getInputId(scope),

@@ -703,7 +703,7 @@ export namespace JSX {
     contextMenu?: string | undefined
     dir?: string | undefined
     draggable?: Booleanish | undefined
-    hidden?: boolean | undefined
+    hidden?: boolean | "until-found" | undefined
     id?: string | undefined
     inert?: boolean | undefined
     lang?: string | undefined

@@ -166,7 +166,7 @@ const service = useMachine(pagination.machine, {
   count: 500,
   translations: {
     rootLabel: "Results pages",
-    prevTriggerLabel: "Previous page",
+    previousTriggerLabel: "Previous page",
     nextTriggerLabel: "Next page",
     itemLabel: ({ page, totalPages }) => `Page ${page} of ${totalPages}`,
   },
@@ -190,7 +190,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
   /* styles for the pagination's ellipsis */
 }
 
-[data-pagination-prev-trigger] {
+[data-pagination-previous-trigger] {
   /* styles for the pagination's previous page trigger */
 }
 
@@ -200,7 +200,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 
 /* We add a data-disabled attribute to the prev/next items when on the first/last page  */
 
-[data-pagination-prev-trigger][data-disabled] {
+[data-pagination-previous-trigger][data-disabled] {
   /* styles for the pagination's previous page trigger when on first page */
 }
 

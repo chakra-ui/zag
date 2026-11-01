@@ -291,8 +291,8 @@ export class DatePicker extends Component<datePicker.Props, datePicker.Api> {
     const dayViewControl = this.rootEl.querySelector<HTMLElement>(".date-picker-day-view-control")
     if (dayViewControl) this.spreadProps(dayViewControl, this.api.getViewControlProps({ view: "year" }))
 
-    const dayPrevTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-day-prev")
-    if (dayPrevTrigger) this.spreadProps(dayPrevTrigger, this.api.getPrevTriggerProps())
+    const dayPreviousTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-day-prev")
+    if (dayPreviousTrigger) this.spreadProps(dayPreviousTrigger, this.api.getPreviousTriggerProps())
 
     const dayViewTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-day-view-trigger")
     if (dayViewTrigger) {
@@ -322,8 +322,9 @@ export class DatePicker extends Component<datePicker.Props, datePicker.Api> {
     const monthViewControl = this.rootEl.querySelector<HTMLElement>(".date-picker-month-view-control")
     if (monthViewControl) this.spreadProps(monthViewControl, this.api.getViewControlProps({ view: "month" }))
 
-    const monthPrevTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-month-prev")
-    if (monthPrevTrigger) this.spreadProps(monthPrevTrigger, this.api.getPrevTriggerProps({ view: "month" }))
+    const monthPreviousTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-month-prev")
+    if (monthPreviousTrigger)
+      this.spreadProps(monthPreviousTrigger, this.api.getPreviousTriggerProps({ view: "month" }))
 
     const monthViewTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-month-view-trigger")
     if (monthViewTrigger) {
@@ -346,8 +347,8 @@ export class DatePicker extends Component<datePicker.Props, datePicker.Api> {
     const yearViewControl = this.rootEl.querySelector<HTMLElement>(".date-picker-year-view-control")
     if (yearViewControl) this.spreadProps(yearViewControl, this.api.getViewControlProps({ view: "year" }))
 
-    const yearPrevTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-year-prev")
-    if (yearPrevTrigger) this.spreadProps(yearPrevTrigger, this.api.getPrevTriggerProps({ view: "year" }))
+    const yearPreviousTrigger = this.rootEl.querySelector<HTMLElement>(".date-picker-year-prev")
+    if (yearPreviousTrigger) this.spreadProps(yearPreviousTrigger, this.api.getPreviousTriggerProps({ view: "year" }))
 
     const yearViewText = this.rootEl.querySelector<HTMLElement>(".date-picker-year-view-text")
     if (yearViewText) {

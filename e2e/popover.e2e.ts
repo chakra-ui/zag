@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { PopoverModel } from "./models/popover.model"
 
 let I: PopoverModel
@@ -146,5 +146,28 @@ test.describe("popover", () => {
     await I.clickButtonBefore()
     await I.seeButtonBeforeIsFocused()
     await I.dontSeeContent()
+  })
+})
+
+test.describe("popover / lazy mount", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PopoverModel(page)
+    await I.goto("/popover/lazy-mount")
+  })
+
+  test("should label the content by its title and description", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeContentIsLabelled()
+  })
+
+  test("should label the content after reopening", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickClose()
+    await I.dontSeeContent()
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeContentIsLabelled()
   })
 })

@@ -2,10 +2,10 @@ import { defineConfig } from "@pandacss/dev"
 
 export default defineConfig({
   preflight: true,
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda"],
   include: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
-    "./layouts/**/*.{js,jsx,ts,tsx}",
     "./demos/**/*.{js,jsx,ts,tsx}",
   ],
   exclude: [],
@@ -104,16 +104,17 @@ export default defineConfig({
               value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
             },
             primary: {
+              // pair with text.inverse: white in light, near-black in dark
               subtle: {
                 value: {
-                  _light: "{colors.green.500}",
+                  _light: "{colors.green.600}",
                   _dark: "{colors.green.400}",
                 },
               },
               bold: {
                 value: {
-                  _light: "{colors.green.600}",
-                  _dark: "{colors.green.500}",
+                  _light: "{colors.green.700}",
+                  _dark: "{colors.green.300}",
                 },
               },
             },
@@ -162,37 +163,44 @@ export default defineConfig({
             bold: {
               value: { _light: "{colors.gray.950}", _dark: "{colors.white}" },
             },
+            // both clear WCAG AA (4.5:1) on bg and bg.muted in each theme
             subtle: {
+              value: {
+                _light: "{colors.gray.700}",
+                _dark: "{colors.gray.300}",
+              },
+            },
+            muted: {
               value: {
                 _light: "{colors.gray.600}",
                 _dark: "{colors.gray.400}",
               },
             },
-            muted: {
-              value: {
-                _light: "{colors.gray.500}",
-                _dark: "{colors.gray.500}",
-              },
-            },
             inverse: {
               value: { _light: "{colors.white}", _dark: "{colors.gray.950}" },
+            },
+            error: {
+              value: { _light: "#c53030", _dark: "#fc8181" },
             },
             primary: {
               bold: {
                 value: {
-                  _light: "{colors.green.600}",
+                  _light: "{colors.green.700}",
                   _dark: "{colors.green.400}",
                 },
               },
               subtle: {
                 value: {
-                  _light: "{colors.green.700}",
+                  _light: "{colors.green.800}",
                   _dark: "{colors.green.300}",
                 },
               },
             },
           },
           border: {
+            error: {
+              value: { _light: "#c53030", _dark: "#fc8181" },
+            },
             DEFAULT: {
               value: {
                 _light: "{colors.gray.200}",
@@ -321,6 +329,13 @@ export default defineConfig({
   outdir: "styled-system",
 
   globalCss: {
+    // smooth in-page #hash jumps; Next pauses it during route changes (data-scroll-behavior on <html>)
+    html: {
+      "@media (prefers-reduced-motion: no-preference)": {
+        scrollBehavior: "smooth",
+      },
+    },
+
     body: {
       fontFamily: "body",
       textRendering: "geometricprecision",
@@ -342,7 +357,7 @@ export default defineConfig({
 
     ".has-highlight": {
       "& mark": {
-        color: "green.500",
+        color: "text.primary.bold",
         fontWeight: "semibold",
       },
     },
@@ -379,7 +394,8 @@ export default defineConfig({
         listStyleType: "revert",
       },
       "& :is(h2, h3, h4)": {
-        scrollMarginTop: "24",
+        // clears the sticky top nav and docs tab bar
+        scrollMarginTop: "32",
         "&:hover": {
           "& a.anchor": { opacity: 1 },
         },

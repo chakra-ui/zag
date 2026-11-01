@@ -2,9 +2,9 @@
   import * as listbox from "@zag-js/listbox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { listboxControls, selectData } from "@zag-js/shared"
-  import { useControls } from "$lib/use-controls.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/listbox.css"
 
   interface Item {
@@ -22,7 +22,7 @@
   const id = $props.id()
   const service = useMachine(
     listbox.machine,
-    controls.mergeProps<listbox.Props>({
+    controls.mergeProps<listbox.Props<Item>>({
       collection,
       id,
     }),
@@ -36,9 +36,9 @@
     <label {...api.getLabelProps()}>Label</label>
     <div {...api.getContentProps()}>
       <ul {...api.getListProps()}>
-        {#each selectData as item}
+        {#each collection.items as item (item.value)}
           <li {...api.getItemProps({ item })}>
-            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+            {item.label}
             <span {...api.getItemIndicatorProps({ item })}>✓</span>
           </li>
         {/each}
@@ -47,6 +47,6 @@
   </div>
 </main>
 
-<Toolbar {controls}>
-  <StateVisualizer state={service} />
+<Toolbar {controls} viz>
+  <StateVisualizer state={service} context={["highlightedValue"]} />
 </Toolbar>

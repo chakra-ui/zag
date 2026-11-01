@@ -54,6 +54,10 @@ const api = computed(() => gridlist.connect(service, normalizeProps))
                 <span class="gridlist-item-description">{{ item.description }}</span>
               </div>
               <span class="gridlist-item-badge">{{ item.badge }}</span>
+              <div class="gridlist-actions">
+                <button type="button" @click="lastAction = `Edit ${item.name}`">Edit</button>
+                <button type="button" @click="lastAction = `Delete ${item.name}`">Delete</button>
+              </div>
             </div>
           </div>
           <div v-bind="api.getEmptyProps()">No mailboxes</div>

@@ -3,11 +3,11 @@ import { createSplitProps } from "@zag-js/utils"
 import type { ThumbProps, SliderProps, MarkerProps } from "./slider.types"
 
 export const props = createProps<SliderProps>()([
-  "aria-label",
-  "aria-labelledby",
   "dir",
   "disabled",
   "form",
+  "getAriaLabel",
+  "getAriaLabelledBy",
   "getAriaValueText",
   "getRootNode",
   "id",

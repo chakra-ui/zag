@@ -1,82 +1,238 @@
-[data-angle-slider-root] {
+.angle-slider-layout {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-[data-angle-slider-control] {
-  --size: 100px;
-  --thumb-size: 40px;
-  --thumb-indicator-size: min(var(--thumb-size), calc(var(--size) / 2));
-  width: var(--size);
-  height: var(--size);
-  border-radius: 100%;
-  background-color: #ebebeb;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  user-select: none;
-  position: relative;
+  gap: 20px;
 }
 
-[data-angle-slider-thumb] {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  --thumb-width: 3px;
-  inset-inline-start: calc(50% - var(--thumb-width) / 2);
-  height: 100%;
-  width: var(--thumb-width);
+[data-angle-slider-root] {
+  --size: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 
-  &::before {
-    content: "";
-    position: absolute;
-    inset-inline-end: 0;
-    top: 0;
-    height: var(--thumb-indicator-size);
-    background: red;
-    width: var(--thumb-width);
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
   }
 }
 
 [data-angle-slider-label] {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 8px;
+  width: var(--size);
+  font-size: var(--z-text-sm);
+  font-weight: 500;
 }
 
-[data-angle-slider-marker-group] {
-  position: absolute;
-  inset: 1px;
-  border-radius: var(--size);
-  pointer-events: none;
+[data-angle-slider-value-text] {
+  color: var(--z-fg-muted);
+  font-variant-numeric: tabular-nums;
 }
 
-[data-angle-slider-marker] {
-  width: 2px;
+[data-angle-slider-control] {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border: 1px solid var(--z-border);
+  border-radius: 50%;
+  background: var(--z-bg-muted);
+  user-select: none;
+  touch-action: none;
+
+  /* Center hub the indicator pivots around */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: calc(50% - 4px);
+    border-radius: 50%;
+    background: var(--z-fg);
+  }
+
+  &:has([data-angle-slider-thumb]:focus-visible) {
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+}
+
+/* The thumb spans the full diameter and is rotated by the machine; ::before draws the visible part */
+[data-angle-slider-thumb] {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  inset-inline-start: calc(50% - 1px);
-  --marker-color: var(--marker-color, red);
+  inset-block: 0;
+  inset-inline-start: calc(50% - 1.5px);
+  width: 3px;
+  outline: none;
 
   &::before {
     content: "";
     position: absolute;
-    top: calc(var(--thumb-size) / 3);
-    inset-inline-start: 0.5px;
-    width: 1px;
-    height: calc(var(--thumb-size) / 1.5);
-    transform: translate(-50%, -50%);
-    background-color: var(--marker-color);
+    top: 10px;
+    inset-inline-start: 0;
+    width: 3px;
+    height: calc(var(--size) / 2 - 10px);
+    border-radius: 2px;
+    background: var(--z-accent);
+  }
+}
+
+[data-angle-slider-marker-group] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+[data-angle-slider-marker] {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(50% - 1px);
+  width: 2px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    inset-inline-start: 0;
+    width: 2px;
+    height: 6px;
+    border-radius: 1px;
+    background: var(--z-border-emphasis);
   }
 
-  &[data-state="under-value"],
-  &[data-state="at-value"] {
-    --marker-color: red;
+  &:is([data-state="under-value"], [data-state="at-value"])::before {
+    background: var(--z-accent);
+  }
+}
+
+/* Knob: a round handle orbiting the rim instead of a needle */
+.angle-slider-knob {
+  [data-angle-slider-control]::after {
+    display: none;
   }
 
-  &[data-state="over-value"] {
-    --marker-color: lightgray;
+  [data-angle-slider-thumb]::before {
+    top: 6px;
+    inset-inline-start: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--z-accent);
+    border-radius: 50%;
+    background: var(--z-bg);
+    box-shadow: var(--z-shadow-sm);
+    translate: -50% 0;
+  }
+
+  [data-angle-slider-thumb]:focus-visible::before {
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+
+  [data-angle-slider-control]:has([data-angle-slider-thumb]:focus-visible) {
+    box-shadow: none;
+  }
+}
+
+/* Hue ring. 0° is the top, clockwise, which matches conic-gradient(from 0deg) */
+.angle-slider-hue {
+  [data-angle-slider-root] {
+    --size: 200px;
+    --ring: 28px;
+  }
+
+  [data-angle-slider-control] {
+    border: none;
+    background: none;
+
+    /* Drawn on a pseudo-element: masking the control itself would also cut the thumb */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        hsl(0 100% 50%),
+        hsl(60 100% 50%),
+        hsl(120 100% 50%),
+        hsl(180 100% 50%),
+        hsl(240 100% 50%),
+        hsl(300 100% 50%),
+        hsl(360 100% 50%)
+      );
+      mask: radial-gradient(farthest-side, transparent calc(100% - var(--ring)), #000 calc(100% - var(--ring) + 1px));
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  [data-angle-slider-thumb]::before {
+    top: 2px;
+    inset-inline-start: 50%;
+    width: calc(var(--ring) - 4px);
+    height: calc(var(--ring) - 4px);
+    border: 3px solid white;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+    translate: -50% 0;
+  }
+
+  .angle-slider-hue-preview {
+    position: absolute;
+    inset: calc(var(--ring) + 16px);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+    pointer-events: none;
+  }
+}
+
+/* Compass: cardinal letters inside the dial */
+.angle-slider-compass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+  font-weight: 600;
+
+  & span {
+    position: absolute;
+    translate: -50% -50%;
+  }
+
+  & span:nth-child(1) {
+    top: 22%;
+    left: 50%;
+  }
+
+  & span:nth-child(2) {
+    top: 50%;
+    left: 78%;
+  }
+
+  & span:nth-child(3) {
+    top: 78%;
+    left: 50%;
+  }
+
+  & span:nth-child(4) {
+    top: 50%;
+    left: 22%;
+  }
+}
+
+.angle-slider-presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+
+  & button[aria-pressed="true"] {
+    background: var(--z-bg-emphasis);
+  }
+
+  & input {
+    width: 88px;
   }
 }

@@ -1,4 +1,5 @@
-import { expect, type Locator, type Page, test } from "@playwright/test"
+import type { Locator } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { isInViewport } from "./_utils"
 
 class AlignedSelectModel {

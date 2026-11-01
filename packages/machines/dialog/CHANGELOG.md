@@ -94,6 +94,54 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3487](https://github.com/chakra-ui/zag/pull/3487)
+  [`8b8a4b0`](https://github.com/chakra-ui/zag/commit/8b8a4b02289f2453622ba8b28ce7f787624908a6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus not returning to the trigger when a non-modal dialog
+  closes.
+  - Fix Escape not closing the dialog right after it opens.
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/aria-hidden@1.47.0
+  - @zag-js/focus-trap@1.47.0
+  - @zag-js/remove-scroll@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
+### Patch Changes
+
+- [#3415](https://github.com/chakra-ui/zag/pull/3415)
+  [`127617b`](https://github.com/chakra-ui/zag/commit/127617bc7459288ac3c53d6fe0a0a9b838809657) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `api.modal` to read whether the dialog or drawer is modal.
+  Useful for skipping the backdrop in non-modal mode.
+
+  ```tsx
+  {
+    api.modal && <div {...api.getBackdropProps()} />
+  }
+  ```
+
+- Updated dependencies [[`44445ae`](https://github.com/chakra-ui/zag/commit/44445ae6b038d2d737bb3ca5b9d02d697c29cc07),
+  [`656f677`](https://github.com/chakra-ui/zag/commit/656f6770c719f447427f583ca924f954a6e47d93)]:
+  - @zag-js/aria-hidden@1.46.0
+  - @zag-js/dismissable@1.46.0
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
+  - @zag-js/focus-trap@1.46.0
+  - @zag-js/remove-scroll@1.46.0
+
 ## 1.45.0
 
 ### Patch Changes

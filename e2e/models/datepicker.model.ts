@@ -77,8 +77,8 @@ export class DatePickerModel extends Model {
     return this.page.locator("[data-date-picker-year-select]")
   }
 
-  get prevTrigger() {
-    return this.page.locator("[data-date-picker-prev-trigger]")
+  get previousTrigger() {
+    return this.page.locator("[data-date-picker-previous-trigger]")
   }
 
   get nextTrigger() {

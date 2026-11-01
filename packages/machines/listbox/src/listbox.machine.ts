@@ -22,7 +22,6 @@ export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: false,
-      composite: true,
       defaultValue: [],
       multiple: false,
       typeahead: true,
@@ -264,19 +263,24 @@ export const machine = createMachine({
           scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
         }
 
-        raf(() => {
+        const rafCleanup = raf(() => {
           setInteractionModality("virtual")
           exec(true)
         })
 
         const listEl = () => dom.getListEl(scope)
-        return observeAttributes(listEl, {
+        const observerCleanup = observeAttributes(listEl, {
           defer: true,
           attributes: ["data-activedescendant"],
           callback() {
             exec(false)
           },
         })
+
+        return () => {
+          rafCleanup()
+          observerCleanup()
+        }
       },
     },
 

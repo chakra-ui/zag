@@ -2,6 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
+import { XIcon } from "lucide-solid"
 
 export default function Page() {
   const service = useMachine(dialog.machine, { id: createUniqueId() })
@@ -15,7 +16,9 @@ export default function Page() {
           <div {...api().getBackdropProps()} />
           <div {...api().getPositionerProps()}>
             <div {...api().getContentProps()}>
-              <button {...api().getCloseTriggerProps()}>Close</button>
+              <button {...api().getCloseTriggerProps()}>
+                <XIcon />
+              </button>
               <h2 {...api().getTitleProps()}>Edit profile</h2>
               <p {...api().getDescriptionProps()}>The name input receives focus via data-autofocus.</p>
               <input data-autofocus placeholder="Enter name..." />

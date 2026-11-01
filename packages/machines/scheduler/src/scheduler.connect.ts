@@ -59,7 +59,7 @@ import {
 } from "./utils/time"
 
 const defaultTranslations: Required<SchedulerTranslations> = {
-  prevTriggerLabel: "Previous",
+  previousTriggerLabel: "Previous",
   nextTriggerLabel: "Next",
   todayTriggerLabel: "Today",
   viewSelectLabel: "Calendar view",
@@ -247,7 +247,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
     goToNext() {
       send({ type: "GOTO.NEXT" })
     },
-    goToPrev() {
+    goToPrevious() {
       send({ type: "GOTO.PREV" })
     },
     clearSelectedSlot() {
@@ -459,11 +459,11 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getPrevTriggerProps() {
+    getPreviousTriggerProps() {
       return normalize.button({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         type: "button",
-        "aria-label": translations.prevTriggerLabel,
+        "aria-label": translations.previousTriggerLabel,
         onClick() {
           send({ type: "GOTO.PREV" })
         },

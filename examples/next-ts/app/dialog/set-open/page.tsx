@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 
 export default function Page() {
@@ -72,7 +73,9 @@ export default function Page() {
               <button data-testid="content-set-closed" onClick={() => api.setOpen(false)}>
                 setOpen(false)
               </button>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

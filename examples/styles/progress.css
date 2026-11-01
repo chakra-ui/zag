@@ -1,76 +1,163 @@
 [data-progress-root] {
+  --progress-color: var(--z-accent);
+  --progress-track: var(--z-bg-emphasis);
+  --progress-thickness: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
-  max-width: 50%;
+  width: 320px;
+  max-width: 100%;
+
+  &[data-orientation="vertical"] {
+    width: auto;
+    height: 160px;
+    align-items: center;
+  }
+
+  /* Circular roots size to the svg */
+  &:has([data-progress-circle]) {
+    width: auto;
+    align-items: center;
+  }
+}
+
+/* Label and value text on one line */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+[data-progress-label] {
+  font-size: var(--z-text-md);
+  font-weight: 500;
+}
+
+[data-progress-value-text],
+[data-progress-view] {
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 [data-progress-track] {
-  height: 4px;
-  background-color: #ebebeb;
-  border-radius: 4px;
+  position: relative;
+  height: var(--progress-thickness);
+  background-color: var(--progress-track);
+  border-radius: var(--z-radius-full);
   overflow: hidden;
+
+  &[data-orientation="vertical"] {
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    width: var(--progress-thickness);
+    height: auto;
+  }
 }
 
 [data-progress-range] {
-  --translate-x: -100%;
   height: 100%;
-  background-color: blue;
-  border-radius: 4px;
-  transition: width 0.2s ease-in-out;
-}
+  background-color: var(--progress-color);
+  border-radius: inherit;
+  transition-property: width, height;
+  transition-duration: 0.3s;
+  transition-timing-function: var(--z-ease);
 
-[data-progress-range][dir="rtl"] {
-  --translate-x: -100%;
-}
+  &[data-orientation="vertical"] {
+    width: 100%;
+  }
 
-[data-progress-range][data-state="indeterminate"] {
-  width: 210%;
-  animation: 1s cubic-bezier(0.694, 0.0482, 0.335, 1) 0s infinite normal none running progress-animation;
+  &[data-state="complete"] {
+    background-color: var(--z-green-600);
+  }
+
+  /* A short segment sweeps across the track */
+  &[data-state="indeterminate"] {
+    position: absolute;
+    inset-block: 0;
+    width: 40%;
+    animation: progress-sweep 1.4s var(--z-ease) infinite;
+
+    &[dir="rtl"] {
+      animation-direction: reverse;
+    }
+  }
 }
 
 [data-progress-circle] {
-  --size: 48px;
-  --thickness: 4px;
-}
+  --size: 120px;
+  --thickness: 10px;
 
-[data-progress-circle][data-state="indeterminate"] {
-  animation: spin 2s linear infinite;
+  &[data-state="indeterminate"] {
+    animation: progress-spin 1.4s linear infinite;
+  }
 }
 
 [data-progress-circle-track] {
-  stroke: #ebebeb;
+  stroke: var(--progress-track);
 }
 
 [data-progress-circle-range] {
-  stroke: blue;
-  transition-property: stroke-dasharray, stroke;
-  transition-duration: 0.6s;
+  stroke: var(--progress-color);
+  stroke-linecap: round;
+  transition-property: stroke-dashoffset, stroke;
+  transition-duration: 0.3s;
+  transition-timing-function: var(--z-ease);
+
+  &[data-state="complete"] {
+    stroke: var(--z-green-600);
+  }
+
+  &[data-state="indeterminate"] {
+    animation: progress-dash 1.4s ease-in-out infinite;
+  }
 }
 
-[data-progress-circle-range][data-state="indeterminate"] {
-  animation: spin-progress;
-  animation-duration: 1.5s;
-  animation-iteration-count: infinite;
+/* Value text centered inside the ring */
+.progress-circle-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+
+  & > :not(svg) {
+    position: absolute;
+  }
+
+  & [data-progress-value-text] {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--z-fg);
+  }
 }
 
-@keyframes spin-progress {
+@keyframes progress-sweep {
+  from {
+    left: -40%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes progress-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes progress-dash {
   0% {
-    stroke-dasharray: 1, 400;
+    stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
   }
-  100% {
-    stroke-dasharray: 400, 400;
-    stroke-dashoffset: -140;
-  }
-}
-
-@keyframes progress-animation {
-  0% {
-    transform: scaleX(1) translateX(var(--translate-x));
+  50% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35;
   }
   100% {
-    transform: scaleX(0) translateX(var(--translate-x));
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -125;
   }
 }

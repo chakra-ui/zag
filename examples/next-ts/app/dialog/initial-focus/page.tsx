@@ -2,6 +2,7 @@
 
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, useRef } from "react"
 import "@styles/dialog.css"
 
@@ -21,7 +22,9 @@ export default function Page() {
           <div {...api.getBackdropProps()} />
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
               <h2 {...api.getTitleProps()}>Edit profile</h2>
               <p {...api.getDescriptionProps()}>The name input receives focus via initialFocusEl.</p>
               <input ref={inputRef} placeholder="Enter name..." />

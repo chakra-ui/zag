@@ -7,9 +7,10 @@ import "@styles/pin-input.css"
 
 export default function Page() {
   const [value, setValue] = createSignal(["", "", ""])
+  const id = createUniqueId()
 
   const service = useMachine(pinInput.machine, () => ({
-    id: createUniqueId(),
+    id,
     name: "test",
     count: 3,
     value: value(),
@@ -24,6 +25,7 @@ export default function Page() {
     <>
       <main class="pin-input">
         <form
+          class="vstack gap-4"
           onSubmit={(e) => {
             e.preventDefault()
             console.log("submitted:", value().join(""))
@@ -39,7 +41,7 @@ export default function Page() {
             <input {...api().getHiddenInputProps()} />
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem", "margin-top": "0.5rem" }}>
+          <div class="hstack">
             <button type="button" data-testid="clear-button" onClick={api().clearValue}>
               Clear
             </button>

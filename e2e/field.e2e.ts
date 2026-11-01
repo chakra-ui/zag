@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { FieldModel } from "./models/field.model"
 
 let I: FieldModel

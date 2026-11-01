@@ -3,6 +3,9 @@
 import { useState } from "react"
 import { useGridVirtualizer } from "@/hooks/use-virtualizer"
 
+const estimateRowSize = () => CELL_HEIGHT
+const estimateColumnSize = () => CELL_WIDTH
+
 // Grid configuration
 const TOTAL_ROWS = 1000
 const TOTAL_COLUMNS = 50
@@ -21,8 +24,8 @@ export default function Page() {
   const { virtualizer, ref: setScrollElementRef } = useGridVirtualizer({
     rowCount: TOTAL_ROWS,
     columnCount: TOTAL_COLUMNS,
-    estimatedRowSize: () => CELL_HEIGHT,
-    estimatedColumnSize: () => CELL_WIDTH,
+    estimatedRowSize: estimateRowSize,
+    estimatedColumnSize: estimateColumnSize,
     overscan: 3,
     gap: 0,
     paddingStart: 0,

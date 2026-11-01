@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -215,6 +216,7 @@ type ComputedContext = Readonly<{
   isAtMax: boolean
   count: number
   isOverflowing: boolean
+  highlightedValue: string | null
   isDisabled: boolean
 }>
 
@@ -235,6 +237,9 @@ export interface TagsInputSchema {
   refs: {
     log: { current: Log | null; prev: Log | null }
     liveRegion: LiveRegion | null
+    highlightFrame: AnimationFrame
+    focusInputFrame: AnimationFrame
+    pasteFrame: AnimationFrame
   }
   computed: ComputedContext
   event: EventObject
@@ -324,6 +329,10 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
    * Whether the tags have reached the max limit.
    */
   atMax: boolean
+  /**
+   * The value of the highlighted tag.
+   */
+  highlightedValue: string | null
   /**
    * Function to set the value of the tags.
    */

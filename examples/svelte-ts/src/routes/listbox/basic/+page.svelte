@@ -2,9 +2,9 @@
   import * as listbox from "@zag-js/listbox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { listboxControls, selectData } from "@zag-js/shared"
-  import { useControls } from "$lib/use-controls.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/listbox.css"
 
   interface Item {
@@ -32,8 +32,8 @@
     <label {...api.getLabelProps()}>Label</label>
     <div {...api.getContentProps()}>
       <ul {...api.getListProps()}>
-        {#each selectData as item}
-          <li {...api.getItemProps({ item })}>
+        {#each selectData as item (item.value)}
+          <li {...api.getItemProps({ item, highlightOnHover: true })}>
             <span {...api.getItemTextProps({ item })}>{item.label}</span>
             <span {...api.getItemIndicatorProps({ item })}>✓</span>
           </li>
@@ -44,5 +44,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["highlightedValue", "focused"]} />
 </Toolbar>

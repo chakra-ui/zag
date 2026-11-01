@@ -3,6 +3,7 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { XIcon } from "lucide-react"
 import { useId, type ReactNode } from "react"
 import "@styles/dialog.css"
 import "@styles/popover.css"
@@ -21,7 +22,9 @@ function DialogWrapper({ trigger, children }: { trigger: ReactNode; children: Re
             <div {...api.getContentProps()}>
               <h2 {...api.getTitleProps()}>Dialog</h2>
               <p {...api.getDescriptionProps()}>Dialog content</p>
-              <button {...api.getCloseTriggerProps()}>X</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
               <div>{children}</div>
             </div>
           </div>
@@ -43,7 +46,9 @@ function PopoverWrapper({ trigger, children }: { trigger: ReactNode; children: R
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
               <div {...api.getTitleProps()}>Popover</div>
-              <button {...api.getCloseTriggerProps()}>X</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
               <div>{children}</div>
             </div>
           </div>

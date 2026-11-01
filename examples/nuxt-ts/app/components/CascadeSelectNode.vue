@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Api } from "@zag-js/cascade-select"
+import { ChevronRightIcon } from "lucide-vue-next"
 import type { TreeCollection } from "@zag-js/collection"
 
 interface Node {
@@ -72,8 +73,9 @@ const children = computed(() => props.collection.getNodeChildren(props.node))
             item,
           }).hasChildren
         "
-        >&gt;</span
       >
+        <ChevronRightIcon :size="16" />
+      </span>
     </li>
   </ul>
   <CascadeSelectNode

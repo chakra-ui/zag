@@ -1,6 +1,7 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("combobox").parts(
+  "empty",
   "root",
   "clearTrigger",
   "content",

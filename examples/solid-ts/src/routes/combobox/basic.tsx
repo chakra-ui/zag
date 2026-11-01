@@ -25,14 +25,17 @@ export default function Page() {
   )
 
   const [value, setValue] = createSignal<string[]>([])
+  const [selectedItems, setSelectedItems] = createSignal<{ label: string }[]>([])
 
+  const id = createUniqueId()
   const service = useMachine(
     combobox.machine,
     controls.mergeProps<combobox.Props>(() => ({
-      id: createUniqueId(),
+      id,
       value: value(),
-      onValueChange({ value }) {
+      onValueChange({ value, items }) {
         setValue(value)
+        setSelectedItems(items)
       },
       collection: collection(),
       onOpenChange() {
@@ -40,7 +43,7 @@ export default function Page() {
       },
       onInputValueChange({ inputValue }) {
         const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
+        setOptions(filtered)
       },
     })),
   )
@@ -55,6 +58,12 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api().clearValue()}>
             Clear Value
           </button>
+          <pre data-testid="on-value-change-items">
+            selectedItems:{" "}
+            {selectedItems()
+              .map((item) => item.label)
+              .join(", ") || "N/A"}
+          </pre>
           <br />
 
           <div {...api().getRootProps()}>
@@ -72,6 +81,7 @@ export default function Page() {
 
           <div {...api().getPositionerProps()}>
             <div data-testid="combobox-content" {...api().getContentProps()}>
+              <div {...api().getEmptyProps()}>{options().length === 0 && "No results found"}</div>
               <Show when={options().length > 0}>
                 <div {...api().getListProps()}>
                   <Index each={options()}>

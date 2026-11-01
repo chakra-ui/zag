@@ -1,5 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
+import type { Heading } from "./utils/active-ids"
 
 /* -----------------------------------------------------------------------------
  * Item types
@@ -44,6 +46,7 @@ export interface ScrollToDetails {
 
 export interface ElementIds {
   root?: string | undefined
+  nav?: string | undefined
   title?: string | undefined
   list?: string | undefined
   item?: ((value: string) => string) | undefined
@@ -92,6 +95,12 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    */
   scrollBehavior?: ScrollBehavior | undefined
   /**
+   * Whether every visible heading can be active at once.
+   * When `false`, only the topmost visible heading is active.
+   * @default false
+   */
+  multiple?: boolean | undefined
+  /**
    * Callback when the active (visible) headings change.
    */
   onActiveChange?: ((details: ActiveChangeDetails) => void) | undefined
@@ -106,10 +115,10 @@ export interface TocProps extends DirectionProperty, CommonProperties {
   defaultActiveIds?: string[] | undefined
 }
 
-type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items"
+type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items" | "multiple"
 
 export interface TocSchema {
-  state: "idle"
+  state: "idle" | "navigating"
   props: TocProps
   defaultPropKey: PropsWithDefault
   context: {
@@ -119,6 +128,11 @@ export interface TocSchema {
   refs: {
     visibilityMap: Map<string, boolean>
     indicatorCleanup: VoidFunction | null
+    rootBounds: DOMRectReadOnly | null
+    headings: Heading[]
+    headingObserver: IntersectionObserver | null
+    headingsFrame: AnimationFrame
+    scrollContainer: HTMLElement | null
   }
   computed: {
     activeItems: TocItem[]
@@ -197,6 +211,7 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getItemState(props: ItemProps): ItemState
 
   getRootProps(): T["element"]
+  getNavProps(): T["element"]
   getTitleProps(): T["element"]
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]

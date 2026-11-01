@@ -22,7 +22,7 @@
           <!-- Day View -->
           <div v-show="api.view !== 'day'">
             <div v-bind="api.getViewControlProps({ view: 'year' })">
-              <button v-bind="api.getPrevTriggerProps()">Prev</button>
+              <button v-bind="api.getPreviousTriggerProps()">Prev</button>
               <button v-bind="api.getViewTriggerProps()">
                 {{api.visibleRangeText.start}}
               </button>
@@ -58,7 +58,7 @@
           <!-- Month View -->
           <div v-show="api.view !== 'month'">
             <div v-bind="api.getViewControlProps({ view: 'month' })">
-              <button v-bind="api.getPrevTriggerProps({ view: 'month' })">
+              <button v-bind="api.getPreviousTriggerProps({ view: 'month' })">
                 Prev
               </button>
               <button v-bind="api.getViewTriggerProps({ view: 'month' })">
@@ -95,7 +95,7 @@
           <!-- Year View -->
           <div v-show="api.view !== 'year'">
             <div v-bind="api.getViewControlProps({ view: 'year' })">
-              <button v-bind="api.getPrevTriggerProps({ view: 'year' })">
+              <button v-bind="api.getPreviousTriggerProps({ view: 'year' })">
                 Prev
               </button>
               <span>

@@ -20,11 +20,11 @@
 
     &[data-type="info"] {
       background: var(--colors-bg-popover);
-      color: var(--colors-fg);
+      color: var(--colors-text);
     }
 
     &[data-type="success"] {
-      color: #ffffff;
+      color: var(--colors-text-inverse);
       background: var(--colors-bg-primary-bold);
     }
 
@@ -34,6 +34,10 @@
         scale 400ms,
         opacity 200ms;
       transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+    }
+
+    &[data-swiping] {
+      transition: none;
     }
   }
 

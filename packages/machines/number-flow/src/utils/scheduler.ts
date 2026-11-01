@@ -1,9 +1,4 @@
-/**
- * Module-level singletons shared by every `number-flow` instance on the page (§9.4, §9.9).
- *
- * Batches transform writes into a single rAF per frame regardless of how many tickers are
- * mounted, and reads `prefers-reduced-motion` from one shared `MediaQueryList`.
- */
+/** Page-wide singletons: one rAF write phase and one reduced-motion listener for every instance. */
 
 import { AnimationFrame } from "@zag-js/dom-query"
 

@@ -1,4 +1,9 @@
 [data-toc-root] {
+  display: flex;
+  gap: 2rem;
+}
+
+[data-toc-nav] {
   position: relative;
   max-width: 16rem;
   max-height: 20rem;

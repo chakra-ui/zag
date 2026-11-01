@@ -3,30 +3,26 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
-import "@styles/angle-slider-custom.css"
+import "@styles/angle-slider.css"
 
 export default function Page() {
   const service = useMachine(angleSlider.machine, {
     id: useId(),
-    defaultValue: 0,
+    defaultValue: 210,
   })
 
   const api = angleSlider.connect(service, normalizeProps)
 
-  const color = `hsl(${api.value} 100% 50%)`
-
   return (
-    <main className="angle-slider angle-slider-color-wheel">
-      <h1>Angle Slider — Color Wheel (Hue)</h1>
-
-      <div className="swatch" style={{ background: color }} />
-
+    <main className="angle-slider angle-slider-hue">
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>
-          Hue: <div {...api.getValueTextProps()}>{api.value}°</div>
+          Hue
+          <span {...api.getValueTextProps()}>{api.value}°</span>
         </label>
         <div {...api.getControlProps()}>
-          <div {...api.getThumbProps()}></div>
+          <div className="angle-slider-hue-preview" style={{ background: `hsl(${api.value} 90% 55%)` }} />
+          <div {...api.getThumbProps()} />
         </div>
         <input {...api.getHiddenInputProps()} />
       </div>

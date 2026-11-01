@@ -1,22 +1,21 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import "@styles/angle-slider-custom.css"
+import "@styles/angle-slider.css"
 
 export default function Page() {
-  const id = createUniqueId()
-  const service = useMachine(angleSlider.machine, () => ({ id }))
+  const service = useMachine(angleSlider.machine, { id: createUniqueId(), defaultValue: 120 })
   const api = createMemo(() => angleSlider.connect(service, normalizeProps))
 
   return (
-    <main class="angle-slider angle-slider-circular">
-      <h1>Angle Slider — Circular Thumb</h1>
+    <main class="angle-slider angle-slider-knob">
       <div {...api().getRootProps()}>
         <label {...api().getLabelProps()}>
-          Angle Slider: <div {...api().getValueTextProps()}>{api().valueAsDegree}</div>
+          Shadow angle
+          <span {...api().getValueTextProps()}>{api().value}°</span>
         </label>
         <div {...api().getControlProps()}>
-          <div {...api().getThumbProps()}></div>
+          <div {...api().getThumbProps()} />
         </div>
         <input {...api().getHiddenInputProps()} />
       </div>

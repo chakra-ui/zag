@@ -21,7 +21,7 @@
 
     &[data-outside-range][data-selectable] {
       visibility: visible;
-      color: var(--colors-fg-muted, #64748b);
+      color: var(--colors-text-muted);
       font-weight: 400;
 
       &:hover {

@@ -13,7 +13,7 @@
     padding-inline: 1rem;
     padding-block: 0.25rem;
     background: var(--colors-bg-primary-subtle);
-    color: #ffffff;
+    color: var(--colors-text-inverse);
   }
 
   .Content {

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { DatePickerModel } from "./models/datepicker.model"
 
 let I: DatePickerModel
@@ -38,6 +38,15 @@ test.describe("datepicker [single]", () => {
     await I.clickTodayCell()
     await I.dontSeeContent()
     await I.seeInputIsFocused()
+  })
+
+  test("selecting a date with Space key", async () => {
+    const day = currentDate.getDate().toString().padStart(2, "0")
+    await I.clickTrigger()
+    await I.seeTodayCellIsFocused()
+    await I.pressKey("Space")
+    await I.dontSeeContent()
+    await I.seeInputHasValue(`${month}/${day}/${year}`)
   })
 
   test("navigates to next day on ArrowRight key press", async () => {
@@ -111,6 +120,24 @@ test.describe("datepicker [single]", () => {
     await I.pressKey("Enter")
     await I.seeInputHasValue("28. 02. 2024")
     await I.seeSelectedValue("28. 02. 2024")
+  })
+
+  test("names the grid with the visible month", async ({ page }) => {
+    const format = (date: Date) => date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    await I.clickTrigger()
+    await expect(page.getByRole("grid", { name: format(currentDate) })).toBeVisible()
+
+    await page.getByRole("button", { name: "Switch to next month" }).click()
+    const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    await expect(page.getByRole("grid", { name: format(next) })).toBeVisible()
+  })
+
+  test("localizes the grid name", async ({ page }) => {
+    await I.clickControls()
+    await I.controls.select("locale", "de-DE")
+    await I.clickTrigger()
+    const name = currentDate.toLocaleDateString("de-DE", { month: "long", year: "numeric" })
+    await expect(page.getByRole("grid", { name })).toBeVisible()
   })
 
   test("keyboard selection + re-selection", async () => {
@@ -489,5 +516,19 @@ test.describe("datepicker [multiple month + maxSelectedDates]", () => {
     await I.getMonthCell("Mar").click()
     await expect(I.getMonthCell("Mar")).not.toHaveAttribute("data-selected", "")
     await expect(I.getMonthCell("Jan")).toHaveAttribute("data-selected", "")
+  })
+})
+
+test.describe("date-picker / focus moved on value change", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/focus-next-field")
+  })
+
+  test("should keep focus where onValueChange moved it", async () => {
+    await I.clickTrigger()
+    await I.clickDayCell(11)
+    await I.waitForFrames()
+    await I.seeElementIsFocused("next-field")
   })
 })

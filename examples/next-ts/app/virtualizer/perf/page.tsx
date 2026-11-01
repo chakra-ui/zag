@@ -4,6 +4,8 @@ import { useVirtualizer } from "@tanstack/react-virtual"
 import { useCallback, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
+const zagEstimateSize = () => ITEM_HEIGHT
+
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
 
@@ -21,7 +23,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => ITEM_HEIGHT,
+    estimatedSize: zagEstimateSize,
     overscan: 5,
   })
 

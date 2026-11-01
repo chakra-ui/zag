@@ -6,7 +6,7 @@ export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
 export const getItemId = (ctx: Scope, index: number) => ctx.ids?.item?.(index) ?? `${ctx.id}:item:${index}`
 export const getItemGroupId = (ctx: Scope) => ctx.ids?.itemGroup ?? `${ctx.id}:item-group`
 export const getNextTriggerId = (ctx: Scope) => ctx.ids?.nextTrigger ?? `${ctx.id}:next-trigger`
-export const getPrevTriggerId = (ctx: Scope) => ctx.ids?.prevTrigger ?? `${ctx.id}:prev-trigger`
+export const getPreviousTriggerId = (ctx: Scope) => ctx.ids?.previousTrigger ?? `${ctx.id}:previous-trigger`
 export const getIndicatorGroupId = (ctx: Scope) => ctx.ids?.indicatorGroup ?? `${ctx.id}:indicator-group`
 export const getIndicatorId = (ctx: Scope, index: number) =>
   ctx.ids?.indicator?.(index) ?? `${ctx.id}:indicator:${index}`

@@ -8,6 +8,7 @@ import {
   isAnchorElement,
   isComposingEvent,
   isEditableElement,
+  isInteractiveDescendant,
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
@@ -356,7 +357,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           }
 
           const key = getEventKey(event, { dir: prop("dir") })
-          const exec = keyMap[key]
+          // `a` is only a shortcut with the meta key (select all), otherwise let it reach typeahead
+          const exec = key === "a" && !event.metaKey ? undefined : keyMap[key]
 
           if (exec) {
             exec(event)
@@ -432,6 +434,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           if (nodeState.loading) return
           if (!isLeftClick(event)) return
           if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+          // A nested button (e.g. a row's actions menu) handles its own click
+          if (isInteractiveDescendant(event.currentTarget, getEventTarget(event))) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
           send({

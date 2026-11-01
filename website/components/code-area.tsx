@@ -1,17 +1,13 @@
-import { getSnippetDoc } from "lib/contentlayer-utils"
-import { useMemo } from "react"
+import { getSnippetBody } from "lib/source"
 import { Box } from "styled-system/jsx"
-import { useMDX } from "./mdx-components"
+import { mdxComponents } from "./mdx-components"
 
 interface CodeAreaProps {
   slug: string
 }
 
 export function CodeArea(props: CodeAreaProps) {
-  const { slug } = props
-
-  const doc = useMemo(() => getSnippetDoc(slug), [slug])
-  const Component = useMDX(doc?.body.code ?? "")
+  const Body = getSnippetBody(props.slug)
 
   return (
     <Box
@@ -26,7 +22,7 @@ export function CodeArea(props: CodeAreaProps) {
         },
       }}
     >
-      {doc ? Component : "Code not available!"}
+      {Body ? <Body components={mdxComponents} /> : "Code not available!"}
     </Box>
   )
 }

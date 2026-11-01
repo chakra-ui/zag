@@ -1,5 +1,6 @@
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-solid"
 import keyframes from "@styles/keyframes.css?inline"
 import selectStyles from "@styles/select.css?inline"
 
@@ -25,7 +26,9 @@ function Select(props: Partial<select.Props> & { portalRef?: HTMLElement }) {
       <div {...api().getControlProps()}>
         <button {...api().getTriggerProps()}>
           {api().valueAsString || "Select option"}
-          <span {...api().getIndicatorProps()}>▼</span>
+          <span {...api().getIndicatorProps()}>
+            <ChevronsUpDownIcon />
+          </span>
         </button>
       </div>
       <Portal mount={portalProps.portalRef}>

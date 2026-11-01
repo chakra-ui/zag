@@ -7,6 +7,7 @@ import "@styles/angle-slider.css"
 
 const STEP = 45
 const MARKERS = [0, 45, 90, 135, 180, 225, 270, 315]
+const DIRECTIONS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
 
 export default function Page() {
   const service = useMachine(angleSlider.machine, {
@@ -18,17 +19,24 @@ export default function Page() {
 
   return (
     <main className="angle-slider">
-      <h1>Angle Slider — Larger Step (snaps to {STEP}°)</h1>
-
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>
-          Angle Slider: <div {...api.getValueTextProps()}>{api.valueAsDegree}</div>
+          Wind direction
+          <span {...api.getValueTextProps()}>
+            {api.value}° {DIRECTIONS[Math.round(api.value / STEP) % DIRECTIONS.length]}
+          </span>
         </label>
         <div {...api.getControlProps()}>
-          <div {...api.getThumbProps()}></div>
+          <div className="angle-slider-compass" aria-hidden>
+            <span>N</span>
+            <span>E</span>
+            <span>S</span>
+            <span>W</span>
+          </div>
+          <div {...api.getThumbProps()} />
           <div {...api.getMarkerGroupProps()}>
             {MARKERS.map((value) => (
-              <div key={value} {...api.getMarkerProps({ value })}></div>
+              <div key={value} {...api.getMarkerProps({ value })} />
             ))}
           </div>
         </div>

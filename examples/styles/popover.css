@@ -54,8 +54,18 @@
 
 [data-popover-close-trigger] {
   position: absolute;
-  right: 0px;
-  top: -20px;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  color: var(--z-fg-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-muted);
+    color: var(--z-fg);
+  }
 }
 
 [data-popover-arrow] {

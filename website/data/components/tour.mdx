@@ -135,13 +135,14 @@ The `action` property accepts one of the following built-in types, or a custom
 function:
 
 - `next`: Move to the next step.
-- `prev`: Move to the previous step.
+- `previous`: Move to the previous step.
 - `dismiss`: End the tour. Use this when the user is unlikely to want to see the
   tour again.
 - `skip`: End the tour, similar to `dismiss`, but semantically intended for
   cases where the user might want to resume or restart the tour later.
 - A custom function `(actionMap) => void`, which receives the same
-  `next`/`prev`/`dismiss`/`skip`/`goto` methods to compose your own behavior.
+  `next`/`previous`/`dismiss`/`skip`/`goto` methods to compose your own
+  behavior.
 
 ```tsx
 const steps: tour.StepDetails[] = [
@@ -335,7 +336,7 @@ Use the connected API to drive tour flow from code.
 api.start()
 api.setStep("step-2")
 api.next()
-api.prev()
+api.previous()
 api.updateStep("step-2", { title: "Updated title" })
 ```
 
@@ -348,6 +349,20 @@ const service = useMachine(tour.machine, {
   closeOnEscape: false,
   closeOnInteractOutside: false,
   preventInteraction: true,
+})
+```
+
+### Customizing scroll behavior
+
+By default, the target scrolls into view with the nearest alignment. Use
+`scrollToTargetFn` to handle sticky headers, smooth scrolling or custom scroll
+containers.
+
+```tsx
+const service = useMachine(tour.machine, {
+  scrollToTargetFn({ target }) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" })
+  },
 })
 ```
 
@@ -442,6 +457,10 @@ it in the DOM.
 [data-tour-backdrop] {
   /* styles for the backdrop part */
 }
+
+[data-tour-spotlight] {
+  /* styles for the spotlight part */
+}
 ```
 
 ### Step types
@@ -492,9 +511,19 @@ backdrop:
 
 ### Spotlight
 
-The spotlight exposes CSS variables you can transition between steps:
+The spotlight exposes CSS variables for the target's position and size:
+`--spotlight-x`, `--spotlight-y`, `--spotlight-width`, `--spotlight-height`.
+
+### Animating step changes
+
+Transition the backdrop cutout, the spotlight and the positioner together so the
+highlight and the tooltip glide to the next step.
 
 ```css
+[data-tour-backdrop] {
+  transition: clip-path 0.2s ease;
+}
+
 [data-tour-spotlight] {
   transition:
     left 0.2s ease,
@@ -502,10 +531,29 @@ The spotlight exposes CSS variables you can transition between steps:
     width 0.2s ease,
     height 0.2s ease;
 }
+
+[data-tour-positioner] {
+  transition: transform 0.2s ease;
+}
+
+:is(
+  [data-tour-backdrop],
+  [data-tour-spotlight],
+  [data-tour-positioner]
+)[data-instant] {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is([data-tour-backdrop], [data-tour-spotlight], [data-tour-positioner]) {
+    transition: none !important;
+  }
+}
 ```
 
-Variables: `--spotlight-x`, `--spotlight-y`, `--spotlight-width`,
-`--spotlight-height`.
+These parts get `data-instant` when there's no visible previous step to move
+from (open, reopen, or after a step without a target). Turning transitions off
+for it makes them snap into place instead of animating from their last position.
 
 ### Placement Styles
 

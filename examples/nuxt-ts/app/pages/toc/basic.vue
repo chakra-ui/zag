@@ -19,8 +19,8 @@ const api = computed(() => toc.connect(service, normalizeProps))
 
 <template>
   <main class="toc">
-    <div style="display: flex; gap: 2rem">
-      <nav v-bind="api.getRootProps()">
+    <div v-bind="api.getRootProps()">
+      <nav v-bind="api.getNavProps()">
         <h5 v-bind="api.getTitleProps()">On this page</h5>
         <ul v-bind="api.getListProps()">
           <li v-for="item in tocData" :key="item.value" v-bind="api.getItemProps({ item })">
@@ -47,5 +47,8 @@ const api = computed(() => toc.connect(service, normalizeProps))
 
   <Toolbar>
     <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>

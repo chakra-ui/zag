@@ -10,7 +10,7 @@ export default function Page() {
   const id = createUniqueId()
   const [open, setOpen] = createSignal(false)
   const [size, setSize] = createSignal({ width: 360, height: 260 })
-  const [position, setPosition] = createSignal({ x: 120, y: 120 })
+  const [position, setPosition] = createSignal({ x: 120, y: 240 })
   const [observedSize, setObservedSize] = createSignal({ width: 0, height: 0 })
   const [observedEl, setObservedEl] = createSignal<HTMLDivElement>()
 
@@ -62,7 +62,7 @@ export default function Page() {
           <button
             onClick={() => {
               setSize({ width: 360, height: 260 })
-              setPosition({ x: 120, y: 120 })
+              setPosition({ x: 120, y: 240 })
             }}
           >
             Reset rect

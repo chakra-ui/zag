@@ -109,6 +109,10 @@ export class TourModel extends Model {
     expect(spotlightRect.height).toBeGreaterThan(targetRect.height)
   }
 
+  seeStartIsFocused() {
+    return expect(this.page.getByRole("button", { name: "Start" })).toBeFocused()
+  }
+
   async seeTitle(title: string) {
     return expect(this.title).toContainText(title)
   }

@@ -15,8 +15,8 @@ const skipNavLinkRecipe = cva({
     zIndex: "60",
     px: "4",
     py: "2",
-    bg: "green.500",
-    color: "white",
+    bg: "bg.primary.subtle",
+    color: "text.inverse",
     _focus: {
       clip: "auto",
       width: "auto",

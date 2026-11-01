@@ -56,7 +56,6 @@ import {
   defaultTranslations,
   getInputPlaceholder,
   getNextView,
-  getRoleDescription,
   isDateWithinRange,
 } from "./date-picker.utils"
 
@@ -447,7 +446,7 @@ export function connect<T extends PropTypes>(
     goToNext() {
       send({ type: "GOTO.NEXT", view: context.get("view") })
     },
-    goToPrev() {
+    goToPrevious() {
       send({ type: "GOTO.PREV", view: context.get("view") })
     },
 
@@ -510,7 +509,6 @@ export function connect<T extends PropTypes>(
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "application",
-        "aria-roledescription": "datepicker",
         "aria-label": translations.content,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
@@ -524,7 +522,7 @@ export function connect<T extends PropTypes>(
         ...parts.table.attrs(scope.id),
         role: "grid",
         "data-columns": columns,
-        "aria-roledescription": getRoleDescription(view),
+        "aria-label": computed("visibleRangeText").formatted,
         id: dom.getTableId(scope, uid),
         "aria-readonly": ariaAttr(readOnly),
         "aria-disabled": ariaAttr(disabled),
@@ -550,6 +548,9 @@ export function connect<T extends PropTypes>(
                 if (!cellState.selectable) return
               }
               send({ type: "TABLE.ENTER", view, columns, focus: true })
+            },
+            Space(event) {
+              keyMap.Enter?.(event)
             },
             ArrowLeft() {
               send({ type: "TABLE.ARROW_LEFT", view, columns, focus: true })
@@ -872,15 +873,15 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getPrevTriggerProps(props = {}) {
+    getPreviousTriggerProps(props = {}) {
       const { view = "day" } = props
-      const isDisabled = disabled || !computed("isPrevVisibleRangeValid")
+      const isDisabled = disabled || !computed("isPreviousVisibleRangeValid")
       return normalize.button({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getPrevTriggerId(scope, view),
+        id: dom.getPreviousTriggerId(scope, view),
         type: "button",
-        "aria-label": translations.prevTrigger(view),
+        "aria-label": translations.previousTrigger(view),
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         onClick(event) {
@@ -991,7 +992,7 @@ export function connect<T extends PropTypes>(
         required: prop("required"),
         "aria-invalid": ariaAttr(inputState.invalid),
         "data-invalid": dataAttr(inputState.invalid),
-        placeholder: prop("placeholder") || getInputPlaceholder(locale),
+        placeholder: prop("placeholder") || getInputPlaceholder(locale, translations.placeholder(locale)),
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
@@ -1073,7 +1074,7 @@ export function connect<T extends PropTypes>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
         },
       })
     },

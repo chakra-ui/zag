@@ -1,10 +1,11 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as carousel from "@zag-js/carousel"
   import { carouselControls, carouselData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "lucide-svelte"
   import "@styles/carousel.css"
 
   const controls = useControls(carouselControls)
@@ -14,7 +15,7 @@
     carousel.machine,
     controls.mergeProps<carousel.Props>({
       id,
-      spacing: "20px",
+      spacing: "16px",
       slidesPerPage: 2,
       count: carouselData.length,
       allowMouseDrag: true,
@@ -24,32 +25,41 @@
   const api = $derived(carousel.connect(service, normalizeProps))
 </script>
 
-<main class="carousel">
-  <div {...api.getRootProps()}>
-    <button onclick={() => api.scrollToIndex(4)}>Scroll to 4</button>
-    <div {...api.getControlProps()}>
-      <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
-      <div class="carousel-spacer"></div>
-      <button {...api.getPrevTriggerProps()}>Prev</button>
-      <button {...api.getNextTriggerProps()}>Next</button>
-    </div>
+<main>
+  <div class="carousel">
+    <div {...api.getRootProps()}>
+      <div class="carousel-toolbar">
+        <button onclick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+      </div>
 
-    <div {...api.getItemGroupProps()}>
-      {#each carouselData as image, index}
-        <div {...api.getItemProps({ index })}>
-          <img src={image} alt="" />
+      <div {...api.getControlProps()}>
+        <button {...api.getPreviousTriggerProps()}><ChevronLeftIcon /></button>
+        <div {...api.getItemGroupProps()}>
+          {#each carouselData as image, index (image)}
+            <div {...api.getItemProps({ index })} class="carousel-photo">
+              <img src={image} alt="" />
+            </div>
+          {/each}
         </div>
-      {/each}
-    </div>
-    <div {...api.getIndicatorGroupProps()}>
-      {#each api.pageSnapPoints as _, index}
-        <!-- svelte-ignore a11y_consider_explicit_label -->
-        <button {...api.getIndicatorProps({ index })}></button>
-      {/each}
+        <button {...api.getNextTriggerProps()}><ChevronRightIcon /></button>
+      </div>
+
+      <div class="carousel-footer">
+        <button {...api.getAutoplayTriggerProps()}>
+          {#if api.isPlaying}<PauseIcon />{:else}<PlayIcon />{/if}
+          <span class="sr-only">{api.isPlaying ? "Stop" : "Play"}</span>
+        </button>
+        <div {...api.getIndicatorGroupProps()}>
+          {#each api.pageSnapPoints as _, index}
+            <button {...api.getIndicatorProps({ index })}></button>
+          {/each}
+        </div>
+        <span {...api.getProgressTextProps()}>{api.getProgressText()}</span>
+      </div>
     </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} omit={["translations"]} />
 </Toolbar>

@@ -1,41 +1,34 @@
-import {
-  components as allComponents,
-  snippets as allSnippets,
-  utilities as allUtilities,
-} from ".velite"
 import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import * as tabs from "@zag-js/tabs"
 import { Blockquote } from "components/ui/blockquote"
 import { Code } from "components/ui/code"
-import { Icon } from "components/ui/icon"
-import * as runtime from "react/jsx-runtime"
+import {
+  components as allComponents,
+  getSnippetBody,
+  snippets as allSnippets,
+  utilities as allUtilities,
+  type Snippet,
+} from "lib/source"
 import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
-import { Box, HStack, styled } from "styled-system/jsx"
+import { Box, styled } from "styled-system/jsx"
 import { Showcase } from "../demos"
-import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
+import { FRAMEWORKS } from "../lib/framework-utils"
+import { CodeSnippetTabs } from "./code-snippet-tabs"
 import { CopyButton } from "./copy-button"
 import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
-import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
 import { PropTable } from "./prop-table"
+import { SectionIndex } from "./section-index"
 
-const SnippetItem = ({
-  body,
-  id,
-}: {
-  body: { code: string; raw: string }
-  id: string
-}) => {
-  const content = useMDX(body.code)
-  const textContent = body.raw.split("\n").slice(1, -1).join("\n")
+const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
+  const Body = getSnippetBody(snippet.key)
+  const textContent = snippet.body.raw.split("\n").slice(1, -1).join("\n")
   return (
-    <div className="prose" id="snippet" data-framework={id}>
-      {content}
+    <div className="prose" id="snippet" data-framework={snippet.framework}>
+      {Body ? <Body components={components} /> : null}
       <CopyButton content={textContent} />
     </div>
   )
@@ -43,7 +36,7 @@ const SnippetItem = ({
 
 const Anchor = styled("a", {
   base: {
-    color: "green.500",
+    color: "text.primary.bold",
     cursor: "pointer",
     fontWeight: "medium",
     textDecoration: "underline",
@@ -65,6 +58,7 @@ const components: Record<string, FC<any>> = {
     )
   },
   Showcase,
+  SectionIndex,
   Admonition(props) {
     return <div {...props} />
   },
@@ -162,77 +156,18 @@ const components: Record<string, FC<any>> = {
     return <div className="prose">{props.children}</div>
   },
   CodeSnippet(props) {
-    const { framework: userFramework } = useFramework()
-
-    const snippets = allSnippets.filter((p) => {
-      const [_, __, ...rest] = p.params
-      const str = rest.join("/") + ".mdx"
-      return str === props.id
-    })
-
-    const service = useMachine(tabs.machine, {
-      id: props.id,
-      defaultValue: userFramework ?? "react",
-    })
-
-    const api = tabs.connect(service, normalizeProps)
-
-    return (
-      <Box
-        width="full"
-        maxW="768px"
-        borderWidth="1px"
-        my="8"
-        bg="bg.code.block"
-        rounded="6px"
-        {...api.getRootProps()}
-      >
-        <Box {...api.getListProps()}>
-          {FRAMEWORKS.map((framework) => (
-            <styled.button
-              py="2"
-              px="8"
-              fontSize="sm"
-              fontWeight="medium"
-              borderBottom="2px solid transparent"
-              bg="bg.code.block"
-              _selected={{
-                borderColor: "border.primary.subtle",
-                color: "text.primary.bold",
-              }}
-              _focusVisible={{ outline: "2px solid blue" }}
-              {...api.getTriggerProps({ value: framework })}
-              key={framework}
-            >
-              <HStack>
-                <Icon as={frameworks[framework].icon} />
-                <p>{frameworks[framework].label}</p>
-              </HStack>
-            </styled.button>
-          ))}
-        </Box>
-        {FRAMEWORKS.map((framework) => {
-          const snippet = snippets.find((p) => p.framework === framework)
-          return (
-            <Box
-              {...api.getContentProps({ value: framework })}
-              position="relative"
-              key={framework}
-              mt="-6"
-              _focusVisible={{ outline: "2px solid blue" }}
-            >
-              {snippet ? (
-                <SnippetItem id={framework} body={snippet.body} />
-              ) : (
-                <Box mt="6" padding="4" fontSize="sm" opacity="0.5">
-                  Snippet not found :(
-                </Box>
-              )}
-            </Box>
-          )
-        })}
-      </Box>
+    const panels = Object.fromEntries(
+      FRAMEWORKS.map((framework) => {
+        const snippet = allSnippets.find(
+          (p) => p.id === props.id && p.framework === framework,
+        )
+        return [
+          framework,
+          snippet ? <SnippetItem key={framework} snippet={snippet} /> : null,
+        ]
+      }),
     )
+    return <CodeSnippetTabs id={props.id} panels={panels} />
   },
   a(props) {
     const href = props.href
@@ -269,31 +204,4 @@ const components: Record<string, FC<any>> = {
   },
 }
 
-const useMDXComponent = (code: string) => {
-  const fn = new Function(code)
-  const result = fn({ ...runtime })
-
-  // Handle both default export and direct function return
-  if (result && typeof result === "object" && "default" in result) {
-    return result.default
-  }
-
-  // If result is already the component function
-  if (typeof result === "function") {
-    return result
-  }
-
-  // Fallback - return a simple component that displays an error
-  console.error("MDX compilation failed:", { code: code.slice(0, 100), result })
-}
-
-export function useMDX(code: string) {
-  // Handle empty or missing code
-  if (!code || code.trim() === "") {
-    return <div>No content available</div>
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const MDXComponent = useMDXComponent(code)
-  return <MDXComponent components={components as any} />
-}
+export { components as mdxComponents }

@@ -231,7 +231,7 @@ const service = useMachine(carousel.machine, {
   count: 5,
   translations: {
     nextTrigger: "Next slide",
-    prevTrigger: "Previous slide",
+    previousTrigger: "Previous slide",
     indicator: (index) => `Go to slide ${index + 1}`,
     item: (index, count) => `Slide ${index + 1} of ${count}`,
     autoplayStart: "Start autoplay",
@@ -266,8 +266,8 @@ Each part includes a component-scoped data attribute you can target in CSS.
   /* styles for the next-trigger part */
 }
 
-[data-carousel-prev-trigger] {
-  /* styles for the prev-trigger part */
+[data-carousel-previous-trigger] {
+  /* styles for the previous trigger part */
 }
 
 [data-carousel-indicator-group] {

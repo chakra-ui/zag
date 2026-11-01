@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
@@ -10,6 +10,9 @@ import { getGhostAfterStyle, getGhostBeforeStyle, getPlacementStyle } from "./to
 const defaultTranslations: Required<IntlTranslations> = {
   closeTriggerLabel: "Dismiss notification",
 }
+
+// Presses that start on controls never begin a swipe, so their clicks still work
+const SWIPE_IGNORE_SELECTOR = 'button,a,input,textarea,select,[role="button"],[data-swipe-ignore]'
 
 export function connect<T extends PropTypes, O>(
   service: Service<ToastSchema<O>>,
@@ -22,23 +25,39 @@ export function connect<T extends PropTypes, O>(
   const paused = state.hasTag("paused")
 
   const mounted = context.get("mounted")
+  const rendered = context.get("rendered")
   const frontmost = computed("frontmost")
 
   const placement = prop("parent").computed("placement")
   const type = prop("type")
-  const stacked = prop("stacked")
+  const stacked = prop("parent").state.matches("stack")
   const title = prop("title")
   const description = prop("description")
   const action = prop("action")
 
   const [side, align = "center"] = placement.split("-")
 
+  const swiping = state.matches("visible:swiping")
+  const swipeDirection = context.get("swipeDirection")
+
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
   function getRootState(): RootState {
-    return { visible, paused, mounted, frontmost, stacked: !!stacked, type, placement, side, align }
+    return {
+      visible,
+      paused,
+      mounted,
+      frontmost,
+      stacked: !!stacked,
+      type,
+      placement,
+      side,
+      align,
+      swiping,
+      swipeDirection,
+    }
   }
 
   // -----------------------------------------------------------------------------
@@ -54,11 +73,11 @@ export function connect<T extends PropTypes, O>(
     paused,
     closable: !!prop("closable"),
     pause() {
-      send({ type: "PAUSE" })
+      prop("parent").prop("store").pause(prop("id"))
     },
 
     resume() {
-      send({ type: "RESUME" })
+      prop("parent").prop("store").resume(prop("id"))
     },
 
     dismiss() {
@@ -83,11 +102,13 @@ export function connect<T extends PropTypes, O>(
         "data-sibling": dataAttr(!rootState.frontmost),
         "data-stack": dataAttr(rootState.stacked),
         "data-overlap": dataAttr(!rootState.stacked),
+        "data-swiping": dataAttr(rootState.swiping),
+        "data-swipe-direction": rootState.swipeDirection ?? undefined,
 
         role: "status",
         "aria-atomic": "true",
-        "aria-describedby": description ? dom.getDescriptionId(scope) : undefined,
-        "aria-labelledby": title ? dom.getTitleId(scope) : undefined,
+        "aria-describedby": description && rendered.description ? dom.getDescriptionId(scope) : undefined,
+        "aria-labelledby": title && rendered.title ? dom.getTitleId(scope) : undefined,
         tabIndex: 0,
         style: getPlacementStyle(service, visible),
         onKeyDown(event) {
@@ -97,6 +118,24 @@ export function connect<T extends PropTypes, O>(
             event.preventDefault()
           }
         },
+        onPointerDown(event) {
+          if (event.defaultPrevented || event.button !== 0) return
+          const target = getEventTarget<Element>(event)
+          if (target?.closest(SWIPE_IGNORE_SELECTOR)) return
+          send({ type: "SWIPE.START", point: { x: event.clientX, y: event.clientY }, pointerId: event.pointerId })
+        },
+      })
+    },
+
+    getContentProps() {
+      const rootState = getRootState()
+      return normalize.element({
+        ...parts.content.attrs(scope.id),
+        "data-state": rootState.visible ? "open" : "closed",
+        "data-first": dataAttr(rootState.frontmost),
+        "data-sibling": dataAttr(!rootState.frontmost),
+        "data-stack": dataAttr(rootState.stacked),
+        "data-overlap": dataAttr(!rootState.stacked),
       })
     },
 

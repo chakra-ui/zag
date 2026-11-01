@@ -62,7 +62,8 @@ const api = computed(() => dnd.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()" :class="styles.root">
       <h3>Copy vs move</h3>
       <p :class="styles.helperText">
-        Library copies. Archive moves. Zag reports the target; the app chooses the operation.
+        Drop operations without HTML5 DataTransfer: Library copies, Archive moves. Zag reports the target; the app
+        chooses the operation.
       </p>
       <div :class="styles.transferLayout">
         <div :class="styles.transferColumn">

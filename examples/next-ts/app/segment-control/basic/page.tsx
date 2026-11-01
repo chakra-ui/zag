@@ -2,7 +2,7 @@
 
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { radioControls, radioData } from "@zag-js/shared"
+import { segmentControls, radioData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
@@ -11,7 +11,7 @@ import "@styles/segmented-control.css"
 import "@styles/radio-group.css"
 
 export default function Page() {
-  const controls = useControls(radioControls)
+  const controls = useControls(segmentControls)
 
   const service = useMachine(radio.machine, {
     id: useId(),

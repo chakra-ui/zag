@@ -1,17 +1,16 @@
 "use client"
 
 import { CopyPageWidget } from "components/copy-page-widget"
-import { FrameworkSelect } from "components/framework-select"
+import { DocsTabBar } from "components/docs-tab-bar"
 import { MdxFooter } from "components/mdx-footer"
-import { EditPageLink } from "components/mdx/edit-page-link"
-import { Search } from "components/search-dialog"
+import { FooterCredits } from "components/footer"
 import { Sidebar } from "components/sidebar"
 import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNav } from "components/nav/top-nav"
 import { usePathname } from "next/navigation"
 import { css } from "styled-system/css"
-import { Box, Flex, Spacer, styled } from "styled-system/jsx"
+import { Box, Flex, styled } from "styled-system/jsx"
 
 const scrollbarStyles = css({
   // Chrome 121+ and Firefox
@@ -52,84 +51,96 @@ export default function DocsLayout(props: DocsLayoutProps) {
   return (
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
-      <TopNav />
-      <styled.div pt="10">
-        <SkipNavContent />
-        <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
+      <Box position="sticky" top="0" zIndex="50">
+        <TopNav />
+        <DocsTabBar />
+      </Box>
+      <SkipNavContent />
+      {/* Same columns as the Panda docs: a sticky sidebar, the article centered
+          at 4xl, and the TOC column always reserved so the article sits in the
+          same place with or without one. The container matches the top nav, so
+          the logo doesn't move between the docs and the other pages. */}
+      <Flex position="relative" maxW="8xl" mx="auto" px={{ md: "8" }}>
+        <Box
+          as="aside"
+          hideBelow="lg"
+          flexShrink="0"
+          w="240px"
+          position="sticky"
+          top="7rem"
+          h="calc(100dvh - 7rem)"
+        >
           <Box
-            display={{ base: "none", lg: "block" }}
-            position="fixed"
-            zIndex={20}
-            bottom="0"
-            top="4rem"
-            left="max(0px, calc(50% - 45rem - calc(var(--scrollbar-width, 0px) / 2)))"
-            right="auto"
-            width="19.5rem"
-            pb="10"
-            px="8"
+            data-sidebar-scroll=""
+            h="full"
             overflowY="auto"
             overscrollBehavior="contain"
+            pt="10"
+            pb="10"
+            pe="6"
             className={scrollbarStyles}
           >
-            <Box position="relative">
-              <Box position="sticky" top="0" bg="bg.subtle" pb="8">
-                <Spacer height="10" bg="transparent" />
-                <Search />
-                <Spacer mt="px" height="5" bg="transparent" />
-                <FrameworkSelect />
-              </Box>
-              <Sidebar />
-            </Box>
-          </Box>
-
-          <Box
-            as="main"
-            className="mdx-content"
-            pl={{ lg: "19.5rem" }}
-            pt="4"
-            pr={{ xl: "16" }}
-          >
-            <Box mr={{ xl: "15.5rem" }}>
-              {doc?.title && (
-                <Flex alignItems="center" gap="4" mb="6">
-                  <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
-                    {doc.title}
-                  </styled.h1>
-                  {doc?.body?.raw && (
-                    <CopyPageWidget slug={pathname} title={doc.title} />
-                  )}
-                </Flex>
-              )}
-              {children}
-              {doc?.editUrl && (
-                <EditPageLink href={doc.editUrl}>
-                  Edit this page on GitHub
-                </EditPageLink>
-              )}
-              <MdxFooter />
-            </Box>
-          </Box>
-
-          <Box
-            py="10"
-            px="8"
-            overflowY="auto"
-            position="fixed"
-            top="3.8rem"
-            bottom="0"
-            right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
-            display={{ base: "none", xl: "block" }}
-            width="19.5rem"
-            visibility={hideToc ? "hidden" : undefined}
-          >
-            <TableOfContents
-              title={toc?.title}
-              data={tableOfContent}
-              getSlug={toc?.getSlug}
-            />
+            <Sidebar />
           </Box>
         </Box>
-      </styled.div>
+
+        <Box
+          as="main"
+          className="mdx-content"
+          flex="1"
+          minW="0"
+          maxW="4xl"
+          mx="auto"
+          px={{ base: "4", sm: "6" }}
+          pt="10"
+          pb="10"
+        >
+          {doc?.title && (
+            <Flex alignItems="center" gap="4" mb="6">
+              <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
+                {doc.title}
+              </styled.h1>
+              {doc?.body?.raw && (
+                <CopyPageWidget slug={pathname} title={doc.title} />
+              )}
+            </Flex>
+          )}
+          {children}
+          <MdxFooter editUrl={doc?.editUrl} />
+        </Box>
+
+        <Box
+          hideBelow="xl"
+          flexShrink="0"
+          w="72"
+          position="sticky"
+          top="7rem"
+          h="calc(100dvh - 7rem)"
+        >
+          <Box
+            h="full"
+            overflowY="auto"
+            overscrollBehavior="contain"
+            pt="10"
+            pb="10"
+            ps="6"
+            className={scrollbarStyles}
+          >
+            {!hideToc && (
+              <TableOfContents
+                title={toc?.title}
+                data={tableOfContent}
+                getSlug={toc?.getSlug}
+              />
+            )}
+          </Box>
+        </Box>
+      </Flex>
+      <Box as="footer" borderTopWidth="1px" borderColor="border.subtle" py="6">
+        <Box maxW="8xl" mx="auto" px={{ base: "4", sm: "6", md: "8" }}>
+          <FooterCredits />
+        </Box>
+      </Box>
     </Box>
   )
 }

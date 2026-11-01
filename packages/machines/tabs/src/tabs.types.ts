@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -6,11 +7,13 @@ import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string
+  /** `null` when a `deselectable` tab is deselected */
+  value: string | null
 }
 
 export interface FocusChangeDetails {
-  focusedValue: string
+  /** `null` when focus leaves the tab list */
+  focusedValue: string | null
 }
 
 export interface NavigateDetails {
@@ -114,11 +117,12 @@ export type TabsSchema = {
     value: string | null
     focusedValue: string | null
     indicatorRect: Rect | null
-    animateIndicator: boolean
+    indicatorInstant: boolean
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
-    prevValue: string | null
+    indicatorFrame: AnimationFrame
+    focusFrame: AnimationFrame
   }
   computed: {
     focused: boolean
@@ -127,7 +131,7 @@ export type TabsSchema = {
   guard: string
   effect: string
   event: EventObject & {
-    src?: "keyboard" | "selectNext" | "selectPrev" | undefined
+    src?: "keyboard" | "selectNext" | "selectPrevious" | undefined
   }
 }
 
@@ -216,7 +220,7 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * Selects the previous tab
    */
-  selectPrev: (fromValue?: string) => void
+  selectPrevious: (fromValue?: string) => void
   /**
    * Returns the state of the trigger with the given props
    */

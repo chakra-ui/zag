@@ -39,7 +39,7 @@
     border-radius: 9999px;
     border: solid 1px;
     border-color: var(--colors-border-bold);
-    color: #ffffff;
+    color: var(--colors-text-inverse);
     padding: 1px;
 
     &:hover {

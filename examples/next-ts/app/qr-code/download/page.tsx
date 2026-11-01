@@ -18,21 +18,30 @@ export default function Page() {
 
   return (
     <main className="qr-code">
-      <div {...api.getRootProps()}>
-        <svg {...api.getFrameProps()}>
-          <path {...api.getPatternProps()} />
-        </svg>
-        <div {...api.getOverlayProps()}>
-          <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+      <div className="vstack gap-4">
+        <div {...api.getRootProps()}>
+          <svg {...api.getFrameProps()}>
+            <path {...api.getPatternProps()} />
+          </svg>
+          <div {...api.getOverlayProps()}>
+            <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+          </div>
         </div>
+
+        <div className="hstack">
+          <button {...api.getDownloadTriggerProps({ mimeType: "image/png", quality: 1, fileName: "qr-code.png" })}>
+            Download PNG
+          </button>
+          <button onClick={() => api.getDataUrl("image/png", 1).then(setPreview)}>Show as image</button>
+        </div>
+
+        {preview && (
+          <div className="qr-tile">
+            <img width="120" height="120" src={preview} alt="QR code exported as PNG" />
+            <span>Exported PNG</span>
+          </div>
+        )}
       </div>
-
-      <button {...api.getDownloadTriggerProps({ mimeType: "image/png", quality: 1, fileName: "qr-code.png" })}>
-        Download
-      </button>
-      <button onClick={() => api.getDataUrl("image/png", 1).then(setPreview)}>Preview</button>
-
-      {preview && <img width="120" height="120" src={preview} alt="qr-code preview" />}
     </main>
   )
 }

@@ -69,7 +69,7 @@ export interface IntlTranslations {
   monthSelect?: string | undefined
   yearSelect?: string | undefined
   viewTrigger?: ((view: DateView, nextView: DateView | undefined) => string) | undefined
-  prevTrigger?: ((view: DateView) => string) | undefined
+  previousTrigger?: ((view: DateView) => string) | undefined
   presetTrigger?: ((value: string[]) => string) | undefined
   clearTrigger?: string | undefined
   trigger?: ((open: boolean) => string) | undefined
@@ -88,7 +88,7 @@ export interface ElementIds {
   tableRow?: ((id: string) => string) | undefined
   content?: string | undefined
   cellTrigger?: ((id: string) => string) | undefined
-  prevTrigger?: ((view: DateView) => string) | undefined
+  previousTrigger?: ((view: DateView) => string) | undefined
   nextTrigger?: ((view: DateView) => string) | undefined
   viewTrigger?: ((view: DateView) => string) | undefined
   clearTrigger?: string | undefined
@@ -394,7 +394,7 @@ type ComputedContext = Readonly<{
   /**
    * Whether the previous visible range is valid.
    */
-  isPrevVisibleRangeValid: boolean
+  isPreviousVisibleRangeValid: boolean
   /**
    * The value text to display in the input.
    */
@@ -823,7 +823,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Goes to the previous month/year/decade.
    */
-  goToPrev: VoidFunction
+  goToPrevious: VoidFunction
   /**
    * Returns the state details for a given cell.
    */
@@ -871,7 +871,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getYearTableCellTriggerProps: (props: TableCellProps) => T["element"]
 
   getNextTriggerProps: (props?: ViewProps) => T["button"]
-  getPrevTriggerProps: (props?: ViewProps) => T["button"]
+  getPreviousTriggerProps: (props?: ViewProps) => T["button"]
 
   getClearTriggerProps: () => T["button"]
   /**

@@ -21,7 +21,8 @@ export const useControls = <T extends ControlRecord>(config: T): UseControlsRetu
   const state = ref<any>(getControlDefaults(config))
 
   const setState = (key: string, value: any) => {
-    const newState = toValue(state)
+    // Assign a fresh object so `state` triggers and `mergeProps` recomputes
+    const newState = structuredClone(toRaw(state.value))
     deepSet(newState, key, value)
     state.value = newState
   }

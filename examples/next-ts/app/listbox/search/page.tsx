@@ -40,12 +40,16 @@ export default function Page() {
     <>
       <main className="listbox">
         <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Country</label>
           <div {...api.getContentProps()}>
             <input
               {...api.getInputProps({ autoHighlight: true })}
+              aria-label="Filter countries"
+              placeholder="Filter…"
               onChange={(e) => setSearch(e.target.value)}
               value={search}
             />
+            <div {...api.getEmptyProps()}>{collection.size === 0 && `No matches for "${search}"`}</div>
             <ul {...api.getListProps()}>
               {collection.items.map((item) => (
                 <li key={item.value} {...api.getItemProps({ item })}>

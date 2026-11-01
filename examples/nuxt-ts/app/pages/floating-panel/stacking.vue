@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import "@styles/floating-panel.css"
+</script>
+
 <template>
   <main class="floating-panel">
     <div style="display: flex; gap: 12px">

@@ -1,5 +1,5 @@
-import { dataAttr, getEventKey, isSafari } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, isSafari } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(
   service: Service<AccordionSchema>,
   normalize: NormalizeProps<T>,
 ): AccordionApi<T> {
-  const { send, context, prop, scope, computed } = service
+  const { send, context, prop, scope } = service
 
   const focusedValue = context.get("focusedValue")
   const value = context.get("value")
@@ -66,7 +66,8 @@ export function connect<T extends PropTypes>(
         role: "region",
         id: dom.getItemContentId(scope, props.value),
         "aria-labelledby": dom.getItemTriggerId(scope, props.value),
-        hidden: !itemState.expanded,
+        "data-value": props.value,
+        hidden: itemState.expanded ? false : prop("hiddenUntilFound") ? "until-found" : true,
         "data-state": itemState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(itemState.disabled),
         "data-focus": dataAttr(itemState.focused),
@@ -129,47 +130,6 @@ export function connect<T extends PropTypes>(
             event.currentTarget.focus()
           }
           send({ type: "TRIGGER.CLICK", value })
-        },
-        onKeyDown(event) {
-          if (event.defaultPrevented) return
-          if (itemState.disabled) return
-
-          const keyMap: EventKeyMap = {
-            ArrowDown() {
-              if (computed("isHorizontal")) return
-              send({ type: "GOTO.NEXT", value })
-            },
-            ArrowUp() {
-              if (computed("isHorizontal")) return
-              send({ type: "GOTO.PREV", value })
-            },
-            ArrowRight() {
-              if (!computed("isHorizontal")) return
-              send({ type: "GOTO.NEXT", value })
-            },
-            ArrowLeft() {
-              if (!computed("isHorizontal")) return
-              send({ type: "GOTO.PREV", value })
-            },
-            Home() {
-              send({ type: "GOTO.FIRST", value })
-            },
-            End() {
-              send({ type: "GOTO.LAST", value })
-            },
-          }
-
-          const key = getEventKey(event, {
-            dir: prop("dir"),
-            orientation: prop("orientation"),
-          })
-
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
         },
       })
     },

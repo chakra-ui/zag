@@ -1,8 +1,9 @@
 "use client"
 
-import { tourLayoutShiftData } from "@zag-js/shared"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { tourLayoutShiftData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
 import "@styles/tour.css"
 
@@ -54,7 +55,7 @@ export default function Page() {
               </div>
 
               <button {...api.getCloseTriggerProps()}>
-                <span aria-hidden="true">×</span>
+                <XIcon />
               </button>
             </div>
           </div>

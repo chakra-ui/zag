@@ -2,6 +2,22 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3557](https://github.com/chakra-ui/zag/pull/3557)
+  [`669fbf7`](https://github.com/chakra-ui/zag/commit/669fbf79b1818b40fa72387f60c0d3553a8d4268) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `updateProps` slowing down with every call and overflowing
+  the stack in long-lived machines.
+- Updated dependencies []:
+  - @zag-js/core@1.47.0
+  - @zag-js/store@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -81,6 +97,11 @@
   - @zag-js/utils@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+- @zag-js/core@1.46.0
+- @zag-js/store@1.46.0
+- @zag-js/types@1.46.0
+- @zag-js/utils@1.46.0
 
 ## 1.45.0
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as angleSlider from "@zag-js/angle-slider"
   import { angleSliderControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
@@ -24,7 +24,8 @@
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>
-      Angle Slider: <div {...api.getValueTextProps()}>{api.valueAsDegree}</div>
+      Rotation
+      <span {...api.getValueTextProps()}>{api.valueAsDegree}</span>
     </label>
     <div {...api.getControlProps()}>
       <div {...api.getThumbProps()}></div>

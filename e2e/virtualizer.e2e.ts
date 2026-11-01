@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { Model } from "./models/model"
 
 /** Standalone virtualizer examples (see shared/src/routes.ts). */

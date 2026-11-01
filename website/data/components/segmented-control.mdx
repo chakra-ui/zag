@@ -130,11 +130,26 @@ Each part includes a component-scoped data attribute you can target in CSS.
 
 ### Indicator
 
-Style the segmented control Indicator through the `indicator` part.
+Animate the indicator with a CSS transition. It gets `data-instant` when it
+should snap instead (first render or resize), and the items get
+`data-indicator-pending` until it's measured.
 
 ```css
 [data-radio-group-indicator] {
-  /* styles for indicator */
+  width: var(--width);
+  height: var(--height);
+  transition:
+    left 0.2s,
+    width 0.2s;
+}
+
+[data-radio-group-indicator][data-instant] {
+  transition: none;
+}
+
+/* Server render or hidden container: style the checked item instead */
+[data-radio-group-item][data-state="checked"][data-indicator-pending] {
+  background: white;
 }
 ```
 

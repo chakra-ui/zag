@@ -10,8 +10,8 @@ export class TreeViewModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto("/tree-view/basic")
+  goto(url = "/tree-view/basic") {
+    return this.page.goto(url)
   }
 
   private item(name: string) {
@@ -35,12 +35,33 @@ export class TreeViewModel extends Model {
     return this.page.getByRole("button", { name }).first()
   }
 
+  private get renameInput() {
+    return this.page.locator("[data-tree-view-node-rename-input]")
+  }
+
+  async seeRenameInputIsFocused(value: string) {
+    await expect(this.renameInput).toBeFocused()
+    await expect(this.renameInput).toHaveValue(value)
+  }
+
+  seeItem(name: string) {
+    return expect(this.item(name)).toBeVisible()
+  }
+
   clickItem(name: string, options?: ClickOptions) {
     return this.item(name).click(options)
   }
 
   clickBranch(name: string, options?: ClickOptions) {
     return this.node(name).click(options)
+  }
+
+  clickNodeMenuTrigger(value: string) {
+    return this.node(value).locator("[data-menu-trigger]").click()
+  }
+
+  seeMenuIsOpen() {
+    return expect(this.page.locator("[data-menu-content]")).toBeVisible()
   }
 
   focusItem(name: string) {

@@ -4,6 +4,7 @@ import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
+import type { AnimationFrame, Timeout } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -186,6 +187,10 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   computed: {
     isInteractive: boolean
     valueAsString: string
+  }
+  refs: {
+    initialFocusFrame: AnimationFrame
+    graceAreaTimeout: Timeout
   }
   action: string
   effect: string
@@ -382,13 +387,9 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   setOpen(open: boolean): void
   /**
-   * Function to set the highlighted value (path or single value to find)
+   * Function to set the highlighted value (path or single value to find), or clear it with `null`
    */
-  setHighlightValue(value: string | string[]): void
-  /**
-   * Function to clear the highlighted value
-   */
-  clearHighlightValue(): void
+  setHighlightedValue(value: string | string[] | null): void
   /**
    * Function to select a value
    */

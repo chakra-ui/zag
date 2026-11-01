@@ -51,6 +51,11 @@ export class MenubarModel extends Model {
     await expect(this.trigger(id)).toHaveAttribute("tabindex", "-1")
   }
 
+  // content takes focus a frame after opening; keys pressed before that hit the body
+  seeMenuIsFocused = async (id: string) => {
+    await expect(this.content(id)).toBeFocused()
+  }
+
   seeMenuIsOpen = async (id: string) => {
     await expect(this.content(id)).toBeVisible()
     await expect(this.trigger(id)).toHaveAttribute("aria-expanded", "true")
@@ -81,6 +86,10 @@ export class MenubarModel extends Model {
 
   seeSubmenuIsOpen = async (testId: string) => {
     await expect(this.page.locator(`[data-testid="${testId}"]`)).toBeVisible()
+  }
+
+  seeSubmenuIsFocused = async (testId: string) => {
+    await expect(this.page.locator(`[data-testid="${testId}"]`)).toBeFocused()
   }
 
   seeSubmenuIsClosed = async (testId: string) => {

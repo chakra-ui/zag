@@ -9,7 +9,7 @@ import { getTransformedRange } from "./pagination.utils"
 const defaultTranslations: Required<IntlTranslations> = {
   rootLabel: "pagination",
   firstTriggerLabel: "first page",
-  prevTriggerLabel: "previous page",
+  previousTriggerLabel: "previous page",
   nextTriggerLabel: "next page",
   lastTriggerLabel: "last page",
   itemLabel({ page, totalPages }) {
@@ -39,6 +39,13 @@ export function connect<T extends PropTypes>(
 
   const isFirstPage = page === 1
   const isLastPage = page >= totalPages
+
+  const getTriggerLinkProps = (targetPage: number | null, disabled: boolean) => {
+    if (type !== "link") return
+    if (disabled || targetPage == null) return { role: "link", "aria-disabled": true }
+    if (!getPageUrl) return
+    return { href: getPageUrl({ page: targetPage, pageSize }) }
+  }
 
   const pages = getTransformedRange({
     page,
@@ -84,7 +91,7 @@ export function connect<T extends PropTypes>(
     goToNextPage() {
       send({ type: "NEXT_PAGE" })
     },
-    goToPrevPage() {
+    goToPreviousPage() {
       send({ type: "PREVIOUS_PAGE" })
     },
     goToFirstPage() {
@@ -134,21 +141,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getPrevTriggerProps() {
+    getPreviousTriggerProps() {
       return normalize.element({
-        ...parts.prevTrigger.attrs(scope.id),
+        ...parts.previousTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(isFirstPage),
-        "aria-label": translations.prevTriggerLabel,
+        "aria-label": translations.previousTriggerLabel,
         onClick() {
           send({ type: "PREVIOUS_PAGE" })
         },
         ...(type === "button" && { disabled: isFirstPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl &&
-          previousPage && {
-            href: getPageUrl({ page: previousPage, pageSize }),
-          }),
+        ...getTriggerLinkProps(previousPage, isFirstPage),
       })
     },
 
@@ -162,10 +165,7 @@ export function connect<T extends PropTypes>(
           send({ type: "FIRST_PAGE" })
         },
         ...(type === "button" && { disabled: isFirstPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl && {
-            href: getPageUrl({ page: 1, pageSize }),
-          }),
+        ...getTriggerLinkProps(1, isFirstPage),
       })
     },
 
@@ -179,11 +179,7 @@ export function connect<T extends PropTypes>(
           send({ type: "NEXT_PAGE" })
         },
         ...(type === "button" && { disabled: isLastPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl &&
-          nextPage && {
-            href: getPageUrl({ page: nextPage, pageSize }),
-          }),
+        ...getTriggerLinkProps(nextPage, isLastPage),
       })
     },
 
@@ -197,10 +193,7 @@ export function connect<T extends PropTypes>(
           send({ type: "LAST_PAGE" })
         },
         ...(type === "button" && { disabled: isLastPage, type: "button" }),
-        ...(type === "link" &&
-          getPageUrl && {
-            href: getPageUrl({ page: totalPages, pageSize }),
-          }),
+        ...getTriggerLinkProps(totalPages, isLastPage),
       })
     },
   }

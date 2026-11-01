@@ -37,6 +37,7 @@ export default function Page() {
     id: useId(),
     collection,
     placeholder: "Search people...",
+    loading: asyncList.loading,
     onInputValueChange({ inputValue }) {
       asyncList.setFilterText(inputValue)
     },

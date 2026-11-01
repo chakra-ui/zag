@@ -1,0 +1,58 @@
+import * as popover from "@zag-js/popover"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { XIcon } from "lucide-solid"
+import { createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
+import "@styles/popover.css"
+
+export default function Page() {
+  return (
+    <div class="App">
+      <Popover />
+    </div>
+  )
+}
+
+const dataAttr = (el: HTMLElement, key: string, value: boolean) => {
+  if (value) el.dataset[key] = ""
+  else delete el.dataset[key]
+}
+
+const isMdDown = () => window.matchMedia("(max-width: 640px)").matches
+
+function Popover() {
+  const service = useMachine(popover.machine, {
+    id: createUniqueId(),
+    positioning: {
+      updatePosition({ updatePosition, floatingElement }) {
+        const positionerEl = floatingElement as HTMLElement
+        const contentEl = positionerEl.firstElementChild as HTMLElement
+
+        dataAttr(positionerEl, "fullscreen", isMdDown())
+        dataAttr(contentEl, "fullscreen", isMdDown())
+
+        updatePosition()
+      },
+    },
+  })
+
+  const api = createMemo(() => popover.connect(service, normalizeProps))
+
+  return (
+    <main>
+      <button {...api().getTriggerProps()}>Click me</button>
+      <Portal>
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>
+            <div {...api().getTitleProps()}>Presenters</div>
+            <div {...api().getDescriptionProps()}>Description</div>
+            <button>Action Button</button>
+            <button {...api().getCloseTriggerProps()}>
+              <XIcon />
+            </button>
+          </div>
+        </div>
+      </Portal>
+    </main>
+  )
+}

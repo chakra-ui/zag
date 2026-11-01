@@ -10,7 +10,7 @@
 </style>
 
 <template>
-  <main class="json-tree-container">
+  <main class="json-tree-container" style="font-family: monospace">
     <JsonTreeNode :node="treeData" :index-path="[0]" />
   </main>
 </template>
@@ -37,7 +37,7 @@ const KeyNode = defineComponent({
     },
   },
   render() {
-    const key = keyPathToKey(this.node.keyPath)
+    const key = keyPathToKey(this.node.keyPath, { excludeRoot: true })
     return [
       h(
         "span",
@@ -103,7 +103,7 @@ const JsonTreeNode = defineComponent({
   render() {
     if (this.node.children && this.node.children.length > 0) {
       return h("div", [
-        h("div", { "aria-label": getAccessibleDescription(this.node) }, [
+        h("div", { "aria-label": getAccessibleDescription(this.node), "data-key": this.node.keyPath.join(".") }, [
           this.key && h(KeyNode, { node: this.node }),
           h(ValueNode, { node: jsonNodeToElement(this.node) }),
         ]),
@@ -125,6 +125,7 @@ const JsonTreeNode = defineComponent({
         {
           "aria-label": getAccessibleDescription(this.node),
           "data-line": this.line,
+          "data-key": this.node.keyPath.join("."),
           style: {
             "--line-length": this.lineLength,
           },

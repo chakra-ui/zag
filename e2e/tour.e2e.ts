@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { TourModel } from "./models/tour.model"
 
 let I: TourModel
@@ -16,11 +16,90 @@ test.describe("tour", () => {
     await I.seeContentIsCentered()
   })
 
+  test.describe("action triggers", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route("https://api.github.com/**", (route) => route.fulfill({ json: { name: "Step 1. Welcome" } }))
+    })
+
+    const button = (page: Page, name: string) => page.getByRole("button", { name, exact: true })
+
+    async function goToStep(page: Page, stepId: string) {
+      const order = ["step-0", "step-1", "step-2", "step-2a", "step-3", "step-4", "step-5"]
+      await I.clickStart()
+      for (const id of order.slice(1, order.indexOf(stepId) + 1)) {
+        await button(page, "Next").click()
+        await I.seeStep(id)
+      }
+    }
+
+    test("next and skip are named by their label", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await expect(button(page, "Next")).not.toHaveAttribute("aria-label")
+      await expect(button(page, "Skip")).not.toHaveAttribute("aria-label")
+    })
+
+    test("prev is named by its label", async ({ page }) => {
+      await goToStep(page, "step-1")
+      await expect(button(page, "Previous")).not.toHaveAttribute("aria-label")
+    })
+
+    test("dismiss is named by its label", async ({ page }) => {
+      await goToStep(page, "step-5")
+      await expect(button(page, "Finish")).not.toHaveAttribute("aria-label")
+    })
+
+    test("close trigger keeps its translated name", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await expect(button(page, "close tour")).toBeVisible()
+    })
+
+    test("prev by label goes back", async ({ page }) => {
+      await goToStep(page, "step-1")
+      await button(page, "Previous").click()
+      await I.seeStep("step-0")
+    })
+
+    test("skip by label ends the tour", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await button(page, "Skip").click()
+      await I.dontSeeContent()
+    })
+
+    test("dismiss by label ends the tour", async ({ page }) => {
+      await goToStep(page, "step-5")
+      await button(page, "Finish").click()
+      await I.dontSeeContent()
+    })
+
+    test("keyboard activates a trigger found by its label", async ({ page }) => {
+      await goToStep(page, "step-0")
+      await button(page, "Next").focus()
+      await page.keyboard.press("Enter")
+      await I.seeStep("step-1")
+    })
+  })
+
   test("should close on escape", async () => {
     await I.clickStart()
     await I.seeContent()
     await I.pressKey("Escape")
     await I.dontSeeContent()
+  })
+
+  test("should restore focus to the start trigger on escape", async () => {
+    await I.clickStart()
+    await I.seeContent()
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeStartIsFocused()
+  })
+
+  test("should restore focus to the start trigger on close", async ({ page }) => {
+    await I.clickStart()
+    await I.seeContent()
+    await page.getByRole("button", { name: "close tour" }).click()
+    await I.dontSeeContent()
+    await I.seeStartIsFocused()
   })
 
   test.fixme("should align with spotlight (due to offset)", async () => {
@@ -136,10 +215,7 @@ test.describe("tour / replaced target", () => {
 
     // the highlight moves to the element now carrying the target, and nothing is left on the old one
     await expect(page.locator("[data-tour-highlighted]")).toHaveCount(1)
-    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute(
-      "data-tour-highlighted",
-      "",
-    )
+    await expect(page.getByRole("heading", { name: "Replacement target" })).toHaveAttribute("data-tour-highlighted", "")
 
     // and the spotlight follows it rather than staying on a node that has left the document.
     // Polled, because the position is recomputed asynchronously, on the next update.

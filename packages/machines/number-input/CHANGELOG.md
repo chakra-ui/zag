@@ -2,6 +2,22 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3504](https://github.com/chakra-ui/zag/pull/3504)
+  [`9555cad`](https://github.com/chakra-ui/zag/commit/9555cad71d5bd77fdfdf3564c5865102af245801) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix scrubbing always incrementing the value when `dir` is `rtl`.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
+## 1.46.0
+
 ### Patch Changes
 
 - Updated dependencies []:
@@ -108,6 +124,12 @@
   - **`largeStep` / `smallStep`** — Explicit step sizes for Shift (default `step * 10`) and Alt/Option (default
     `step * 0.1`) modifier keys. Alt replaces Ctrl for fine control, matching design tool conventions.
   - **`snapOnStep`** — Snap values to step multiples when scrubbing or using keyboard.
+
+  - @zag-js/anatomy@1.46.0
+  - @zag-js/core@1.46.0
+  - @zag-js/types@1.46.0
+  - @zag-js/utils@1.46.0
+  - @zag-js/dom-query@1.46.0
 
 ## 1.45.0
 

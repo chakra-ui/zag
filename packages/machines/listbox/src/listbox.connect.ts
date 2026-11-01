@@ -88,9 +88,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     empty: value.length === 0,
     highlightedItem,
     highlightedValue,
-    clearHighlightedValue() {
-      send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
-    },
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value,
@@ -109,7 +106,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       }
       send({ type: "VALUE.SET", value: collection.getValues() })
     },
-    highlightValue(value) {
+    setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     highlightFirst() {
@@ -440,7 +437,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
           }
 
-          const exec = keyMap[getEventKey(event)]
+          const key = getEventKey(event, { dir: prop("dir") })
+          // `a` is only a shortcut with the ctrl or meta key (select all), otherwise let it reach typeahead
+          const exec = key === "a" && !isCtrlOrMetaKey(event) ? undefined : keyMap[key]
 
           if (exec) {
             exec(event)
@@ -458,6 +457,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getListState,
+    getEmptyProps() {
+      return normalize.element({
+        ...parts.empty.attrs(scope.id),
+        dir: prop("dir"),
+        role: "status",
+        "aria-live": "polite",
+        "aria-atomic": true,
+      })
+    },
+
     getListProps() {
       const listState = getListState()
       return normalize.element({

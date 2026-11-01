@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getPlacement, getPlacementStyles } from "@zag-js/popper"
-  import { onMount } from "svelte"
   import { normalizeProps } from "@zag-js/svelte"
+  import { onMount } from "svelte"
 
   let referenceRef: HTMLButtonElement
   let floatingRef: HTMLDivElement
-  let positioned = $state.raw<any>({})
+  let positioned = $state.raw({})
 
   onMount(() => {
     if (!referenceRef || !floatingRef) return
@@ -17,15 +17,12 @@
     })
   })
 
-  const styles = $derived.by(() => {
-    const floatingStyle = getPlacementStyles(positioned).floating
-    return normalizeProps.style(floatingStyle)
-  })
-
-  $inspect(styles)
+  const styles = $derived(getPlacementStyles(positioned))
 </script>
 
-<main>
+<div>
   <button bind:this={referenceRef}>Hello StackBlitz!</button>
-  <div style={styles} bind:this={floatingRef}>Start editing to see some magic happen :)</div>
-</main>
+  <div {...normalizeProps.element({ style: styles.floating })} bind:this={floatingRef}>
+    Start editing to see some magic happen :)
+  </div>
+</div>

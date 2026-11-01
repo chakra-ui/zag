@@ -1,0 +1,188 @@
+/* -----------------------------------------------------------------------------
+ * Defaults for plain elements in examples.
+ * Imported as `@layer base`, so every component rule (unlayered) wins over it.
+ * Scoped to the page minus playground chrome, so portaled content is covered too.
+ * -----------------------------------------------------------------------------*/
+
+@scope (body) to (.pg-topbar, .pg-floating-bar, .pg-overlay, .pg-palette-positioner, div.toolbar) {
+  :scope {
+    font-family: var(--z-font-sans);
+    color: var(--z-fg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :is(h1, h2, h3, h4) {
+    letter-spacing: -0.01em;
+  }
+
+  /* Button: small, subtle fill */
+  button {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border: none;
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg-muted);
+    color: var(--z-fg);
+    font: 500 var(--z-text-sm) / 1 var(--z-font-sans);
+    white-space: nowrap;
+    cursor: default;
+    transition:
+      background var(--z-duration) var(--z-ease),
+      box-shadow var(--z-duration) var(--z-ease);
+
+    &:hover:not(:disabled) {
+      background: var(--z-bg-emphasis);
+    }
+
+    &:disabled {
+      opacity: var(--z-disabled-opacity);
+    }
+
+    & svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Icon-only button: square */
+    &[aria-label]:has(> svg:only-child) {
+      width: 32px;
+      padding: 0;
+    }
+
+    &[data-variant="outline"] {
+      border: 1px solid var(--z-border);
+      background: var(--z-bg);
+
+      &:hover:not(:disabled) {
+        background: var(--z-bg-muted);
+      }
+    }
+
+    /* green-600, not --z-accent: white text needs 4.5:1 (green-500 is 3.3:1) */
+    &[data-variant="solid"] {
+      background: var(--z-green-600);
+      color: var(--z-accent-contrast);
+
+      &:hover:not(:disabled) {
+        background: var(--z-green-700);
+      }
+    }
+  }
+
+  /* Input */
+  :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]), select) {
+    box-sizing: border-box;
+    height: var(--z-control-h);
+    padding: 0 12px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg);
+    color: var(--z-fg);
+    font: var(--z-text-md) / 1.4 var(--z-font-sans);
+    box-shadow: var(--z-shadow-xs);
+    transition:
+      border-color var(--z-duration) var(--z-ease),
+      box-shadow var(--z-duration) var(--z-ease);
+  }
+
+  textarea {
+    box-sizing: border-box;
+    min-height: 64px;
+    padding: 8px 12px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg);
+    color: var(--z-fg);
+    font: var(--z-text-md) / 1.5 var(--z-font-sans);
+    box-shadow: var(--z-shadow-xs);
+  }
+
+  :is(input, select, textarea) {
+    &::placeholder {
+      color: var(--z-fg-subtle);
+    }
+
+    &:hover:not(:disabled, :focus) {
+      border-color: var(--z-border-emphasis);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--z-accent);
+      box-shadow: 0 0 0 3px var(--z-ring);
+    }
+
+    &:disabled {
+      opacity: var(--z-disabled-opacity);
+    }
+  }
+
+  input[type="range"] {
+    accent-color: var(--z-accent);
+  }
+
+  :is(input[type="checkbox"], input[type="radio"]) {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--z-accent);
+  }
+
+  label {
+    color: var(--z-fg);
+    font-size: var(--z-text-md);
+    font-weight: 500;
+  }
+
+  label:has(> :is(input[type="checkbox"], input[type="radio"])) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 12px 16px 16px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius);
+  }
+
+  legend {
+    padding: 0 4px;
+    color: var(--z-fg-muted);
+    font-size: var(--z-text-sm);
+    font-weight: 500;
+  }
+
+  a {
+    color: var(--z-accent-fg);
+    text-underline-offset: 2px;
+  }
+
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: var(--z-radius-xs);
+    background: var(--z-bg-muted);
+    color: var(--z-fg-muted);
+    font: 500 var(--z-text-xs) / 1.4 var(--z-font-sans);
+  }
+
+  hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--z-border-subtle);
+  }
+
+  :is(button, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: var(--z-focus-ring);
+  }
+}

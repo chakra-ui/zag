@@ -8,9 +8,12 @@ import "@styles/navigation-menu-viewport.css"
 
 const controls = useControls(navigationMenuControls)
 
-const service = useMachine(navigationMenu.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  navigationMenu.machine,
+  controls.mergeProps<navigationMenu.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => navigationMenu.connect(service, normalizeProps))
 </script>
@@ -171,7 +174,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
     </header>
   </main>
 
-  <Toolbar :viz="true">
+  <Toolbar viz>
     <StateVisualizer :state="service" :context="['value', 'previousValue', 'triggerRect', 'viewportSize']" />
     <template #controls>
       <Controls :control="controls" />

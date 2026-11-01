@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
+const estimateSize = () => ITEM_HEIGHT
+
 const ITEM_COUNT = 1000
 const ITEM_HEIGHT = 40
 
@@ -17,7 +19,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => ITEM_HEIGHT,
+    estimatedSize: estimateSize,
     scrollPaddingStart,
     scrollPaddingEnd,
     overscan: 5,
@@ -26,7 +28,6 @@ export default function Page() {
   const updateScrollPadding = (start: number, end: number) => {
     setScrollPaddingStart(start)
     setScrollPaddingEnd(end)
-    virtualizer.updateOptions({ scrollPaddingStart: start, scrollPaddingEnd: end })
   }
 
   const virtualItems = virtualizer.getVirtualItems()

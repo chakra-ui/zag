@@ -38,14 +38,24 @@ export const machine = createMachine<PasswordInputSchema>({
         "VISIBILITY.SET": {
           actions: ["setVisibility"],
         },
-        "TRIGGER.CLICK": {
-          actions: ["toggleVisibility", "focusInputEl"],
-        },
+        "TRIGGER.CLICK": [
+          {
+            guard: "isKeyboardClick",
+            actions: ["toggleVisibility"],
+          },
+          {
+            actions: ["toggleVisibility", "focusInputEl"],
+          },
+        ],
       },
     },
   },
 
   implementations: {
+    guards: {
+      isKeyboardClick: ({ event }) => event.src === "keyboard",
+    },
+
     actions: {
       setVisibility({ context, event }) {
         context.set("visible", event.value)

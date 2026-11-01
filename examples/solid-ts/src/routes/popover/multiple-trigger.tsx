@@ -4,6 +4,7 @@ import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { Presence } from "~/components/presence"
 import "@styles/popover.css"
+import { XIcon } from "lucide-solid"
 
 interface Document {
   id: number
@@ -162,7 +163,7 @@ export default function PopoverMultipleTrigger() {
                     "font-size": "16px",
                   }}
                 >
-                  ✕
+                  <XIcon />
                 </button>
               </div>
             </Presence>

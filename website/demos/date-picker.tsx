@@ -34,7 +34,7 @@ export function DatePicker(props: DatePickerProps) {
             >
               <button
                 className={styles.PrevTrigger}
-                {...api.getPrevTriggerProps()}
+                {...api.getPreviousTriggerProps()}
               >
                 <BiChevronLeft />
               </button>
@@ -92,7 +92,7 @@ export function DatePicker(props: DatePickerProps) {
               >
                 <button
                   className={styles.PrevTrigger}
-                  {...api.getPrevTriggerProps({ view: "month" })}
+                  {...api.getPreviousTriggerProps({ view: "month" })}
                 >
                   Prev
                 </button>
@@ -151,7 +151,7 @@ export function DatePicker(props: DatePickerProps) {
               >
                 <button
                   className={styles.PrevTrigger}
-                  {...api.getPrevTriggerProps({ view: "year" })}
+                  {...api.getPreviousTriggerProps({ view: "year" })}
                 >
                   Prev
                 </button>

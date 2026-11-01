@@ -17,6 +17,29 @@ export const accordionData = [
   { id: "contact", label: "Contact" },
 ]
 
+export const accordionFaqData = [
+  {
+    value: "shipping",
+    title: "How long does shipping take?",
+    content: "Orders ship within 2 business days. Standard delivery takes 3–5 days, express takes 1–2.",
+  },
+  {
+    value: "returns",
+    title: "What is your return policy?",
+    content: "Unused items can be returned within 30 days for a full refund. Return shipping is free.",
+  },
+  {
+    value: "payment",
+    title: "Which payment methods do you accept?",
+    content: "We accept all major cards, PayPal, and Apple Pay. Invoices are available for business accounts.",
+  },
+  {
+    value: "support",
+    title: "How do I contact support?",
+    content: "Email support@example.com or use the chat in your dashboard. We reply within one business day.",
+  },
+]
+
 export const avatarData = {
   full: [
     "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/top-crop/width/200/height/150?cb=20210223094656",
@@ -112,6 +135,27 @@ export const menuData = [
     { label: "Export", value: "export" },
   ],
 ]
+
+export const menuFilterData = {
+  actions: [
+    { label: "New file", value: "new-file" },
+    { label: "Open file", value: "open-file" },
+    { label: "Save", value: "save" },
+    { label: "Save as", value: "save-as" },
+    { label: "Rename", value: "rename" },
+    { label: "Duplicate", value: "duplicate" },
+    { label: "Download a copy", value: "download" },
+    { label: "Delete", value: "delete" },
+  ],
+  folders: [
+    { label: "Inbox", value: "inbox" },
+    { label: "Projects", value: "projects" },
+    { label: "Archive", value: "archive" },
+    { label: "Design reviews", value: "design-reviews" },
+    { label: "Personal", value: "personal" },
+    { label: "Receipts", value: "receipts" },
+  ],
+}
 
 export const menuOptionData = {
   order: [
@@ -237,7 +281,7 @@ export const tourDataWithEffect: StepDetails[] = [
     description: "Use them to change the context properties",
     target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(1)"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -259,7 +303,7 @@ export const tourDataWithEffect: StepDetails[] = [
     description: "Use them to see the state of the tour. Click the Visualizer button to proceed.",
     target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(2)"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -280,7 +324,10 @@ export const tourData: StepDetails[] = [
     id: "step-0",
     title: "Centered tour (no target)",
     description: "This is the center of the world. Ready to start the tour?",
-    actions: [{ label: "Next", action: "next" }],
+    actions: [
+      { label: "Skip", action: "skip" },
+      { label: "Next", action: "next" },
+    ],
   },
   {
     type: "tooltip",
@@ -289,7 +336,7 @@ export const tourData: StepDetails[] = [
     description: "To the new world",
     target: () => document.querySelector<HTMLElement>("#step-1"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
     effect({ show, update }) {
@@ -314,7 +361,7 @@ export const tourData: StepDetails[] = [
     description: "Using scrollIntoView(...) rocks!",
     target: () => document.querySelector<HTMLElement>("#step-2"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -328,7 +375,7 @@ export const tourData: StepDetails[] = [
       return frameEl?.document.querySelector<HTMLElement>("#step-2a")
     },
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -339,7 +386,7 @@ export const tourData: StepDetails[] = [
     description: "The new world is a great place",
     target: () => document.querySelector<HTMLElement>("#step-3"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -350,7 +397,7 @@ export const tourData: StepDetails[] = [
     description: "So nice to see the scrolling works!",
     target: () => document.querySelector<HTMLElement>("#step-4"),
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Previous", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -365,7 +412,7 @@ export const tourData: StepDetails[] = [
 
 export const stepsData = [
   { value: "first", title: "First", description: "Contact Info" },
-  { value: "second", title: "Second", description: "Date & Time" },
+  { value: "second", title: "Second", description: "Date & Time", optional: true },
   { value: "third", title: "Third", description: "Select Rooms" },
 ]
 
@@ -472,7 +519,7 @@ export const tourLayoutShiftData: StepDetails[] = [
     title: "A different target",
     description: "The spotlight animates across to this one, then snaps for any layout change after that.",
     target: () => document.getElementById("other-target"),
-    actions: [{ label: "Prev", action: "prev" }],
+    actions: [{ label: "Previous", action: "previous" }],
   },
 ]
 

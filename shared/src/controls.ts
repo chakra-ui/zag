@@ -11,9 +11,8 @@ export const schedulerControls = defineControls({
 })
 
 export const accordionControls = defineControls({
-  collapsible: { type: "boolean", defaultValue: false },
+  collapsible: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
-  loopFocus: { type: "boolean", defaultValue: true },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
@@ -113,7 +112,12 @@ export const numberFlowControls = defineControls({
   stagger: { type: "string", defaultValue: "25ms" },
 })
 
+export const tooltipControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+})
+
 export const numberInputControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   clampValueOnBlur: { type: "boolean", defaultValue: true },
   allowMouseWheel: { type: "boolean", defaultValue: false },
@@ -153,6 +157,7 @@ export const pinInputControls = defineControls({
   mask: { type: "boolean", defaultValue: false },
   otp: { type: "boolean", defaultValue: false },
   blurOnComplete: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
   type: { type: "select", options: ["numeric", "alphanumeric", "alphabetic"] as const, defaultValue: "numeric" },
 })
 
@@ -163,6 +168,13 @@ export const popoverControls = defineControls({
 })
 
 export const radioControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "vertical" },
+})
+
+// Segmented controls are always horizontal, so no orientation option
+export const segmentControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
 })
@@ -243,6 +255,7 @@ export const listboxControls = defineControls({
   deselectable: { type: "boolean", defaultValue: true },
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const gridListControls = defineControls({
@@ -353,6 +366,7 @@ export const fileUploadControls = defineControls({
   accept: { type: "string", defaultValue: "" },
   maxFiles: { type: "number", defaultValue: 1 },
   disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
   dropzone: { type: "boolean", defaultValue: true },
 })
 
@@ -423,10 +437,12 @@ export const qrCodeControls = defineControls({
 export const stepsControls = defineControls({
   linear: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const tocControls = defineControls({
   autoScroll: { type: "boolean", defaultValue: true },
+  multiple: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 

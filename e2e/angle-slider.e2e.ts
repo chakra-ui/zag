@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { AngleSliderModel } from "./models/angle-slider.model"
 
 let I: AngleSliderModel
@@ -11,6 +11,19 @@ test.describe("angle-slider", () => {
 
   test("should have no accessibility violation", async () => {
     await I.checkAccessibility()
+  })
+
+  test("should have a disabled hidden input when disabled", async () => {
+    const input = I.page.locator("input[type='hidden']")
+    await expect(input).toBeEnabled()
+
+    await I.controls.bool("disabled")
+    await expect(input).toBeDisabled()
+  })
+
+  test("should keep the hidden input enabled when read-only", async () => {
+    await I.controls.bool("readOnly")
+    await expect(I.page.locator("input[type='hidden']")).toBeEnabled()
   })
 
   test("[pointer] should jump to clicked position on control", async () => {

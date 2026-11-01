@@ -113,6 +113,7 @@ export default function Page() {
     onRenameComplete: (details) => {
       console.log("Rename complete:", details)
       const node = collection.at(details.indexPath)
+      if (!node) return
       const updatedCollection = collection.replace(details.indexPath, {
         ...node,
         name: details.label,

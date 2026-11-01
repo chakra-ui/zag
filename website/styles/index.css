@@ -5,3 +5,13 @@
   src: url("/fonts/spline-sans.woff2") format("woff2");
   font-weight: 100 1000;
 }
+
+/* Unlayered so it beats the token layer in both themes */
+@media (prefers-contrast: more) {
+  :root {
+    --colors-text-muted: var(--colors-text);
+    --colors-text-subtle: var(--colors-text);
+    --colors-border-subtle: var(--colors-border-bold);
+    --colors-border: var(--colors-border-bold);
+  }
+}

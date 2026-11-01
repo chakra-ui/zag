@@ -11,8 +11,8 @@ export class PopoverModel extends Model {
     return a11y(this.page)
   }
 
-  goto() {
-    return this.page.goto("/popover/basic")
+  goto(url = "/popover/basic") {
+    return this.page.goto(url)
   }
 
   get trigger() {
@@ -77,6 +77,13 @@ export class PopoverModel extends Model {
 
   seeContentIsFocused() {
     return expect(this.content).toBeFocused()
+  }
+
+  async seeContentIsLabelled() {
+    const titleId = await this.page.locator(testid("popover-title")).getAttribute("id")
+    const descriptionId = await this.page.locator(testid("popover-description")).getAttribute("id")
+    await expect(this.content).toHaveAttribute("aria-labelledby", titleId!)
+    await expect(this.content).toHaveAttribute("aria-describedby", descriptionId!)
   }
 
   seeContentIsNotFocused() {

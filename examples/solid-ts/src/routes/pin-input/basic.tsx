@@ -26,6 +26,7 @@ export default function Page() {
     <>
       <main class="pin-input">
         <form
+          class="vstack gap-4"
           onSubmit={(e) => {
             e.preventDefault()
             const formData = serialize(e.currentTarget, { hash: true })
@@ -41,9 +42,12 @@ export default function Page() {
             </div>
             <input {...api().getHiddenInputProps()} />
           </div>
-          <button data-testid="clear-button" onClick={api().clearValue}>
-            Clear
-          </button>
+          <div class="hstack">
+            <button data-testid="clear-button" onClick={api().clearValue}>
+              Clear
+            </button>
+            <button onClick={api().focus}>Focus</button>
+          </div>
         </form>
       </main>
 

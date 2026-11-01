@@ -11,7 +11,7 @@ import "@styles/floating-panel.css"
 export default function Page() {
   const controls = useControls(floatingPanelControls)
 
-  const service = useMachine(floatingPanel.machine, { id: createUniqueId() })
+  const service = useMachine(floatingPanel.machine, controls.mergeProps<floatingPanel.Props>({ id: createUniqueId() }))
 
   const api = createMemo(() => floatingPanel.connect(service, normalizeProps))
 

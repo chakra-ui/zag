@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isEditableElement } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault, toPx } from "@zag-js/utils"
@@ -20,7 +20,7 @@ import { getEffectiveStepIndex, getEffectiveSteps, isDialogStep, isTooltipPlacem
 
 const defaultTranslations: Required<IntlTranslations> = {
   nextStep: "next step",
-  prevStep: "previous step",
+  previousStep: "previous step",
   close: "close tour",
   progressText: ({ current, total }) => `${current + 1} of ${total}`,
   skip: "skip tour",
@@ -37,7 +37,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const hasTarget = typeof step?.target?.() !== "undefined"
 
   const hasNextStep = computed("hasNextStep")
-  const hasPrevStep = computed("hasPrevStep")
+  const hasPreviousStep = computed("hasPreviousStep")
 
   const firstStep = computed("isFirstStep")
   const lastStep = computed("isLastStep")
@@ -45,7 +45,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
   const placement = context.get("currentPlacement")
   const placementSide = isTooltipPlacement(placement) ? getPlacementSide(placement) : undefined
   const targetRect = context.get("targetRect")
-  const suppressTransition = context.get("suppressSpotlightTransition")
+  // No visible previous step to move from (first open, reopen, same step), so parts should snap instead of animate
+  const instant = context.get("suppressSpotlightTransition")
   const floatingOffset = context.get("floatingOffset")
   const tooltipPositioned = isTooltipStep(step) && floatingOffset != null
 
@@ -89,7 +90,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     next() {
       send({ type: "STEP.NEXT", src: "actionTrigger" })
     },
-    prev() {
+    previous() {
       send({ type: "STEP.PREV", src: "actionTrigger" })
     },
     dismiss() {
@@ -109,7 +110,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     stepIndex,
     step,
     hasNextStep,
-    hasPrevStep,
+    hasPreviousStep,
     firstStep,
     lastStep,
     addStep(step) {
@@ -142,7 +143,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     next() {
       send({ type: "STEP.NEXT" })
     },
-    prev() {
+    previous() {
       send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
@@ -166,6 +167,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         hidden: !backdropState.open,
         "data-state": backdropState.open ? "open" : "closed",
         "data-type": backdropState.type,
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
@@ -182,6 +184,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.element({
         ...parts.spotlight.attrs(scope.id),
         hidden: !spotlightState.open || !spotlightState.hasTarget,
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 1,
           "--spotlight-x": toPx(targetRect.x),
@@ -195,8 +198,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
           top: "var(--spotlight-y)",
           borderRadius: toPx(prop("spotlightRadius")),
           pointerEvents: "none",
-          transitionDuration: suppressTransition ? "0ms" : undefined,
-          transitionDelay: suppressTransition ? "0ms" : undefined,
+          transitionDuration: instant ? "0ms" : undefined,
+          transitionDelay: instant ? "0ms" : undefined,
         },
       })
     },
@@ -216,6 +219,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         "data-type": positionerState.type,
         "data-placement": positionerState.placement,
         "data-side": positionerState.side,
+        "data-instant": dataAttr(instant),
         style: {
           "--tour-layer": 2,
           ...(positionerState.type === "tooltip" && {
@@ -235,8 +239,10 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !tooltipPositioned,
-        style: tooltipPositioned ? popperStyles.arrow : undefined,
+        style: {
+          ...popperStyles.arrow,
+          visibility: tooltipPositioned ? undefined : "hidden",
+        },
         opacity: hasTarget ? undefined : 0,
       })
     },
@@ -256,7 +262,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         dir: prop("dir"),
-        role: "alertdialog",
+        role: "dialog",
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
@@ -272,6 +278,8 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!prop("keyboardNavigation")) return
+          // let arrow keys move the caret in inputs rendered inside the step
+          if (isEditableElement(getEventTarget(event))) return
           const isRtl = prop("dir") === "rtl"
           switch (event.key) {
             case "ArrowRight":
@@ -279,7 +287,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
               send({ type: isRtl ? "STEP.PREV" : "STEP.NEXT", src: "keydown" })
               break
             case "ArrowLeft":
-              if (!hasPrevStep) return
+              if (!hasPreviousStep) return
               send({ type: isRtl ? "STEP.NEXT" : "STEP.PREV", src: "keydown" })
               break
             default:
@@ -328,25 +336,22 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": translations.nextStep,
             onClick: actionMap.next,
           }
           break
 
-        case "prev":
+        case "previous":
           actionProps = {
-            "data-type": "prev",
-            disabled: !hasPrevStep,
-            "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": translations.prevStep,
-            onClick: actionMap.prev,
+            "data-type": "previous",
+            disabled: !hasPreviousStep,
+            "data-disabled": dataAttr(!hasPreviousStep),
+            onClick: actionMap.previous,
           }
           break
 
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": translations.close,
             onClick: actionMap.dismiss,
           }
           break
@@ -354,7 +359,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
         case "skip":
           actionProps = {
             "data-type": "skip",
-            "aria-label": translations.skip,
             onClick: actionMap.skip,
           }
           break

@@ -3,6 +3,8 @@
 import { ClientOnly } from "@/components/client-only"
 import { useWindowVirtualizer } from "@/hooks/use-virtualizer"
 
+const estimateSize = () => 142
+
 const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -15,7 +17,7 @@ const items = generateItems(10000)
 function WindowDemo() {
   const { virtualizer, ref: setScrollRootRef } = useWindowVirtualizer({
     count: items.length,
-    estimatedSize: () => 142,
+    estimatedSize: estimateSize,
     overscan: 8,
     gap: 0,
     paddingStart: 0,

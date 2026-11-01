@@ -1,5 +1,4 @@
-import { nextById, prevById, queryAll } from "@zag-js/dom-query"
-import { first, last } from "@zag-js/utils"
+import { queryAll } from "@zag-js/dom-query"
 import type { Scope } from "@zag-js/core"
 import { parts } from "./accordion.anatomy"
 
@@ -11,15 +10,15 @@ export const getItemTriggerId = (ctx: Scope, value: string) =>
   ctx.ids?.itemTrigger?.(value) ?? `${ctx.id}:trigger:${value}`
 
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
-export const getTriggerEls = (ctx: Scope) => {
+
+export const getItemContentEls = (ctx: Scope) => {
   const ownerId = CSS.escape(ctx.id!)
-  const selector = `[data-controls][${parts.itemTrigger.attr}='${ownerId}']:not([disabled])`
-  return queryAll(getRootEl(ctx), selector)
+  return queryAll(getRootEl(ctx), `[${parts.itemContent.attr}='${ownerId}']`)
 }
 
-export const getFirstTriggerEl = (ctx: Scope) => first(getTriggerEls(ctx))
-export const getLastTriggerEl = (ctx: Scope) => last(getTriggerEls(ctx))
-export const getNextTriggerEl = (ctx: Scope, id: string, loopFocus: boolean) =>
-  nextById(getTriggerEls(ctx), getItemTriggerId(ctx, id), loopFocus)
-export const getPrevTriggerEl = (ctx: Scope, id: string, loopFocus: boolean) =>
-  prevById(getTriggerEls(ctx), getItemTriggerId(ctx, id), loopFocus)
+// React renders `hidden` as a boolean
+export const syncHiddenUntilFound = (ctx: Scope) => {
+  getItemContentEls(ctx).forEach((contentEl) => {
+    if (contentEl.hidden) contentEl.setAttribute("hidden", "until-found")
+  })
+}

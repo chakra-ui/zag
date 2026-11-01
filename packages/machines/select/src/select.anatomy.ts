@@ -6,6 +6,8 @@ export const anatomy = createAnatomy("select").parts(
   "trigger",
   "indicator",
   "clearTrigger",
+  "input",
+  "empty",
   "item",
   "itemText",
   "itemIndicator",

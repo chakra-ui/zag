@@ -22,6 +22,7 @@ const StyledLink = styled("a", {
     fontSize: "sm",
     cursor: "pointer",
     bg: "bg",
+    _hover: { bg: "bg.muted" },
   },
 })
 
@@ -29,7 +30,7 @@ function ResourceLink(props: ResourceLinkProps) {
   const { href, icon, children, ...rest } = props
   return (
     <StyledLink href={href} target="_blank" {...rest}>
-      <Icon as={icon} fontSize="lg" color="green.500" />
+      <Icon as={icon} fontSize="lg" color="text.primary.bold" />
       <span>{children}</span>
     </StyledLink>
   )

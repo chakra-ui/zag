@@ -69,81 +69,38 @@ export default function HoverCardMultipleTrigger() {
   const api = hoverCard.connect(service, normalizeProps)
 
   return (
-    <main style={{ padding: "40px" }}>
-      <h2 style={{ marginBottom: "24px" }}>Team Members - Hover Card with Multiple Triggers</h2>
+    <main className="hover-card">
+      <p>Hover a team member to preview their profile. The card follows the hovered trigger.</p>
 
-      <p style={{ marginBottom: "24px", color: "#666" }}>
-        Hover over any team member to see their profile card. The card will reposition to the hovered member.
-      </p>
-
-      <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
         {users.map((user) => (
-          <a
-            key={user.id}
-            href="#"
-            {...api.getTriggerProps({ value: `${user.id}` })}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "12px 16px",
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              textDecoration: "none",
-              color: "inherit",
-              transition: "box-shadow 0.2s",
-            }}
-          >
-            <img src={user.avatar} alt={user.name} style={{ width: "40px", height: "40px", borderRadius: "50%" }} />
-            <div>
-              <div style={{ fontWeight: "bold" }}>{user.name}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>{user.username}</div>
-            </div>
+          <a key={user.id} href="#" className="profile-chip" {...api.getTriggerProps({ value: `${user.id}` })}>
+            <img src={user.avatar} alt="" />
+            {user.name}
           </a>
         ))}
       </div>
 
-      <div style={{ marginTop: "24px", padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px" }}>
-        <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
-        <strong>Active User:</strong> {activeUser ? `${activeUser.name} (${activeUser.username})` : "-"}
-      </div>
+      <output>
+        Active trigger: {api.triggerValue || "-"} · Active user: {activeUser?.name ?? "-"}
+      </output>
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <Presence
-            {...api.getContentProps()}
-            style={{
-              backgroundColor: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: "12px",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-              padding: "20px",
-              width: "320px",
-            }}
-          >
+          <Presence {...api.getContentProps()}>
             {activeUser && (
-              <>
-                <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-                  <img
-                    src={activeUser.avatar}
-                    alt={activeUser.name}
-                    style={{ width: "64px", height: "64px", borderRadius: "50%" }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: "bold", fontSize: "18px" }}>{activeUser.name}</div>
-                    <div style={{ color: "#666" }}>{activeUser.username}</div>
-                  </div>
+              <div className="profile">
+                <img className="profile-avatar" src={activeUser.avatar} alt="" />
+                <div className="profile-body">
+                  <span className="profile-name">{activeUser.name}</span>
+                  <span className="profile-handle">{activeUser.username}</span>
+                  <p className="profile-bio">{activeUser.bio}</p>
+                  <span className="profile-meta">
+                    {activeUser.followers.toLocaleString()} followers · {activeUser.following.toLocaleString()}{" "}
+                    following
+                  </span>
                 </div>
-                <p style={{ marginBottom: "16px", color: "#444" }}>{activeUser.bio}</p>
-                <div style={{ display: "flex", gap: "24px", color: "#666", fontSize: "14px" }}>
-                  <div>
-                    <strong style={{ color: "#000" }}>{activeUser.followers.toLocaleString()}</strong> Followers
-                  </div>
-                  <div>
-                    <strong style={{ color: "#000" }}>{activeUser.following.toLocaleString()}</strong> Following
-                  </div>
-                </div>
-              </>
+              </div>
             )}
           </Presence>
         </div>

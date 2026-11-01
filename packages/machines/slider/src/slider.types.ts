@@ -25,6 +25,10 @@ export interface ValueTextDetails {
   index: number
 }
 
+export interface ThumbLabelDetails {
+  index: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -46,14 +50,6 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * The ids of the elements in the slider. Useful for composition.
    */
   ids?: ElementIds | undefined
-  /**
-   * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
-   */
-  "aria-label"?: string[] | undefined
-  /**
-   * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
-   */
-  "aria-labelledby"?: string[] | undefined
   /**
    * The name associated with each slider thumb (when used in a form)
    */
@@ -99,6 +95,15 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * Function that returns a human readable value for the slider thumb
    */
   getAriaValueText?: ((details: ValueTextDetails) => string) | undefined
+  /**
+   * Function that returns the accessible name of each thumb, e.g. "Minimum price"
+   */
+  getAriaLabel?: ((details: ThumbLabelDetails) => string) | undefined
+  /**
+   * Function that returns the `id` of the element that labels each thumb.
+   * Defaults to the label part when no `getAriaLabel` is provided.
+   */
+  getAriaLabelledBy?: ((details: ThumbLabelDetails) => string) | undefined
   /**
    * The minimum value of the slider
    * @default 0
@@ -154,9 +159,9 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   thumbAlignment?: "contain" | "center" | undefined
   /**
-   * The slider thumbs dimensions
+   * The slider thumbs dimensions. A number sets both the width and height.
    */
-  thumbSize?: { width: number; height: number } | undefined
+  thumbSize?: number | { width: number; height: number } | undefined
   /**
    * Controls how thumbs behave when they collide during pointer interactions.
    * - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
@@ -255,7 +260,7 @@ export interface SliderSchema {
      * The values when a thumb drag starts.
      * Used for swap collision behavior to determine swap direction.
      */
-    thumbDragStartValue: number[] | null
+    startValue: number[] | null
   }
   computed: Computed
   event: EventObject
@@ -294,6 +299,10 @@ export interface MarkerState {
    * The state of the marker relative to the slider value
    */
   state: "under-value" | "over-value" | "at-value"
+  /**
+   * Whether the marker is within the filled range, accounting for `origin`
+   */
+  inRange: boolean
 }
 
 export interface ThumbProps {

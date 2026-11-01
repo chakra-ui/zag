@@ -18,8 +18,7 @@ export const hideOthers = (
   return walkTreeOutside(originalTarget, {
     parentNode,
     markerName,
-    controlAttribute: "aria-hidden",
-    explicitBooleanValue: true,
+    attribute: "aria-hidden",
     followControlledElements,
   })
 }
@@ -34,8 +33,7 @@ export const inertOthers = (
   return walkTreeOutside(originalTarget, {
     parentNode,
     markerName,
-    controlAttribute: "inert",
-    explicitBooleanValue: false,
+    attribute: "inert",
     followControlledElements,
   })
 }

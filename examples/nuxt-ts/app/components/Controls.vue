@@ -1,10 +1,17 @@
 <script setup lang="ts">
-defineProps<{ control: any }>()
+const props = defineProps<{ control: any }>()
+
+// Toggles last, so they pack together instead of breaking up the inputs
+const entries = computed(() =>
+  Object.entries(props.control.config as Record<string, any>).sort(
+    ([, a], [, b]) => Number(a?.type === "boolean") - Number(b?.type === "boolean"),
+  ),
+)
 </script>
 
 <template>
   <div class="controls-container">
-    <div v-for="(value, key) in control.config" :key="key">
+    <div v-for="[key, value] in entries" :key="key">
       <template v-if="value.type === 'boolean'">
         <div class="checkbox">
           <input

@@ -95,7 +95,7 @@ const steps: tour.StepDetails[] = [
     target: () => document.querySelector("[data-id=logic]"),
     placement: "bottom",
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Prev", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },
@@ -106,7 +106,7 @@ const steps: tour.StepDetails[] = [
     target: () => document.querySelector("[data-id=source]"),
     placement: "bottom",
     actions: [
-      { label: "Prev", action: "prev" },
+      { label: "Prev", action: "previous" },
       { label: "Next", action: "next" },
     ],
   },

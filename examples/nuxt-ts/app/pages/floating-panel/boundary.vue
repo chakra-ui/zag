@@ -2,6 +2,7 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
+import "@styles/floating-panel.css"
 
 const boundaryRef = ref<HTMLElement | null>(null)
 const strategy = ref<"fixed" | "absolute">("fixed")

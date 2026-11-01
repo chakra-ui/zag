@@ -38,7 +38,10 @@ export function Carousel(props: CarouselProps) {
       </div>
 
       <div className={styles.Control} {...api.getControlProps()}>
-        <button className={styles.PrevTrigger} {...api.getPrevTriggerProps()}>
+        <button
+          className={styles.PrevTrigger}
+          {...api.getPreviousTriggerProps()}
+        >
           <HiChevronLeft />
         </button>
         <div

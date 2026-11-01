@@ -2,7 +2,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
 import "@styles/date-picker.css"
 
 const controls = useControls(datePickerControls)
@@ -11,9 +10,9 @@ const service = useMachine(
   datePicker.machine,
   controls.mergeProps<datePicker.Props>({
     id: useId(),
-    defaultOpen: true,
     locale: "en",
     selectionMode: "single",
+    defaultOpen: true,
   }),
 )
 
@@ -42,21 +41,21 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
       <div v-bind="api.getContentProps()">
         <div style="margin-bottom: 20px">
           <select v-bind="api.getMonthSelectProps()">
-            <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value">
+            <option v-for="(month, i) in api.getMonths()" :key="i" :value="month.value" :disabled="month.disabled">
               {{ month.label }}
             </option>
           </select>
 
           <select v-bind="api.getYearSelectProps()">
-            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value">
+            <option v-for="(year, i) in api.getYears()" :key="i" :value="year.value" :disabled="year.disabled">
               {{ year.label }}
             </option>
           </select>
         </div>
 
-        <div v-if="api.view === 'day'">
+        <div :hidden="api.view !== 'day'">
           <div v-bind="api.getViewControlProps({ view: 'year' })">
-            <button v-bind="api.getPrevTriggerProps()">Prev</button>
+            <button v-bind="api.getPreviousTriggerProps()">Prev</button>
             <button v-bind="api.getViewTriggerProps()">{{ api.visibleRangeText.start }}</button>
             <button v-bind="api.getNextTriggerProps()">Next</button>
           </div>
@@ -80,15 +79,15 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
         </div>
 
         <div style="display: flex; gap: 40px">
-          <div v-if="api.view === 'month'" style="width: 100%">
+          <div :hidden="api.view !== 'month'" style="width: 100%">
             <div v-bind="api.getViewControlProps({ view: 'month' })">
-              <button v-bind="api.getPrevTriggerProps({ view: 'month' })">Prev</button>
+              <button v-bind="api.getPreviousTriggerProps({ view: 'month' })">Prev</button>
               <button v-bind="api.getViewTriggerProps({ view: 'month' })">{{ api.visibleRange.start.year }}</button>
               <button v-bind="api.getNextTriggerProps({ view: 'month' })">Next</button>
             </div>
 
             <table v-bind="api.getTableProps({ view: 'month', columns: 4 })">
-              <tbody v-bind="api.getTableBodyProps()">
+              <tbody v-bind="api.getTableBodyProps({ view: 'month' })">
                 <tr
                   v-for="(months, row) in api.getMonthsGrid({ columns: 4, format: 'short' })"
                   :key="row"
@@ -106,9 +105,9 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
             </table>
           </div>
 
-          <div v-if="api.view === 'year'" style="width: 100%">
+          <div :hidden="api.view !== 'year'" style="width: 100%">
             <div v-bind="api.getViewControlProps({ view: 'year' })">
-              <button v-bind="api.getPrevTriggerProps({ view: 'year' })">Prev</button>
+              <button v-bind="api.getPreviousTriggerProps({ view: 'year' })">Prev</button>
               <span> {{ api.getDecade().start }} - {{ api.getDecade().end }} </span>
               <button v-bind="api.getNextTriggerProps({ view: 'year' })">Next</button>
             </div>

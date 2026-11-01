@@ -20,8 +20,8 @@ const styles = computed(() => getPlacementStyles(positioned.value))
 </script>
 
 <template>
-  <main>
+  <div>
     <button ref="referenceRef">Hello StackBlitz!</button>
-    <div :style="styles.floating" ref="floatingRef">Start editing to see some magic happen :)</div>
-  </main>
+    <div ref="floatingRef" :style="styles.floating">Start editing to see some magic happen :)</div>
+  </div>
 </template>

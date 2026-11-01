@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as timer from "@zag-js/timer"
   import "@styles/timer.css"
@@ -30,13 +30,13 @@
       <div {...api.getSeparatorProps()}>:</div>
       <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
     </div>
+  </div>
 
-    <div {...api.getControlProps()}>
-      <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
-      <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
-      <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
-      <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
-    </div>
+  <div {...api.getControlProps()}>
+    <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+    <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+    <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+    <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
   </div>
 </main>
 

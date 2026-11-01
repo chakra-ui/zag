@@ -1,6 +1,6 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createGuards, createMachine } from "@zag-js/core"
-import { contains, isCaretAtStart, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, contains, isCaretAtStart, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { isEqual, mergeWithDefault, removeAt, uniq, warn } from "@zag-js/utils"
@@ -35,10 +35,13 @@ export const machine = createMachine<TagsInputSchema>({
     return {
       liveRegion: null,
       log: { current: null, prev: null },
+      highlightFrame: AnimationFrame.create(),
+      focusInputFrame: AnimationFrame.create(),
+      pasteFrame: AnimationFrame.create(),
     }
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope, getContext }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
@@ -69,8 +72,10 @@ export const machine = createMachine<TagsInputSchema>({
       highlightedTagId: bindable<string | null>(() => ({
         defaultValue: null,
         sync: true,
-        onChange(value) {
-          prop("onHighlightChange")?.({ highlightedValue: value })
+        onChange(id) {
+          prop("onHighlightChange")?.({
+            highlightedValue: dom.getValueOfItemId(scope, getContext().get("value"), id),
+          })
         },
       })),
     }
@@ -84,6 +89,8 @@ export const machine = createMachine<TagsInputSchema>({
     isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),
     isAtMax: ({ context, prop }) => context.get("value").length === prop("max"),
     isOverflowing: ({ context, prop }) => context.get("value").length > prop("max"),
+    highlightedValue: ({ context, scope }) =>
+      dom.getValueOfItemId(scope, context.get("value"), context.get("highlightedTagId")),
   },
 
   watch({ track, context, action, computed, refs }) {
@@ -109,7 +116,7 @@ export const machine = createMachine<TagsInputSchema>({
 
   effects: ["trackLiveRegion", "trackFormControlState"],
 
-  exit: ["clearLog"],
+  exit: ["clearLog", "cancelFrames"],
 
   on: {
     DOUBLE_CLICK_TAG: {
@@ -172,6 +179,7 @@ export const machine = createMachine<TagsInputSchema>({
     "focused:input": {
       tags: ["focused"],
       entry: ["focusInput", "clearHighlightedId"],
+      exit: ["cancelHighlight", "cancelFocusInput"],
       effects: ["trackInteractOutside"],
       on: {
         TYPE: {
@@ -224,6 +232,7 @@ export const machine = createMachine<TagsInputSchema>({
 
     "navigating:tag": {
       tags: ["focused"],
+      exit: ["cancelHighlight", "cancelFocusInput"],
       effects: ["trackInteractOutside"],
       on: {
         ARROW_RIGHT: [
@@ -397,8 +406,10 @@ export const machine = createMachine<TagsInputSchema>({
       },
       autoResize({ context, prop, scope }) {
         let fn_cleanup: VoidFunction | undefined
+        let cancelled = false
 
         queueMicrotask(() => {
+          if (cancelled) return
           const editedTagValue = context.get("editedTagValue")
           const editedTagIndex = context.get("editedTagIndex")
           if (!editedTagValue || editedTagIndex == null || !prop("editable")) return
@@ -410,6 +421,7 @@ export const machine = createMachine<TagsInputSchema>({
         })
 
         return () => {
+          cancelled = true
           fn_cleanup?.()
         }
       },
@@ -441,8 +453,8 @@ export const machine = createMachine<TagsInputSchema>({
         const next = dom.getNextEl(scope, highlightedTagId)
         context.set("highlightedTagId", next?.id ?? null)
       },
-      highlightFirstTag({ context, scope }) {
-        raf(() => {
+      highlightFirstTag({ context, scope, refs }) {
+        refs.get("highlightFrame").request(() => {
           const first = dom.getFirstEl(scope)
           context.set("highlightedTagId", first?.id ?? null)
         })
@@ -460,8 +472,8 @@ export const machine = createMachine<TagsInputSchema>({
       highlightTag({ context, event }) {
         context.set("highlightedTagId", event.id)
       },
-      highlightTagAtIndex({ context, scope }) {
-        raf(() => {
+      highlightTagAtIndex({ context, scope, refs }) {
+        refs.get("highlightFrame").request(() => {
           const idx = context.get("editedTagIndex")
           if (idx == null) return
 
@@ -587,16 +599,28 @@ export const machine = createMachine<TagsInputSchema>({
         context.set("highlightedTagId", null)
       },
 
-      focusInput({ scope }) {
-        raf(() => {
+      focusInput({ scope, refs }) {
+        refs.get("focusInputFrame").request(() => {
           dom.getInputEl(scope)?.focus()
         })
       },
 
+      cancelHighlight({ refs }) {
+        refs.get("highlightFrame").cancel()
+      },
+
+      cancelFocusInput({ refs }) {
+        refs.get("focusInputFrame").cancel()
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("highlightFrame").cancel()
+        refs.get("focusInputFrame").cancel()
+        refs.get("pasteFrame").cancel()
+      },
+
       clearInputValue({ context }) {
-        raf(() => {
-          context.set("inputValue", "")
-        })
+        context.set("inputValue", "")
       },
 
       syncInputValue({ context, scope }) {
@@ -632,7 +656,7 @@ export const machine = createMachine<TagsInputSchema>({
       },
 
       addTagFromPaste({ context, computed, prop, refs }) {
-        raf(() => {
+        refs.get("pasteFrame").request(() => {
           const inputValue = computed("sanitizedInputValue")
           const value = context.get("value")
           const sanitize = prop("sanitizeValue")

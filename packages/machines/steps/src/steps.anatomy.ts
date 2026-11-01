@@ -9,7 +9,8 @@ export const anatomy = createAnatomy("steps").parts(
   "separator",
   "content",
   "nextTrigger",
-  "prevTrigger",
+  "previousTrigger",
+  "skipTrigger",
   "progress",
 )
 

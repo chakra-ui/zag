@@ -213,7 +213,7 @@ export interface DragState<T extends SchedulerPayload = SchedulerPayload> {
  * -----------------------------------------------------------------------------*/
 
 export interface SchedulerTranslations {
-  prevTriggerLabel?: string | undefined
+  previousTriggerLabel?: string | undefined
   nextTriggerLabel?: string | undefined
   todayTriggerLabel?: string | undefined
   viewSelectLabel?: string | undefined
@@ -665,7 +665,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   /** Advance by one view-sized step. */
   goToNext: () => void
   /** Go back by one view-sized step. */
-  goToPrev: () => void
+  goToPrevious: () => void
   /** Dismiss the selected slot highlight (e.g. when a create dialog closes). */
   clearSelectedSlot: () => void
   /** Interaction state for an event — dragging, focused, conflicting, and so on. */
@@ -708,7 +708,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   getRootProps: () => T["element"]
   getHeaderProps: () => T["element"]
   getHeaderTitleProps: () => T["element"]
-  getPrevTriggerProps: () => T["button"]
+  getPreviousTriggerProps: () => T["button"]
   getNextTriggerProps: () => T["button"]
   getTodayTriggerProps: () => T["button"]
   getViewSelectProps: () => T["element"]
