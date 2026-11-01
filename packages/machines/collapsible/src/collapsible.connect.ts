@@ -79,13 +79,14 @@ export function connect<T extends PropTypes>(
     },
 
     getTriggerProps() {
-      return normalize.element({
+      return normalize.button({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
+        disabled,
         "aria-controls": dom.getContentId(scope),
         "aria-expanded": visible || false,
         onClick(event) {
