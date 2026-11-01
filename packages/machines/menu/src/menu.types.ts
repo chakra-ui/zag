@@ -3,7 +3,7 @@ import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -100,6 +100,16 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * @default false
    */
   loopFocus?: boolean | undefined
+  /**
+   * The element to focus when the menu opens.
+   * Return `false` to skip moving focus, or `null` to use the default.
+   */
+  initialFocusEl?: (() => HTMLElement | null | false) | undefined
+  /**
+   * The element to focus when the menu closes.
+   * Return `null` to use the default (the trigger, or the element focused before a context menu opened).
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
   /**
    * The options used to dynamically position the menu
    */
