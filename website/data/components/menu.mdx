@@ -177,14 +177,9 @@ const service = useMachine(menu.machine, {
 
 ### Managing focus
 
-When the menu opens, focus moves to the first focusable element inside the
-content that isn't a menu item, or to the content itself. To focus a specific
-element instead, set `initialFocusEl`. Return `false` to leave focus where it
-is.
-
-When the menu closes, focus returns to the trigger. Context menus return focus
-to the element that was focused when they opened. To focus a different element,
-set `finalFocusEl`.
+Set `initialFocusEl` to choose the element focused when the menu opens, and
+`finalFocusEl` for when it closes. Return `false` from `initialFocusEl` to leave
+focus where it is.
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -192,9 +187,6 @@ const service = useMachine(menu.machine, {
   finalFocusEl: () => document.getElementById("editor"),
 })
 ```
-
-> Focus isn't moved back on close when the menu was dismissed by clicking
-> another focusable element.
 
 ### Positioning the menu
 
