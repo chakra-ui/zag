@@ -2,4 +2,4 @@
 "@zag-js/menu": patch
 ---
 
-Restore focus to the previously focused context trigger when closing a context menu.
+- Fix focus not returning to the previously focused element when a context menu closes.
