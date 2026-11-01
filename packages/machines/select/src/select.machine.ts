@@ -6,7 +6,7 @@ import {
   markAsInternalChangeEvent,
   observeAttributes,
   raf,
-  scrollIntoView,
+  scrollToNearest,
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -518,7 +518,7 @@ export const machine = createMachine<SelectSchema>({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollToNearest(itemEl, { rootEl: contentEl })
         }
 
         const rafCleanup = raf(() => {

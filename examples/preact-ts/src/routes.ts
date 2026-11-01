@@ -153,6 +153,7 @@ export const routes: RouteDefinition[] = [
   { path: "/combobox/controlled-input", component: lazy(() => import("./pages/combobox/controlled-input")) },
   { path: "/combobox/rehydrate", component: lazy(() => import("./pages/combobox/rehydrate")) },
   { path: "/combobox/virtualized", component: lazy(() => import("./pages/combobox/virtualized")) },
+  { path: "/combobox/highlighted-on-mount", component: lazy(() => import("./pages/combobox/highlighted-on-mount")) },
   { path: "/combobox/emoji-picker", component: lazy(() => import("./pages/combobox/emoji-picker")) },
   { path: "/combobox/form", component: lazy(() => import("./pages/combobox/form")) },
   { path: "/editable/basic", component: lazy(() => import("./pages/editable/basic")) },

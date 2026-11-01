@@ -7,7 +7,7 @@ import {
   type CollectionItem,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
+import { getByTypeahead, observeAttributes, raf, scrollToNearest } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
@@ -261,7 +261,7 @@ export const machine = createMachine({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollToNearest(itemEl, { rootEl: contentEl })
         }
 
         const rafCleanup = raf(() => {

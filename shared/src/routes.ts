@@ -323,6 +323,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "rehydrate", title: "Rehydrate" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "emoji-picker", title: "Emoji Picker" },
+      { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
     ],
   },
   {

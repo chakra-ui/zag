@@ -6,7 +6,7 @@ import {
   Timeout,
   trackFormControl,
   observeAttributes,
-  scrollIntoView,
+  scrollToNearest,
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
@@ -668,7 +668,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             }
 
             const raf_cleanup = raf(() => {
-              scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
+              scrollToNearest(itemEl, { rootEl: listEl })
             })
             cleanups.push(raf_cleanup)
           })
