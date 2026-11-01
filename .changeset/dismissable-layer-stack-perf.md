@@ -1,6 +1,10 @@
 ---
 "@zag-js/dismissable": patch
+"@zag-js/interact-outside": patch
 ---
 
-Fixed the page freezing when many overlays are open at once. With 120 open popovers, mounting took about 4.6 seconds and
-unmounting took several minutes. Both now take around 100 milliseconds or less.
+- Fix the page freezing when many overlays are open at once.
+- Fix closing one overlay also closing unrelated overlays opened after it.
+- Fix Escape closing the outer layer first when nested layers open together on mount.
+- Fix unmounting nested layers firing `onOpenChange` for children that unmount too.
+- Cancel the pending outside-click check when the layer unmounts.

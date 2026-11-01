@@ -3,26 +3,27 @@ import { layerStack } from "./layer-stack"
 
 const originalBodyPointerEvents = new WeakMap<HTMLElement, string>()
 
-/** Applies or restores body blocking from the current stack state. Safe to call at any time. */
+const scheduled = new WeakSet<Document>()
+
+/** Applies or restores body blocking from the current stack state, once per microtask. */
 function syncBodyPointerEvents(doc: Document) {
-  const body = doc.body
-  if (!body) return
+  if (scheduled.has(doc)) return
+  scheduled.add(doc)
+  queueMicrotask(() => {
+    scheduled.delete(doc)
+    const body = doc.body
+    if (!body) return
 
-  const shouldBlock = layerStack.hasPointerBlockingLayer()
-  if (shouldBlock === body.hasAttribute("data-inert")) return
+    const shouldBlock = layerStack.hasPointerBlockingLayer()
+    if (shouldBlock === body.hasAttribute("data-inert")) return
 
-  if (shouldBlock) {
-    originalBodyPointerEvents.set(body, body.style.pointerEvents)
-    queueMicrotask(() => {
-      if (!layerStack.hasPointerBlockingLayer()) return
+    if (shouldBlock) {
+      originalBodyPointerEvents.set(body, body.style.pointerEvents)
       body.style.pointerEvents = "none"
       body.setAttribute("data-inert", "")
-    })
-    return
-  }
+      return
+    }
 
-  queueMicrotask(() => {
-    if (layerStack.hasPointerBlockingLayer()) return
     const original = originalBodyPointerEvents.get(body)
     if (original !== undefined) {
       body.style.pointerEvents = original

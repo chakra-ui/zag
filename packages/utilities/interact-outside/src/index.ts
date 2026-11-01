@@ -166,6 +166,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const isInShadowRoot = isShadowRoot(node?.getRootNode())
 
   let isPointerDown = false
+  const pointerFrame = AnimationFrame.create()
 
   function onPointerDown(event: PointerEvent) {
     isPointerDown = true
@@ -176,7 +177,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     win.addEventListener("pointerup", onPointerUp, { once: true })
     //
     function handler(clickEvent?: MouseEvent) {
-      const func = defer && !isTouchDevice() ? raf : (v: any) => v()
+      const func =
+        defer && !isTouchDevice() ? (fn: VoidFunction) => pointerFrame.request(fn) : (fn: VoidFunction) => fn()
       const evt = clickEvent ?? event
       const composedPath = evt?.composedPath?.() ?? [evt?.target]
       func(() => {
@@ -260,6 +262,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   return () => {
     clearTimeout(timer)
+    pointerFrame.cancel()
     focusFrame.cancel()
     pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())

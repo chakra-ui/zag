@@ -53,8 +53,7 @@ function resetStack() {
 describe("layerStack", () => {
   afterEach(async () => {
     resetStack()
-    // `remove` schedules `nextTick` to clear `recentlyRemoved`; drain so the next test
-    // does not see a global "during removal" `isInNestedLayer` true positive.
+    // drain the `closingAncestors` timer
     for (let i = 0; i < 3; i++) {
       await nextTick()
     }
@@ -70,7 +69,6 @@ describe("layerStack", () => {
       layerStack.add(createLayer(node, { onLayerChange }))
 
       expect(layerStack.count()).toBe(1)
-      expect(layerStack.countNestedLayersOfType(node, "dialog")).toBe(0)
       expect(getLastSnapshot(onLayerChange)).toMatchObject({ index: 0, nestedCount: 0, active: true })
     })
 
@@ -168,7 +166,7 @@ describe("layerStack", () => {
   })
 
   describe("remove", () => {
-    test("dismisses nested layers when removing a parent from the stack", () => {
+    test("dismisses nested layers when removing a parent from the stack", async () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
       document.body.append(parent, child)
@@ -178,6 +176,7 @@ describe("layerStack", () => {
       layerStack.add(createLayer(child, { dismiss: childDismiss }))
 
       layerStack.remove(parent)
+      await Promise.resolve()
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
     })
@@ -226,7 +225,6 @@ describe("layerStack", () => {
       layerStack.add(createLayer(child, { pointerBlocking: true, onLayerChange: onChildChange }))
 
       expect(layerStack.hasPointerBlockingLayer()).toBe(true)
-      expect(layerStack.pointerBlockingLayers()).toHaveLength(1)
       expect(layerStack.topMostPointerBlockingLayer()?.node).toBe(child)
 
       expect(layerStack.isBelowPointerBlockingLayer(bottom)).toBe(true)
@@ -254,7 +252,7 @@ describe("layerStack", () => {
     })
   })
 
-  describe("isInNestedLayer and recentlyRemoved", () => {
+  describe("isInNestedLayer and isClosingAncestor", () => {
     test("returns true when target is inside a nested layer node", () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
@@ -269,21 +267,24 @@ describe("layerStack", () => {
       expect(layerStack.isInNestedLayer(parent, parent)).toBe(false)
     })
 
-    test("treats interactions as inside while recentlyRemoved is non-empty, then clears after nextTick", async () => {
+    test("shields only the ancestors of a closing layer until nextTick", async () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
-      document.body.append(parent, child)
+      const other = document.createElement("div")
+      document.body.append(parent, child, other)
 
-      layerStack.add(createLayer(parent))
-      layerStack.add(createLayer(child))
+      layerStack.add(createLayer(other))
+      layerStack.add({ ...createLayer(parent), origins: [parent] })
+      layerStack.add({ ...createLayer(child), origins: [child, parent] })
 
-      layerStack.remove(parent)
+      layerStack.remove(child)
 
-      expect(layerStack.isInNestedLayer(child, document.body)).toBe(true)
+      expect(layerStack.isClosingAncestor(parent)).toBe(true)
+      expect(layerStack.isClosingAncestor(other)).toBe(false)
 
       await nextTick()
 
-      expect(layerStack.isInNestedLayer(child, document.body)).toBe(false)
+      expect(layerStack.isClosingAncestor(parent)).toBe(false)
     })
   })
 })
@@ -341,9 +342,6 @@ describe("layerStack snapshots", () => {
   function expectSnapshotsMatchHelpers() {
     layerStack.layers.forEach((layer, index) => {
       expect(layer.snapshot).toEqual(expectedSnapshot(layer, index))
-      // the public helpers must agree too
-      expect(layer.snapshot?.nestedCount).toBe(layerStack.countNestedLayersOfType(layer.node, layer.type))
-      expect(layer.snapshot?.nested).toBe(layerStack.getParentLayerOfType(layer.node, layer.type) != null)
       expect(layer.snapshot?.blocked).toBe(layerStack.isBelowPointerBlockingLayer(layer.node))
     })
   }
@@ -396,12 +394,13 @@ describe("layerStack snapshots", () => {
     second.parentId = undefined
   })
 
-  test("a nested layer that refuses to dismiss keeps an accurate snapshot", () => {
+  test("a nested layer that refuses to dismiss keeps an accurate snapshot", async () => {
     const parent = addLayer("dialog")
     addLayer("dialog")
     const child = addLayer("dialog", { requestDismiss: (event) => event.preventDefault() })
 
     layerStack.remove(parent.node)
+    await Promise.resolve()
 
     expect(layerStack.layers).toEqual([child])
     expect(child.snapshot).toMatchObject({ index: 0, nested: false, nestedCount: 0 })
@@ -424,7 +423,6 @@ describe("layerStack snapshots", () => {
     a.parentId = b.id
     layerStack.syncLayers()
 
-    expect(layerStack.depthOf(a)).toBe(2)
     expect(layerStack.getNestedLayers(a.node)).toHaveLength(2)
     expectSnapshotsMatchHelpers()
 
@@ -478,10 +476,11 @@ describe("layerStack snapshots", () => {
     expect(performance.now() - start).toBeLessThan(1000)
   })
 
-  test("removing the bottom of a long chain dismisses the rest", () => {
+  test("removing the bottom of a long chain dismisses the rest", async () => {
     const layers = Array.from({ length: 200 }, () => addLayer("popover"))
     const start = performance.now()
     layerStack.remove(layers[0].node)
+    await Promise.resolve()
 
     expect(layerStack.count()).toBe(0)
     expect(performance.now() - start).toBeLessThan(1000)

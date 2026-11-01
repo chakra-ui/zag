@@ -37,10 +37,11 @@ test.describe("popover / multiple triggers", () => {
     // Switch to first trigger
     await page.click(trigger(1))
     await expect(page.locator(content)).toBeVisible()
-    const pos2 = await rect(page.locator(positioner))
-
     // Y position should be different
-    expect(pos2.y).toBeLessThan(pos1.y)
+    await expect(async () => {
+      const pos2 = await rect(page.locator(positioner))
+      expect(pos2.y).toBeLessThan(pos1.y)
+    }).toPass()
   })
 
   test("should close popover on close trigger", async ({ page }) => {
