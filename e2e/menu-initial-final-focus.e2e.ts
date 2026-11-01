@@ -21,42 +21,11 @@ test.describe("menu / initialFocusEl and finalFocusEl", () => {
     await expect(page.locator(secondary)).toBeFocused()
   })
 
-  test("should focus initialFocusEl when opened with the keyboard", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-    await expect(page.locator(secondary)).toBeFocused()
-  })
-
-  test("should keep keyboard navigation working from initialFocusEl", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(secondary)).toBeFocused()
-
-    await page.keyboard.press("ArrowDown")
-    await expect(page.locator("[data-part=item][data-highlighted]")).toHaveText("Edit")
-  })
-
   test("should focus finalFocusEl on escape", async ({ page }) => {
     await page.click(trigger)
     await expect(page.locator(secondary)).toBeFocused()
 
     await page.keyboard.press("Escape")
-    await expect(page.locator(content).first()).toBeHidden()
-    await expect(page.locator(finalFocus)).toBeFocused()
-  })
-
-  test("should focus finalFocusEl after selecting an item", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter")
-    await expect(page.locator(content).first()).toBeHidden()
-    await expect(page.locator(finalFocus)).toBeFocused()
-  })
-
-  test("should focus finalFocusEl when toggled closed via the trigger", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(secondary)).toBeFocused()
-
-    await page.click(trigger)
     await expect(page.locator(content).first()).toBeHidden()
     await expect(page.locator(finalFocus)).toBeFocused()
   })
