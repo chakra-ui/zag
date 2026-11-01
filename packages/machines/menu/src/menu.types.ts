@@ -181,6 +181,8 @@ export interface MenuSchema {
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
     focusMenuFrame: AnimationFrame
+    returnFocusFrame: AnimationFrame
+    returnFocusEl: HTMLElement | null
   }
 
   action: string
