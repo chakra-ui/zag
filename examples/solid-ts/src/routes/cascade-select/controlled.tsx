@@ -78,10 +78,11 @@ export default function Page() {
   const controls = useControls(cascadeSelectControls)
   const [open, setOpen] = createSignal(false)
 
+  const id = createUniqueId()
   const service = useMachine(
     cascadeSelect.machine,
     controls.mergeProps<cascadeSelect.Props>(() => ({
-      id: createUniqueId(),
+      id,
       collection,
       name: "location",
       open: open(),

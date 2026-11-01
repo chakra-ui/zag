@@ -9,8 +9,9 @@ export default function Page() {
   const [dirty, setDirty] = createSignal(false)
   const [touched, setTouched] = createSignal(false)
 
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     required: true,
     dirty: dirty(),
     touched: touched(),

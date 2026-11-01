@@ -139,6 +139,7 @@ export class ImageCropperModel extends Model {
   }
 
   async dragSelection(deltaX: number, deltaY: number) {
+    await this.selection.scrollIntoViewIfNeeded()
     const selectionBox = await rect(this.selection)
     const startX = selectionBox.midX
     const startY = selectionBox.midY

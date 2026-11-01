@@ -44,6 +44,7 @@ const service = useMachine(
     id,
     collection: collection.value,
     placeholder: "Search people…",
+    loading: list.value.isLoading && !list.value.isLoadingMore,
     // Wrapping to the top would skip the next page
     loopFocus: false,
     onInputValueChange({ inputValue, reason }) {
@@ -111,7 +112,7 @@ const status = computed(() => {
       </div>
 
       <div v-bind="api.getPositionerProps()">
-        <div data-testid="combobox-content" v-bind="api.getContentProps()" :aria-busy="list.isLoading || undefined">
+        <div data-testid="combobox-content" v-bind="api.getContentProps()">
           <div v-bind="api.getEmptyProps()">
             <span v-if="list.error" class="combobox-status" data-type="error">
               Couldn’t load people.

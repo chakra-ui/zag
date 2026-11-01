@@ -13,11 +13,12 @@ import "@styles/select.css"
 export default function Page() {
   const controls = useControls(selectControls)
 
+  const id = createUniqueId()
   const service = useMachine(
     select.machine,
     controls.mergeProps<select.Props>(() => ({
       collection: select.collection({ items: selectData }),
-      id: createUniqueId(),
+      id,
     })),
   )
 

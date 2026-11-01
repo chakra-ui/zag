@@ -4,8 +4,8 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { getContext, onMount } from "svelte"
 
-  const menubarContext = getContext<menu.MenubarContext | undefined>("menubar")
-  const service = useMachine(menu.machine, { id: "edit", menubar: menubarContext })
+  const getMenubarContext = getContext<(() => menu.MenubarContext) | undefined>("menubar")
+  const service = useMachine(menu.machine, () => ({ id: "edit", menubar: getMenubarContext?.() }))
   const api = $derived(menu.connect(service, normalizeProps))
 
   // The submenu is not a menubar menu (no `menubar` prop) — it's linked via setParent/setChild.

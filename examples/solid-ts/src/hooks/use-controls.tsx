@@ -19,7 +19,8 @@ export function useControls<T extends ControlRecord>(config: T) {
     setState,
     config,
     mergeProps: <T extends object>(props: T | Accessor<T>): Accessor<T> => {
-      return createMemo(() => mergeProps(context(), typeof props === "function" ? props() : props))
+      // controls win over the page defaults, like `...controls.context` in the other frameworks
+      return createMemo(() => mergeProps(typeof props === "function" ? props() : props, context()))
     },
   }
 }

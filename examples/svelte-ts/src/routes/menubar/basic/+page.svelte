@@ -15,7 +15,7 @@
   const service = useMachine(menubar.machine, { id, disabled })
   const api = $derived(menubar.connect(service, normalizeProps))
 
-  setContext<menu.MenubarContext>("menubar", api.getMenuContext())
+  setContext<() => menu.MenubarContext>("menubar", () => api.getMenuContext())
 
   const menus = [
     {

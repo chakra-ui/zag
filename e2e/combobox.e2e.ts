@@ -57,12 +57,12 @@ test.describe("combobox", () => {
     await I.clickTrigger()
     await I.seeDropdown()
 
-    const content = page.getByTestId("combobox-content")
-    await content.evaluate((el) => (el.scrollTop = el.scrollHeight))
-    await expect.poll(() => content.evaluate((el) => el.scrollTop)).toBeGreaterThan(0)
+    const list = page.locator("[data-combobox-list]")
+    await list.evaluate((el) => (el.scrollTop = el.scrollHeight))
+    await expect.poll(() => list.evaluate((el) => el.scrollTop)).toBeGreaterThan(0)
 
     await I.type("a")
-    await expect.poll(() => content.evaluate((el) => el.scrollTop)).toBe(0)
+    await expect.poll(() => list.evaluate((el) => el.scrollTop)).toBe(0)
   })
 
   test("[keyboard] should open combobox menu when typing", async () => {
@@ -357,10 +357,10 @@ test.describe("combobox", () => {
     await I.goto("/combobox/async")
     await I.clickTrigger()
     await I.seeDropdown()
-    await expect(page.getByTestId("combobox-content")).not.toHaveAttribute("aria-busy")
+    await expect(page.locator("[data-combobox-list]")).not.toHaveAttribute("aria-busy")
 
     await I.type("zzz")
-    await expect(page.getByTestId("combobox-content")).toHaveAttribute("aria-busy", "true")
+    await expect(page.locator("[data-combobox-list]")).toHaveAttribute("aria-busy", "true")
     await expect(I.liveRegion()).toHaveText("Loading results")
     // still loading well past the settle delay: no premature "No results"
     await page.waitForTimeout(1500)

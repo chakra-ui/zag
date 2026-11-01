@@ -10,8 +10,9 @@ export default function Page() {
   const [invalid, setInvalid] = createSignal(false)
   const [required, setRequired] = createSignal(true)
 
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     disabled: disabled(),
     invalid: invalid(),
     required: required(),

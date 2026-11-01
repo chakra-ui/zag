@@ -78,7 +78,7 @@ test.describe("menubar", () => {
 
   test("Escape closes the menu and restores focus to the trigger", async () => {
     await I.clickTrigger("file")
-    await I.seeMenuIsOpen("file")
+    await I.seeMenuIsFocused("file")
     await I.pressKey("Escape")
     await I.seeMenuIsClosed("file")
     await I.seeHasOpenMenu(false)
@@ -96,7 +96,7 @@ test.describe("menubar", () => {
 
   test("ArrowRight switches to the next menu while one is open", async () => {
     await I.clickTrigger("file")
-    await I.seeMenuIsOpen("file")
+    await I.seeMenuIsFocused("file")
     await I.pressKey("ArrowRight")
     await I.seeMenuIsClosed("file")
     await I.seeMenuIsOpen("edit")
@@ -105,7 +105,7 @@ test.describe("menubar", () => {
 
   test("ArrowLeft switches to the previous menu while one is open", async () => {
     await I.clickTrigger("edit")
-    await I.seeMenuIsOpen("edit")
+    await I.seeMenuIsFocused("edit")
     await I.pressKey("ArrowLeft")
     await I.seeMenuIsClosed("edit")
     await I.seeMenuIsOpen("file")
@@ -114,11 +114,11 @@ test.describe("menubar", () => {
 
   test("can arrow-switch across multiple menus consecutively", async () => {
     await I.clickTrigger("file")
-    await I.seeMenuIsOpen("file")
+    await I.seeMenuIsFocused("file")
     await I.pressKey("ArrowRight")
-    await I.seeMenuIsOpen("edit")
+    await I.seeMenuIsFocused("edit")
     await I.pressKey("ArrowRight")
-    await I.seeMenuIsOpen("view")
+    await I.seeMenuIsFocused("view")
     await I.seeMenuIsClosed("edit")
     await I.pressKey("ArrowRight")
     await I.seeMenuIsOpen("file")
@@ -139,7 +139,7 @@ test.describe("menubar", () => {
 
     test("ArrowRight on a submenu trigger opens the submenu instead of switching menus", async () => {
       await I.clickTrigger("edit")
-      await I.seeMenuIsOpen("edit")
+      await I.seeMenuIsFocused("edit")
       // last item is the "Find" submenu trigger
       await I.pressKey("ArrowUp")
       await I.seeItemIsHighlighted("find:trigger")
@@ -151,9 +151,10 @@ test.describe("menubar", () => {
 
     test("ArrowLeft inside the submenu closes it back to the parent menu", async () => {
       await I.clickTrigger("edit")
+      await I.seeMenuIsFocused("edit")
       await I.pressKey("ArrowUp")
       await I.pressKey("ArrowRight")
-      await I.seeSubmenuIsOpen("find:content")
+      await I.seeSubmenuIsFocused("find:content")
       await I.pressKey("ArrowLeft")
       await I.seeSubmenuIsClosed("find:content")
       await I.seeMenuIsOpen("edit")
@@ -162,6 +163,7 @@ test.describe("menubar", () => {
 
     test("ArrowRight on a regular item still switches to the next menu", async () => {
       await I.clickTrigger("edit")
+      await I.seeMenuIsFocused("edit")
       await I.pressKey("Home")
       await I.seeItemIsHighlighted("undo")
       await I.pressKey("ArrowRight")
@@ -171,9 +173,10 @@ test.describe("menubar", () => {
 
     test("ArrowRight on a leaf item inside the submenu closes the chain and switches to the next menu", async () => {
       await I.clickTrigger("edit")
+      await I.seeMenuIsFocused("edit")
       await I.pressKey("ArrowUp")
       await I.pressKey("ArrowRight")
-      await I.seeSubmenuIsOpen("find:content")
+      await I.seeSubmenuIsFocused("find:content")
       await I.seeItemIsHighlighted("find-text")
       // leaf item -> closes the submenu and parent, opens the next menubar menu
       await I.pressKey("ArrowRight")
@@ -206,7 +209,7 @@ test.describe("menubar", () => {
     test("ArrowLeft closes the menu back to its trigger", async () => {
       await I.focusTrigger("edit")
       await I.pressKey("ArrowRight")
-      await I.seeMenuIsOpen("edit")
+      await I.seeMenuIsFocused("edit")
       await I.pressKey("ArrowLeft")
       await I.seeMenuIsClosed("edit")
       await I.seeTriggerIsFocused("edit")
@@ -215,8 +218,9 @@ test.describe("menubar", () => {
     test("switching siblings: close to trigger, step down, reopen", async () => {
       await I.focusTrigger("edit")
       await I.pressKey("ArrowRight")
-      await I.seeMenuIsOpen("edit")
+      await I.seeMenuIsFocused("edit")
       await I.pressKey("ArrowLeft")
+      await I.seeTriggerIsFocused("edit")
       await I.pressKey("ArrowDown")
       await I.seeTriggerIsFocused("view")
       await I.pressKey("ArrowRight")

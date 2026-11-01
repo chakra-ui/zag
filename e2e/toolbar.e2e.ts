@@ -50,7 +50,10 @@ test.describe("toolbar", () => {
   test("[keyboard] Tab exits the whole toolbar as a single stop", async ({ page }) => {
     await I.goto("/toolbar/basic")
     await I.focusRoot()
-    await I.pressKey("ArrowRight", 2)
+    // focus moves a frame after each key, so step one at a time
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("Align right")
+    await I.pressKey("ArrowRight")
     await I.seeItemIsFocused("Cut")
 
     await page.keyboard.press("Tab")
@@ -120,7 +123,7 @@ test.describe("toolbar", () => {
     await I.seeItemIsFocused("More actions")
 
     await page.keyboard.press("Enter")
-    await expect(page.getByRole("menu")).toBeVisible()
+    await expect(page.getByRole("menu")).toBeFocused()
 
     await page.keyboard.press("ArrowDown")
     await expect(page.getByRole("menuitem", { name: "Keyboard Shortcuts" })).toHaveAttribute("data-highlighted", "")

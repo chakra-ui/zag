@@ -77,10 +77,11 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
 export default function Page() {
   const controls = useControls(cascadeSelectControls)
 
+  const id = createUniqueId()
   const service = useMachine(
     cascadeSelect.machine,
     controls.mergeProps<cascadeSelect.Props>(() => ({
-      id: createUniqueId(),
+      id,
       collection,
       name: "location",
       defaultOpen: true,

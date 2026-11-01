@@ -44,6 +44,7 @@ export default function Page() {
     id,
     collection: collection(),
     placeholder: "Search people…",
+    loading: list().isLoading && !list().isLoadingMore,
     // Wrapping to the top would skip the next page
     loopFocus: false,
     onInputValueChange({ inputValue, reason }) {
@@ -110,7 +111,7 @@ export default function Page() {
         </div>
 
         <div {...api().getPositionerProps()}>
-          <div data-testid="combobox-content" {...api().getContentProps()} aria-busy={list().isLoading || undefined}>
+          <div data-testid="combobox-content" {...api().getContentProps()}>
             <div {...api().getEmptyProps()}>
               <Show when={list().error} fallback={status()}>
                 <span class="combobox-status" data-type="error">

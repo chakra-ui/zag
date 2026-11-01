@@ -9,8 +9,9 @@ import "@styles/field.css"
 export default function Page() {
   let textareaRef: HTMLTextAreaElement | undefined
 
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     validationMode: "onChange" as const,
     validate({ value }: field.ValidateDetails) {
       if (value.length > 100) return "Keep it under 100 characters"

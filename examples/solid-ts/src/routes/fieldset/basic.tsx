@@ -10,16 +10,18 @@ export default function Page() {
   const [disabled, setDisabled] = createSignal(false)
   const [invalid, setInvalid] = createSignal(false)
 
+  const fieldsetId = createUniqueId()
   const fieldsetService = useMachine(fieldset.machine, () => ({
-    id: createUniqueId(),
+    id: fieldsetId,
     disabled: disabled(),
     invalid: invalid(),
   }))
   const fieldsetApi = createMemo(() => fieldset.connect(fieldsetService, normalizeProps))
 
   // disabled inheritance is DOM-based: the field picks it up from <fieldset disabled>
+  const fieldId = createUniqueId()
   const fieldService = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id: fieldId,
     required: true,
   }))
   const fieldApi = createMemo(() => field.connect(fieldService, normalizeProps))

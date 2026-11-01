@@ -13,8 +13,9 @@ export default function Page() {
   const [loading, setLoading] = createSignal(false)
 
   // `loading` is fully owned by the consumer here — no promise is returned from onLoadMore.
+  const id = createUniqueId()
   const service = useMachine(infiniteScroll.machine, () => ({
-    id: createUniqueId(),
+    id,
     count: items().length,
     hasMore: items().length < TOTAL,
     loading: loading(),

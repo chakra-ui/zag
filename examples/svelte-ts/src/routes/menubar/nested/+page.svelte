@@ -13,7 +13,7 @@
   const service = useMachine(menubar.machine, { id })
   const api = $derived(menubar.connect(service, normalizeProps))
 
-  setContext<menu.MenubarContext>("menubar", api.getMenuContext())
+  setContext<() => menu.MenubarContext>("menubar", () => api.getMenuContext())
 
   const fileItems = [
     { value: "new", label: "New File" },

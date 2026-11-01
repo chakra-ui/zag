@@ -114,6 +114,7 @@ test.describe("menu / links", () => {
     I = new MenuModel(page)
     await I.goto("/menu/links")
     await I.clickTrigger()
+    await I.seeDropdownIsFocused()
     await I.pressKey("End")
     await I.seeItemIsHighlighted("Basic menu")
 

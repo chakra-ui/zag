@@ -148,7 +148,8 @@ export const machine = createMachine({
       actions: ["focusTrigger", "deselectValue"],
     },
     CLOSE: {
-      actions: ["clearAllOpenTimeouts", "deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
+      // restore focus before deselecting, since deselecting can unmount the content synchronously
+      actions: ["clearAllOpenTimeouts", "focusTriggerIfNeeded", "deselectValue", "removeFromTabOrder"],
     },
   },
 

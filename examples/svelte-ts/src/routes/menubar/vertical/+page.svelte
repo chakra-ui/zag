@@ -12,7 +12,7 @@
   const service = useMachine(menubar.machine, { id, orientation: "vertical" })
   const api = $derived(menubar.connect(service, normalizeProps))
 
-  setContext<menu.MenubarContext>("menubar", api.getMenuContext())
+  setContext<() => menu.MenubarContext>("menubar", () => api.getMenuContext())
 
   // Vertical menubar menus fly out to the side.
   const positioning: menu.Props["positioning"] = { placement: "right-start", gutter: 4 }

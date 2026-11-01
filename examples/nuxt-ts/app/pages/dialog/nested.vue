@@ -28,7 +28,7 @@ const childDialog = computed(() => dialog.connect(service2, normalizeProps))
             <p v-bind="parentDialog.getDescriptionProps()">
               Make changes to your profile here. Click save when you are done.
             </p>
-            <button v-bind="parentDialog.getCloseTriggerProps()" data-testid="close-1">
+            <button v-bind="parentDialog.getCloseTriggerProps()" data-testid="close-1" aria-label="Close">
               <XIcon />
             </button>
             <input type="text" placeholder="Enter name..." data-testid="input-1" />
@@ -41,7 +41,7 @@ const childDialog = computed(() => dialog.connect(service2, normalizeProps))
               <div data-testid="positioner-2" v-bind="childDialog.getPositionerProps()">
                 <div v-bind="childDialog.getContentProps()">
                   <h2 v-bind="childDialog.getTitleProps()">Nested</h2>
-                  <button v-bind="childDialog.getCloseTriggerProps()" data-testid="close-2">
+                  <button v-bind="childDialog.getCloseTriggerProps()" data-testid="close-2" aria-label="Close">
                     <XIcon />
                   </button>
                   <button data-testid="special-close" @click="parentDialog.setOpen(false)">Close Dialog 1</button>

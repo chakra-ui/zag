@@ -23,8 +23,10 @@ export class ToolbarModel extends Model {
     return this.page.getByRole("link", { name })
   }
 
-  focusRoot() {
-    return this.root.focus()
+  // the root hands focus to an item a frame later; keys pressed before that are lost
+  async focusRoot() {
+    await this.root.focus()
+    await expect(this.root).not.toBeFocused()
   }
 
   seeItemIsFocused(name: string) {

@@ -83,6 +83,10 @@ export class CascadeSelectModel extends Model {
     await this.content.hover({ position: { x: 0, y: 0 } })
   }
 
+  seeContentIsFocused = async () => {
+    await expect(this.content).toBeFocused()
+  }
+
   seeTriggerIsFocused = async () => {
     await expect(this.trigger).toBeFocused()
   }

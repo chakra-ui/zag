@@ -14,8 +14,9 @@ export default function Page() {
   const [isAsync, setIsAsync] = createSignal(false)
   const [submitted, setSubmitted] = createSignal(false)
 
+  const id = createUniqueId()
   const service = useMachine(field.machine, () => ({
-    id: createUniqueId(),
+    id,
     required: true,
     validationMode: mode(),
     validate({ value }: field.ValidateDetails) {

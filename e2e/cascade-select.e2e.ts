@@ -869,6 +869,7 @@ test.describe("disabled items", () => {
 
   test("should skip disabled items during keyboard navigation", async () => {
     await I.clickTrigger()
+    await I.seeContentIsFocused()
     await I.pressKey("Home") // Go to first item
     await I.seeItemIsHighlighted("Africa") // Should be Africa, not Antarctica
 
