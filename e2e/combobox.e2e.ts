@@ -681,6 +681,8 @@ test.describe("combobox [highlight frame]", () => {
 })
 
 test.describe("combobox / highlighted on mount", () => {
+  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
   test.beforeEach(async ({ page }) => {
     I = new ComboboxModel(page)
     await I.goto("/combobox/highlighted-on-mount")
