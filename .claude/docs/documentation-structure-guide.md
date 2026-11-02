@@ -516,7 +516,7 @@ export class DragManager {
   "sideEffects": false,
   "files": ["dist"],
   "scripts": {
-    "build": "tsup"
+    "build": "tsdown"
   },
   "dependencies": {
     "@zag-js/core": "workspace:*",

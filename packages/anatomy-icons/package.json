@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest --passWithNoTests",
     "lint": "oxlint src",
     "gen": "node scripts/generate.mjs",
