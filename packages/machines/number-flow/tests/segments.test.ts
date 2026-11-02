@@ -9,6 +9,7 @@ import {
   getPlaceValue,
   getRenderResult,
   getSignature,
+  getStripBounds,
   getStripSize,
   isDigitSegment,
   mod10,
@@ -125,7 +126,7 @@ describe("render result", () => {
 
 describe("counter math", () => {
   const cycles = getCycles(false)
-  const max = getStripSize(cycles) - 1
+  const [min, max] = getStripBounds(cycles)
   const home = normalizeCounter(0, cycles)
 
   test("normalizeCounter lands on the middle cycle, same digit", () => {
@@ -148,7 +149,7 @@ describe("counter math", () => {
   })
 
   test("always lands on a cell showing the target digit", () => {
-    for (let prev = 0; prev <= max; prev++) {
+    for (let prev = min; prev <= max; prev++) {
       for (let digit = 0; digit < 10; digit++) {
         for (const trend of [undefined, 1, -1] as const) {
           expect(mod10(nextCounter(prev, digit, trend, cycles))).toBe(digit)
@@ -157,12 +158,14 @@ describe("counter math", () => {
     }
   })
 
-  test("never leaves the rendered strip", () => {
-    for (let prev = 0; prev <= max; prev++) {
+  test("keeps clear of the strip ends, so an overshoot still shows a digit", () => {
+    expect(min).toBeGreaterThan(0)
+    expect(max).toBeLessThan(getStripSize(cycles) - 1)
+    for (let prev = min; prev <= max; prev++) {
       for (let digit = 0; digit < 10; digit++) {
         for (const trend of [undefined, 1, -1] as const) {
           const next = nextCounter(prev, digit, trend, cycles)
-          expect(next).toBeGreaterThanOrEqual(0)
+          expect(next).toBeGreaterThanOrEqual(min)
           expect(next).toBeLessThanOrEqual(max)
         }
       }
@@ -172,13 +175,12 @@ describe("counter math", () => {
   test("takes the opposite path instead of a full-cycle backspin at the edge", () => {
     // at the top of the strip an upward roll has nowhere to go - it rolls down 1 cell,
     // not back through a whole cycle
-    expect(nextCounter(max, 0, 1, cycles)).toBe(max - 9)
-    expect(nextCounter(max, mod10(max) + 1, 1, cycles)).toBe(max - 9)
-    expect(nextCounter(0, 9, -1, cycles)).toBe(9)
+    expect(nextCounter(max, mod10(max + 1), 1, cycles)).toBe(max - 9)
+    expect(nextCounter(min, mod10(min - 1), -1, cycles)).toBe(min + 9)
   })
 
   test("moves at most 9 cells per roll", () => {
-    for (let prev = 0; prev <= max; prev++) {
+    for (let prev = min; prev <= max; prev++) {
       for (let digit = 0; digit < 10; digit++) {
         for (const trend of [undefined, 1, -1] as const) {
           expect(Math.abs(nextCounter(prev, digit, trend, cycles) - prev)).toBeLessThanOrEqual(9)
@@ -203,15 +205,15 @@ describe("counter math", () => {
     for (const target of [-113, -7, 0, 12, 49, 50, 512]) {
       const bounded = boundToStrip(target, 5)
       expect(mod10(bounded)).toBe(mod10(target))
-      expect(bounded).toBeGreaterThanOrEqual(0)
-      expect(bounded).toBeLessThanOrEqual(getStripSize(5) - 1)
+      expect(bounded).toBeGreaterThanOrEqual(getStripBounds(5)[0])
+      expect(bounded).toBeLessThanOrEqual(getStripBounds(5)[1])
     }
   })
 })
 
 describe("continuous counter math", () => {
   const cycles = getCycles(true)
-  const max = getStripSize(cycles) - 1
+  const [min, max] = getStripBounds(cycles)
 
   test("spins through every intermediate value when it fits", () => {
     const start = normalizeCounter(0, cycles)
@@ -222,7 +224,7 @@ describe("continuous counter math", () => {
   test("bounds an oversized delta without changing the landing digit", () => {
     const start = normalizeCounter(5, cycles)
     const next = nextCounterContinuous(0, 4045, 0, start, 5, cycles)
-    expect(next).toBeGreaterThanOrEqual(0)
+    expect(next).toBeGreaterThanOrEqual(min)
     expect(next).toBeLessThanOrEqual(max)
     expect(mod10(next)).toBe(5)
   })

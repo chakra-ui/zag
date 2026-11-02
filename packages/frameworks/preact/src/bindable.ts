@@ -29,14 +29,18 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled) setValue(next)
+    if (!controlled) {
+      // Reads before the next render (e.g. several events in one task) see the new value
+      valueRef.current = next
+      setValue(next)
+    }
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }
   }
 
   function get(): T {
-    return (controlled ? props().value : value) as T
+    return valueRef.current as T
   }
 
   return {

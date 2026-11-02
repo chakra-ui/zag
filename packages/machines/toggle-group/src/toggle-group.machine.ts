@@ -99,6 +99,9 @@ export const machine = createMachine<ToggleGroupSchema>({
     focused: {
       exit: ["cancelFocusFrame"],
       on: {
+        "ROOT.BLUR": {
+          actions: ["clearClickFocus", "cancelFocusFrame"],
+        },
         "ROOT.FOCUS": {
           guard: not("isClickFocus"),
           actions: ["focusFirstToggle", "clearClickFocus"],
