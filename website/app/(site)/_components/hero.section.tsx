@@ -1,5 +1,6 @@
 import { TwoToneHeading } from "components/ui/heading"
 import { hCopy } from "lib/home"
+import { componentsHref } from "lib/pagination-utils"
 import Link from "next/link"
 import { Box, Grid, HStack, Stack, styled } from "styled-system/jsx"
 import { button, logoChip, pill } from "styled-system/recipes"
@@ -75,7 +76,7 @@ export function HeroSection() {
           >
             Get started →
           </Link>
-          <Link href="/components/react/accordion" className={button()}>
+          <Link href={componentsHref} className={button()}>
             Browse components
           </Link>
         </HStack>

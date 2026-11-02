@@ -1,6 +1,6 @@
 "use client"
 
-import { docHref, getActiveTab, tabItems } from "lib/pagination-utils"
+import { getActiveTab, tabHref } from "lib/pagination-utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { tabs, type SidebarTab } from "sidebar.config"
@@ -43,19 +43,15 @@ const tabLink = css({
   },
 })
 
-/** A tab opens on its first docs page */
 export function useTabHref() {
   const { framework } = useFramework()
-  return (tab: SidebarTab) => {
-    const first = tabItems(tab).find((item) => !item.href)
-    return first ? docHref(first, framework) : "/"
-  }
+  return (tab: SidebarTab) => tabHref(tab, framework)
 }
 
 export function DocsTabBar() {
   const pathname = usePathname()
   const active = getActiveTab(pathname)
-  const tabHref = useTabHref()
+  const hrefFor = useTabHref()
 
   return (
     <Box
@@ -80,7 +76,7 @@ export function DocsTabBar() {
           {tabs.map((tab) => (
             <Link
               key={tab.id}
-              href={tabHref(tab)}
+              href={hrefFor(tab)}
               className={tabLink}
               aria-current={tab.id === active.id ? "page" : undefined}
             >

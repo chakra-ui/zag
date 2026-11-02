@@ -25,6 +25,17 @@ const itemKey = (item: SidebarDoc) => `${item.section}/${item.id}`
 export const tabItems = (tab: SidebarTab) =>
   tab.groups.flatMap((group) => group.items)
 
+/** A tab opens on its first docs page */
+export function tabHref(tab: SidebarTab, framework?: string) {
+  const first = tabItems(tab).find((item) => !item.href)
+  return first ? docHref(first, framework) : "/"
+}
+
+export const componentsHref = tabHref(
+  tabs.find((tab) => tab.id === "components")!,
+  "react",
+)
+
 export function isCurrentDoc(item: SidebarDoc, pathname: string) {
   return !item.href && itemKey(item) === pageKey(pathname)
 }

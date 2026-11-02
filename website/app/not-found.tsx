@@ -2,6 +2,7 @@ import { Footer } from "components/footer"
 import { IsoNotFound } from "components/illustrations/not-found"
 import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { TopNav } from "components/nav/top-nav"
+import { componentsHref } from "lib/pagination-utils"
 import { Box, Grid, HStack, styled } from "styled-system/jsx"
 
 export default function NotFound() {
@@ -30,7 +31,7 @@ export default function NotFound() {
               <Btn href="/overview/introduction" tone="ghost">
                 Read the docs
               </Btn>
-              <Btn href="/components/react/accordion" tone="ghost">
+              <Btn href={componentsHref} tone="ghost">
                 Browse components
               </Btn>
             </HStack>

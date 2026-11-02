@@ -1,5 +1,6 @@
 "use client"
 
+import { componentsHref } from "lib/pagination-utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { css } from "styled-system/css"
@@ -66,7 +67,7 @@ export const navLinks: NavLink[] = [
       pathname.startsWith("/utilities"),
   },
   {
-    href: "/components/react/accordion",
+    href: componentsHref,
     label: "Components",
     isActive: (pathname) => pathname.startsWith("/components"),
   },

@@ -68,7 +68,8 @@
     }
   }
 
-  .List:not(:has(.Indicator)) .Trigger[data-selected]::after {
+  .List:not(:has(.Indicator)) .Trigger[data-selected]::after,
+  .Trigger[data-selected][data-indicator-pending]::after {
     content: "";
     position: absolute;
     inset-inline: 0.5rem;
