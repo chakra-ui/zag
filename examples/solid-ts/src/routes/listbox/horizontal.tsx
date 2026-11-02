@@ -1,0 +1,65 @@
+import * as listbox from "@zag-js/listbox"
+import { Car, CookingPot, Coffee, Dumbbell, PawPrint, Snowflake, Waves, Wifi } from "lucide-solid"
+import { listboxData, type ListboxOption } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+import { Dynamic } from "solid-js/web"
+import { StateVisualizer } from "~/components/state-visualizer"
+import { Toolbar } from "~/components/toolbar"
+import "@styles/listbox.css"
+
+const collection = listbox.collection({ items: listboxData.amenities })
+
+const icons = {
+  wifi: Wifi,
+  parking: Car,
+  pool: Waves,
+  gym: Dumbbell,
+  breakfast: Coffee,
+  pets: PawPrint,
+  ac: Snowflake,
+  kitchen: CookingPot,
+}
+
+export default function Page() {
+  const service = useMachine(listbox.machine as listbox.Machine<ListboxOption>, {
+    collection,
+    id: createUniqueId(),
+    orientation: "horizontal",
+    selectionMode: "multiple",
+    defaultValue: ["wifi", "breakfast"],
+  })
+
+  const api = createMemo(() => listbox.connect(service, normalizeProps))
+
+  return (
+    <>
+      <main class="listbox listbox-tags">
+        <div {...api().getRootProps()}>
+          <label {...api().getLabelProps()}>Amenities</label>
+          <div {...api().getContentProps()}>
+            <ul {...api().getListProps()}>
+              <For each={listboxData.amenities}>
+                {(item) => (
+                  <li {...api().getItemProps({ item, highlightOnHover: true })}>
+                    <Dynamic
+                      component={icons[item.value as keyof typeof icons]}
+                      class="listbox-item-icon"
+                      aria-hidden
+                    />
+                    <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                    <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <Toolbar viz>
+        <StateVisualizer state={service} context={["value", "highlightedValue"]} />
+      </Toolbar>
+    </>
+  )
+}

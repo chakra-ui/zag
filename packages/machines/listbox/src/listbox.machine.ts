@@ -14,9 +14,7 @@ import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
-const { guards, createMachine } = setup<ListboxSchema>()
-
-const { or } = guards
+const { createMachine } = setup<ListboxSchema>()
 
 export const machine = createMachine({
   props({ props }) {
@@ -189,7 +187,7 @@ export const machine = createMachine({
         },
         "CONTENT.FOCUS": [
           {
-            guard: or("hasSelectedValue", "hasHighlightedValue"),
+            guard: "hasHighlightedValue",
             actions: ["setFocused"],
           },
           {
@@ -220,7 +218,6 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      hasSelectedValue: ({ context }) => context.get("value").length > 0,
       hasHighlightedValue: ({ context }) => context.get("highlightedValue") != null,
     },
 
@@ -477,7 +474,9 @@ export const machine = createMachine({
 
       setDefaultHighlightedValue({ context, prop }) {
         const collection = prop("collection")
-        const firstValue = collection.firstValue
+        // the first selected item, in collection order, else the first item
+        const [firstSelected] = collection.sort(context.get("value"))
+        const firstValue = firstSelected ?? collection.firstValue
         if (firstValue != null) {
           context.set("highlightedValue", firstValue)
         }

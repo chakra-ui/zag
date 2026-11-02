@@ -147,6 +147,11 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "grid", title: "Grid" },
+      { slug: "horizontal", title: "Horizontal (Tags)" },
+      { slug: "group", title: "Group" },
+      { slug: "disabled-item", title: "Disabled Item" },
+      { slug: "select-all", title: "Select All" },
+      { slug: "selection-follows-focus", title: "Selection Follows Focus" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "transfer", title: "Transfer" },
