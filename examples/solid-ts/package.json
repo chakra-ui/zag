@@ -47,6 +47,7 @@
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-trap": "workspace:*",
+    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/gridlist": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",

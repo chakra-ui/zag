@@ -373,6 +373,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/fuzzy':
+        specifier: workspace:*
+        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
@@ -698,6 +701,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/fuzzy':
+        specifier: workspace:*
+        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
@@ -1011,6 +1017,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/fuzzy':
+        specifier: workspace:*
+        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
@@ -1342,6 +1351,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/fuzzy':
+        specifier: workspace:*
+        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
@@ -1640,6 +1652,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
+      '@zag-js/fuzzy':
+        specifier: workspace:*
+        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist

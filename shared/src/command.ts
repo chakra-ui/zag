@@ -120,3 +120,40 @@ export const suggestions = [
 ]
   .map((name) => allItems.find((item) => item.name === name))
   .filter((item): item is NonNullable<typeof item> => !!item)
+
+export interface PageItem {
+  value: string
+  label: string
+  group: string
+  parent?: string | undefined
+  keywords?: string[] | undefined
+}
+
+const aiModes = ["Fast", "Balanced", "Precise"]
+
+// flat items: extensions open a page of their commands
+export const pageItems: PageItem[] = [
+  ...applications.map((app) => ({
+    value: app.name,
+    label: app.title,
+    group: "Apps",
+    keywords: [app.description ?? ""],
+  })),
+  ...extensions.map((ext) => ({ value: ext.name, label: ext.title, group: "Extensions" })),
+  ...extensions.flatMap((ext) =>
+    ext.commands.map((cmd) => ({
+      value: cmd.name,
+      label: cmd.title,
+      group: "Commands",
+      parent: ext.name,
+      keywords: [cmd.description ?? ""],
+    })),
+  ),
+  { value: "cmd-ai-mode", label: "Change Mode", group: "Settings", parent: "ext-ai" },
+  ...aiModes.map((mode) => ({
+    value: `cmd-ai-mode-${mode.toLowerCase()}`,
+    label: mode,
+    group: "Modes",
+    parent: "cmd-ai-mode",
+  })),
+]

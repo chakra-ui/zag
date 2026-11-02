@@ -96,6 +96,36 @@
     &[data-highlighted] {
       background: var(--z-bg-muted);
     }
+
+    & mark {
+      background: none;
+      color: inherit;
+      font-weight: 600;
+    }
+  }
+
+  & [data-part="breadcrumbs"] {
+    display: flex;
+    gap: 6px;
+    padding: 12px 20px 0;
+    color: var(--z-fg-muted);
+    font-size: 12px;
+
+    & span + span::before {
+      content: "›";
+      margin-inline-end: 6px;
+    }
+  }
+
+  & [data-part="item-path"] {
+    margin-inline-start: 8px;
+    color: var(--z-fg-muted);
+    font-size: 12px;
+  }
+
+  & [data-part="item-indicator"] {
+    margin-inline-start: auto;
+    color: var(--z-fg-muted);
   }
 
   & [data-combobox-empty] {

@@ -25,7 +25,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   items: T[]
   private indexMap: Map<string, number> | null = null
 
-  constructor(private options: CollectionOptions<T>) {
+  constructor(protected options: CollectionOptions<T>) {
     this.items = [...options.items] as T[]
   }
 

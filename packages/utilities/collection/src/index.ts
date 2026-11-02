@@ -1,6 +1,11 @@
 export { GridCollection, isGridCollection, type GridCollectionOptions } from "./grid-collection"
 export { isListCollection, ListCollection } from "./list-collection"
-export { createPageState, PageTree, type PageChange, type PageState, type PageTreeOptions } from "./page-tree"
+export {
+  isPageListCollection,
+  PageListCollection,
+  type PageListCollectionOptions,
+  type PageRestore,
+} from "./page-list-collection"
 export {
   createSelectedItemMap,
   deriveSelectionState,
