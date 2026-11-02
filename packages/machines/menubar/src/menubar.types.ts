@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { TypeaheadState } from "@zag-js/dom-query"
+import type { AnimationFrame, TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -76,6 +76,7 @@ export interface MenubarSchema {
   context: MenubarContext
   refs: {
     typeaheadState: TypeaheadState
+    focusFrame: AnimationFrame
   }
   state: "idle" | "focused" | "open"
   event: EventObject

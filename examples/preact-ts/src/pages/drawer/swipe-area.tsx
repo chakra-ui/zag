@@ -1,10 +1,11 @@
+import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
 import { useId } from "react"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
-import styles from "../../../../shared/styles/drawer.module.css"
 
 export default function Page() {
   const service = useMachine(drawer.machine, {
@@ -25,7 +26,9 @@ export default function Page() {
             </div>
             <div {...api.getTitleProps()}>Drawer</div>
             <p {...api.getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
             <div className={styles.scrollable} data-testid="scrollable">
               {Array.from({ length: 100 }).map((_element, index) => (
                 <div key={index}>Item {index}</div>

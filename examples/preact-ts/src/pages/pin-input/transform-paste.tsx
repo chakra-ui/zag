@@ -6,6 +6,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/pin-input.css"
 
 export default function Page() {
   const controls = useControls(pinInputControls)
@@ -25,6 +26,7 @@ export default function Page() {
     <>
       <main className="pin-input">
         <form
+          className="vstack gap-4"
           onSubmit={(e) => {
             e.preventDefault()
             const formData = serialize(e.currentTarget, { hash: true })
@@ -40,10 +42,12 @@ export default function Page() {
             </div>
             <input {...api.getHiddenInputProps()} />
           </div>
-          <button data-testid="clear-button" onClick={api.clearValue}>
-            Clear
-          </button>
-          <button onClick={api.focus}>Focus</button>
+          <div className="hstack">
+            <button data-testid="clear-button" onClick={api.clearValue}>
+              Clear
+            </button>
+            <button onClick={api.focus}>Focus</button>
+          </div>
         </form>
       </main>
 

@@ -1,6 +1,8 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-preact"
 import { useId } from "react"
+import "@styles/tour.css"
 
 interface TourProps extends Omit<tour.Props, "id" | "steps"> {}
 
@@ -38,7 +40,9 @@ export default function Tour(props: TourProps) {
           <div {...api.getSpotlightProps()} />
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <button {...api.getCloseTriggerProps()}>X</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
 
               {api.step.arrow && (
                 <div {...api.getArrowProps()}>

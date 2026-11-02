@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { controls } from "./_utils"
 import { RatingGroupModel } from "./models/rating-group.model"
 
@@ -17,6 +17,15 @@ test.describe("rating / pointer", () => {
   test("should set value when item is clicked", async () => {
     await I.clickRating(4)
     await I.seeInputHasValue("4")
+  })
+
+  test("should only mark the selected rating as checked", async () => {
+    await I.seeRatingIsChecked(3)
+    await I.seeCheckedRatingLabel("2.5 stars")
+
+    await I.previewRating(5)
+    await I.seeRatingIsHighlighted(5)
+    await I.seeRatingIsChecked(3)
   })
 
   test.skip("highlight when hovered", async () => {
@@ -95,5 +104,16 @@ test.describe("rating / keyboard", () => {
     // blur and verify first item is still focusable
     await I.pressKey("Tab")
     await I.seeRatingIsFocusable(1)
+  })
+
+  test("should not mark any item as checked when value is 0", async () => {
+    await I.seeRatingIsChecked(3)
+
+    await I.focusRating(3)
+
+    // decrease value to 0
+    await I.pressKey("ArrowLeft", 5)
+    await I.seeInputHasValue("0")
+    await I.seeNoRatingIsChecked()
   })
 })

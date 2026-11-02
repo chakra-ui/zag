@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SizedRating from "$lib/components/rating-group-sized.svelte"
+  import SizedRating from "#lib/components/rating-group-sized.svelte"
   import "@styles/rating-group.css"
 
   const sizes = [

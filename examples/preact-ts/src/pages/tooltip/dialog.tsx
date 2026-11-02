@@ -1,7 +1,10 @@
-import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as dialog from "@zag-js/dialog"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
+import { XIcon } from "lucide-preact"
 import { useId } from "react"
+import "@styles/tooltip.css"
+import "@styles/dialog.css"
 
 const Tooltip = () => {
   const service = useMachine(tooltip.machine, { id: useId() })
@@ -54,7 +57,9 @@ export default function Page() {
                   <input placeholder="Enter name..." />
                   <button>Save</button>
                 </div>
-                <button {...dialogApi.getCloseTriggerProps()}>Close</button>
+                <button {...dialogApi.getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </div>
             </div>
           </Portal>

@@ -1,7 +1,7 @@
 import { autoresizeTextarea } from "@zag-js/auto-resize"
-import { useEffect, useRef, useState } from "preact/hooks"
+import { useEffect, useRef, useState } from "react"
 
-export default function Page() {
+export default function AutoresizeControlled() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [value, setValue] = useState("")
 
@@ -9,16 +9,29 @@ export default function Page() {
     return autoresizeTextarea(textareaRef.current)
   }, [])
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log("onChange fired:", e.currentTarget.value)
+    setValue(e.currentTarget.value)
+  }
+
+  const handleClear = () => {
+    console.log("Clear button clicked")
+    setValue("")
+  }
+
   return (
     <main style={{ padding: 20, maxWidth: 600 }}>
       <h1>Autoresize Controlled Textarea</h1>
-      <p>Type a character, click Clear, then type the same character again. The value should update each time.</p>
+      <p>
+        Test: Type a character, click Clear, then type the same character again. The onChange should fire each time.
+      </p>
 
       <textarea
         ref={textareaRef}
         value={value}
-        rows={2}
+        onChange={handleChange}
         placeholder="Type something..."
+        rows={2}
         style={{
           width: "100%",
           resize: "none",
@@ -27,14 +40,16 @@ export default function Page() {
           borderRadius: 8,
           border: "1px solid #ccc",
         }}
-        onInput={(e) => setValue((e.currentTarget as HTMLTextAreaElement).value)}
       />
 
-      <div style={{ marginTop: 12 }}>
+      <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
         <button
-          type="button"
-          style={{ padding: "8px 16px", fontSize: 14, cursor: "pointer" }}
-          onClick={() => setValue("")}
+          onClick={handleClear}
+          style={{
+            padding: "8px 16px",
+            fontSize: 14,
+            cursor: "pointer",
+          }}
         >
           Clear the field
         </button>
@@ -42,9 +57,33 @@ export default function Page() {
 
       <div style={{ marginTop: 20 }}>
         <strong>Value from state:</strong>
-        <pre data-testid="value" style={{ background: "#f5f5f5", padding: 12, borderRadius: 4, minHeight: 40 }}>
+        <pre
+          data-testid="value"
+          style={{
+            background: "#f5f5f5",
+            padding: 12,
+            borderRadius: 4,
+            minHeight: 40,
+          }}
+        >
           {JSON.stringify(value)}
         </pre>
+      </div>
+
+      <div style={{ marginTop: 20, color: "#666", fontSize: 14 }}>
+        <strong>Instructions:</strong>
+        <ol>
+          <li>Type any single character (e.g., "a")</li>
+          <li>Click "Clear the field" button</li>
+          <li>Type the same character again</li>
+          <li>
+            <strong>Expected:</strong> onChange fires, state updates to "a"
+          </li>
+          <li>
+            <strong>Bug (before fix):</strong> onChange doesn't fire, state stays empty
+          </li>
+        </ol>
+        <p>Check the browser console for onChange logs.</p>
       </div>
     </main>
   )

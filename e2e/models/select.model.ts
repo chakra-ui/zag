@@ -127,6 +127,8 @@ export class SelectModel extends Model {
       const select = document.querySelector<HTMLSelectElement>("[data-select-root] select[aria-hidden]")
       if (!select) throw new Error("Hidden select not found")
       select.value = value
+      // browsers fire input then change on autofill
+      select.dispatchEvent(new Event("input", { bubbles: true }))
       select.dispatchEvent(new Event("change", { bubbles: true }))
     }, value)
   }

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { ListboxModel } from "./models/listbox.model"
 
 let I: ListboxModel
@@ -26,6 +26,26 @@ test.describe("listbox", () => {
     await I.seeItemIsHighlighted("Andorra")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Zimbabwe")
+  })
+
+  test("[rtl] grid arrow keys should be mirrored", async () => {
+    await I.goto("/listbox/grid")
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Oleg Chursin")
+    await I.pressKey("ArrowLeft")
+    await I.seeItemIsHighlighted("Christopher Sardegna")
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsHighlighted("Oleg Chursin")
+  })
+
+  test("typeahead: lowercase a should move the highlight to matching item", async () => {
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Andorra")
+
+    await I.type("a")
+    await I.seeItemIsHighlighted("Afghanistan")
   })
 
   test("should scroll selected option into view", async () => {
@@ -174,5 +194,95 @@ test.describe("listbox", () => {
 
     await expect(page.getByTestId("selected-items")).toContainText("Solid")
     await expect(page.locator("[data-listbox-item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
+  })
+})
+
+test.describe("listbox / horizontal", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/horizontal")
+  })
+
+  test("arrow left/right move the highlight", async () => {
+    await I.list.focus()
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsHighlighted("Free parking")
+    await I.pressKey("ArrowLeft")
+    await I.seeItemIsHighlighted("Wi-Fi")
+  })
+
+  test("space toggles items without clearing others", async () => {
+    await I.list.focus()
+    await I.pressKey("ArrowRight", 2)
+    await I.pressKey(" ")
+    await I.seeSelectedValues(["wifi", "pool", "breakfast"])
+  })
+})
+
+test.describe("listbox / disabled item", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/disabled-item")
+  })
+
+  test("arrow keys skip the disabled item", async () => {
+    await I.list.focus()
+    await I.seeItemIsHighlighted("Standard")
+    await I.pressKey("ArrowDown", 3)
+    await I.seeItemIsHighlighted("Store pickup")
+  })
+
+  test("clicking the disabled item doesn't select it", async () => {
+    await I.getItem("Same day").click({ force: true })
+    await I.seeSelectedValues(["standard"])
+  })
+})
+
+test.describe("listbox / select all", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/select-all")
+  })
+
+  test("select all and clear", async ({ page }) => {
+    await page.getByRole("button", { name: "Select all" }).click()
+    await expect(page.getByTestId("value-text")).toHaveText("6 of 6 selected")
+    await page.getByRole("button", { name: "Clear" }).click()
+    await expect(page.getByTestId("value-text")).toHaveText("0 of 6 selected")
+    await I.seeSelectedValues([])
+  })
+})
+
+test.describe("listbox / selection follows focus", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/selection-follows-focus")
+  })
+
+  test("arrow keys select as they move", async ({ page }) => {
+    await I.list.focus()
+    await I.pressKey("ArrowRight")
+    await I.seeSelectedValues(["month"])
+    await expect(page.getByTestId("preview")).toHaveText("Showing the month view")
+    await I.pressKey("ArrowLeft", 2)
+    await I.seeSelectedValues(["day"])
+  })
+})
+
+test.describe("listbox / group", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/group")
+  })
+
+  test("arrow keys move across groups", async () => {
+    await I.list.focus()
+    await I.seeItemIsHighlighted("London")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("São Paulo")
+  })
+
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
   })
 })

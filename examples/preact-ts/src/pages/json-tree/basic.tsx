@@ -44,7 +44,6 @@ const ValueNode = (props: ValueNodeProps): React.ReactNode => {
       data-root={node.properties.root ? "" : undefined}
       data-type={node.properties.nodeType}
       data-kind={node.properties.kind}
-      suppressHydrationWarning
     >
       {node.children.map((child, index) => (
         <ValueNode key={index} node={child} />
@@ -66,7 +65,7 @@ function JsonTreeNode(props: JsonTreeNodeProps) {
     <>
       {node.children && node.children.length > 0 ? (
         <div>
-          <div aria-label={getAccessibleDescription(node)} suppressHydrationWarning data-key={node.keyPath.join(".")}>
+          <div aria-label={getAccessibleDescription(node)} data-key={node.keyPath.join(".")}>
             {key && <KeyNode node={node} />}
             <ValueNode node={jsonNodeToElement(node)} />
           </div>
@@ -79,7 +78,6 @@ function JsonTreeNode(props: JsonTreeNodeProps) {
       ) : (
         <div
           aria-label={getAccessibleDescription(node)}
-          suppressHydrationWarning
           data-line={line}
           data-key={node.keyPath.join(".")}
           style={{

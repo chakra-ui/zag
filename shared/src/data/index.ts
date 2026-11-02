@@ -4,6 +4,7 @@ import type { HandlePosition } from "@zag-js/image-cropper"
 import { countryList } from "./country-list"
 export { paginationData } from "./pagination"
 export { cascadeSelectData } from "./cascade-select"
+export { listboxData, type ListboxOption } from "./listbox"
 export * from "./scheduler"
 
 export const selectData = countryList.map((country) => ({

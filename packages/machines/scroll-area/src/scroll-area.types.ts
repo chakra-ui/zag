@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Orientation, Point, PropTypes, Size } from "@zag-js/types"
-import type { Timeout } from "./utils/timeout"
+import type { Timeout } from "@zag-js/dom-query"
 
 export type ScrollToEdge = "top" | "right" | "bottom" | "left"
 

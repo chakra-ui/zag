@@ -38,7 +38,7 @@ export class StepsModel extends Model {
   }
 
   get previousTrigger() {
-    return this.page.locator(part("steps", "prev-trigger"))
+    return this.page.locator(part("steps", "previous-trigger"))
   }
 
   get skipTrigger() {
@@ -67,6 +67,15 @@ export class StepsModel extends Model {
 
   async seeCurrentStep(value: string) {
     await expect(this.getTrigger(value)).toHaveAttribute("data-current", "")
+  }
+
+  async seeAriaCurrentStep(value: string) {
+    await expect(this.getTrigger(value)).toHaveAttribute("aria-current", "step")
+    await expect(this.locate("item", value)).not.toHaveAttribute("aria-current")
+  }
+
+  async dontSeeAriaCurrentStep(value: string) {
+    await expect(this.getTrigger(value)).not.toHaveAttribute("aria-current")
   }
 
   async seeStepState(value: string, state: "complete" | "skipped" | "incomplete") {

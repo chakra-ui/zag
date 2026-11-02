@@ -68,7 +68,7 @@ export default function Page() {
       <main className="scheduler">
         <label>
           Locale{" "}
-          <select data-testid="locale" value={locale} onChange={(e) => setLocale(e.target.value as LocaleKey)}>
+          <select data-testid="locale" value={locale} onChange={(e) => setLocale(e.currentTarget.value as LocaleKey)}>
             {Object.keys(LOCALES).map((key) => (
               <option key={key} value={key}>
                 {key}

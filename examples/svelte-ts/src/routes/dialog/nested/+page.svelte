@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"
@@ -35,7 +35,7 @@
             <p {...parentDialog.getDescriptionProps()}>
               Make changes to your profile here. Click save when you are done.
             </p>
-            <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1">
+            <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1" aria-label="Close">
               <XIcon />
             </button>
             <input type="text" bind:this={inputRef} placeholder="Enter name..." data-testid="input-1" />
@@ -49,7 +49,7 @@
                 <div data-testid="positioner-2" {...childDialog.getPositionerProps()}>
                   <div {...childDialog.getContentProps()}>
                     <h2 {...childDialog.getTitleProps()}>Nested</h2>
-                    <button {...childDialog.getCloseTriggerProps()} data-testid="close-2">
+                    <button {...childDialog.getCloseTriggerProps()} data-testid="close-2" aria-label="Close">
                       <XIcon />
                     </button>
                     <button onclick={() => parentDialog.setOpen(false)} data-testid="special-close"

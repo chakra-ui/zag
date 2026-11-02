@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, inject, onMounted } from "vue"
+import { computed, inject, onMounted, type ComputedRef } from "vue"
 
-const menubarContext = inject<menu.MenubarContext | undefined>("menubar", undefined)
-const service = useMachine(menu.machine, { id: "edit", menubar: menubarContext })
+const menubarContext = inject<ComputedRef<menu.MenubarContext> | undefined>("menubar", undefined)
+const service = useMachine(
+  menu.machine,
+  computed(() => ({ id: "edit", menubar: menubarContext?.value })),
+)
 const api = computed(() => menu.connect(service, normalizeProps))
 
 // The submenu is not a menubar menu (no `menubar` prop) — it's linked via setParent/setChild.

@@ -74,7 +74,7 @@ export default function Page() {
   return (
     <>
       <main className="number-flow">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className="nf-hero">
           {api.segments.map((segment) =>
             segment.kind === "digit" ? (
               <span key={segment.key} {...api.getDigitProps({ segment })}>
@@ -95,8 +95,12 @@ export default function Page() {
           <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
         </div>
 
-        <div className="number-flow__actions">
-          <select data-testid="preset" value={preset} onChange={(e) => changePreset(e.target.value as PresetKey)}>
+        <div className="hstack">
+          <select
+            data-testid="preset"
+            value={preset}
+            onChange={(e) => changePreset(e.currentTarget.value as PresetKey)}
+          >
             {Object.entries(PRESETS).map(([key, p]) => (
               <option key={key} value={key}>
                 {p.label}

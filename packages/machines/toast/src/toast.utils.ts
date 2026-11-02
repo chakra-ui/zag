@@ -1,7 +1,16 @@
 import type { Service } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
+import { toPx } from "@zag-js/utils"
 import type { Style } from "@zag-js/types"
-import type { Placement, ToastGroupService, ToastSchema, Type } from "./toast.types"
+import type {
+  Placement,
+  SwipeDirection,
+  ToastGroupSchema,
+  ToastGroupService,
+  ToastHeight,
+  ToastSchema,
+  Type,
+} from "./toast.types"
 
 export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
@@ -39,8 +48,8 @@ export function getGroupPlacementStyle(service: ToastGroupService, placement: Pl
     pointerEvents: computed("count") > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
-    "--gap": `${gap}px`,
-    "--first-height": `${heights[0]?.height || 0}px`,
+    "--gap": toPx(gap),
+    "--first-height": toPx(heights[0]?.height || 0),
     "--viewport-offset-left": computedOffset.left,
     "--viewport-offset-right": computedOffset.right,
     "--viewport-offset-top": computedOffset.top,
@@ -92,13 +101,18 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const frontmost = computed("frontmost")
   const sibling = !frontmost
 
-  const overlap = !prop("stacked")
-  const stacked = prop("stacked")
+  const stacked = prop("parent").state.matches("stack")
+  const overlap = !stacked
   const type = prop("type")
 
   const totalDuration = getToastDuration(prop("duration"), type)
   const duration = type === "loading" || !Number.isFinite(totalDuration) ? Number.MAX_SAFE_INTEGER : totalDuration
   const offset = computed("heightIndex") * gap + computed("heightBefore")
+
+  const swipeOffset = context.get("swipeOffset")
+  // Dismissed by a swipe: leave the way it was thrown instead of the default exit
+  const swipedOut = !visible ? context.get("swipeDirection") : null
+  const exiting = !visible && !swipedOut
 
   const styles: Style = {
     position: "absolute",
@@ -106,13 +120,15 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
     "--opacity": "0",
     "--remove-delay": `${prop("removeDelay")}ms`,
     "--duration": `${duration}ms`,
-    "--initial-height": `${height}px`,
-    "--offset": `${offset}px`,
+    "--initial-height": toPx(height),
+    "--offset": toPx(offset),
     "--index": prop("index"),
     "--z-index": computed("zIndex"),
     "--lift-amount": "calc(var(--lift) * var(--gap))",
     "--y": "100%",
-    "--x": "0",
+    "--x": "0px",
+    "--swipe-x": toPx(swipeOffset.x),
+    "--swipe-y": toPx(swipeOffset.y),
   }
 
   const assign = (overrides: Style) => Object.assign(styles, overrides)
@@ -165,26 +181,39 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
       "--height": "var(--first-height)",
     })
 
-    if (!visible) {
+    if (exiting) {
       assign({
         "--y": "calc(var(--sign) * 40%)",
       })
     }
   }
 
-  if (sibling && stacked && !visible) {
+  if (sibling && stacked && exiting) {
     assign({
       "--y": "calc(var(--lift) * var(--offset) + var(--lift) * -100%)",
     })
   }
 
-  if (frontmost && !visible) {
+  if (frontmost && exiting) {
     assign({
       "--y": "calc(var(--lift) * -100%)",
     })
   }
 
+  const [throwX, throwY] = swipedOut ? swipeThrow[swipedOut] : ["0px", "0px"]
+  assign({
+    "--x": `calc(${styles["--x"]} + var(--swipe-x) + ${throwX})`,
+    "--y": `calc(${styles["--y"]} + var(--swipe-y) + ${throwY})`,
+  })
+
   return styles
+}
+
+const swipeThrow: Record<SwipeDirection, [string, string]> = {
+  up: ["0px", "-100%"],
+  down: ["0px", "100%"],
+  left: ["-100%", "0px"],
+  right: ["100%", "0px"],
 }
 
 export function getGhostBeforeStyle(service: Service<ToastSchema>, visible: boolean): Style {
@@ -215,4 +244,25 @@ export function getGhostAfterStyle(): Style {
     bottom: "100%",
     width: "100%",
   }
+}
+
+export function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) {
+  const { id, height } = item
+  parent.context.set("heights", (prev) => {
+    const existing = prev.find((i) => i.id === id)
+    if (existing) {
+      if (existing.height === height) return prev
+      return prev.map((i) => (i.id === id ? { ...i, height } : i))
+    }
+    // Toasts mounted in the same flush measure in any order, so insert by `toasts` position
+    const toasts = parent.context.get("toasts")
+    const rank = (id: string) => toasts.findIndex((t) => t.id === id)
+    const index = rank(id)
+    let insertAt = prev.findIndex((i) => {
+      const r = rank(i.id)
+      return r === -1 || r > index
+    })
+    if (insertAt === -1) insertAt = prev.length
+    return [...prev.slice(0, insertAt), { id, height }, ...prev.slice(insertAt)]
+  })
 }

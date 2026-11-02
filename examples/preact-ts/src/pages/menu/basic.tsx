@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/menu.css"
 
 export default function Page() {
   const controls = useControls(menuControls)

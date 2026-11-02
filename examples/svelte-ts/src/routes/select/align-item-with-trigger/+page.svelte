@@ -1,6 +1,6 @@
 <script lang="ts">
-  import SelectAligned from "$lib/components/select-aligned.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import SelectAligned from "#lib/components/select-aligned.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/select.css"
 
   const items = [

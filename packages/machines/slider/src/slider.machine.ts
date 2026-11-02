@@ -1,5 +1,11 @@
 import { createMachine, memo } from "@zag-js/core"
-import { raf, resizeObserverBorderBox, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  resizeObserverBorderBox,
+  setElementValue,
+  trackFormControl,
+  trackPointerMove,
+} from "@zag-js/dom-query"
 import {
   callAll,
   clampValue,
@@ -98,6 +104,7 @@ export const machine = createMachine<SliderSchema>({
     return {
       thumbDragOffset: null,
       startValue: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -127,6 +134,8 @@ export const machine = createMachine<SliderSchema>({
   },
 
   effects: ["trackFormControlState", "trackThumbSize"],
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     SET_VALUE: [
@@ -289,12 +298,12 @@ export const machine = createMachine<SliderSchema>({
         const pointValue = dom.getPointValue(params, event.point)
         if (pointValue == null) return
 
-        const focusedIndex = getClosestIndex(params, pointValue)
+        const focusedIndex = getClosestIndex(params, pointValue, dom.getDisabledThumbIndices(params.scope))
         context.set("focusedIndex", focusedIndex)
       },
       setFocusedIndex(params) {
         const { context, event } = params
-        const movableIndex = selectMovableThumb(params, event.index)
+        const movableIndex = selectMovableThumb(params, event.index, dom.getDisabledThumbIndices(params.scope))
         context.set("focusedIndex", movableIndex)
       },
       clearFocusedIndex({ context }) {
@@ -311,6 +320,7 @@ export const machine = createMachine<SliderSchema>({
           if (pointValue == null) return
 
           const focusedIndex = context.get("focusedIndex")
+          if (focusedIndex < 0) return
           const startValues = refs.get("startValue")
 
           const result = resolveThumbCollision(
@@ -323,6 +333,7 @@ export const machine = createMachine<SliderSchema>({
             prop("step"),
             prop("minStepsBetweenThumbs"),
             startValues?.[focusedIndex],
+            dom.getDisabledThumbIndices(params.scope),
           )
 
           if (result.swapped) {
@@ -332,11 +343,14 @@ export const machine = createMachine<SliderSchema>({
           context.set("value", result.values)
         })
       },
-      focusActiveThumb({ scope, context }) {
-        raf(() => {
+      focusActiveThumb({ scope, context, refs }) {
+        refs.get("focusFrame").request(() => {
           const thumbEl = dom.getThumbEl(scope, context.get("focusedIndex"))
           thumbEl?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       decrementThumbAtIndex(params) {
         const { context, event, prop } = params

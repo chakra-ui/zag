@@ -7,8 +7,9 @@ import { Toolbar } from "../../components/toolbar"
 import styles from "@styles/drawer.module.css"
 
 export default function Page() {
+  const id = createUniqueId()
   const service = useMachine(drawer.machine, () => ({
-    id: createUniqueId(),
+    id,
   }))
 
   const api = createMemo(() => drawer.connect(service, normalizeProps))

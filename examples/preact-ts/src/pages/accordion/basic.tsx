@@ -5,8 +5,8 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
-import "@styles/accordion.css"
 import { ArrowRight } from "lucide-preact"
+import "@styles/accordion.css"
 
 export default function Page() {
   const controls = useControls(accordionControls)
@@ -24,7 +24,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>
-              <h3>
+              <h3 {...api.getItemHeaderProps({ value: item.id })}>
                 <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
                   <div {...api.getItemIndicatorProps({ value: item.id })}>
@@ -33,8 +33,10 @@ export default function Page() {
                 </button>
               </h3>
               <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
+                <div className="accordion-item-body">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua.
+                </div>
               </div>
             </div>
           ))}

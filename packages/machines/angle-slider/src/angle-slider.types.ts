@@ -1,5 +1,6 @@
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -93,6 +94,7 @@ export interface AngleSliderSchema {
   }
   refs: {
     thumbDragOffset: number | null
+    focusFrame: AnimationFrame
   }
   action: string
   event: EventObject
@@ -169,7 +171,7 @@ export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
-  getHiddenInputProps: () => T["element"]
+  getHiddenInputProps: () => T["input"]
   getControlProps: () => T["element"]
   getThumbProps: () => T["element"]
   getValueTextProps: () => T["element"]

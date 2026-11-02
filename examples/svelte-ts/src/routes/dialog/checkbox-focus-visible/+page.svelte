@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Checkbox from "$lib/components/dialog-focus-checkbox.svelte"
-  import RadioGroup from "$lib/components/dialog-focus-radio-group.svelte"
-  import Switch from "$lib/components/dialog-focus-switch.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Checkbox from "#lib/components/dialog-focus-checkbox.svelte"
+  import RadioGroup from "#lib/components/dialog-focus-radio-group.svelte"
+  import Switch from "#lib/components/dialog-focus-switch.svelte"
   import * as dialog from "@zag-js/dialog"
   import * as popover from "@zag-js/popover"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

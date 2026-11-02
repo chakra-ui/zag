@@ -16,8 +16,7 @@ function updateWaiting() {
 }
 
 function dismissOldest() {
-  const visible = toaster.getVisibleToasts()
-  const oldest = visible[visible.length - 1]
+  const oldest = toaster.getVisibleToasts().at(-1)
   if (oldest?.id) toaster.dismiss(oldest.id)
 }
 

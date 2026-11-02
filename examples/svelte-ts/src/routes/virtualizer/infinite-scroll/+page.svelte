@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { mergeProps, normalizeProps } from "@zag-js/svelte"
 
   const TOTAL_ITEMS = 1000

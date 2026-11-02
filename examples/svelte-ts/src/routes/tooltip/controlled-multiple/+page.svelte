@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TooltipDemo from "$lib/components/tooltip-controlled-item.svelte"
+  import TooltipDemo from "#lib/components/tooltip-controlled-item.svelte"
   import "@styles/tooltip.css"
 </script>
 

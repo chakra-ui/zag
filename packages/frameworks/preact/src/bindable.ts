@@ -1,14 +1,12 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isEqual, isFunction } from "@zag-js/utils"
-import { flushSync } from "preact/compat"
+import { identity, isFunction } from "@zag-js/utils"
 import { useLayoutEffect, useRef, useState } from "preact/hooks"
-
-const identity = (v: VoidFunction) => v()
+import { flushSync } from "./flush-sync"
 
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
 
-  const eq = props().isEqual ?? isEqual
+  const eq = props().isEqual ?? Object.is
 
   const [initialValue] = useState(initial)
   const [value, setValue] = useState(initialValue)
@@ -31,14 +29,18 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled) setValue(next)
+    if (!controlled) {
+      // Reads before the next render (e.g. several events in one task) see the new value
+      valueRef.current = next
+      setValue(next)
+    }
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }
   }
 
   function get(): T {
-    return (controlled ? props().value : value) as T
+    return valueRef.current as T
   }
 
   return {

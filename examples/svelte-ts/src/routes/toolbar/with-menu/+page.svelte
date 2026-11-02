@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import ControlsPanel from "$lib/components/toolbar.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import ControlsPanel from "#lib/components/toolbar.svelte"
   import * as menu from "@zag-js/menu"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toolbar from "@zag-js/toolbar"

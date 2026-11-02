@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ScrollArea from "$lib/components/scroll-area.svelte"
+  import ScrollArea from "#lib/components/scroll-area.svelte"
   import "@styles/scroll-area.css"
 </script>
 

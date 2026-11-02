@@ -39,7 +39,7 @@ export function ToastItem(props: ToastItemProps) {
           </span>
         )}
       </Show>
-      <div data-scope="toast" data-part="content">
+      <div {...api().getContentProps()}>
         <Show when={api().title}>
           <div {...api().getTitleProps()}>{api().title}</div>
         </Show>

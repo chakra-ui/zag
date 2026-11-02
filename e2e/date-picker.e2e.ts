@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { DatePickerModel } from "./models/datepicker.model"
 
 let I: DatePickerModel
@@ -38,6 +38,15 @@ test.describe("datepicker [single]", () => {
     await I.clickTodayCell()
     await I.dontSeeContent()
     await I.seeInputIsFocused()
+  })
+
+  test("selecting a date with Space key", async () => {
+    const day = currentDate.getDate().toString().padStart(2, "0")
+    await I.clickTrigger()
+    await I.seeTodayCellIsFocused()
+    await I.pressKey("Space")
+    await I.dontSeeContent()
+    await I.seeInputHasValue(`${month}/${day}/${year}`)
   })
 
   test("navigates to next day on ArrowRight key press", async () => {
@@ -507,5 +516,19 @@ test.describe("datepicker [multiple month + maxSelectedDates]", () => {
     await I.getMonthCell("Mar").click()
     await expect(I.getMonthCell("Mar")).not.toHaveAttribute("data-selected", "")
     await expect(I.getMonthCell("Jan")).toHaveAttribute("data-selected", "")
+  })
+})
+
+test.describe("date-picker / focus moved on value change", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker/focus-next-field")
+  })
+
+  test("should keep focus where onValueChange moved it", async () => {
+    await I.clickTrigger()
+    await I.clickDayCell(11)
+    await I.waitForFrames()
+    await I.seeElementIsFocused("next-field")
   })
 })

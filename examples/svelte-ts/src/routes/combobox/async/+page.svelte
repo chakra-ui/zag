@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Output from "$lib/components/output.svelte"
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
+  import Output from "#lib/components/output.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
   import * as asyncList from "@zag-js/async-list"
   import * as combobox from "@zag-js/combobox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
@@ -44,6 +44,7 @@
     id,
     collection,
     placeholder: "Search people…",
+    loading: list.isLoading && !list.isLoadingMore,
     // Wrapping to the top would skip the next page
     loopFocus: false,
     onInputValueChange({ inputValue, reason }) {
@@ -106,7 +107,7 @@
     </div>
 
     <div {...api.getPositionerProps()}>
-      <div data-testid="combobox-content" {...api.getContentProps()} aria-busy={list.isLoading || undefined}>
+      <div data-testid="combobox-content" {...api.getContentProps()}>
         <div {...api.getEmptyProps()}>
           {#if list.error}
             <span class="combobox-status" data-type="error">

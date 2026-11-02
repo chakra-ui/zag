@@ -81,8 +81,13 @@
   .Indicator {
     background: var(--colors-accent);
     border-radius: 2px;
-    --transition-duration: 200ms;
-    --transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+    transition-property: left, top, width, height;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+    &[data-instant] {
+      transition: none;
+    }
 
     &[data-orientation="horizontal"] {
       bottom: -1px;
@@ -111,7 +116,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .Indicator {
-      --transition-duration: 0ms;
+      transition: none;
     }
   }
 }

@@ -31,12 +31,12 @@
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@testing-library/preact": "^3.2.4",
+    "@testing-library/preact": "^3.2.6",
     "clean-package": "2.2.0",
-    "preact": "10.29.8"
+    "preact": "11.1.1"
   },
   "peerDependencies": {
-    "preact": ">=10.0.0"
+    "preact": ">=11.0.0"
   },
   "scripts": {
     "build": "tsup",

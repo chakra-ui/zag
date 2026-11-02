@@ -33,7 +33,7 @@ export function ToastItem(props: ToastItemProps) {
           <Icon />
         </span>
       )}
-      <div data-scope="toast" data-part="content">
+      <div {...api.getContentProps()}>
         {api.title && <div {...api.getTitleProps()}>{api.title}</div>}
         {api.description && <div {...api.getDescriptionProps()}>{api.description}</div>}
       </div>

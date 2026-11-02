@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SliderOrigin from "$lib/components/slider-origin.svelte"
+  import SliderOrigin from "#lib/components/slider-origin.svelte"
   import "@styles/slider.css"
 </script>
 

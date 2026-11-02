@@ -13,7 +13,10 @@ interface ThumbCollisionContext {
   min: number
   max: number
   gap: number
+  disabled: ReadonlySet<number>
 }
+
+const NO_DISABLED: ReadonlySet<number> = new Set()
 
 interface ThumbCollisionResult {
   values: number[]
@@ -43,13 +46,34 @@ function handleNone(ctx: ThumbCollisionContext): ThumbCollisionResult {
   return { values: nextValues, index, swapped: false }
 }
 
+// the nearest disabled thumbs on each side never move, so the dragged thumb (and any it pushes) stops before them
+function getDisabledBounds(ctx: ThumbCollisionContext) {
+  const { index, values, gap, disabled } = ctx
+  let lower = -Infinity
+  let upper = Infinity
+  for (let i = index - 1; i >= 0; i--) {
+    if (disabled.has(i)) {
+      lower = values[i] + (index - i) * gap
+      break
+    }
+  }
+  for (let i = index + 1; i < values.length; i++) {
+    if (disabled.has(i)) {
+      upper = values[i] - (i - index) * gap
+      break
+    }
+  }
+  return { lower, upper }
+}
+
 function handlePush(ctx: ThumbCollisionContext): ThumbCollisionResult {
   const { index, value, values, min, max, gap } = ctx
   const nextValues = values.slice()
 
   // clamp the dragged thumb within absolute bounds (accounting for other thumbs' space)
-  const absoluteMin = min + index * gap
-  const absoluteMax = max - (values.length - 1 - index) * gap
+  const walls = getDisabledBounds(ctx)
+  const absoluteMin = Math.max(min + index * gap, walls.lower)
+  const absoluteMax = Math.min(max - (values.length - 1 - index) * gap, walls.upper)
   nextValues[index] = round(clampValue(value, absoluteMin, absoluteMax))
 
   // push thumbs to the right if they overlap
@@ -88,6 +112,7 @@ function handleSwap(ctx: ThumbCollisionContext, startValue: number): ThumbCollis
 
   // determine which thumb we're swapping with
   const swapIndex = crossingNext ? index + 1 : index - 1
+  if (ctx.disabled.has(swapIndex)) return handleNone(ctx)
   const nextValues = values.slice()
 
   // the dragged thumb takes the neighbor's position (clamped)
@@ -118,6 +143,7 @@ export function resolveThumbCollision(
   step: number,
   minStepsBetweenThumbs: number,
   startValue?: number,
+  disabled: ReadonlySet<number> = NO_DISABLED,
 ): ThumbCollisionResult {
   // single thumb - no collision possible
   if (values.length === 1) {
@@ -125,7 +151,7 @@ export function resolveThumbCollision(
   }
 
   const gap = step * minStepsBetweenThumbs
-  const ctx: ThumbCollisionContext = { behavior, index, value, values, min, max, gap }
+  const ctx: ThumbCollisionContext = { behavior, index, value, values, min, max, gap, disabled }
 
   switch (behavior) {
     case "push":
@@ -164,14 +190,19 @@ export function stepThumb(params: Pick<Ctx, "context" | "prop">, delta: number, 
   return setValueAtIndex(values, idx, constrainValue(params, values[idx] + delta, idx))
 }
 
-export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValue: number) {
+export function getClosestIndex(
+  params: Pick<Ctx, "context" | "prop">,
+  pointValue: number,
+  disabled: ReadonlySet<number> = NO_DISABLED,
+) {
   const { context } = params
   const values = context.get("value")
 
-  let closestIndex = 0
-  let minDistance = Math.abs(values[0] - pointValue)
+  let closestIndex = -1
+  let minDistance = Infinity
 
-  for (let i = 1; i < values.length; i++) {
+  for (let i = 0; i < values.length; i++) {
+    if (disabled.has(i)) continue
     const distance = Math.abs(values[i] - pointValue)
     // use <= to prefer later thumbs when distances are equal
     if (distance <= minDistance) {
@@ -180,19 +211,23 @@ export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValu
     }
   }
 
-  return selectMovableThumb(params, closestIndex)
+  return closestIndex === -1 ? -1 : selectMovableThumb(params, closestIndex, disabled)
 }
 
-export function selectMovableThumb(params: Pick<Ctx, "context" | "prop">, index: number) {
+export function selectMovableThumb(
+  params: Pick<Ctx, "context" | "prop">,
+  index: number,
+  disabled: ReadonlySet<number> = NO_DISABLED,
+) {
   const { context, prop } = params
   const values = context.get("value")
   const max = prop("max")
   const thumbValue = values[index]
 
-  // when multiple thumbs are stacked at max, select the first thumb (only one that can move)
+  // when multiple thumbs are stacked at max, select the first enabled thumb (only one that can move)
   if (thumbValue === max) {
     let movableIndex = index
-    while (movableIndex > 0 && values[movableIndex - 1] === max) {
+    while (movableIndex > 0 && values[movableIndex - 1] === max && !disabled.has(movableIndex - 1)) {
       movableIndex -= 1
     }
     return movableIndex

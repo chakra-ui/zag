@@ -55,7 +55,7 @@ export default function Page() {
                 aria-label="Filter countries"
                 placeholder="Filter…"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.currentTarget.value)}
               />
 
               <div {...api.getListProps()}>

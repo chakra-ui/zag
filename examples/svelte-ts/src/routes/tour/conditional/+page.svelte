@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"
   import { XIcon } from "lucide-svelte"

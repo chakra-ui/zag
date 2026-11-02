@@ -64,7 +64,6 @@ describe("toast store updates", () => {
     const updater = vi.fn((prev: Partial<ToastProps<string>>) => {
       expect(prev).toEqual(original)
       expect(prev.duration).toBe(5000)
-      expect(prev.stacked).toBe(false)
       return {}
     })
 
@@ -1128,5 +1127,38 @@ describe("toast store priority", () => {
     store.remove(visibleId)
 
     expect(store.getVisibleToasts()[0]).toMatchObject({ id: queuedId, priority: 6 })
+  })
+})
+
+describe("toast store layout", () => {
+  test("does not store the layout on toasts", () => {
+    const store = createToastStore({ overlap: true })
+    store.create({ id: "first" })
+    expect(store.getVisibleToasts()[0]).not.toHaveProperty("stacked")
+  })
+
+  test("expand and collapse notify layout subscribers", () => {
+    const store = createToastStore({ overlap: true })
+    const subscriber = vi.fn()
+    const unsubscribe = store.subscribeLayout(subscriber)
+
+    store.expand()
+    store.collapse()
+    expect(subscriber.mock.calls).toEqual([[true], [false]])
+
+    unsubscribe()
+    store.expand()
+    expect(subscriber).toHaveBeenCalledTimes(2)
+  })
+
+  test("expand and collapse do not republish toasts", () => {
+    const store = createToastStore({ overlap: true })
+    store.create({ id: "first" })
+    const subscriber = vi.fn()
+    store.subscribe(subscriber)
+
+    store.expand()
+    store.collapse()
+    expect(subscriber).not.toHaveBeenCalled()
   })
 })

@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { CalendarDateTime } from "@internationalized/date"
 
@@ -420,6 +421,7 @@ export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> 
     dragOrigin: { x: number; y: number } | null
     dragStartSnapshot: { start: CalendarDateTime; end: CalendarDateTime } | null
     slotAnchor: CalendarDateTime | null
+    focusFrame: AnimationFrame
   }
   computed: Computed
   event: EventObject

@@ -3,6 +3,8 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import { CheckSquare, ChevronRightIcon, MinusSquare, Square, XIcon } from "lucide-preact"
 import { JSX, useId, useRef, useState } from "react"
+import "@styles/dialog.css"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -93,32 +95,33 @@ function TreeNodeCheckbox(props: TreeNodeProps) {
 
 const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const { node, indexPath, api } = props
+
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
           <TreeNodeCheckbox {...props} />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getNodeCellProps(nodeProps)}>
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+        </div>
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <TreeNodeCheckbox {...props} /> {node.name}
+      )}
     </div>
   )
 }
@@ -219,7 +222,7 @@ export default function Page() {
                 <h2 {...dialogApi.getTitleProps()} style={{ margin: 0 }}>
                   Categories
                 </h2>
-                <button {...dialogApi.getCloseTriggerProps()} aria-label="Close">
+                <button {...dialogApi.getCloseTriggerProps()}>
                   <XIcon />
                 </button>
               </header>
@@ -228,7 +231,7 @@ export default function Page() {
                 ref={searchRef}
                 type="text"
                 placeholder="Search categories"
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.currentTarget.value)}
                 style={{ padding: "8px 12px" }}
               />
 

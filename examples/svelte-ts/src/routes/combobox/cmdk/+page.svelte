@@ -1,52 +1,45 @@
 <script lang="ts">
-  import ComboboxCommandMenu from "$lib/components/combobox-command-menu.svelte"
-  import Portal from "$lib/components/portal.svelte"
-  import * as combobox from "@zag-js/combobox"
+  import ComboboxCommandMenu from "#lib/components/combobox-command-menu.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import { PageListCollection } from "@zag-js/collection"
   import * as dialog from "@zag-js/dialog"
   import { createHotkeyStore } from "@zag-js/hotkeys"
-  import { createFilter } from "@zag-js/i18n-utils"
   import { commandData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/cmdk.css"
 
-  const { allItems, commands, applications, suggestions } = commandData
-  const { contains } = createFilter({ sensitivity: "base" })
+  type Item = commandData.PageItem
 
-  function filter(value: string): Record<string, commandData.Command[]> {
-    if (!value) {
-      return {
-        Suggestions: suggestions,
-        Commands: commands.filter((item) => !suggestions.includes(item)),
-        Apps: applications.filter((item) => !suggestions.includes(item)),
-      }
-    }
+  const createCollection = () =>
+    new PageListCollection<Item>({
+      items: commandData.pageItems,
+      itemToValue: (item) => item.value,
+      itemToString: (item) => item.label,
+      groupBy: (item) => item.group,
+    })
 
-    const results = allItems.filter((item) => contains(item.name, value) || contains(item.title, value))
-
-    if (!results.length) return {}
-
-    return { Results: results }
-  }
-
-  let inputValue = $state("")
   let selectedAction = $state<string | null>(null)
+  // raw: the collection is immutable and replaced on every change
+  let pages = $state.raw(createCollection())
+  let query = $state("")
 
-  const matches = $derived(filter(inputValue))
-  const flatMatches = $derived(Object.values(matches).flat())
-
-  const collection = $derived(
-    combobox.collection({
-      items: flatMatches,
-      itemToValue: (item) => item.name,
-      itemToString: (item) => item.title,
-    }),
-  )
+  const navigate = (next: PageListCollection<Item>, nextQuery: string) => {
+    pages = next
+    query = nextQuery
+  }
 
   const id = $props.id()
   const service = useMachine(dialog.machine, {
     id,
+    onEscapeKeyDown(event) {
+      // Escape goes back a page before it closes the dialog
+      if (!pages.canGoBack) return
+      event.preventDefault()
+      const next = pages.back(query)
+      navigate(next, next.restore.query)
+    },
     onOpenChange({ open }) {
-      if (!open) inputValue = ""
+      if (!open) navigate(pages.reset(), "")
     },
   })
   const dialogApi = $derived(dialog.connect(service, normalizeProps))
@@ -76,14 +69,13 @@
       <div {...dialogApi.getPositionerProps()}>
         <div {...dialogApi.getContentProps()}>
           <ComboboxCommandMenu
-            {matches}
-            {collection}
-            onValueChange={({ items }) => {
-              selectedAction = JSON.stringify(items[0].title)
+            {pages}
+            {query}
+            onNavigate={navigate}
+            onQueryChange={(value) => (query = value)}
+            onAction={(item) => {
+              selectedAction = item.label
               dialogApi.setOpen(false)
-            }}
-            onInputValueChange={(details) => {
-              inputValue = details.inputValue
             }}
           />
         </div>

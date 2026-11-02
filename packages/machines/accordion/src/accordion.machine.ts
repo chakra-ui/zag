@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, getEventTarget, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getEventTarget, raf } from "@zag-js/dom-query"
 import { add, remove, warn } from "@zag-js/utils"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
@@ -20,6 +20,12 @@ export const machine = createMachine<AccordionSchema>({
 
   initialState() {
     return "idle"
+  },
+
+  refs() {
+    return {
+      syncFrame: AnimationFrame.create(),
+    }
   },
 
   context({ prop, bindable }) {
@@ -49,6 +55,8 @@ export const machine = createMachine<AccordionSchema>({
   },
 
   effects: ["trackBeforeMatch"],
+
+  exit: ["cancelSyncFrame"],
 
   on: {
     "VALUE.SET": {
@@ -160,9 +168,12 @@ export const machine = createMachine<AccordionSchema>({
       setValue({ context, event }) {
         context.set("value", event.value)
       },
-      syncHiddenUntilFound({ scope, prop }) {
+      syncHiddenUntilFound({ scope, prop, refs }) {
         if (!prop("hiddenUntilFound")) return
-        raf(() => dom.syncHiddenUntilFound(scope))
+        refs.get("syncFrame").request(() => dom.syncHiddenUntilFound(scope))
+      },
+      cancelSyncFrame({ refs }) {
+        refs.get("syncFrame").cancel()
       },
       coarseValue({ context, prop }) {
         if (!prop("multiple") && context.get("value").length > 1) {

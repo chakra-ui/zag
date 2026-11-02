@@ -56,7 +56,17 @@ export class VanillaMachine<T extends MachineSchema> {
   private cleanups: VoidFunction[] = []
   private subscriptions: Array<(service: Service<T>) => void> = []
 
-  private userPropsRef: { current: InputProps<T> | (() => InputProps<T>) }
+  private userProps: InputProps<T> | undefined
+  private userPropsSources: Array<InputProps<T> | (() => InputProps<T>)> = []
+
+  private getUserProps = (): InputProps<T> => {
+    let props = this.userProps
+    for (const source of this.userPropsSources) {
+      const next = runIfFn(source) as InputProps<T>
+      props = props ? (mergeMachineProps(props as any, next as any) as InputProps<T>) : next
+    }
+    return props!
+  }
 
   private getEvent = () => ({
     ...this.event,
@@ -83,7 +93,8 @@ export class VanillaMachine<T extends MachineSchema> {
     private machine: Machine<T>,
     userProps: InputProps<T> | (() => InputProps<T>) = {} as InputProps<T>,
   ) {
-    this.userPropsRef = { current: userProps }
+    if (isFunction(userProps)) this.userPropsSources.push(userProps)
+    else this.userProps = userProps
 
     // create scope
     const { id, ids, getRootNode } = runIfFn(userProps) as any
@@ -91,7 +102,7 @@ export class VanillaMachine<T extends MachineSchema> {
 
     // create prop
     const prop: PropFn<T> = (key) => {
-      const __props = runIfFn(this.userPropsRef.current)
+      const __props = this.getUserProps()
       const props: any = machine.props?.({ props: compact(__props as any), scope: this.scope }) ?? __props
       return props[key] as any
     }
@@ -194,12 +205,20 @@ export class VanillaMachine<T extends MachineSchema> {
   }
 
   updateProps(newProps: InputProps<T> | (() => InputProps<T>)) {
-    const prevSource = this.userPropsRef.current
-
-    this.userPropsRef.current = () => {
-      const prev = runIfFn(prevSource)
-      const next = runIfFn(newProps)
-      return mergeMachineProps(prev as any, next as any) as InputProps<T>
+    const sources = this.userPropsSources
+    if (isFunction(newProps)) {
+      sources.push(newProps)
+    } else if (sources.length === 0) {
+      this.userProps = mergeMachineProps(this.userProps as any, newProps as any) as InputProps<T>
+    } else {
+      const lastIndex = sources.length - 1
+      const previous = sources[lastIndex]
+      if (isFunction(previous)) {
+        const patch = mergeMachineProps({} as any, newProps as any) as InputProps<T>
+        if (patch && Object.keys(patch).length > 0) sources.push(patch)
+      } else {
+        sources[lastIndex] = mergeMachineProps(previous as any, newProps as any) as InputProps<T>
+      }
     }
 
     this.notify()

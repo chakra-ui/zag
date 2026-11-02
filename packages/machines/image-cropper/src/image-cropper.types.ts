@@ -498,7 +498,7 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    * Returns the state of the image
    */
   getImageState: () => ImageState
-  getImageProps: () => T["element"]
+  getImageProps: () => T["img"]
   /**
    * Returns the state of the selection
    */

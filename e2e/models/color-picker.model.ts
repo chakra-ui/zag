@@ -9,8 +9,8 @@ export class ColorPickerModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto("/color-picker/basic")
+  goto(url = "/color-picker/basic") {
+    return this.page.goto(url)
   }
 
   gotoInline() {
@@ -119,6 +119,10 @@ export class ColorPickerModel extends Model {
 
   clickFirstSwatch() {
     return this.swatchTriggers.first().click()
+  }
+
+  clickSwatch(index: number) {
+    return this.swatchTriggers.nth(index).click()
   }
 
   clickResetButton() {

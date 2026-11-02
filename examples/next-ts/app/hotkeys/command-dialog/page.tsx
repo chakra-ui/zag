@@ -109,7 +109,7 @@ export default function CommandDialogPage() {
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.currentTarget.value)}
               placeholder="Type a command..."
               style={inputStyle}
             />

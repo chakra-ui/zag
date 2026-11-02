@@ -9,6 +9,7 @@ import type {
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
@@ -43,6 +44,8 @@ export interface FormatDateDetails {
 export type SelectionMode = "single" | "range"
 
 export type HourCycle = 12 | 24
+
+export type MaxGranularity = "year" | "month" | DateGranularity
 
 export interface IntlTranslations {
   placeholder?: ((locale: string) => Record<EditableSegmentType, string>) | undefined
@@ -175,6 +178,13 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   granularity?: DateGranularity | undefined
   /**
+   * Determines the largest unit that is displayed in the date input.
+   * To create a time-only input, set this to `"hour"` and set `granularity`
+   * to `"hour"`, `"minute"`, or `"second"`.
+   * @default "year"
+   */
+  maxGranularity?: MaxGranularity | undefined
+  /**
    * Whether to always show leading zeros in month, day, and hour fields.
    * When false, formatting follows the locale default (e.g. "1" instead of "01").
    * @default false
@@ -199,6 +209,7 @@ type PropsWithDefault =
   | "locale"
   | "timeZone"
   | "granularity"
+  | "maxGranularity"
   | "shouldForceLeadingZeros"
   | "formatter"
   | "allSegments"
@@ -256,6 +267,7 @@ type Refs = {
   announcer: LiveRegion | null
   /** Segment index to announce (for SEGMENT.INPUT with auto-advance). Set before advance, used after. */
   segmentToAnnounceIndex: number | null
+  focusSegmentFrame: AnimationFrame
 }
 
 export interface DateInputSchema {

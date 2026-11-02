@@ -2,7 +2,7 @@
   import * as drawer from "@zag-js/drawer"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import styles from "@styles/drawer.module.css"
 
   const id = $props.id()

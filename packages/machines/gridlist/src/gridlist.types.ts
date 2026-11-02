@@ -1,6 +1,6 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { TypeaheadState } from "@zag-js/dom-query"
+import type { AnimationFrame, TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -220,6 +220,7 @@ export interface GridListSchema<T extends CollectionItem = CollectionItem> {
   refs: {
     typeahead: TypeaheadState
     focusVisible: boolean
+    focusFrame: AnimationFrame
   }
   action: string
   guard: string

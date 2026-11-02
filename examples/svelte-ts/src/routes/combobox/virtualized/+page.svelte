@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as combobox from "@zag-js/combobox"
   import { createFilter } from "@zag-js/i18n-utils"
   import { comboboxData } from "@zag-js/shared"

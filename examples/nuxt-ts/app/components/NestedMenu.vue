@@ -13,10 +13,16 @@ const MenuServiceKey: InjectionKey<menu.Service> = Symbol("MenuService") as any
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, onMounted, useId, provide, inject } from "vue"
 
+const props = defineProps<{ positioning?: menu.PositioningOptions }>()
+
 const parentApi = inject(MenuApiKey, undefined)
 const parentService = inject(MenuServiceKey, undefined)
 
-const service = useMachine(menu.machine, { id: useId() })
+const id = useId()
+const service = useMachine(
+  menu.machine,
+  computed(() => ({ id, positioning: props.positioning })),
+)
 const api = computed(() => menu.connect(service, normalizeProps))
 
 onMounted(() => {

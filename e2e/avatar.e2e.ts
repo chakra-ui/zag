@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { a11y } from "./_utils"
 
 test.describe("avatar", () => {

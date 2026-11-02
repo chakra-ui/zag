@@ -88,7 +88,7 @@ export default function Page() {
         <div
           ref={ref}
           onScroll={(e) => {
-            scrollOffsetRef.current = (e.target as HTMLDivElement).scrollTop
+            scrollOffsetRef.current = e.currentTarget.scrollTop
             virtualizer.handleScroll(e)
           }}
           tabIndex={0}

@@ -6,6 +6,7 @@ import { JSX, useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -74,41 +75,36 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
-          <FolderIcon />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          <span {...api.getNodeTextProps(nodeProps)}>
+            {node.href ? (
+              <a href={node.href}>
+                {node.name}
+                {node.href.startsWith("http") && <ExternalLinkIcon size={12} />}
+              </a>
+            ) : (
+              node.name
+            )}
           </span>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  // Render as link if node has href
-  if (node.href) {
-    return (
-      <a href={node.href} {...api.getItemProps(nodeProps)}>
-        <FileIcon />
-        <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
-        {node.href.startsWith("http") && <ExternalLinkIcon size={12} />}
-      </a>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <FileIcon />
-      <span {...api.getItemTextProps(nodeProps)}>{node.name}</span>
+      )}
     </div>
   )
 }

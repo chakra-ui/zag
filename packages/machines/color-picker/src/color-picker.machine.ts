@@ -2,10 +2,11 @@ import { parseColor, type Color } from "@zag-js/color-utils"
 import { createGuards, createMachine, type Scope } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   disableTextSelection,
   dispatchInputValueEvent,
   getInitialFocus,
-  raf,
+  isFocusOutside,
   setElementValue,
   trackFormControl,
   trackPointerMove,
@@ -49,6 +50,14 @@ export const machine = createMachine<ColorPickerSchema>({
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen") || prop("inline")
     return open ? "open" : "idle"
+  },
+
+  refs() {
+    return {
+      focusFrame: AnimationFrame.create(),
+      inputSyncFrame: AnimationFrame.create(),
+      formatSyncFrame: AnimationFrame.create(),
+    }
   },
 
   context({ prop, bindable, getContext }) {
@@ -104,6 +113,8 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 
   effects: ["trackFormControl"],
+
+  exit: ["cancelFrames"],
 
   watch({ prop, context, action, track }) {
     track([() => context.hash("value")], () => {
@@ -402,6 +413,7 @@ export const machine = createMachine<ColorPickerSchema>({
           },
           exclude: dom.getTriggerEl(scope),
           defer: true,
+          getRootNode: scope.getRootNode,
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (event.defaultPrevented) return
@@ -409,8 +421,8 @@ export const machine = createMachine<ColorPickerSchema>({
           },
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
-          onDismiss() {
-            send({ type: "INTERACT_OUTSIDE" })
+          onDismiss(event) {
+            send({ type: "INTERACT_OUTSIDE", focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -529,8 +541,8 @@ export const machine = createMachine<ColorPickerSchema>({
       dispatchChangeEvent({ scope, computed }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: computed("valueAsString") })
       },
-      syncInputElements({ context, scope }) {
-        syncChannelInputs(scope, context.get("value"))
+      syncInputElements({ context, scope, refs }) {
+        syncChannelInputs(refs.get("inputSyncFrame"), scope, context.get("value"))
       },
       invokeOnChangeEnd({ context, prop, computed }) {
         prop("onValueChangeEnd")?.({
@@ -538,7 +550,7 @@ export const machine = createMachine<ColorPickerSchema>({
           valueAsString: computed("valueAsString"),
         })
       },
-      setChannelColorFromInput({ context, event, scope, prop }) {
+      setChannelColorFromInput({ context, event, scope, prop, refs }) {
         const { channel, isTextField, value } = event
         const currentAlpha = context.get("value").getChannelValue("alpha")
 
@@ -571,7 +583,7 @@ export const machine = createMachine<ColorPickerSchema>({
         }
 
         // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-        syncChannelInputs(scope, context.get("value"), color)
+        syncChannelInputs(refs.get("inputSyncFrame"), scope, context.get("value"), color)
 
         // set new color
         context.set("value", color)
@@ -630,19 +642,19 @@ export const machine = createMachine<ColorPickerSchema>({
         const color = value.withChannelValue(event.channel, range.minValue)
         context.set("value", color)
       },
-      focusAreaThumb({ scope }) {
-        raf(() => {
+      focusAreaThumb({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getAreaThumbEl(scope)?.focus({ preventScroll: true })
         })
       },
-      focusChannelThumb({ event, scope }) {
-        raf(() => {
+      focusChannelThumb({ event, scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getChannelSliderThumbEl(scope, event.channel)?.focus({ preventScroll: true })
         })
       },
-      setInitialFocus({ prop, scope }) {
+      setInitialFocus({ prop, scope, refs }) {
         if (!prop("openAutoFocus")) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
@@ -651,13 +663,22 @@ export const machine = createMachine<ColorPickerSchema>({
           element.focus({ preventScroll: true })
         })
       },
-      setReturnFocus({ scope }) {
-        raf(() => {
-          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+      setReturnFocus({ scope, event, refs }) {
+        const contentEl = dom.getContentEl(scope)
+        const focusOptions = getReturnFocusOptions(event)
+        refs.get("focusFrame").request(() => {
+          // Keep focus that moved elsewhere (e.g. from `onValueChange`)
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
+          dom.getTriggerEl(scope)?.focus(focusOptions)
         })
       },
-      syncFormatSelectElement({ context, scope }) {
-        syncFormatSelect(scope, context.get("format"))
+      syncFormatSelectElement({ context, scope, refs }) {
+        syncFormatSelect(refs.get("formatSyncFrame"), scope, context.get("format"))
+      },
+      cancelFrames({ refs }) {
+        refs.get("focusFrame").cancel()
+        refs.get("inputSyncFrame").cancel()
+        refs.get("formatSyncFrame").cancel()
       },
       syncValueWithFormat({ context }) {
         const value = context.get("value")
@@ -680,9 +701,9 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 })
 
-function syncChannelInputs(scope: Scope, currentValue: Color, nextValue?: Color) {
+function syncChannelInputs(frame: AnimationFrame, scope: Scope, currentValue: Color, nextValue?: Color) {
   const channelInputEls = dom.getChannelInputEls(scope)
-  raf(() => {
+  frame.request(() => {
     channelInputEls.forEach((inputEl) => {
       const channel = inputEl.dataset.channel as ExtendedColorChannel | null
       setElementValue(inputEl, getChannelValue(nextValue || currentValue, channel))
@@ -690,8 +711,14 @@ function syncChannelInputs(scope: Scope, currentValue: Color, nextValue?: Color)
   })
 }
 
-function syncFormatSelect(scope: Scope, format: ColorFormat) {
+function syncFormatSelect(frame: AnimationFrame, scope: Scope, format: ColorFormat) {
   const selectEl = dom.getFormatSelectEl(scope)
   if (!selectEl) return
-  raf(() => setElementValue(selectEl, format))
+  frame.request(() => setElementValue(selectEl, format))
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }

@@ -53,8 +53,7 @@ function resetStack() {
 describe("layerStack", () => {
   afterEach(async () => {
     resetStack()
-    // `remove` schedules `nextTick` to clear `recentlyRemoved`; drain so the next test
-    // does not see a global "during removal" `isInNestedLayer` true positive.
+    // drain the `closingAncestors` timer
     for (let i = 0; i < 3; i++) {
       await nextTick()
     }
@@ -70,7 +69,6 @@ describe("layerStack", () => {
       layerStack.add(createLayer(node, { onLayerChange }))
 
       expect(layerStack.count()).toBe(1)
-      expect(layerStack.countNestedLayersOfType(node, "dialog")).toBe(0)
       expect(getLastSnapshot(onLayerChange)).toMatchObject({ index: 0, nestedCount: 0, active: true })
     })
 
@@ -168,7 +166,7 @@ describe("layerStack", () => {
   })
 
   describe("remove", () => {
-    test("dismisses nested layers when removing a parent from the stack", () => {
+    test("dismisses nested layers when removing a parent from the stack", async () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
       document.body.append(parent, child)
@@ -178,6 +176,7 @@ describe("layerStack", () => {
       layerStack.add(createLayer(child, { dismiss: childDismiss }))
 
       layerStack.remove(parent)
+      await Promise.resolve()
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
     })
@@ -226,7 +225,6 @@ describe("layerStack", () => {
       layerStack.add(createLayer(child, { pointerBlocking: true, onLayerChange: onChildChange }))
 
       expect(layerStack.hasPointerBlockingLayer()).toBe(true)
-      expect(layerStack.pointerBlockingLayers()).toHaveLength(1)
       expect(layerStack.topMostPointerBlockingLayer()?.node).toBe(child)
 
       expect(layerStack.isBelowPointerBlockingLayer(bottom)).toBe(true)
@@ -254,7 +252,7 @@ describe("layerStack", () => {
     })
   })
 
-  describe("isInNestedLayer and recentlyRemoved", () => {
+  describe("isInNestedLayer and isClosingAncestor", () => {
     test("returns true when target is inside a nested layer node", () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
@@ -269,21 +267,222 @@ describe("layerStack", () => {
       expect(layerStack.isInNestedLayer(parent, parent)).toBe(false)
     })
 
-    test("treats interactions as inside while recentlyRemoved is non-empty, then clears after nextTick", async () => {
+    test("shields only the ancestors of a closing layer until nextTick", async () => {
       const parent = document.createElement("div")
       const child = document.createElement("div")
-      document.body.append(parent, child)
+      const other = document.createElement("div")
+      document.body.append(parent, child, other)
 
-      layerStack.add(createLayer(parent))
-      layerStack.add(createLayer(child))
+      layerStack.add(createLayer(other))
+      layerStack.add({ ...createLayer(parent), origins: [parent] })
+      layerStack.add({ ...createLayer(child), origins: [child, parent] })
 
-      layerStack.remove(parent)
+      layerStack.remove(child)
 
-      expect(layerStack.isInNestedLayer(child, document.body)).toBe(true)
+      expect(layerStack.isClosingAncestor(parent)).toBe(true)
+      expect(layerStack.isClosingAncestor(other)).toBe(false)
 
       await nextTick()
 
-      expect(layerStack.isInNestedLayer(child, document.body)).toBe(false)
+      expect(layerStack.isClosingAncestor(parent)).toBe(false)
     })
+  })
+})
+
+describe("layerStack snapshots", () => {
+  afterEach(async () => {
+    resetStack()
+    for (let i = 0; i < 3; i++) {
+      await nextTick()
+    }
+  })
+
+  function addLayer(type: LayerType = "popover", options: Partial<Layer> = {}) {
+    const node = document.createElement("div")
+    document.body.append(node)
+    const layer: Layer = { node, type, dismiss: () => layerStack.remove(node), ...options }
+    layerStack.add(layer)
+    return layer
+  }
+
+  // a from-scratch reference, independent of the stack's own lookups
+  function expectedSnapshot(layer: Layer, index: number): LayerSnapshot {
+    const layers = layerStack.layers
+    const find = (id: string | undefined) => layers.find((l) => l.id === id)
+    const ancestors = (l: Layer) => {
+      const chain: Layer[] = []
+      const seen = new Set<string>()
+      let parentId = l.parentId
+      while (parentId && !seen.has(parentId)) {
+        seen.add(parentId)
+        const parent = find(parentId)
+        if (!parent) break
+        chain.push(parent)
+        parentId = parent.parentId
+      }
+      return chain
+    }
+    const self = find(layer.id)!
+    const nestedCount = layers.filter((l) => l.type === layer.type && ancestors(l).includes(self)).length
+    let topBlocking = -1
+    layers.forEach((l, i) => {
+      if (typeof l.pointerBlocking === "function" ? l.pointerBlocking() : l.pointerBlocking) topBlocking = i
+    })
+    return {
+      active: true,
+      type: layer.type,
+      index,
+      nested: ancestors(layer).some((l) => l.type === layer.type),
+      hasNested: nestedCount > 0,
+      nestedCount,
+      blocked: index < topBlocking,
+    }
+  }
+
+  function expectSnapshotsMatchHelpers() {
+    layerStack.layers.forEach((layer, index) => {
+      expect(layer.snapshot).toEqual(expectedSnapshot(layer, index))
+      expect(layer.snapshot?.blocked).toBe(layerStack.isBelowPointerBlockingLayer(layer.node))
+    })
+  }
+
+  test("counts same-type descendants through layers of another type", () => {
+    const dialog = addLayer("dialog")
+    const menu = addLayer("menu")
+    const nestedDialog = addLayer("dialog")
+    addLayer("dialog")
+
+    expect(dialog.snapshot).toMatchObject({ nested: false, nestedCount: 2 })
+    expect(menu.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expect(nestedDialog.snapshot).toMatchObject({ nested: true, nestedCount: 1 })
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("menubar peers are siblings, not nested", () => {
+    const first = addLayer("menu", { group: "menubar" })
+    const second = addLayer("menu", { group: "menubar" })
+
+    expect(first.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expect(second.snapshot).toMatchObject({ nested: false, nestedCount: 0 })
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("blocks only layers below the topmost pointer-blocking layer", () => {
+    let blocking = true
+    const below = addLayer("popover")
+    addLayer("dialog", { pointerBlocking: () => blocking })
+    const above = addLayer("popover")
+
+    expect(below.snapshot?.blocked).toBe(true)
+    expect(above.snapshot?.blocked).toBe(false)
+
+    blocking = false
+    layerStack.syncLayers()
+    expect(below.snapshot?.blocked).toBe(false)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("layers sharing an explicit id share a nested count", () => {
+    const first = addLayer("dialog", { id: "shared" })
+    const second = addLayer("dialog", { id: "shared" })
+
+    expect(first.snapshot?.nestedCount).toBe(1)
+    expect(second.snapshot?.nestedCount).toBe(1)
+    expectSnapshotsMatchHelpers()
+
+    // sharing its parent's id makes `second` its own ancestor; detach so teardown's cascade can finish
+    second.parentId = undefined
+  })
+
+  test("a nested layer that refuses to dismiss keeps an accurate snapshot", async () => {
+    const parent = addLayer("dialog")
+    addLayer("dialog")
+    const child = addLayer("dialog", { requestDismiss: (event) => event.preventDefault() })
+
+    layerStack.remove(parent.node)
+    await Promise.resolve()
+
+    expect(layerStack.layers).toEqual([child])
+    expect(child.snapshot).toMatchObject({ index: 0, nested: false, nestedCount: 0 })
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("a missing parent ends the chain", () => {
+    addLayer("dialog")
+    const child = addLayer("dialog")
+    child.parentId = "missing"
+    layerStack.syncLayers()
+
+    expect(child.snapshot?.nested).toBe(false)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("a parent cycle does not hang", () => {
+    const a = addLayer("dialog")
+    const b = addLayer("dialog")
+    a.parentId = b.id
+    layerStack.syncLayers()
+
+    expect(layerStack.getNestedLayers(a.node)).toHaveLength(2)
+    expectSnapshotsMatchHelpers()
+
+    // `add` never builds a cycle; break it so teardown's cascade can finish
+    a.parentId = undefined
+  })
+
+  test("reattached layers keep their index and nesting", () => {
+    const parent = addLayer("dialog")
+    const child = addLayer("dialog")
+    addLayer("dialog")
+
+    layerStack.remove(child.node, { reattach: true })
+    layerStack.add({ ...child, id: undefined, parentId: undefined })
+
+    expect(layerStack.indexOf(child.node)).toBe(1)
+    expect(parent.snapshot?.nestedCount).toBe(2)
+    expectSnapshotsMatchHelpers()
+  })
+
+  test("random stacks match the per-layer helpers", () => {
+    let seed = 1
+    const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+    const types: LayerType[] = ["dialog", "popover", "menu"]
+
+    for (let run = 0; run < 20; run++) {
+      resetStack()
+      for (let i = 0; i < 15; i++) {
+        const type = types[Math.floor(random() * types.length)]
+        if (random() < 0.2 && layerStack.count() > 0) {
+          const layer = layerStack.layers[Math.floor(random() * layerStack.count())]
+          layerStack.remove(layer.node, { reattach: random() < 0.5 })
+          if (!layerStack.layers.includes(layer) && layerStack.pendingReattach.has(layer.node)) {
+            layerStack.add({ ...layer, id: undefined })
+          }
+        } else {
+          addLayer(type, { pointerBlocking: random() < 0.2, group: random() < 0.2 ? "group" : undefined })
+        }
+        expectSnapshotsMatchHelpers()
+      }
+    }
+  })
+
+  test("many open layers mount and unmount quickly", () => {
+    const start = performance.now()
+    const layers = Array.from({ length: 200 }, () => addLayer("popover"))
+    layers.reverse().forEach((layer) => layerStack.remove(layer.node))
+
+    expect(layerStack.count()).toBe(0)
+    // was several seconds at 120 layers when each snapshot rescanned the stack; ~0.5s now, with headroom for CI
+    expect(performance.now() - start).toBeLessThan(3000)
+  })
+
+  test("removing the bottom of a long chain dismisses the rest", async () => {
+    const layers = Array.from({ length: 200 }, () => addLayer("popover"))
+    const start = performance.now()
+    layerStack.remove(layers[0].node)
+    await Promise.resolve()
+
+    expect(layerStack.count()).toBe(0)
+    expect(performance.now() - start).toBeLessThan(3000)
   })
 })

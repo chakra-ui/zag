@@ -1,8 +1,8 @@
 <script lang="ts">
-  import MenubarEditMenu from "$lib/components/menubar-edit-menu.svelte"
-  import MenubarMenu from "$lib/components/menubar-menu.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import MenubarEditMenu from "#lib/components/menubar-edit-menu.svelte"
+  import MenubarMenu from "#lib/components/menubar-menu.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import type * as menu from "@zag-js/menu"
   import * as menubar from "@zag-js/menubar"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
@@ -13,7 +13,7 @@
   const service = useMachine(menubar.machine, { id })
   const api = $derived(menubar.connect(service, normalizeProps))
 
-  setContext<menu.MenubarContext>("menubar", api.getMenuContext())
+  setContext<() => menu.MenubarContext>("menubar", () => api.getMenuContext())
 
   const fileItems = [
     { value: "new", label: "New File" },

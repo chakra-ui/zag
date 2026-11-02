@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import ToastItem from "$lib/components/toast-item.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import ToastItem from "#lib/components/toast-item.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"

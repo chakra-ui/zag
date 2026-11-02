@@ -71,7 +71,7 @@ const docsMap = {
   "data-empty": "Present when the content is empty",
   "data-overflow-x": "Present when the content overflows the x-axis",
   "data-overflow-y": "Present when the content overflows the y-axis",
-  "data-ssr": "Present when not rendered in the browser. Useful for ssr styling",
+  "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)",
   "data-nested": "Present when the {{widget}} is nested within another {{widget}}",
   "data-has-nested": "Present when the {{widget}} has nested {{widget}}s",
   "data-has-collapsed-size": "Present when the {{widget}} has collapsed width or height",

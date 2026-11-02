@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Tooltip from "$lib/components/tooltip-scroll-item.svelte"
+  import Tooltip from "#lib/components/tooltip-scroll-item.svelte"
   import "@styles/tooltip.css"
 </script>
 

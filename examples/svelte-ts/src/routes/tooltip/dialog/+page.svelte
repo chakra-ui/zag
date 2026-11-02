@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Tooltip from "$lib/components/tooltip-dialog-tooltip.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Tooltip from "#lib/components/tooltip-dialog-tooltip.svelte"
   import * as dialog from "@zag-js/dialog"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"

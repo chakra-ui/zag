@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { PaginationModel } from "./models/pagination.model"
 
 let I: PaginationModel
@@ -39,16 +39,16 @@ test("should update page when prev button is clicked", async () => {
 
 test("should call onChange when item is clicked", async () => {
   await I.clickItem("2")
-  await I.seeOutputContains(": 2")
+  await I.seeOutputContains(`"page":2`)
 })
 
 test("should call onChange when next button is clicked", async () => {
   await I.clickNext()
-  await I.seeOutputContains(": 2")
+  await I.seeOutputContains(`"page":2`)
 })
 
 test("should call onChange when prev button is clicked", async () => {
   await I.clickItem("5")
   await I.clickPrev()
-  await I.seeOutputContains(": 4")
+  await I.seeOutputContains(`"page":4`)
 })

@@ -5,6 +5,7 @@ import { useId, useRef } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { useFocusTrap } from "../../hooks/use-focus-trap"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/floating-panel.css"
 
 export default function Page() {
   const service = useMachine(floating.machine, {
@@ -56,8 +57,8 @@ export default function Page() {
                 <button type="button">Submit</button>
               </div>
 
-              {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+              {floating.resizeTriggerPlacements.map((placement) => (
+                <div key={placement} {...api.getResizeTriggerProps({ placement })} />
               ))}
             </div>
           </div>

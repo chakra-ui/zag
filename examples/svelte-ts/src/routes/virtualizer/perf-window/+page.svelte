@@ -1,8 +1,8 @@
 <script lang="ts">
-  import BenchmarkButtons from "$lib/components/virtualizer-benchmark-buttons.svelte"
-  import PerfMetrics from "$lib/components/virtualizer-perf-metrics.svelte"
-  import { runWindowScrollBenchmark, type ScrollBenchmarkMetrics } from "$lib/scroll-benchmark"
-  import { useWindowVirtualizer } from "$lib/use-virtualizer.svelte"
+  import BenchmarkButtons from "#lib/components/virtualizer-benchmark-buttons.svelte"
+  import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
+  import { runWindowScrollBenchmark, type ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
+  import { useWindowVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { normalizeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 10_000

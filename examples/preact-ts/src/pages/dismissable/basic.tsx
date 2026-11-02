@@ -6,63 +6,71 @@ import {
 } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
 import { Portal } from "@zag-js/preact"
-import { type ComponentChildren } from "preact"
-import { useEffect, useRef, useState } from "preact/hooks"
+import { useEffect, useRef, useState } from "react"
 
 interface PopoverProps {
-  background: string
-  children?: ComponentChildren
+  children?: React.ReactNode
+  bg: string
   id: string
-  pointerBlocking?: boolean
+  inert?: boolean
 }
 
 function Popover(props: PopoverProps) {
+  const { children, bg, id, inert } = props
+
   const [open, setOpen] = useState(false)
   const [layer, setLayer] = useState<LayerSnapshot | null>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  const ref = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!open) return
-    const cleanups = [
-      getPlacement(triggerRef.current, contentRef.current, { placement: "right" }),
-      trackDismissableElement(contentRef.current, {
-        pointerBlocking: props.pointerBlocking,
+    const cleanup = [
+      getPlacement(buttonRef.current, ref.current, {
+        placement: "right",
+      }),
+      trackDismissableElement(ref.current, {
+        pointerBlocking: inert,
         onLayerChange: setLayer,
         onDismiss: () => setOpen(false),
-        exclude: [triggerRef.current],
+        exclude: [buttonRef.current],
       }),
     ]
-    return () => cleanups.forEach((cleanup) => cleanup())
-  }, [open, props.pointerBlocking])
+    return () => {
+      cleanup.forEach((c) => c())
+    }
+  }, [open, inert])
 
   return (
     <div style={{ padding: 40 }}>
-      <button ref={triggerRef} data-testid={`trigger-${props.id}`} onClick={() => setOpen((value) => !value)}>
+      <button ref={buttonRef} data-testid={`trigger-${id}`} onClick={() => setOpen((v) => !v)}>
         Dismiss
       </button>
       <Portal>
         <div
           hidden={!open}
-          ref={contentRef}
-          data-testid={`layer-${props.id}`}
+          ref={ref}
+          data-testid={`layer-${id}`}
           {...getDismissableLayerAttrs(layer)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            transform: "translate3d(var(--x, 0px), var(--y, -100vh), 0)",
-            // getPlacement() also writes to --z-index (copying the content's own
-            // computed z-index), so use --layer-index directly to avoid the clash.
-            zIndex: "var(--layer-index)",
-            background: props.background,
-            padding: 10,
-            ...getDismissableLayerStyle(layer, { pointerEvents: true }),
-          }}
+          style={
+            {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              transform: "translate3d(var(--x, 0px), var(--y, -100vh), 0)",
+              // getPlacement() also writes to --z-index (copying the content's own
+              // computed z-index), so use --layer-index directly to avoid the clash.
+              zIndex: "var(--layer-index)",
+              background: bg,
+              padding: 10,
+              ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+            } as React.CSSProperties
+          }
         >
           <h1>Sandbox</h1>
           <p>This is a sandbox page.</p>
-          {props.children}
+          {children}
         </div>
       </Portal>
     </div>
@@ -71,19 +79,20 @@ function Popover(props: PopoverProps) {
 
 export default function Page() {
   return (
-    <main>
-      <Popover id="1" background="pink" pointerBlocking>
+    <div>
+      <iframe title="sdfdsfs" src="https://motion.dev/" />
+      <Popover id="1" bg="pink" inert>
         <p>This is a popover.</p>
         <input placeholder="Initial...." />
-        <Popover id="2" background="green">
+        <Popover id="2" bg="green">
           <p>This is a nested popover.</p>
           <input placeholder="Nested 1...." />
-          <Popover id="3" background="teal" pointerBlocking>
+          <Popover id="3" bg="teal" inert>
             <p>This is a nested popover.</p>
             <input placeholder="Nested 2...." />
           </Popover>
         </Popover>
       </Popover>
-    </main>
+    </div>
   )
 }

@@ -34,11 +34,11 @@ export default function Page() {
         <div className="vstack gap-3">
           <div className="vstack gap-2">
             <label htmlFor={ids.ssid}>Network name</label>
-            <input id={ids.ssid} value={ssid} onChange={(e) => setSsid(e.target.value)} />
+            <input id={ids.ssid} value={ssid} onChange={(e) => setSsid(e.currentTarget.value)} />
           </div>
           <div className="vstack gap-2">
             <label htmlFor={ids.security}>Security</label>
-            <select id={ids.security} value={security} onChange={(e) => setSecurity(e.target.value as Security)}>
+            <select id={ids.security} value={security} onChange={(e) => setSecurity(e.currentTarget.value as Security)}>
               <option value="WPA">WPA / WPA2</option>
               <option value="WEP">WEP</option>
               <option value="nopass">None</option>
@@ -47,7 +47,7 @@ export default function Page() {
           {security !== "nopass" && (
             <div className="vstack gap-2">
               <label htmlFor={ids.password}>Password</label>
-              <input id={ids.password} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input id={ids.password} value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
             </div>
           )}
         </div>

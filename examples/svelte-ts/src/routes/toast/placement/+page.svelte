@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toaster from "$lib/components/toast-placement-toaster.svelte"
+  import Toaster from "#lib/components/toast-placement-toaster.svelte"
   import * as toast from "@zag-js/toast"
   import "@styles/toast.css"
 

@@ -18,7 +18,7 @@ export default function Page() {
     <>
       <main class="file-upload">
         <div {...api().getRootProps()}>
-          <input {...api().getHiddenInputProps()} />
+          <input data-testid="input" {...api().getHiddenInputProps()} />
           <div {...api().getDropzoneProps()}>Drag your files here</div>
 
           <button {...api().getTriggerProps()}>Choose Files...</button>

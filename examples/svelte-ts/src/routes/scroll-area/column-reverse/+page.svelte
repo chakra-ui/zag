@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as scrollArea from "@zag-js/scroll-area"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/scroll-area.css"

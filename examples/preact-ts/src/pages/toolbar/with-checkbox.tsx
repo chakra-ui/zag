@@ -4,18 +4,22 @@ import * as toolbar from "@zag-js/toolbar"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
+import "@styles/checkbox.css"
 
 function TrackChangesToggle(props: { api: toolbar.Api }) {
   const { api } = props
+  const inputId = api.getItemId("track-changes")
+
   const service = useMachine(checkbox.machine, {
     id: useId(),
-    ids: { hiddenInput: api.getItemId("track-changes") },
+    ids: { hiddenInput: inputId },
     disabled: api.disabled,
   })
   const checkboxApi = checkbox.connect(service, normalizeProps)
 
   return (
-    <label {...checkboxApi.getRootProps()} class="toolbar-item">
+    <label {...checkboxApi.getRootProps()} className="toolbar-item">
       <div {...checkboxApi.getControlProps()} />
       <input
         {...mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: "track-changes" }))}
@@ -32,11 +36,13 @@ export default function Page() {
 
   return (
     <>
-      <main class="toolbar">
+      <main className="toolbar">
         <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "cut" })}>Cut</button>
           <button {...api.getItemProps({ value: "copy" })}>Copy</button>
+
           <div {...api.getSeparatorProps()} />
+
           <TrackChangesToggle api={api} />
         </div>
       </main>

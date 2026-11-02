@@ -164,8 +164,16 @@ export function isFocusHeldBySubmenuOf(target: EventTarget | null, children: Rec
   return false
 }
 
-export function dispatchClickWithModifiers(el: HTMLElement, event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "shiftKey" | "altKey">) {
+export function dispatchClickWithModifiers(
+  el: HTMLElement,
+  event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "shiftKey" | "altKey">,
+) {
   const win = getWindow(el)
   const { ctrlKey, metaKey, shiftKey, altKey } = event
   el.dispatchEvent(new win.MouseEvent("click", { bubbles: true, cancelable: true, ctrlKey, metaKey, shiftKey, altKey }))
+}
+
+export const getItemCloseOnSelect = (el: HTMLElement) => {
+  const value = el.dataset.closeOnSelect
+  return value == null ? undefined : value === "true"
 }

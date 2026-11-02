@@ -55,7 +55,7 @@ export default function Page() {
                 type="button"
                 draggable
                 data-testid={`backlog-${item.id}`}
-                onDragStart={(event) => event.dataTransfer.setData("text/plain", item.id)}
+                onDragStart={(event) => event.dataTransfer?.setData("text/plain", item.id)}
               >
                 {item.title}
               </button>

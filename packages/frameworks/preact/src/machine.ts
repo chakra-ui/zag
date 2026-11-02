@@ -28,10 +28,11 @@ import {
   watchEffect,
 } from "@zag-js/core"
 import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
-import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
+import { flushSync } from "./flush-sync"
 import { useRefs } from "./refs"
+import { useConst, useStableFn } from "./stable"
 import { useEffectSync, useTrack } from "./track"
 
 export function useMachine<T extends MachineSchema>(
@@ -70,7 +71,7 @@ export function useMachine<T extends MachineSchema>(
   })
 
   const contextRef = useLiveRef<any>(context)
-  const ctx: BindableContext<T> = {
+  const ctx: BindableContext<T> = useConst(() => ({
     get(key) {
       return contextRef.current?.[key].get()
     },
@@ -84,7 +85,7 @@ export function useMachine<T extends MachineSchema>(
       const current = contextRef.current?.[key].get()
       return contextRef.current?.[key].hash(current)
     },
-  }
+  }))
 
   const effects = useRef(new Map<number, EffectRecord>())
   const effectId = useRef(0)
@@ -238,7 +239,7 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
-  const computed: ComputedFn<T> = (key) => {
+  const computed: ComputedFn<T> = useStableFn((key) => {
     ensure(machine.computed, () => `[zag-js] No computed object found on machine`)
     const fn = machine.computed[key]
     return fn({
@@ -249,7 +250,7 @@ export function useMachine<T extends MachineSchema>(
       scope,
       computed: computed as any,
     })
-  }
+  })
 
   const state = useBindable(() => ({
     defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
@@ -315,9 +316,9 @@ export function useMachine<T extends MachineSchema>(
     return currentStateRef.current
   }
 
-  const replaceTracker = useMemo(createReplaceTracker, [])
+  const replaceTracker = useConst(createReplaceTracker)
 
-  const send = (event: any) => {
+  const send = useStableFn<Service<T>["send"]>((event) => {
     const key = event.replaces
     const token = key ? replaceTracker.claim(key) : undefined
     queueMicrotask(() => {
@@ -349,7 +350,9 @@ export function useMachine<T extends MachineSchema>(
         action(transition.actions ?? [])
       }
     })
-  }
+  })
+
+  const getStatus = useStableFn(() => statusRef.current)
 
   machine.watch?.(getParams())
 
@@ -364,7 +367,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     event: getEvent(),
-    getStatus: () => statusRef.current,
+    getStatus,
   } as Service<T>
 }
 
@@ -376,9 +379,9 @@ function useLiveRef<T>(value: T) {
 
 function useProp<T>(value: T) {
   const ref = useLiveRef(value)
-  return function get<K extends keyof T>(key: K): T[K] {
+  return useStableFn(function get<K extends keyof T>(key: K): T[K] {
     return ref.current[key]
-  }
+  })
 }
 
 function flush(fn: VoidFunction) {

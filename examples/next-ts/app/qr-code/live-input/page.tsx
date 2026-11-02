@@ -24,7 +24,7 @@ export default function Page() {
           <input
             id={inputId}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setValue(e.currentTarget.value)}
             placeholder="Type something…"
             style={{ width: 240 }}
           />

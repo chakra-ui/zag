@@ -1,9 +1,11 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
 import { useId, useState } from "react"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/dialog.css"
 
 interface User {
   id: number
@@ -107,7 +109,9 @@ export default function DialogMultipleTriggerControlled() {
                       </select>
                     </div>
                   </div>
-                  <button {...api.getCloseTriggerProps()}>Close</button>
+                  <button {...api.getCloseTriggerProps()}>
+                    <XIcon />
+                  </button>
                 </>
               ) : (
                 <div>No user selected</div>

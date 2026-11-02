@@ -138,6 +138,37 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Minor Changes
+
+- [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `modifiers` to the `navigate` and `onSelect` details.
+  - Fix Cmd/Ctrl/Shift/Alt+Enter on link items not opening the link like a modifier-click.
+  - Call `onSelect` and close the menu when Enter is pressed on a link item.
+  - Fix the `aria-label` prop not naming the menu.
+  - Fix controlled submenus opening after the pointer leaves their trigger, and controlled context menus opening on a
+    short tap.
+  - Fix a pending scroll to the highlighted item running after the menu closes.
+  - Fix focus being lost after pressing Escape right after an arrow key.
+  - Fix Escape not closing the menu right after it opens.
+
+### Patch Changes
+
+- Updated dependencies [[`d597306`](https://github.com/chakra-ui/zag/commit/d5973062d830ea2128c27f5eb1807f5807e076e8),
+  [`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1),
+  [`81992a5`](https://github.com/chakra-ui/zag/commit/81992a56b8600c0b2403e486059a41d66bad4ea4),
+  [`b8c35b6`](https://github.com/chakra-ui/zag/commit/b8c35b69b03bf094fe99fe2df67abbaa72dabcbb)]:
+  - @zag-js/dismissable@1.47.0
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/focus-visible@1.47.0
+  - @zag-js/popper@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+  - @zag-js/rect-utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

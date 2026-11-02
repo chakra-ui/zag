@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as hoverCard from "@zag-js/hover-card"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/hover-card.css"

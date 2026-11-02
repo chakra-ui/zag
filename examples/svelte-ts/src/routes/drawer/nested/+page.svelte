@@ -2,8 +2,8 @@
   import * as drawer from "@zag-js/drawer"
   import { XIcon } from "lucide-svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Portal from "$lib/components/portal.svelte"
-  import Presence from "$lib/components/presence.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import styles from "@styles/drawer-nested.module.css"
 
   const baseId = $props.id()

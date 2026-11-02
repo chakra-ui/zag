@@ -4,6 +4,8 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tabs from "@zag-js/tabs"
 import { useId, useMemo, useRef, useState } from "react"
 import { flushSync } from "react-dom"
+import "@styles/combobox.css"
+import "@styles/tabs.css"
 
 const pages = {
   Page: [
@@ -124,9 +126,12 @@ export default function Page() {
         </div>
       </div>
       <div {...comboboxApi.getPositionerProps()}>
-        <ul {...comboboxApi.getContentProps()}>
-          <div {...tabApi.getRootProps()} style={{ position: "relative" }}>
-            <div {...tabApi.getListProps()} style={{ position: "sticky", top: "0", insetInline: "0" }}>
+        <div {...comboboxApi.getContentProps()}>
+          <div {...mergeProps(tabApi.getRootProps(), { style: { position: "relative" } })}>
+            <div
+              data-stretch=""
+              {...mergeProps(tabApi.getListProps(), { style: { position: "sticky", top: "0", insetInline: "0" } })}
+            >
               {categories.map((category) => {
                 const currentItems = matches[category]
                 return (
@@ -152,16 +157,16 @@ export default function Page() {
                 {selectedTab === category && (
                   <div {...comboboxApi.getListProps()}>
                     {items.map((item) => (
-                      <li key={item.value} {...comboboxApi.getItemProps({ item, persistFocus: true })}>
+                      <div key={item.value} {...comboboxApi.getItemProps({ item, persistFocus: true })}>
                         {item.label}
-                      </li>
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
             ))}
           </div>
-        </ul>
+        </div>
       </div>
     </main>
   )

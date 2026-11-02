@@ -6,6 +6,7 @@ import {
   addDomEvent,
   getComputedStyle,
   getInitialFocus,
+  isFocusOutside,
   raf,
   resizeObserverBorderBox,
   waitForElement,
@@ -119,6 +120,11 @@ export const machine = createMachine<DrawerSchema>({
         preventDragOnScroll: () => prop("preventDragOnScroll"),
       }),
       snapBackFrame: AnimationFrame.create(),
+      returnFocusFrame: AnimationFrame.create(),
+      initialFocusFrame: AnimationFrame.create(),
+      renderedFrame: AnimationFrame.create(),
+      dragOffsetFrame: AnimationFrame.create(),
+      returnFocusEl: null,
     }
   },
 
@@ -208,6 +214,8 @@ export const machine = createMachine<DrawerSchema>({
     return open ? "open" : "closed"
   },
 
+  exit: ["cancelFrames"],
+
   on: {
     "SNAP_POINT.SET": {
       actions: ["setSnapPoint"],
@@ -217,7 +225,8 @@ export const machine = createMachine<DrawerSchema>({
   states: {
     open: {
       tags: ["open"],
-      entry: ["checkRenderedElements", "setInitialFocus", "deferClearDragOffset"],
+      entry: ["checkRenderedElements", "setReturnFocusEl", "setInitialFocus", "deferClearDragOffset"],
+      exit: ["cancelInitialFocus"],
       effects: [
         "trackDismissableElement",
         "preventScroll",
@@ -234,7 +243,7 @@ export const machine = createMachine<DrawerSchema>({
         },
         "CONTROLLED.CLOSE": {
           target: "closing",
-          actions: ["clearSwipeOpenAnimation", "cancelSnapBack"],
+          actions: ["clearSwipeOpenAnimation", "cancelSnapBack", "setFinalFocus"],
         },
         POINTER_DOWN: {
           actions: ["setPointerStart", "cancelSnapBack"],
@@ -267,7 +276,7 @@ export const machine = createMachine<DrawerSchema>({
           {
             guard: "shouldCloseOnSwipe",
             target: "closing",
-            actions: ["clearSwipeOpenAnimation", "clearRegistrySwiping", "setDismissSwipeStrength"],
+            actions: ["clearSwipeOpenAnimation", "clearRegistrySwiping", "setDismissSwipeStrength", "setFinalFocus"],
           },
           {
             guard: "isDragging",
@@ -301,7 +310,7 @@ export const machine = createMachine<DrawerSchema>({
           },
           {
             target: "closing",
-            actions: ["clearSwipeOpenAnimation", "resetSwipeStrength", "invokeOnClose"],
+            actions: ["clearSwipeOpenAnimation", "resetSwipeStrength", "invokeOnClose", "setFinalFocus"],
           },
         ],
       },
@@ -470,10 +479,36 @@ export const machine = createMachine<DrawerSchema>({
     },
 
     actions: {
-      setInitialFocus({ prop, scope }) {
+      setReturnFocusEl({ refs, scope }) {
+        // Read on the next frame, like a focus trap, so an opener that closes (e.g. a menu) has restored focus first
+        refs.get("returnFocusFrame").request(() => refs.set("returnFocusEl", scope.getActiveElement()))
+      },
+
+      setFinalFocus({ event, prop, refs, scope, context }) {
+        // A focus trap returns focus on its own
+        if (prop("trapFocus") || !prop("restoreFocus")) return
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        if (restoreFocus === false) return
+
+        const contentEl = dom.getContentEl(scope)
+        const returnFocusEl =
+          dom.getReturnFocusEl(scope, {
+            finalFocusEl: prop("finalFocusEl"),
+            triggerValue: context.get("triggerValue"),
+          }) ?? refs.get("returnFocusEl")
+
+        // Not cancelled on exit: restore must still run if the drawer unmounts on close
+        raf(() => {
+          // Don't take focus back from an element the user moved to
+          if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
+          returnFocusEl?.focus({ preventScroll: true })
+        })
+      },
+
+      setInitialFocus({ prop, scope, refs }) {
         // In modal mode, trapFocus handles initial focus
         if (prop("trapFocus")) return
-        raf(() => {
+        refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
@@ -483,8 +518,8 @@ export const machine = createMachine<DrawerSchema>({
         })
       },
 
-      checkRenderedElements({ context, scope }) {
-        raf(() => {
+      checkRenderedElements({ context, scope, refs }) {
+        refs.get("renderedFrame").request(() => {
           context.set("rendered", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
@@ -504,7 +539,7 @@ export const machine = createMachine<DrawerSchema>({
         if (contentEl) contentEl.style.setProperty("animation", "none", "important")
         if (backdropEl) backdropEl.style.setProperty("animation", "none", "important")
 
-        raf(() => {
+        refs.get("dragOffsetFrame").request(() => {
           refs.get("swipeSession").resetDragOffset()
           context.set("dragOffset", null)
         })
@@ -542,7 +577,7 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       setPointerStart({ event, refs }) {
-        refs.get("swipeSession").beginSwipe(event.point)
+        refs.get("swipeSession").beginSwipe(event.point, event.target)
       },
 
       setDragOffset({ context, event, refs, computed }) {
@@ -657,6 +692,17 @@ export const machine = createMachine<DrawerSchema>({
         })
       },
 
+      cancelInitialFocus({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("returnFocusFrame").cancel()
+        refs.get("initialFocusFrame").cancel()
+        refs.get("renderedFrame").cancel()
+        refs.get("dragOffsetFrame").cancel()
+      },
+
       cancelSnapBack({ refs }) {
         refs.get("snapBackFrame").cancel()
       },
@@ -725,9 +771,11 @@ export const machine = createMachine<DrawerSchema>({
         // pointerBlocking is read at setup, so `modal` has to re-run this
         return watchEffect([() => prop("modal")], () => {
           const getContentEl = () => dom.getContentEl(scope)
+          let restoreFocus = true
           return trackDismissableElement(getContentEl, {
             type: "drawer",
             defer: true,
+            getRootNode: scope.getRootNode,
             pointerBlocking: prop("modal"),
             onLayerChange(layer) {
               context.set("layer", layer)
@@ -738,6 +786,8 @@ export const machine = createMachine<DrawerSchema>({
               if (!prop("closeOnInteractOutside")) {
                 event.preventDefault()
               }
+              // Keep focus on what the user pressed outside
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
             },
             onFocusOutside: prop("onFocusOutside"),
             onEscapeKeyDown(event) {
@@ -749,7 +799,7 @@ export const machine = createMachine<DrawerSchema>({
             onPointerDownOutside: prop("onPointerDownOutside"),
             onRequestDismiss: prop("onRequestDismiss"),
             onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         })
@@ -774,21 +824,11 @@ export const machine = createMachine<DrawerSchema>({
                 root: dom.getContentEl(scope),
                 getInitialEl: prop("initialFocusEl"),
               }),
-            setReturnFocus: (el) => {
-              const finalFocusEl = prop("finalFocusEl")?.()
-              if (finalFocusEl) return finalFocusEl
-
-              const triggerValue = context.get("triggerValue")
-              if (triggerValue) {
-                const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
-                if (activeTriggerEl) return activeTriggerEl
-              }
-
-              const fallbackTrigger = dom.getTriggerEls(scope)[0]
-              if (fallbackTrigger) return fallbackTrigger
-
-              return el
-            },
+            setReturnFocus: (el) =>
+              dom.getReturnFocusEl(scope, {
+                finalFocusEl: prop("finalFocusEl"),
+                triggerValue: context.get("triggerValue"),
+              }) ?? el,
             getShadowRoot: true,
           })
 
@@ -929,6 +969,7 @@ function waitForContentEl(
   const contentEl = dom.getContentEl(scope)
   let cleanup = contentEl ? setup(contentEl) : undefined
   let abort: VoidFunction | undefined
+  let disposed = false
 
   if (!cleanup) {
     const [promise, cancel] = waitForElement(() => dom.getContentEl(scope), {
@@ -936,10 +977,16 @@ function waitForContentEl(
       rootNode: scope.getDoc(),
     })
     abort = cancel
-    promise.then((el) => (cleanup = setup(el))).catch(noop)
+    promise
+      .then((el) => {
+        if (disposed) return
+        cleanup = setup(el)
+      })
+      .catch(noop)
   }
 
   return () => {
+    disposed = true
     abort?.()
     cleanup?.()
   }

@@ -25,6 +25,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const isHorizontal = prop("orientation") === "horizontal"
   const virtualFocus = prop("virtualFocus")
 
+  // Server render, or the indicator hasn't been measured yet (e.g. inside a hidden panel)
+  const indicatorRect = context.get("indicatorRect")
+  const indicatorPending = context.get("ssr") || (indicatorRect != null && isRectEmpty(indicatorRect))
+
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
@@ -163,7 +167,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "data-selected": dataAttr(triggerState.selected),
         "data-focus": dataAttr(triggerState.focused),
         "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
-        "data-ssr": dataAttr(context.get("ssr")),
+        "data-indicator-pending": dataAttr(indicatorPending),
         id: dom.getTriggerId(scope, value),
         tabIndex: triggerState.selected && !virtualFocus ? 0 : -1,
         onFocus() {
@@ -210,28 +214,19 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
 
     getIndicatorProps() {
       const rect = context.get("indicatorRect")
-      const animateIndicator = context.get("animateIndicator")
 
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        "data-instant": dataAttr(context.get("indicatorInstant")),
         hidden: isRectEmpty(rect),
-        onTransitionEnd(event) {
-          if (getEventTarget(event) !== event.currentTarget) return
-          send({ type: "INDICATOR_TRANSITION_END" })
-        },
         style: {
-          "--transition-property": "left, right, top, bottom, width, height",
           "--left": toPx(rect?.x),
           "--top": toPx(rect?.y),
           "--width": toPx(rect?.width),
           "--height": toPx(rect?.height),
           position: "absolute",
-          willChange: animateIndicator ? "var(--transition-property)" : "auto",
-          transitionProperty: animateIndicator ? "var(--transition-property)" : "none",
-          transitionDuration: animateIndicator ? "var(--transition-duration, 150ms)" : "0ms",
-          transitionTimingFunction: "var(--transition-timing-function)",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },
       })

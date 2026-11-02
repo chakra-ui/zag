@@ -344,6 +344,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
           const keyMap: EventKeyMap = {
             ArrowUp(event) {
+              if (!isGridCollection(collection) && prop("orientation") === "horizontal") return
               let nextValue: string | null = null
               if (isGridCollection(collection) && highlightedValue) {
                 nextValue = collection.getPreviousRowValue(highlightedValue)
@@ -362,6 +363,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
 
             ArrowDown(event) {
+              if (!isGridCollection(collection) && prop("orientation") === "horizontal") return
               let nextValue: string | null = null
               if (isGridCollection(collection) && highlightedValue) {
                 nextValue = collection.getNextRowValue(highlightedValue)
@@ -381,7 +383,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             ArrowLeft() {
               if (!isGridCollection(collection) && prop("orientation") === "vertical") return
               let nextValue = highlightedValue ? collection.getPreviousValue(highlightedValue) : null
-              if (!nextValue && prop("loopFocus")) {
+              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
                 nextValue = collection.lastValue
               }
               if (!nextValue) return
@@ -392,7 +394,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             ArrowRight() {
               if (!isGridCollection(collection) && prop("orientation") === "vertical") return
               let nextValue = highlightedValue ? collection.getNextValue(highlightedValue) : null
-              if (!nextValue && prop("loopFocus")) {
+              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
                 nextValue = collection.firstValue
               }
               if (!nextValue) return
@@ -437,7 +439,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
           }
 
-          const exec = keyMap[getEventKey(event)]
+          const key = getEventKey(event, { dir: prop("dir") })
+          // `a` is only a shortcut with the ctrl or meta key (select all), otherwise let it reach typeahead
+          const exec = key === "a" && !isCtrlOrMetaKey(event) ? undefined : keyMap[key]
 
           if (exec) {
             exec(event)

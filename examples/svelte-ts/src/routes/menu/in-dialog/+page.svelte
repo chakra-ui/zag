@@ -1,6 +1,6 @@
 <script lang="ts">
-  import NestedMenu from "$lib/components/menu-in-dialog-nested-menu.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import NestedMenu from "#lib/components/menu-in-dialog-nested-menu.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"

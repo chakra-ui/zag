@@ -181,7 +181,6 @@
   },
   "radio-group": {
     "Indicator": {
-      "--transition-property": "The transition property value for the Indicator",
       "--left": "The left position value",
       "--top": "The top position value",
       "--width": "The width of the element",
@@ -230,7 +229,6 @@
   },
   "tabs": {
     "Indicator": {
-      "--transition-property": "The transition property value for the Indicator",
       "--left": "The left position value",
       "--top": "The top position value",
       "--width": "The width of the element",

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useInfiniteScroll } from "$lib/use-infinite-scroll.svelte"
+  import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
   import type { Snippet } from "svelte"
 
   interface Props {

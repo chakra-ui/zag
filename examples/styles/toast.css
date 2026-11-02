@@ -57,6 +57,12 @@
     outline: none;
     box-shadow: var(--z-shadow-popover), var(--z-focus-ring);
   }
+
+  /* Follow the pointer while swiping; the snap-back and exit still animate */
+  &[data-swiping] {
+    transition: none;
+    user-select: none;
+  }
 }
 
 [data-scope="toast"][data-part="indicator"] {
@@ -75,14 +81,14 @@
   }
 }
 
-[data-scope="toast"][data-part="content"] {
+[data-toast-content] {
   display: grid;
   flex: 1;
   gap: 2px;
   min-width: 0;
   transition: opacity 150ms;
 
-  [data-overlap][data-sibling] & {
+  &[data-overlap][data-sibling] {
     opacity: 0;
   }
 }

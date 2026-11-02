@@ -6,6 +6,7 @@ import { Show } from "../../components/show"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/color-picker.css"
 
 const presets = ["#f47373", "#697689"]
 

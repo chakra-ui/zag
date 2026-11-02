@@ -1,10 +1,10 @@
 import { memo, setup } from "@zag-js/core"
 import {
   addDomEvent,
+  AnimationFrame,
   isFirefox,
   isSafari,
   observeAttributes,
-  raf,
   requestPointerLock,
   setElementValue,
   trackFormControl,
@@ -59,6 +59,15 @@ export const machine = createMachine({
   initialState() {
     return "idle"
   },
+
+  refs() {
+    return {
+      syncFrame: AnimationFrame.create(),
+      focusFrame: AnimationFrame.create(),
+    }
+  },
+
+  exit: ["cancelFrames"],
 
   context({ prop, bindable, getComputed, getEvent }) {
     return {
@@ -414,11 +423,15 @@ export const machine = createMachine({
     },
 
     actions: {
-      focusInput({ scope, prop }) {
+      focusInput({ scope, prop, refs }) {
         if (!prop("focusInputOnChange")) return
         const inputEl = dom.getInputEl(scope)
         if (scope.isActiveElement(inputEl)) return
-        raf(() => inputEl?.focus({ preventScroll: true }))
+        refs.get("focusFrame").request(() => inputEl?.focus({ preventScroll: true }))
+      },
+      cancelFrames({ refs }) {
+        refs.get("syncFrame").cancel()
+        refs.get("focusFrame").cancel()
       },
       increment({ context, event, prop, computed }) {
         let nextValue = incrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
@@ -493,15 +506,18 @@ export const machine = createMachine({
           reason: event.src as ValueChangeReason,
         })
       },
-      syncInputElement({ context, event, computed, scope }) {
+      syncInputElement({ context, event, computed, scope, refs }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
         const sel = event.selection ?? recordCursor(inputEl, scope)
-        raf(() => {
+        // a newer sync replaces a pending one
+        refs.get("syncFrame").request(() => {
+          const unchanged = inputEl?.value === value
           setElementValue(inputEl, value)
-          restoreCursor(inputEl, sel, scope)
+          // the caret may have moved since it was recorded; only restore it if the value was rewritten
+          if (!unchanged) restoreCursor(inputEl, sel, scope)
         })
       },
       setFormattedValue({ context, computed, action }) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Popover from "$lib/components/popover-nested.svelte"
+  import Popover from "#lib/components/popover-nested.svelte"
   import "@styles/popover.css"
 </script>
 

@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { LayerSnapshot } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type {
   CommonProperties,
   DirectionProperty,
@@ -100,6 +101,7 @@ export interface NavigationMenuSchema {
 
     closeTimeoutId: number | null
     openTimeoutIds: Record<string, number>
+    focusFrame: AnimationFrame
   }
   context: {
     /**

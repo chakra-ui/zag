@@ -232,11 +232,21 @@ export function resolveTrend(trend: Trend | undefined, prevValue: number, nextVa
 /** The number of cells rendered in one digit strip. */
 export const getStripSize = (cycles: number): number => cycles * 10
 
-/** Shifts `target` by whole cycles until it lands on a rendered cell: same digit, fewer spins. */
+/**
+ * The lowest and highest cells a counter may land on. The ends stay clear so the spring's
+ * overshoot (~3% of the travel) still shows a digit; one cell per spare cycle covers the
+ * longest roll while leaving a full roll of headroom either side of the middle cycle.
+ */
+export function getStripBounds(cycles: number): [min: number, max: number] {
+  const margin = Math.floor(cycles / 2)
+  return [margin, getStripSize(cycles) - 1 - margin]
+}
+
+/** Shifts `target` by whole cycles until it lands inside the strip bounds: same digit, fewer spins. */
 export function boundToStrip(target: number, cycles: number): number {
-  const max = getStripSize(cycles) - 1
+  const [min, max] = getStripBounds(cycles)
   if (target > max) return target - Math.ceil((target - max) / 10) * 10
-  if (target < 0) return target + Math.ceil(-target / 10) * 10
+  if (target < min) return target + Math.ceil((min - target) / 10) * 10
   return target
 }
 
@@ -253,9 +263,9 @@ export function nextCounter(prev: number, digit: number, trend: 1 | -1 | undefin
   const preferred = trend === 1 ? up : trend === -1 ? down : up - prev <= prev - down ? up : down
   const opposite = preferred === up ? down : up
 
-  const max = getStripSize(cycles) - 1
-  if (preferred >= 0 && preferred <= max) return preferred
-  if (opposite >= 0 && opposite <= max) return opposite
+  const [min, max] = getStripBounds(cycles)
+  if (preferred >= min && preferred <= max) return preferred
+  if (opposite >= min && opposite <= max) return opposite
   return boundToStrip(preferred, cycles)
 }
 

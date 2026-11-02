@@ -3,6 +3,7 @@ import { createHotkeyStore } from "@zag-js/hotkeys"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { useEffect, useRef, useState } from "react"
 import { Presence } from "../../components/presence"
+import "@styles/dialog.css"
 
 let openDialog: () => void = () => {}
 
@@ -106,7 +107,7 @@ export default function CommandDialogPage() {
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.currentTarget.value)}
               placeholder="Type a command..."
               style={inputStyle}
             />

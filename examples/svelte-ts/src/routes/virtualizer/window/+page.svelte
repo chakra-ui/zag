@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useWindowVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useWindowVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { normalizeProps } from "@zag-js/svelte"
 
   const estimateSize = () => 142

@@ -36,16 +36,10 @@ export class ClipboardModel extends Model {
   }
 
   async seeContent(text: string) {
-    const content = this.getContent(text)
-    const hidden = await content.isHidden()
-
-    expect(hidden).not.toBe(true)
+    await expect(this.getContent(text)).toBeVisible()
   }
 
   async dontSeeContent(text: string) {
-    const content = this.getContent(text)
-    const hidden = await content.isHidden()
-
-    expect(hidden).toBe(true)
+    await expect(this.getContent(text)).toBeHidden()
   }
 }

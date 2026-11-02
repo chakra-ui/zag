@@ -62,7 +62,8 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
     },
 
     scrollTo(value, details) {
-      scrollTo(value, details)
+      if (!scrollTo(value, details)) return
+      send({ type: "SCROLL_TO", value })
     },
 
     getItemState,
@@ -134,15 +135,18 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
         "data-active": dataAttr(itemState.active),
         "aria-current": itemState.active ? "location" : undefined,
         onClick(event) {
-          const scrollEl = prop("scrollEl")?.()
-          if (!scrollEl) return
-
           if (event.defaultPrevented) return
           if (isDownloadingEvent(event)) return
           if (isOpeningInNewTab(event)) return
 
           const value = getSamePageHash(event.currentTarget)
-          if (!value) return
+          if (!value || !dom.getHeadingEl(scope, value)) return
+
+          send({ type: "SCROLL_TO", value })
+
+          // Without a scroll container, the browser handles the hash navigation
+          const scrollEl = prop("scrollEl")?.()
+          if (!scrollEl) return
 
           const scrolled = scrollTo(value)
           if (!scrolled) return

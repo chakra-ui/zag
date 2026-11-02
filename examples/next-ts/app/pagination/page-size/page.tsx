@@ -52,7 +52,7 @@ export default function Page() {
         <div className="pagination-bar">
           <div className="pagination-page-size">
             <label htmlFor={selectId}>Rows per page</label>
-            <select id={selectId} value={api.pageSize} onChange={(e) => api.setPageSize(Number(e.target.value))}>
+            <select id={selectId} value={api.pageSize} onChange={(e) => api.setPageSize(Number(e.currentTarget.value))}>
               {pageSizes.map((size) => (
                 <option key={size} value={size}>
                   {size}

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 import { ToastModel } from "./models/toast.model"
 
 let I: ToastModel

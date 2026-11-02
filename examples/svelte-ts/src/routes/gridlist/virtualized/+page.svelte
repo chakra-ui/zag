@@ -21,9 +21,9 @@
   import * as gridlist from "@zag-js/gridlist"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { CheckIcon } from "lucide-svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import "@styles/gridlist.css"
 
   const collection = gridlist.collection<Row>({

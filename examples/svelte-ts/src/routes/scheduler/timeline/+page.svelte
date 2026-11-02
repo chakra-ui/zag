@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as scheduler from "@zag-js/scheduler"
   import { schedulerAnchor, schedulerResourceEvents, schedulerResources } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

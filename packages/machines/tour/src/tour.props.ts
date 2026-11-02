@@ -17,6 +17,7 @@ export const props = createProps<TourProps>()([
   "onStepChange",
   "onStepsChange",
   "preventInteraction",
+  "scrollToTargetFn",
   "spotlightOffset",
   "spotlightRadius",
   "stepId",

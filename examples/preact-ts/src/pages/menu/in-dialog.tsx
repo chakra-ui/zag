@@ -2,8 +2,11 @@ import * as dialog from "@zag-js/dialog"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { menuData } from "@zag-js/shared"
+import { XIcon } from "lucide-preact"
 import { useId } from "react"
 import { useEffectOnce } from "../../hooks/use-effect-once"
+import "@styles/menu.css"
+import "@styles/dialog.css"
 
 function NestedMenu() {
   const service = useMachine(menu.machine, {
@@ -110,7 +113,9 @@ export default function Page() {
                 <NestedMenu />
               </div>
               <div style={{ marginTop: "20px", display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-                <button {...api.getCloseTriggerProps()}>Close</button>
+                <button {...api.getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </div>
             </div>
           </div>

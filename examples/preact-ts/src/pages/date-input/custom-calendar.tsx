@@ -5,6 +5,7 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 import { PersianCalendar } from "@internationalized/date"
+import "@styles/date-input.css"
 
 function createCalendar(identifier: string) {
   switch (identifier) {

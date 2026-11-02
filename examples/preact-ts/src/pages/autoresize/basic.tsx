@@ -1,13 +1,11 @@
 import { autoresizeTextarea } from "@zag-js/auto-resize"
-import { useEffect, useRef } from "preact/hooks"
+import { useEffect, useRef } from "react"
 
-export default function Page() {
+export default function Autoresize() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
   useEffect(() => {
     return autoresizeTextarea(textareaRef.current)
   }, [])
-
   return (
     <main>
       <textarea

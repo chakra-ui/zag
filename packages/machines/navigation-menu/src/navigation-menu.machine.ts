@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, navigate } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
@@ -92,12 +92,13 @@ export const machine = createMachine({
       triggerResizeObserverCleanup: undefined,
       closeTimeoutId: null,
       openTimeoutIds: {},
+      focusFrame: AnimationFrame.create(),
     }
   },
 
   entry: ["checkViewportNode"],
 
-  exit: ["cleanupObservers"],
+  exit: ["cleanupObservers", "clearAllTimeouts", "cancelFocusFrame"],
 
   effects: ["trackDocumentResize"],
 
@@ -148,7 +149,8 @@ export const machine = createMachine({
       actions: ["focusTrigger", "deselectValue"],
     },
     CLOSE: {
-      actions: ["clearAllOpenTimeouts", "deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
+      // restore focus before deselecting, since deselecting can unmount the content synchronously
+      actions: ["clearAllOpenTimeouts", "focusTriggerIfNeeded", "deselectValue", "removeFromTabOrder"],
     },
   },
 
@@ -190,12 +192,16 @@ export const machine = createMachine({
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
+        clearOpenTimeout(refs, event.value)
+
         const openTimeoutId = window.setTimeout(
           () => {
-            setTimeout(() => {
+            const innerTimeoutId = window.setTimeout(() => {
+              clearOpenTimeout(refs, event.value)
               context.set("previousValue", context.get("value"))
               context.set("value", event.value)
             })
+            setOpenTimeout(refs, event.value, innerTimeoutId)
           },
           shouldSkipDelay ? 0 : prop("openDelay"),
         )
@@ -263,6 +269,7 @@ export const machine = createMachine({
           onLayerChange(layer) {
             context.set("layer", layer)
           },
+          getRootNode: scope.getRootNode,
           onFocusOutside(event) {
             const target = event.detail.target as HTMLElement
 
@@ -319,8 +326,8 @@ export const machine = createMachine({
         dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
 
-      focusFirstTabbableEl({ event, scope, context }) {
-        raf(() => {
+      focusFirstTabbableEl({ event, scope, context, refs }) {
+        refs.get("focusFrame").request(() => {
           const value = event.value || context.get("value")
           const candidates = dom.getTabbableEls(scope, value)
           const elements = event.side === "start" ? candidates : candidates.reverse()
@@ -356,7 +363,13 @@ export const machine = createMachine({
       restoreTabOrder({ refs }) {
         refs.get("restoreContentTabOrder")?.()
       },
-
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
+      clearAllTimeouts({ refs }) {
+        clearCloseTimeout(refs)
+        clearAllOpenTimeouts(refs)
+      },
       cleanupObservers({ refs }) {
         refs.get("contentResizeObserverCleanup")?.()
         refs.get("contentDismissableCleanup")?.()

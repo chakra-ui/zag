@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "$lib/emoji-loader"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "#lib/emoji-loader.ts"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as listbox from "@zag-js/listbox"
   import * as popover from "@zag-js/popover"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

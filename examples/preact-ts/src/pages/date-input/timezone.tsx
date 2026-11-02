@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/date-input.css"
 
 const timeZone = "America/Los_Angeles"
 
@@ -30,7 +31,7 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <div {...api.getSegmentGroupProps()}>
               {api.getSegments().map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment })} suppressHydrationWarning>
+                <span key={i} {...api.getSegmentProps({ segment })}>
                   {segment.text}
                 </span>
               ))}
@@ -45,12 +46,12 @@ export default function Page() {
           <div>Time zone: {timeZone}</div>
         </output>
 
-        <label style={{ display: "block", marginTop: "12px" }}>
+        <label>
           <input
             type="checkbox"
             data-testid="hide-tz"
             checked={hideTimeZone}
-            onChange={(e) => setHideTimeZone(e.target.checked)}
+            onChange={(e) => setHideTimeZone(e.currentTarget.checked)}
           />{" "}
           Hide time zone
         </label>

@@ -2,6 +2,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId } from "react"
 import { Presence } from "../../components/presence"
+import "@styles/popover.css"
 
 export default function Page() {
   const service = useMachine(popover.machine, {

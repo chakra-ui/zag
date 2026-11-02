@@ -39,8 +39,8 @@
     "@vitejs/plugin-react": "^6.0.5",
     "clean-package": "2.2.0",
     "jsdom": "^30.0.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "vitest": "^5.0.0"
   },
   "peerDependencies": {

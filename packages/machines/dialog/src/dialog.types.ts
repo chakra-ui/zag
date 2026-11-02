@@ -1,4 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
@@ -71,7 +72,7 @@ export interface DialogProps
   restoreFocus?: boolean | undefined
   /**
    * Whether to close the dialog when the outside is clicked
-   * @default true
+   * @default `true` for modal dialogs, `false` for non-modal dialogs
    */
   closeOnInteractOutside?: boolean | undefined
   /**
@@ -138,6 +139,12 @@ export interface DialogSchema {
     rendered: { title: boolean; description: boolean }
     triggerValue: string | null
   }
+  refs: {
+    returnFocusEl: HTMLElement | null
+    returnFocusFrame: AnimationFrame
+    initialFocusFrame: AnimationFrame
+    renderedFrame: AnimationFrame
+  }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
   action:
@@ -147,9 +154,15 @@ export interface DialogSchema {
     | "invokeOnOpen"
     | "toggleVisibility"
     | "setTriggerValue"
+    | "setReturnFocusEl"
+    | "setFinalFocus"
+    | "cancelInitialFocus"
+    | "cancelFrames"
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined
+    restoreFocus?: boolean | undefined
+    previousEvent?: any
   }
 }
 

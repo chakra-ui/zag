@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useGridVirtualizer } from "$lib/use-virtualizer.svelte"
+  import { useGridVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { normalizeProps } from "@zag-js/svelte"
 
   // Grid configuration

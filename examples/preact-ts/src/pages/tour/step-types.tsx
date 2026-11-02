@@ -4,6 +4,7 @@ import { X } from "lucide-preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/tour.css"
 
 const steps: tour.StepDetails[] = [
   {
@@ -28,6 +29,8 @@ const steps: tour.StepDetails[] = [
   {
     id: "wait-action",
     type: "wait",
+    title: "",
+    description: "",
     effect({ next }) {
       const btn = document.querySelector<HTMLElement>("#continue-btn")
       if (!btn) return

@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { observeChildren, raf } from "@zag-js/dom-query"
+import { AnimationFrame, observeChildren } from "@zag-js/dom-query"
 import * as dom from "./toolbar.dom"
 import type { ToolbarSchema } from "./toolbar.types"
 
@@ -18,7 +18,15 @@ export const machine = createMachine<ToolbarSchema>({
     return "idle"
   },
 
+  refs() {
+    return {
+      focusFrame: AnimationFrame.create(),
+    }
+  },
+
   effects: ["trackItemMutations"],
+
+  exit: ["cancelFocusFrame"],
 
   context({ bindable }) {
     return {
@@ -116,33 +124,36 @@ export const machine = createMachine<ToolbarSchema>({
       setFocusedValue({ context, event }) {
         context.set("focusedValue", event.value)
       },
-      focusNextItem({ scope, prop }) {
+      focusNextItem({ scope, prop, refs }) {
         const before = scope.getActiveElement()
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
           dom.getNextEl(scope, prop("loopFocus"))?.focus({ preventScroll: true })
         })
       },
-      focusPrevItem({ scope, prop }) {
+      focusPrevItem({ scope, prop, refs }) {
         const before = scope.getActiveElement()
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
           dom.getPrevEl(scope, prop("loopFocus"))?.focus({ preventScroll: true })
         })
       },
-      focusFirstItem({ scope }) {
+      focusFirstItem({ scope, refs }) {
         const before = scope.getActiveElement()
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
           dom.getFirstEl(scope)?.focus({ preventScroll: true })
         })
       },
-      focusLastItem({ scope }) {
+      focusLastItem({ scope, refs }) {
         const before = scope.getActiveElement()
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
           dom.getLastEl(scope)?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
     },
 

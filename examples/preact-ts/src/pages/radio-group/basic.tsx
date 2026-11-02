@@ -6,6 +6,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/radio-group.css"
 
 export default function Page() {
   const controls = useControls(radioControls)
@@ -27,7 +28,7 @@ export default function Page() {
             console.log(result)
           }}
         >
-          <fieldset disabled={false}>
+          <fieldset className="vstack gap-5" disabled={false}>
             <div {...api.getRootProps()}>
               <h3 {...api.getLabelProps()}>Fruits</h3>
               <div {...api.getIndicatorProps()} />
@@ -43,16 +44,18 @@ export default function Page() {
             </div>
 
             {/*  */}
-            <button type="reset">Reset</button>
-            <button type="button" onClick={() => api.clearValue()}>
-              Clear
-            </button>
-            <button type="button" onClick={() => api.setValue("mango")}>
-              Set to Mangoes
-            </button>
-            <button type="button" onClick={() => api.focus()}>
-              Focus
-            </button>
+            <div className="hstack">
+              <button type="reset">Reset</button>
+              <button type="button" onClick={() => api.clearValue()}>
+                Clear
+              </button>
+              <button type="button" onClick={() => api.setValue("mango")}>
+                Set to Mangoes
+              </button>
+              <button type="button" onClick={() => api.focus()}>
+                Focus
+              </button>
+            </div>
           </fieldset>
         </form>
       </main>

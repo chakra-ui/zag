@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PlacementSide } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -84,6 +85,11 @@ export interface StepBaseDetails {
    * The actions to perform when the step is completed
    */
   actions?: StepAction[] | undefined
+}
+
+export interface ScrollToTargetDetails {
+  target: HTMLElement
+  step: StepDetails
 }
 
 export interface StepDetails extends StepBaseDetails {
@@ -207,6 +213,11 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
    */
   spotlightRadius?: number | undefined
   /**
+   * Function to scroll the step target into view.
+   * Defaults to `scrollIntoView` with the nearest alignment.
+   */
+  scrollToTargetFn?: ((details: ScrollToTargetDetails) => void) | undefined
+  /**
    * The translations for the tour
    */
   translations?: IntlTranslations | undefined
@@ -282,6 +293,14 @@ interface Refs {
    * The last positioned rect, including updates not yet rendered by the framework
    */
   prevSpotlightRect?: Rect | undefined
+  /**
+   * The element that had focus when the tour started, to restore focus when it ends
+   */
+  restoreFocusEl?: HTMLElement | null | undefined
+  /**
+   * The pending frame that restores focus
+   */
+  focusFrame: AnimationFrame
 }
 
 type ComputedContext = Readonly<{

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Presence from "$lib/components/presence.svelte"
+  import Presence from "#lib/components/presence.svelte"
   import * as popover from "@zag-js/popover"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { MoreVerticalIcon, XIcon } from "lucide-svelte"
   import "@styles/popover.css"
 

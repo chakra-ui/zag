@@ -12,10 +12,11 @@ export default function Page() {
   const [zoom, setZoom] = createSignal(1)
   const [rotation, setRotation] = createSignal(0)
 
+  const id = createUniqueId()
   const service = useMachine(
     imageCropper.machine,
     controls.mergeProps<imageCropper.Props>(() => ({
-      id: createUniqueId(),
+      id,
       cropShape: "circle",
       zoom: zoom(),
       onZoomChange(details) {

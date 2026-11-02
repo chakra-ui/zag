@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/date-input.css"
 
 export default function Page() {
   const controls = useControls(dateInputControls)
@@ -50,7 +51,7 @@ export default function Page() {
           <div>Selected: {api.valueAsString.join(" - ") || "-"}</div>
           <div>Placeholder: {api.placeholderValue.toString()}</div>
           {api.displayValues?.map((date, index) => (
-            <div>
+            <div key={index}>
               Editing input {index + 1}: {date.toString() ?? "-"}
             </div>
           ))}

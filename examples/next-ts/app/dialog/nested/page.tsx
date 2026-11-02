@@ -38,7 +38,7 @@ export default function Page() {
                   <p {...parentDialog.getDescriptionProps()}>
                     Make changes to your profile here. Click save when you are done.
                   </p>
-                  <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1">
+                  <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1" aria-label="Close">
                     <XIcon />
                   </button>
                   <input type="text" ref={inputRef} placeholder="Enter name..." data-testid="input-1" />
@@ -54,7 +54,7 @@ export default function Page() {
                       <div data-testid="positioner-2" {...childDialog.getPositionerProps()}>
                         <div {...childDialog.getContentProps()}>
                           <h2 {...childDialog.getTitleProps()}>Nested</h2>
-                          <button {...childDialog.getCloseTriggerProps()} data-testid="close-2">
+                          <button {...childDialog.getCloseTriggerProps()} data-testid="close-2" aria-label="Close">
                             <XIcon />
                           </button>
                           <button onClick={() => parentDialog.setOpen(false)} data-testid="special-close">

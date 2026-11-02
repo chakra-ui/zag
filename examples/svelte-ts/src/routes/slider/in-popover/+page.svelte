@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import SliderPriceSlider from "$lib/components/slider-price-slider.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import SliderPriceSlider from "#lib/components/slider-price-slider.svelte"
   import * as popover from "@zag-js/popover"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/slider.css"

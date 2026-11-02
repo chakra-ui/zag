@@ -23,7 +23,8 @@ export class DialogModel extends Model {
   }
 
   private get content() {
-    return this.page.locator(`[data-testid='positioner-${this.id}']`)
+    // positioner may stay mounted while closed
+    return this.page.locator(`[data-testid='positioner-${this.id}'] > [data-dialog-content]`)
   }
 
   private get closeTrigger() {

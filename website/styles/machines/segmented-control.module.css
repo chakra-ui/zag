@@ -29,8 +29,13 @@
     border-radius: 8px;
     background: var(--colors-bg-raised);
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
-    --transition-duration: 180ms;
-    --transition-timing-function: ease-out;
+    transition-property: left, top, width, height;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out;
+
+    &[data-instant] {
+      transition: none;
+    }
   }
 
   .Item {
@@ -62,6 +67,11 @@
       outline-offset: -2px;
     }
 
+    &[data-state="checked"][data-indicator-pending] {
+      border-radius: 0.375rem;
+      background: var(--colors-bg-subtle);
+    }
+
     &[data-disabled] {
       opacity: 0.45;
       cursor: not-allowed;
@@ -71,7 +81,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .Indicator {
-    --transition-duration: 0ms;
+    transition: none;
   }
 
   .Item {

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import SchedulerMiniMonth from "$lib/components/scheduler-mini-month.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import SchedulerMiniMonth from "#lib/components/scheduler-mini-month.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import { CalendarDateTime } from "@internationalized/date"
   import * as scheduler from "@zag-js/scheduler"
   import { schedulerAnchor, schedulerControls } from "@zag-js/shared"

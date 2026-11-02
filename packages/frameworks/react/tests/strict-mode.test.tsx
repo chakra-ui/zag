@@ -194,4 +194,35 @@ describe("React Strict Mode", () => {
 
     expect(cleanupSpy).toHaveBeenCalledTimes(2)
   })
+
+  test("watch does not track the double mount as a change", async () => {
+    const notify = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+      },
+      context({ bindable }) {
+        return { value: bindable(() => ({ defaultValue: "foo" })) }
+      },
+      watch({ track, context, action }) {
+        track([() => context.get("value")], () => {
+          action(["notify"])
+        })
+      },
+      implementations: {
+        actions: {
+          notify,
+        },
+      },
+    })
+
+    renderStrict(machine)
+    await flush()
+
+    expect(notify).not.toHaveBeenCalled()
+  })
 })

@@ -24,7 +24,7 @@ export class CarouselModel extends Model {
   }
 
   get previousTrigger() {
-    return this.page.locator(part("carousel", "prev-trigger"))
+    return this.page.locator(part("carousel", "previous-trigger"))
   }
 
   get nextTrigger() {

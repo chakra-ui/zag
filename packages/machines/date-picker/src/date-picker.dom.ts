@@ -33,3 +33,21 @@ export const getMonthSelectEl = (ctx: Scope) => ctx.query<HTMLSelectElement>(ctx
 export const getClearTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.clearTrigger))
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
+
+export const focusInputEl = (ctx: Scope) => {
+  const inputEls = getInputEls(ctx)
+
+  // If no input elements exist (trigger-only mode), focus the trigger instead
+  if (inputEls.length === 0) {
+    getTriggerEl(ctx)?.focus({ preventScroll: true })
+    return
+  }
+
+  const lastIndexWithValue = inputEls.findLastIndex((inputEl) => inputEl.value !== "")
+  const indexToFocus = Math.max(lastIndexWithValue, 0)
+
+  const inputEl = inputEls[indexToFocus]
+  inputEl?.focus({ preventScroll: true })
+  // move cursor to the end
+  inputEl?.setSelectionRange(inputEl.value.length, inputEl.value.length)
+}

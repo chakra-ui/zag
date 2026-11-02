@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import { CheckSquare, ChevronRightIcon, MinusSquare, Square } from "lucide-preact"
 import { JSX, useId } from "react"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -63,11 +64,13 @@ const iconMap = {
 function TreeNodeCheckbox(props: TreeNodeProps) {
   const { api, ...nodeProps } = props
   const nodeState = api.getNodeState(nodeProps)
+  const Icon = iconMap[nodeState.checked.toString() as keyof typeof iconMap]
 
-  const checkboxProps = api.getNodeCheckboxProps(nodeProps)
-  const Icon = iconMap[nodeState.checked.toString()]
-
-  return <Icon {...checkboxProps} />
+  return (
+    <span {...api.getNodeCheckboxProps(nodeProps)}>
+      <Icon />
+    </span>
+  )
 }
 
 const TreeNode = (props: TreeNodeProps): JSX.Element => {
@@ -76,29 +79,29 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
           <TreeNodeCheckbox {...props} />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getNodeCellProps(nodeProps)}>
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+        </div>
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <TreeNodeCheckbox {...props} /> {node.name}
+      )}
     </div>
   )
 }

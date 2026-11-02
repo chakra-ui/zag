@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Panel from "$lib/components/splitter-panel.svelte"
-  import PanelGroup from "$lib/components/splitter-panel-group.svelte"
-  import ResizeTrigger from "$lib/components/splitter-resize-trigger.svelte"
+  import Panel from "#lib/components/splitter-panel.svelte"
+  import PanelGroup from "#lib/components/splitter-panel-group.svelte"
+  import ResizeTrigger from "#lib/components/splitter-resize-trigger.svelte"
   import * as splitter from "@zag-js/splitter"
   import "@styles/splitter.css"
 

@@ -22,7 +22,7 @@ function ConditionalToast(props: ConditionalToastProps) {
 
   return (
     <div {...api().getRootProps()}>
-      <div data-scope="toast" data-part="content">
+      <div {...api().getContentProps()}>
         <p>Your draft is ready.</p>
         <Show when={props.showTitle}>
           <div {...api().getTitleProps()}>{api().title}</div>

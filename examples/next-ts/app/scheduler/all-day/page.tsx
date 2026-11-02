@@ -44,7 +44,7 @@ export default function Page() {
             type="checkbox"
             data-testid="cap-rows"
             checked={maxAllDayRows === 1}
-            onChange={(e) => setMaxAllDayRows(e.target.checked ? 1 : undefined)}
+            onChange={(e) => setMaxAllDayRows(e.currentTarget.checked ? 1 : undefined)}
           />
           Cap the all-day row at one level
         </label>

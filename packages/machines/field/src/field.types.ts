@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Params, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -166,6 +167,10 @@ export interface FieldSchema {
      * Async validation sequence — stale resolutions are discarded.
      */
     seq: number
+    /**
+     * The pending frame that re-measures the control after a form reset.
+     */
+    resetFrame: AnimationFrame
   }
   event: EventObject
   action: string

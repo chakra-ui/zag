@@ -17,7 +17,7 @@
 </script>
 
 <div {...api.getRootProps()}>
-  <div data-scope="toast" data-part="content">
+  <div {...api.getContentProps()}>
     <p>Your draft is ready.</p>
     {#if showTitle}
       <div {...api.getTitleProps()}>{api.title}</div>

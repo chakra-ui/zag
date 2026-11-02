@@ -7,6 +7,7 @@ import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/combobox.css"
 
 interface Item {
   code: string

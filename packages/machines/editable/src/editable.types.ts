@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
@@ -166,6 +167,9 @@ export interface EditableSchema {
     isInteractive: boolean
     submitOnEnter: boolean
     submitOnBlur: boolean
+  }
+  refs: {
+    focusFrame: AnimationFrame
   }
   action: string
   effect: string

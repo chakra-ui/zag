@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Presence from "$lib/components/presence.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Presence from "#lib/components/presence.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tooltip from "@zag-js/tooltip"
   import "@styles/tooltip.css"

@@ -1,4 +1,5 @@
-import { expect, test, type Locator } from "@playwright/test"
+import type { Locator } from "@playwright/test"
+import { expect, test } from "./_test"
 
 const zIndex = (locator: Locator) => locator.evaluate((el) => Number(getComputedStyle(el).zIndex))
 

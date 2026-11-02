@@ -3,6 +3,8 @@ import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
 import { useId } from "react"
+import "@styles/dialog.css"
+import "@styles/date-picker.css"
 
 const DatePicker = () => {
   const service = useMachine(datePicker.machine, {

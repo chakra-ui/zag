@@ -296,7 +296,7 @@ export function connect<T extends PropTypes>(
 
       const transform = getImageTransformCss({ zoom, offset, rotation, flip })
 
-      return normalize.element({
+      return normalize.img({
         ...parts.image.attrs(scope.id),
         draggable: false,
         role: "presentation",

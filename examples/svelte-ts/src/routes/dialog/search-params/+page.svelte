@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import { goto } from "$app/navigation"
   import { page } from "$app/state"
   import * as dialog from "@zag-js/dialog"

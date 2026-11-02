@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import { startOfWeek } from "@internationalized/date"
   import * as scheduler from "@zag-js/scheduler"
   import { schedulerAnchor, schedulerBacklog } from "@zag-js/shared"

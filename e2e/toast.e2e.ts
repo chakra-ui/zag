@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./_test"
 import { ToastModel } from "./models/toast.model"
 
 let I: ToastModel
@@ -34,6 +34,38 @@ test.describe("toast / basic", () => {
     await I.getToast().focus()
     await page.keyboard.press("Escape")
     await I.seeNumOfToasts(0)
+  })
+
+  test("updates the height when the content wraps onto more lines", async () => {
+    await I.clickExact("Show toast")
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 200, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
+  })
+
+  // Shows the toast first: at 200px the example's toolbar covers the trigger
+  test("updates the height when the content wraps onto fewer lines", async () => {
+    await I.clickExact("Show toast")
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const baseHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 200, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(baseHeight)
+    const wrappedHeight = await I.getToastHeight()
+
+    await I.resizeWindow({ width: 1024, height: 720 })
+    await expect.poll(() => I.getToastHeight()).toBeLessThan(wrappedHeight)
+  })
+
+  test("updates the height when the content grows without a resize", async () => {
+    await I.clickExact("Show toast")
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(0)
+    const initialHeight = await I.getToastHeight()
+
+    await I.enlargeTitle()
+    await expect.poll(() => I.getToastHeight()).toBeGreaterThan(initialHeight)
   })
 })
 
@@ -82,6 +114,33 @@ test.describe("toast / overlap", () => {
     await page.waitForTimeout(16)
     await I.seeToastsStacked()
   })
+
+  test("new toasts join the expanded stack without moving the pointer", async ({ page }) => {
+    await I.clickExact("Show toast", 2)
+    await I.mouseIntoRegion()
+    await I.seeToastsStacked()
+
+    // The create button keeps focus while the pointer stays over the stack
+    await page.keyboard.press("Space")
+    await I.seeNumOfToasts(3)
+    await I.seeToastsStacked()
+    await I.seeToastArePaused()
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsOverlap()
+    await page.keyboard.press("Space")
+    await I.seeNumOfToasts(4)
+    await I.seeToastsOverlap()
+  })
+
+  test("closing a toast with the mouse resumes the rest once the pointer leaves", async () => {
+    await I.clickExact("Show toast", 2)
+    await I.closeNthToast(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
+  })
 })
 
 test.describe("toast / list", () => {
@@ -93,11 +152,7 @@ test.describe("toast / list", () => {
   test("lays toasts out without overlap", async () => {
     await I.clickExact("Show toast", 3)
     await I.seeToastsStacked()
-
-    const boxes = await Promise.all([0, 1, 2].map((i) => I.getToast(i).boundingBox()))
-    const sorted = boxes.map((box) => box!).sort((a, b) => a.y - b.y)
-    expect(sorted[0].y + sorted[0].height).toBeLessThanOrEqual(sorted[1].y)
-    expect(sorted[1].y + sorted[1].height).toBeLessThanOrEqual(sorted[2].y)
+    await I.seeToastsDontOverlap(3)
   })
 
   test("pauses on hover and resumes on leave", async () => {
@@ -107,6 +162,42 @@ test.describe("toast / list", () => {
 
     await I.mouseOutOfRegion()
     await I.seeNumOfToasts(0)
+  })
+
+  test("escape on a focused toast moves focus to the next toast", async () => {
+    await I.clickExact("Show toast", 2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+    await I.seeToastArePaused()
+
+    await I.pressKey("Escape")
+    await I.seeNumOfToasts(0)
+    await I.seeButtonIsFocused("Show toast")
+  })
+
+  test("closing a focused toast with its close button moves focus to the next toast", async () => {
+    await I.clickExact("Show toast", 2)
+    await I.pressHotkey()
+    await I.pressKey("Tab")
+    await I.pressKey("Tab")
+
+    await I.pressKey("Enter")
+    await I.seeNumOfToasts(1)
+    await I.seeToastIsFocused(0)
+  })
+
+  test("closing a toast with the mouse resumes the others once the pointer leaves", async () => {
+    await I.clickExact("Show toast", 2)
+    await I.closeNthToast(0)
+    await I.seeNumOfToasts(1)
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsAreNotPaused()
   })
 })
 

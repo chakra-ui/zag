@@ -159,7 +159,7 @@
 }
 
 /* Stale results stay visible but dimmed while a slow query loads */
-[data-combobox-content][aria-busy] [data-combobox-list] {
+[data-combobox-list][aria-busy] {
   opacity: 0.6;
   transition: opacity var(--z-duration) var(--z-ease) 500ms;
 }

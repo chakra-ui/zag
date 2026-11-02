@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { UseControlsReturn } from "$lib/use-controls.svelte"
+  import type { UseControlsReturn } from "#lib/use-controls.svelte.ts"
   import { dataAttr } from "@zag-js/dom-query"
   import Controls from "./controls.svelte"
   import { untrack, type Snippet } from "svelte"

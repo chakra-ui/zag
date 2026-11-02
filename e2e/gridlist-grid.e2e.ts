@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./_test"
 import { GridListModel } from "./models/gridlist.model"
 
 let I: GridListModel

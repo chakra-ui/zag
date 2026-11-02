@@ -72,18 +72,18 @@
     ]
   },
   "dependencies": {
-    "@axe-core/playwright": "4.13.0",
+    "@axe-core/playwright": "4.14.0",
     "@changesets/changelog-github": "1.0.1",
     "@changesets/cli": "3.0.3",
-    "@commitlint/cli": "21.2.3",
-    "@commitlint/config-conventional": "21.2.3",
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
     "@internationalized/date": "3.12.4",
-    "@playwright/test": "1.64.0",
-    "@swc/core": "1.16.13",
+    "@playwright/test": "1.64.1",
+    "@swc/core": "1.16.20",
     "@types/jsdom": "^30.0.0",
     "@types/node": "25.9.9",
     "@types/signale": "1.4.7",
-    "commitlint": "21.2.3",
+    "commitlint": "21.2.4",
     "cross-env": "^10.1.0",
     "dotenv": "17.4.2",
     "esbuild-plugin-file-path-extensions": "^2.1.4",
@@ -101,8 +101,8 @@
     "tsup": "8.5.1",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
-    "vite": "8.3.4",
-    "vitest": "5.0.3"
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   },
   "engines": {
     "node": ">=18.0.0"

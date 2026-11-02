@@ -2,6 +2,21 @@
 
 ## 2.0.0-next.3
 
+## 1.47.0
+
+### Patch Changes
+
+- [#3492](https://github.com/chakra-ui/zag/pull/3492)
+  [`bb78af8`](https://github.com/chakra-ui/zag/commit/bb78af81b4013a246917010d4f720c4e15c9936f) Thanks
+  [@jsabutis](https://github.com/jsabutis)! - - Fix `ArrowLeft` and `ArrowRight` not being mirrored when `dir` is `rtl`.
+  - Fix focus jumping back into the group when tabbing out right after pressing an arrow, `Home`, or `End` key.
+- Updated dependencies [[`94fbd51`](https://github.com/chakra-ui/zag/commit/94fbd51c20586f78c5df2db4811bb252ba099bf1)]:
+  - @zag-js/dom-query@1.47.0
+  - @zag-js/core@1.47.0
+  - @zag-js/anatomy@1.47.0
+  - @zag-js/types@1.47.0
+  - @zag-js/utils@1.47.0
+
 ## 1.46.0
 
 ### Patch Changes

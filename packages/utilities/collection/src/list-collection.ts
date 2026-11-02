@@ -25,15 +25,16 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   items: T[]
   private indexMap: Map<string, number> | null = null
 
-  constructor(private options: CollectionOptions<T>) {
+  constructor(protected options: CollectionOptions<T>) {
     this.items = [...options.items] as T[]
   }
 
   /**
-   * Copy the collection
+   * Copy the collection, as the same subclass
    */
-  copy = (items?: T[]) => {
-    return new ListCollection({ ...this.options, items: items ?? [...this.items] })
+  copy = (items?: T[]): this => {
+    const Collection = this.constructor as new (options: CollectionOptions<T>) => this
+    return new Collection({ ...this.options, items: items ?? [...this.items] })
   }
 
   /**

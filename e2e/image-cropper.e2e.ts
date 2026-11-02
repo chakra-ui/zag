@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect } from "./_test"
 import { ImageCropperModel } from "./models/image-cropper.model"
 
 let I: ImageCropperModel

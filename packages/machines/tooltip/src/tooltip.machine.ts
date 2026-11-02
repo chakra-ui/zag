@@ -144,6 +144,10 @@ export const machine = createMachine<TooltipSchema>({
         ],
         POINTER_LEAVE: [
           {
+            guard: "isDisabled",
+            actions: ["clearPointerMoveOpened"],
+          },
+          {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
             actions: ["clearPointerMoveOpened", "invokeOnClose", "toggleVisibility"],
@@ -187,6 +191,11 @@ export const machine = createMachine<TooltipSchema>({
         // Hoverable content means the pointer may be travelling to it (WCAG 1.4.13), so the
         // safe area decides when it has really left.
         POINTER_LEAVE: [
+          {
+            // A controlled tooltip can stay open while disabled
+            guard: "isDisabled",
+            actions: ["clearPointerMoveOpened"],
+          },
           {
             guard: and(not("isInteractive"), "isVisible"),
             target: "closing",
@@ -285,6 +294,7 @@ export const machine = createMachine<TooltipSchema>({
       isInteractive: ({ prop }) => !!prop("interactive"),
       hasPointerMoveOpened: ({ context }) => !!context.get("hasPointerMoveOpened"),
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
+      isDisabled: ({ prop }) => !!prop("disabled"),
     },
 
     actions: {
@@ -449,7 +459,9 @@ export const machine = createMachine<TooltipSchema>({
 
       trackStore: ({ prop, send }) => {
         let cleanup: VoidFunction | undefined
+        let cancelled = false
         queueMicrotask(() => {
+          if (cancelled) return
           cleanup = store.subscribe(() => {
             const id = store.get("id")
             if (id !== null && id !== prop("id")) {
@@ -457,7 +469,10 @@ export const machine = createMachine<TooltipSchema>({
             }
           })
         })
-        return () => cleanup?.()
+        return () => {
+          cancelled = true
+          cleanup?.()
+        }
       },
 
       trackEscapeKey: ({ send, prop }) => {

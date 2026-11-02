@@ -90,7 +90,9 @@ function Menubar() {
 ```
 
 The config carries the menubar's `rootId`, `activeId`, `disabled`, and
-`orientation`, so a menu always reflects the bar it belongs to.
+`orientation`, so a menu always reflects the bar it belongs to. In Vue, Svelte,
+and Solid, pass it down reactively (a computed ref, getter, or accessor) so
+`activeId` updates reach the menus.
 
 ### Nested submenus
 

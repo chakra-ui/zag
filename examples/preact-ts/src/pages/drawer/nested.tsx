@@ -1,9 +1,10 @@
+import styles from "@styles/drawer-nested.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
 import { useEffect, useId, useState } from "react"
 import { createPortal } from "react-dom"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer-nested.module.css"
 
 function Portal({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -77,7 +78,7 @@ export default function Page() {
                   </button>
                 </div>
                 <button {...firstApi.getCloseTriggerProps()} className={styles.button}>
-                  Close
+                  <XIcon />
                 </button>
               </div>
             </div>
@@ -111,7 +112,7 @@ export default function Page() {
                     </button>
                   </div>
                   <button {...secondApi.getCloseTriggerProps()} className={styles.button}>
-                    Close
+                    <XIcon />
                   </button>
                 </div>
               </div>

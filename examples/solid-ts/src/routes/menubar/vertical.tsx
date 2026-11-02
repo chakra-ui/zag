@@ -1,13 +1,13 @@
 import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createContext, createMemo, createUniqueId, useContext } from "solid-js"
+import { type Accessor, For, Show, createContext, createMemo, createUniqueId, useContext } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
 
-const MenubarContext = createContext<menu.MenubarContext>()
+const MenubarContext = createContext<Accessor<menu.MenubarContext>>()
 
 interface MenuProps {
   id: string
@@ -17,12 +17,12 @@ interface MenuProps {
 
 function Menu(props: MenuProps) {
   const menubarContext = useContext(MenubarContext)
-  const service = useMachine(menu.machine, {
+  const service = useMachine(menu.machine, () => ({
     id: props.id,
-    menubar: menubarContext,
+    menubar: menubarContext?.(),
     // vertical menubar menus fly out to the side
-    positioning: { placement: "right-start", gutter: 4 },
-  })
+    positioning: { placement: "right-start" as const, gutter: 4 },
+  }))
   const api = createMemo(() => menu.connect(service, normalizeProps))
   return (
     <>
@@ -84,7 +84,7 @@ export default function Page() {
   return (
     <>
       <main class="menubar">
-        <MenubarContext.Provider value={api().getMenuContext()}>
+        <MenubarContext.Provider value={() => api().getMenuContext()}>
           <div
             {...api().getRootProps()}
             style={{ display: "inline-flex", "flex-direction": "column", gap: "4px", width: "160px" }}

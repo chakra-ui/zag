@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -261,6 +262,7 @@ export interface SliderSchema {
      * Used for swap collision behavior to determine swap direction.
      */
     startValue: number[] | null
+    focusFrame: AnimationFrame
   }
   computed: Computed
   event: EventObject
@@ -308,6 +310,7 @@ export interface MarkerState {
 export interface ThumbProps {
   index: number
   name?: string | undefined
+  disabled?: boolean | undefined
 }
 
 export interface ThumbState {

@@ -33,7 +33,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                     type="checkbox"
                     defaultChecked={value}
                     onChange={(e) => {
-                      setState(key, e.target.checked)
+                      setState(key, e.currentTarget.checked)
                     }}
                   />
                   <label htmlFor={label}>{label}</label>
@@ -67,7 +67,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                     id={label}
                     defaultValue={value}
                     onChange={(e) => {
-                      setState(key, e.target.value)
+                      setState(key, e.currentTarget.value)
                     }}
                   >
                     <option>-----</option>

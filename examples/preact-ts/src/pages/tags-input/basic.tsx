@@ -1,10 +1,12 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { tagsInputControls } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
+import { XIcon } from "lucide-preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/tags-input.css"
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
@@ -37,14 +39,16 @@ export default function Page() {
                     data-testid={`${toDashCase(value)}-close-button`}
                     {...api.getItemDeleteTriggerProps({ index, value })}
                   >
-                    &#x2715;
+                    <XIcon />
                   </button>
                 </div>
                 <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
             <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
-            <button {...api.getClearTriggerProps()}>X</button>
+            <button {...api.getClearTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
           <input {...api.getHiddenInputProps()} />
         </div>

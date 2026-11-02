@@ -50,7 +50,7 @@ export default function Page() {
                 min={0}
                 max={100}
                 value={volume}
-                onChange={(e) => setVolume(Number(e.target.value))}
+                onChange={(e) => setVolume(Number(e.currentTarget.value))}
                 data-testid="drawer-native-range"
                 style={{ width: "100%", touchAction: "auto" }}
               />

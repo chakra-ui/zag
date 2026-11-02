@@ -1,2 +1,3 @@
 export { highlightWord } from "./highlight"
-export type { HighlightChunk, HighlightWordProps, HighlightSpan } from "./types"
+export { highlightRanges } from "./highlight-ranges"
+export type { HighlightChunk, HighlightRange, HighlightRangesProps, HighlightWordProps, HighlightSpan } from "./types"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PopoverResponsive from "$lib/components/popover-responsive.svelte"
+  import PopoverResponsive from "#lib/components/popover-responsive.svelte"
   import "@styles/popover.css"
 </script>
 

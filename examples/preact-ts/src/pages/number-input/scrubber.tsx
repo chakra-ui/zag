@@ -1,14 +1,14 @@
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { numberInputControls } from "@zag-js/shared"
-import { MoveHorizontalIcon } from "lucide-preact"
+import { MinusIcon, MoveHorizontalIcon, PlusIcon } from "lucide-preact"
 import { useId } from "react"
-import { useControls } from "../../hooks/use-controls"
-import { Toolbar } from "../../components/toolbar"
 import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 import "@styles/number-input.css"
 
-export default function NumberInput() {
+export default function Page() {
   const controls = useControls(numberInputControls)
 
   const service = useMachine(numberInput.machine, {
@@ -32,16 +32,15 @@ export default function NumberInput() {
           </label>
           <div {...api.getControlProps()}>
             <button data-testid="dec-button" {...api.getDecrementTriggerProps()}>
-              DEC
+              <MinusIcon />
             </button>
             <input data-testid="input" {...api.getInputProps()} />
             <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
-              INC
+              <PlusIcon />
             </button>
           </div>
         </div>
       </main>
-
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} omit={["formatter", "parser"]} />
       </Toolbar>

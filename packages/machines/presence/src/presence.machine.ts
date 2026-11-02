@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
+import { AnimationFrame, getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import type { PresenceSchema } from "./presence.types"
 
 export const machine = createMachine<PresenceSchema>({
@@ -15,6 +15,8 @@ export const machine = createMachine<PresenceSchema>({
     return {
       node: null,
       styles: null,
+      unmountFrame: AnimationFrame.create(),
+      prevAnimationFrame: AnimationFrame.create(),
     }
   },
 
@@ -30,7 +32,7 @@ export const machine = createMachine<PresenceSchema>({
     }
   },
 
-  exit: ["cleanupNode"],
+  exit: ["cancelFrames", "cleanupNode"],
 
   watch({ track, prop, send }) {
     track([() => prop("present")], () => {
@@ -111,6 +113,11 @@ export const machine = createMachine<PresenceSchema>({
         refs.set("styles", getComputedStyle(event.node))
       },
 
+      cancelFrames: ({ refs }) => {
+        refs.get("unmountFrame").cancel()
+        refs.get("prevAnimationFrame").cancel()
+      },
+
       cleanupNode: ({ refs }) => {
         refs.set("node", null)
         refs.set("styles", null)
@@ -127,7 +134,7 @@ export const machine = createMachine<PresenceSchema>({
           return send({ type: "UNMOUNT", src: "visibilitychange" })
         }
 
-        raf(() => {
+        refs.get("unmountFrame").request(() => {
           // Re-check present prop - it may have changed back to true during the raf delay
           if (prop("present")) return
 
@@ -148,7 +155,7 @@ export const machine = createMachine<PresenceSchema>({
       },
 
       setPrevAnimationName: ({ context, refs }) => {
-        raf(() => {
+        refs.get("prevAnimationFrame").request(() => {
           context.set("prevAnimationName", getAnimationName(refs.get("styles")))
         })
       },

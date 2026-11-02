@@ -6,7 +6,6 @@ import {
   contains,
   getByTypeahead,
   observeAttributes,
-  raf,
   scrollIntoView,
   tryFocusElement,
 } from "@zag-js/dom-query"
@@ -94,6 +93,7 @@ export const machine = createMachine({
     return {
       typeahead: { ...getByTypeahead.defaultOptions },
       focusVisible: false,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -125,6 +125,8 @@ export const machine = createMachine({
   },
 
   entry: ["applyAutoFocus"],
+
+  exit: ["cancelFocusFrame"],
 
   watch({ context, prop, track, action }) {
     track([() => context.get("focusedValue")], () => {
@@ -277,7 +279,7 @@ export const machine = createMachine({
     },
 
     actions: {
-      applyAutoFocus({ context, prop, scope }) {
+      applyAutoFocus({ context, prop, scope, refs }) {
         const autoFocus = prop("autoFocus")
         if (!autoFocus) return
         const coll = prop("collection")
@@ -285,7 +287,7 @@ export const machine = createMachine({
         if (nextValue == null) return
         context.set("focusedValue", nextValue)
         context.set("focused", true)
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           dom.getItemEl(scope, nextValue)?.focus({ preventScroll: true })
         })
       },
@@ -357,11 +359,11 @@ export const machine = createMachine({
         context.set("focusedValue", value)
       },
 
-      setFocusedItem({ context, event, scope }) {
+      setFocusedItem({ context, event, scope, refs }) {
         context.set("focusedValue", event.value)
 
         if (event.value) {
-          raf(() => {
+          refs.get("focusFrame").request(() => {
             const itemEl = dom.getItemEl(scope, event.value)
             if (!itemEl) return
 
@@ -432,35 +434,39 @@ export const machine = createMachine({
         context.set("focused", true)
       },
 
-      focusCurrentItem({ context, scope }) {
+      focusCurrentItem({ context, scope, refs }) {
         const focusedValue = context.get("focusedValue")
         if (focusedValue) {
-          raf(() => {
+          refs.get("focusFrame").request(() => {
             const itemEl = dom.getItemEl(scope, focusedValue)
             itemEl?.focus({ preventScroll: true })
           })
         }
       },
 
-      setDefaultFocusedValue({ context, prop, scope }) {
+      setDefaultFocusedValue({ context, prop, scope, refs }) {
         const collection = prop("collection")
         const firstValue = collection.firstValue
         if (firstValue != null) {
           context.set("focusedValue", firstValue)
-          raf(() => {
+          refs.get("focusFrame").request(() => {
             dom.getItemEl(scope, firstValue)?.focus({ preventScroll: true })
           })
         }
       },
 
-      setFirstSelectedAsFocused({ context, scope }) {
+      setFirstSelectedAsFocused({ context, scope, refs }) {
         const value = context.get("value")
         if (value.length > 0) {
           context.set("focusedValue", value[0])
-          raf(() => {
+          refs.get("focusFrame").request(() => {
             dom.getItemEl(scope, value[0])?.focus({ preventScroll: true })
           })
         }
+      },
+
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
 
       clearFocused({ context }) {

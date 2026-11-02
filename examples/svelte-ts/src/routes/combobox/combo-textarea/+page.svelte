@@ -50,8 +50,8 @@
 </script>
 
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as combobox from "@zag-js/combobox"
   import { raf } from "@zag-js/dom-query"
   import { createFilter } from "@zag-js/i18n-utils"

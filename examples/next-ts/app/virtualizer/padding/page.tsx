@@ -45,7 +45,7 @@ export default function Page() {
           <input
             type="number"
             value={paddingStart}
-            onChange={(e) => updatePadding(Number(e.target.value), paddingEnd)}
+            onChange={(e) => updatePadding(Number(e.currentTarget.value), paddingEnd)}
             style={{ width: 60 }}
           />
           px
@@ -55,7 +55,7 @@ export default function Page() {
           <input
             type="number"
             value={paddingEnd}
-            onChange={(e) => updatePadding(paddingStart, Number(e.target.value))}
+            onChange={(e) => updatePadding(paddingStart, Number(e.currentTarget.value))}
             style={{ width: 60 }}
           />
           px

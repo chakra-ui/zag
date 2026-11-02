@@ -81,4 +81,11 @@ describe("grid collection", () => {
       ]
     `)
   })
+
+  test("edits keep the grid", () => {
+    const next = grid.append({ label: "Extra", value: "extra" }).setItems(items.slice(0, 4))
+    expect(next).toBeInstanceOf(GridCollection)
+    expect(next.columnCount).toBe(grid.columnCount)
+    expect(next.getRowCount()).toBe(Math.ceil(4 / grid.columnCount))
+  })
 })

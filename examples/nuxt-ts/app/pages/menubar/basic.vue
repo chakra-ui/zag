@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComputedRef } from "vue"
 import type * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -10,7 +11,10 @@ const disabled = route.query.disabled === "true"
 const service = useMachine(menubar.machine, { id: useId(), disabled })
 const api = computed(() => menubar.connect(service, normalizeProps))
 
-provide<menu.MenubarContext>("menubar", api.value.getMenuContext())
+provide<ComputedRef<menu.MenubarContext>>(
+  "menubar",
+  computed(() => api.value.getMenuContext()),
+)
 
 const logSelect = (label: string, value: string) => console.log(`[${label}]`, value)
 

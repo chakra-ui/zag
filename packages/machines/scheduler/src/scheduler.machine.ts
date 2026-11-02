@@ -1,6 +1,6 @@
 import { getLocalTimeZone, parseDateTime, type CalendarDateTime } from "@internationalized/date"
 import { createMachine, memo, type PropFn, type Scope } from "@zag-js/core"
-import { getNearestScrollableAncestor, raf, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, getNearestScrollableAncestor, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
 import { createAutoScroller } from "./utils/auto-scroll"
@@ -85,8 +85,11 @@ export const machine = createMachine<SchedulerSchema>({
       dragOrigin: null,
       dragStartSnapshot: null,
       slotAnchor: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFocusFrame"],
 
   computed: {
     visibleRange: memo(
@@ -294,11 +297,14 @@ export const machine = createMachine<SchedulerSchema>({
       clearFocusedDate({ context }) {
         context.set("focusedDate", null)
       },
-      focusActiveDayCell({ scope, context }) {
+      focusActiveDayCell({ scope, context, refs }) {
         if (!context.get("focusedDate")) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           dom.getFocusedDayCellTriggerEl(scope)?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       handleFocusDateKeydown({ context, event, prop }) {
         const cur = context.get("focusedDate") ?? context.get("date")

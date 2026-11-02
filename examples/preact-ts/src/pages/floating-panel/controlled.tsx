@@ -2,6 +2,7 @@ import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-preact"
 import { useEffect, useId, useRef, useState } from "react"
+import "@styles/floating-panel.css"
 
 function AutoSizingContent() {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -117,8 +118,8 @@ export default function Page() {
               <AutoSizingContent />
             </div>
 
-            {floating.resizeTriggerAxes.map((axis) => (
-              <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+            {floating.resizeTriggerPlacements.map((placement) => (
+              <div key={placement} {...api.getResizeTriggerProps({ placement })} />
             ))}
           </div>
         </div>

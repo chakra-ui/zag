@@ -57,7 +57,7 @@ function PageContent() {
 
 export default function Page() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <PageContent />
     </Suspense>
   )

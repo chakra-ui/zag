@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ColorPicker from "$lib/components/color-picker-in-dialog-picker.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import ColorPicker from "#lib/components/color-picker-in-dialog-picker.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"

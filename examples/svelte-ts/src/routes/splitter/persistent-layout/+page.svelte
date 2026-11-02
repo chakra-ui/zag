@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { usePersistentMapState } from "$lib/use-persistent-state.svelte"
+  import { usePersistentMapState } from "#lib/use-persistent-state.svelte.ts"
   import * as splitter from "@zag-js/splitter"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { isEqual } from "@zag-js/utils"

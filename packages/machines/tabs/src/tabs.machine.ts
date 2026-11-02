@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, getFocusables, isAnchorElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -43,7 +43,7 @@ export const machine = createMachine({
       indicatorRect: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
-      animateIndicator: bindable<boolean>(() => ({
+      indicatorInstant: bindable<boolean>(() => ({
         defaultValue: false,
       })),
     }
@@ -52,16 +52,19 @@ export const machine = createMachine({
   refs() {
     return {
       indicatorCleanup: null,
-      prevValue: null,
+      indicatorFrame: AnimationFrame.create(),
+      focusFrame: AnimationFrame.create(),
+      selectFrame: AnimationFrame.create(),
+      tabIndexFrame: AnimationFrame.create(),
     }
   },
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncTabIndex"])
+      action(["syncIndicatorRect", "syncTabIndex"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
-      action(["syncIndicatorRect"])
+      action(["snapIndicator", "syncIndicatorRect"])
     })
   },
 
@@ -78,14 +81,16 @@ export const machine = createMachine({
     SYNC_TAB_INDEX: {
       actions: ["syncTabIndex"],
     },
-    INDICATOR_TRANSITION_END: {
-      actions: ["clearIndicatorAnimation"],
-    },
+    INDICATOR_RESIZE: [
+      // A running selection transition retargets to the new rect instead of snapping
+      { guard: "isIndicatorTransitioning", actions: ["setResizedIndicatorRect"] },
+      { actions: ["snapIndicator", "setResizedIndicatorRect"] },
+    ],
   },
 
-  entry: ["syncPrevValue", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
+  entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
 
-  exit: ["cleanupObserver"],
+  exit: ["cleanupObserver", "cancelFocusFrame", "cancelIndicatorFrame", "cancelSelectFrame", "cancelTabIndexFrame"],
 
   states: {
     idle: {
@@ -101,6 +106,7 @@ export const machine = createMachine({
       },
     },
     focused: {
+      exit: ["cancelFocusFrame"],
       on: {
         TAB_CLICK: {
           actions: ["setFocusedValue", "setValue", "requestNavigation"],
@@ -155,11 +161,12 @@ export const machine = createMachine({
   implementations: {
     guards: {
       selectOnFocus: ({ prop }) => prop("activationMode") === "automatic",
+      isIndicatorTransitioning: ({ event }) => !!event.transitioning,
     },
 
     actions: {
-      selectFocusedTab({ context, prop, event, scope }) {
-        raf(() => {
+      selectFocusedTab({ context, prop, event, scope, refs }) {
+        refs.get("selectFrame").request(() => {
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const nullable = prop("deselectable") && context.get("value") === focusedValue
@@ -194,19 +201,19 @@ export const machine = createMachine({
         context.set("value", null)
       },
 
-      focusFirstTab({ scope }) {
-        raf(() => {
+      focusFirstTab({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getFirstTriggerEl(scope)?.focus()
         })
       },
 
-      focusLastTab({ scope }) {
-        raf(() => {
+      focusLastTab({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getLastTriggerEl(scope)?.focus()
         })
       },
 
-      focusNextTab({ context, prop, scope, event }) {
+      focusNextTab({ context, prop, scope, event, refs }) {
         const focusedValue = event.value ?? context.get("focusedValue")
         if (!focusedValue) return
 
@@ -215,7 +222,7 @@ export const machine = createMachine({
           loopFocus: prop("loopFocus"),
         })
 
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (prop("virtualFocus")) {
             if (triggerEl?.dataset.value != null) {
               context.set("focusedValue", triggerEl.dataset.value)
@@ -226,7 +233,7 @@ export const machine = createMachine({
         })
       },
 
-      focusPrevTab({ context, prop, scope, event }) {
+      focusPrevTab({ context, prop, scope, event, refs }) {
         const focusedValue = event.value ?? context.get("focusedValue")
         if (!focusedValue) return
 
@@ -235,7 +242,7 @@ export const machine = createMachine({
           loopFocus: prop("loopFocus"),
         })
 
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           if (prop("virtualFocus")) {
             if (triggerEl?.dataset.value != null) {
               context.set("focusedValue", triggerEl.dataset.value)
@@ -246,8 +253,8 @@ export const machine = createMachine({
         })
       },
 
-      syncTabIndex({ context, scope }) {
-        raf(() => {
+      syncTabIndex({ context, scope, refs }) {
+        refs.get("tabIndexFrame").request(() => {
           const value = context.get("value")
           if (!value) return
 
@@ -261,6 +268,15 @@ export const machine = createMachine({
             contentEl.setAttribute("tabindex", "0")
           }
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
+      cancelSelectFrame({ refs }) {
+        refs.get("selectFrame").cancel()
+      },
+      cancelTabIndexFrame({ refs }) {
+        refs.get("tabIndexFrame").cancel()
       },
       cleanupObserver({ refs }) {
         const cleanup = refs.get("indicatorCleanup")
@@ -282,39 +298,45 @@ export const machine = createMachine({
       syncSsr({ context }) {
         context.set("ssr", false)
       },
-      syncPrevValue({ context, refs }) {
-        refs.set("prevValue", context.get("value"))
+      snapIndicator({ context, refs }) {
+        // Clear after two frames so the style recalc always sees `data-instant`
+        const frame = refs.get("indicatorFrame")
+        context.set("indicatorInstant", true)
+        frame.request(() => frame.request(() => context.set("indicatorInstant", false)))
       },
-      syncIndicatorAnimation({ context, refs }) {
-        const prevValue = refs.get("prevValue")
-        const nextValue = context.get("value")
-        const animate = prevValue != null && nextValue != null && prevValue !== nextValue
-        context.set("animateIndicator", animate)
-        refs.set("prevValue", nextValue)
+      cancelIndicatorFrame({ refs }) {
+        refs.get("indicatorFrame").cancel()
       },
-      clearIndicatorAnimation({ context }) {
-        context.set("animateIndicator", false)
+      setResizedIndicatorRect({ context, event }) {
+        context.set("indicatorRect", event.rect)
       },
-      syncIndicatorRect({ context, refs, scope }) {
+      syncIndicatorRect({ context, refs, scope, send }) {
         const cleanup = refs.get("indicatorCleanup")
         if (cleanup) cleanup()
 
         const indicatorEl = dom.getIndicatorEl(scope)
         if (!indicatorEl) return
 
-        const exec = () => {
+        const getRect = () => {
           const triggerEl = dom.getTriggerEl(scope, context.get("value"))
-          if (!triggerEl) return
-          const rect = dom.getOffsetRect(triggerEl)
-          context.set("indicatorRect", (prev) => (isEqual(prev, rect) ? prev : rect))
+          return triggerEl ? dom.getOffsetRect(triggerEl) : null
         }
-        exec()
+
+        const rect = getRect()
+        if (rect) context.set("indicatorRect", (prev) => (isEqual(prev, rect) ? prev : rect))
+
+        // Observers fire once on observe; only report real changes
+        const onResize = () => {
+          const rect = getRect()
+          if (!rect || isEqual(context.get("indicatorRect"), rect)) return
+          send({ type: "INDICATOR_RESIZE", rect, transitioning: indicatorEl.getAnimations?.().length > 0 })
+        }
 
         const triggerEls = dom.getElements(scope)
         const listEl = dom.getListEl(scope)
         const indicatorCleanup = callAll(
-          ...triggerEls.map((el) => resizeObserverBorderBox.observe(el, exec)),
-          ...(listEl ? [resizeObserverBorderBox.observe(listEl, exec)] : []),
+          ...triggerEls.map((el) => resizeObserverBorderBox.observe(el, onResize)),
+          ...(listEl ? [resizeObserverBorderBox.observe(listEl, onResize)] : []),
         )
 
         refs.set("indicatorCleanup", indicatorCleanup)

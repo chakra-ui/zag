@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId } from "react"
+import "@styles/menu.css"
 
 const items = [
   ...Array.from({ length: 20 }, (_, i) => ({ label: `Item ${i}`, value: `item-${i}` })),

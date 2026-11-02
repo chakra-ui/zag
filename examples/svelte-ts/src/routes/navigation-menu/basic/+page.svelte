@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Presence from "$lib/components/presence.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import Presence from "#lib/components/presence.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as navigationMenu from "@zag-js/navigation-menu"
   import { navigationMenuControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"

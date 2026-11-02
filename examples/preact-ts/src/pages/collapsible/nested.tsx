@@ -3,6 +3,7 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/collapsible.css"
 
 interface CollapsibleProps {
   trigger: React.ReactNode

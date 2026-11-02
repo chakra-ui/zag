@@ -572,3 +572,57 @@ describe("highlightWord / Multiple Occurrences", () => {
     `)
   })
 })
+
+describe("highlightWord / exactMatch word boundaries", () => {
+  const matches = (
+    text: string,
+    query: string | string[],
+    options: { matchAll?: boolean; ignoreCase?: boolean } = {},
+  ) =>
+    highlightWord({ text, query, exactMatch: true, ...options })
+      .filter((chunk) => chunk.match)
+      .map((chunk) => chunk.text)
+
+  test("matches whole Korean words", () => {
+    expect(matches("토스 증권 앱", "증권")).toEqual(["증권"])
+    expect(matches("증권 증권사 증권", "증권", { matchAll: true })).toEqual(["증권", "증권"])
+  })
+
+  test("skips Korean words that only contain the query", () => {
+    const result = highlightWord({ text: "증권사 증권", query: "증권", exactMatch: true })
+    expect(result).toEqual([
+      { text: "증권사 ", match: false },
+      { text: "증권", match: true },
+    ])
+  })
+
+  test("matches words that start or end with accented letters", () => {
+    expect(matches("Le café est fermé", "café")).toEqual(["café"])
+    expect(matches("Über alles", "über", { ignoreCase: true })).toEqual(["Über"])
+    expect(matches("Москва и Москва-река", "Москва", { matchAll: true })).toEqual(["Москва", "Москва"])
+  })
+
+  test("does not match inside words that contain accented letters", () => {
+    expect(matches("naïve", "na")).toEqual([])
+    expect(matches("cafés", "café")).toEqual([])
+    expect(matches("naïve", ["na", "ve"], { matchAll: true })).toEqual([])
+  })
+
+  test("falls back to another query when one runs into a longer word", () => {
+    expect(matches("증권사", ["증권", "증권사"], { matchAll: true })).toEqual(["증권사"])
+    expect(matches("quickly quick", ["quick", "quickly"], { matchAll: true })).toEqual(["quickly", "quick"])
+  })
+
+  test("matches queries that start or end with punctuation", () => {
+    expect(matches("I like C++ a lot", "C++")).toEqual(["C++"])
+    expect(matches("re-run the re-run", "re-run", { matchAll: true })).toEqual(["re-run", "re-run"])
+  })
+
+  test("finds a whole word that overlaps a rejected candidate", () => {
+    const result = highlightWord({ text: "yx x x", query: "x x", exactMatch: true, matchAll: true })
+    expect(result).toEqual([
+      { text: "yx ", match: false },
+      { text: "x x", match: true },
+    ])
+  })
+})

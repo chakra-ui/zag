@@ -1,7 +1,8 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import type { Rect } from "@zag-js/types"
+import { isEqual } from "@zag-js/utils"
 import * as dom from "./radio-group.dom"
 import type { RadioGroupSchema } from "./radio-group.types"
 
@@ -43,7 +44,7 @@ export const machine = createMachine<RadioGroupSchema>({
       indicatorRect: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
-      animateIndicator: bindable<boolean>(() => ({
+      indicatorInstant: bindable<boolean>(() => ({
         defaultValue: false,
       })),
       fieldsetDisabled: bindable<boolean>(() => ({
@@ -58,8 +59,8 @@ export const machine = createMachine<RadioGroupSchema>({
   refs() {
     return {
       indicatorCleanup: null,
+      indicatorFrame: AnimationFrame.create(),
       focusVisibleValue: null,
-      prevValue: null,
     }
   },
 
@@ -67,15 +68,15 @@ export const machine = createMachine<RadioGroupSchema>({
     isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
   },
 
-  entry: ["syncPrevValue", "syncIndicatorRect", "syncSsr"],
+  entry: ["syncIndicatorRect", "syncSsr"],
 
-  exit: ["cleanupObserver"],
+  exit: ["cleanupObserver", "cancelIndicatorFrame"],
 
   effects: ["trackFormControlState", "trackFocusVisible"],
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncInputElements"])
+      action(["syncIndicatorRect", "syncInputElements"])
     })
   },
 
@@ -98,9 +99,11 @@ export const machine = createMachine<RadioGroupSchema>({
     SET_FOCUSED: {
       actions: ["setFocused"],
     },
-    INDICATOR_TRANSITION_END: {
-      actions: ["clearIndicatorAnimation"],
-    },
+    INDICATOR_RESIZE: [
+      // A running selection transition retargets to the new rect instead of snapping
+      { guard: "isIndicatorTransitioning", actions: ["setResizedIndicatorRect"] },
+      { actions: ["snapIndicator", "setResizedIndicatorRect"] },
+    ],
   },
 
   states: {
@@ -110,6 +113,7 @@ export const machine = createMachine<RadioGroupSchema>({
   implementations: {
     guards: {
       isTrusted: ({ event }) => !!event.isTrusted,
+      isIndicatorTransitioning: ({ event }) => !!event.transitioning,
     },
 
     effects: {
@@ -143,18 +147,14 @@ export const machine = createMachine<RadioGroupSchema>({
         const focusVisibleValue = event.value != null && event.focusVisible ? event.value : null
         context.set("focusVisibleValue", focusVisibleValue)
       },
-      syncPrevValue({ context, refs }) {
-        refs.set("prevValue", context.get("value"))
+      snapIndicator({ context, refs }) {
+        // Clear after two frames so the style recalc always sees `data-instant`
+        const frame = refs.get("indicatorFrame")
+        context.set("indicatorInstant", true)
+        frame.request(() => frame.request(() => context.set("indicatorInstant", false)))
       },
-      syncIndicatorAnimation({ context, refs }) {
-        const prevValue = refs.get("prevValue")
-        const nextValue = context.get("value")
-        const animate = prevValue != null && nextValue != null && prevValue !== nextValue
-        context.set("animateIndicator", animate)
-        refs.set("prevValue", nextValue)
-      },
-      clearIndicatorAnimation({ context }) {
-        context.set("animateIndicator", false)
+      cancelIndicatorFrame({ refs }) {
+        refs.get("indicatorFrame").cancel()
       },
       syncInputElements({ context, scope }) {
         const inputs = dom.getInputEls(scope)
@@ -168,10 +168,14 @@ export const machine = createMachine<RadioGroupSchema>({
       syncSsr({ context }) {
         context.set("ssr", false)
       },
-      syncIndicatorRect({ context, scope, refs }) {
+      setResizedIndicatorRect({ context, event }) {
+        context.set("indicatorRect", event.rect)
+      },
+      syncIndicatorRect({ context, scope, refs, send }) {
         refs.get("indicatorCleanup")?.()
 
-        if (!dom.getIndicatorEl(scope)) return
+        const indicatorEl = dom.getIndicatorEl(scope)
+        if (!indicatorEl) return
 
         const value = context.get("value")
         const radioEl = dom.getRadioEl(scope, value)
@@ -181,12 +185,16 @@ export const machine = createMachine<RadioGroupSchema>({
           return
         }
 
-        const exec = () => {
-          context.set("indicatorRect", dom.getOffsetRect(radioEl))
+        context.set("indicatorRect", dom.getOffsetRect(radioEl))
+
+        // Observers fire once on observe; only report real changes
+        const onResize = () => {
+          const rect = dom.getOffsetRect(radioEl)
+          if (isEqual(context.get("indicatorRect"), rect)) return
+          send({ type: "INDICATOR_RESIZE", rect, transitioning: indicatorEl.getAnimations?.().length > 0 })
         }
 
-        exec()
-        const indicatorCleanup = resizeObserverBorderBox.observe(radioEl, exec)
+        const indicatorCleanup = resizeObserverBorderBox.observe(radioEl, onResize)
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },

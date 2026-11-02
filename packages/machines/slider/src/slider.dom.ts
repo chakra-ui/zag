@@ -14,7 +14,15 @@ export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getThumbEl = (ctx: Scope, index: number) =>
   ctx.query(`${ctx.selector(parts.thumb)}[data-index="${index}"]`)
 export const getThumbEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.thumb))
-export const getFirstThumbEl = (ctx: Scope) => getThumbEls(ctx)[0]
+export const isThumbDisabled = (el: Element | null | undefined) => !!el?.hasAttribute("data-disabled")
+export const getFirstEnabledThumbEl = (ctx: Scope) => getThumbEls(ctx).find((el) => !isThumbDisabled(el))
+export const getDisabledThumbIndices = (ctx: Scope) => {
+  const indices = new Set<number>()
+  for (const el of getThumbEls(ctx)) {
+    if (isThumbDisabled(el)) indices.add(Number(el.getAttribute("data-index")))
+  }
+  return indices
+}
 export const getHiddenInputEl = (ctx: Scope, index: number) =>
   ctx.getById<HTMLInputElement>(getHiddenInputId(ctx, index))
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))

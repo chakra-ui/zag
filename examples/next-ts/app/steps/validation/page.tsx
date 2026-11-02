@@ -89,7 +89,7 @@ export default function Page() {
           <div {...api.getContentProps({ value: "details" })} className="steps-form">
             <label>
               Project name
-              <input value={project.name} onChange={(e) => update({ name: e.target.value })} />
+              <input value={project.name} onChange={(e) => update({ name: e.currentTarget.value })} />
             </label>
             {showError("details") && <p className="steps-error">{errors.details}</p>}
           </div>
@@ -97,7 +97,7 @@ export default function Page() {
           <div {...api.getContentProps({ value: "region" })} className="steps-form">
             <label>
               Region
-              <select value={project.region} onChange={(e) => update({ region: e.target.value })}>
+              <select value={project.region} onChange={(e) => update({ region: e.currentTarget.value })}>
                 <option value="">Select a region</option>
                 {regions.map((region) => (
                   <option key={region} value={region}>

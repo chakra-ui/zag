@@ -3,6 +3,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/menu.css"
 
 interface FileItem {
   id: number

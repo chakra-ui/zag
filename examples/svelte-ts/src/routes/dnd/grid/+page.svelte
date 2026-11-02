@@ -1,6 +1,6 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
   import * as dnd from "@zag-js/dnd"
   import styles from "@styles/dnd-grid.module.css"
   import { GripVerticalIcon } from "lucide-svelte"

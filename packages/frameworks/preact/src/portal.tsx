@@ -1,5 +1,4 @@
-import type { JSX } from "preact"
-import { Children, createPortal, type PropsWithChildren, type RefObject } from "preact/compat"
+import { createPortal, toChildArray, type ComponentChildren, type JSX, type RefObject } from "preact"
 import { useLayoutEffect, useReducer } from "preact/hooks"
 
 export interface PortalProps {
@@ -8,7 +7,7 @@ export interface PortalProps {
   getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 
-export const Portal = (props: PropsWithChildren<PortalProps>): JSX.Element => {
+export const Portal = (props: PortalProps & { children?: ComponentChildren }): JSX.Element => {
   const { children, container, disabled, getRootNode } = props
 
   const [, forceUpdate] = useReducer((c) => c + 1, 0)
@@ -23,11 +22,5 @@ export const Portal = (props: PropsWithChildren<PortalProps>): JSX.Element => {
   const doc = getRootNode?.().ownerDocument ?? document
   const mountNode = container?.current ?? doc.body
 
-  return (
-    <>
-      {Children.map(children, (child) => {
-        return createPortal(<>{child}</>, mountNode)
-      })}
-    </>
-  )
+  return <>{toChildArray(children).map((child) => createPortal(<>{child}</>, mountNode))}</>
 }

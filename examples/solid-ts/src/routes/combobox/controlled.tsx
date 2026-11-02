@@ -25,16 +25,19 @@ export default function Page() {
   )
 
   const [value, setValue] = createSignal<string[]>([])
+  const [selectedItems, setSelectedItems] = createSignal<{ label: string }[]>([])
   const [open, setOpen] = createSignal(false)
 
+  const id = createUniqueId()
   const service = useMachine(
     combobox.machine,
     controls.mergeProps<combobox.Props>(() => ({
-      id: createUniqueId(),
+      id,
       open: open(),
       value: value(),
-      onValueChange({ value }) {
+      onValueChange({ value, items }) {
         setValue(value)
+        setSelectedItems(items)
       },
       collection: collection(),
       onOpenChange(details) {
@@ -58,6 +61,12 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api().clearValue()}>
             Clear Value
           </button>
+          <pre data-testid="on-value-change-items">
+            selectedItems:{" "}
+            {selectedItems()
+              .map((item) => item.label)
+              .join(", ") || "N/A"}
+          </pre>
           <br />
 
           <div {...api().getRootProps()}>

@@ -1,5 +1,5 @@
 import { createMachine, memo, type Params } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
 import { isEqual, warn } from "@zag-js/utils"
 import * as dom from "./steps.dom"
 import { COMPLETE, type StepsSchema } from "./steps.types"
@@ -65,7 +65,7 @@ export const machine = createMachine<StepsSchema>({
   },
 
   refs() {
-    return { lastPosition: null }
+    return { lastPosition: null, focusFrame: AnimationFrame.create() }
   },
 
   computed: {
@@ -80,6 +80,8 @@ export const machine = createMachine<StepsSchema>({
   },
 
   entry: ["validateItems", "syncCurrentValue", "rememberPosition"],
+
+  exit: ["cancelFocusFrame"],
 
   watch({ track, action, prop, context }) {
     track([() => hashItems(prop("items"))], () => {
@@ -106,6 +108,9 @@ export const machine = createMachine<StepsSchema>({
 
   implementations: {
     actions: {
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
       validateItems({ prop }) {
         validateItems(prop("items"))
       },
@@ -205,7 +210,7 @@ function navigate(params: StepsParams, result: NavResult | null) {
     return
   }
 
-  const { context, prop, scope } = params
+  const { context, prop, scope, refs } = params
   context.set("completedValues", result.completedValues)
   context.set("value", result.value)
   if (result.value !== COMPLETE) return
@@ -213,7 +218,7 @@ function navigate(params: StepsParams, result: NavResult | null) {
   // Pass the result: React has not flushed the context write yet
   prop("onComplete")?.({ completedValues: result.completedValues })
   // Next is now disabled, so focus would otherwise drop to the body
-  raf(() => scope.getById(dom.getContentId(scope, COMPLETE))?.focus())
+  refs.get("focusFrame").request(() => scope.getById(dom.getContentId(scope, COMPLETE))?.focus())
 }
 
 function emitBlocked(params: StepsParams, result: Extract<NavResult, { ok: false }>) {

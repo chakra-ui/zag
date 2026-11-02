@@ -1,8 +1,8 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { treeviewControls } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"

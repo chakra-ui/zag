@@ -1,6 +1,7 @@
 import { tourControls, tourData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-solid"
 import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { IFrame } from "~/components/iframe"
@@ -62,12 +63,17 @@ export default function Page() {
                 </Show>
                 <p {...api().getTitleProps()}>{api().step!.title}</p>
                 <div {...api().getDescriptionProps()}>{api().step!.description}</div>
+                <div {...api().getProgressTextProps()}>{api().getProgressText()}</div>
 
                 <div class="tour button__group">
                   <For each={api().step?.actions}>
                     {(action) => <button {...api().getActionTriggerProps({ action })}>{action.label}</button>}
                   </For>
                 </div>
+
+                <button {...api().getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </div>
             </div>
           </Portal>

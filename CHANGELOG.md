@@ -4,6 +4,240 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.47.0](./#1.47.0) - 2026-10-26
+
+### Added
+
+- **Combobox**
+  - Announce the result count to screen readers after typing, or "No results" when nothing matches.
+  - Add a `loading` prop that sets `aria-busy` on the listbox and holds back "No results" while loading.
+  - Add `resultsCount`, `noResults` and `loading` translations. Set one to `""` to turn that announcement off.
+
+  ```tsx
+  const service = useMachine(combobox.machine, {
+    loading: isFetching,
+    translations: {
+      resultsCount: (count) => `${count} matches`,
+    },
+  })
+  ```
+
+- **Combobox, Menu**: Add `modifiers` to the `navigate` and `onSelect` details.
+
+  ```tsx
+  const service = useMachine(menu.machine, {
+    onSelect(details) {
+      if (details.modifiers.metaKey) return
+    },
+  })
+  ```
+
+- **Drawer**: Add axis support to `data-no-drag`. Set it to `x` or `y` to block drags only along that axis.
+
+  ```html
+  <div data-no-drag="x">Horizontally scrolling content</div>
+  ```
+
+- **Steps**: Add `data-current`, `data-complete` and `data-incomplete` to the item, as the styling guide documents.
+
+- **TOC**: Add a `multiple` prop. Set it to `false` to keep only the topmost visible heading active.
+
+  ```tsx
+  const service = useMachine(toc.machine, { multiple: false })
+  ```
+
+- **Tour**
+  - Add `scrollToTargetFn` to customize how a step's target is scrolled into view.
+  - Add `data-instant` to the backdrop, spotlight and positioner when they should snap into place instead of animating.
+
+  ```tsx
+  const service = useMachine(tour.machine, {
+    scrollToTargetFn({ target }) {
+      target.scrollIntoView({ behavior: "instant", block: "center" })
+    },
+  })
+  ```
+
+### Fixed
+
+- **Popups**: Fix Escape not closing the content right after it opens.
+
+  > Affected Components: Cascade Select, Color Picker, Combobox, Date Picker, Dialog, Drawer, Hover Card, Menu,
+  > Navigation Menu, Popover, Select.
+
+- **Popups**: Fix the trigger missing its focus ring in Firefox after closing with Escape.
+
+  > Affected Components: Cascade Select, Color Picker, Date Picker, Popover, Select.
+
+- **Popups**: Fix floating content flashing at the top-left corner for one frame when it first opens.
+
+- **Carousel**
+  - Fix a snap point refresh reverting a page change that hadn't rendered yet.
+  - Fix a stale scroll-end timer ending a later scroll early.
+
+- **Cascade Select**
+  - Fix the content taking focus after closing right after it opened.
+  - Fix leaving an item clearing the next item's grace area early, which could switch the highlighted item.
+
+- **Color Picker**: Fix focus being pulled back to the trigger after closing when focus had moved elsewhere.
+
+- **Combobox**
+  - Fix Cmd/Ctrl/Shift/Alt+Enter on link items not opening the link like a modifier-click.
+  - Fix announcements not working in modal dialogs.
+  - Fix unselected options missing `aria-selected="false"`.
+  - Fix `inputBehavior: "autohighlight"` leaving nothing highlighted when the highlighted item is removed.
+  - Fix focus being pulled back into the input when tabbing away right after selecting an item.
+  - Fix an item staying highlighted after the combobox closes right after opening with the keyboard.
+
+- **Date Input**: Fix focus jumping back into the input after tabbing out of it.
+
+- **Date Picker**
+  - Fix Space not selecting the focused date in the calendar.
+  - Fix focus being pulled back to the input or trigger after closing when focus had moved elsewhere.
+
+- **Dialog**: Fix focus not returning to the trigger when a non-modal dialog closes.
+
+- **Drawer**
+  - Fix focus not returning to the trigger when a non-modal drawer closes.
+  - Fix mouse drags that start on the grabber not moving the drawer when the pointer passes over a scrolled list.
+  - Fix text in an open drawer not being selectable with the mouse after the pointer moved over it.
+
+- **Editable**
+  - Fix cancelling an edit not restoring an empty value, or the initial value when `defaultEdit` is set.
+  - Fix a rendered label not naming the input.
+
+- **File Utils**: Fix `getFileMimeType` ignoring uppercase file extensions (e.g. `IMG_0001.HEIC`).
+
+- **Focus Visible**: Fix programmatic focus turning on focus-visible styles when `HTMLElement.prototype.focus` is an
+  accessor, as in Storybook 10.0–10.5.
+
+- **Highlight Word**: Fix `exactMatch` for non-ASCII words and for queries that start or end with punctuation (e.g.
+  `C++`).
+
+- **Listbox**
+  - Fix `ArrowLeft` and `ArrowRight` not being mirrored in grid and horizontal layouts when `dir` is `rtl`.
+  - Fix typeahead ignoring the lowercase `a` key.
+
+- **Menu**
+  - Fix Cmd/Ctrl/Shift/Alt+Enter on link items not opening the link like a modifier-click.
+  - Fix the `aria-label` prop not naming the menu.
+  - Fix controlled submenus opening after the pointer leaves their trigger, and controlled context menus opening on a
+    short tap.
+  - Fix focus being lost after pressing Escape right after an arrow key.
+
+- **Navigation Menu**
+  - Fix hovering the same trigger again leaving an earlier open timer running.
+  - Fix the content's links dropping out of the Tab order after a quick Tab and Shift+Tab out of the content.
+
+- **Number Input**: Fix scrubbing always incrementing the value when `dir` is `rtl`.
+
+- **Password Input**
+  - Remove `aria-expanded` from the visibility trigger.
+  - Make the visibility trigger keyboard accessible.
+
+- **Pin Input**
+  - Fix screen readers not announcing the label for the inputs.
+  - Fix `api.clearValue()` wiping a value set right after it in the same handler.
+  - Fix focus jumping back into the inputs when focus moves away right after a paste.
+
+- **Radio Group**: Fix the native radio inputs keeping the old value when the value changes while the group is disabled.
+
+- **Rating Group**
+  - Fix `aria-checked` being set on unselected items.
+  - Announce half ratings with their actual value.
+  - Fix focus being pulled back to the rating when tabbing away right after an arrow key.
+
+- **React, Preact**: Fix controlled prop changes being missed after a hidden `<Activity>` is shown again.
+
+- **Solid**
+  - Fix machines missing prop changes made before their first effect run, such as presence staying unmounted while
+    `present` is `true`.
+  - Fix `watch` missing context changes made by entry actions, such as pin input's `autoFocus` having no effect.
+
+- **Splitter**
+  - Fix nested splitters snapping back to their default layout, or flickering, when the outer splitter is resized.
+  - Fix `onResizeEnd` reporting a `null` `resizeTriggerId` after dragging or resizing with the keyboard.
+  - Fix the resize trigger's `aria-orientation` so it describes the separator, which is perpendicular to the panel
+    layout.
+
+- **Steps**: Fix `aria-current="step"` being set on the item wrapper instead of the current step's trigger.
+
+- **Svelte**
+  - Fix machines missing prop changes made before their first effect run, such as presence staying unmounted while
+    `present` is `true`.
+  - Fix component styles being lost on re-render, which left popups in the top-left corner and closed nested menus as
+    they opened.
+  - Fix `derived_inert` warnings when a machine reads props, `scope` or computed values after its component unmounts.
+
+- **Tabs**: Fix focus jumping back to the tab list when tabbing out right after pressing an arrow, `Home`, or `End` key.
+
+- **Tags Input**
+  - Fix characters typed right after a delimiter being cleared along with the new tag's text.
+  - Fix a tag staying highlighted after pressing Escape right after deleting the first tag, so a later Delete removed
+    it.
+  - Fix focus jumping back to the input when focus moves away right after editing a tag.
+  - Fix a regex `delimiter` not creating tags while typing when it has flags (e.g. `/\p{P}/u`) or several characters,
+    and matching anywhere in the input when it has alternatives.
+
+- **Toast**
+  - Fix toasts staying paused after a focused toast is dismissed, or after closing one with the mouse and moving the
+    pointer away.
+  - Fix new and queued toasts appearing collapsed while the stack is expanded.
+  - Fix toast height not updating when its content resizes.
+  - Fix swapped offsets when several toasts are created at once in adapters that batch renders (e.g. Vue).
+
+- **TOC**
+  - Activate the clicked item right away and keep it active while the page scrolls to it.
+  - Activate the section the reader is in when its heading has scrolled out of view, instead of keeping a stale item.
+  - Fix `autoScroll` interrupting the smooth scroll to a heading when the TOC sits inside the content's scroll
+    container.
+
+- **Toggle Group**
+  - Fix `ArrowLeft` and `ArrowRight` not being mirrored when `dir` is `rtl`.
+  - Fix focus jumping back into the group when tabbing out right after pressing an arrow, `Home`, or `End` key.
+
+- **Tooltip**
+  - Use the `aria-label` prop as the tooltip's accessible description, instead of pointing `aria-describedby` at a
+    missing element.
+  - Fix the first hover after re-enabling a disabled tooltip not opening it.
+
+- **Tour**
+  - Fix focus moving to the page body when the tour is dismissed, skipped or ends because a step target is missing.
+  - Fix arrow keys changing steps while typing in an input inside the tour content.
+  - Fix the content shifting by half the arrow's size right after a step opens.
+
+- **Tree View**: Fix typeahead ignoring the lowercase `a` key.
+
+- **Vanilla**: Fix `updateProps` slowing down with every call and overflowing the stack in long-lived machines.
+
+- **Vue**: Fix "Maximum recursive updates exceeded" when a nested component, like a submenu, receives an inline object
+  prop.
+
+### Changed
+
+- **Combobox**
+  - Call `onSelect` when a link item is modifier-clicked. Skip navigating in `onSelect` while a modifier is held.
+  - Scroll the list back to the top when the input changes while open.
+
+- **Live Region**
+  - Keep one element per region in the DOM, so announcements from different components no longer drop each other.
+  - **Breaking change:** Regions no longer have an `id`. Select them with `[data-live-announcer]` instead of
+    `#__live-region__`.
+
+  ```diff
+  - document.querySelector("#__live-region__")
+  + document.querySelector("[data-live-announcer]")
+  ```
+
+- **Menu**: Call `onSelect` and close the menu when Enter is pressed on a link item.
+
+- **Svelte**: Raise the minimum `svelte` peer version to `5.29.0`.
+
+- **Toast**: Move focus to the next toast when a focused toast is dismissed, and back to the previously focused element
+  after the last one.
+
+- **Tour**: Use the `dialog` role for the content instead of `alertdialog`.
+
 ## [1.46.0](./#1.46.0) - 2026-10-11
 
 ### Added

@@ -1,8 +1,8 @@
-import * as asyncList from "@zag-js/async-list"
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId, useRef } from "react"
 import { LoadMore } from "../../components/load-more"
+import { useAsyncList } from "../../hooks/use-async-list"
 import "@styles/menu.css"
 
 interface Character {
@@ -12,7 +12,7 @@ interface Character {
 export default function Page() {
   const hasOpened = useRef(false)
 
-  const listService = useMachine(asyncList.machine as asyncList.Machine<Character>, {
+  const listApi = useAsyncList<Character>({
     autoReload: false,
     async load({ signal, cursor }) {
       if (cursor) cursor = cursor.replace(/^http:\/\//i, "https://")
@@ -22,7 +22,6 @@ export default function Page() {
       return { items: json.results, cursor: json.next ?? undefined }
     },
   })
-  const listApi = asyncList.connect(listService)
 
   const service = useMachine(menu.machine, {
     id: useId(),

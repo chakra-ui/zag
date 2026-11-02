@@ -17,8 +17,9 @@ const LONG_LIST = Array.from({ length: 50 }, (_, i) => ({
 }))
 
 export default function Page() {
+  const id = createUniqueId()
   const service = useMachine(drawer.machine, () => ({
-    id: createUniqueId(),
+    id,
   }))
 
   const api = createMemo(() => drawer.connect(service, normalizeProps))

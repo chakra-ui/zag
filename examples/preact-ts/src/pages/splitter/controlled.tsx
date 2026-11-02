@@ -1,6 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
 import { useId, useState } from "react"
+import "@styles/splitter.css"
 
 export default function Page() {
   const [size, setSize] = useState<number[]>([25, 50, 25])

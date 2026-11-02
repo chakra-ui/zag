@@ -82,33 +82,8 @@ describe("layer nesting", () => {
     })
   })
 
-  describe("getParentLayerOfType", () => {
-    test("finds the nearest ancestor of a matching type", () => {
-      const dialog = el("dialog")
-      const popover = el("popover")
-      const inner = el("inner")
-      layerStack.add(createLayer(dialog, { type: "dialog" }))
-      layerStack.add(createLayer(popover, { type: "popover" }))
-      layerStack.add(createLayer(inner, { type: "popover" }))
-
-      expect(layerStack.getParentLayerOfType(inner, "popover")?.node).toBe(popover)
-      expect(layerStack.getParentLayerOfType(inner, "dialog")?.node).toBe(dialog)
-      expect(layerStack.getParentLayerOfType(dialog, "dialog")).toBeUndefined()
-    })
-
-    test("countNestedLayersOfType counts only matching descendants", () => {
-      const dialog = el("dialog")
-      layerStack.add(createLayer(dialog, { type: "dialog" }))
-      layerStack.add(createLayer(el("p1"), { type: "popover" }))
-      layerStack.add(createLayer(el("d2"), { type: "dialog" }))
-
-      expect(layerStack.countNestedLayersOfType(dialog, "popover")).toBe(1)
-      expect(layerStack.countNestedLayersOfType(dialog, "dialog")).toBe(1)
-    })
-  })
-
   describe("cascade dismissal", () => {
-    test("removing a parent dismisses its descendants", () => {
+    test("removing a parent dismisses its descendants", async () => {
       const parentDismiss = vi.fn()
       const childDismiss = vi.fn()
       const parent = el("parent")
@@ -117,7 +92,23 @@ describe("layer nesting", () => {
       layerStack.add(createLayer(child, { dismiss: childDismiss }))
 
       layerStack.remove(parent)
+      await Promise.resolve()
       expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("descendants removed in the same pass are not dismissed", async () => {
+      const childDismiss = vi.fn()
+      const parent = el("parent")
+      const child = el("child")
+      layerStack.add(createLayer(parent))
+      layerStack.add(createLayer(child, { dismiss: childDismiss }))
+
+      // parent-first teardown
+      layerStack.remove(parent)
+      layerStack.remove(child)
+      await Promise.resolve()
+
+      expect(childDismiss).not.toHaveBeenCalled()
     })
 
     test("removing the topmost layer dismisses nothing", () => {
@@ -193,7 +184,7 @@ describe("layer nesting", () => {
   })
 
   describe("re-registration", () => {
-    test("re-adding a parent keeps it below its child and dismisses nothing", () => {
+    test("re-adding a parent keeps it below its child and dismisses nothing", async () => {
       const childDismiss = vi.fn()
       const parent = el("parent")
       const child = el("child")
@@ -202,6 +193,7 @@ describe("layer nesting", () => {
 
       // what reconfiguring a layer used to do: remove then add
       layerStack.remove(parent)
+      await Promise.resolve()
       layerStack.add(createLayer(parent))
 
       expect(childDismiss).toHaveBeenCalledTimes(1) // remove still cascades, by design
@@ -229,7 +221,7 @@ describe("layer nesting", () => {
 
       expect(layerStack.count()).toBe(1)
       expect(layerStack.getNestedLayers(a)).toEqual([])
-      expect(layerStack.countNestedLayersOfType(a, "dialog")).toBe(0)
+      expect(layerStack.layerFor(a)?.snapshot?.nestedCount).toBe(0)
     })
 
     test("re-registering a middle layer keeps the whole chain intact", () => {
@@ -273,7 +265,7 @@ describe("layer nesting", () => {
       expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child])
     })
 
-    test("without reattach, descendants are dismissed", () => {
+    test("without reattach, descendants are dismissed", async () => {
       const childDismiss = vi.fn()
       const parent = el("parent")
       const child = el("child")
@@ -281,6 +273,7 @@ describe("layer nesting", () => {
       layerStack.add(createLayer(child, { dismiss: childDismiss }))
 
       layerStack.remove(parent)
+      await Promise.resolve()
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
     })
@@ -319,6 +312,119 @@ describe("layer nesting", () => {
       layerStack.remove(child)
 
       expect(layerStack.getNestedLayers(parent)).toEqual([])
+    })
+  })
+
+  describe("origins", () => {
+    const withOrigins = (node: HTMLElement, origins: Array<Element | null>, options: { type?: LayerType } = {}) => ({
+      ...createLayer(node, options),
+      origins: [node, ...origins],
+    })
+
+    test("unrelated layers open side by side", () => {
+      const a = el("a")
+      const b = el("b")
+      layerStack.add(withOrigins(a, [el("trigger-a")]))
+      layerStack.add(withOrigins(b, [el("trigger-b")]))
+
+      expect(layerStack.getNestedLayers(a)).toEqual([])
+      expect(layerStack.layerFor(b)?.parentId).toBeUndefined()
+    })
+
+    test("removing a layer does not dismiss an unrelated one", () => {
+      const a = el("a")
+      const b = el("b")
+      const dismiss = vi.fn()
+      layerStack.add(withOrigins(a, [el("trigger-a")]))
+      layerStack.add({ ...withOrigins(b, [el("trigger-b")]), dismiss })
+      layerStack.remove(a)
+
+      expect(dismiss).not.toHaveBeenCalled()
+      expect(layerStack.isTopMost(b)).toBe(true)
+    })
+
+    test("a layer whose trigger is inside another layer nests in it", () => {
+      const parent = el("parent")
+      const child = el("child")
+      layerStack.add(withOrigins(parent, [el("trigger-parent")]))
+      layerStack.add(withOrigins(child, [el("trigger-child", parent)]))
+
+      expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child])
+    })
+
+    test("a layer rendered inside another layer nests in it", () => {
+      const parent = el("parent")
+      const child = el("child", parent)
+      layerStack.add(withOrigins(parent, []))
+      layerStack.add(withOrigins(child, []))
+
+      expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child])
+    })
+
+    test("nests in the topmost layer containing an origin, not the top of the stack", () => {
+      const parent = el("parent")
+      const sibling = el("sibling")
+      const child = el("child")
+      layerStack.add(withOrigins(parent, []))
+      layerStack.add(withOrigins(sibling, []))
+      layerStack.add(withOrigins(child, [el("trigger-child", parent)]))
+
+      expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child])
+      expect(layerStack.getNestedLayers(sibling)).toEqual([])
+    })
+
+    test("a parent registered after its children adopts them and sits below them", () => {
+      const parent = el("parent")
+      const child = el("child")
+      const grandchild = el("grandchild")
+      // effects run child-first
+      layerStack.add(withOrigins(grandchild, [el("trigger-grandchild", child)]))
+      layerStack.add(withOrigins(child, [el("trigger-child", parent)]))
+      layerStack.add(withOrigins(parent, [el("trigger-parent")]))
+
+      expect(layerStack.layers.map((l) => l.node)).toEqual([parent, child, grandchild])
+      expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child, grandchild])
+      expect(layerStack.isTopMost(grandchild)).toBe(true)
+    })
+
+    test("re-registering a parent keeps it below its children", () => {
+      const parent = el("parent")
+      const child = el("child")
+      const parentLayer = withOrigins(parent, [])
+      layerStack.add(parentLayer)
+      layerStack.add(withOrigins(child, [el("trigger-child", parent)]))
+      // Strict Mode runs effects twice
+      layerStack.add({ ...parentLayer })
+
+      expect(layerStack.isTopMost(child)).toBe(true)
+      expect(layerStack.getNestedLayers(parent).map((l) => l.node)).toEqual([child])
+    })
+
+    test("does not adopt a layer that already has a parent", () => {
+      const a = el("a")
+      const b = el("b")
+      const child = el("child")
+      layerStack.add(withOrigins(a, []))
+      layerStack.add(withOrigins(child, [el("trigger-child", a)]))
+      const trigger = el("trigger-b-holder", b)
+      trigger.appendChild(document.getElementById("trigger-child")!)
+      layerStack.add(withOrigins(b, []))
+
+      expect(layerStack.getNestedLayers(a).map((l) => l.node)).toEqual([child])
+      expect(layerStack.getNestedLayers(b)).toEqual([])
+    })
+
+    test("nested counts ignore unrelated layers of the same type", () => {
+      const a = el("a")
+      const b = el("b")
+      const child = el("child")
+      layerStack.add(withOrigins(a, [], { type: "popover" }))
+      layerStack.add(withOrigins(b, [], { type: "popover" }))
+      layerStack.add(withOrigins(child, [el("trigger-child", a)], { type: "popover" }))
+
+      expect(layerStack.layerFor(a)!.snapshot?.nestedCount).toBe(1)
+      expect(layerStack.layerFor(b)!.snapshot?.nestedCount).toBe(0)
+      expect(layerStack.layerFor(child)!.snapshot?.nested).toBe(true)
     })
   })
 })

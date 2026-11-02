@@ -1,6 +1,6 @@
 <script lang="ts">
-  import NestedPopover from "$lib/components/popover-in-dialog-nested.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import NestedPopover from "#lib/components/popover-in-dialog-nested.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/popover.css"

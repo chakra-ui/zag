@@ -1,0 +1,121 @@
+import { type CalendarDateTime } from "@internationalized/date"
+import { normalizeProps, useMachine } from "@zag-js/preact"
+import * as scheduler from "@zag-js/scheduler"
+import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
+import { ChevronLeft, ChevronRight } from "lucide-preact"
+import { useId, useState } from "react"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
+import "@styles/scheduler.css"
+
+export default function Page() {
+  const controls = useControls(schedulerControls)
+  const [view, setView] = useState<scheduler.ViewType>("week")
+  const [date, setDate] = useState<CalendarDateTime>(schedulerAnchor)
+  const [events, setEvents] = useState(schedulerEvents)
+  const [selectedTitle, setSelectedTitle] = useState<string | null>(null)
+
+  const service = useMachine(scheduler.machine, {
+    id: useId(),
+    ...controls.context,
+    view,
+    date,
+    events,
+    onViewChange: (d) => setView(d.view),
+    onDateChange: (d) => setDate(d.date),
+    onEventClick: (d) => setSelectedTitle(d.event.title),
+    onEventDrop: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+    onEventResize: (d) =>
+      setEvents((prev) => prev.map((e) => (e.id === d.event.id ? { ...e, start: d.newStart, end: d.newEnd } : e))),
+  })
+
+  const api = scheduler.connect(service, normalizeProps)
+
+  return (
+    <>
+      <main className="scheduler">
+        <div {...api.getRootProps()}>
+          <div {...api.getHeaderProps()}>
+            <button {...api.getPreviousTriggerProps()}>
+              <ChevronLeft />
+            </button>
+            <button {...api.getTodayTriggerProps()}>Today</button>
+            <button {...api.getNextTriggerProps()}>
+              <ChevronRight />
+            </button>
+            <span {...api.getHeaderTitleProps()}>{api.visibleRangeText.formatted}</span>
+            <div {...api.getViewSelectProps()}>
+              {(["day", "week"] as scheduler.ViewType[]).map((v) => (
+                <button key={v} {...api.getViewItemProps({ view: v })}>
+                  {api.getViewText(v)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 4 }}>
+            View: <strong>{view}</strong> · {events.length} events
+            {selectedTitle ? (
+              <>
+                {" · Selected: "}
+                <strong>{selectedTitle}</strong>
+              </>
+            ) : null}
+          </div>
+
+          <div className="scheduler-time-grid-wrapper">
+            <div {...api.getColumnHeadersProps()}>
+              <div className="scheduler-gutter-header" />
+              {api.visibleDays.map((date) => (
+                <div key={date.toString()} {...api.getColumnHeaderProps({ date })}>
+                  <span className="scheduler-header-day-label">{api.formatWeekDay(date)}</span>
+                  <span className="scheduler-header-day-num">{date.day}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
+              <div {...api.getGridProps()}>
+                <div {...api.getGridRowProps()}>
+                  <div {...api.getTimeGutterProps()}>
+                    {api.hourRange.hours.map((hour) => (
+                      <div key={hour.value} {...api.getHourLabelProps({ hour })}>
+                        {hour.label}
+                      </div>
+                    ))}
+                  </div>
+
+                  {api.visibleDays.map((date) => (
+                    <div key={date.toString()} {...api.getDayColumnProps({ date })}>
+                      {api.hourRange.hours.map((hour) => (
+                        <div key={hour.value} {...api.getHourLineProps({ hour })} />
+                      ))}
+                      <div {...api.getCurrentTimeIndicatorProps({ date })} />
+                      {api.getEventsForDay(date).map((event) => (
+                        <div key={event.id} {...api.getEventProps({ event })}>
+                          <div className="scheduler-event-title">{event.title}</div>
+                          <div {...api.getEventResizeHandleProps({ event, edge: "end" })}>
+                            <div className="scheduler-resize-grip" />
+                          </div>
+                        </div>
+                      ))}
+                      <div {...api.getDragOriginProps({ date })} />
+                      <div {...api.getDragPreviewProps({ date })}>
+                        <div className="scheduler-event-title">{api.dragState?.event.title}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} />
+      </Toolbar>
+    </>
+  )
+}

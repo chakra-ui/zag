@@ -1,6 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
+import "@styles/splitter.css"
 
 export default function Page() {
   const service = useMachine(splitter.machine, {

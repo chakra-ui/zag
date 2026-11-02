@@ -1,6 +1,6 @@
 <script lang="ts">
-  import NestedMenu from "$lib/components/nested-menu.svelte"
-  import Portal from "$lib/components/portal.svelte"
+  import NestedMenu from "#lib/components/nested-menu.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import "@styles/menu.css"
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import Uptime from "$lib/components/dialog-uptime.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import Uptime from "#lib/components/dialog-uptime.svelte"
   import * as dialog from "@zag-js/dialog"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"

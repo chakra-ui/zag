@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Collapsible from "$lib/components/collapsible-nested-item.svelte"
+  import Collapsible from "#lib/components/collapsible-nested-item.svelte"
   import "@styles/collapsible.css"
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
-  import { useListVirtualizer } from "$lib/use-virtualizer.svelte"
+  import Portal from "#lib/components/portal.svelte"
+  import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as select from "@zag-js/select"
   import { selectData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"

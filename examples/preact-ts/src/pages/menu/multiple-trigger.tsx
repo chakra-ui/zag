@@ -3,6 +3,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { MoreVerticalIcon } from "lucide-preact"
 import { useId, useState } from "react"
 import { Presence } from "../../components/presence"
+import "@styles/menu.css"
 
 interface Document {
   id: number

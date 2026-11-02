@@ -1,10 +1,11 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/menu.css"
 
 export default function Page() {
-  const service = useMachine(menu.machine, { id: createUniqueId() })
+  const [selected, setSelected] = createSignal("")
+  const service = useMachine(menu.machine, { id: createUniqueId(), onSelect: (details) => setSelected(details.value) })
   const api = createMemo(() => menu.connect(service, normalizeProps))
 
   return (
@@ -27,8 +28,15 @@ export default function Page() {
           <a {...api().getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">
             YouTube
           </a>
+          <a {...api().getItemProps({ value: "section" })} href="#section">
+            Section
+          </a>
+          <a {...api().getItemProps({ value: "basic" })} href="/menu/basic">
+            Basic menu
+          </a>
         </div>
       </div>
+      <output data-testid="selected">{selected()}</output>
     </div>
   )
 }

@@ -233,7 +233,7 @@ export default function Page() {
                 ref={searchRef}
                 type="text"
                 placeholder="Search categories"
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.currentTarget.value)}
                 style={{ padding: "8px 12px" }}
               />
 

@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
@@ -161,6 +162,10 @@ export interface PopoverSchema {
   state: "open" | "closed"
   context: PrivateContext
   computed: {}
+  refs: {
+    renderedFrame: AnimationFrame
+    initialFocusFrame: AnimationFrame
+  }
   event: EventObject
   action: string
   effect: string

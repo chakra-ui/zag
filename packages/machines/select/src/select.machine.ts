@@ -2,6 +2,7 @@ import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } fro
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   getByTypeahead,
   getInitialFocus,
   isApple,
@@ -134,6 +135,8 @@ export const machine = createMachine<SelectSchema>({
       autoGrow: null,
       liveRegion: null,
       alignedToTrigger: false,
+      initialFocusFrame: AnimationFrame.create(),
+      triggerFocusFrame: AnimationFrame.create(),
     }
   },
 
@@ -157,6 +160,8 @@ export const machine = createMachine<SelectSchema>({
   },
 
   entry: ["syncSelectElement"],
+
+  exit: ["cancelFrames"],
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value").toString()], () => {
@@ -354,7 +359,7 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused"],
+      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused", "cancelInitialFocus"],
       effects: [
         "trackDismissableElement",
         "trackFocusVisible",
@@ -511,6 +516,7 @@ export const machine = createMachine<SelectSchema>({
             context.set("layer", layer)
           },
           defer: true,
+          getRootNode: scope.getRootNode,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
@@ -518,8 +524,8 @@ export const machine = createMachine<SelectSchema>({
             prop("onInteractOutside")?.(event)
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          onDismiss(event) {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -572,7 +578,7 @@ export const machine = createMachine<SelectSchema>({
         const win = scope.getWin()
 
         // Defer listener attachment — listEl may not exist until React commits
-        raf(() => {
+        const cancelFrame = raf(() => {
           exec()
           listEl = dom.getListEl(scope)
           if (!listEl) return
@@ -582,6 +588,7 @@ export const machine = createMachine<SelectSchema>({
         })
 
         return () => {
+          cancelFrame()
           unobserveResize?.()
           listEl?.removeEventListener("scroll", exec)
           win.removeEventListener("resize", exec)
@@ -700,8 +707,8 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", value)
       },
 
-      setInitialFocus({ prop, scope }) {
-        raf(() => {
+      setInitialFocus({ prop, scope, refs }) {
+        refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
@@ -711,12 +718,22 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      focusTriggerEl({ event, scope }) {
+      focusTriggerEl({ event, scope, refs }) {
         if (!restoreFocusFn(event)) return
-        raf(() => {
+        const focusOptions = getReturnFocusOptions(event)
+        refs.get("triggerFocusFrame").request(() => {
           const element = dom.getTriggerEl(scope)
-          element?.focus({ preventScroll: true })
+          element?.focus(focusOptions)
         })
+      },
+
+      cancelInitialFocus({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+        refs.get("triggerFocusFrame").cancel()
       },
 
       selectHighlightedItem({ context, prop, event }) {
@@ -980,4 +997,10 @@ export const machine = createMachine<SelectSchema>({
 function restoreFocusFn(event: Record<string, any>) {
   const v = event.restoreFocus ?? event.previousEvent?.restoreFocus
   return v == null || !!v
+}
+
+// Show the focus ring when closed from the keyboard; leave it to the browser otherwise
+function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
+  const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
+  return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }

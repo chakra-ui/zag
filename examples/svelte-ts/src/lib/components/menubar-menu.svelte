@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Portal from "$lib/components/portal.svelte"
+  import Portal from "#lib/components/portal.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { getContext } from "svelte"
@@ -14,10 +14,10 @@
 
   const props: Props = $props()
 
-  const menubarContext = getContext<menu.MenubarContext | undefined>("menubar")
+  const getMenubarContext = getContext<(() => menu.MenubarContext) | undefined>("menubar")
   const service = useMachine(menu.machine, () => ({
     id: props.id,
-    menubar: menubarContext,
+    menubar: getMenubarContext?.(),
     positioning: props.positioning,
     onSelect: props.onSelect,
   }))

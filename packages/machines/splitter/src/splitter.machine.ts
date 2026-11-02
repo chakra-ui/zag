@@ -93,6 +93,7 @@ export const machine = createMachine<SplitterSchema>({
       initialSize: null,
       prevInitialLayout: null,
       prevGroupSize: null,
+      prevPropsKey: null,
       lastRequestedSize: null,
       suppressOnResize: false,
     }
@@ -371,17 +372,22 @@ export const machine = createMachine<SplitterSchema>({
           orientation,
         })
 
-        const canPreserveLayout =
-          prevGroupSize != null && prevGroupSize !== nextGroupSize && currentSize.length === panels.length
+        const hasCurrentLayout = prevGroupSize != null && currentSize.length === panels.length
+        const propsKey = `${serializePanels(prop("panels"))}:${JSON.stringify(prop("size") ?? [])}:${JSON.stringify(prop("defaultSize") ?? [])}`
+        const propsChanged = refs.get("prevPropsKey") !== propsKey
 
-        const nextSize = canPreserveLayout
-          ? preserveFixedPanelSizes({
-              panels,
-              prevLayout: currentSize,
-              prevGroupSize,
-              nextGroupSize,
-            })
-          : nextResolvedSize
+        let nextSize = nextResolvedSize
+        if (hasCurrentLayout && prevGroupSize !== nextGroupSize) {
+          nextSize = preserveFixedPanelSizes({
+            panels,
+            prevLayout: currentSize,
+            prevGroupSize,
+            nextGroupSize,
+          })
+        } else if (hasCurrentLayout && !propsChanged) {
+          // The root resized along the cross axis only, so the current layout still holds
+          nextSize = currentSize
+        }
 
         const safeSize = validateSizes({
           size: nextSize,
@@ -401,6 +407,7 @@ export const machine = createMachine<SplitterSchema>({
         }
 
         refs.set("prevGroupSize", nextGroupSize)
+        refs.set("prevPropsKey", propsKey)
       },
 
       setDraggingState({ context, event, prop, scope }) {
@@ -623,12 +630,13 @@ export const machine = createMachine<SplitterSchema>({
         }
       },
 
-      invokeOnResizeEnd({ context, prop, refs }) {
+      invokeOnResizeEnd({ context, prop, refs, event }) {
+        // Read before the transition clears the drag state
+        const resizeTriggerId = event.id ?? context.get("dragState")?.resizeTriggerId ?? null
         queueMicrotask(() => {
-          const dragState = context.get("dragState")
           prop("onResizeEnd")?.({
             size: refs.get("lastRequestedSize") ?? context.get("size"),
-            resizeTriggerId: dragState?.resizeTriggerId ?? null,
+            resizeTriggerId,
           })
         })
       },

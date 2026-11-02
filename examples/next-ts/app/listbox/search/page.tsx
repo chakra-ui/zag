@@ -46,7 +46,7 @@ export default function Page() {
               {...api.getInputProps({ autoHighlight: true })}
               aria-label="Filter countries"
               placeholder="Filter…"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.currentTarget.value)}
               value={search}
             />
             <div {...api.getEmptyProps()}>{collection.size === 0 && `No matches for "${search}"`}</div>

@@ -1,13 +1,14 @@
 import { normalizeSpan } from "./normalize-span"
 import { escapeRegex } from "./escape-regex"
 import type { HighlightChunk, HighlightWordProps } from "./types"
+import { wholeWord } from "./whole-word"
 
 export function highlightFirst(props: HighlightWordProps): HighlightChunk[] {
   const { text, query, ignoreCase, exactMatch } = props
 
   if (exactMatch) {
     const escapedQuery = escapeRegex(query as string)
-    const regex = new RegExp(`\\b(${escapedQuery})\\b`, ignoreCase ? "i" : "")
+    const regex = new RegExp(wholeWord(escapedQuery), ignoreCase ? "iu" : "u")
 
     const match = text.match(regex)
     if (!match || match.index === undefined) {

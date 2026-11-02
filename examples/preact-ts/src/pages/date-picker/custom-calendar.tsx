@@ -5,6 +5,7 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 import { PersianCalendar } from "@internationalized/date"
+import "@styles/date-picker.css"
 
 // Only bundle the Persian calendar — not all 13+ calendars.
 function createCalendar(identifier: string) {

@@ -4,6 +4,7 @@ import * as tour from "@zag-js/tour"
 import { XIcon } from "lucide-solid"
 import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
+import "@styles/tour.css"
 
 export default function Page() {
   const [wide, setWide] = createSignal(false)

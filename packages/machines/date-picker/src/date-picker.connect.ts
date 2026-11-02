@@ -549,6 +549,9 @@ export function connect<T extends PropTypes>(
               }
               send({ type: "TABLE.ENTER", view, columns, focus: true })
             },
+            Space(event) {
+              keyMap.Enter?.(event)
+            },
             ArrowLeft() {
               send({ type: "TABLE.ARROW_LEFT", view, columns, focus: true })
             },

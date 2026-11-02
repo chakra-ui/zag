@@ -1,11 +1,11 @@
 <script lang="ts">
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "#lib/components/state-visualizer.svelte"
+  import Toolbar from "#lib/components/toolbar.svelte"
+  import { useControls } from "#lib/use-controls.svelte.ts"
   import * as colorPicker from "@zag-js/color-picker"
   import { colorPickerControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import EyeDropIcon from "$lib/components/eye-drop-icon.svelte"
+  import EyeDropIcon from "#lib/components/eye-drop-icon.svelte"
   import "@styles/color-picker.css"
 
   const presets = ["#f47373", "#697689"]

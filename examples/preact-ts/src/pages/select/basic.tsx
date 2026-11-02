@@ -2,10 +2,12 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { selectControls, selectData } from "@zag-js/shared"
 import serialize from "form-serialize"
+import { ChevronsUpDownIcon, XIcon } from "lucide-preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/select.css"
 
 interface Item {
   label: string
@@ -42,9 +44,15 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>X</button>
+            <div className="select-indicator-group">
+              <button {...api.getClearTriggerProps()}>
+                <XIcon />
+              </button>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           <form
@@ -67,14 +75,16 @@ export default function Page() {
           {/* UI select */}
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
-                {selectData.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ item })}>
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                ))}
-              </ul>
+              <div {...api.getContentProps()}>
+                <div {...api.getListProps()}>
+                  {selectData.map((item) => (
+                    <div key={item.value} {...api.getItemProps({ item })}>
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

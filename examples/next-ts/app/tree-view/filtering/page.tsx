@@ -106,10 +106,10 @@ export default function Page() {
           className="tree-view-search"
           placeholder="Search files…"
           onChange={(e) => {
-            if (e.target.value.length === 0) {
+            if (e.currentTarget.value.length === 0) {
               setCollection(initialCollection)
             } else {
-              const filtered = initialCollection.filter((node) => node.name.includes(e.target.value))
+              const filtered = initialCollection.filter((node) => node.name.includes(e.currentTarget.value))
               setCollection(filtered)
               api.setExpandedValue(filtered.getBranchValues())
             }

@@ -45,13 +45,13 @@ export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Prese
   )
 })
 
-function mergeRefs<T>(...refs: (React.RefObject<T> | React.Ref<T>)[]) {
-  return (node: T) => {
+function mergeRefs<T>(...refs: (React.RefObject<T | null> | React.Ref<T>)[]) {
+  return (node: T | null) => {
     refs.forEach((ref) => {
       if (typeof ref === "function") {
         ref(node)
       } else if (ref != null) {
-        ref.current = node
+        ;(ref as React.RefObject<T | null>).current = node
       }
     })
   }

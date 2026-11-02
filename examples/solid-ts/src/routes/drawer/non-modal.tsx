@@ -6,8 +6,9 @@ import styles from "@styles/drawer.module.css"
 import { XIcon } from "lucide-solid"
 
 export default function Page() {
+  const id = createUniqueId()
   const service = useMachine(drawer.machine, () => ({
-    id: createUniqueId(),
+    id,
     modal: false,
     closeOnInteractOutside: false,
     swipeDirection: "end" as const,

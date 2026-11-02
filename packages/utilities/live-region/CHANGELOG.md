@@ -21,6 +21,19 @@
 
 ## 2.0.0-next.0
 
+## 1.47.0
+
+### Minor Changes
+
+- [#3479](https://github.com/chakra-ui/zag/pull/3479)
+  [`60833ac`](https://github.com/chakra-ui/zag/commit/60833acda3f96b94c99464d0a2d3abbdeb5a87d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Keep one element per region in the DOM, so announcements from
+  different components no longer drop each other.
+  - Add `cancel()` to drop a pending announcement, and cancel it in `destroy()`.
+  - Allow `root` to be a function.
+  - **Breaking change:** Regions no longer have an `id`. Select them with `[data-live-announcer]` instead of
+    `#__live-region__`.
+
 ## 1.46.0
 
 No changes in this release.
