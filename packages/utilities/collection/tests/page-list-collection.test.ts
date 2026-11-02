@@ -96,6 +96,14 @@ describe("PageListCollection / structure", () => {
     expect(collection.setPage("a").items).toEqual([{ id: "b", up: "a" }])
   })
 
+  test("a custom parent accessor can return null for the top level", () => {
+    const collection = new PageListCollection({
+      items: [item("a"), item("b", "a")],
+      itemToParent: () => null,
+    })
+    expect(values(collection.items)).toEqual(["a", "b"])
+  })
+
   test("survives cycles", () => {
     const collection = new PageListCollection({
       items: [item("a", "b"), item("b", "a")],

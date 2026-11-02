@@ -23,6 +23,12 @@ describe("fuzzyScore", () => {
     expect(fuzzyScore("Settings", "settings")).toBe(1)
   })
 
+  test("long partial matches still rank below an exact match", () => {
+    const query = "Create a new project from an existing template"
+    expect(fuzzyScore(`${query} using defaults`, query)).toBeLessThan(fuzzyScore(query, query))
+    expect(rankItems([`${query} using defaults`, query], (item) => fuzzyScore(item, query))[0]).toBe(query)
+  })
+
   test("non-subsequence scores 0", () => {
     expect(fuzzyScore("Settings", "xyz")).toBe(0)
     expect(fuzzyScore("Set", "settings")).toBe(0)

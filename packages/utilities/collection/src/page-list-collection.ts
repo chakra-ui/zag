@@ -268,7 +268,7 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
 }
 
 function parentOf<T>(options: PageListCollectionOptions<T>, byValue: Map<string, T>, item: T): string | null {
-  const parent = options.itemToParent?.(item) ?? fallback.itemToParent(item)
+  const parent = options.itemToParent ? options.itemToParent(item) : fallback.itemToParent(item)
   return parent != null && byValue.has(parent) ? parent : null
 }
 

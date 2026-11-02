@@ -8,6 +8,8 @@ export const MATCH_CONSECUTIVE = 1
 
 const KEYWORD_WEIGHT = 0.9
 const PER_WORD_WEIGHT = 0.95
+// the sigmoid rounds long matches to 1, so cap partial matches below an exact one
+const MAX_PARTIAL = 1 - 1e-6
 
 // reused across calls; scoring is synchronous
 const bestEndingHere = new Float64Array(MAX_LENGTH)
@@ -69,7 +71,7 @@ export function scoreText(query: PreparedQuery, target: PreparedText): number {
 
   const raw = M[m - 1]
   if (raw === -Infinity) return 0
-  return 1 / (1 + Math.exp(-raw))
+  return Math.min(1 / (1 + Math.exp(-raw)), MAX_PARTIAL)
 }
 
 function scoreTarget(query: PreparedQuery, target: PreparedTarget) {
