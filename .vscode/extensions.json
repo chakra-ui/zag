@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "ms-playwright.playwright",
+    "oxc.oxc-vscode",
     "Vue.volar",
     "svelte.svelte-vscode"
   ]

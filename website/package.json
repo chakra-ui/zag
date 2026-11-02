@@ -7,7 +7,7 @@
     "build": "panda codegen && next build",
     "dev": "panda codegen && next dev",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "oxlint",
     "typecheck": "panda codegen && tsc --noEmit",
     "gen:snippet": "plop snippet",
     "gen:component": "plop component",
@@ -88,13 +88,9 @@
     "velite": "^0.4.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.4.3",
     "@pandacss/dev": "^1.12.0",
     "@types/react": "^19.2.18",
     "all-contributors-cli": "7.0.0",
-    "eslint": "10.14.0",
-    "eslint-config-next": "16.4.3",
-    "prettier": "3.9.10",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.1",

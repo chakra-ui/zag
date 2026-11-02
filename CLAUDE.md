@@ -51,7 +51,7 @@ pnpm build              # Build all packages
 pnpm start-react        # Start React example
 pnpm test               # Run all tests
 pnpm e2e-react          # E2E tests for React
-pnpm lint               # Lint all packages
+pnpm lint               # Lint all packages (oxlint)
 pnpm typecheck          # TypeScript type checking
 ```
 

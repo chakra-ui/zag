@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs"
-import { format } from "prettier"
+import { format } from "oxfmt"
 
 const EXTENSIONS_SEPARATOR = ","
 const MIME_TYPES_SEPARATOR = "_"
@@ -226,6 +226,7 @@ const mimes = [
   .join(MIME_TYPES_ARRAY_SEPARATOR)
 
 format(
+  "mime-types.ts",
   `export const mimeTypes /*#__PURE__*/ = \n'${mimes}'
     
     
@@ -236,10 +237,7 @@ export const mimeTypesMap = new Map<string, string>(
   }),
 )
     `,
-  {
-    parser: "typescript",
-    semi: false,
-  },
-).then((code) => {
+  { semi: false, printWidth: 120 },
+).then(({ code }) => {
   writeFileSync("src/mime-types.ts", code)
 })

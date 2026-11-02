@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "oxlint"
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
@@ -77,12 +77,9 @@
     "react-spinners": "0.17.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.4.3",
     "@types/node": "25.9.9",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "eslint": "10.14.0",
-    "eslint-config-next": "16.4.3",
     "typescript": "6.0.3"
   }
 }

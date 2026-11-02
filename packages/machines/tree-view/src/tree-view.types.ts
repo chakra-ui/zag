@@ -265,7 +265,12 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
 }
 
 type PropsWithDefault =
-  "collection" | "selectionMode" | "expandOnClick" | "typeahead" | "defaultExpandedValue" | "defaultSelectedValue"
+  | "collection"
+  | "selectionMode"
+  | "expandOnClick"
+  | "typeahead"
+  | "defaultExpandedValue"
+  | "defaultSelectedValue"
 
 export type TreeLoadingStatus = "loading" | "loaded"
 

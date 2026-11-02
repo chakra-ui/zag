@@ -133,7 +133,13 @@ export interface PopoverProps
 }
 
 type PropsWithDefault =
-  "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "restoreFocus" | "positioning"
+  | "closeOnInteractOutside"
+  | "closeOnEscape"
+  | "modal"
+  | "portalled"
+  | "autoFocus"
+  | "restoreFocus"
+  | "positioning"
 
 type ComputedContext = Readonly<{
   /**

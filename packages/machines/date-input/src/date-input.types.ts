@@ -280,7 +280,16 @@ export type DateInputMachine = Machine<DateInputSchema>
  * -----------------------------------------------------------------------------*/
 
 export type SegmentType =
-  "era" | "year" | "month" | "day" | "hour" | "minute" | "second" | "dayPeriod" | "literal" | "timeZoneName"
+  | "era"
+  | "year"
+  | "month"
+  | "day"
+  | "hour"
+  | "minute"
+  | "second"
+  | "dayPeriod"
+  | "literal"
+  | "timeZoneName"
 
 export type Segments = {
   -readonly [K in keyof typeof EDITABLE_SEGMENTS]?: boolean | undefined
