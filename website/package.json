@@ -88,7 +88,9 @@
     "velite": "^0.4.0"
   },
   "devDependencies": {
-    "@pandacss/dev": "^1.12.0",
+    "@pandacss/dev": "^2.0.0",
+    "@pandacss/preset-base": "^2.4.0",
+    "@pandacss/preset-panda": "^2.4.0",
     "@types/react": "^19.2.18",
     "all-contributors-cli": "7.0.0",
     "rehype": "13.0.2",

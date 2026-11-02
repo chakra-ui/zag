@@ -1,6 +1,8 @@
 import { defineConfig } from "@pandacss/dev"
 
 export default defineConfig({
+  // v2 no longer adds these by default; v1 included both implicitly
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda"],
   preflight: true,
   include: [
     "./app/**/*.{js,jsx,ts,tsx}",
