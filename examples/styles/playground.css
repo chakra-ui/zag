@@ -115,10 +115,21 @@ body:has(.pg) {
   gap: 10px;
   min-width: 0;
   padding: 40px;
+  margin-inline-end: var(--pg-inspector-inset, 0px);
   overflow-y: auto;
   background: white;
   color: var(--zinc-950);
   font-size: 14px;
+}
+
+/* The side inspector overlays the canvas; keep the canvas content out from under it */
+:where(:root:not([data-pg-dock="bottom"])) .pg-body:has(> div.toolbar) {
+  --pg-inspector-inset: var(--pg-inspector-w);
+}
+
+:root[data-pg-inspector="hidden"] .pg:not([data-fullscreen]) .pg-body,
+.pg[data-fullscreen][data-inspector="hidden"] .pg-body {
+  --pg-inspector-inset: 0px;
 }
 
 /* Canvas layouts, like Storybook's */

@@ -380,6 +380,16 @@ test.describe("tags-input [highlight frame]", () => {
     await page.keyboard.press("Delete")
     await I.seeTag("Vue")
   })
+})
+
+test.describe("tags-input / editable [highlight frame]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TagsInputModel(page)
+    await page.clock.install()
+    await I.goto("/tags-input/editable")
+    const now = await page.evaluate(() => Date.now())
+    await page.clock.pauseAt(now + 60_000)
+  })
 
   test("leaving right after editing a tag should not refocus the input", async ({ page }) => {
     await I.doubleClickTag("React")

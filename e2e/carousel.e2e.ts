@@ -99,11 +99,14 @@ test.describe("carousel", () => {
   })
 
   test("drag interruption and immediate restart resolves to final drag target", async () => {
-    await I.swipeCarousel("left", 320, 300, false)
+    // Relative to the page width so the second drag ends nearest the last page
+    const width = await I.carousel.evaluate((el) => el.clientWidth)
+
+    await I.swipeCarousel("left", Math.round(width * 0.6), 300, false)
     await I.holdDrag(60)
     await I.releaseDrag()
 
-    await I.swipeCarousel("left", 320, 300, false)
+    await I.swipeCarousel("left", width, 300, false)
     await I.holdDrag(80)
     await I.releaseDrag()
     await I.waitForScrollSettle()

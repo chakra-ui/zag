@@ -165,11 +165,13 @@ test.describe("number input", () => {
   })
 
   test("rtl: scrubbing should be mirrored", async () => {
+    await I.goto("/number-input/scrubber")
     await I.controls.select("dir", "rtl")
     await I.type("50")
-    await I.scrubBy(10)
+    // 2px per step
+    await I.scrubBy(20)
     await I.seeInputValueIsApprox(40)
-    await I.scrubBy(-20)
+    await I.scrubBy(-40)
     await I.seeInputValueIsApprox(60)
   })
 

@@ -178,7 +178,9 @@ export class NumberFlowModel extends Model {
         requestAnimationFrame(step)
 
         if (label) {
-          const button = [...document.querySelectorAll("button")].find((b) => b.textContent?.trim() === label)
+          const button = [...document.querySelectorAll("button")].find(
+            (b) => (b.getAttribute("aria-label") ?? b.textContent?.trim()) === label,
+          )
           if (!button) throw new Error(`no button labelled "${label}"`)
           for (let i = 0; i < (count as number); i++) {
             button.click()
