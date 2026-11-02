@@ -490,7 +490,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   const popperComponents = await findComponentsUsingDependency("@zag-js/popper")
   const dismissableComponents = await findComponentsUsingDependency("@zag-js/dismissable")
 
-  // Transform to match data-attr.json structure
+  // Transform to match data-attr.ts structure
   const allVariables: AllCSSVars = {}
 
   for (const variable of tempVariables) {
@@ -587,8 +587,8 @@ async function main() {
 
   const allVariables = await extractAllCSSVariables()
 
-  const outputPath = resolve("packages/docs/data/css-vars.json")
-  writeFileSync(outputPath, JSON.stringify(allVariables, null, 2))
+  const outputPath = resolve("packages/docs/data/css-vars.ts")
+  writeFileSync(outputPath, `export default ${JSON.stringify(allVariables, null, 2)}\n`)
 
   const totalComponents = Object.keys(allVariables).length
   const totalVariables = Object.values(allVariables).reduce(

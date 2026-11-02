@@ -17,7 +17,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "test": "vitest",
     "typecheck": "tsc --noEmit",

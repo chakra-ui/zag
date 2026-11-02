@@ -10,5 +10,5 @@
   "trailingComma": "all",
   "sortPackageJson": false,
   "svelte": true,
-  "ignorePatterns": ["dist", "node_modules", "coverage", ".next", "build", "*.hbs"]
+  "ignorePatterns": ["dist", "node_modules", "coverage", ".next", "build", "*.hbs", "packages/docs/data"]
 }

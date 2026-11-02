@@ -39,7 +39,7 @@
     "preact": ">=10.0.0"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

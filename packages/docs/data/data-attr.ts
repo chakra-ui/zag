@@ -1,4 +1,4 @@
-{
+export default {
   "accordion": {
     "Root": {
       "data-scope": "accordion",
@@ -521,12 +521,14 @@
       "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
-      "data-empty": "Present when the content is empty"
+      "data-empty": "Present when the content is empty",
+      "data-loading": "Present when loading"
     },
     "List": {
       "data-scope": "combobox",
       "data-part": "list",
-      "data-empty": "Present when the content is empty"
+      "data-empty": "Present when the content is empty",
+      "data-loading": "Present when loading"
     },
     "ClearTrigger": {
       "data-scope": "combobox",
@@ -1225,7 +1227,8 @@
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
       "data-value": "The value of the item",
-      "data-valuetext": "The human-readable value"
+      "data-valuetext": "The human-readable value",
+      "data-close-on-select": ""
     },
     "OptionItem": {
       "data-scope": "menu",
@@ -1235,7 +1238,8 @@
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-valuetext": "The human-readable value"
+      "data-valuetext": "The human-readable value",
+      "data-close-on-select": ""
     },
     "ItemIndicator": {
       "data-scope": "menu",
@@ -1895,7 +1899,10 @@
       "data-scope": "steps",
       "data-part": "item",
       "data-orientation": "The orientation of the item",
-      "data-skippable": ""
+      "data-skippable": "",
+      "data-complete": "Present when the item value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
     },
     "Trigger": {
       "data-scope": "steps",
@@ -2195,14 +2202,21 @@
       "data-scope": "tour",
       "data-part": "backdrop",
       "data-state": "\"open\" | \"closed\"",
-      "data-type": "The type of the item"
+      "data-type": "The type of the item",
+      "data-instant": ""
+    },
+    "Spotlight": {
+      "data-scope": "tour",
+      "data-part": "spotlight",
+      "data-instant": ""
     },
     "Positioner": {
       "data-scope": "tour",
       "data-part": "positioner",
       "data-type": "The type of the item",
       "data-placement": "The placement of the positioner",
-      "data-side": "The side of the trigger that the positioner is positioned on"
+      "data-side": "The side of the trigger that the positioner is positioned on",
+      "data-instant": ""
     },
     "Content": {
       "data-scope": "tour",

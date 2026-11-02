@@ -1,36 +1,52 @@
-{
+export default {
   "accordion": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "When focus is on an trigger of a collapsed item, the item is expanded"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "When focus is on an trigger of a collapsed section, expands the section."
       },
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Moves focus to the next focusable element"
       },
       {
-        "keys": ["Shift + Tab"],
+        "keys": [
+          "Shift + Tab"
+        ],
         "description": "Moves focus to the previous focusable element"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the next trigger"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous trigger."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "When focus is on an trigger, moves focus to the first trigger."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "When focus is on an trigger, moves focus to the last trigger."
       }
     ]
@@ -38,35 +54,51 @@
   "angle-slider": {
     "keyboard": [
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>Increments the angle slider based on defined step</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>Decrements the angle slider based on defined step</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>Decreases the value by the step amount.</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>Increases the value by the step amount.</span>"
       },
       {
-        "keys": ["Shift + ArrowUp"],
+        "keys": [
+          "Shift + ArrowUp"
+        ],
         "description": "<span>Decreases the value by a larger step</span>"
       },
       {
-        "keys": ["Shift + ArrowDown"],
+        "keys": [
+          "Shift + ArrowDown"
+        ],
         "description": "<span>Increases the value by a larger step</span>"
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Sets the value to 0 degrees."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Sets the value to 360 degrees."
       }
     ]
@@ -74,7 +106,9 @@
   "checkbox": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Toggle the checkbox"
       }
     ]
@@ -82,11 +116,15 @@
   "collapsible": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Opens/closes the collapsible."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Opens/closes the collapsible."
       }
     ]
@@ -94,27 +132,39 @@
   "color-picker": {
     "keyboard": [
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "<span>When focus is on the trigger, opens the color picker<br />When focus is on a trigger of a swatch, selects the color (and closes the color picker)<br />When focus is on the input or channel inputs, selects the color</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>When focus is on the color area, decreases the hue value of the color<br />When focus is on the channel sliders, decreases the value of the channel</span>"
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>When focus is on the color area, increases the hue value of the color<br />When focus is on the channel sliders, increases the value of the channel</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>When focus is on the color area, increases the saturation value of the color<br />When focus is on the channel sliders, increases the value of the channel</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>When focus is on the color area, decreases the saturation value of the color<br />When focus is on the channel sliders, decreases the value of the channel</span>"
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the color picker and moves focus to the trigger"
       }
     ]
@@ -122,27 +172,40 @@
   "menu": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Activates/Selects the highlighted item"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Activates/Selects the highlighted item"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Highlights the next item in the menu"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Highlights the previous item in the menu"
       },
       {
-        "keys": ["ArrowRight", "ArrowLeft"],
+        "keys": [
+          "ArrowRight",
+          "ArrowLeft"
+        ],
         "description": "<span>When focus is on trigger, opens or closes the submenu depending on reading direction.</span>"
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the menu and moves focus to the trigger"
       }
     ]
@@ -150,31 +213,45 @@
   "nested-menu": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Opens/closes the nested menu."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Opens/closes the nested menu."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the next item."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous item."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Opens the nested menu."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Closes the nested menu."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the nested menu and moves focus to the parent menu item."
       }
     ]
@@ -182,31 +259,49 @@
   "pin-input": {
     "keyboard": [
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous input"
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next input"
       },
       {
-        "keys": ["Home", "ArrowUp", "Control + ArrowLeft"],
+        "keys": [
+          "Home",
+          "ArrowUp",
+          "Control + ArrowLeft"
+        ],
         "description": "Moves focus to the first input"
       },
       {
-        "keys": ["End", "ArrowDown", "Control + ArrowRight"],
+        "keys": [
+          "End",
+          "ArrowDown",
+          "Control + ArrowRight"
+        ],
         "description": "Moves focus to the last filled input"
       },
       {
-        "keys": ["Backspace"],
+        "keys": [
+          "Backspace"
+        ],
         "description": "Deletes the value in the current input and moves focus to the previous input"
       },
       {
-        "keys": ["Delete"],
+        "keys": [
+          "Delete"
+        ],
         "description": "Deletes the value in the current input"
       },
       {
-        "keys": ["Control + V"],
+        "keys": [
+          "Control + V"
+        ],
         "description": "Pastes the value into the input fields"
       }
     ]
@@ -214,23 +309,33 @@
   "popover": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Opens/closes the popover."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Opens/closes the popover."
       },
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "<span>Moves focus to the next focusable element within the content.<br /><strong>Note:</strong> If there are no focusable elements, focus is moved to the next focusable element after the trigger.</span>"
       },
       {
-        "keys": ["Shift + Tab"],
+        "keys": [
+          "Shift + Tab"
+        ],
         "description": "<span>Moves focus to the previous focusable element within the content<br /><strong>Note:</strong> If there are no focusable elements, focus is moved to the trigger.</span>"
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "<span>Closes the popover and moves focus to the trigger.</span>"
       }
     ]
@@ -238,11 +343,15 @@
   "tooltip": {
     "keyboard": [
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Opens/closes the tooltip without delay."
       },
       {
-        "keys": ["Escape"],
+        "keys": [
+          "Escape"
+        ],
         "description": "If open, closes the tooltip without delay."
       }
     ]
@@ -250,27 +359,40 @@
   "select": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "<span>When focus is on trigger, opens the select and focuses the first selected item.<br />When focus is on the content, selects the highlighted item.</span>"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "<span>When focus is on trigger, opens the select and focuses the first selected item.<br />When focus is on content, selects the focused item.</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>When focus is on trigger, opens the select.<br />When focus is on content, moves focus to the next item.</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>When focus is on trigger, opens the select.<br />When focus is on content, moves focus to the previous item.</span>"
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "<span>Closes the select and moves focus to trigger.</span>"
       },
       {
-        "keys": ["A-Z", "a-z"],
+        "keys": [
+          "A-Z",
+          "a-z"
+        ],
         "description": "<span>When focus is on trigger, selects the item whose label starts with the typed character.<br />When focus is on the listbox, moves focus to the next item with a label that starts with the typed character.</span>"
       }
     ]
@@ -278,39 +400,57 @@
   "cascade-select": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "<span>When focus is on trigger, opens the cascade select and focuses the first item.<br />When focus is on the content, selects the highlighted item.</span>"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "<span>When focus is on trigger, opens the cascade select and focuses the first item.<br />When focus is on content, selects the highlighted item.</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>When focus is on trigger, opens the cascade select.<br />When focus is on content, moves focus to the next item in the current level.</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>When focus is on trigger, opens the cascade select and focuses the last item.<br />When focus is on content, moves focus to the previous item in the current level.</span>"
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>When focus is on a branch item, expands the next level and moves focus into it.</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>When focus is on a nested level, collapses it and moves focus back to the parent.<br />When focus is at the root level, closes the cascade select.</span>"
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "<span>Moves focus to the first item in the current level.</span>"
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "<span>Moves focus to the last item in the current level.</span>"
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "<span>Closes the cascade select and moves focus to trigger.</span>"
       }
     ]
@@ -318,7 +458,10 @@
   "switch": {
     "keyboard": [
       {
-        "keys": ["Space", "Enter"],
+        "keys": [
+          "Space",
+          "Enter"
+        ],
         "description": "Toggle the switch"
       }
     ]
@@ -326,43 +469,63 @@
   "slider": {
     "keyboard": [
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>Increments the slider based on defined step</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>Decrements the slider based on defined step</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>Increases the value by the step amount.</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>Decreases the value by the step amount.</span>"
       },
       {
-        "keys": ["PageUp"],
+        "keys": [
+          "PageUp"
+        ],
         "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
-        "keys": ["PageDown"],
+        "keys": [
+          "PageDown"
+        ],
         "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
-        "keys": ["Shift + ArrowUp"],
+        "keys": [
+          "Shift + ArrowUp"
+        ],
         "description": "<span>Increases the value by the <code>largeStep</code> amount.</span>"
       },
       {
-        "keys": ["Shift + ArrowDown"],
+        "keys": [
+          "Shift + ArrowDown"
+        ],
         "description": "<span>Decreases the value by the <code>largeStep</code> amount.</span>"
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Sets the value to its minimum."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Sets the value to its maximum."
       }
     ]
@@ -370,27 +533,39 @@
   "radio-group": {
     "keyboard": [
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Moves focus to either the checked radio item or the first radio item in the group."
       },
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "When focus is on an unchecked radio item, checks it."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus and checks the next radio item in the group."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus and checks the next radio item in the group."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous radio item in the group."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous radio item in the group."
       }
     ]
@@ -398,43 +573,63 @@
   "range-slider": {
     "keyboard": [
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>Increments the focused thumb based on defined step</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>Decrements the focused thumb based on defined step</span>"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "<span>Increases the focused thumb by the step amount.</span>"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "<span>Decreases the focused thumb by the step amount.</span>"
       },
       {
-        "keys": ["PageUp"],
+        "keys": [
+          "PageUp"
+        ],
         "description": "<span>Increases the focused thumb value by a larger step</span>"
       },
       {
-        "keys": ["PageDown"],
+        "keys": [
+          "PageDown"
+        ],
         "description": "<span>Decreases the focused thumb value by a larger step</span>"
       },
       {
-        "keys": ["Shift + ArrowUp"],
+        "keys": [
+          "Shift + ArrowUp"
+        ],
         "description": "<span>Increases the focused thumb value by a larger step</span>"
       },
       {
-        "keys": ["Shift + ArrowDown"],
+        "keys": [
+          "Shift + ArrowDown"
+        ],
         "description": "<span>Decreases the focused thumb value by a larger step</span>"
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Sets the focused thumb value to its minimum."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Sets the focused thumb value to its maximum."
       }
     ]
@@ -442,35 +637,52 @@
   "tabs": {
     "keyboard": [
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "When focus moves onto the tabs, focuses the active trigger. When a trigger is focused, moves focus to the active content."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the next trigger in vertical orientation and activates its associated content."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next trigger in horizontal orientation and activates its associated content."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous trigger in vertical orientation and activates its associated content."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous trigger in horizontal orientation and activates its associated content."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Moves focus to the first trigger and activates its associated content."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Moves focus to the last trigger and activates its associated content."
       },
       {
-        "keys": ["Enter", "Space"],
+        "keys": [
+          "Enter",
+          "Space"
+        ],
         "description": "In manual mode, when a trigger is focused, moves focus to its associated content."
       }
     ]
@@ -478,7 +690,10 @@
   "toggle": {
     "keyboard": [
       {
-        "keys": ["Space", "Enter"],
+        "keys": [
+          "Space",
+          "Enter"
+        ],
         "description": "Toggle the pressed state"
       }
     ]
@@ -486,39 +701,57 @@
   "toggle-group": {
     "keyboard": [
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Moves focus to either the pressed item or the first item in the group."
       },
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Activates/deactivates the item."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Activates/deactivates the item."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the next item in the group."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next item in the group."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous item in the group."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous item in the group."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Moves focus to the first item."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Moves focus to the last item."
       }
     ]
@@ -526,27 +759,39 @@
   "tags-input": {
     "keyboard": [
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous tag item"
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next tag item"
       },
       {
-        "keys": ["Backspace"],
+        "keys": [
+          "Backspace"
+        ],
         "description": "Deletes the tag item that has visual focus or the last tag item"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "<span>When a tag item has visual focus, it puts the tag in edit mode.<br />When the input has focus, it adds the value to the list of tags</span>"
       },
       {
-        "keys": ["Delete"],
+        "keys": [
+          "Delete"
+        ],
         "description": "Deletes the tag item that has visual focus"
       },
       {
-        "keys": ["Control + V"],
+        "keys": [
+          "Control + V"
+        ],
         "description": "When `addOnPaste` is set. Adds the pasted value as a tags"
       }
     ]
@@ -554,55 +799,83 @@
   "tree-view": {
     "keyboard": [
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Moves focus to the tree view, placing the first tree view item in focus."
       },
       {
-        "keys": ["Enter", "Space"],
+        "keys": [
+          "Enter",
+          "Space"
+        ],
         "description": "Selects the item or branch node"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the next node"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the previous node"
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "When focus is on a closed branch node, opens the branch.<br> When focus is on an open branch node, moves focus to the first item node."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "When focus is on an open branch node, closes the node.<br> When focus is on an item or branch node, moves focus to its parent branch node."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Moves focus to first node without opening or closing a node."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Moves focus to the last node that can be focused without expanding any nodes that are closed."
       },
       {
-        "keys": ["a-z", "A-Z"],
+        "keys": [
+          "a-z",
+          "A-Z"
+        ],
         "description": "Focus moves to the next node with a name that starts with the typed character. The search logic ignores nodes that are descendants of closed branch."
       },
       {
-        "keys": ["*"],
+        "keys": [
+          "*"
+        ],
         "description": "Expands all sibling nodes that are at the same depth as the focused node."
       },
       {
-        "keys": ["Shift + ArrowDown"],
+        "keys": [
+          "Shift + ArrowDown"
+        ],
         "description": "Moves focus to and toggles the selection state of the next node."
       },
       {
-        "keys": ["Shift + ArrowUp"],
+        "keys": [
+          "Shift + ArrowUp"
+        ],
         "description": "Moves focus to and toggles the selection state of the previous node."
       },
       {
-        "keys": ["Ctrl + A"],
+        "keys": [
+          "Ctrl + A"
+        ],
         "description": "Selects all nodes in the tree. If all nodes are selected, unselects all nodes."
       }
     ]
@@ -610,43 +883,63 @@
   "date-picker": {
     "keyboard": [
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous day within the current week."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next day within the current week."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves focus to the same day of the week in the previous week."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves focus to the same day of the week in the next week."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Moves focus to the first day of the current month."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Moves focus to the last day of the current month."
       },
       {
-        "keys": ["PageUp"],
+        "keys": [
+          "PageUp"
+        ],
         "description": "Moves focus to the same day of the month in the previous month."
       },
       {
-        "keys": ["PageDown"],
+        "keys": [
+          "PageDown"
+        ],
         "description": "Moves focus to the same day of the month in the next month."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Selects the focused date and closes the date picker."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the date picker without selecting any date."
       }
     ]
@@ -654,11 +947,15 @@
   "editable": {
     "keyboard": [
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Saves the edited content and exits edit mode."
       },
       {
-        "keys": ["Escape"],
+        "keys": [
+          "Escape"
+        ],
         "description": "Discards the changes and exits edit mode."
       }
     ]
@@ -666,43 +963,63 @@
   "image-cropper": {
     "keyboard": [
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Moves the crop selection upward by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Moves the crop selection downward by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves the crop selection to the left by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves the crop selection to the right by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
       },
       {
-        "keys": ["Alt + ArrowUp"],
+        "keys": [
+          "Alt + ArrowUp"
+        ],
         "description": "Resizes the crop vertically from the bottom handle, reducing the height. Hold Shift or Ctrl/Cmd for the larger nudge steps."
       },
       {
-        "keys": ["Alt + ArrowDown"],
+        "keys": [
+          "Alt + ArrowDown"
+        ],
         "description": "Resizes the crop vertically from the bottom handle, increasing the height. Hold Shift or Ctrl/Cmd for the larger nudge steps."
       },
       {
-        "keys": ["Alt + ArrowLeft"],
+        "keys": [
+          "Alt + ArrowLeft"
+        ],
         "description": "Resizes the crop horizontally from the right handle, reducing the width. Hold Shift or Ctrl/Cmd for the larger nudge steps."
       },
       {
-        "keys": ["Alt + ArrowRight"],
+        "keys": [
+          "Alt + ArrowRight"
+        ],
         "description": "Resizes the crop horizontally from the right handle, increasing the width. Hold Shift or Ctrl/Cmd for the larger nudge steps."
       },
       {
-        "keys": ["+"],
+        "keys": [
+          "+"
+        ],
         "description": "Zooms in on the image. The `=` key performs the same action on keyboards where both symbols share a key."
       },
       {
-        "keys": ["-"],
+        "keys": [
+          "-"
+        ],
         "description": "Zooms out of the image. The `_` key performs the same action on keyboards where both symbols share a key."
       }
     ]
@@ -710,39 +1027,57 @@
   "number-input": {
     "keyboard": [
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Increments the value of the number input by a predefined step."
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Decrements the value of the number input by a predefined step."
       },
       {
-        "keys": ["Shift + ArrowUp"],
+        "keys": [
+          "Shift + ArrowUp"
+        ],
         "description": "Increments the value of the number input by the `largeStep` amount."
       },
       {
-        "keys": ["Shift + ArrowDown"],
+        "keys": [
+          "Shift + ArrowDown"
+        ],
         "description": "Decrements the value of the number input by the `largeStep` amount."
       },
       {
-        "keys": ["Alt + ArrowUp"],
+        "keys": [
+          "Alt + ArrowUp"
+        ],
         "description": "Increments the value of the number input by the `smallStep` amount."
       },
       {
-        "keys": ["Alt + ArrowDown"],
+        "keys": [
+          "Alt + ArrowDown"
+        ],
         "description": "Decrements the value of the number input by the `smallStep` amount."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "Sets the value of the number input to its minimum allowed value."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "Sets the value of the number input to its maximum allowed value."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Submits the value entered in the number input."
       }
     ]
@@ -750,15 +1085,21 @@
   "rating-group": {
     "keyboard": [
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves focus to the next star, increasing the rating value based on the `allowHalf` property."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves focus to the previous star, decreasing the rating value based on the `allowHalf` property."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Selects the focused star in the rating group."
       }
     ]
@@ -766,15 +1107,21 @@
   "tour": {
     "keyboard": [
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "Moves to the next step in the tour."
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "Moves to the previous step in the tour."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the tour."
       }
     ]
@@ -782,31 +1129,45 @@
   "combobox": {
     "keyboard": [
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "When the combobox is closed, opens the listbox and highlights to the first option.\nWhen the combobox is open, moves focus to the next option."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "When the combobox is closed, opens the listbox and highlights to the last option.\nWhen the combobox is open, moves focus to the previous option."
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "When the combobox is open, moves focus to the first option."
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "When the combobox is open, moves focus to the last option."
       },
       {
-        "keys": ["Escape"],
+        "keys": [
+          "Escape"
+        ],
         "description": "Closes the listbox."
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Selects the highlighted option and closes the combobox."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the combobox"
       }
     ]
@@ -814,27 +1175,40 @@
   "context-menu": {
     "keyboard": [
       {
-        "keys": ["Space"],
+        "keys": [
+          "Space"
+        ],
         "description": "Activates/Selects the highlighted item"
       },
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "Activates/Selects the highlighted item"
       },
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "Highlights the next item in the menu"
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "Highlights the previous item in the menu"
       },
       {
-        "keys": ["ArrowRight", "ArrowLeft"],
+        "keys": [
+          "ArrowRight",
+          "ArrowLeft"
+        ],
         "description": "When focus is on trigger, opens or closes the submenu depending on reading direction."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the context menu"
       }
     ]
@@ -842,19 +1216,27 @@
   "dialog": {
     "keyboard": [
       {
-        "keys": ["Enter"],
+        "keys": [
+          "Enter"
+        ],
         "description": "When focus is on the trigger, opens the dialog."
       },
       {
-        "keys": ["Tab"],
+        "keys": [
+          "Tab"
+        ],
         "description": "Moves focus to the next focusable element within the content. Focus is trapped within the dialog."
       },
       {
-        "keys": ["Shift + Tab"],
+        "keys": [
+          "Shift + Tab"
+        ],
         "description": "Moves focus to the previous focusable element. Focus is trapped within the dialog."
       },
       {
-        "keys": ["Esc"],
+        "keys": [
+          "Esc"
+        ],
         "description": "Closes the dialog and moves focus to trigger or the defined final focus element"
       }
     ]
@@ -862,27 +1244,39 @@
   "navigation-menu": {
     "keyboard": [
       {
-        "keys": ["ArrowDown"],
+        "keys": [
+          "ArrowDown"
+        ],
         "description": "When focus is on trigger (vertical orientation), moves focus to the next trigger."
       },
       {
-        "keys": ["ArrowUp"],
+        "keys": [
+          "ArrowUp"
+        ],
         "description": "When focus is on trigger (vertical orientation), moves focus to the previous trigger."
       },
       {
-        "keys": ["ArrowRight"],
+        "keys": [
+          "ArrowRight"
+        ],
         "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the next trigger.<br />When focus is on content, moves focus to the next link.</span>"
       },
       {
-        "keys": ["ArrowLeft"],
+        "keys": [
+          "ArrowLeft"
+        ],
         "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the previous trigger.<br />When focus is on content, moves focus to the previous link.</span>"
       },
       {
-        "keys": ["Home"],
+        "keys": [
+          "Home"
+        ],
         "description": "<span>When focus is on trigger, moves focus to the first trigger.<br />When focus is on content, moves focus to the first link.</span>"
       },
       {
-        "keys": ["End"],
+        "keys": [
+          "End"
+        ],
         "description": "<span>When focus is on trigger, moves focus to the last trigger.<br />When focus is on content, moves focus to the last link.</span>"
       }
     ]
