@@ -24,6 +24,28 @@ export interface HighlightWordProps extends HighlightRegexOptions {
   query: string | string[]
 }
 
+export interface HighlightRange {
+  /**
+   * The start index of the range
+   */
+  start: number
+  /**
+   * The end index of the range (exclusive)
+   */
+  end: number
+}
+
+export interface HighlightRangesProps {
+  /**
+   * The text to highlight
+   */
+  text: string
+  /**
+   * The ranges of the text to mark as matches, e.g. from a fuzzy matcher
+   */
+  ranges: HighlightRange[]
+}
+
 export interface HighlightChunk {
   /**
    * The text to highlight
