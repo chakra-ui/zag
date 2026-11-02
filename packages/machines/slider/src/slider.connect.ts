@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     return {
       index,
       value: sliderValue[index],
-      disabled,
+      disabled: disabled || !!props.disabled,
       focused: focused && focusedIndex === index,
       dragging: dragging && focusedIndex === index,
     }
@@ -139,7 +139,8 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     },
     focus() {
       if (!interactive) return
-      send({ type: "FOCUS", index: 0 })
+      const thumbEl = dom.getFirstEnabledThumbEl(scope)
+      if (thumbEl) send({ type: "FOCUS", index: Number(thumbEl.getAttribute("data-index")) })
     },
 
     getRootState,
@@ -153,7 +154,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
-          dom.getFirstThumbEl(scope)?.focus()
+          dom.getFirstEnabledThumbEl(scope)?.focus()
         },
         style: {
           userSelect: "none",
@@ -188,7 +189,8 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     getThumbState,
     getThumbProps(props) {
       const { index = 0, name } = props
-      const thumbState = getThumbState({ index, name })
+      const thumbState = getThumbState({ ...props, index })
+      const thumbInteractive = interactive && !thumbState.disabled
 
       const range = getRangeAtIndex(service, index)
       const valueText = prop("getAriaValueText")?.({ value: thumbState.value, index })
@@ -219,7 +221,9 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         tabIndex: thumbState.disabled ? undefined : 0,
         style: getThumbStyle(service, index),
         onPointerDown(event) {
-          if (!interactive) return
+          // keep the control from moving another thumb to this one
+          if (thumbState.disabled) event.stopPropagation()
+          if (!thumbInteractive) return
           if (!isLeftClick(event)) return
 
           // Calculate offset from thumb center to maintain constant offset during drag
@@ -238,16 +242,16 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           event.stopPropagation()
         },
         onBlur() {
-          if (!interactive) return
+          if (!thumbInteractive) return
           send({ type: "BLUR" })
         },
         onFocus() {
-          if (!interactive) return
+          if (!thumbInteractive) return
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!interactive) return
+          if (!thumbInteractive) return
 
           const step = getEventStepValue(event, { step: prop("step"), largeStep: prop("largeStep") })
 
@@ -299,13 +303,13 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
 
     getHiddenInputProps(props) {
       const { index = 0, name } = props
-      const thumbState = getThumbState({ index, name })
+      const thumbState = getThumbState({ ...props, index })
       return normalize.input({
         name: name ?? (prop("name") ? prop("name") + (sliderValue.length > 1 ? "[]" : "") : undefined),
         form: prop("form"),
         type: "text",
         hidden: true,
-        disabled,
+        disabled: thumbState.disabled,
         defaultValue: thumbState.value,
         id: dom.getHiddenInputId(scope, index),
       })
@@ -328,6 +332,9 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (!interactive) return
           if (!isLeftClick(event)) return
           if (isModifierKey(event)) return
+
+          // nothing to move when every thumb is disabled
+          if (!dom.getFirstEnabledThumbEl(scope)) return
 
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", point })

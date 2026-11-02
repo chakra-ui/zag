@@ -155,3 +155,60 @@ test.describe("slider", () => {
     await I.seeFillPercent({ start: 50, end: 0 })
   })
 })
+
+test.describe("slider / disabled thumb", () => {
+  // values [20, 50, 80]; the middle thumb is disabled
+  test.beforeEach(async ({ page }) => {
+    I = new SliderModel(page)
+    await I.goto("/slider/disabled-thumb")
+  })
+
+  test("marks the thumb and its hidden input as disabled", async () => {
+    await expect(I.getThumb(1)).toHaveAttribute("data-disabled", "")
+    await expect(I.getThumb(1)).toHaveAttribute("aria-disabled", "true")
+    await expect(I.getThumb(1).locator("input")).toBeDisabled()
+    await expect(I.getThumb(0).locator("input")).toBeEnabled()
+  })
+
+  test("[keyboard] skips the disabled thumb in the tab order", async () => {
+    await I.focusThumb(0)
+    await I.pressKey("Tab")
+    await I.seeThumbIsFocused(2)
+  })
+
+  test("[keyboard] other thumbs stop at the disabled thumb", async () => {
+    await I.focusThumb(0)
+    await I.pressKey("PageUp", 5)
+    await I.seeValueText("50 – 50 – 80")
+  })
+
+  test("[pointer] dragging the disabled thumb does nothing", async () => {
+    await I.mousedownAt({ x: 0.5 })
+    await I.mousemoveTo({ x: 0.9 })
+    await I.mouseup()
+    await I.seeValueText("20 – 50 – 80")
+  })
+
+  test("[pointer] pressing the track moves the closest enabled thumb", async () => {
+    await I.mousedownAt({ x: 0.7 })
+    await I.mouseup()
+    await I.seeValueText("20 – 50 – 70")
+    await I.seeThumbIsFocused(2)
+  })
+
+  test("[push] pushing stops at the disabled thumb", async () => {
+    await I.controls.select("thumbCollisionBehavior", "push")
+    await I.mousedownAt({ x: 0.8 })
+    await I.mousemoveTo({ x: 0.1 })
+    await I.mouseup()
+    await I.seeValueText("20 – 50 – 50")
+  })
+
+  test("[swap] doesn't swap with the disabled thumb", async () => {
+    await I.controls.select("thumbCollisionBehavior", "swap")
+    await I.mousedownAt({ x: 0.2 })
+    await I.mousemoveTo({ x: 0.9 })
+    await I.mouseup()
+    await I.seeValueText("50 – 50 – 80")
+  })
+})

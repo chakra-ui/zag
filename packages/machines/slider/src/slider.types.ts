@@ -308,6 +308,7 @@ export interface MarkerState {
 export interface ThumbProps {
   index: number
   name?: string | undefined
+  disabled?: boolean | undefined
 }
 
 export interface ThumbState {

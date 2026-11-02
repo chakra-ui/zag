@@ -289,12 +289,12 @@ export const machine = createMachine<SliderSchema>({
         const pointValue = dom.getPointValue(params, event.point)
         if (pointValue == null) return
 
-        const focusedIndex = getClosestIndex(params, pointValue)
+        const focusedIndex = getClosestIndex(params, pointValue, dom.getDisabledThumbIndices(params.scope))
         context.set("focusedIndex", focusedIndex)
       },
       setFocusedIndex(params) {
         const { context, event } = params
-        const movableIndex = selectMovableThumb(params, event.index)
+        const movableIndex = selectMovableThumb(params, event.index, dom.getDisabledThumbIndices(params.scope))
         context.set("focusedIndex", movableIndex)
       },
       clearFocusedIndex({ context }) {
@@ -311,6 +311,7 @@ export const machine = createMachine<SliderSchema>({
           if (pointValue == null) return
 
           const focusedIndex = context.get("focusedIndex")
+          if (focusedIndex < 0) return
           const startValues = refs.get("startValue")
 
           const result = resolveThumbCollision(
@@ -323,6 +324,7 @@ export const machine = createMachine<SliderSchema>({
             prop("step"),
             prop("minStepsBetweenThumbs"),
             startValues?.[focusedIndex],
+            dom.getDisabledThumbIndices(params.scope),
           )
 
           if (result.swapped) {

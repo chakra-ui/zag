@@ -673,6 +673,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "range-controlled", title: "Range Controlled" },
       { slug: "range-marks", title: "Range Marks" },
       { slug: "range-prevent-overlap", title: "Range Prevent Overlap" },
+      { slug: "disabled-thumb", title: "Disabled Thumb" },
       { slug: "change-end", title: "Change End" },
       { slug: "number-input", title: "With Number Input" },
       { slug: "in-popover", title: "With Popover" },

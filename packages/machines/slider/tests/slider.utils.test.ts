@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { getFillSpan, getOriginPercent, toThumbSize } from "../src/slider.utils"
+import { getClosestIndex, getFillSpan, getOriginPercent, resolveThumbCollision, toThumbSize } from "../src/slider.utils"
 import type { SliderOrigin } from "../src/slider.types"
 
 /**
@@ -165,5 +165,35 @@ describe("toThumbSize", () => {
 
   test("no size is null, so the thumb gets measured", () => {
     expect(toThumbSize(undefined)).toBeNull()
+  })
+})
+
+describe("disabled thumbs", () => {
+  // values [20, 50, 80], step 1, no gap; thumb 1 is disabled
+  const values = [20, 50, 80]
+  const disabled = new Set([1])
+  const collide = (behavior: "none" | "push" | "swap", index: number, value: number) =>
+    resolveThumbCollision(behavior, index, value, values, 0, 100, 1, 0, values[index], disabled).values
+
+  test("push stops in front of a disabled thumb", () => {
+    expect(collide("push", 0, 70)).toEqual([50, 50, 80])
+    expect(collide("push", 2, 10)).toEqual([20, 50, 50])
+  })
+
+  test("push still moves enabled thumbs before the disabled one", () => {
+    const four = [10, 20, 60, 90]
+    const result = resolveThumbCollision("push", 0, 80, four, 0, 100, 1, 0, 10, new Set([2])).values
+    expect(result).toEqual([60, 60, 60, 90])
+  })
+
+  test("swap doesn't swap with a disabled thumb", () => {
+    expect(collide("swap", 0, 70)).toEqual([50, 50, 80])
+  })
+
+  test("the closest thumb skips disabled ones", () => {
+    const params = { context: { get: () => values }, prop: (key: string) => ({ max: 100 })[key] } as any
+    expect(getClosestIndex(params, 52, disabled)).toBe(2)
+    expect(getClosestIndex(params, 48, disabled)).toBe(0)
+    expect(getClosestIndex(params, 50, new Set([0, 1, 2]))).toBe(-1)
   })
 })

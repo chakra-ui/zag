@@ -34,7 +34,7 @@ export const props = createProps<SliderProps>()([
 
 export const splitProps = createSplitProps<Partial<SliderProps>>(props)
 
-export const thumbProps = createProps<ThumbProps>()(["index", "name"])
+export const thumbProps = createProps<ThumbProps>()(["disabled", "index", "name"])
 export const splitThumbProps = createSplitProps<ThumbProps>(thumbProps)
 export const markerProps = createProps<MarkerProps>()(["value"])
 export const splitMarkerProps = createSplitProps<MarkerProps>(markerProps)

@@ -228,6 +228,17 @@ const service = useMachine(slider.machine, {
 })
 ```
 
+### Disabling a thumb
+
+Pass `disabled` to `getThumbProps` and `getHiddenInputProps`. The thumb can't be
+focused or moved, and other thumbs stop at it.
+
+```tsx
+<div {...api.getThumbProps({ index: 1, disabled: true })}>
+  <input {...api.getHiddenInputProps({ index: 1, disabled: true })} />
+</div>
+```
+
 ### Usage within forms
 
 To use slider in forms, set `name` and render `api.getHiddenInputProps()`.
