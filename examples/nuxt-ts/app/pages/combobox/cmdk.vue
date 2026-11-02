@@ -1,48 +1,42 @@
 <script setup lang="ts">
-import * as combobox from "@zag-js/combobox"
+import { PageListCollection } from "@zag-js/collection"
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createFilter } from "@zag-js/i18n-utils"
 import { commandData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/cmdk.css"
 
-const { allItems, commands, applications, suggestions } = commandData
-const { contains } = createFilter({ sensitivity: "base" })
+type Item = commandData.PageItem
 
-function filter(value: string): Record<string, commandData.Command[]> {
-  if (!value) {
-    return {
-      Suggestions: suggestions,
-      Commands: commands.filter((item) => !suggestions.includes(item)),
-      Apps: applications.filter((item) => !suggestions.includes(item)),
-    }
-  }
+const createCollection = () =>
+  new PageListCollection<Item>({
+    items: commandData.pageItems,
+    itemToValue: (item) => item.value,
+    itemToString: (item) => item.label,
+    groupBy: (item) => item.group,
+  })
 
-  const results = allItems.filter((item) => contains(item.name, value) || contains(item.title, value))
-
-  if (!results.length) return {}
-
-  return { Results: results }
-}
-
-const inputValue = ref("")
 const selectedAction = ref<string | null>(null)
+// shallow: the collection is immutable and replaced on every change
+const pages = shallowRef(createCollection())
+const query = ref("")
 
-const matches = computed(() => filter(inputValue.value))
-
-const collection = computed(() =>
-  combobox.collection({
-    items: Object.values(matches.value).flat(),
-    itemToValue: (item) => item.name,
-    itemToString: (item) => item.title,
-  }),
-)
+const navigate = (next: PageListCollection<Item>, nextQuery: string) => {
+  pages.value = next
+  query.value = nextQuery
+}
 
 const service = useMachine(dialog.machine, {
   id: useId(),
+  onEscapeKeyDown(event) {
+    // Escape goes back a page before it closes the dialog
+    if (!pages.value.canGoBack) return
+    event.preventDefault()
+    const next = pages.value.back(query.value)
+    navigate(next, next.restore.query)
+  },
   onOpenChange({ open }) {
-    if (!open) inputValue.value = ""
+    if (!open) navigate(pages.value.reset(), "")
   },
 })
 const dialogApi = computed(() => dialog.connect(service, normalizeProps))
@@ -53,8 +47,8 @@ store.register({ id: "cmdk", hotkey: "/", action: () => dialogApi.value.setOpen(
 onMounted(() => store.init({ target: document }))
 onBeforeUnmount(() => store.destroy())
 
-const onValueChange = ({ items }: combobox.ValueChangeDetails<commandData.Command>) => {
-  selectedAction.value = JSON.stringify(items[0]?.title)
+const onAction = (item: Item) => {
+  selectedAction.value = item.label
   dialogApi.value.setOpen(false)
 }
 </script>
@@ -71,10 +65,11 @@ const onValueChange = ({ items }: combobox.ValueChangeDetails<commandData.Comman
       <div v-bind="dialogApi.getPositionerProps()">
         <div v-bind="dialogApi.getContentProps()">
           <ComboboxCommandMenu
-            :matches="matches"
-            :collection="collection"
-            @value-change="onValueChange"
-            @input-value-change="({ inputValue: v }) => (inputValue = v)"
+            :pages="pages"
+            :query="query"
+            @navigate="navigate"
+            @query-change="(value) => (query = value)"
+            @action="onAction"
           />
         </div>
       </div>

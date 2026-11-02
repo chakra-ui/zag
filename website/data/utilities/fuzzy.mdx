@@ -1,0 +1,96 @@
+---
+title: Fuzzy
+description: Using the fuzzy search utility in your project.
+package: "@zag-js/fuzzy"
+---
+
+Fuzzy match, rank and highlight text. Matches favor consecutive letters and word
+starts, so `gp` ranks "Git: Push" above "Toggle panel". Case and diacritics are
+ignored.
+
+<Resources pkg="@zag-js/fuzzy" />
+
+## Installation
+
+```bash
+npm install @zag-js/fuzzy
+```
+
+## Scoring a match
+
+`fuzzyScore` returns a score from 0 (no match) to 1 (exact match).
+
+```ts
+import { fuzzyScore } from "@zag-js/fuzzy"
+
+fuzzyScore("Open File", "of") // 0.84
+fuzzyScore("Open File", "xyz") // 0
+```
+
+Pass keywords to match other terms too. They rank slightly below the text.
+
+```ts
+fuzzyScore("Preferences", "settings", ["settings", "options"])
+```
+
+Each space-separated word can match on its own, so "theme dark" matches "Toggle
+dark theme".
+
+## Searching a list
+
+`createFuzzySearch` returns the matching items, best match first. It caches each
+item's prepared text, and when the query only grows, it searches the previous
+matches instead of the whole list.
+
+```ts
+import { createFuzzySearch } from "@zag-js/fuzzy"
+
+const fuzzy = createFuzzySearch({
+  itemToString: (item) => item.label,
+  itemToKeywords: (item) => item.keywords,
+})
+
+const results = fuzzy.search(items, query)
+```
+
+> Pass a new array when the items change, or call `fuzzy.clear()` after changing
+> them in place.
+
+To rank with your own scorer, use `rankItems`. Items scoring 0 are dropped, and
+ties keep their original order.
+
+```ts
+import { rankItems } from "@zag-js/fuzzy"
+
+const results = rankItems(items, (item) => myScore(item, query))
+```
+
+## Highlighting matches
+
+`getFuzzyMatchRanges` returns the matched `[start, end)` ranges. Pass them to
+`highlightRanges` from `@zag-js/highlight-word` to split the text.
+
+```tsx
+import { getFuzzyMatchRanges } from "@zag-js/fuzzy"
+import { highlightRanges } from "@zag-js/highlight-word"
+
+const chunks = highlightRanges({
+  text: item.label,
+  ranges: getFuzzyMatchRanges(item.label, query),
+})
+
+chunks.map((chunk) => (chunk.match ? <mark>{chunk.text}</mark> : chunk.text))
+```
+
+## With a combobox
+
+Search, then pass the results to the combobox collection.
+
+```ts
+const collection = combobox.collection({
+  items: fuzzy.search(items, inputValue),
+})
+```
+
+For a command menu with nested pages, use it with a
+[`PageListCollection`](/guides/collection#page-list-collection).

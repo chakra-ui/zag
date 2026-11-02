@@ -1,69 +1,128 @@
+import { PageListCollection } from "@zag-js/collection"
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
+import { createFuzzySearch } from "@zag-js/fuzzy"
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createFilter } from "@zag-js/i18n-utils"
 import { commandData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js"
+import { For, Show, createEffect, createMemo, createSignal, createUniqueId, on, onCleanup, onMount } from "solid-js"
 import { Portal } from "solid-js/web"
+import { Highlight } from "~/components/highlight"
 import "@styles/cmdk.css"
 
-const { allItems, commands, applications, suggestions } = commandData
-const { contains } = createFilter({ sensitivity: "base" })
+type Item = commandData.PageItem
 
-function filter(value: string): Record<string, commandData.Command[]> {
-  if (!value) {
-    return {
-      Suggestions: suggestions,
-      Commands: commands.filter((item) => !suggestions.includes(item)),
-      Apps: applications.filter((item) => !suggestions.includes(item)),
-    }
-  }
+const createCollection = () =>
+  new PageListCollection<Item>({
+    items: commandData.pageItems,
+    itemToValue: (item) => item.value,
+    itemToString: (item) => item.label,
+    groupBy: (item) => item.group,
+  })
 
-  const results = allItems.filter((item) => contains(item.name, value) || contains(item.title, value))
+const fuzzy = createFuzzySearch<Item>({ itemToString: (item) => item.label, itemToKeywords: (item) => item.keywords })
 
-  if (!results.length) return {}
-
-  return { Results: results }
+interface CommandProps {
+  pages: PageListCollection<Item>
+  query: string
+  onNavigate: (pages: PageListCollection<Item>, query: string) => void
+  onQueryChange: (query: string) => void
+  onAction: (item: Item) => void
 }
 
-interface ComboboxProps {
-  matches: Record<string, commandData.Command[]>
-  collection: ReturnType<typeof combobox.collection<commandData.Command>>
-  onValueChange: combobox.Props["onValueChange"]
-  onInputValueChange: combobox.Props["onInputValueChange"]
-}
-
-function Combobox(props: ComboboxProps) {
-  const matchEntries = createMemo(() => Object.entries(props.matches))
+function Command(props: CommandProps) {
   const id = createUniqueId()
 
-  const service = useMachine(combobox.machine, (): combobox.Props<commandData.Command> => ({
-    inline: true,
-    placeholder: "Type a command or search term...",
-    loopFocus: false,
-    collection: props.collection,
-    onValueChange: props.onValueChange,
-    onInputValueChange: props.onInputValueChange,
+  // search the open page and everything nested in it
+  const collection = createMemo(() =>
+    props.pages.setItems(
+      fuzzy.search(props.query ? props.pages.getDescendants() : props.pages.getChildren(), props.query),
+    ),
+  )
+
+  const service = useMachine(combobox.machine, () => ({
     id,
-    inputBehavior: "autohighlight",
-    selectionBehavior: "clear",
+    inline: true,
+    collection: collection(),
+    inputValue: props.query,
+    placeholder: props.pages.pageItem ? `Search ${props.pages.pageItem.label}...` : "Type a command or search...",
+    loopFocus: false,
+    inputBehavior: "autohighlight" as const,
+    selectionBehavior: "clear" as const,
+    onInputValueChange({ inputValue }: combobox.InputValueChangeDetails) {
+      props.onQueryChange(inputValue)
+    },
+    onSelect({ itemValue }: combobox.SelectionDetails) {
+      const item = props.pages.getItem(itemValue)
+      if (!item) return
+      if (props.pages.isPage(item)) {
+        props.onNavigate(props.pages.setPage(itemValue, props.query), "")
+      } else {
+        props.onAction(item)
+      }
+    },
   }))
 
-  const comboApi = createMemo(() => combobox.connect(service, normalizeProps))
+  const api = createMemo(() => combobox.connect(service, normalizeProps))
+
+  // highlight the item we came back from once its page is showing
+  createEffect(
+    on(
+      () => props.pages,
+      (pages) => {
+        const { highlightedValue } = pages.restore
+        if (highlightedValue && collection().has(highlightedValue)) api().setHighlightedValue(highlightedValue)
+      },
+      { defer: true },
+    ),
+  )
+
+  const inputProps = createMemo(() => api().getInputProps())
 
   return (
-    <div {...comboApi().getRootProps()}>
-      <input {...comboApi().getInputProps()} />
-      <div {...comboApi().getContentProps()}>
-        <div {...comboApi().getEmptyProps()}>{matchEntries().length === 0 && "No results found"}</div>
-        <div {...comboApi().getListProps()}>
-          <For each={matchEntries()}>
+    <div {...api().getRootProps()}>
+      <Show when={props.pages.page}>
+        <div data-part="breadcrumbs">
+          <For each={props.pages.getPath()}>{(page) => <span>{page.label}</span>}</For>
+        </div>
+      </Show>
+      <input
+        {...inputProps()}
+        onKeyDown={(event) => {
+          if (event.key === "Backspace" && !props.query && props.pages.page) {
+            event.preventDefault()
+            // keep the input empty so Backspace keeps going up
+            props.onNavigate(props.pages.up(props.query), "")
+            return
+          }
+          const handler = inputProps().onKeyDown
+          if (typeof handler === "function") handler(event)
+        }}
+      />
+      <div {...api().getContentProps()}>
+        <div {...api().getEmptyProps()}>{collection().size === 0 && "No results found"}</div>
+        <div {...api().getListProps()}>
+          <For each={collection().group()}>
             {([group, items]) => (
-              <div {...comboApi().getItemGroupProps({ id: group })}>
-                <div {...comboApi().getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
+              <div {...api().getItemGroupProps({ id: group })}>
+                <div {...api().getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
                 <For each={items}>
-                  {(item) => <div {...comboApi().getItemProps({ item, persistFocus: true })}>{item.title}</div>}
+                  {(item) => (
+                    <div {...api().getItemProps({ item, persistFocus: true })}>
+                      <Highlight text={item.label} query={props.query} />
+                      <Show when={props.query && props.pages.getAncestors(item).length > 0}>
+                        <span data-part="item-path">
+                          {props.pages
+                            .getAncestors(item)
+                            .map((page) => page.label)
+                            .join(" › ")}
+                        </span>
+                      </Show>
+                      <Show when={props.pages.isPage(item)}>
+                        <span data-part="item-indicator">›</span>
+                      </Show>
+                    </div>
+                  )}
                 </For>
               </div>
             )}
@@ -75,23 +134,26 @@ function Combobox(props: ComboboxProps) {
 }
 
 export default function Page() {
-  const [inputValue, setInputValue] = createSignal("")
   const [selectedAction, setSelectedAction] = createSignal<string | null>(null)
+  const [pages, setPages] = createSignal(createCollection())
+  const [query, setQuery] = createSignal("")
 
-  const matches = createMemo(() => filter(inputValue()))
-
-  const collection = createMemo(() =>
-    combobox.collection({
-      items: Object.values(matches()).flat(),
-      itemToValue: (item) => item.name,
-      itemToString: (item) => item.title,
-    }),
-  )
+  const navigate = (next: PageListCollection<Item>, nextQuery: string) => {
+    setPages(next)
+    setQuery(nextQuery)
+  }
 
   const service = useMachine(dialog.machine, {
     id: createUniqueId(),
+    onEscapeKeyDown(event) {
+      // Escape goes back a page before it closes the dialog
+      if (!pages().canGoBack) return
+      event.preventDefault()
+      const next = pages().back(query())
+      navigate(next, next.restore.query)
+    },
     onOpenChange({ open }) {
-      if (!open) setInputValue("")
+      if (!open) navigate(pages().reset(), "")
     },
   })
   const dialogApi = createMemo(() => dialog.connect(service, normalizeProps))
@@ -121,15 +183,14 @@ export default function Page() {
           <div {...dialogApi().getBackdropProps()} />
           <div {...dialogApi().getPositionerProps()}>
             <div {...dialogApi().getContentProps()}>
-              <Combobox
-                matches={matches()}
-                collection={collection()}
-                onValueChange={({ items }) => {
-                  setSelectedAction(JSON.stringify(items[0].title))
+              <Command
+                pages={pages()}
+                query={query()}
+                onNavigate={navigate}
+                onQueryChange={setQuery}
+                onAction={(item) => {
+                  setSelectedAction(item.label)
                   dialogApi().setOpen(false)
-                }}
-                onInputValueChange={({ inputValue }) => {
-                  setInputValue(inputValue)
                 }}
               />
             </div>

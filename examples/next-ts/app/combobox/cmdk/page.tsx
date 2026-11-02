@@ -1,61 +1,118 @@
 "use client"
 
+import { PageListCollection } from "@zag-js/collection"
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
+import { createFuzzySearch } from "@zag-js/fuzzy"
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { commandData } from "@zag-js/shared"
 import { useEffect, useId, useMemo, useState } from "react"
+import { Highlight } from "@/components/highlight"
 import "@styles/cmdk.css"
 
-const { allItems, commands, applications, suggestions } = commandData
-const { contains } = createFilter({ sensitivity: "base" })
+type Item = commandData.PageItem
 
-function filter(value: string): Record<string, commandData.Command[]> {
-  if (!value) {
-    return {
-      Suggestions: suggestions,
-      Commands: commands.filter((item) => !suggestions.includes(item)),
-      Apps: applications.filter((item) => !suggestions.includes(item)),
-    }
-  }
-
-  const results = allItems.filter((item) => contains(item.name, value) || contains(item.title, value))
-
-  if (!results.length) return {}
-
-  return { Results: results }
-}
-
-function Combobox(props: Partial<combobox.Props> & { matches: Record<string, commandData.Command[]> }) {
-  const { matches, ...context } = props
-  const matchEntries = Object.entries(matches)
-
-  const service = useMachine(combobox.machine, {
-    inline: true,
-    placeholder: "Type a command or search term...",
-    loopFocus: false,
-    ...context,
-    id: useId(),
-    inputBehavior: "autohighlight",
-    selectionBehavior: "clear",
+const createCollection = () =>
+  new PageListCollection<Item>({
+    items: commandData.pageItems,
+    itemToValue: (item) => item.value,
+    itemToString: (item) => item.label,
+    groupBy: (item) => item.group,
   })
 
-  const comboApi = combobox.connect(service, normalizeProps)
+const fuzzy = createFuzzySearch<Item>({ itemToString: (item) => item.label, itemToKeywords: (item) => item.keywords })
+
+interface CommandProps {
+  pages: PageListCollection<Item>
+  query: string
+  onNavigate: (pages: PageListCollection<Item>, query: string) => void
+  onQueryChange: (query: string) => void
+  onAction: (item: Item) => void
+}
+
+function Command(props: CommandProps) {
+  const { pages, query } = props
+
+  // search the open page and everything nested in it
+  const collection = useMemo(
+    () => pages.setItems(fuzzy.search(query ? pages.getDescendants() : pages.getChildren(), query)),
+    [pages, query],
+  )
+
+  const service = useMachine(combobox.machine, {
+    id: useId(),
+    inline: true,
+    collection,
+    inputValue: query,
+    placeholder: pages.pageItem ? `Search ${pages.pageItem.label}...` : "Type a command or search...",
+    loopFocus: false,
+    inputBehavior: "autohighlight",
+    selectionBehavior: "clear",
+    onInputValueChange({ inputValue }) {
+      props.onQueryChange(inputValue)
+    },
+    onSelect({ itemValue }) {
+      const item = pages.getItem(itemValue)
+      if (!item) return
+      if (pages.isPage(item)) {
+        props.onNavigate(pages.setPage(itemValue, query), "")
+      } else {
+        props.onAction(item)
+      }
+    },
+  })
+
+  const api = combobox.connect(service, normalizeProps)
+
+  // highlight the item we came back from once its page is showing
+  const { highlightedValue } = pages.restore
+  useEffect(() => {
+    if (highlightedValue && collection.has(highlightedValue)) api.setHighlightedValue(highlightedValue)
+  }, [pages])
+
+  const groups = collection.group()
+  const inputProps = api.getInputProps()
 
   return (
-    <div {...comboApi.getRootProps()}>
-      <input {...comboApi.getInputProps()} />
-      <div {...comboApi.getContentProps()}>
-        <div {...comboApi.getEmptyProps()}>{matchEntries.length === 0 && "No results found"}</div>
-        <div {...comboApi.getListProps()}>
-          {matchEntries.map(([group, items]) => (
-            <div key={group} {...comboApi.getItemGroupProps({ id: group })}>
-              <div {...comboApi.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
+    <div {...api.getRootProps()}>
+      {pages.page && (
+        <div data-part="breadcrumbs">
+          {pages.getPath().map((page) => (
+            <span key={page.value}>{page.label}</span>
+          ))}
+        </div>
+      )}
+      <input
+        {...inputProps}
+        onKeyDown={(event) => {
+          if (event.key === "Backspace" && !query && pages.page) {
+            event.preventDefault()
+            // keep the input empty so Backspace keeps going up
+            props.onNavigate(pages.up(query), "")
+            return
+          }
+          inputProps.onKeyDown?.(event)
+        }}
+      />
+      <div {...api.getContentProps()}>
+        <div {...api.getEmptyProps()}>{collection.size === 0 && "No results found"}</div>
+        <div {...api.getListProps()}>
+          {groups.map(([group, items]) => (
+            <div key={group} {...api.getItemGroupProps({ id: group })}>
+              <div {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
               {items.map((item) => (
-                <div key={item.name} {...comboApi.getItemProps({ item, persistFocus: true })}>
-                  {item.title}
+                <div key={item.value} {...api.getItemProps({ item, persistFocus: true })}>
+                  <Highlight text={item.label} query={query} />
+                  {query && pages.getAncestors(item).length > 0 && (
+                    <span data-part="item-path">
+                      {pages
+                        .getAncestors(item)
+                        .map((page) => page.label)
+                        .join(" › ")}
+                    </span>
+                  )}
+                  {pages.isPage(item) && <span data-part="item-indicator">›</span>}
                 </div>
               ))}
             </div>
@@ -67,33 +124,28 @@ function Combobox(props: Partial<combobox.Props> & { matches: Record<string, com
 }
 
 export default function Page() {
-  const [inputValue, setInputValue] = useState("")
   const [selectedAction, setSelectedAction] = useState<string | null>(null)
+  const [pages, setPages] = useState(createCollection)
+  const [query, setQuery] = useState("")
 
-  const matches = useMemo(() => filter(inputValue), [inputValue])
-  const flatMatches = Object.values(matches).flat()
-
-  const collection = useMemo(
-    () =>
-      combobox.collection({
-        items: flatMatches,
-        itemToValue: (item) => item.name,
-        itemToString: (item) => item.title,
-      }),
-    [flatMatches],
-  )
-
-  /* -----------------------------------------------------------------------------
-   * Dialog machine
-   * -----------------------------------------------------------------------------*/
+  const navigate = (next: PageListCollection<Item>, nextQuery: string) => {
+    setPages(next)
+    setQuery(nextQuery)
+  }
 
   const service = useMachine(dialog.machine, {
     id: useId(),
+    onEscapeKeyDown(event) {
+      // Escape goes back a page before it closes the dialog
+      if (!pages.canGoBack) return
+      event.preventDefault()
+      const next = pages.back(query)
+      navigate(next, next.restore.query)
+    },
     onOpenChange({ open }) {
-      if (!open) setInputValue("")
+      if (!open) navigate(pages.reset(), "")
     },
   })
-
   const dialogApi = dialog.connect(service, normalizeProps)
 
   useEffect(() => {
@@ -102,10 +154,6 @@ export default function Page() {
     store.init({ target: document })
     return () => store.destroy()
   }, [dialogApi])
-
-  /* -----------------------------------------------------------------------------
-   * Render
-   * -----------------------------------------------------------------------------*/
 
   return (
     <main>
@@ -125,15 +173,14 @@ export default function Page() {
           <div {...dialogApi.getBackdropProps()} />
           <div {...dialogApi.getPositionerProps()}>
             <div {...dialogApi.getContentProps()}>
-              <Combobox
-                matches={matches}
-                collection={collection}
-                onValueChange={({ items }) => {
-                  setSelectedAction(JSON.stringify(items[0].title))
+              <Command
+                pages={pages}
+                query={query}
+                onNavigate={navigate}
+                onQueryChange={setQuery}
+                onAction={(item) => {
+                  setSelectedAction(item.label)
                   dialogApi.setOpen(false)
-                }}
-                onInputValueChange={({ inputValue }) => {
-                  setInputValue(inputValue)
                 }}
               />
             </div>

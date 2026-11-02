@@ -74,10 +74,11 @@ export const machine = createMachine({
       resultsRegion: null,
       finalFocusFrame: AnimationFrame.create(),
       highlightFrame: AnimationFrame.create(),
+      autoHighlightPending: false,
     }
   },
 
-  exit: ["cancelFinalFocus", "cancelHighlightFrame"],
+  exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -214,7 +215,7 @@ export const machine = createMachine({
       actions: ["syncSelectedItems"],
     },
     "HIGHLIGHTED_VALUE.SET": {
-      actions: ["setHighlightedValue"],
+      actions: ["cancelAutoHighlight", "setHighlightedValue"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -530,7 +531,7 @@ export const machine = createMachine({
             CHILDREN_CHANGE: [
               {
                 guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
-                actions: ["clearHighlightedValue", "highlightFirstItem"],
+                actions: ["clearHighlightedValue", "autoHighlightFirstItem"],
               },
               {
                 guard: "isHighlightedItemRemoved",
@@ -609,7 +610,7 @@ export const machine = createMachine({
             CHILDREN_CHANGE: [
               {
                 guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
-                actions: ["clearHighlightedValue", "highlightFirstItem"],
+                actions: ["clearHighlightedValue", "autoHighlightFirstItem"],
               },
               {
                 guard: "isHighlightedItemRemoved",
@@ -617,7 +618,7 @@ export const machine = createMachine({
               },
               {
                 guard: "autoHighlight",
-                actions: ["highlightFirstItem"],
+                actions: ["autoHighlightFirstItem"],
               },
             ],
             "INPUT.ARROW_DOWN": {
@@ -1011,6 +1012,21 @@ export const machine = createMachine({
         // wait a frame if the content is not mounted yet
         if (dom.getContentEl(scope)) queueMicrotask(fn)
         else refs.get("highlightFrame").request(fn)
+      },
+      // runs after the collection changes; an explicit highlight before it runs cancels it
+      autoHighlightFirstItem({ context, prop, scope, refs }) {
+        refs.set("autoHighlightPending", true)
+        const fn = () => {
+          if (!refs.get("autoHighlightPending")) return
+          refs.set("autoHighlightPending", false)
+          const value = prop("collection").firstValue
+          if (value) context.set("highlightedValue", value)
+        }
+        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        else refs.get("highlightFrame").request(fn)
+      },
+      cancelAutoHighlight({ refs }) {
+        refs.set("autoHighlightPending", false)
       },
       highlightFirstItemIfNeeded({ computed, action }) {
         if (!computed("autoHighlight")) return

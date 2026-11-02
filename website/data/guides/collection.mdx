@@ -123,6 +123,63 @@ collection.reorder(fromIndex, toIndex)
 console.log(collection.items) // [{ label: "Banana", value: "banana" }, { label: "Apple", value: "apple" }]
 ```
 
+## Page List Collection
+
+A list collection for one page of nested items, like the pages of a command
+menu. Here "page" means a nested page, not pagination. Pass it to the combobox
+like any list collection.
+
+Give it flat items with a `parent` field. Its `items` are the items on the open
+page.
+
+```ts
+import { PageListCollection } from "@zag-js/collection"
+
+const pages = new PageListCollection({
+  items: [
+    { value: "theme", label: "Theme" },
+    { value: "light", label: "Light", parent: "theme" },
+    { value: "dark", label: "Dark", parent: "theme" },
+  ],
+})
+
+pages.items // [Theme]
+pages.setPage("theme").items // [Light, Dark]
+```
+
+Use `itemToParent` when the parent lives under another field, and `isItemPage`
+for an item that opens a page without children, e.g. one that loads them.
+
+### Navigating
+
+`setPage`, `back` and `up` return a new collection. Pass the current query, so
+it's restored when the user comes back.
+
+```ts
+let next = pages.setPage("theme", query) // open a page
+next = next.back(query) // previous page in the history
+next = next.up(query) // parent page
+
+next.restore // { query, highlightedValue }
+```
+
+After `back` or `up`, `restore` holds the query the user typed on that page and
+the item they came from, to highlight again. `reset()` goes to the top level and
+forgets the history. `canGoBack` tells you whether there's a page to go back to.
+
+### Searching
+
+Use `getChildren` for the open page, or `getDescendants` to search nested pages
+too. Show the results with `setItems`, which keeps the page.
+
+```ts
+const scope = query ? pages.getDescendants() : pages.getChildren()
+const collection = pages.setItems(fuzzy.search(scope, query))
+```
+
+`getPath()` returns the open page's ancestors for breadcrumbs, and
+`getAncestors(item)` returns where a deep result lives.
+
 ## Tree Collection
 
 A tree collection is designed to manage hierarchical data structures like file

@@ -1,0 +1,5 @@
+export { prepareFuzzyTarget } from "./prepare"
+export { getFuzzyMatchRanges } from "./ranges"
+export { createFuzzySearch, rankItems } from "./rank"
+export { createFuzzyMatcher, fuzzyScore } from "./score"
+export type { FuzzyMatcher, FuzzyRange, FuzzySearch, FuzzySearchOptions, PreparedTarget } from "./types"
