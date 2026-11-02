@@ -1,8 +1,9 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
+import { isEqual } from "@zag-js/utils"
 import { useId, useMemo, useState } from "react"
 import { usePersistentMapState } from "../../hooks/use-persistent-state"
-import { isEqual } from "@zag-js/utils"
+import "@styles/splitter.css"
 
 export default function Page() {
   const [showInspector, setShowInspector] = useState(true)

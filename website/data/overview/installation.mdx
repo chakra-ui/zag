@@ -3,7 +3,8 @@ title: Getting Started
 description: Setting up Zag UI machines in your project
 ---
 
-Zag can be used within most JS frameworks like Vue, React, Svelte and Solid.
+Zag can be used within most JS frameworks like Vue, React, Preact, Svelte and
+Solid.
 
 To get Zag running, you'll need to:
 
@@ -17,7 +18,8 @@ yarn add @zag-js/tooltip
 ```
 
 2. Install the adapter for the framework of your choice. At the moment, Zag is
-   available for React, Vue 3, Svelte and Solid.js. Let's say you use React.
+   available for React, Preact, Vue 3, Svelte and Solid.js. Let's say you use
+   React.
 
 ```bash
 npm install @zag-js/react
@@ -160,6 +162,35 @@ There are some extra functions that need to be used in order to make it work:
   compatible with Svelte.
 - `$derived` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
+
+### Usage with Preact
+
+The Preact adapter requires Preact 11 and works with or without `preact/compat`.
+
+```tsx
+import * as tooltip from "@zag-js/tooltip"
+import { useMachine, normalizeProps } from "@zag-js/preact"
+
+export function Tooltip() {
+  const service = useMachine(tooltip.machine, { id: "1" })
+
+  const api = tooltip.connect(service, normalizeProps)
+
+  return (
+    <>
+      <button {...api.getTriggerProps()}>Hover me</button>
+      {api.open && (
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>Tooltip</div>
+        </div>
+      )}
+    </>
+  )
+}
+```
+
+`normalizeProps` maps the React-style event props Zag uses to Preact's, e.g.
+`onChange` to `onInput` and `onFocus` to `onfocusin`.
 
 ### About prop normalization
 

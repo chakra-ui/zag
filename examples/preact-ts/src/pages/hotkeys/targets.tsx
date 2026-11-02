@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 
 const store = createHotkeyStore()
 
-const boxStyle = {
+const boxStyle: React.CSSProperties = {
   border: "2px solid #999",
   borderRadius: "0.5rem",
   padding: "1rem",

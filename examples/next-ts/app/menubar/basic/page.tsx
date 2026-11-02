@@ -107,7 +107,7 @@ function Menubar() {
 
 export default function Page() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <Menubar />
     </Suspense>
   )

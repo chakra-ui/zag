@@ -37,7 +37,7 @@ export default function Page() {
   })
   const dndApi = dnd.connect(dndService, normalizeProps)
 
-  function onInputKeyDown(event: React.KeyboardEvent) {
+  function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const highlighted = tagsApi.highlightedValue
     if (!event.altKey || !highlighted) return
     const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0

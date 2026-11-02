@@ -7,12 +7,6 @@ import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
 import "@styles/meter.css"
 
-const presets = [
-  { value: 10, label: "10%" },
-  { value: 50, label: "50%" },
-  { value: 90, label: "90%" },
-]
-
 export default function Page() {
   const controls = useControls(meterControls)
 
@@ -48,7 +42,11 @@ export default function Page() {
         </p>
 
         <div className="meter-actions">
-          {presets.map(({ value, label }) => (
+          {[
+            { value: 10, label: "10%" },
+            { value: 50, label: "50%" },
+            { value: 90, label: "90%" },
+          ].map(({ value, label }) => (
             <button key={value} data-testid={`set-${value}`} type="button" onClick={() => api.setValue(value)}>
               Set {label}
             </button>

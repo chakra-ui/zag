@@ -66,7 +66,7 @@ export default function Page() {
           <div {...api.getContentProps({ value: "password" })} className="steps-form">
             <label>
               Password
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
             </label>
           </div>
 
@@ -78,7 +78,7 @@ export default function Page() {
           <div {...api.getContentProps({ value: "verify" })} className="steps-form">
             <label>
               6-digit code
-              <input inputMode="numeric" maxLength={6} value={code} onChange={(e) => setCode(e.target.value)} />
+              <input inputMode="numeric" maxLength={6} value={code} onChange={(e) => setCode(e.currentTarget.value)} />
             </label>
           </div>
 

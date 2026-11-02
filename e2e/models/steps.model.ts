@@ -38,7 +38,7 @@ export class StepsModel extends Model {
   }
 
   get previousTrigger() {
-    return this.page.locator(part("steps", "prev-trigger"))
+    return this.page.locator(part("steps", "previous-trigger"))
   }
 
   get skipTrigger() {

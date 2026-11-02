@@ -6,6 +6,7 @@ import { comboboxData } from "@zag-js/shared"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/combobox.css"
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -108,13 +109,15 @@ export default function Page() {
         </div>
 
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            {options.map((item) => (
-              <li key={item.code} {...api.getItemProps({ item })}>
-                {item.label}
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <div {...api.getListProps()}>
+              {options.map((item) => (
+                <div key={item.code} {...api.getItemProps({ item })}>
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </main>
 

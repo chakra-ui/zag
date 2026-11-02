@@ -1,6 +1,8 @@
-import { Fragment, useId } from "react"
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
+import { useId } from "react"
+import "@styles/popover.css"
 
 export default function Page() {
   return (
@@ -35,21 +37,21 @@ export function Popover() {
 
   const api = popover.connect(service, normalizeProps)
 
-  const Wrapper = api.portalled ? Portal : Fragment
-
   return (
     <main>
       <button {...api.getTriggerProps()}>Click me</button>
-      <Wrapper>
+      <Portal>
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>
             <div {...api.getTitleProps()}>Presenters</div>
             <div {...api.getDescriptionProps()}>Description</div>
             <button>Action Button</button>
-            <button {...api.getCloseTriggerProps()}>X</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </div>
         </div>
-      </Wrapper>
+      </Portal>
     </main>
   )
 }

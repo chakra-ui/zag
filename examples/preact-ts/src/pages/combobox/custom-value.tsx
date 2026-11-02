@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-preact"
 import { useId, useState } from "react"
+import "@styles/combobox.css"
 
 interface Item {
   code: string
@@ -56,16 +57,18 @@ export default function Page() {
           </div>
         </div>
         <div {...api.getPositionerProps()}>
-          {options.length > 0 && (
-            <ul data-testid="combobox-content" {...api.getContentProps()}>
-              {options.map((item) => (
-                <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
-                  <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                  <span>{item.label}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div data-testid="combobox-content" {...api.getContentProps()}>
+            {options.length > 0 && (
+              <div {...api.getListProps()}>
+                {options.map((item) => (
+                  <div data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
+                    <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </form>
     </main>

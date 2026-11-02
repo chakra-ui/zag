@@ -1,6 +1,7 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { numberFlowControls } from "@zag-js/shared"
+import { MinusIcon, PlusIcon } from "lucide-preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -30,7 +31,7 @@ export default function Page() {
   return (
     <>
       <main className="number-flow">
-        <div {...api.getRootProps()}>
+        <div {...api.getRootProps()} className="nf-hero">
           {api.segments.map((segment) =>
             segment.kind === "digit" ? (
               <span key={segment.key} {...api.getDigitProps({ segment })}>
@@ -51,18 +52,20 @@ export default function Page() {
           <span {...api.getValueTextProps()}>{api.announcedValueText}</span>
         </div>
 
-        <div className="number-flow__actions">
-          <button onClick={() => api.setValue(api.value - randomDelta())}>Decrement</button>
-          <button onClick={() => api.setValue(api.value + randomDelta())}>Increment</button>
+        <div className="hstack">
+          <button className="nf-stepper" aria-label="Decrement" onClick={() => api.setValue(api.value - randomDelta())}>
+            <MinusIcon />
+          </button>
+          <button className="nf-stepper" aria-label="Increment" onClick={() => api.setValue(api.value + randomDelta())}>
+            <PlusIcon />
+          </button>
           <button onClick={() => api.setValue(Math.round(Math.random() * 99999))}>Randomize</button>
           <button onClick={() => api.setValue(0)}>Reset</button>
-          <span className="number-flow__value" data-testid="value">
-            value: {api.value} {api.animating ? "(rolling)" : ""}
-          </span>
-          <span className="number-flow__value" data-testid="animations">
-            animations: {animations.started} started / {animations.completed} completed
-          </span>
         </div>
+
+        <p className="nf-caption" data-testid="animations">
+          animations: {animations.started} started / {animations.completed} completed
+        </p>
       </main>
 
       <Toolbar controls={controls.ui}>

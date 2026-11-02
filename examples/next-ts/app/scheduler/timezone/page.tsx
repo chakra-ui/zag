@@ -51,7 +51,7 @@ export default function Page() {
 
         <label>
           Time zone{" "}
-          <select data-testid="zone" value={timeZone} onChange={(e) => setTimeZone(e.target.value)}>
+          <select data-testid="zone" value={timeZone} onChange={(e) => setTimeZone(e.currentTarget.value)}>
             {ZONES.map((zone) => (
               <option key={zone} value={zone}>
                 {zone}

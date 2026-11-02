@@ -1,16 +1,19 @@
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
 import * as toolbar from "@zag-js/toolbar"
-import type { ComponentChildren } from "preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
+import "@styles/tooltip.css"
 
-function IconButton(props: { api: toolbar.Api; value: string; label: string; children: ComponentChildren }) {
+function IconButton(props: { api: toolbar.Api; value: string; label: string; children: React.ReactNode }) {
   const { api, value, label, children } = props
+  const triggerId = api.getItemId(value)
+
   const service = useMachine(tooltip.machine, {
     id: useId(),
-    ids: { trigger: api.getItemId(value) },
+    ids: { trigger: triggerId },
     disabled: api.disabled,
   })
   const tooltipApi = tooltip.connect(service, normalizeProps)
@@ -18,7 +21,7 @@ function IconButton(props: { api: toolbar.Api; value: string; label: string; chi
   return (
     <>
       <button
-        class="toolbar-icon-only"
+        className="toolbar-icon-only"
         {...mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))}
         aria-label={label}
       >
@@ -41,7 +44,7 @@ export default function Page() {
 
   return (
     <>
-      <main class="toolbar">
+      <main className="toolbar">
         <div {...api.getRootProps()}>
           <IconButton api={api} value="bold" label="Bold">
             <strong>B</strong>
@@ -53,6 +56,7 @@ export default function Page() {
             <u>U</u>
           </IconButton>
         </div>
+        <p>Hover or focus an icon button to see its tooltip. Arrow keys still move roving focus normally.</p>
       </main>
 
       <ControlsPanel>

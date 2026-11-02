@@ -35,7 +35,7 @@ export default function Page() {
   })
   const dndApi = dnd.connect(dndService, normalizeProps)
 
-  function onInputKeyDown(event: KeyboardEvent) {
+  function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const highlighted = tagsApi.highlightedValue
     if (!event.altKey || !highlighted) return
     const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0
@@ -67,8 +67,8 @@ export default function Page() {
                     tagsApi.getItemProps({ index, value }),
                     dndApi.getDraggableProps({ value }),
                     dndApi.getDropTargetProps({ value }),
+                    { tabIndex: -1 },
                   )}
-                  tabIndex={-1}
                 >
                   <div {...dndApi.getDropIndicatorProps({ value, placement: "before" })} />
                   <div {...tagsApi.getItemPreviewProps({ index, value })}>

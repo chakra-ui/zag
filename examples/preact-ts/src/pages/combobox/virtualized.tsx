@@ -1,10 +1,13 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-preact"
-import { useId, useRef, useState } from "react"
+import { useId, useState } from "react"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import "@styles/combobox.css"
+
+const estimateSize = () => 32
 
 interface Item {
   code: string
@@ -14,14 +17,12 @@ interface Item {
 const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
-  const contentRef = useRef<HTMLDivElement>(null)
-
   const [options, setOptions] = useState(comboboxData)
 
-  const virtualizer = useVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer({
     count: options.length,
-    getScrollElement: () => contentRef.current,
-    estimateSize: () => 32,
+    estimatedSize: estimateSize,
+    observeScrollElementSize: true,
   })
 
   const collection = combobox.collection({
@@ -34,7 +35,7 @@ export default function Page() {
     id: useId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+      virtualizer.scrollToIndex(details.index, { align: "center" })
     },
     onOpenChange() {
       setOptions(comboboxData)
@@ -63,38 +64,31 @@ export default function Page() {
       </div>
 
       <div {...api.getPositionerProps()}>
-        <div data-testid="combobox-content" ref={contentRef} {...api.getContentProps()}>
-          <div
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            {virtualizer.getVirtualItems().map((virtualItem) => {
-              const item = options[virtualItem.index]
-              return (
-                <div
-                  data-testid={item.code}
-                  key={item.code}
-                  {...api.getItemProps({ item })}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: `${virtualItem.size}px`,
-                    transform: `translateY(${virtualItem.start}px)`,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  <span>{item.label}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                </div>
-              )
-            })}
+        <div data-testid="combobox-content" {...api.getContentProps()}>
+          <div {...api.getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
+            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+              {virtualizer.getVirtualItems().map((vi) => {
+                const item = options[vi.index]
+                // The count syncs before paint; skip rows from the previous one
+                if (!item) return null
+                return (
+                  <div
+                    data-testid={item.code}
+                    key={item.code}
+                    {...api.getItemProps({ item })}
+                    style={{
+                      ...virtualizer.getItemStyle(vi),
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>

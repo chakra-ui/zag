@@ -5,6 +5,7 @@ import { useId, useState } from "react"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/dialog.css"
 
 interface User {
   id: number

@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/date-picker.css"
 
 const format = (date: DateValue) => {
   const month = date.month.toString().padStart(2, "0")
@@ -27,7 +28,6 @@ export default function Page() {
   const service = useMachine(datePicker.machine, {
     id: useId(),
     locale: "en",
-    view: "month",
     minView: "month",
     placeholder: "mm/yyyy",
     format,

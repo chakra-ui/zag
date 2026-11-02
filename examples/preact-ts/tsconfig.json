@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
+    "lib": ["dom", "esnext", "dom.iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -13,6 +14,7 @@
     "skipLibCheck": true,
     "paths": {
       "react": ["./node_modules/preact/compat/"],
+      "preact/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
       "react-dom": ["./node_modules/preact/compat/"],
       "@styles/*": ["../styles/*"]
     }

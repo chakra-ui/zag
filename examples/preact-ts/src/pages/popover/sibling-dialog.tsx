@@ -1,8 +1,10 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { Fragment, useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { Presence } from "../../components/presence"
+import "@styles/popover.css"
+import "@styles/dialog.css"
 
 function ToggleTip() {
   const [open, setOpen] = useState(false)
@@ -15,7 +17,6 @@ function ToggleTip() {
 
   const service = useMachine(popover.machine, {
     id: useId(),
-    portalled: true,
     open,
     onOpenChange(details) {
       setOpen(details.open)
@@ -25,14 +26,13 @@ function ToggleTip() {
   })
 
   const api = popover.connect(service, normalizeProps)
-  const Wrapper = api.portalled ? Portal : Fragment
 
   return (
     <div style={{ display: "inline-block" }}>
       <button data-testid="toggletip-trigger" {...api.getTriggerProps()}>
         ℹ Info
       </button>
-      <Wrapper>
+      <Portal>
         <div {...api.getPositionerProps()}>
           <Presence data-testid="toggletip-content" className="popover-content" {...api.getContentProps()}>
             <div {...api.getArrowProps()}>
@@ -42,7 +42,7 @@ function ToggleTip() {
             <div data-part="body">This is some additional information. It will close in 2 seconds.</div>
           </Presence>
         </div>
-      </Wrapper>
+      </Portal>
     </div>
   )
 }

@@ -1,8 +1,9 @@
+import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
 import { useId, useState } from "react"
 import { Presence } from "../../components/presence"
-import styles from "../../../../shared/styles/drawer.module.css"
 
 function AlwaysOpenDrawer() {
   const service = useMachine(drawer.machine, {
@@ -68,7 +69,9 @@ function ControlledDrawer() {
           <p style={{ fontSize: 14 }}>
             Open: <strong>{String(open)}</strong>
           </p>
-          <button {...api.getCloseTriggerProps()}>Close</button>
+          <button {...api.getCloseTriggerProps()}>
+            <XIcon />
+          </button>
         </Presence>
       </div>
     </div>

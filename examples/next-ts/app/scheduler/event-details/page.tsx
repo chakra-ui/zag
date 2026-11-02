@@ -165,7 +165,7 @@ export default function Page() {
                         autoFocus
                         className="scheduler-event-popover-title"
                         value={draftTitle}
-                        onChange={(e) => setDraftTitle(e.target.value)}
+                        onChange={(e) => setDraftTitle(e.currentTarget.value)}
                         onBlur={commitRename}
                         onKeyDown={handleRenameKey}
                       />

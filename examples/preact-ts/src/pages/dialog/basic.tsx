@@ -1,5 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
+import "@styles/dialog.css"
 
 export default function Dialog() {
   const service = useMachine(dialog.machine, { id: "1" })
@@ -19,7 +21,9 @@ export default function Dialog() {
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

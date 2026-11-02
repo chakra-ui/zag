@@ -7,6 +7,7 @@ import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/combobox.css"
 
 interface Item {
   code: string
@@ -35,7 +36,7 @@ export default function Page() {
     },
     onInputValueChange({ inputValue }) {
       const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
-      setOptions(filtered.length > 0 ? filtered : comboboxData)
+      setOptions(filtered)
     },
     onValueChange({ items }) {
       setSelectedItems(items as Item[])
@@ -70,16 +71,19 @@ export default function Page() {
             </div>
           </div>
           <div {...api.getPositionerProps()}>
-            {options.length > 0 && (
-              <ul data-testid="combobox-content" {...api.getContentProps()}>
-                {options.map((item) => (
-                  <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
-                    <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                    <span>{item.label}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div data-testid="combobox-content" {...api.getContentProps()}>
+              <div {...api.getEmptyProps()}>{options.length === 0 && "No results found"}</div>
+              {options.length > 0 && (
+                <div {...api.getListProps()}>
+                  {options.map((item) => (
+                    <div data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
+                      <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>

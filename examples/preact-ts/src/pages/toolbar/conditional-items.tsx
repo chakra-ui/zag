@@ -3,6 +3,7 @@ import * as toolbar from "@zag-js/toolbar"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
 
 export default function Page() {
   const [showComment, setShowComment] = useState(true)
@@ -11,7 +12,7 @@ export default function Page() {
 
   return (
     <>
-      <main class="toolbar">
+      <main className="toolbar">
         <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "cut" })}>Cut</button>
           <button {...api.getItemProps({ value: "copy" })}>Copy</button>
@@ -19,13 +20,13 @@ export default function Page() {
           {showComment && <button {...api.getItemProps({ value: "comment" })}>Comment</button>}
         </div>
         <label>
-          <input
-            type="checkbox"
-            checked={showComment}
-            onChange={(event) => setShowComment(event.currentTarget.checked)}
-          />
+          <input type="checkbox" checked={showComment} onChange={(e) => setShowComment(e.currentTarget.checked)} />
           Show Comment button
         </label>
+        <p>
+          Focus "Comment" (the last item), then uncheck the box above to remove it while it's still focused. Tab away
+          and back — the toolbar should still have a working tab stop, not become entirely unreachable.
+        </p>
       </main>
 
       <ControlsPanel>

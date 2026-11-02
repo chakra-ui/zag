@@ -1,6 +1,7 @@
 import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useState } from "react"
+import "@styles/editable.css"
 
 export default function Page() {
   const [edit, setEdit] = useState(false)

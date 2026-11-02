@@ -47,14 +47,14 @@ export default function ConditionalContent() {
     <main>
       <fieldset className="hstack gap-4" disabled={!ready}>
         <label>
-          <input type="checkbox" checked={showTitle} onChange={(event) => setShowTitle(event.target.checked)} />
+          <input type="checkbox" checked={showTitle} onChange={(event) => setShowTitle(event.currentTarget.checked)} />
           Show title
         </label>
         <label>
           <input
             type="checkbox"
             checked={showDescription}
-            onChange={(event) => setShowDescription(event.target.checked)}
+            onChange={(event) => setShowDescription(event.currentTarget.checked)}
           />
           Show description
         </label>

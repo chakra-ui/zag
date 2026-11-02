@@ -2,6 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useMemo, useState } from "react"
+import "@styles/combobox.css"
 
 interface Item {
   label: string
@@ -90,7 +91,7 @@ export default function Page() {
         </div>
 
         <div {...api.getPositionerProps()}>
-          <ul
+          <div
             data-testid="combobox-content"
             {...api.getContentProps()}
             style={{
@@ -104,20 +105,22 @@ export default function Page() {
               overflow: "auto",
             }}
           >
-            {options.map((item) => (
-              <li
-                data-testid={item.value}
-                key={item.value}
-                {...api.getItemProps({ item })}
-                style={{
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
+            <div {...api.getListProps()}>
+              {options.map((item) => (
+                <div
+                  data-testid={item.value}
+                  key={item.value}
+                  {...api.getItemProps({ item })}
+                  style={{
+                    padding: "8px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <button

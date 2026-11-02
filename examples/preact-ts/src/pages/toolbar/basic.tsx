@@ -7,6 +7,9 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/toolbar.css"
+import "@styles/toggle-group.css"
+import "@styles/select.css"
 
 interface Font {
   label: string
@@ -69,6 +72,10 @@ function FontPicker(props: { api: toolbar.Api }) {
 
   return (
     <>
+      {/* the trigger points aria-labelledby at this, so it has to be rendered even though the toolbar shows no label */}
+      <label {...fontApi.getLabelProps()} className="sr-only">
+        Font
+      </label>
       <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
         <span>{fontApi.valueAsString || "Font"}</span>
         <span aria-hidden>▾</span>

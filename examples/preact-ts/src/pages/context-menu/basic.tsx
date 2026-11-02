@@ -3,6 +3,7 @@ import { normalizeProps, useMachine, Portal } from "@zag-js/preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/menu.css"
 
 export default function Page() {
   const service = useMachine(menu.machine, {

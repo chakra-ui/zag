@@ -1,6 +1,7 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useRef } from "react"
+import "@styles/date-picker.css"
 
 export default function Page() {
   const nextFieldRef = useRef<HTMLInputElement>(null)

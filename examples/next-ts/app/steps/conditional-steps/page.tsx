@@ -57,7 +57,7 @@ export default function Page() {
           <div {...api.getContentProps({ value: "profile" })} className="steps-form">
             <label>
               Your name
-              <input value={name} onChange={(e) => setName(e.target.value)} />
+              <input value={name} onChange={(e) => setName(e.currentTarget.value)} />
             </label>
           </div>
 

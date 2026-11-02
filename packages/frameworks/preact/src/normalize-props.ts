@@ -1,14 +1,21 @@
 import { createNormalizer } from "@zag-js/types"
-import type { JSX, DOMAttributes, CSSProperties } from "preact"
+import type { CSSProperties, HTMLAttributes, JSX, SignalLike } from "preact"
 
-type WithoutRef<T> = Omit<T, "ref">
+// Prop getters return plain values, never signals
+type Unsignal<T> = { [K in keyof T]: Exclude<T[K], SignalLike<any>> }
+
+// Preact narrows `role` per element, so a part's role must spread onto any element.
+// Distributes over unions, e.g. `input` attributes are keyed on `type`.
+type Normalize<T> = T extends any
+  ? Unsignal<Omit<T, "ref" | "role" | "style">> & { role?: any; style?: CSSProperties | undefined }
+  : never
 
 type ElementsWithoutRef = {
-  [K in keyof JSX.IntrinsicElements]: WithoutRef<JSX.IntrinsicElements[K]>
+  [K in keyof JSX.IntrinsicElements]: Normalize<JSX.IntrinsicElements[K]>
 }
 
 export type PropTypes = ElementsWithoutRef & {
-  element: WithoutRef<DOMAttributes<HTMLElement>>
+  element: Normalize<HTMLAttributes<HTMLElement>>
   style: CSSProperties
 }
 

@@ -6,6 +6,7 @@ import { useId, useMemo, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/listbox.css"
 
 interface Item {
   label: string
@@ -37,19 +38,25 @@ export default function Page() {
     <>
       <main className="listbox">
         <div {...api.getRootProps()}>
-          <input
-            {...api.getInputProps({ autoHighlight: true })}
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-          />
-          <ul {...api.getContentProps()}>
-            {collection.items.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <label {...api.getLabelProps()}>Country</label>
+          <div {...api.getContentProps()}>
+            <input
+              {...api.getInputProps({ autoHighlight: true })}
+              aria-label="Filter countries"
+              placeholder="Filter…"
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              value={search}
+            />
+            <div {...api.getEmptyProps()}>{collection.size === 0 && `No matches for "${search}"`}</div>
+            <ul {...api.getListProps()}>
+              {collection.items.map((item) => (
+                <li key={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </main>
 

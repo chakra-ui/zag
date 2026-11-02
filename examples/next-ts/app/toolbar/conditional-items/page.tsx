@@ -22,7 +22,7 @@ export default function Page() {
           {showComment && <button {...api.getItemProps({ value: "comment" })}>Comment</button>}
         </div>
         <label>
-          <input type="checkbox" checked={showComment} onChange={(e) => setShowComment(e.target.checked)} />
+          <input type="checkbox" checked={showComment} onChange={(e) => setShowComment(e.currentTarget.checked)} />
           Show Comment button
         </label>
         <p>

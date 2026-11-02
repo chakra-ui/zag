@@ -5,6 +5,8 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { useId, useRef, useState } from "react"
+import "@styles/combobox.css"
+import "@styles/tags-input.css"
 
 const { contains: matchContains } = createFilter({ sensitivity: "base" })
 
@@ -23,7 +25,7 @@ export default function Page() {
    * -----------------------------------------------------------------------------*/
 
   const [options, setOptions] = useState(comboboxData)
-  const [value, setValue] = useState([])
+  const [value, setValue] = useState<string[]>([])
 
   const collection = combobox.collection({
     items: options,
@@ -121,15 +123,17 @@ export default function Page() {
       </div>
 
       <div {...comboboxApi.getPositionerProps()}>
-        {options.length > 0 && (
-          <div data-testid="combobox-content" {...comboboxApi.getContentProps()} ref={contentRef}>
-            {options.map((item) => (
-              <div data-testid={item.code} key={item.code} {...comboboxApi.getItemProps({ item })}>
-                {item.label}
-              </div>
-            ))}
-          </div>
-        )}
+        <div data-testid="combobox-content" {...comboboxApi.getContentProps()}>
+          {options.length > 0 && (
+            <div {...comboboxApi.getListProps()} ref={contentRef}>
+              {options.map((item) => (
+                <div data-testid={item.code} key={item.code} {...comboboxApi.getItemProps({ item })}>
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </main>
   )

@@ -3,6 +3,8 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { selectData } from "@zag-js/shared"
 import { useId, useMemo, useState } from "react"
+import "@styles/select.css"
+import "@styles/combobox.css"
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -14,9 +16,9 @@ export default function Page() {
   const service = useMachine(combobox.machine, {
     id: useId(),
     collection,
+    popupType: "dialog",
     selectionBehavior: "clear",
     inputBehavior: "autohighlight",
-    popupType: "dialog",
     onOpenChange() {
       setOptions(selectData)
     },
@@ -31,18 +33,15 @@ export default function Page() {
   return (
     <main className="select">
       <div {...api.getRootProps()}>
-        <div {...api.getControlProps()} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <label {...api.getLabelProps()}>Country</label>
-          <button {...api.getTriggerProps({ focusable: true })}>
-            <span>{api.valueAsString || "Select Country"} </span>
-            <span>▼</span>
-          </button>
+        <label {...api.getLabelProps()}>Country</label>
+        <div {...api.getControlProps()}>
+          <button {...api.getTriggerProps({ focusable: true })}>{api.valueAsString || "Select Country"}</button>
         </div>
 
         <Portal>
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <input style={{ position: "sticky", top: "0", width: "100%" }} {...api.getInputProps()} />
+              <input {...api.getInputProps()} />
               <div {...api.getListProps()}>
                 {options.map((item) => (
                   <div key={item.value} {...api.getItemProps({ item })}>

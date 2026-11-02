@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/steps.css"
 
 export default function Page() {
   const controls = useControls(stepsControls)
@@ -22,15 +23,18 @@ export default function Page() {
       <main className="steps">
         <div {...api.getRootProps()}>
           <div {...api.getListProps()}>
-            {stepsData.map((step, index) => (
-              <div key={step.value} {...api.getItemProps({ value: step.value })}>
-                <button {...api.getTriggerProps({ value: step.value })}>
-                  <div {...api.getIndicatorProps({ value: step.value })}>{index + 1}</div>
-                  <span>{step.title}</span>
-                </button>
-                <div {...api.getSeparatorProps({ value: step.value })} />
-              </div>
-            ))}
+            {stepsData.map((step, index) => {
+              const itemState = api.getItemState({ value: step.value })
+              return (
+                <div key={step.value} {...api.getItemProps({ value: step.value })}>
+                  <button {...api.getTriggerProps({ value: step.value })}>
+                    <div {...api.getIndicatorProps({ value: step.value })}>{itemState.completed ? "✓" : index + 1}</div>
+                    <span>{step.title}</span>
+                  </button>
+                  <div {...api.getSeparatorProps({ value: step.value })} />
+                </div>
+              )
+            })}
           </div>
 
           {stepsData.map((step) => (

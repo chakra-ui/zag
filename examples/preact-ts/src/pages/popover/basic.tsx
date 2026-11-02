@@ -1,11 +1,13 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { popoverControls } from "@zag-js/shared"
-import { Fragment, useId } from "react"
+import { XIcon } from "lucide-preact"
+import { useId } from "react"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/popover.css"
 
 export default function Page() {
   const controls = useControls(popoverControls)
@@ -16,8 +18,6 @@ export default function Page() {
   })
 
   const api = popover.connect(service, normalizeProps)
-
-  const Wrapper = api.portalled ? Portal : Fragment
 
   return (
     <>
@@ -32,7 +32,7 @@ export default function Page() {
 
           <div {...api.getAnchorProps()}>anchor</div>
 
-          <Wrapper>
+          <Portal>
             <div {...api.getPositionerProps()}>
               <Presence data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
                 <div {...api.getArrowProps()}>
@@ -48,12 +48,12 @@ export default function Page() {
                   </a>
                   <input data-testid="input" placeholder="input" />
                   <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
-                    X
+                    <XIcon />
                   </button>
                 </div>
               </Presence>
             </div>
-          </Wrapper>
+          </Portal>
           <span data-testid="plain-text">I am just text</span>
           <button data-testid="button-after">Button :after</button>
         </div>

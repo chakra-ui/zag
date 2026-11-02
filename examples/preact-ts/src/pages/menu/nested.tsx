@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useEffectOnce } from "../../hooks/use-effect-once"
+import "@styles/menu.css"
 
 export default function Page() {
   const service = useMachine(menu.machine, {

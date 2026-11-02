@@ -1,10 +1,10 @@
-import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
-import styles from "@styles/dnd-list.module.css"
-import { GripVertical } from "lucide-preact"
+import * as dnd from "@zag-js/dnd"
+import { GripVerticalIcon } from "lucide-preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import styles from "@styles/dnd-list.module.css"
 
 const initialItems = [
   { id: "1", label: "Apple" },
@@ -42,13 +42,11 @@ export default function Page() {
                   {...mergeProps(
                     api.getDraggableProps({ value: item.id }),
                     api.getDropTargetProps({ value: item.id }),
-                    {
-                      className: `${styles.draggable} ${styles.dropTarget}`,
-                    },
+                    { className: `${styles.draggable} ${styles.dropTarget}` },
                   )}
                 >
                   <span {...api.getDragHandleProps({ value: item.id })} className={styles.dragHandle}>
-                    <GripVertical size={14} />
+                    <GripVerticalIcon size={14} />
                   </span>
                   {item.label}
                 </div>

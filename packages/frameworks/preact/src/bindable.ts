@@ -1,14 +1,12 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isEqual, isFunction } from "@zag-js/utils"
-import { flushSync } from "preact/compat"
+import { identity, isFunction } from "@zag-js/utils"
 import { useLayoutEffect, useRef, useState } from "preact/hooks"
-
-const identity = (v: VoidFunction) => v()
+import { flushSync } from "./flush-sync"
 
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
 
-  const eq = props().isEqual ?? isEqual
+  const eq = props().isEqual ?? Object.is
 
   const [initialValue] = useState(initial)
   const [value, setValue] = useState(initialValue)

@@ -6,6 +6,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/tour.css"
 
 const steps: tour.StepDetails[] = [
   {
@@ -30,8 +31,7 @@ const steps: tour.StepDetails[] = [
     title: "Wait Step",
     description: "Wait for 2 seconds",
     effect({ next }) {
-      const btn = document.querySelector<HTMLElement>("#play-btn")
-      btn.addEventListener("click", next, { once: true })
+      document.querySelector<HTMLElement>("#play-btn")?.addEventListener("click", next, { once: true })
     },
   },
   {
@@ -43,7 +43,7 @@ const steps: tour.StepDetails[] = [
     placement: "top",
     effect({ show, next, target }) {
       show()
-      const btn = target()
+      const btn = target?.()
       if (!btn) return
       const handler = () => next()
       btn.addEventListener("click", handler)

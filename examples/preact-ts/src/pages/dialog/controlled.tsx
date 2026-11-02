@@ -1,6 +1,8 @@
+import "@styles/dialog.css"
 import * as dialog from "@zag-js/dialog"
-import { useMachine, normalizeProps, Portal } from "@zag-js/preact"
-import React, { useState } from "react"
+import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
+import { useState } from "react"
 
 export default function Dialog() {
   const [open, setOpen] = useState(false)
@@ -30,7 +32,9 @@ export default function Dialog() {
                 <input placeholder="Enter name..." />
                 <button>Save</button>
               </div>
-              <button {...api.getCloseTriggerProps()}>Close</button>
+              <button {...api.getCloseTriggerProps()}>
+                <XIcon />
+              </button>
             </div>
           </div>
         </Portal>

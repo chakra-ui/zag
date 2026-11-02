@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/date-picker.css"
 
 let unavailableDates = [
   "2025-06-01",

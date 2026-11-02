@@ -1,7 +1,9 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
 import { useState } from "react"
 import { Presence } from "../../components/presence"
+import "@styles/dialog.css"
 
 export default function Dialog() {
   const [open, setOpen] = useState(false)
@@ -36,7 +38,9 @@ export default function Dialog() {
             >
               Delayed close
             </button>
-            <button {...api.getCloseTriggerProps()}>Close</button>
+            <button {...api.getCloseTriggerProps()}>
+              <XIcon />
+            </button>
           </Presence>
         </div>
       </Portal>

@@ -1,8 +1,9 @@
-import { normalizeProps, useMachine } from "@zag-js/preact"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as scrollArea from "@zag-js/scroll-area"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/scroll-area.css"
 
 export default function Page() {
   const service = useMachine(scrollArea.machine, {
@@ -16,7 +17,9 @@ export default function Page() {
       <main className="scroll-area">
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <div {...api.getContentProps()} style={{ display: "flex", flexDirection: "column-reverse" }}>
+            <div
+              {...mergeProps(api.getContentProps(), { style: { display: "flex", flexDirection: "column-reverse" } })}
+            >
               {Array.from({ length: 100 }).map((_, index) => (
                 <div key={index}>Item {index}</div>
               ))}

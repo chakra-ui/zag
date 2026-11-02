@@ -1,7 +1,9 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
+import { ChevronsUpDownIcon } from "lucide-preact"
 import { useState } from "react"
+import "@styles/select.css"
 
 const Select = (props: { id: string }) => {
   const [open, setOpen] = useState(false)
@@ -21,19 +23,23 @@ const Select = (props: { id: string }) => {
       <div {...api.getControlProps()}>
         <button {...api.getTriggerProps()}>
           <span>{api.valueAsString || "Select option"}</span>
-          <span {...api.getIndicatorProps()}>▼</span>
+          <span {...api.getIndicatorProps()}>
+            <ChevronsUpDownIcon />
+          </span>
         </button>
       </div>
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            {selectData.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <div {...api.getListProps()}>
+              {selectData.map((item) => (
+                <div key={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </Portal>
     </div>

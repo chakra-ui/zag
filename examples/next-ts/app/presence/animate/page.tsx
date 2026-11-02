@@ -35,11 +35,14 @@ function AnimatePresence(props: AnimatePresenceProps) {
   const renderChild = child || lastPresentChild.current
   if (!React.isValidElement(renderChild)) return null
 
-  return React.cloneElement(renderChild, {
-    hidden: !api.present,
-    "data-state": api.skip ? undefined : present ? "open" : "closed",
-    ref: api.setNode,
-  } as React.Attributes & { ref: (node: HTMLElement | null) => void })
+  return React.cloneElement(
+    renderChild as React.ReactElement,
+    {
+      hidden: !api.present,
+      "data-state": api.skip ? undefined : present ? "open" : "closed",
+      ref: api.setNode,
+    } as Record<string, unknown>,
+  )
 }
 
 export default function Page() {

@@ -1,6 +1,8 @@
 import * as select from "@zag-js/select"
-import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import { ChevronsUpDownIcon } from "lucide-preact"
 import { useId, useMemo, useState } from "react"
+import "@styles/select.css"
 
 interface Item {
   label: string
@@ -45,28 +47,32 @@ export default function Page() {
 
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select framework</label>
-          <div {...api.getControlProps()} style={{ display: "flex", marginTop: "4px" }}>
-            <button data-testid="trigger" {...api.getTriggerProps()} style={{ padding: "8px 12px", flex: 1 }}>
+          <div {...mergeProps(api.getControlProps(), { style: { display: "flex", marginTop: "4px" } })}>
+            <button data-testid="trigger" {...mergeProps(api.getTriggerProps(), { style: { flex: 1 } })}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span style={{ marginLeft: "8px" }}>▼</span>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
             </button>
           </div>
 
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul data-testid="select-content" {...api.getContentProps()} style={{ listStyle: "none", padding: "4px" }}>
-                {options.map((item) => (
-                  <li
-                    key={item.value}
-                    data-testid={item.value}
-                    {...api.getItemProps({ item })}
-                    style={{ padding: "8px 12px" }}
-                  >
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                ))}
-              </ul>
+              <div data-testid="select-content" {...mergeProps(api.getContentProps(), { style: { padding: "4px" } })}>
+                <div {...api.getListProps()}>
+                  {options.map((item) => (
+                    <div
+                      key={item.value}
+                      data-testid={item.value}
+                      {...api.getItemProps({ item })}
+                      style={{ padding: "8px 12px" }}
+                    >
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Portal>
         </div>

@@ -60,10 +60,10 @@ function Checkout() {
           <div {...api.getContentProps({ value: "contact" })} className="steps-form">
             <label>
               Email
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type="email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
             </label>
             <label style={{ flexDirection: "row" }}>
-              <input type="checkbox" checked={digitalOnly} onChange={(e) => setDigitalOnly(e.target.checked)} />
+              <input type="checkbox" checked={digitalOnly} onChange={(e) => setDigitalOnly(e.currentTarget.checked)} />
               My cart only has digital items
             </label>
           </div>
@@ -71,7 +71,7 @@ function Checkout() {
           <div {...api.getContentProps({ value: "shipping" })} className="steps-form">
             <label>
               Address
-              <input value={address} onChange={(e) => setAddress(e.target.value)} />
+              <input value={address} onChange={(e) => setAddress(e.currentTarget.value)} />
             </label>
           </div>
 
@@ -101,7 +101,7 @@ function Checkout() {
 
 export default function Page() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <Checkout />
     </Suspense>
   )

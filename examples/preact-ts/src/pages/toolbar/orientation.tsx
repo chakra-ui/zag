@@ -3,6 +3,7 @@ import * as toolbar from "@zag-js/toolbar"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
 
 const items = [
   { value: "bold", label: "B" },
@@ -11,12 +12,15 @@ const items = [
 ]
 
 export default function Page() {
-  const service = useMachine(toolbar.machine, { id: useId(), orientation: "vertical" })
+  const service = useMachine(toolbar.machine, {
+    id: useId(),
+    orientation: "vertical",
+  })
   const api = toolbar.connect(service, normalizeProps)
 
   return (
     <>
-      <main class="toolbar">
+      <main className="toolbar">
         <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "cut" })}>Cut</button>
           <button {...api.getItemProps({ value: "copy" })}>Copy</button>

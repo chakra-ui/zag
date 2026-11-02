@@ -1,6 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId } from "react"
+import "@styles/file-upload.css"
 
 export default function Page() {
   const service = useMachine(fileUpload.machine, { id: useId() })

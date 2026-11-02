@@ -6,6 +6,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/floating-panel.css"
 
 export default function Page() {
   const controls = useControls(floatingPanelControls)
@@ -47,8 +48,8 @@ export default function Page() {
                 <p>Some content</p>
               </div>
 
-              {floating.resizeTriggerAxes.map((axis) => (
-                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+              {floating.resizeTriggerPlacements.map((placement) => (
+                <div key={placement} {...api.getResizeTriggerProps({ placement })} />
               ))}
             </div>
           </div>

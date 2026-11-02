@@ -16,7 +16,11 @@ export default function Page() {
     <>
       <main className="toolbar" dir={dir}>
         <label>
-          <input type="checkbox" checked={dir === "rtl"} onChange={(e) => setDir(e.target.checked ? "rtl" : "ltr")} />
+          <input
+            type="checkbox"
+            checked={dir === "rtl"}
+            onChange={(e) => setDir(e.currentTarget.checked ? "rtl" : "ltr")}
+          />
           RTL
         </label>
 

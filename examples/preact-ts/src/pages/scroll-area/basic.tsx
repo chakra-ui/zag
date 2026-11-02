@@ -1,10 +1,11 @@
-import { normalizeProps, useMachine } from "@zag-js/preact"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as scrollArea from "@zag-js/scroll-area"
 import { scrollAreaControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import "@styles/scroll-area.css"
 
 export default function Page() {
   const controls = useControls(scrollAreaControls)
@@ -22,7 +23,7 @@ export default function Page() {
         <button onClick={() => api.scrollToEdge({ edge: "bottom" })}>Scroll to bottom</button>
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <div {...api.getContentProps()} style={{ minWidth: "800px" }}>
+            <div {...mergeProps(api.getContentProps(), { style: { minWidth: "800px" } })}>
               {Array.from({ length: 100 }).map((_, index) => (
                 <div key={index}>{index}</div>
               ))}

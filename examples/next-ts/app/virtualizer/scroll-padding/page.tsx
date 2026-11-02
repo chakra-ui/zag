@@ -46,7 +46,7 @@ export default function Page() {
           <input
             type="number"
             value={scrollPaddingStart}
-            onChange={(event) => updateScrollPadding(Number(event.target.value), scrollPaddingEnd)}
+            onChange={(event) => updateScrollPadding(Number(event.currentTarget.value), scrollPaddingEnd)}
             style={{ width: 64 }}
           />
           px
@@ -56,7 +56,7 @@ export default function Page() {
           <input
             type="number"
             value={scrollPaddingEnd}
-            onChange={(event) => updateScrollPadding(scrollPaddingStart, Number(event.target.value))}
+            onChange={(event) => updateScrollPadding(scrollPaddingStart, Number(event.currentTarget.value))}
             style={{ width: 64 }}
           />
           px

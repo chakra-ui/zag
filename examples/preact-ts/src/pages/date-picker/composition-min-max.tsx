@@ -2,6 +2,7 @@ import { parseDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId } from "react"
+import "@styles/date-picker.css"
 
 export default function Page() {
   const service = useMachine(datePicker.machine, {

@@ -4,6 +4,7 @@ import { X } from "lucide-preact"
 import { useId } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/tour.css"
 
 const steps: tour.StepDetails[] = [
   {

@@ -62,7 +62,7 @@ function Links() {
 export default function Page() {
   return (
     <main className="pagination">
-      <Suspense>
+      <Suspense fallback={null}>
         <Links />
       </Suspense>
     </main>

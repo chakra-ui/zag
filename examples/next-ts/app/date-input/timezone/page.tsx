@@ -53,7 +53,7 @@ export default function Page() {
             type="checkbox"
             data-testid="hide-tz"
             checked={hideTimeZone}
-            onChange={(e) => setHideTimeZone(e.target.checked)}
+            onChange={(e) => setHideTimeZone(e.currentTarget.checked)}
           />{" "}
           Hide time zone
         </label>

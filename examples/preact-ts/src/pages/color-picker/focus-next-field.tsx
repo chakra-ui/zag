@@ -1,6 +1,7 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useRef } from "react"
+import "@styles/color-picker.css"
 
 const presets = ["#f47373", "#697689", "#37d67a"]
 

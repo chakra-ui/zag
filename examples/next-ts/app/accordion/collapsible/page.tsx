@@ -20,7 +20,7 @@ function Collapsible(props: ItemProps) {
 
   const service = useMachine(collapsible.machine, {
     id: useId(),
-    ids: { content: contentProps.id },
+    ids: { content: contentProps.id as string | undefined },
     open,
     // The accordion owns `open`, so route find-in-page reveals back to it
     hiddenUntilFound: true,

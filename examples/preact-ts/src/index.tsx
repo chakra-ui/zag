@@ -1,10 +1,16 @@
-import { dataAttr } from "@zag-js/dom-query"
-import { componentRoutesData, getComponentByPath, isKnownComponent } from "@zag-js/shared"
 import { render } from "preact"
-import { LocationProvider, Route, Router, useLocation } from "preact-iso"
+import { LocationProvider, Route, Router } from "preact-iso"
 import "@styles/global.css"
+import "@styles/playground.css"
+import { prefsScript } from "./components/shell/prefs"
+import { Shell } from "./components/shell/shell"
 import { NotFound } from "./pages/_404.jsx"
 import { routes } from "./routes"
+
+// Sets saved shell prefs on <html> before first paint
+const prefs = document.createElement("script")
+prefs.textContent = prefsScript
+document.head.appendChild(prefs)
 
 // e2e waits for this before interacting
 const markReady = () => {
@@ -12,33 +18,15 @@ const markReady = () => {
 }
 
 export function App() {
-  const location = useLocation()
-  const pathname = location.path.split("?")[0] || "/"
-  const pathnameComponent = pathname.split("/").filter(Boolean)[0] ?? ""
-  const currentComponent =
-    getComponentByPath(pathname) ?? (isKnownComponent(pathnameComponent) ? pathnameComponent : "")
-
   return (
-    <div className="page">
-      <aside class="nav">
-        <header>Zagjs</header>
-        {componentRoutesData.map((component) => (
-          <a
-            key={component.slug}
-            data-active={dataAttr(currentComponent === component.slug)}
-            href={`/${component.slug}`}
-          >
-            {component.label}
-          </a>
-        ))}
-      </aside>
+    <Shell>
       <Router onLoadEnd={markReady} onRouteChange={markReady}>
-        {(routes as any).map((route, index) => (
+        {routes.map((route, index) => (
           <route.component key={index} path={route.path} />
         ))}
         <Route default component={NotFound} />
       </Router>
-    </div>
+    </Shell>
   )
 }
 
@@ -46,5 +34,5 @@ render(
   <LocationProvider>
     <App />
   </LocationProvider>,
-  document.getElementById("app"),
+  document.getElementById("app")!,
 )

@@ -2,6 +2,7 @@ import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
 import { useId } from "react"
+import "@styles/floating-panel.css"
 
 interface PanelProps {
   name: string

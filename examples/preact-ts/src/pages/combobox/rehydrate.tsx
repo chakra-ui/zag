@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
 import { useId, useMemo, useRef } from "react"
 import { useAsyncList } from "../../hooks/use-async-list"
+import "@styles/combobox.css"
 
 interface Item {
   name: string
@@ -16,8 +17,8 @@ interface Item {
 export default function Page() {
   const asyncList = useAsyncList<Item>({
     autoReload: true,
-    async load({ signal, filterText }) {
-      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filterText}`, { signal })
+    async load({ signal, filter }) {
+      const response = await fetch(`https://swapi.py4e.com/api/people/?search=${filter}`, { signal })
       const data = await response.json()
       return {
         items: data.results,
@@ -42,7 +43,7 @@ export default function Page() {
     defaultValue: ["C-3PO"],
     placeholder: "Example: Dexter",
     onInputValueChange({ inputValue }) {
-      asyncList.setFilterText(inputValue)
+      asyncList.setFilter(inputValue)
     },
   })
 
@@ -69,16 +70,18 @@ export default function Page() {
         </div>
       </div>
       <div {...api.getPositionerProps()}>
-        {api.collection.items.length > 0 && (
-          <ul data-testid="combobox-content" {...api.getContentProps()}>
-            {api.collection.items.map((item) => (
-              <li data-testid={item.name} key={item.name} {...api.getItemProps({ item })}>
-                <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                <span>{item.name}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div data-testid="combobox-content" {...api.getContentProps()}>
+          {api.collection.items.length > 0 && (
+            <div {...api.getListProps()}>
+              {api.collection.items.map((item) => (
+                <div data-testid={item.name} key={item.name} {...api.getItemProps({ item })}>
+                  <span {...api.getItemIndicatorProps({ item })}>✅</span>
+                  <span>{item.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </main>
   )

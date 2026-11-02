@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useId, useState } from "react"
+import "@styles/menu.css"
 
 const MenuMultipleControlled = () => {
   const [open, setOpen] = useState(false)

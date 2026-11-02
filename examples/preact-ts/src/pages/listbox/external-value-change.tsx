@@ -1,6 +1,7 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useMemo, useState } from "react"
+import "@styles/listbox.css"
 
 interface Item {
   label: string
@@ -44,14 +45,16 @@ export default function Page() {
         </div>
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select framework</label>
-          <ul data-testid="listbox-content" {...api.getContentProps()}>
-            {options.map((item) => (
-              <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </li>
-            ))}
-          </ul>
+          <div data-testid="listbox-content" {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {options.map((item) => (
+                <li key={item.value} data-testid={item.value} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <button data-testid="filter-vue-button" onClick={() => setOptions([frameworks[2]])}>

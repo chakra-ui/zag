@@ -1,6 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
 import { createContext, useContext, useId } from "react"
+import "@styles/splitter.css"
 
 const PanelContext = createContext<splitter.Api>({} as any)
 

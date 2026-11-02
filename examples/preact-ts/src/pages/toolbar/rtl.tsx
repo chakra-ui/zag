@@ -1,26 +1,42 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as toolbar from "@zag-js/toolbar"
-import { useId } from "react"
+import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
 
 export default function Page() {
-  const service = useMachine(toolbar.machine, { id: useId(), dir: "rtl" })
+  const [dir, setDir] = useState<"ltr" | "rtl">("rtl")
+  const service = useMachine(toolbar.machine, { id: useId(), dir })
   const api = toolbar.connect(service, normalizeProps)
 
   return (
     <>
-      <main class="toolbar" dir="rtl">
+      <main className="toolbar" dir={dir}>
+        <label>
+          <input
+            type="checkbox"
+            checked={dir === "rtl"}
+            onChange={(e) => setDir(e.currentTarget.checked ? "rtl" : "ltr")}
+          />
+          RTL
+        </label>
+
         <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "cut" })}>Cut</button>
           <button {...api.getItemProps({ value: "copy" })}>Copy</button>
           <button {...api.getItemProps({ value: "paste" })}>Paste</button>
           <button {...api.getItemProps({ value: "select-all" })}>Select All</button>
         </div>
+
+        <p>
+          With <code>dir="rtl"</code>, ArrowLeft moves forward (toward the visual start) and ArrowRight moves backward —
+          matching reading direction.
+        </p>
       </main>
 
       <ControlsPanel>
-        <StateVisualizer state={service} context={["focusedValue"]} />
+        <StateVisualizer state={service} />
       </ControlsPanel>
     </>
   )

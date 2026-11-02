@@ -1,7 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
-import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
+import { ChevronRightIcon, FileIcon, FolderIcon, LoaderCircleIcon } from "lucide-preact"
 import { JSX, useId, useState } from "react"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -30,7 +31,7 @@ function loadChildren(details: tree.LoadChildrenDetails<Node>): Promise<Node[]> 
   const value = details.valuePath.join("/")
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(apiResult[value] ?? [])
+      resolve(apiResult[value as keyof typeof apiResult] ?? [])
     }, 1200)
   })
 }
@@ -64,29 +65,28 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
-          {nodeState.loading ? "..." : <FolderIcon />}
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+          {nodeState.loading && <LoaderCircleIcon className="tree-view-spinner" aria-hidden />}
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <FileIcon /> {node.name}
+      )}
     </div>
   )
 }

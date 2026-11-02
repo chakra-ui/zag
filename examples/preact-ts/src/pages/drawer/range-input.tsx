@@ -6,7 +6,7 @@ import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
-import styles from "../../../../shared/styles/drawer.module.css"
+import styles from "@styles/drawer.module.css"
 
 export default function Page() {
   const controls = useControls(drawerControls)
@@ -48,7 +48,7 @@ export default function Page() {
                 min={0}
                 max={100}
                 value={volume}
-                onChange={(e) => setVolume(Number(e.target.value))}
+                onChange={(e) => setVolume(Number(e.currentTarget.value))}
                 data-testid="drawer-native-range"
                 style={{ width: "100%", touchAction: "auto" }}
               />

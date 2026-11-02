@@ -3,6 +3,7 @@ import * as toolbar from "@zag-js/toolbar"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
+import "@styles/toolbar.css"
 
 export default function Page() {
   const [log, setLog] = useState<string[]>([])
@@ -15,17 +16,19 @@ export default function Page() {
 
   return (
     <>
-      <main class="toolbar">
+      <main className="toolbar">
         <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "cut" })} onClick={() => onActivate("Cut")}>
             Cut
           </button>
+
           <button
             {...api.getItemProps({ value: "copy", disabled: true, focusableWhenDisabled: false })}
             onClick={() => onActivate("Copy")}
           >
             Copy (disabled, skipped by arrow keys)
           </button>
+
           <button
             {...api.getItemProps({ value: "paste", disabled: true })}
             onClick={() => {
@@ -35,6 +38,7 @@ export default function Page() {
           >
             Paste (disabled, still reachable)
           </button>
+
           <button {...api.getItemProps({ value: "select-all" })} onClick={() => onActivate("Select All")}>
             Select All
           </button>

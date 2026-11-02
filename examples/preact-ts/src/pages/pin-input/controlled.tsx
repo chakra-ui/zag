@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/pin-input.css"
 
 export default function Page() {
   const [value, setValue] = useState(["", "", ""])
@@ -23,6 +24,7 @@ export default function Page() {
     <>
       <main className="pin-input">
         <form
+          className="vstack gap-4"
           onSubmit={(e) => {
             e.preventDefault()
             console.log("submitted:", value.join(""))
@@ -38,7 +40,7 @@ export default function Page() {
             <input {...api.getHiddenInputProps()} />
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+          <div className="hstack">
             <button type="button" data-testid="clear-button" onClick={api.clearValue}>
               Clear
             </button>

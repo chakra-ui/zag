@@ -12,8 +12,8 @@ export default function AutoresizeControlled() {
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log("onChange fired:", e.target.value)
-    setValue(e.target.value)
+    console.log("onChange fired:", e.currentTarget.value)
+    setValue(e.currentTarget.value)
   }
 
   const handleClear = () => {

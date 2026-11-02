@@ -98,7 +98,11 @@ export default function Page() {
         </div>
 
         <div className="hstack">
-          <select data-testid="preset" value={preset} onChange={(e) => changePreset(e.target.value as PresetKey)}>
+          <select
+            data-testid="preset"
+            value={preset}
+            onChange={(e) => changePreset(e.currentTarget.value as PresetKey)}
+          >
             {Object.entries(PRESETS).map(([key, p]) => (
               <option key={key} value={key}>
                 {p.label}

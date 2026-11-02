@@ -3,6 +3,7 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
 import { useId } from "react"
 import { useForm } from "react-hook-form"
+import "@styles/file-upload.css"
 
 export default function Page() {
   const service = useMachine(fileUpload.machine, { id: useId() })

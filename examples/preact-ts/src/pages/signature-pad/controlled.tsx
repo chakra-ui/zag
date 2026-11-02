@@ -4,6 +4,7 @@ import { RotateCcw } from "lucide-preact"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import "@styles/signature-pad.css"
 
 export default function Page() {
   const [paths, setPaths] = useState<string[]>([])

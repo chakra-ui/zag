@@ -1,8 +1,11 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
+import { XIcon } from "lucide-preact"
+import { useId } from "react"
+import "@styles/dialog.css"
 
 export default function Page() {
-  const service = useMachine(dialog.machine, { id: "1" })
+  const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
 
   return (
@@ -14,7 +17,7 @@ export default function Page() {
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
               <button {...api.getCloseTriggerProps()} data-no-autofocus>
-                Close
+                <XIcon />
               </button>
               <button data-no-autofocus aria-label="Help">
                 ?

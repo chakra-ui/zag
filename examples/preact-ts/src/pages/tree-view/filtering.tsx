@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
 import { JSX, useId, useState } from "react"
+import "@styles/tree-view.css"
 
 interface Node {
   id: string
@@ -60,29 +61,27 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
-  if (nodeState.isBranch) {
-    return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
-          <FolderIcon />
-          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
-            <ChevronRightIcon />
-          </span>
+  return (
+    <div {...api.getNodeGroupProps(nodeProps)}>
+      <div {...api.getNodeProps(nodeProps)}>
+        <div {...api.getNodeCellProps(nodeProps)}>
+          {nodeState.isBranch ? <FolderIcon /> : <FileIcon />}
+          <span {...api.getNodeTextProps(nodeProps)}>{node.name}</span>
+          {nodeState.isBranch && (
+            <span {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}>
+              <ChevronRightIcon />
+            </span>
+          )}
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+      </div>
+      {nodeState.isBranch && (
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
           ))}
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div {...api.getItemProps(nodeProps)}>
-      <FileIcon /> {node.name}
+      )}
     </div>
   )
 }
@@ -102,11 +101,13 @@ export default function Page() {
       <div {...api.getRootProps()}>
         <input
           type="text"
+          className="tree-view-search"
+          placeholder="Search files…"
           onChange={(e) => {
-            if (e.target.value.length === 0) {
+            if (e.currentTarget.value.length === 0) {
               setCollection(initialCollection)
             } else {
-              const filtered = initialCollection.filter((node) => node.name.includes(e.target.value))
+              const filtered = initialCollection.filter((node) => node.name.includes(e.currentTarget.value))
               setCollection(filtered)
               api.setExpandedValue(filtered.getBranchValues())
             }

@@ -39,7 +39,7 @@ export default function Page() {
             aria-label="Filter components"
             placeholder={`Filter ${components.length} components…`}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => setQuery(event.currentTarget.value)}
           />
         </label>
 
