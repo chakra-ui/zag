@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watchAll",
     "prepack": "clean-package",

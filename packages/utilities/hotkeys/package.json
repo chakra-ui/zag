@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

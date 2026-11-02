@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
-    "lint": "eslint src",
+    "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
