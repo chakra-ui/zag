@@ -158,11 +158,13 @@ export const machine = createMachine<CascadeSelectSchema>({
   refs() {
     return {
       initialFocusFrame: AnimationFrame.create(),
+      triggerFocusFrame: AnimationFrame.create(),
+      scrollToTopFrame: AnimationFrame.create(),
       graceAreaTimeout: Timeout.create(),
     }
   },
 
-  exit: ["cancelInitialFocus", "cancelGraceAreaTimeout"],
+  exit: ["cancelInitialFocus", "cancelFrames", "cancelGraceAreaTimeout"],
 
   effects: ["trackFormControlState"],
 
@@ -946,10 +948,14 @@ export const machine = createMachine<CascadeSelectSchema>({
       cancelInitialFocus({ refs }) {
         refs.get("initialFocusFrame").cancel()
       },
-      focusTriggerEl({ event, scope }) {
+      cancelFrames({ refs }) {
+        refs.get("triggerFocusFrame").cancel()
+        refs.get("scrollToTopFrame").cancel()
+      },
+      focusTriggerEl({ event, scope, refs }) {
         if (!restoreFocusFn(event)) return
         const focusOptions = getReturnFocusOptions(event)
-        raf(() => {
+        refs.get("triggerFocusFrame").request(() => {
           const triggerEl = dom.getTriggerEl(scope)
           triggerEl?.focus(focusOptions)
         })
@@ -1036,10 +1042,10 @@ export const machine = createMachine<CascadeSelectSchema>({
       dispatchChangeEvent({ scope, context }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: context.hash("value") })
       },
-      scrollContentToTop({ scope, prop }) {
+      scrollContentToTop({ scope, prop, refs }) {
         const scrollToIndexFn = prop("scrollToIndexFn")
         // Scroll all lists to the top when closing
-        raf(() => {
+        refs.get("scrollToTopFrame").request(() => {
           const contentEl = dom.getContentEl(scope)
           const listEls = contentEl?.querySelectorAll("[data-cascade-select-list]")
           listEls?.forEach((listEl, index) => {

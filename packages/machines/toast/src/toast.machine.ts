@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, contains, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, raf } from "@zag-js/dom-query"
 import { callAll, ensureProps, setRafTimeout, warn } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastSchema } from "./toast.types"
@@ -56,6 +56,7 @@ export const machine = createMachine<ToastSchema>({
       closeTimerStartTime: Date.now(),
       lastCloseStartTimerStartTime: 0,
       swipeStart: null,
+      mountFrame: AnimationFrame.create(),
     }
   },
 
@@ -122,6 +123,8 @@ export const machine = createMachine<ToastSchema>({
   },
 
   entry: ["setMounted", "measureHeight", "invokeOnVisible"],
+
+  exit: ["cancelMountFrame"],
 
   effects: ["trackContent"],
 
@@ -385,10 +388,14 @@ export const machine = createMachine<ToastSchema>({
         prop("parent").send({ type: "TOAST.SWIPE_END" })
       },
 
-      setMounted({ context }) {
-        raf(() => {
+      setMounted({ context, refs }) {
+        refs.get("mountFrame").request(() => {
           context.set("mounted", true)
         })
+      },
+
+      cancelMountFrame({ refs }) {
+        refs.get("mountFrame").cancel()
       },
 
       measureHeight({ scope, prop, context }) {

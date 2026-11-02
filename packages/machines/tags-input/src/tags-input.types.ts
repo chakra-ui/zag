@@ -240,6 +240,7 @@ export interface TagsInputSchema {
     highlightFrame: AnimationFrame
     focusInputFrame: AnimationFrame
     pasteFrame: AnimationFrame
+    editInputFrame: AnimationFrame
   }
   computed: ComputedContext
   event: EventObject

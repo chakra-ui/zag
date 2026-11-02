@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -27,6 +28,8 @@ export interface PresenceSchema {
   refs: {
     node: HTMLElement | null
     styles: CSSStyleDeclaration | null
+    unmountFrame: AnimationFrame
+    prevAnimationFrame: AnimationFrame
   }
   props: PresenceProps
   defaultPropKey: never

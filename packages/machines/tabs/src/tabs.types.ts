@@ -123,6 +123,8 @@ export type TabsSchema = {
     indicatorCleanup: VoidFunction | null | undefined
     indicatorFrame: AnimationFrame
     focusFrame: AnimationFrame
+    selectFrame: AnimationFrame
+    tabIndexFrame: AnimationFrame
   }
   computed: {
     focused: boolean

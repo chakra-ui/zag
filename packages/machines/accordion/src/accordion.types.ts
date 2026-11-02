@@ -1,5 +1,6 @@
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -81,6 +82,9 @@ export type AccordionSchema = {
   context: {
     value: string[]
     focusedValue: string | null
+  }
+  refs: {
+    syncFrame: AnimationFrame
   }
   action: string
   guard: string

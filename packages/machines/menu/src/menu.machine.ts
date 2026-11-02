@@ -185,6 +185,8 @@ export const machine = createMachine<MenuSchema>({
       menubarCloseReason: null,
       pointerType: null,
       focusMenuFrame: AnimationFrame.create(),
+      autoHighlightFrame: AnimationFrame.create(),
+      syncHighlightFrame: AnimationFrame.create(),
     }
   },
 
@@ -198,7 +200,7 @@ export const machine = createMachine<MenuSchema>({
   },
 
   entry: ["setIsWebKit"],
-  exit: ["cancelFocusMenu", "focusParentIfOrphaned"],
+  exit: ["cancelFocusMenu", "cancelHighlightFrames", "focusParentIfOrphaned"],
   effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
@@ -485,7 +487,7 @@ export const machine = createMachine<MenuSchema>({
         "highlightFirstIfAlways",
         "warnIfFilterInputNotDialog",
       ],
-      exit: ["cancelFocusMenu"],
+      exit: ["cancelFocusMenu", "cancelHighlightFrames"],
       on: {
         CLOSE: closeTransitions,
         "CONTROLLED.CLOSE": [
@@ -981,9 +983,9 @@ export const machine = createMachine<MenuSchema>({
       setIsWebKit({ context }) {
         context.set("isWebKit", isWebKit())
       },
-      highlightFirstIfAlways({ prop, scope, context }) {
+      highlightFirstIfAlways({ prop, scope, context, refs }) {
         if (prop("autoHighlight") !== "always") return
-        raf(() => {
+        refs.get("autoHighlightFrame").request(() => {
           if (!dom.getInputEl(scope) || context.get("highlightedValue") != null) return
           const first = dom.getFirstEl(scope)
           if (first) context.set("highlightedValue", dom.getItemValue(first))
@@ -1024,9 +1026,9 @@ export const machine = createMachine<MenuSchema>({
         context.set("highlightedValue", next ? dom.getItemValue(next) : null)
       },
       // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
-      syncInputHighlight({ context, scope, event, prop }) {
+      syncInputHighlight({ context, scope, event, prop, refs }) {
         const queryChanged = event.type === "INPUT.CHANGE"
-        raf(() => {
+        refs.get("syncHighlightFrame").request(() => {
           const inputEl = dom.getInputEl(scope)
           if (!inputEl) return
           const items = dom.getElements(scope)
@@ -1086,6 +1088,10 @@ export const machine = createMachine<MenuSchema>({
       },
       cancelFocusMenu({ refs }) {
         refs.get("focusMenuFrame").cancel()
+      },
+      cancelHighlightFrames({ refs }) {
+        refs.get("autoHighlightFrame").cancel()
+        refs.get("syncHighlightFrame").cancel()
       },
       highlightFirstItem({ context, scope }) {
         // use raf in event content is lazy mounted

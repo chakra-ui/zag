@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PlacementSide } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -296,6 +297,10 @@ interface Refs {
    * The element that had focus when the tour started, to restore focus when it ends
    */
   restoreFocusEl?: HTMLElement | null | undefined
+  /**
+   * The pending frame that restores focus
+   */
+  focusFrame: AnimationFrame
 }
 
 type ComputedContext = Readonly<{

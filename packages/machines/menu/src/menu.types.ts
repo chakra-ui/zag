@@ -236,6 +236,8 @@ export interface MenuSchema {
     menubarCloseReason: string | null
     pointerType: string | null
     focusMenuFrame: AnimationFrame
+    autoHighlightFrame: AnimationFrame
+    syncHighlightFrame: AnimationFrame
   }
 
   action: string

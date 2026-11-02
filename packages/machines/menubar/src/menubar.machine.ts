@@ -1,6 +1,6 @@
 import type { Params, Scope } from "@zag-js/core"
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, getByTypeahead, observeChildren, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getByTypeahead, observeChildren, raf } from "@zag-js/dom-query"
 import * as dom from "./menubar.dom"
 import type { MenubarSchema } from "./menubar.types"
 
@@ -27,12 +27,15 @@ export const machine = createMachine<MenubarSchema>({
   refs() {
     return {
       typeaheadState: { ...getByTypeahead.defaultOptions },
+      focusFrame: AnimationFrame.create(),
     }
   },
 
   // Always-on: keep the active trigger valid as triggers mount/change, and listen for the
   // menu coordination events dispatched on the root element.
   effects: ["trackTriggers", "trackMenuEvents"],
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     "TRIGGER.FOCUS": {
@@ -123,8 +126,12 @@ export const machine = createMachine<MenubarSchema>({
         const rootEl = dom.getRootEl(scope)
         if (!rootEl) return
         const reconcile = () => reconcileActiveId(context, scope)
-        raf(reconcile)
-        return observeChildren(rootEl, { callback: reconcile })
+        const cancelFrame = raf(reconcile)
+        const stopObserver = observeChildren(rootEl, { callback: reconcile })
+        return () => {
+          cancelFrame()
+          stopObserver()
+        }
       },
       trackMenuEvents({ scope, send }) {
         const rootEl = dom.getRootEl(scope)
@@ -174,20 +181,23 @@ export const machine = createMachine<MenubarSchema>({
           context.set("activeId", event.triggerId)
         }
       },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
       clearHasOpenMenu({ context }) {
         context.set("hasOpenMenu", false)
       },
-      focusNextTrigger({ context, scope, prop }) {
+      focusNextTrigger({ context, scope, prop, refs }) {
         const activeId = context.get("activeId")
         const nextEl = activeId
           ? dom.getNextTriggerEl(scope, activeId, prop("loopFocus"))
           : dom.getFirstTriggerEl(scope)
-        focusTrigger(context, nextEl)
+        focusTrigger(context, refs, nextEl)
       },
-      focusPrevTrigger({ context, scope, prop }) {
+      focusPrevTrigger({ context, scope, prop, refs }) {
         const activeId = context.get("activeId")
         const prevEl = activeId ? dom.getPrevTriggerEl(scope, activeId, prop("loopFocus")) : dom.getLastTriggerEl(scope)
-        focusTrigger(context, prevEl)
+        focusTrigger(context, refs, prevEl)
       },
       focusMatchingTrigger({ context, scope, event, refs }) {
         const matched = getByTypeahead(dom.getTriggerEls(scope), {
@@ -195,13 +205,13 @@ export const machine = createMachine<MenubarSchema>({
           key: event.key,
           activeId: context.get("activeId"),
         })
-        focusTrigger(context, matched)
+        focusTrigger(context, refs, matched)
       },
-      focusFirstTrigger({ context, scope }) {
-        focusTrigger(context, dom.getFirstTriggerEl(scope))
+      focusFirstTrigger({ context, scope, refs }) {
+        focusTrigger(context, refs, dom.getFirstTriggerEl(scope))
       },
-      focusLastTrigger({ context, scope }) {
-        focusTrigger(context, dom.getLastTriggerEl(scope))
+      focusLastTrigger({ context, scope, refs }) {
+        focusTrigger(context, refs, dom.getLastTriggerEl(scope))
       },
       switchToNextMenu({ context, scope, prop }) {
         const activeId = context.get("activeId")
@@ -233,8 +243,12 @@ function setActiveTrigger(context: Params<MenubarSchema>["context"], id: string)
   context.set("activeId", id)
 }
 
-function focusTrigger(context: Params<MenubarSchema>["context"], el: HTMLElement | null | undefined) {
+function focusTrigger(
+  context: Params<MenubarSchema>["context"],
+  refs: Params<MenubarSchema>["refs"],
+  el: HTMLElement | null | undefined,
+) {
   if (!el) return
   setActiveTrigger(context, el.id)
-  raf(() => el.focus())
+  refs.get("focusFrame").request(() => el.focus())
 }

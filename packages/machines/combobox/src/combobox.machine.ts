@@ -74,11 +74,13 @@ export const machine = createMachine({
       resultsRegion: null,
       finalFocusFrame: AnimationFrame.create(),
       highlightFrame: AnimationFrame.create(),
+      initialFocusFrame: AnimationFrame.create(),
+      autofillFrame: AnimationFrame.create(),
       autoHighlightPending: false,
     }
   },
 
-  exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight"],
+  exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight", "cancelFrames"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -904,8 +906,8 @@ export const machine = createMachine({
           context.set("inputValue", inputValue)
         })
       },
-      setInitialFocus({ scope }) {
-        raf(() => {
+      setInitialFocus({ scope, refs }) {
+        refs.get("initialFocusFrame").request(() => {
           dom.focusInputEl(scope)
         })
       },
@@ -921,6 +923,10 @@ export const machine = createMachine({
       },
       cancelFinalFocus({ refs }) {
         refs.get("finalFocusFrame").cancel()
+      },
+      cancelFrames({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+        refs.get("autofillFrame").cancel()
       },
       cancelHighlightFrame({ refs }) {
         refs.get("highlightFrame").cancel()
@@ -1094,12 +1100,12 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         })
       },
-      autofillInputValue({ context, computed, prop, event, scope }) {
+      autofillInputValue({ context, computed, prop, event, scope, refs }) {
         const inputEl = dom.getInputEl(scope)
         const collection = prop("collection")
         if (!computed("autoComplete") || !inputEl || !event.keypress) return
         const valueText = collection.stringify(context.get("highlightedValue"))
-        raf(() => {
+        refs.get("autofillFrame").request(() => {
           inputEl.value = valueText || context.get("inputValue")
         })
       },

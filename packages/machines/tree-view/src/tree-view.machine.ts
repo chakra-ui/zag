@@ -1,7 +1,7 @@
 import type { TreeNode } from "@zag-js/collection"
 import type { Params } from "@zag-js/core"
 import { createGuards, createMachine } from "@zag-js/core"
-import { getByTypeahead, raf, setElementValue } from "@zag-js/dom-query"
+import { AnimationFrame, getByTypeahead, setElementValue } from "@zag-js/dom-query"
 import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
@@ -97,6 +97,9 @@ export const machine = createMachine<TreeViewSchema>({
     return {
       typeaheadState: { ...getByTypeahead.defaultOptions },
       pendingAborts: new Map(),
+      focusNodeFrame: AnimationFrame.create(),
+      renameSyncFrame: AnimationFrame.create(),
+      renameFocusFrame: AnimationFrame.create(),
     }
   },
 
@@ -243,7 +246,7 @@ export const machine = createMachine<TreeViewSchema>({
     },
   },
 
-  exit: ["clearPendingAborts"],
+  exit: ["clearPendingAborts", "cancelFrames"],
 
   states: {
     idle: {
@@ -333,52 +336,52 @@ export const machine = createMachine<TreeViewSchema>({
         context.set("selectedValue", [])
       },
       focusTreeFirstNode(params) {
-        const { prop, scope } = params
+        const { prop, scope, refs } = params
         const collection = prop("collection")
         const firstNode = collection.getFirstNode(undefined, { skip: skipFn(params) })
         if (!firstNode) return
         const firstValue = collection.getNodeValue(firstNode)
         const scrolled = scrollToNode(params, firstValue)
-        if (scrolled) raf(() => dom.focusNode(scope, firstValue))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, firstValue))
         else dom.focusNode(scope, firstValue)
       },
       focusTreeLastNode(params) {
-        const { prop, scope } = params
+        const { prop, scope, refs } = params
         const collection = prop("collection")
         const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
         const lastValue = collection.getNodeValue(lastNode)
         const scrolled = scrollToNode(params, lastValue)
-        if (scrolled) raf(() => dom.focusNode(scope, lastValue))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, lastValue))
         else dom.focusNode(scope, lastValue)
       },
       focusTreeNextNode(params) {
-        const { event, prop, scope } = params
+        const { event, prop, scope, refs } = params
         const collection = prop("collection")
         const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
         if (!nextNode) return
         const nextValue = collection.getNodeValue(nextNode)
         const scrolled = scrollToNode(params, nextValue)
-        if (scrolled) raf(() => dom.focusNode(scope, nextValue))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, nextValue))
         else dom.focusNode(scope, nextValue)
       },
       focusTreePrevNode(params) {
-        const { event, prop, scope } = params
+        const { event, prop, scope, refs } = params
         const collection = prop("collection")
         const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
         if (!prevNode) return
         const prevValue = collection.getNodeValue(prevNode)
         const scrolled = scrollToNode(params, prevValue)
-        if (scrolled) raf(() => dom.focusNode(scope, prevValue))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, prevValue))
         else dom.focusNode(scope, prevValue)
       },
       focusBranchNode(params) {
-        const { event, prop, scope } = params
+        const { event, prop, scope, refs } = params
         const collection = prop("collection")
         const parentNode = collection.getParentNode(event.id)
         const parentValue = parentNode ? collection.getNodeValue(parentNode) : undefined
         if (!parentValue) return
         const scrolled = scrollToNode(params, parentValue)
-        if (scrolled) raf(() => dom.focusNode(scope, parentValue))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, parentValue))
         else dom.focusNode(scope, parentValue)
       },
       selectAllNodes({ context, prop }) {
@@ -399,7 +402,7 @@ export const machine = createMachine<TreeViewSchema>({
 
         if (!node?.id) return
         const scrolled = scrollToNode(params, node.id)
-        if (scrolled) raf(() => dom.focusNode(scope, node.id))
+        if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, node.id))
         else dom.focusNode(scope, node.id)
       },
       toggleNodeSelection({ context, event }) {
@@ -594,8 +597,8 @@ export const machine = createMachine<TreeViewSchema>({
           dom.focusNode(scope, renamingValue)
         }
       },
-      syncRenameInput({ context, scope, prop }) {
-        raf(() => {
+      syncRenameInput({ context, scope, prop, refs }) {
+        refs.get("renameSyncFrame").request(() => {
           const renamingValue = context.get("renamingValue")
           if (!renamingValue) return
 
@@ -609,8 +612,8 @@ export const machine = createMachine<TreeViewSchema>({
           setElementValue(inputEl, label)
         })
       },
-      focusRenameInput({ context, scope }) {
-        raf(() => {
+      focusRenameInput({ context, scope, refs }) {
+        refs.get("renameFocusFrame").request(() => {
           const renamingValue = context.get("renamingValue")
           if (!renamingValue) return
 
@@ -619,6 +622,11 @@ export const machine = createMachine<TreeViewSchema>({
           inputEl.focus()
           inputEl.select()
         })
+      },
+      cancelFrames({ refs }) {
+        refs.get("focusNodeFrame").cancel()
+        refs.get("renameSyncFrame").cancel()
+        refs.get("renameFocusFrame").cancel()
       },
     },
   },

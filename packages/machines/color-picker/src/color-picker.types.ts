@@ -2,6 +2,7 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
@@ -184,6 +185,11 @@ export type ColorPickerSchema = {
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
     restoreFocus: boolean
+  }
+  refs: {
+    focusFrame: AnimationFrame
+    inputSyncFrame: AnimationFrame
+    formatSyncFrame: AnimationFrame
   }
   event: EventObject
   action: string

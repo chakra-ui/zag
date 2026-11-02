@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Point, Rect } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -268,6 +269,7 @@ interface Refs {
   autoScrollMove: ((x: number, y: number) => void) | null
   dropTargetSequence: string[]
   dropTargetIndex: number
+  focusFrame: AnimationFrame
 }
 
 export interface DndSchema {

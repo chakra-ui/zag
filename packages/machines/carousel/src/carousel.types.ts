@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { Timeout } from "@zag-js/dom-query"
+import type { AnimationFrame, Timeout } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -184,6 +184,8 @@ export interface CarouselSchema {
   computed: ComputedContext
   refs: {
     scrollEndTimeout: Timeout
+    scrollFrame: AnimationFrame
+    focusFrame: AnimationFrame
   }
   state: "idle" | "dragging" | "settling" | "autoplay" | "userScroll" | "focus"
   effect: string

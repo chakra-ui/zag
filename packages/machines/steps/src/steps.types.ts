@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /** The value of the position past the last step */
@@ -189,6 +190,7 @@ type ComputedContext = Readonly<{
 
 interface Refs {
   lastPosition: number | null
+  focusFrame: AnimationFrame
 }
 
 export interface StepsSchema<T extends StepItem = StepItem> {

@@ -360,6 +360,8 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     resultsRegion: LiveRegion | null
     finalFocusFrame: AnimationFrame
     highlightFrame: AnimationFrame
+    initialFocusFrame: AnimationFrame
+    autofillFrame: AnimationFrame
     autoHighlightPending: boolean
   }
   computed: {

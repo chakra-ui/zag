@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { AnimationFrame, getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, getFocusables, isAnchorElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -54,6 +54,8 @@ export const machine = createMachine({
       indicatorCleanup: null,
       indicatorFrame: AnimationFrame.create(),
       focusFrame: AnimationFrame.create(),
+      selectFrame: AnimationFrame.create(),
+      tabIndexFrame: AnimationFrame.create(),
     }
   },
 
@@ -88,7 +90,7 @@ export const machine = createMachine({
 
   entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
 
-  exit: ["cleanupObserver", "cancelFocusFrame", "cancelIndicatorFrame"],
+  exit: ["cleanupObserver", "cancelFocusFrame", "cancelIndicatorFrame", "cancelSelectFrame", "cancelTabIndexFrame"],
 
   states: {
     idle: {
@@ -163,8 +165,8 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectFocusedTab({ context, prop, event, scope }) {
-        raf(() => {
+      selectFocusedTab({ context, prop, event, scope, refs }) {
+        refs.get("selectFrame").request(() => {
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const nullable = prop("deselectable") && context.get("value") === focusedValue
@@ -251,8 +253,8 @@ export const machine = createMachine({
         })
       },
 
-      syncTabIndex({ context, scope }) {
-        raf(() => {
+      syncTabIndex({ context, scope, refs }) {
+        refs.get("tabIndexFrame").request(() => {
           const value = context.get("value")
           if (!value) return
 
@@ -269,6 +271,12 @@ export const machine = createMachine({
       },
       cancelFocusFrame({ refs }) {
         refs.get("focusFrame").cancel()
+      },
+      cancelSelectFrame({ refs }) {
+        refs.get("selectFrame").cancel()
+      },
+      cancelTabIndexFrame({ refs }) {
+        refs.get("tabIndexFrame").cancel()
       },
       cleanupObserver({ refs }) {
         const cleanup = refs.get("indicatorCleanup")

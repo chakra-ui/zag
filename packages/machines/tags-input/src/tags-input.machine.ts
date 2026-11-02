@@ -1,6 +1,6 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createGuards, createMachine } from "@zag-js/core"
-import { AnimationFrame, contains, isCaretAtStart, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, contains, isCaretAtStart, setElementValue, trackFormControl } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { isEqual, mergeWithDefault, removeAt, uniq, warn } from "@zag-js/utils"
@@ -38,6 +38,7 @@ export const machine = createMachine<TagsInputSchema>({
       highlightFrame: AnimationFrame.create(),
       focusInputFrame: AnimationFrame.create(),
       pasteFrame: AnimationFrame.create(),
+      editInputFrame: AnimationFrame.create(),
     }
   },
 
@@ -582,8 +583,8 @@ export const machine = createMachine<TagsInputSchema>({
         }
       },
 
-      focusEditedTagInput({ context, scope }) {
-        raf(() => {
+      focusEditedTagInput({ context, scope, refs }) {
+        refs.get("editInputFrame").request(() => {
           const editedTagId = context.get("editedTagId")
           if (!editedTagId) return
           const editTagInputEl = dom.getEditInputEl(scope, editedTagId)
@@ -617,6 +618,7 @@ export const machine = createMachine<TagsInputSchema>({
         refs.get("highlightFrame").cancel()
         refs.get("focusInputFrame").cancel()
         refs.get("pasteFrame").cancel()
+        refs.get("editInputFrame").cancel()
       },
 
       clearInputValue({ context }) {

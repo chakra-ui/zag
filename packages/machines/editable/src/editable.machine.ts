@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { contains, raf, setElementValue } from "@zag-js/dom-query"
+import { AnimationFrame, contains, setElementValue } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import * as dom from "./editable.dom"
 import type { EditableSchema } from "./editable.types"
@@ -21,6 +21,14 @@ export const machine = createMachine<EditableSchema>({
   },
 
   entry: ["focusInputIfNeeded"],
+
+  exit: ["cancelFocusFrame"],
+
+  refs() {
+    return {
+      focusFrame: AnimationFrame.create(),
+    }
+  },
 
   context: ({ bindable, prop }) => {
     return {
@@ -157,12 +165,15 @@ export const machine = createMachine<EditableSchema>({
     },
 
     actions: {
-      restoreFocus({ event, scope, prop }) {
+      restoreFocus({ event, scope, prop, refs }) {
         if (event.focusable) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           const finalEl = prop("finalFocusEl")?.() ?? dom.getEditTriggerEl(scope)
           finalEl?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       clearValue({ context }) {
         context.set("value", "")
@@ -172,8 +183,8 @@ export const machine = createMachine<EditableSchema>({
         if (!edit) return
         action(["focusInput"])
       },
-      focusInput({ scope, prop }) {
-        raf(() => {
+      focusInput({ scope, prop, refs }) {
+        refs.get("focusFrame").request(() => {
           const inputEl = dom.getInputEl(scope)
           if (!inputEl) return
           if (prop("selectOnFocus")) {

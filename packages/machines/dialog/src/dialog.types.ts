@@ -1,4 +1,5 @@
 import type { Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
 
@@ -140,6 +141,9 @@ export interface DialogSchema {
   }
   refs: {
     returnFocusEl: HTMLElement | null
+    returnFocusFrame: AnimationFrame
+    initialFocusFrame: AnimationFrame
+    renderedFrame: AnimationFrame
   }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
@@ -152,6 +156,8 @@ export interface DialogSchema {
     | "setTriggerValue"
     | "setReturnFocusEl"
     | "setFinalFocus"
+    | "cancelInitialFocus"
+    | "cancelFrames"
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined

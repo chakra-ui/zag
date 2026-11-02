@@ -1,5 +1,11 @@
 import { createMachine, memo } from "@zag-js/core"
-import { raf, resizeObserverBorderBox, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  resizeObserverBorderBox,
+  setElementValue,
+  trackFormControl,
+  trackPointerMove,
+} from "@zag-js/dom-query"
 import {
   callAll,
   clampValue,
@@ -98,6 +104,7 @@ export const machine = createMachine<SliderSchema>({
     return {
       thumbDragOffset: null,
       startValue: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -127,6 +134,8 @@ export const machine = createMachine<SliderSchema>({
   },
 
   effects: ["trackFormControlState", "trackThumbSize"],
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     SET_VALUE: [
@@ -334,11 +343,14 @@ export const machine = createMachine<SliderSchema>({
           context.set("value", result.values)
         })
       },
-      focusActiveThumb({ scope, context }) {
-        raf(() => {
+      focusActiveThumb({ scope, context, refs }) {
+        refs.get("focusFrame").request(() => {
           const thumbEl = dom.getThumbEl(scope, context.get("focusedIndex"))
           thumbEl?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       decrementThumbAtIndex(params) {
         const { context, event, prop } = params

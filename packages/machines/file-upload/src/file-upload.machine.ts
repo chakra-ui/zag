@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, contains, getEventTarget, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
 import { createLiveRegion } from "@zag-js/live-region"
 import { callAll, warn } from "@zag-js/utils"
@@ -28,6 +28,7 @@ export const machine = createMachine<FileUploadSchema>({
     return {
       liveRegion: null,
       focusFrame: AnimationFrame.create(),
+      pickerFrame: AnimationFrame.create(),
     }
   },
 
@@ -91,7 +92,7 @@ export const machine = createMachine<FileUploadSchema>({
     },
   },
 
-  exit: ["cancelFocusFrame"],
+  exit: ["cancelFocusFrame", "cancelPickerFrame"],
 
   effects: ["preventDocumentDrop", "trackLiveRegion"],
 
@@ -179,8 +180,8 @@ export const machine = createMachine<FileUploadSchema>({
           inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
         })
       },
-      openFilePicker({ scope }) {
-        raf(() => {
+      openFilePicker({ scope, refs }) {
+        refs.get("pickerFrame").request(() => {
           dom.getHiddenInputEl(scope)?.click()
         })
       },
@@ -272,6 +273,9 @@ export const machine = createMachine<FileUploadSchema>({
       },
       cancelFocusFrame({ refs }) {
         refs.get("focusFrame").cancel()
+      },
+      cancelPickerFrame({ refs }) {
+        refs.get("pickerFrame").cancel()
       },
     },
   },

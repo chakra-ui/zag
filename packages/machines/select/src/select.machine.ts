@@ -2,6 +2,7 @@ import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } fro
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
+  AnimationFrame,
   getByTypeahead,
   getInitialFocus,
   isApple,
@@ -134,6 +135,8 @@ export const machine = createMachine<SelectSchema>({
       autoGrow: null,
       liveRegion: null,
       alignedToTrigger: false,
+      initialFocusFrame: AnimationFrame.create(),
+      triggerFocusFrame: AnimationFrame.create(),
     }
   },
 
@@ -157,6 +160,8 @@ export const machine = createMachine<SelectSchema>({
   },
 
   entry: ["syncSelectElement"],
+
+  exit: ["cancelFrames"],
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value").toString()], () => {
@@ -354,7 +359,7 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused"],
+      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused", "cancelInitialFocus"],
       effects: [
         "trackDismissableElement",
         "trackFocusVisible",
@@ -573,7 +578,7 @@ export const machine = createMachine<SelectSchema>({
         const win = scope.getWin()
 
         // Defer listener attachment — listEl may not exist until React commits
-        raf(() => {
+        const cancelFrame = raf(() => {
           exec()
           listEl = dom.getListEl(scope)
           if (!listEl) return
@@ -583,6 +588,7 @@ export const machine = createMachine<SelectSchema>({
         })
 
         return () => {
+          cancelFrame()
           unobserveResize?.()
           listEl?.removeEventListener("scroll", exec)
           win.removeEventListener("resize", exec)
@@ -701,8 +707,8 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", value)
       },
 
-      setInitialFocus({ prop, scope }) {
-        raf(() => {
+      setInitialFocus({ prop, scope, refs }) {
+        refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
@@ -712,13 +718,22 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      focusTriggerEl({ event, scope }) {
+      focusTriggerEl({ event, scope, refs }) {
         if (!restoreFocusFn(event)) return
         const focusOptions = getReturnFocusOptions(event)
-        raf(() => {
+        refs.get("triggerFocusFrame").request(() => {
           const element = dom.getTriggerEl(scope)
           element?.focus(focusOptions)
         })
+      },
+
+      cancelInitialFocus({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+        refs.get("triggerFocusFrame").cancel()
       },
 
       selectHighlightedItem({ context, prop, event }) {

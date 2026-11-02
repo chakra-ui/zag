@@ -1,5 +1,13 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, raf, resizeObserverBorderBox, Timeout, trackPointerMove, trackScrollEnd } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  AnimationFrame,
+  raf,
+  resizeObserverBorderBox,
+  Timeout,
+  trackPointerMove,
+  trackScrollEnd,
+} from "@zag-js/dom-query"
 import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
@@ -37,6 +45,8 @@ export const machine = createMachine<CarouselSchema>({
   refs() {
     return {
       scrollEndTimeout: Timeout.create(),
+      scrollFrame: AnimationFrame.create(),
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -132,7 +142,7 @@ export const machine = createMachine<CarouselSchema>({
 
   entry: ["setSnapPoints", "setPage"],
 
-  exit: ["clearScrollEndTimer"],
+  exit: ["clearScrollEndTimer", "cancelFrames"],
 
   states: {
     idle: {
@@ -294,10 +304,10 @@ export const machine = createMachine<CarouselSchema>({
         const exec = () => {
           send({ type: "SNAP.REFRESH", src: "slide.resize" })
         }
-        raf(() => {
+        const cancelInitialSync = raf(() => {
           exec()
           // sync initial scroll position
-          raf(() => {
+          return raf(() => {
             send({ type: "PAGE.SCROLL", instant: true })
           })
         })
@@ -307,6 +317,7 @@ export const machine = createMachine<CarouselSchema>({
         const cleanups = [
           resizeObserverBorderBox.observe(el, exec),
           ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec)),
+          cancelInitialSync,
         ]
         return callAll(...cleanups)
       },
@@ -412,6 +423,10 @@ export const machine = createMachine<CarouselSchema>({
       clearScrollEndTimer({ refs }) {
         refs.get("scrollEndTimeout").clear()
       },
+      cancelFrames({ refs }) {
+        refs.get("scrollFrame").cancel()
+        refs.get("focusFrame").cancel()
+      },
       scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"
         // `INDEX.SET` carries a slide index, not a page
@@ -493,7 +508,7 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         el?.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
       },
-      endDragging({ scope, context, computed, event }) {
+      endDragging({ scope, context, computed, event, refs }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
@@ -506,7 +521,7 @@ export const machine = createMachine<CarouselSchema>({
 
         const target = snapPoints[getReleaseSnapIndex(snapPoints, scrollPos, event.velocity)]
 
-        raf(() => {
+        refs.get("scrollFrame").request(() => {
           el.scrollTo({
             left: isHorizontal ? target : el.scrollLeft,
             top: isHorizontal ? el.scrollTop : target,
@@ -514,11 +529,11 @@ export const machine = createMachine<CarouselSchema>({
           })
         })
       },
-      focusIndicatorEl({ context, event, scope }) {
+      focusIndicatorEl({ context, event, scope, refs }) {
         if (event.src !== "indicator") return
         const el = dom.getIndicatorEl(scope, context.get("page"))
         if (!el) return
-        raf(() => el.focus({ preventScroll: true }))
+        refs.get("focusFrame").request(() => el.focus({ preventScroll: true }))
       },
       invokeDragStart({ context, prop }) {
         prop("onDragStatusChange")?.({ type: "dragging.start", isDragging: true, page: context.get("page") })

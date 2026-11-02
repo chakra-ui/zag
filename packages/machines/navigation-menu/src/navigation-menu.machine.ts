@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, navigate } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
@@ -92,12 +92,13 @@ export const machine = createMachine({
       triggerResizeObserverCleanup: undefined,
       closeTimeoutId: null,
       openTimeoutIds: {},
+      focusFrame: AnimationFrame.create(),
     }
   },
 
   entry: ["checkViewportNode"],
 
-  exit: ["cleanupObservers", "clearAllTimeouts"],
+  exit: ["cleanupObservers", "clearAllTimeouts", "cancelFocusFrame"],
 
   effects: ["trackDocumentResize"],
 
@@ -325,8 +326,8 @@ export const machine = createMachine({
         dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
 
-      focusFirstTabbableEl({ event, scope, context }) {
-        raf(() => {
+      focusFirstTabbableEl({ event, scope, context, refs }) {
+        refs.get("focusFrame").request(() => {
           const value = event.value || context.get("value")
           const candidates = dom.getTabbableEls(scope, value)
           const elements = event.side === "start" ? candidates : candidates.reverse()
@@ -362,7 +363,9 @@ export const machine = createMachine({
       restoreTabOrder({ refs }) {
         refs.get("restoreContentTabOrder")?.()
       },
-
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
+      },
       clearAllTimeouts({ refs }) {
         clearCloseTimeout(refs)
         clearAllOpenTimeouts(refs)

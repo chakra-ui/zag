@@ -1,4 +1,4 @@
-import { raf, setElementValue, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, setElementValue, trackPointerMove } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderSchema } from "./angle-slider.types"
@@ -35,6 +35,7 @@ export const machine = createMachine<AngleSliderSchema>({
   refs() {
     return {
       thumbDragOffset: null,
+      focusFrame: AnimationFrame.create(),
     }
   },
 
@@ -52,6 +53,8 @@ export const machine = createMachine<AngleSliderSchema>({
   initialState() {
     return "idle"
   },
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     "VALUE.SET": {
@@ -161,10 +164,13 @@ export const machine = createMachine<AngleSliderSchema>({
         const value = snapAngleToStep(context.get("value") + event.step, event.step ?? prop("step"))
         context.set("value", value)
       },
-      focusThumb({ scope }) {
-        raf(() => {
+      focusThumb({ scope, refs }) {
+        refs.get("focusFrame").request(() => {
           dom.getThumbEl(scope)?.focus({ preventScroll: true })
         })
+      },
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
       setThumbDragOffset({ refs, event }) {
         refs.set("thumbDragOffset", event.angularOffset ?? null)

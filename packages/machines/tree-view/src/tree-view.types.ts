@@ -1,7 +1,7 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { IndexPath, ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
-import type { TypeaheadState } from "@zag-js/dom-query"
+import type { AnimationFrame, TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -291,6 +291,9 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   refs: {
     typeaheadState: TypeaheadState
     pendingAborts: Map<string, AbortController>
+    focusNodeFrame: AnimationFrame
+    renameSyncFrame: AnimationFrame
+    renameFocusFrame: AnimationFrame
   }
   computed: {
     isTypingAhead: boolean

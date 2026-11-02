@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
-import { disableTextSelection, raf, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, disableTextSelection, trackPointerMove } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { createRect, distance as pointDistance, getElementRect } from "@zag-js/rect-utils"
 import type { Rect } from "@zag-js/rect-utils"
@@ -136,8 +136,11 @@ export const machine = createMachine<DndSchema>({
       autoScrollMove: null,
       dropTargetSequence: [],
       dropTargetIndex: -1,
+      focusFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFocusFrame"],
 
   on: {
     "DRAG.CANCEL": {
@@ -765,12 +768,16 @@ export const machine = createMachine<DndSchema>({
         refs.set("ariaHideCleanup", null)
       },
 
-      focusDragSource({ context, scope }) {
+      focusDragSource({ context, scope, refs }) {
         const source = context.get("dragSource")
         if (!source) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           dom.focusDraggable(scope, source)
         })
+      },
+
+      cancelFocusFrame({ refs }) {
+        refs.get("focusFrame").cancel()
       },
     },
   },

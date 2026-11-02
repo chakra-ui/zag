@@ -190,6 +190,8 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   }
   refs: {
     initialFocusFrame: AnimationFrame
+    triggerFocusFrame: AnimationFrame
+    scrollToTopFrame: AnimationFrame
     graceAreaTimeout: Timeout
   }
   action: string

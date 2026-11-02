@@ -159,6 +159,8 @@ export interface PinInputSchema {
   refs: {
     pasteFrame: AnimationFrame
     pasteFocusFrame: AnimationFrame
+    selectFrame: AnimationFrame
+    blurFrame: AnimationFrame
   }
   event: EventObject
   action: string

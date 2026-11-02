@@ -242,6 +242,7 @@ export type ToastSchema<O = any> = {
     closeTimerStartTime: number
     lastCloseStartTimerStartTime: number
     swipeStart: { point: Point; pointerId: number } | null
+    mountFrame: AnimationFrame
   }
   state: "visible" | "visible:updating" | "visible:swiping" | "dismissing" | "unmounted" | "visible:persist"
   tag: "visible" | "paused" | "updating"

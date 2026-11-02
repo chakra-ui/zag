@@ -1,6 +1,7 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import {
   addDomEvent,
+  AnimationFrame,
   getOverflowAncestors,
   isHTMLElement,
   raf,
@@ -103,6 +104,13 @@ export const machine = createMachine<FloatingPanelSchema>({
     }
   },
 
+  refs() {
+    return {
+      offsetOriginFrame: AnimationFrame.create(),
+      focusFrame: AnimationFrame.create(),
+    }
+  },
+
   computed: {
     isMaximized: ({ context }) => context.get("stage") === "maximized",
     isMinimized: ({ context }) => context.get("stage") === "minimized",
@@ -131,6 +139,8 @@ export const machine = createMachine<FloatingPanelSchema>({
   },
 
   effects: ["trackPanelStack"],
+
+  exit: ["cancelFrames"],
 
   on: {
     CONTENT_FOCUS: {
@@ -437,12 +447,16 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("position", pick(result, ["x", "y"]))
       },
 
-      setOffsetOrigin({ scope, context, prop }) {
+      setOffsetOrigin({ scope, context, prop, refs }) {
         const apply = () => context.set("offsetOrigin", dom.getOffsetOrigin(scope, prop("strategy")))
         // on a strategy change the element still carries the old `position`, so offsetParent is unresolved
         const unresolved = prop("strategy") === "absolute" && !dom.getPositionerEl(scope)?.offsetParent
-        if (unresolved) raf(apply)
-        else apply()
+        const frame = refs.get("offsetOriginFrame")
+        if (unresolved) frame.request(apply)
+        else {
+          frame.cancel()
+          apply()
+        }
       },
 
       setPositionStyle({ scope, context }) {
@@ -623,21 +637,26 @@ export const machine = createMachine<FloatingPanelSchema>({
         prop("onSizeChangeEnd")?.({ size: context.get("size") })
       },
 
-      setFinalFocus({ scope, prop }) {
+      setFinalFocus({ scope, prop, refs }) {
         if (prop("restoreFocus") === false) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           const element = prop("finalFocusEl")?.() ?? dom.getTriggerEl(scope)
           element?.focus({ preventScroll: true })
         })
       },
 
-      setInitialFocus({ scope, prop }) {
-        raf(() => {
+      setInitialFocus({ scope, prop, refs }) {
+        refs.get("focusFrame").request(() => {
           const initialEl = prop("initialFocusEl")?.()
           if (initialEl === false) return
           const element = initialEl ?? dom.getContentEl(scope)
           element?.focus({ preventScroll: true })
         })
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("offsetOriginFrame").cancel()
+        refs.get("focusFrame").cancel()
       },
 
       toggleVisibility({ send, prop, event }) {

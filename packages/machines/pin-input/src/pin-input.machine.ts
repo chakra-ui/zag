@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { AnimationFrame, dispatchInputValueEvent, raf } from "@zag-js/dom-query"
+import { AnimationFrame, dispatchInputValueEvent } from "@zag-js/dom-query"
 import { ensureProps, isEqual, setValueAtIndex, warn } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
@@ -43,6 +43,8 @@ export const machine = createMachine({
     return {
       pasteFrame: AnimationFrame.create(),
       pasteFocusFrame: AnimationFrame.create(),
+      selectFrame: AnimationFrame.create(),
+      blurFrame: AnimationFrame.create(),
     }
   },
 
@@ -63,7 +65,7 @@ export const machine = createMachine({
     { actions: ["warnOnCountMismatch"] },
   ]),
 
-  exit: ["cancelPasteFrames"],
+  exit: ["cancelFrames"],
 
   watch({ action, track, context, computed }) {
     track([() => context.get("focusedIndex")], () => {
@@ -181,10 +183,10 @@ export const machine = createMachine({
           dom.getInputElAtIndex(scope, focusedIndex)?.focus({ preventScroll: true })
         })
       },
-      selectInputIfNeeded({ context, prop, scope }) {
+      selectInputIfNeeded({ context, prop, refs, scope }) {
         const focusedIndex = context.get("focusedIndex")
         if (!prop("selectOnFocus") || focusedIndex === -1) return
-        raf(() => {
+        refs.get("selectFrame").request(() => {
           dom.getInputElAtIndex(scope, focusedIndex)?.select()
         })
       },
@@ -299,13 +301,15 @@ export const machine = createMachine({
       cancelPasteFocus({ refs }) {
         refs.get("pasteFocusFrame").cancel()
       },
-      cancelPasteFrames({ refs }) {
+      cancelFrames({ refs }) {
         refs.get("pasteFrame").cancel()
         refs.get("pasteFocusFrame").cancel()
+        refs.get("selectFrame").cancel()
+        refs.get("blurFrame").cancel()
       },
-      blurFocusedInputIfNeeded({ context, computed, prop, scope }) {
+      blurFocusedInputIfNeeded({ context, computed, prop, refs, scope }) {
         if (!prop("blurOnComplete") || !computed("isValueComplete")) return
-        raf(() => {
+        refs.get("blurFrame").request(() => {
           dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
         })
       },

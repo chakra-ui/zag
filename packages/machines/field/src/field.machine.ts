@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { observeChildren, raf, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, observeChildren, trackFormControl } from "@zag-js/dom-query"
 import { isEqual } from "@zag-js/utils"
 import * as dom from "./field.dom"
 import type { FieldParams, FieldSchema, ValidateResult, ValiditySnapshot } from "./field.types"
@@ -50,6 +50,7 @@ export const machine = createMachine({
       markedDirty: false,
       initialValue: null,
       seq: 0,
+      resetFrame: AnimationFrame.create(),
     }
   },
 
@@ -79,6 +80,8 @@ export const machine = createMachine({
   },
 
   effects: ["trackControlState", "trackTextParts"],
+
+  exit: ["cancelResetFrame"],
 
   on: {
     "CONTROL.FOCUS": {
@@ -163,6 +166,9 @@ export const machine = createMachine({
     },
 
     actions: {
+      cancelResetFrame({ refs }) {
+        refs.get("resetFrame").cancel()
+      },
       setFocused({ context }) {
         context.set("focused", true)
       },
@@ -234,7 +240,7 @@ export const machine = createMachine({
         context.set("submitAttempted", false)
         refs.set("markedDirty", false)
         // form values are restored after the reset event's default action, so measure later
-        raf(() => {
+        refs.get("resetFrame").request(() => {
           const controlEl = getTrackedControlEl(params)
           if (!controlEl) return
           refs.set("initialValue", controlEl.value)

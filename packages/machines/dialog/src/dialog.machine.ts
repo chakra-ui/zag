@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
+import { AnimationFrame, getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -54,8 +54,13 @@ export const machine = createMachine<DialogSchema>({
   refs() {
     return {
       returnFocusEl: null,
+      returnFocusFrame: AnimationFrame.create(),
+      initialFocusFrame: AnimationFrame.create(),
+      renderedFrame: AnimationFrame.create(),
     }
   },
+
+  exit: ["cancelFrames"],
 
   watch({ track, action, prop }) {
     track([() => prop("open")], () => {
@@ -67,6 +72,7 @@ export const machine = createMachine<DialogSchema>({
     open: {
       entry: ["checkRenderedElements", "setReturnFocusEl", "setInitialFocus"],
       effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
+      exit: ["cancelInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -219,7 +225,7 @@ export const machine = createMachine<DialogSchema>({
     actions: {
       setReturnFocusEl({ refs, scope }) {
         // Read on the next frame, like a focus trap, so an opener that closes (e.g. a menu) has restored focus first
-        raf(() => refs.set("returnFocusEl", scope.getActiveElement()))
+        refs.get("returnFocusFrame").request(() => refs.set("returnFocusEl", scope.getActiveElement()))
       },
 
       setFinalFocus({ event, prop, refs, scope, context }) {
@@ -235,6 +241,7 @@ export const machine = createMachine<DialogSchema>({
             triggerValue: context.get("triggerValue"),
           }) ?? refs.get("returnFocusEl")
 
+        // not cancelled on exit: restore must still run if the dialog unmounts on close
         raf(() => {
           // Don't take focus back from an element the user moved to
           if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
@@ -242,9 +249,9 @@ export const machine = createMachine<DialogSchema>({
         })
       },
 
-      setInitialFocus({ prop, scope }) {
+      setInitialFocus({ prop, scope, refs }) {
         if (prop("trapFocus")) return
-        raf(() => {
+        refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
             getInitialEl: prop("initialFocusEl"),
@@ -254,13 +261,23 @@ export const machine = createMachine<DialogSchema>({
         })
       },
 
-      checkRenderedElements({ context, scope }) {
-        raf(() => {
+      checkRenderedElements({ context, scope, refs }) {
+        refs.get("renderedFrame").request(() => {
           context.set("rendered", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
           })
         })
+      },
+
+      cancelInitialFocus({ refs }) {
+        refs.get("initialFocusFrame").cancel()
+      },
+
+      cancelFrames({ refs }) {
+        refs.get("returnFocusFrame").cancel()
+        refs.get("initialFocusFrame").cancel()
+        refs.get("renderedFrame").cancel()
       },
 
       invokeOnClose({ prop }) {

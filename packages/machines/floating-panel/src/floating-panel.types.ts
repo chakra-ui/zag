@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { HandlePosition, Point, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
@@ -239,6 +240,10 @@ export interface FloatingPanelSchema {
   defaultPropKey: PropsWithDefault
   context: PrivateContext
   computed: ComputedContext
+  refs: {
+    offsetOriginFrame: AnimationFrame
+    focusFrame: AnimationFrame
+  }
   tag: "open" | "closed"
   state: "open" | "open.idle" | "open.dragging" | "open.resizing" | "closed"
   event: EventObject

@@ -27,7 +27,13 @@ import {
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { disableTextSelection, isFocusOutside, raf, restoreTextSelection, setElementValue } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  disableTextSelection,
+  isFocusOutside,
+  restoreTextSelection,
+  setElementValue,
+} from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
@@ -152,6 +158,9 @@ export const machine = createMachine<DatePickerSchema>({
   refs() {
     return {
       announcer: undefined,
+      syncFrame: AnimationFrame.create(),
+      focusFrame: AnimationFrame.create(),
+      cellFocusFrame: AnimationFrame.create(),
     }
   },
 
@@ -242,6 +251,8 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   effects: ["setupLiveRegion"],
+
+  exit: ["cancelFrames"],
 
   watch({ track, prop, context, action, computed }) {
     track([() => prop("locale")], () => {
@@ -856,8 +867,8 @@ export const machine = createMachine<DatePickerSchema>({
         if (!context.get("value").length) return
         setFocusedValue(params, context.get("value")[0])
       },
-      syncInputElement({ scope, computed }) {
-        raf(() => {
+      syncInputElement({ scope, computed, refs }) {
+        refs.get("syncFrame").request(() => {
           const inputEls = dom.getInputEls(scope)
           inputEls.forEach((inputEl, index) => {
             setElementValue(inputEl, computed("valueAsString")[index] || "")
@@ -1106,16 +1117,16 @@ export const machine = createMachine<DatePickerSchema>({
           context.set("activeIndex", 1)
         }
       },
-      focusActiveCell({ scope, context, event }) {
+      focusActiveCell({ scope, context, event, refs }) {
         if (event.src === "input.click") return
-        raf(() => {
+        refs.get("cellFocusFrame").request(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })
         })
       },
-      focusActiveCellIfNeeded({ scope, context, event }) {
+      focusActiveCellIfNeeded({ scope, context, event, refs }) {
         if (!event.focus) return
-        raf(() => {
+        refs.get("cellFocusFrame").request(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })
         })
@@ -1127,30 +1138,35 @@ export const machine = createMachine<DatePickerSchema>({
         if (!isKeyboardNavigation || prop("selectionMode") !== "range" || context.get("activeIndex") === 0) return
         context.set("hoveredValue", context.get("focusedValue").copy())
       },
-      restoreFocusToTrigger({ scope, event }) {
+      restoreFocusToTrigger({ scope, event, refs }) {
         const contentEl = dom.getContentEl(scope)
         const focusOptions = getReturnFocusOptions(event)
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           // Keep focus that moved elsewhere (e.g. from `onValueChange`)
           if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           dom.getTriggerEl(scope)?.focus(focusOptions)
         })
       },
-      focusFirstInputElement({ scope, event }) {
+      focusFirstInputElement({ scope, event, refs }) {
         if (event.focus === false) return
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           const [inputEl] = dom.getInputEls(scope)
           // if no input elements exist (trigger-only mode), focus the trigger instead
           const elementToFocus = inputEl ?? dom.getTriggerEl(scope)
           elementToFocus?.focus({ preventScroll: true })
         })
       },
-      focusInputElement({ scope }) {
-        raf(() => dom.focusInputEl(scope))
+      focusInputElement({ scope, refs }) {
+        refs.get("focusFrame").request(() => dom.focusInputEl(scope))
       },
-      restoreFocusToInput({ scope }) {
+      cancelFrames({ refs }) {
+        refs.get("syncFrame").cancel()
+        refs.get("focusFrame").cancel()
+        refs.get("cellFocusFrame").cancel()
+      },
+      restoreFocusToInput({ scope, refs }) {
         const contentEl = dom.getContentEl(scope)
-        raf(() => {
+        refs.get("focusFrame").request(() => {
           // Keep focus that moved elsewhere (e.g. from `onValueChange`)
           if (isFocusOutside(scope.getActiveElement(), [contentEl])) return
           dom.focusInputEl(scope)

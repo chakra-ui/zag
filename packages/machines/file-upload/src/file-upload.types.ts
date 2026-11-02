@@ -194,6 +194,7 @@ export interface FileUploadSchema {
   refs: {
     liveRegion: LiveRegion | null
     focusFrame: AnimationFrame
+    pickerFrame: AnimationFrame
   }
   event: EventObject
   action: string
