@@ -312,8 +312,8 @@ async function main() {
     json[widget] = result
   })
 
-  const outPath = join(process.cwd(), "packages", "docs", "data", "data-attr.ts")
-  writeFileSync(outPath, `export default ${JSON.stringify(json, null, 2)}\n`)
+  const outPath = join(process.cwd(), "packages", "docs", "data", "data-attr.json")
+  writeFileSync(outPath, JSON.stringify(json, null, 2))
 }
 
 main()

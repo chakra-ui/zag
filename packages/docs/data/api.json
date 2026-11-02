@@ -1,4 +1,4 @@
-export default {
+{
   "accordion": {
     "api": {
       "focusedValue": {
@@ -1099,10 +1099,6 @@ export default {
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
-      "loading": {
-        "type": "boolean",
-        "description": "Whether the results are being loaded"
-      },
       "inputValue": {
         "type": "string",
         "description": "The value of the combobox input"
@@ -1355,10 +1351,6 @@ export default {
       "navigate": {
         "type": "((details: NavigateDetails) => void) | null | undefined",
         "description": "Function to navigate to the selected item"
-      },
-      "loading": {
-        "type": "boolean | undefined",
-        "description": "Whether the results are being loaded (e.g. fetched from a server).\n\nWhile loading, the listbox is marked with `aria-busy`, the loading message is\nannounced instead of the result count, and \"no results\" is never announced."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",
@@ -1974,10 +1966,6 @@ export default {
         "type": "boolean",
         "description": "Whether the dialog is open"
       },
-      "modal": {
-        "type": "boolean",
-        "description": "Whether the dialog is modal"
-      },
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the dialog"
@@ -2087,10 +2075,6 @@ export default {
       "open": {
         "type": "boolean",
         "description": "Whether the drawer is open."
-      },
-      "modal": {
-        "type": "boolean",
-        "description": "Whether the drawer is modal."
       },
       "dragging": {
         "type": "boolean",
@@ -3519,14 +3503,6 @@ export default {
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation.",
         "defaultValue": "false"
-      },
-      "initialFocusEl": {
-        "type": "(() => MaybeElement | false) | undefined",
-        "description": "The element to focus when the menu opens.\nReturn `false` to skip moving focus, or `null` to use the default."
-      },
-      "finalFocusEl": {
-        "type": "(() => MaybeElement) | undefined",
-        "description": "The element to focus when the menu closes.\nReturn `null` to use the default (the trigger, or the element focused before a context menu opened)."
       },
       "positioning": {
         "type": "PositioningOptions | undefined",
@@ -6113,11 +6089,11 @@ export default {
       },
       "create": {
         "type": "(data: Options<V>) => string",
-        "description": "Create a toast or update an existing toast with the same ID.\nCalls targeting closing toasts are ignored."
+        "description": "Create a new toast with the given options"
       },
       "update": {
-        "type": "(id: string, data: MaybeFunction<Partial<ToastProps<V>>, Partial<ToastProps<V>>>) => string",
-        "description": "Update a toast with new properties or a function of its current properties.\nUpdates to closing toasts are ignored.\nFunctional updates are also ignored when the toast does not exist."
+        "type": "(id: string, data: Partial<ToastProps<V>>) => string",
+        "description": "Update an existing toast with new properties"
       },
       "remove": {
         "type": "(id?: string) => void",
@@ -6244,11 +6220,6 @@ export default {
         "type": "ScrollBehavior | undefined",
         "description": "The default scroll behavior used when auto-scrolling the TOC container\nand when scrolling to a heading (via link click or `api.scrollTo`).\nCan be overridden per-call by passing `behavior` to `api.scrollTo`.",
         "defaultValue": "\"smooth\""
-      },
-      "multiple": {
-        "type": "boolean | undefined",
-        "description": "Whether every visible heading can be active at once.\nWhen `false`, only the topmost visible heading is active.",
-        "defaultValue": "true"
       },
       "onActiveChange": {
         "type": "((details: ActiveChangeDetails) => void) | undefined",
@@ -6645,10 +6616,6 @@ export default {
         "type": "number | undefined",
         "description": "The radius of the spotlight clip path",
         "defaultValue": "4"
-      },
-      "scrollToTargetFn": {
-        "type": "((details: ScrollToTargetDetails) => void) | undefined",
-        "description": "Function to scroll the step target into view.\nDefaults to `scrollIntoView` with the nearest alignment."
       },
       "translations": {
         "type": "IntlTranslations | undefined",

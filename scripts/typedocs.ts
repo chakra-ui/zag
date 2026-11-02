@@ -70,7 +70,7 @@ async function main() {
 
   const result: Record<string, any> = {}
 
-  // sorted: package discovery order follows the filesystem, and it decides the key order of api.ts
+  // sorted: package discovery order follows the filesystem, and it decides the key order of api.json
   const machines = (await getMachinePackages()).sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0))
 
   for (const { dir } of machines) {
@@ -96,9 +96,9 @@ async function main() {
     }
   }
 
-  const outPath = join(process.cwd(), "packages", "docs", "data", "api.ts")
+  const outPath = join(process.cwd(), "packages", "docs", "data", "api.json")
 
-  writeFileSync(outPath, `export default ${JSON.stringify(result, null, 2)}\n`)
+  writeFileSync(outPath, JSON.stringify(result, null, 2))
 }
 
 main()
