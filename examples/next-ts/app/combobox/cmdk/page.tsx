@@ -88,8 +88,8 @@ function Command(props: CommandProps) {
         onKeyDown={(event) => {
           if (event.key === "Backspace" && !query && pages.page) {
             event.preventDefault()
-            const next = pages.up(query)
-            props.onNavigate(next, next.restore.query)
+            // keep the input empty so Backspace keeps going up
+            props.onNavigate(pages.up(query), "")
             return
           }
           inputProps.onKeyDown?.(event)

@@ -190,6 +190,7 @@ export const tabs: SidebarTab[] = [
         label: "Data",
         items: docs("utilities", [
           { label: "Async List", id: "async-list" },
+          { label: "Fuzzy", id: "fuzzy", new: true },
           { label: "Infinite Scroll", id: "infinite-scroll", new: true },
           { label: "Virtualizer", id: "virtualizer", new: true },
         ]),

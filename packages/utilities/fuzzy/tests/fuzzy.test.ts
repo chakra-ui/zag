@@ -46,6 +46,11 @@ describe("fuzzyScore", () => {
     expect(fuzzyScore("getUserName", "un")).toBeGreaterThan(fuzzyScore("getrunner", "un"))
   })
 
+  test("prefers word starts in other scripts", () => {
+    expect(fuzzyScore("Открыть файл", "фа")).toBeGreaterThan(fuzzyScore("Шрифтафон", "фа"))
+    expect(highlight("Открыть файл", "оф")).toBe("О|ф")
+  })
+
   test("matches keywords below the text", () => {
     const keyword = fuzzyScore("Preferences", "settings", ["settings"])
     expect(keyword).toBeGreaterThan(0)
@@ -155,6 +160,10 @@ describe("getFuzzyMatchRanges", () => {
 
   test("maps back to the original text with diacritics", () => {
     expect(getFuzzyMatchRanges("Café au lait", "cafe")).toEqual([{ start: 0, end: 4 }])
+  })
+
+  test("highlights the whole query when it matches across words", () => {
+    expect(highlight("new git file", "new file")).toBe("new |file")
   })
 
   test("falls back to each word", () => {

@@ -30,9 +30,20 @@ const toLower = (code: number) => {
   return String.fromCharCode(code).toLowerCase().charCodeAt(0)
 }
 
-const isLower = (code: number) => (code >= 97 && code <= 122) || (code >= 48 && code <= 57)
+const LETTER_OR_DIGIT = /[\p{L}\p{N}]/u
 
-const isUpper = (code: number) => code >= 65 && code <= 90
+// a letter or digit that isn't uppercase, in any script
+const isLower = (code: number) => {
+  if (code < 128) return (code >= 97 && code <= 122) || (code >= 48 && code <= 57)
+  const char = String.fromCharCode(code)
+  return LETTER_OR_DIGIT.test(char) && char === char.toLowerCase()
+}
+
+const isUpper = (code: number) => {
+  if (code < 128) return code >= 65 && code <= 90
+  const char = String.fromCharCode(code)
+  return char !== char.toLowerCase()
+}
 
 const matchBonus = (last: number, code: number) => {
   if (!isLower(code) && !isUpper(code)) return 0
@@ -42,7 +53,7 @@ const matchBonus = (last: number, code: number) => {
   if (last === 32 || last === 45 || last === 95) return MATCH_WORD
   // after "."
   if (last === 46) return MATCH_DOT
-  if (isUpper(code) && last >= 97 && last <= 122) return MATCH_CAPITAL
+  if (isUpper(code) && isLower(last)) return MATCH_CAPITAL
   return 0
 }
 

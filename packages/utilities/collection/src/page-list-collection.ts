@@ -61,6 +61,13 @@ const fallback = {
 
 const NO_RESTORE: PageRestore = { query: "", highlightedValue: null }
 
+// lets copies reuse the built tree without exposing it in the constructor signature
+const INTERNAL = Symbol("page-list-collection")
+
+type InternalOptions<T> = PageListCollectionOptions<T> & {
+  [INTERNAL]?: { state: PageState<T>; items: T[] | undefined }
+}
+
 /**
  * A list collection of the items on one page of a drill-down, like a command menu's nested
  * pages (not pagination). `items` are the open page's items; `setItems` replaces them, e.g. with
@@ -69,10 +76,11 @@ const NO_RESTORE: PageRestore = { query: "", highlightedValue: null }
 export class PageListCollection<T extends CollectionItem = CollectionItem> extends ListCollection<T> {
   private state: PageState<T>
 
-  constructor(options: PageListCollectionOptions<T>, state?: PageState<T>, items?: T[]) {
-    const resolved = state ?? createState(options)
-    super({ ...options, items: items ?? resolved.tree.children.get(resolved.page) ?? [] })
-    this.state = resolved
+  constructor(options: PageListCollectionOptions<T>) {
+    const { [INTERNAL]: internal, ...rest } = options as InternalOptions<T>
+    const state = internal?.state ?? createState(rest)
+    super({ ...rest, items: internal?.items ?? state.tree.children.get(state.page) ?? [] })
+    this.state = state
   }
 
   private get pageOptions() {
@@ -80,21 +88,18 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
   }
 
   private with = (state: Partial<PageState<T>>, items?: T[]) => {
-    return new PageListCollection(this.pageOptions, { ...this.state, ...state }, items)
+    const options: InternalOptions<T> = {
+      ...this.pageOptions,
+      [INTERNAL]: { state: { ...this.state, ...state }, items },
+    }
+    return new PageListCollection(options)
   }
 
   /**
    * Copy the collection, keeping its pages
    */
-  copy = (items?: T[]): PageListCollection<T> => {
-    return this.with({}, items ?? [...this.items])
-  }
-
-  /**
-   * Replace the items shown on the open page, e.g. with search results
-   */
-  setItems = (items: T[]): PageListCollection<T> => {
-    return this.copy(items)
+  copy = (items?: T[]): this => {
+    return this.with({}, items ?? [...this.items]) as this
   }
 
   /**

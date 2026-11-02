@@ -61,8 +61,8 @@
   const onkeydown = (event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) => {
     if (event.key === "Backspace" && !props.query && props.pages.page) {
       event.preventDefault()
-      const next = props.pages.up(props.query)
-      props.onNavigate(next, next.restore.query)
+      // keep the input empty so Backspace keeps going up
+      props.onNavigate(props.pages.up(props.query), "")
       return
     }
     inputProps.onkeydown?.(event)

@@ -30,10 +30,11 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
-   * Copy the collection
+   * Copy the collection, as the same subclass
    */
-  copy = (items?: T[]) => {
-    return new ListCollection({ ...this.options, items: items ?? [...this.items] })
+  copy = (items?: T[]): this => {
+    const Collection = this.constructor as new (options: CollectionOptions<T>) => this
+    return new Collection({ ...this.options, items: items ?? [...this.items] })
   }
 
   /**

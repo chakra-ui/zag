@@ -79,6 +79,14 @@ describe("PageListCollection / structure", () => {
     expect(collection.back().page).toBeNull()
   })
 
+  test("edits keep the page and the class", () => {
+    const collection = create().setPage("theme").append(item("extra")).remove("dark")
+    expect(collection).toBeInstanceOf(PageListCollection)
+    expect(collection.page).toBe("theme")
+    expect(values(collection.items)).toEqual(["light", "contrast", "extra"])
+    expect(collection.back().page).toBeNull()
+  })
+
   test("custom accessors", () => {
     const collection = new PageListCollection({
       items: [{ id: "a" }, { id: "b", up: "a" }],
