@@ -91,7 +91,7 @@
     "@next/eslint-plugin-next": "16.4.3",
     "@pandacss/dev": "^1.12.0",
     "@types/react": "^19.2.18",
-    "all-contributors-cli": "6.26.1",
+    "all-contributors-cli": "7.0.0",
     "eslint": "10.13.0",
     "eslint-config-next": "16.4.3",
     "prettier": "3.9.10",
