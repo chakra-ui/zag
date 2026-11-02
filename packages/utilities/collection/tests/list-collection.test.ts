@@ -418,6 +418,41 @@ describe("list collection", () => {
     `)
   })
 
+  test("update, upsert, insert and move with grouped collection", () => {
+    const list = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+    })
+
+    const bun: GroupItem = { label: "Bun", value: "bun", type: "runtime" }
+    const values = (collection: ListCollection<GroupItem>) => collection.items.map((item) => item.value)
+
+    expect(values(list.update("node", bun))).toEqual(["react", "bun", "vue", "deno", "solid"])
+    expect(values(list.upsert("node", bun))).toEqual(["react", "bun", "vue", "deno", "solid"])
+    expect(values(list.insertBefore("node", bun))).toEqual(["react", "bun", "node", "vue", "deno", "solid"])
+    expect(values(list.insertAfter("node", bun))).toEqual(["react", "node", "bun", "vue", "deno", "solid"])
+    expect(values(list.move("node", 0))).toEqual(["node", "react", "vue", "deno", "solid"])
+  })
+
+  test("search with grouped collection follows the grouped order", () => {
+    const list = new ListCollection({
+      items: [
+        { label: "Apple", value: "apple", type: "fruit" },
+        { label: "Avocado", value: "avocado", type: "vegetable" },
+        { label: "Apricot", value: "apricot", type: "fruit" },
+      ],
+      groupBy: (item) => item.type,
+    })
+
+    const search = (currentValue: string | null) =>
+      list.search("a", { state: { keysSoFar: "", timer: -1 }, currentValue })
+
+    expect(search(null)).toBe("apple")
+    expect(search("apple")).toBe("apricot")
+    expect(search("apricot")).toBe("avocado")
+    expect(search("avocado")).toBe("apple")
+  })
+
   test("upsert / update existing item", () => {
     const updatedItem = { label: "React 18", value: "react", disabled: false }
     const next = list.upsert("react", updatedItem)

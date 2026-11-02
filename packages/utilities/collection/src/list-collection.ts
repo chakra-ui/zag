@@ -302,13 +302,19 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.indexMap.get(value) ?? -1
   }
 
+  private getItemIndex = (value: string): number => {
+    return this.items.findIndex((item) => this.getItemValue(item) === value)
+  }
+
   private getByText = (text: string, current: string | null): T | undefined => {
     const currentIndex = current != null ? this.indexOf(current) : -1
     const isSingleKey = text.length === 1
+    const isGrouped = this.options.groupBy || this.options.groupSort
+    const items = isGrouped ? this.group().flatMap(([, items]) => items) : this.items
 
     // Use a single loop to filter and find the item
-    for (let i = 0; i < this.items.length; i++) {
-      const item = this.items[(currentIndex + i + 1) % this.items.length]
+    for (let i = 0; i < items.length; i++) {
+      const item = items[(currentIndex + i + 1) % items.length]
       if (isSingleKey && this.getItemValue(item) === current) continue
       if (this.getItemDisabled(item)) continue
       if (match(this.stringifyItem(item), text)) return item
@@ -360,7 +366,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Update an item in the collection
    */
   update = (value: string, item: T) => {
-    let index = this.indexOf(value)
+    let index = this.getItemIndex(value)
     if (index === -1) return this
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
@@ -369,7 +375,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Update an item in the collection if it exists, otherwise append it
    */
   upsert = (value: string, item: T, mode: "append" | "prepend" = "append") => {
-    let index = this.indexOf(value)
+    let index = this.getItemIndex(value)
     if (index === -1) {
       const fn = mode === "append" ? this.append : this.prepend
       return fn(item)
@@ -388,7 +394,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Insert items before a specific value
    */
   insertBefore = (value: string, ...items: T[]) => {
-    let toIndex = this.indexOf(value)
+    let toIndex = this.getItemIndex(value)
     if (toIndex === -1) {
       if (this.items.length === 0) toIndex = 0
       else return this
@@ -400,7 +406,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Insert items after a specific value
    */
   insertAfter = (value: string, ...items: T[]) => {
-    let toIndex = this.indexOf(value)
+    let toIndex = this.getItemIndex(value)
     if (toIndex === -1) {
       if (this.items.length === 0) toIndex = 0
       else return this
@@ -450,7 +456,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Move an item to a specific index
    */
   move = (value: string, toIndex: number) => {
-    const fromIndex = this.indexOf(value)
+    const fromIndex = this.getItemIndex(value)
     if (fromIndex === -1) return this
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
