@@ -82,11 +82,10 @@ describe("normalizeProps", () => {
     })
 
     test("leaves null and undefined style values to spreadProps", () => {
-      // @ts-expect-error - null is allowed
       const result = normalize({
         style: {
           color: "red",
-          backgroundColor: null,
+          backgroundColor: null as any,
           fontSize: undefined,
         },
       })
@@ -129,10 +128,9 @@ describe("normalizeProps", () => {
     })
 
     test("keeps null values", () => {
-      // @ts-expect-error - null is allowed
       const result = normalize({
         id: "test",
-        title: null,
+        title: null as any,
       })
       expect(result).toHaveProperty("title", null)
     })
