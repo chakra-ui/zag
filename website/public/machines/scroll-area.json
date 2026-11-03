@@ -1,0 +1,258 @@
+{
+  "id": "scroll-area",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "root.pointerdown",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "root.pointerenter",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "root.pointerleave",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "thumb.measure",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "viewport.scroll",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "scrollbar.pointerup",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": null,
+      "event": "thumb.pointermove",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "thumb.pointerup",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "scrollbar.pointerdown",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "thumb.pointerdown",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 642,
+      "height": 176,
+      "states": {
+        "idle": {
+          "x": 532,
+          "y": 64,
+          "w": 78,
+          "h": 44
+        },
+        "dragging": {
+          "x": 48,
+          "y": 64,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "scrollbar.pointerup",
+            "thumb.pointerup"
+          ],
+          "lines": [
+            "scrollbar.pointerup",
+            "thumb.pointerup"
+          ],
+          "points": [
+            [
+              157,
+              79
+            ],
+            [
+              532,
+              79
+            ]
+          ],
+          "label": {
+            "x": 274,
+            "y": 32,
+            "w": 141,
+            "h": 40
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "scrollbar.pointerdown",
+            "thumb.pointerdown"
+          ],
+          "lines": [
+            "scrollbar.pointerdown",
+            "thumb.pointerdown"
+          ],
+          "points": [
+            [
+              532,
+              93
+            ],
+            [
+              448,
+              93
+            ],
+            [
+              448,
+              96
+            ],
+            [
+              183,
+              96
+            ],
+            [
+              183,
+              93
+            ],
+            [
+              157,
+              93
+            ]
+          ],
+          "label": {
+            "x": 267,
+            "y": 103,
+            "w": 155,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 415,
+      "height": 412,
+      "states": {
+        "idle": {
+          "x": 169,
+          "y": 336,
+          "w": 78,
+          "h": 44
+        },
+        "dragging": {
+          "x": 159,
+          "y": 32,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "scrollbar.pointerup",
+            "thumb.pointerup"
+          ],
+          "lines": [
+            "scrollbar.pointerup",
+            "thumb.pointerup"
+          ],
+          "points": [
+            [
+              195,
+              76
+            ],
+            [
+              195,
+              336
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 141,
+            "h": 40
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "scrollbar.pointerdown",
+            "thumb.pointerdown"
+          ],
+          "lines": [
+            "scrollbar.pointerdown",
+            "thumb.pointerdown"
+          ],
+          "points": [
+            [
+              221,
+              336
+            ],
+            [
+              221,
+              102
+            ],
+            [
+              232,
+              102
+            ],
+            [
+              232,
+              76
+            ]
+          ],
+          "label": {
+            "x": 228,
+            "y": 186,
+            "w": 155,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

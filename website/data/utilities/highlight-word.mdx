@@ -1,0 +1,211 @@
+---
+title: Highlight word
+description:
+  Split text into matching and non-matching chunks to highlight search results.
+package: "@zag-js/highlight-word"
+---
+
+Split a string into chunks, each marked as a match or not. Render the matches in
+a `<mark>` to highlight a search query in results.
+
+<Resources pkg="@zag-js/highlight-word" />
+
+## Installation
+
+```bash
+npm install @zag-js/highlight-word
+```
+
+## Usage
+
+`highlightWord` takes the text and a query, and returns the chunks in order.
+
+```ts
+import { highlightWord } from "@zag-js/highlight-word"
+
+highlightWord({ text: "Hello world", query: "world" })
+// [
+//   { text: "Hello ", match: false },
+//   { text: "world", match: true },
+// ]
+```
+
+When nothing matches, you get one chunk with `match: false`.
+
+## React rendering
+
+```tsx title="search-result.tsx"
+import { highlightWord } from "@zag-js/highlight-word"
+
+interface SearchResultProps {
+  text: string
+  query: string
+}
+
+export function SearchResult(props: SearchResultProps) {
+  const chunks = highlightWord({
+    text: props.text,
+    query: props.query,
+    ignoreCase: true,
+    matchAll: true,
+  })
+
+  return (
+    <span>
+      {chunks.map((chunk, index) =>
+        chunk.match ? (
+          <mark key={index}>{chunk.text}</mark>
+        ) : (
+          <span key={index}>{chunk.text}</span>
+        ),
+      )}
+    </span>
+  )
+}
+```
+
+The chunks keep the original casing from `text`, so the highlighted word reads
+as written.
+
+## Matching options
+
+### Ignore case
+
+Matching is case-sensitive by default. Set `ignoreCase` to match any case.
+
+```ts
+highlightWord({ text: "Hello World", query: "world", ignoreCase: true })
+// [{ text: "Hello ", match: false }, { text: "World", match: true }]
+```
+
+### Every match
+
+Only the first match is highlighted by default. Set `matchAll` to highlight
+every match.
+
+```ts
+highlightWord({
+  text: "The quick brown fox jumps over the lazy dog",
+  query: "the",
+  ignoreCase: true,
+  matchAll: true,
+})
+// [
+//   { text: "The", match: true },
+//   { text: " quick brown fox jumps over ", match: false },
+//   { text: "the", match: true },
+//   { text: " lazy dog", match: false },
+// ]
+```
+
+### Whole words
+
+Set `exactMatch` to match whole words only. Word boundaries cover Unicode
+letters and numbers, not just ASCII.
+
+```ts
+highlightWord({
+  text: "React and Preact",
+  query: "react",
+  ignoreCase: true,
+  matchAll: true,
+  exactMatch: true,
+})
+// [{ text: "React", match: true }, { text: " and Preact", match: false }]
+```
+
+### Several queries
+
+Pass an array to highlight several terms. `matchAll` defaults to `true` for
+arrays, and setting it to `false` throws.
+
+```ts
+highlightWord({
+  text: "Apples and pears",
+  query: ["apple", "pear"],
+  ignoreCase: true,
+})
+// [
+//   { text: "Apple", match: true },
+//   { text: "s and ", match: false },
+//   { text: "pear", match: true },
+//   { text: "s", match: false },
+// ]
+```
+
+Special characters in the query are escaped, so `"c++"` or `"(beta)"` match
+literally.
+
+## Highlight ranges
+
+When another tool finds the matches, pass their positions to `highlightRanges`.
+Each range is `[start, end)`. Ranges are sorted, merged when they overlap and
+clamped to the text.
+
+```ts
+import { highlightRanges } from "@zag-js/highlight-word"
+
+highlightRanges({
+  text: "Open file",
+  ranges: [
+    { start: 0, end: 1 },
+    { start: 5, end: 9 },
+  ],
+})
+// [
+//   { text: "O", match: true },
+//   { text: "pen ", match: false },
+//   { text: "file", match: true },
+// ]
+```
+
+Use it with [`getFuzzyMatchRanges`](/utilities/fuzzy#highlight-matches) to
+highlight fuzzy matches.
+
+## API Reference
+
+### highlightWord
+
+```ts
+function highlightWord(props: HighlightWordProps): HighlightChunk[]
+
+interface HighlightWordProps {
+  text: string
+  query: string | string[]
+  ignoreCase?: boolean
+  matchAll?: boolean
+  exactMatch?: boolean
+}
+```
+
+- `text`: the text to split
+- `query`: a term, or an array of terms
+- `ignoreCase`: match any case. Defaults to `false`.
+- `matchAll`: highlight every match, not just the first. Defaults to `true` for
+  an array query, `false` otherwise.
+- `exactMatch`: match whole words only. Defaults to `false`.
+
+### highlightRanges
+
+```ts
+function highlightRanges(props: HighlightRangesProps): HighlightChunk[]
+
+interface HighlightRangesProps {
+  text: string
+  ranges: HighlightRange[]
+}
+
+interface HighlightRange {
+  start: number
+  end: number
+}
+```
+
+### HighlightChunk
+
+```ts
+interface HighlightChunk {
+  text: string
+  match: boolean
+}
+```

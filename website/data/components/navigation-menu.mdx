@@ -58,7 +58,7 @@ Then use the framework integration helpers:
 The basic pattern places content directly within each item. This is suitable for
 simple dropdown menus where each dropdown appears below its trigger.
 
-### Advanced pattern with viewport
+### Viewport pattern
 
 The viewport pattern uses a shared viewport container for all content. This
 enables smooth transitions and better performance for complex navigation
@@ -84,7 +84,7 @@ In this pattern:
 - Header navigation bars (like on e-commerce sites)
 - When you want a single shared container for all dropdowns
 
-### Controlling the navigation menu
+### Controlled value
 
 To control which item is currently open, pass the `value` and `onValueChange`
 properties to the machine.
@@ -95,7 +95,7 @@ properties to the machine.
 
 </Example>
 
-### Setting initial open item
+### Initial open item
 
 Use `defaultValue` to start with a specific item open.
 
@@ -109,7 +109,7 @@ const service = useMachine(navigationMenu.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 When the open item changes, the `onValueChange` callback is invoked with the new
 value.
@@ -128,7 +128,7 @@ const service = useMachine(navigationMenu.machine, {
 
 </Example>
 
-### Adding an animated indicator
+### Animated indicator
 
 To show a visual indicator that animates to the active trigger, render the
 indicator within the list container:
@@ -142,7 +142,7 @@ indicator within the list container:
 The indicator automatically transitions to match the active trigger's position
 and size using CSS variables.
 
-### Configuring hover delays
+### Open and close delays
 
 You can customize the delay before opening and closing on hover:
 
@@ -160,7 +160,7 @@ const service = useMachine(navigationMenu.machine, {
 **Tip**: Longer delays provide a more forgiving user experience but can feel
 less responsive.
 
-### Disabling hover or click triggers
+### Disable triggers
 
 You can disable hover or click triggers independently:
 
@@ -182,7 +182,7 @@ const service = useMachine(navigationMenu.machine, {
 - `disableClickTrigger` — Prevents opening on click (hover only)
 - `disablePointerLeaveClose` — Prevents closing when pointer leaves
 
-### Changing orientation
+### Orientation
 
 The default orientation is horizontal. To create a vertical navigation menu:
 
@@ -198,7 +198,7 @@ const service = useMachine(navigationMenu.machine, {
 
 This affects keyboard navigation (arrow keys) and indicator positioning.
 
-### Disabling items
+### Disabled items
 
 To disable a navigation item, pass `disabled: true` to the item props:
 
@@ -216,7 +216,7 @@ To disable a navigation item, pass `disabled: true` to the item props:
 
 Disabled items cannot be opened and are skipped during keyboard navigation.
 
-### Indicating current page
+### Current page
 
 To highlight the current page link, use the `current` prop:
 
@@ -230,7 +230,7 @@ To highlight the current page link, use the `current` prop:
 
 This adds `data-current` attribute and `aria-current="page"` for accessibility.
 
-### Controlling link close behavior
+### Link close behavior
 
 Use `closeOnClick` in `getLinkProps` to keep content open after link click.
 
@@ -249,7 +249,7 @@ Use `closeOnClick` in `getLinkProps` to keep content open after link click.
 
 </Example>
 
-### Aligning the shared viewport
+### Shared viewport
 
 When using the viewport pattern, set `align` on `getViewportProps` or
 `getViewportPositionerProps`.
@@ -285,7 +285,7 @@ const service = useMachine(navigationMenu.machine, {
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Open and closed states
+### Open state
 
 When content is open or closed, it receives a `data-state` attribute:
 
@@ -303,7 +303,7 @@ When content is open or closed, it receives a `data-state` attribute:
 }
 ```
 
-### Selected item state
+### Selected item
 
 When an item is selected (open), it receives `data-state="open"`:
 
@@ -347,7 +347,7 @@ All parts have a `data-orientation` attribute:
 }
 ```
 
-### Current link state
+### Current link
 
 Links marked as current have a `data-current` attribute:
 
@@ -357,7 +357,7 @@ Links marked as current have a `data-current` attribute:
 }
 ```
 
-### Styling the indicator
+### Indicator styling
 
 The indicator uses CSS variables for positioning and sizing:
 
@@ -383,7 +383,7 @@ The indicator uses CSS variables for positioning and sizing:
 }
 ```
 
-### Styling the viewport
+### Viewport styling
 
 The viewport uses CSS variables for positioning and sizing:
 
@@ -415,7 +415,7 @@ The arrow can be styled using CSS variables:
 }
 ```
 
-### Animating content and the viewport
+### Content animation
 
 Content and the viewport carry `data-state="open"` or `"closed"`. The viewport
 also sets `--viewport-width` and `--viewport-height` to the size of the active
@@ -439,7 +439,7 @@ content, so it can animate between items.
 }
 ```
 
-### Machine Context
+### Machine context
 
 The navigation menu machine exposes the following context properties:
 
@@ -451,16 +451,16 @@ The navigation menu `api` exposes the following methods:
 
 <ApiTable name="navigation-menu" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="navigation-menu" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="navigation-menu" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="navigation-menu" />

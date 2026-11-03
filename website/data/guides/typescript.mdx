@@ -26,7 +26,7 @@ const defaults: Partial<menu.Props> = {
 }
 ```
 
-## Typing a wrapped component
+## Wrapped components
 
 When you wrap a machine in your own component, extend its props and leave out
 the ones the component sets itself. `id` is the usual one, since the component
@@ -53,7 +53,7 @@ export function Menu(props: MenuProps) {
 `menu.ItemProps` is the argument `getItemProps` takes, so the items you pass in
 already have the right shape.
 
-## The connected api
+## Connected API
 
 `connect` returns `menu.Api`. It's generic over the framework's element props,
 which each adapter exports as `PropTypes`. Use it when a child component
@@ -84,7 +84,7 @@ function MenuItems({ api, items }: MenuItemsProps) {
 The `PropTypes` parameter is what makes the getters return React's element props
 here, and Vue's or Solid's props in their adapters.
 
-## Typing callbacks
+## Callback types
 
 Each callback receives a details object, and each details type is exported by
 name. Use them when the handler lives outside the component.
@@ -110,7 +110,7 @@ The names follow the callback: `onValueChange` takes `ValueChangeDetails`,
 `onOpenChange` takes `OpenChangeDetails`, `onHighlightChange` takes
 `HighlightChangeDetails`.
 
-## Writing your own adapter
+## Custom adapter
 
 If you connect a machine in a framework Zag doesn't ship an adapter for, build
 the normalizer with `createNormalizer` from `@zag-js/types`. It maps Zag's

@@ -57,7 +57,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="drawer/usage.mdx" />
 
-### Controlled drawer
+### Controlled open
 
 To control the drawer's open state, pass the `open` and `onOpenChange`
 properties.
@@ -68,7 +68,7 @@ properties.
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the drawer state changes, the `onOpenChange` callback is invoked.
 
@@ -86,7 +86,7 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-### Configuring snap points
+### Snap points
 
 The drawer supports customizable snap points, which determine the heights at
 which the sheet can "snap" when dragged. Snap points can be defined as numbers
@@ -127,7 +127,7 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-### Swipe-to-dismiss behavior
+### Swipe to dismiss
 
 The drawer can be dismissed by swiping it down quickly or dragging it below a
 threshold. Customize this behavior with the following properties:
@@ -149,7 +149,7 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-### Choosing swipe direction
+### Swipe direction
 
 Set `swipeDirection` to control where the drawer can be dismissed.
 
@@ -180,7 +180,7 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-### Preventing dragging during scroll
+### Drag during scroll
 
 By default, dragging is prevented if the content inside the drawer is scrollable
 and not at the top or bottom. To allow dragging even during scrolling, set
@@ -302,7 +302,7 @@ restrict dragging to only the grabber, pass `draggable: false` to
 
 </Example>
 
-### Excluding elements from dragging
+### Drag exclusions
 
 Add `data-no-drag` to an element to stop drags that start on it from moving the
 drawer. Set it to `x` or `y` to block only drawers that swipe along that axis.
@@ -316,7 +316,7 @@ right drawer, but vertical drags on it still move a bottom sheet.
 </div>
 ```
 
-### Using drawer stack
+### Drawer stack
 
 When your app shows multiple drawers that stack on top of each other (with
 indent and background effects), use `createStack` and `connectStack` to
@@ -360,7 +360,7 @@ The indent element exposes `data-active` / `data-inactive` attributes and the
 CSS variables `--drawer-swipe-progress` and `--drawer-frontmost-height` for
 styling.
 
-### Closing with Escape
+### Escape to close
 
 Set `closeOnEscape` to `false` if the drawer should not close on `Esc`.
 
@@ -375,7 +375,7 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-### Reading drawer state
+### Drawer state
 
 The `api` provides methods to read the drawer's current position:
 
@@ -400,7 +400,7 @@ const size = api.getContentSize()
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Open and closed state
+### Open state
 
 The drawer exposes `data-state` attributes you can use for open/closed styles:
 
@@ -414,7 +414,7 @@ The drawer exposes `data-state` attributes you can use for open/closed styles:
 }
 ```
 
-### Swipe and drag state
+### Swipe and drag
 
 Target active swipe or drag interactions:
 
@@ -448,7 +448,7 @@ Target active swipe or drag interactions:
 }
 ```
 
-### Animating the drawer
+### Animation
 
 The content element uses
 `transform: translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)`
@@ -515,7 +515,7 @@ The following CSS variables are set on the backdrop element:
 
 The drawer's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The drawer machine exposes the following context properties:
 
@@ -527,10 +527,10 @@ The drawer `api` exposes the following methods:
 
 <ApiTable name="drawer" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="drawer" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="drawer" />

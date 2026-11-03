@@ -47,7 +47,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="rating-group/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the rating's initial value.
 
@@ -61,7 +61,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Controlled rating value
+### Controlled value
 
 Use `value` and `onValueChange` to control the rating externally.
 
@@ -78,7 +78,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Setting and clearing value programmatically
+### Programmatic value
 
 Use `api.setValue` or `api.clearValue` when you need imperative control.
 
@@ -105,7 +105,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the rating value changes, the `onValueChange` callback is invoked.
 
@@ -122,7 +122,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Listening for hover changes
+### Hover changes
 
 Use `onHoverChange` to react to hover previews before selection.
 
@@ -138,7 +138,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Customizing screen reader value text
+### Value text
 
 Use `translations.ratingValueText` to customize how each rating item is
 announced.
@@ -155,7 +155,7 @@ const service = useMachine(rating.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use rating in forms, set `name` and render `api.getHiddenInputProps()`.
 
@@ -173,7 +173,7 @@ const service = useMachine(rating.machine, {
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Disabled State
+### Disabled state
 
 When the rating is disabled, the `data-disabled` attribute is added to the item,
 control and label parts.
@@ -192,7 +192,7 @@ control and label parts.
 }
 ```
 
-### Checked State
+### Checked state
 
 When the rating is checked, the `data-checked` attribute is added to the item
 part.
@@ -203,7 +203,7 @@ part.
 }
 ```
 
-### Readonly State
+### Read-only state
 
 When the rating is readonly, the `data-readonly` attribute is added to the item
 part.
@@ -237,7 +237,7 @@ When an item is half, the `data-half` attribute is added to the item part.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The rating group machine exposes the following context properties:
 
@@ -249,12 +249,12 @@ The rating group `api` exposes the following methods:
 
 <ApiTable name="rating-group" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="rating-group" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="rating-group" />

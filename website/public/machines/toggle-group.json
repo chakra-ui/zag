@@ -1,0 +1,202 @@
+{
+  "id": "toggle-group",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEMS.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ROOT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ROOT.MOUSE_DOWN",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TOGGLE.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ROOT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ROOT.FOCUS",
+      "guard": "!isClickFocus"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TOGGLE.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TOGGLE.FOCUS_FIRST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TOGGLE.FOCUS_LAST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TOGGLE.FOCUS_NEXT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TOGGLE.FOCUS_PREV",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "ROOT.FOCUS",
+      "guard": "!isClickFocus"
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "TOGGLE.FOCUS",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 574,
+      "height": 134,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 441,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "ROOT.FOCUS",
+            "TOGGLE.FOCUS"
+          ],
+          "lines": [
+            "ROOT.FOCUS",
+            "TOGGLE.FOCUS"
+          ],
+          "points": [
+            [
+              126,
+              54
+            ],
+            [
+              441,
+              54
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 61,
+            "w": 95,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 231,
+      "height": 412,
+      "states": {
+        "idle": {
+          "x": 110,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 98,
+          "y": 336,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "ROOT.FOCUS",
+            "TOGGLE.FOCUS"
+          ],
+          "lines": [
+            "ROOT.FOCUS",
+            "TOGGLE.FOCUS"
+          ],
+          "points": [
+            [
+              149,
+              76
+            ],
+            [
+              149,
+              336
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 95,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

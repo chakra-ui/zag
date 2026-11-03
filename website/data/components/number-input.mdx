@@ -57,7 +57,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="number-input/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to define the initial value. The value must be a `string`.
 
@@ -84,7 +84,7 @@ Use `value` and `onValueChange` to control the value externally.
 
 </Example>
 
-### Setting a minimum and maximum value
+### Min and max
 
 Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
@@ -104,7 +104,7 @@ const service = useMachine(numberInput.machine, {
 > To allow the value overflow the specified min or max, set the
 > `allowOverflow: true` in the context.
 
-### Validating overflow and underflow
+### Overflow and underflow
 
 Use `onValueInvalid` to react when the value goes below `min` or above `max`.
 
@@ -124,7 +124,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Scrubbing the input value
+### Scrubbing
 
 Number input supports the scrubber interaction pattern. To use this pattern,
 spread `api.getScrubberProps()` on the scrubbing element.
@@ -138,7 +138,7 @@ virtual cursor which mimics the real cursor's pointer.
 
 </Example>
 
-### Using the mousewheel to change value
+### Mouse wheel
 
 The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
@@ -154,7 +154,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Clamp value when user blurs the input
+### Clamp on blur
 
 In most cases, users can type custom values in the input field. If the typed
 value is greater than the max, the value is reset to max when the user blurs the
@@ -172,7 +172,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 When the value changes, the `onValueChange` callback is invoked.
 
@@ -203,7 +203,7 @@ from a drag.
 | `scrub`           | The scrubber was dragged                     |
 | `script`          | Changed programmatically, such as `setValue` |
 
-### Listening for value commit
+### Value commit
 
 `onValueChange` fires for every step of a drag. Use `onValueCommit` to react
 only when the value settles, which is the better place for saving or validating.
@@ -225,7 +225,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Listening for focus changes
+### Focus changes
 
 Use `onFocusChange` to react to focus and blur transitions.
 
@@ -242,7 +242,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use the number input within forms, set the `name` property in the machine's
 context.
@@ -257,7 +257,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Adjusting the precision of the value
+### Precision
 
 To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
@@ -276,7 +276,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Disabling long press spin
+### Disable long press
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
@@ -290,7 +290,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Choosing mobile keyboard type
+### Mobile keyboard
 
 Set `inputMode` to hint the keyboard type on mobile.
 
@@ -304,7 +304,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Format and parse value
+### Format and parse
 
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
@@ -322,7 +322,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Customizing accessibility labels
+### Accessibility labels
 
 Use `translations` to customize increment/decrement labels and value text.
 
@@ -340,7 +340,7 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Submitting with an external form
+### External form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
@@ -410,7 +410,7 @@ root, label and input parts will have `data-invalid` attribute added to them.
 }
 ```
 
-### Readonly state
+### Read-only state
 
 When the number input is readonly, the input part will have `data-readonly`
 added.
@@ -421,7 +421,7 @@ added.
 }
 ```
 
-### Increment and decrement spin buttons
+### Spin buttons
 
 The spin buttons can be styled individually with their respective
 component-scoped data attributes.
@@ -438,7 +438,7 @@ component-scoped data attributes.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The number input machine exposes the following context properties:
 
@@ -450,12 +450,12 @@ The number input `api` exposes the following methods:
 
 <ApiTable name="number-input" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="number-input" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="number-input" />

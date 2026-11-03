@@ -1,0 +1,770 @@
+{
+  "id": "floating-panel",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open.idle",
+      "label": "idle",
+      "parent": "open",
+      "initial": true
+    },
+    {
+      "id": "open.dragging",
+      "label": "dragging",
+      "parent": "open",
+      "initial": false
+    },
+    {
+      "id": "open.resizing",
+      "label": "resizing",
+      "parent": "open",
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTENT_FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_POSITION",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_SIZE",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open.dragging",
+      "to": null,
+      "event": "DRAG",
+      "guard": null
+    },
+    {
+      "from": "open.dragging",
+      "to": "open.idle",
+      "event": "DRAG_END",
+      "guard": null
+    },
+    {
+      "from": "open.dragging",
+      "to": "open.idle",
+      "event": "ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": "open.dragging",
+      "event": "DRAG_START",
+      "guard": "!isMaximized"
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "ESCAPE",
+      "guard": "isOpenControlled && closeOnEsc"
+    },
+    {
+      "from": "open.idle",
+      "to": "closed",
+      "event": "ESCAPE",
+      "guard": "closeOnEsc"
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "MAXIMIZE",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "MINIMIZE",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "MOVE",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": "open.resizing",
+      "event": "RESIZE_START",
+      "guard": "!isMinimized"
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "RESTORE",
+      "guard": null
+    },
+    {
+      "from": "open.resizing",
+      "to": null,
+      "event": "DRAG",
+      "guard": null
+    },
+    {
+      "from": "open.resizing",
+      "to": "open.idle",
+      "event": "DRAG_END",
+      "guard": null
+    },
+    {
+      "from": "open.resizing",
+      "to": "open.idle",
+      "event": "ESCAPE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 947,
+      "height": 421,
+      "states": {
+        "closed": {
+          "x": 821,
+          "y": 146,
+          "w": 94,
+          "h": 44
+        },
+        "open": {
+          "x": 74,
+          "y": 32,
+          "w": 400,
+          "h": 253
+        },
+        "open.idle": {
+          "x": 98,
+          "y": 96,
+          "w": 78,
+          "h": 44
+        },
+        "open.dragging": {
+          "x": 341,
+          "y": 88,
+          "w": 109,
+          "h": 44
+        },
+        "open.resizing": {
+          "x": 341,
+          "y": 207,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "points": [
+            [
+              821,
+              179
+            ],
+            [
+              737,
+              179
+            ],
+            [
+              737,
+              341
+            ],
+            [
+              48,
+              341
+            ],
+            [
+              48,
+              76
+            ],
+            [
+              74,
+              76
+            ]
+          ],
+          "label": {
+            "x": 219,
+            "y": 348,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "points": [
+            [
+              474,
+              148
+            ],
+            [
+              737,
+              148
+            ],
+            [
+              737,
+              157
+            ],
+            [
+              821,
+              157
+            ]
+          ],
+          "label": {
+            "x": 589,
+            "y": 101,
+            "w": 122,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.dragging",
+          "to": "open.idle",
+          "events": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "lines": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              341,
+              118
+            ],
+            [
+              331,
+              118
+            ],
+            [
+              331,
+              114
+            ],
+            [
+              216,
+              114
+            ],
+            [
+              216,
+              110
+            ],
+            [
+              176,
+              110
+            ]
+          ],
+          "label": {
+            "x": 239,
+            "y": 117,
+            "w": 69,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.dragging",
+          "events": [
+            "DRAG_START"
+          ],
+          "lines": [
+            "DRAG_START"
+          ],
+          "points": [
+            [
+              176,
+              103
+            ],
+            [
+              341,
+              103
+            ]
+          ],
+          "label": {
+            "x": 233,
+            "y": 76,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "closed",
+          "events": [
+            "ESCAPE"
+          ],
+          "lines": [
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              176,
+              118
+            ],
+            [
+              206,
+              118
+            ],
+            [
+              206,
+              168
+            ],
+            [
+              821,
+              168
+            ]
+          ],
+          "label": {
+            "x": 622,
+            "y": 175,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.resizing",
+          "events": [
+            "RESIZE_START"
+          ],
+          "lines": [
+            "RESIZE_START"
+          ],
+          "points": [
+            [
+              176,
+              132
+            ],
+            [
+              186,
+              132
+            ],
+            [
+              186,
+              233
+            ],
+            [
+              331,
+              233
+            ],
+            [
+              331,
+              237
+            ],
+            [
+              341,
+              237
+            ]
+          ],
+          "label": {
+            "x": 226,
+            "y": 236,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.resizing",
+          "to": "open.idle",
+          "events": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "lines": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              341,
+              222
+            ],
+            [
+              196,
+              222
+            ],
+            [
+              196,
+              125
+            ],
+            [
+              176,
+              125
+            ]
+          ],
+          "label": {
+            "x": 239,
+            "y": 179,
+            "w": 69,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 676,
+      "height": 655,
+      "states": {
+        "closed": {
+          "x": 207,
+          "y": 579,
+          "w": 94,
+          "h": 44
+        },
+        "open": {
+          "x": 48,
+          "y": 58,
+          "w": 418,
+          "h": 256
+        },
+        "open.idle": {
+          "x": 143,
+          "y": 102,
+          "w": 78,
+          "h": 44
+        },
+        "open.dragging": {
+          "x": 120,
+          "y": 246,
+          "w": 109,
+          "h": 44
+        },
+        "open.resizing": {
+          "x": 297,
+          "y": 246,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "points": [
+            [
+              278,
+              579
+            ],
+            [
+              278,
+              495
+            ],
+            [
+              522,
+              495
+            ],
+            [
+              522,
+              32
+            ],
+            [
+              72,
+              32
+            ],
+            [
+              72,
+              58
+            ]
+          ],
+          "label": {
+            "x": 529,
+            "y": 169,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "points": [
+            [
+              231,
+              314
+            ],
+            [
+              231,
+              579
+            ]
+          ],
+          "label": {
+            "x": 103,
+            "y": 429,
+            "w": 122,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.dragging",
+          "to": "open.idle",
+          "events": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "lines": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              192,
+              246
+            ],
+            [
+              192,
+              236
+            ],
+            [
+              169,
+              236
+            ],
+            [
+              169,
+              146
+            ]
+          ],
+          "label": {
+            "x": 172,
+            "y": 186,
+            "w": 69,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.dragging",
+          "events": [
+            "DRAG_START"
+          ],
+          "lines": [
+            "DRAG_START"
+          ],
+          "points": [
+            [
+              156,
+              146
+            ],
+            [
+              156,
+              246
+            ]
+          ],
+          "label": {
+            "x": 72,
+            "y": 194,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "closed",
+          "events": [
+            "ESCAPE"
+          ],
+          "lines": [
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              182,
+              146
+            ],
+            [
+              182,
+              176
+            ],
+            [
+              251,
+              176
+            ],
+            [
+              251,
+              495
+            ],
+            [
+              254,
+              495
+            ],
+            [
+              254,
+              579
+            ]
+          ],
+          "label": {
+            "x": 258,
+            "y": 437,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.resizing",
+          "events": [
+            "RESIZE_START"
+          ],
+          "lines": [
+            "RESIZE_START"
+          ],
+          "points": [
+            [
+              208,
+              146
+            ],
+            [
+              208,
+              156
+            ],
+            [
+              344,
+              156
+            ],
+            [
+              344,
+              236
+            ],
+            [
+              369,
+              236
+            ],
+            [
+              369,
+              246
+            ]
+          ],
+          "label": {
+            "x": 347,
+            "y": 194,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.resizing",
+          "to": "open.idle",
+          "events": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "lines": [
+            "DRAG_END",
+            "ESCAPE"
+          ],
+          "points": [
+            [
+              333,
+              246
+            ],
+            [
+              333,
+              166
+            ],
+            [
+              195,
+              166
+            ],
+            [
+              195,
+              146
+            ]
+          ],
+          "label": {
+            "x": 262,
+            "y": 186,
+            "w": 69,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

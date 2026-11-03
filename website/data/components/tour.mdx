@@ -120,7 +120,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Resolving a step's target
+### Step target
 
 `target` is called on every position update, so a step keeps up when the page
 swaps its element. Keep it cheap and return a stable reference, since it runs on
@@ -134,7 +134,7 @@ target: () => document.querySelector("#target-1")
 
 </Example>
 
-### Configuring actions
+### Actions
 
 Every step supports a list of actions that are rendered in the step footer. Use
 the `actions` property to define each action.
@@ -177,7 +177,7 @@ Both `dismiss` and `skip` end the tour and trigger `onStatusChange`, but with a
 different `status` (`"dismissed"` vs `"skipped"`) so you can distinguish user
 intent, for example, to decide whether to show the tour again later.
 
-### Changing tooltip placement
+### Placement
 
 Use the `placement` property to define the placement of the tooltip.
 
@@ -196,7 +196,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Hiding the arrow
+### Hide arrow
 
 Set `arrow: false` in the step property to hide the tooltip arrow. This is only
 useful for tooltip steps.
@@ -215,7 +215,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Hiding the backdrop
+### Hide backdrop
 
 Set `backdrop: false` in the step property to hide the backdrop. This applies to
 all step types except the `wait` step.
@@ -234,7 +234,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Step Effects
+### Step effects
 
 Step effects are functions that are called before a step is opened. They are
 useful for adding custom logic to a step.
@@ -273,7 +273,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Wait Steps
+### Wait steps
 
 Wait steps are useful when you need to wait for a specific condition before
 proceeding to the next step.
@@ -302,7 +302,7 @@ const steps: tour.StepDetails[] = [
 
 </Example>
 
-### Showing progress dots
+### Progress dots
 
 Use the `api.getProgressPercent()` to show the progress dots.
 
@@ -318,7 +318,7 @@ const ProgressBar = () => {
 
 </Example>
 
-### Tracking the lifecycle
+### Lifecycle
 
 As the tour is progressed, events are fired and you can track the lifecycle of
 the tour. Here's are the events you can listen to:
@@ -354,7 +354,7 @@ const Lifecycle = () => {
 
 </Example>
 
-### Controlled current step
+### Controlled step
 
 Use `stepId` and `onStepChange` for controlled navigation.
 
@@ -372,7 +372,7 @@ const service = useMachine(tour.machine, {
 
 </Example>
 
-### Programmatic tour control
+### Programmatic control
 
 Use the connected API to drive tour flow from code.
 
@@ -388,7 +388,7 @@ api.updateStep("step-2", { title: "Updated title" })
 
 </Example>
 
-### Dismiss and interaction behavior
+### Dismiss behavior
 
 Configure dismissal and page interaction behavior with machine props.
 
@@ -404,7 +404,7 @@ const service = useMachine(tour.machine, {
 
 </Example>
 
-### Customizing scroll behavior
+### Scroll behavior
 
 By default, the target scrolls into view with the nearest alignment. Use
 `scrollToTargetFn` to handle sticky headers, smooth scrolling or custom scroll
@@ -418,7 +418,7 @@ const service = useMachine(tour.machine, {
 })
 ```
 
-### Exit animations (Presence)
+### Exit animations
 
 After the tour closes, `api.step` still references the last step so exit
 animations can keep rendering content. Drive visibility with `api.open` (or
@@ -443,7 +443,7 @@ Presence), and read content from `api.step`.
 > Don't treat `api.step === null` as "tour closed". Use `api.open` or
 > `onStatusChange` for that.
 
-### Customizing progress text
+### Progress text
 
 Use `translations.progressText` to customize the progress message.
 
@@ -574,7 +574,7 @@ backdrop:
 The spotlight exposes CSS variables for the target's position and size:
 `--spotlight-x`, `--spotlight-y`, `--spotlight-width`, `--spotlight-height`.
 
-### Animating step changes
+### Step animation
 
 Transition the backdrop cutout, the spotlight and the positioner together so the
 highlight and the tooltip glide to the next step.
@@ -615,7 +615,7 @@ These parts get `data-instant` when there's no visible previous step to move
 from (open, reopen, or after a step without a target). Turning transitions off
 for it makes them snap into place instead of animating from their last position.
 
-### Placement Styles
+### Placement styles
 
 For floating type tours, you can style based on the placement using the
 `data-placement` attribute:
@@ -640,7 +640,7 @@ For floating type tours, you can style based on the placement using the
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tour machine exposes the following context properties:
 

@@ -52,7 +52,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="radio-group/usage.mdx" />
 
-### Disabling the radio group
+### Disabled state
 
 Set `disabled` to `true` to disable all radio items.
 
@@ -66,7 +66,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the radio group's initial value.
 
@@ -97,7 +97,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the radio group value changes, the `onValueChange` callback is invoked.
 
@@ -114,7 +114,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use radio group in forms, set `name`.
 
@@ -152,7 +152,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Read-only and required state
+### Read-only and required
 
 Use `readOnly` and `required` to control form behavior.
 
@@ -185,7 +185,7 @@ const service = useMachine(radio.machine, {
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Checked State
+### Checked state
 
 When the radio input is checked, the `data-state` attribute is added to the
 item, control, and text parts.
@@ -263,7 +263,7 @@ control and text parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The radio group machine exposes the following context properties:
 
@@ -280,6 +280,6 @@ The radio group `api` exposes the following methods:
 Adheres to the
 [Radio Group WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radiobutton)
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="radio-group" />

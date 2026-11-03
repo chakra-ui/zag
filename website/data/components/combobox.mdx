@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="combobox/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to define the initial combobox value.
 
@@ -89,7 +89,7 @@ Use `value` and `onValueChange` to control the value programmatically.
 
 </Example>
 
-### Setting the initial input value
+### Initial input value
 
 Use `defaultInputValue` to prefill the input on first render.
 
@@ -105,7 +105,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Controlling the input value
+### Controlled input
 
 Use `inputValue` and `onInputValueChange` when you want to filter options as you
 type.
@@ -126,7 +126,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Selecting multiple values
+### Multiple selection
 
 Set `multiple` to `true` to allow selecting multiple values.
 
@@ -142,7 +142,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Using a custom object format
+### Custom object format
 
 By default, the combobox collection expects an array of items with `label` and
 `value` properties. To use a custom object format, pass the `itemToString` and
@@ -187,7 +187,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Rendering the selected values outside the combobox
+### Selected values display
 
 By default, selected values are shown in the input. For multiple selection, it
 is often better to render selected values outside the combobox.
@@ -212,7 +212,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Disabling the combobox
+### Disabled state
 
 Set `disabled` to `true` to disable the combobox.
 
@@ -226,7 +226,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Disabling an option
+### Disabled items
 
 Pass `isItemDisabled` to disable specific options.
 
@@ -261,7 +261,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Controlling open state
+### Controlled open
 
 Use `open` and `onOpenChange` for controlled popup state, or `defaultOpen` for
 an uncontrolled initial state.
@@ -290,7 +290,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-### Configuring popup trigger behavior
+### Trigger behavior
 
 Use these props to fine-tune when the popup opens:
 
@@ -315,7 +315,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Positioning the popup
+### Positioning
 
 Use `positioning` to control how the popup is placed.
 
@@ -331,7 +331,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Rendering the list inline
+### Inline list
 
 Set `inline` to keep the list always open and render it in place, like a command
 menu. The list isn't positioned or dismissed on outside interaction, and
@@ -347,7 +347,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Submitting forms on Enter
+### Submit on Enter
 
 Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even
 while the popup is open.
@@ -364,7 +364,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Making the combobox readonly
+### Read-only state
 
 Set `readOnly` to `true` to make the combobox read-only.
 
@@ -378,7 +378,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Required and invalid state
+### Required and invalid
 
 Set `required` and `invalid` for form validation and UI state.
 
@@ -395,7 +395,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Listening for highlight changes
+### Highlight changes
 
 Use `onHighlightChange` to listen for highlighted option changes.
 
@@ -413,7 +413,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Setting the initial highlighted option
+### Initial highlight
 
 Use `defaultHighlightedValue` to set which option is highlighted when the popup
 opens.
@@ -430,7 +430,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Listening for item selection
+### Item selection
 
 Use `onSelect` to react to each selected item.
 
@@ -449,7 +449,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to listen for selected value changes.
 
@@ -466,7 +466,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 The combobox works in forms when you:
 
@@ -495,7 +495,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-### Allowing custom values
+### Custom values
 
 By default, the combobox only allows values from the collection. Set
 `allowCustomValue` to `true` to allow custom values.
@@ -510,7 +510,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Wrapping items in a list
+### List wrapper
 
 By default, `getContentProps()` renders the `listbox` role, so items can sit
 directly inside the content. `getListProps()` is optional here and only acts as
@@ -556,7 +556,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Customizing accessibility labels
+### Accessibility labels
 
 Use `translations` to customize the trigger and clear button labels.
 
@@ -575,7 +575,7 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-### Loading and result announcements
+### Announcements
 
 When the user types, the combobox announces the number of results to screen
 readers once the input and results settle ("3 results", "1 result", or "No
@@ -690,7 +690,7 @@ To paginate, return a `cursor` from `load` and call `list.loadMore()` from
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Open and closed state
+### Open state
 
 When the combobox opens or closes, `data-state` is added to content, control,
 input, and trigger parts.
@@ -751,7 +751,7 @@ label, control, trigger and option parts.
 }
 ```
 
-### Invalid State
+### Invalid state
 
 When the combobox is invalid, the `data-invalid` attribute is added to the root,
 label, control and input parts.
@@ -774,7 +774,7 @@ label, control and input parts.
 }
 ```
 
-### Selected State
+### Selected state
 
 When a combobox item is selected, the `data-state` attribute is added to the
 item part.
@@ -785,7 +785,7 @@ item part.
 }
 ```
 
-### Highlighted State
+### Highlighted state
 
 When a combobox item is highlighted, the `data-highlighted` attribute is added
 to the item part.
@@ -798,7 +798,7 @@ to the item part.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The combobox machine exposes the following context properties:
 
@@ -810,11 +810,11 @@ The combobox `api` exposes the following methods:
 
 <ApiTable name="combobox" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="combobox" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="combobox" />
 
@@ -823,6 +823,6 @@ The combobox `api` exposes the following methods:
 Adheres to the
 [Combobox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="combobox" />

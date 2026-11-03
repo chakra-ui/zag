@@ -4,13 +4,8 @@ description: Using the meter machine in your project.
 package: "@zag-js/meter"
 ---
 
-A meter shows a scalar measurement inside a known range: storage used, battery
-left, a score. Use [`progress`](/components/progress) when the value is how far
-a running task has gone.
-
-`low`, `high`, and `optimum` follow the HTML `<meter>` algorithm. The machine
-exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
-`least-optimal`.
+Shows a measurement inside a known range, like storage used or battery left. Use
+[`progress`](/components/progress) for how far a task has gone.
 
 <Resources pkg="@zag-js/meter" />
 
@@ -55,7 +50,7 @@ The root carries `role="meter"`, `aria-valuemin`, `aria-valuemax`,
 `aria-valuenow`, `aria-valuetext`, and `aria-labelledby`. The visible value text
 is `aria-hidden` because assistive tech already reads `aria-valuetext`.
 
-### Setting the value
+### Initial value
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state. When
 neither is passed, the value defaults to the midpoint of `min` and `max`.
@@ -78,7 +73,7 @@ api.setToMin()
 api.setToMax()
 ```
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react to updates.
 
@@ -95,7 +90,7 @@ const service = useMachine(meter.machine, {
 
 </Example>
 
-### Setting the minimum and maximum values
+### Min and max
 
 By default the meter uses `min` `0` and `max` `100`.
 
@@ -113,7 +108,9 @@ const service = useMachine(meter.machine, {
 ### Thresholds
 
 Pass `low`, `high`, and `optimum`. They default the same way the HTML element
-does: `low` to `min`, `high` to `max`, `optimum` to the midpoint.
+does: `low` to `min`, `high` to `max`, `optimum` to the midpoint. The machine
+exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
+`least-optimal`.
 
 - If `optimum` is below `low`, a smaller value is better (disk usage).
 - If `optimum` is above `high`, a larger value is better (battery).
@@ -148,7 +145,7 @@ Style the fill with `data-state`:
 }
 ```
 
-### Customizing value text
+### Value text
 
 Use `translations.value` when the formatted number is not enough for assistive
 tech.
@@ -171,7 +168,7 @@ Render the `valueText` part if you also want that string on screen.
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
-### Localizing percentage formatting
+### Percent formatting
 
 `formatOptions` defaults to `{ style: "percent" }`. Pass a different
 `Intl.NumberFormat` style when the raw value should be shown.
@@ -231,7 +228,7 @@ The root, track, and indicator also have `data-orientation` and `data-state`.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The meter machine exposes the following context properties:
 
@@ -243,10 +240,10 @@ The meter `api` exposes the following methods:
 
 <ApiTable name="meter" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="meter" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="meter" />

@@ -1,0 +1,1220 @@
+{
+  "id": "toast",
+  "initial": "visible",
+  "states": [
+    {
+      "id": "visible:updating",
+      "label": "visible:updating",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "visible:persist",
+      "label": "visible:persist",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "visible",
+      "label": "visible",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "visible:swiping",
+      "label": "visible:swiping",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "dismissing",
+      "label": "dismissing",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "unmounted",
+      "label": "unmounted",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "MEASURE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "visible:persist",
+      "event": "UPDATE",
+      "guard": "isVisible && shouldPause"
+    },
+    {
+      "from": "*",
+      "to": "visible:updating",
+      "event": "UPDATE",
+      "guard": "isVisible"
+    },
+    {
+      "from": "dismissing",
+      "to": "unmounted",
+      "event": "REMOVE",
+      "guard": null
+    },
+    {
+      "from": "visible",
+      "to": "dismissing",
+      "event": "DISMISS",
+      "guard": null
+    },
+    {
+      "from": "visible",
+      "to": "visible:persist",
+      "event": "PAUSE",
+      "guard": null
+    },
+    {
+      "from": "visible",
+      "to": "visible:swiping",
+      "event": "SWIPE.START",
+      "guard": "canSwipe"
+    },
+    {
+      "from": "visible:persist",
+      "to": "dismissing",
+      "event": "DISMISS",
+      "guard": null
+    },
+    {
+      "from": "visible:persist",
+      "to": "visible",
+      "event": "RESUME",
+      "guard": "!shouldPause"
+    },
+    {
+      "from": "visible:persist",
+      "to": "visible:swiping",
+      "event": "SWIPE.START",
+      "guard": "canSwipe"
+    },
+    {
+      "from": "visible:swiping",
+      "to": "dismissing",
+      "event": "DISMISS",
+      "guard": null
+    },
+    {
+      "from": "visible:swiping",
+      "to": "visible:persist",
+      "event": "SWIPE.CANCEL",
+      "guard": "shouldPause"
+    },
+    {
+      "from": "visible:swiping",
+      "to": "visible",
+      "event": "SWIPE.CANCEL",
+      "guard": null
+    },
+    {
+      "from": "visible:swiping",
+      "to": "dismissing",
+      "event": "SWIPE.END",
+      "guard": "isSwipeDismiss"
+    },
+    {
+      "from": "visible:swiping",
+      "to": "visible:persist",
+      "event": "SWIPE.END",
+      "guard": "shouldPause"
+    },
+    {
+      "from": "visible:swiping",
+      "to": "visible",
+      "event": "SWIPE.END",
+      "guard": null
+    },
+    {
+      "from": "visible:swiping",
+      "to": null,
+      "event": "SWIPE.MOVE",
+      "guard": null
+    },
+    {
+      "from": "visible:swiping",
+      "to": null,
+      "event": "UPDATE",
+      "guard": null
+    },
+    {
+      "from": "visible:updating",
+      "to": "dismissing",
+      "event": "DISMISS",
+      "guard": null
+    },
+    {
+      "from": "visible:updating",
+      "to": "visible:persist",
+      "event": "PAUSE",
+      "guard": null
+    },
+    {
+      "from": "visible:updating",
+      "to": "visible",
+      "event": "SHOW",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 2346,
+      "height": 387,
+      "states": {
+        "visible:updating": {
+          "x": 48,
+          "y": 164,
+          "w": 170,
+          "h": 44
+        },
+        "visible:persist": {
+          "x": 487,
+          "y": 164,
+          "w": 162,
+          "h": 44
+        },
+        "visible": {
+          "x": 925,
+          "y": 158,
+          "w": 101,
+          "h": 44
+        },
+        "visible:swiping": {
+          "x": 1341,
+          "y": 232,
+          "w": 162,
+          "h": 44
+        },
+        "dismissing": {
+          "x": 1798,
+          "y": 70,
+          "w": 124,
+          "h": 44
+        },
+        "unmounted": {
+          "x": 2198,
+          "y": 70,
+          "w": 116,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dismissing",
+          "to": "unmounted",
+          "events": [
+            "REMOVE"
+          ],
+          "lines": [
+            "REMOVE"
+          ],
+          "points": [
+            [
+              1922,
+              92
+            ],
+            [
+              2198,
+              92
+            ]
+          ],
+          "label": {
+            "x": 2032,
+            "y": 99,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              1026,
+              169
+            ],
+            [
+              1052,
+              169
+            ],
+            [
+              1052,
+              144
+            ],
+            [
+              1714,
+              144
+            ],
+            [
+              1714,
+              96
+            ],
+            [
+              1798,
+              96
+            ]
+          ],
+          "label": {
+            "x": 1391,
+            "y": 151,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "visible:persist",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              925,
+              169
+            ],
+            [
+              685,
+              169
+            ],
+            [
+              685,
+              179
+            ],
+            [
+              649,
+              179
+            ]
+          ],
+          "label": {
+            "x": 763,
+            "y": 138,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "visible:swiping",
+          "events": [
+            "SWIPE.START"
+          ],
+          "lines": [
+            "SWIPE.START"
+          ],
+          "points": [
+            [
+              1026,
+              180
+            ],
+            [
+              1062,
+              180
+            ],
+            [
+              1062,
+              200
+            ],
+            [
+              1267,
+              200
+            ],
+            [
+              1267,
+              241
+            ],
+            [
+              1341,
+              241
+            ]
+          ],
+          "label": {
+            "x": 1139,
+            "y": 169,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              649,
+              171
+            ],
+            [
+              675,
+              171
+            ],
+            [
+              675,
+              88
+            ],
+            [
+              1798,
+              88
+            ]
+          ],
+          "label": {
+            "x": 1153,
+            "y": 95,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "visible",
+          "events": [
+            "RESUME"
+          ],
+          "lines": [
+            "RESUME"
+          ],
+          "points": [
+            [
+              649,
+              186
+            ],
+            [
+              841,
+              186
+            ],
+            [
+              841,
+              180
+            ],
+            [
+              925,
+              180
+            ]
+          ],
+          "label": {
+            "x": 759,
+            "y": 193,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "visible:swiping",
+          "events": [
+            "SWIPE.START"
+          ],
+          "lines": [
+            "SWIPE.START"
+          ],
+          "points": [
+            [
+              649,
+              193
+            ],
+            [
+              685,
+              193
+            ],
+            [
+              685,
+              289
+            ],
+            [
+              1257,
+              289
+            ],
+            [
+              1257,
+              258
+            ],
+            [
+              1341,
+              258
+            ]
+          ],
+          "label": {
+            "x": 931,
+            "y": 258,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "dismissing",
+          "events": [
+            "DISMISS",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "DISMISS",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              1503,
+              254
+            ],
+            [
+              1724,
+              254
+            ],
+            [
+              1724,
+              105
+            ],
+            [
+              1798,
+              105
+            ]
+          ],
+          "label": {
+            "x": 1613,
+            "y": 261,
+            "w": 75,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "visible:persist",
+          "events": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              1341,
+              267
+            ],
+            [
+              1267,
+              267
+            ],
+            [
+              1267,
+              306
+            ],
+            [
+              675,
+              306
+            ],
+            [
+              675,
+              201
+            ],
+            [
+              649,
+              201
+            ]
+          ],
+          "label": {
+            "x": 928,
+            "y": 313,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "visible",
+          "events": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              1341,
+              250
+            ],
+            [
+              1257,
+              250
+            ],
+            [
+              1257,
+              217
+            ],
+            [
+              1052,
+              217
+            ],
+            [
+              1052,
+              191
+            ],
+            [
+              1026,
+              191
+            ]
+          ],
+          "label": {
+            "x": 1136,
+            "y": 224,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              218,
+              175
+            ],
+            [
+              244,
+              175
+            ],
+            [
+              244,
+              63
+            ],
+            [
+              1714,
+              63
+            ],
+            [
+              1714,
+              79
+            ],
+            [
+              1798,
+              79
+            ]
+          ],
+          "label": {
+            "x": 945,
+            "y": 32,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "visible:persist",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              218,
+              186
+            ],
+            [
+              487,
+              186
+            ]
+          ],
+          "label": {
+            "x": 328,
+            "y": 193,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "visible",
+          "events": [
+            "SHOW"
+          ],
+          "lines": [
+            "SHOW"
+          ],
+          "points": [
+            [
+              218,
+              197
+            ],
+            [
+              244,
+              197
+            ],
+            [
+              244,
+              323
+            ],
+            [
+              841,
+              323
+            ],
+            [
+              841,
+              191
+            ],
+            [
+              925,
+              191
+            ]
+          ],
+          "label": {
+            "x": 547,
+            "y": 330,
+            "w": 42,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 716,
+      "height": 1580,
+      "states": {
+        "visible:updating": {
+          "x": 280,
+          "y": 32,
+          "w": 170,
+          "h": 44
+        },
+        "visible:persist": {
+          "x": 284,
+          "y": 320,
+          "w": 162,
+          "h": 44
+        },
+        "visible": {
+          "x": 313,
+          "y": 608,
+          "w": 101,
+          "h": 44
+        },
+        "visible:swiping": {
+          "x": 390,
+          "y": 912,
+          "w": 162,
+          "h": 44
+        },
+        "dismissing": {
+          "x": 228,
+          "y": 1216,
+          "w": 124,
+          "h": 44
+        },
+        "unmounted": {
+          "x": 232,
+          "y": 1504,
+          "w": 116,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dismissing",
+          "to": "unmounted",
+          "events": [
+            "REMOVE"
+          ],
+          "lines": [
+            "REMOVE"
+          ],
+          "points": [
+            [
+              290,
+              1260
+            ],
+            [
+              290,
+              1504
+            ]
+          ],
+          "label": {
+            "x": 228,
+            "y": 1370,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              338,
+              652
+            ],
+            [
+              338,
+              678
+            ],
+            [
+              302,
+              678
+            ],
+            [
+              302,
+              1216
+            ]
+          ],
+          "label": {
+            "x": 234,
+            "y": 922,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "visible:persist",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              338,
+              608
+            ],
+            [
+              338,
+              364
+            ]
+          ],
+          "label": {
+            "x": 283,
+            "y": 474,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible",
+          "to": "visible:swiping",
+          "events": [
+            "SWIPE.START"
+          ],
+          "lines": [
+            "SWIPE.START"
+          ],
+          "points": [
+            [
+              364,
+              652
+            ],
+            [
+              364,
+              688
+            ],
+            [
+              422,
+              688
+            ],
+            [
+              422,
+              912
+            ]
+          ],
+          "label": {
+            "x": 327,
+            "y": 770,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              311,
+              364
+            ],
+            [
+              311,
+              390
+            ],
+            [
+              209,
+              390
+            ],
+            [
+              209,
+              1132
+            ],
+            [
+              278,
+              1132
+            ],
+            [
+              278,
+              1216
+            ]
+          ],
+          "label": {
+            "x": 141,
+            "y": 770,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "visible",
+          "events": [
+            "RESUME"
+          ],
+          "lines": [
+            "RESUME"
+          ],
+          "points": [
+            [
+              365,
+              364
+            ],
+            [
+              365,
+              390
+            ],
+            [
+              364,
+              390
+            ],
+            [
+              364,
+              608
+            ]
+          ],
+          "label": {
+            "x": 371,
+            "y": 474,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:persist",
+          "to": "visible:swiping",
+          "events": [
+            "SWIPE.START"
+          ],
+          "lines": [
+            "SWIPE.START"
+          ],
+          "points": [
+            [
+              392,
+              364
+            ],
+            [
+              392,
+              400
+            ],
+            [
+              565,
+              400
+            ],
+            [
+              565,
+              828
+            ],
+            [
+              487,
+              828
+            ],
+            [
+              487,
+              912
+            ]
+          ],
+          "label": {
+            "x": 470,
+            "y": 618,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "dismissing",
+          "events": [
+            "DISMISS",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "DISMISS",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              471,
+              956
+            ],
+            [
+              471,
+              1132
+            ],
+            [
+              327,
+              1132
+            ],
+            [
+              327,
+              1216
+            ]
+          ],
+          "label": {
+            "x": 478,
+            "y": 1066,
+            "w": 75,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "visible:persist",
+          "events": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              520,
+              912
+            ],
+            [
+              520,
+              838
+            ],
+            [
+              582,
+              838
+            ],
+            [
+              582,
+              390
+            ],
+            [
+              419,
+              390
+            ],
+            [
+              419,
+              364
+            ]
+          ],
+          "label": {
+            "x": 589,
+            "y": 610,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:swiping",
+          "to": "visible",
+          "events": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "lines": [
+            "SWIPE.CANCEL",
+            "SWIPE.END"
+          ],
+          "points": [
+            [
+              455,
+              912
+            ],
+            [
+              455,
+              828
+            ],
+            [
+              439,
+              828
+            ],
+            [
+              439,
+              678
+            ],
+            [
+              389,
+              678
+            ],
+            [
+              389,
+              652
+            ]
+          ],
+          "label": {
+            "x": 446,
+            "y": 762,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "dismissing",
+          "events": [
+            "DISMISS"
+          ],
+          "lines": [
+            "DISMISS"
+          ],
+          "points": [
+            [
+              323,
+              76
+            ],
+            [
+              323,
+              102
+            ],
+            [
+              116,
+              102
+            ],
+            [
+              116,
+              1142
+            ],
+            [
+              253,
+              1142
+            ],
+            [
+              253,
+              1216
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 618,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "visible:persist",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              365,
+              76
+            ],
+            [
+              365,
+              320
+            ]
+          ],
+          "label": {
+            "x": 310,
+            "y": 186,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "visible:updating",
+          "to": "visible",
+          "events": [
+            "SHOW"
+          ],
+          "lines": [
+            "SHOW"
+          ],
+          "points": [
+            [
+              408,
+              76
+            ],
+            [
+              408,
+              102
+            ],
+            [
+              599,
+              102
+            ],
+            [
+              599,
+              524
+            ],
+            [
+              389,
+              524
+            ],
+            [
+              389,
+              608
+            ]
+          ],
+          "label": {
+            "x": 606,
+            "y": 330,
+            "w": 42,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

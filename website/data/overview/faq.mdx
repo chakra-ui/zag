@@ -3,7 +3,7 @@ title: Frequently Asked Questions
 description: Common questions and answers about the project
 ---
 
-## Why the need for `normalizeProps`?
+## Why normalizeProps
 
 The goal of `normalizeProps` is to convert the props of the component into the
 format that is compatible with the respective framework.
@@ -28,15 +28,15 @@ frameworks like React, Solid and Vue. Here are some examples:
 These little nuances between frameworks are handled automatically when you use
 `normalizeProps`.
 
-## How can I attach custom extra event handlers to the elements?
+## Custom event handlers
 
 See the approach [here](/guides/composition#event-composition).
 
-## How can I get Zag working in a custom window environment?
+## Custom window
 
-See the approach [here](/guides/composition#custom-window-environment).
+See the approach [here](/guides/composition#custom-window).
 
-## What would it take to support other frameworks?
+## Other frameworks
 
 We're currently interested in supporting as many frameworks as possible. The key
 requirements are:
@@ -47,7 +47,7 @@ requirements are:
 - **Exposed Typings**: The framework should expose the typings for the
   attributes and event handlers. This is optional but would provide the best DX.
 
-## How do I upgrade all zag dependencies?
+## Upgrading dependencies
 
 Since we use independent versioning for each zag package, it can sometimes be
 inconvenient to upgrade all dependencies individually.

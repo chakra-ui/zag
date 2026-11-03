@@ -1,0 +1,180 @@
+---
+title: List collection
+description: A flat list of items with lookup, navigation and immutable updates.
+package: "@zag-js/collection"
+---
+
+Wraps a flat list of items so a machine can look them up, skip disabled ones and
+move between them.
+
+<Resources pkg="@zag-js/collection" />
+
+## Installation
+
+Each component re-exports a factory, so you rarely install the package directly.
+
+```ts
+import * as select from "@zag-js/select"
+
+const collection = select.collection({ items }) // ListCollection
+```
+
+To use the class on its own:
+
+```bash
+npm install @zag-js/collection
+```
+
+## Create a collection
+
+```ts
+import { ListCollection } from "@zag-js/collection"
+
+const collection = new ListCollection({
+  items: [
+    { label: "Apple", value: "apple" },
+    { label: "Banana", value: "banana", disabled: true },
+  ],
+})
+```
+
+Collections are immutable. Methods that change items return a new collection.
+
+### Custom item shapes
+
+By default, a collection reads `value`, `label` and `disabled` from each item.
+Strings work as both value and label. For other shapes, pass the mapping
+functions.
+
+```ts
+interface Country {
+  code: string
+  name: string
+  available: boolean
+}
+
+const collection = new ListCollection<Country>({
+  items: countries,
+  itemToValue: (item) => item.code,
+  itemToString: (item) => item.name,
+  isItemDisabled: (item) => !item.available,
+})
+```
+
+| Option           | Type                                      | Default                |
+| ---------------- | ----------------------------------------- | ---------------------- |
+| `items`          | `Iterable<T>`                             | required               |
+| `itemToValue`    | `(item: T) => string`                     | `item.value` or `item` |
+| `itemToString`   | `(item: T) => string`                     | `item.label` or value  |
+| `isItemDisabled` | `(item: T) => boolean`                    | `item.disabled`        |
+| `groupBy`        | `(item: T, index) => string`              |                        |
+| `groupSort`      | function, `string[]`, `"asc"` or `"desc"` |                        |
+
+Values must be unique. The collection indexes items by value.
+
+### Item groups
+
+`groupBy` returns a group key for each item. `group()` returns `[key, items]`
+pairs to render.
+
+```ts
+const collection = new ListCollection({
+  items: [
+    { label: "Apple", value: "apple", type: "Fruit" },
+    { label: "Carrot", value: "carrot", type: "Vegetable" },
+    { label: "Banana", value: "banana", type: "Fruit" },
+  ],
+  groupBy: (item) => item.type,
+  groupSort: "asc",
+})
+
+collection.group()
+// [["Fruit", [apple, banana]], ["Vegetable", [carrot]]]
+```
+
+`groupSort` orders the groups. Pass `"asc"`, `"desc"`, a compare function, or an
+array of keys in the order you want. Keys missing from the array go last.
+
+With grouping on, `at`, `indexOf` and navigation follow the grouped order, so
+keyboard navigation matches what you render.
+
+## Methods
+
+### Lookup
+
+| Method             | Returns                         |
+| ------------------ | ------------------------------- |
+| `find(value)`      | The item, or `null`             |
+| `findMany(values)` | The items that exist            |
+| `at(index)`        | The item at an index, or `null` |
+| `indexOf(value)`   | The index, or `-1`              |
+| `has(value)`       | Whether a value exists          |
+| `hasItem(item)`    | Whether an item's value exists  |
+| `getValues()`      | All values                      |
+| `size`             | The number of items             |
+| `items`            | The items array                 |
+
+### Item helpers
+
+| Method                        | Returns                            |
+| ----------------------------- | ---------------------------------- |
+| `getItemValue(item)`          | The item's value                   |
+| `stringifyItem(item)`         | The item's label                   |
+| `getItemDisabled(item)`       | Whether the item is disabled       |
+| `stringify(value)`            | The label for a value              |
+| `stringifyItems(items, sep?)` | Labels joined with `", "` or `sep` |
+| `stringifyMany(values, sep?)` | Labels for values, joined          |
+
+### Navigation
+
+These skip disabled items.
+
+| Method                                   | Returns                               |
+| ---------------------------------------- | ------------------------------------- |
+| `firstValue`                             | The first enabled value               |
+| `lastValue`                              | The last enabled value                |
+| `getNextValue(value, step?, clamp?)`     | The next enabled value, or `null`     |
+| `getPreviousValue(value, step?, clamp?)` | The previous enabled value, or `null` |
+| `getValueRange(from, to)`                | Values between two values, in order   |
+| `sort(values)`                           | Values in collection order            |
+| `compareValue(a, b)`                     | `-1`, `0` or `1`                      |
+| `search(query, options)`                 | The value matching typed characters   |
+
+### Update items
+
+Each returns a new collection.
+
+```ts
+collection.append({ label: "Cherry", value: "cherry" })
+collection.insertAfter("apple", { label: "Apricot", value: "apricot" })
+collection.update("apple", { label: "Green apple", value: "apple" })
+collection.upsert("kiwi", { label: "Kiwi", value: "kiwi" })
+collection.remove("banana")
+collection.move("apple", 2)
+collection.filter((label) => label.startsWith("A"))
+```
+
+| Method                                  | Change                                            |
+| --------------------------------------- | ------------------------------------------------- |
+| `setItems(items)`                       | Replace all items                                 |
+| `append(...items)`, `prepend(...items)` | Add to the end or start                           |
+| `insert(index, ...items)`               | Add at an index                                   |
+| `insertBefore(value, ...items)`         | Add before a value                                |
+| `insertAfter(value, ...items)`          | Add after a value                                 |
+| `update(value, item)`                   | Replace an item                                   |
+| `upsert(value, item, mode?)`            | Replace, or add with `"append"` or `"prepend"`    |
+| `remove(...itemsOrValues)`              | Remove items                                      |
+| `move(value, toIndex)`                  | Move an item to an index                          |
+| `moveBefore(value, ...values)`          | Move values before a value                        |
+| `moveAfter(value, ...values)`           | Move values after a value                         |
+| `reorder(fromIndex, toIndex)`           | Move by index                                     |
+| `filter(fn)`                            | Keep items where `fn(label, index, item)` is true |
+| `copy(items?)`                          | A new collection with the same options            |
+
+## Type guard
+
+```ts
+import { isListCollection } from "@zag-js/collection"
+
+isListCollection(value) // value is ListCollection
+```

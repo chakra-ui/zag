@@ -50,7 +50,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="timer/usage.mdx" />
 
-### Setting the start value
+### Start value
 
 Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
@@ -75,7 +75,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-### Auto starting the timer
+### Autostart
 
 Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
@@ -90,7 +90,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Usage as countdown timer
+### Countdown timer
 
 To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
@@ -105,7 +105,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Setting the target value
+### Target value
 
 To set the target value of the countdown timer, pass the `targetMs` property in
 the timer machine's context. The timer stops automatically when the `targetMs`
@@ -134,7 +134,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Setting the tick interval
+### Tick interval
 
 Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
@@ -149,7 +149,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Listening to tick events
+### Tick events
 
 When the timer ticks, the `onTick` callback is invoked. You can listen to this
 event and update your UI accordingly.
@@ -167,7 +167,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Listening for completion events
+### Completion events
 
 When the timer reaches the target time, the `onComplete` callback is invoked.
 
@@ -185,7 +185,7 @@ const service = useMachine(timer.machine, {
 
 </Example>
 
-### Programmatic timer controls
+### Programmatic control
 
 Use the connected API for timer actions.
 
@@ -203,7 +203,7 @@ api.restart()
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The timer machine exposes the following context properties:
 

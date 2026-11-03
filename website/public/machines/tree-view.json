@@ -1,0 +1,410 @@
+{
+  "id": "tree-view",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "renaming",
+      "label": "renaming",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "BRANCH.COLLAPSE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "BRANCH.EXPAND",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.TOGGLE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXPANDED.ALL",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXPANDED.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXPANDED.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXPAND_TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_DOWN",
+      "guard": "isShiftKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_LEFT",
+      "guard": "isBranchNode && isBranchExpanded"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_RIGHT",
+      "guard": "isBranchNode"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_UP",
+      "guard": "isShiftKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.CLICK",
+      "guard": "isCtrlKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.CLICK",
+      "guard": "isShiftKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.CLICK",
+      "guard": "isBranchNode && expandOnClick"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.DESELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.END",
+      "guard": "isShiftKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.END",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.HOME",
+      "guard": "isShiftKey && isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.HOME",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SELECTED.ALL",
+      "guard": "isMultipleSelection && moveFocus"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SELECTED.ALL",
+      "guard": "isMultipleSelection"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SELECTED.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SELECTED.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SIBLINGS.EXPAND",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TREE.TYPEAHEAD",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "renaming",
+      "event": "NODE.RENAME",
+      "guard": null
+    },
+    {
+      "from": "renaming",
+      "to": "idle",
+      "event": "RENAME.CANCEL",
+      "guard": null
+    },
+    {
+      "from": "renaming",
+      "to": "idle",
+      "event": "RENAME.SUBMIT",
+      "guard": "isRenameLabelValid"
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 589,
+      "height": 160,
+      "states": {
+        "idle": {
+          "x": 479,
+          "y": 48,
+          "w": 78,
+          "h": 44
+        },
+        "renaming": {
+          "x": 48,
+          "y": 48,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "renaming",
+          "events": [
+            "NODE.RENAME"
+          ],
+          "lines": [
+            "NODE.RENAME"
+          ],
+          "points": [
+            [
+              479,
+              63
+            ],
+            [
+              157,
+              63
+            ]
+          ],
+          "label": {
+            "x": 274,
+            "y": 32,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "renaming",
+          "to": "idle",
+          "events": [
+            "RENAME.CANCEL",
+            "RENAME.SUBMIT"
+          ],
+          "lines": [
+            "RENAME.CANCEL",
+            "RENAME.SUBMIT"
+          ],
+          "points": [
+            [
+              157,
+              77
+            ],
+            [
+              183,
+              77
+            ],
+            [
+              183,
+              80
+            ],
+            [
+              395,
+              80
+            ],
+            [
+              395,
+              77
+            ],
+            [
+              479,
+              77
+            ]
+          ],
+          "label": {
+            "x": 267,
+            "y": 87,
+            "w": 102,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 310,
+      "height": 412,
+      "states": {
+        "idle": {
+          "x": 117,
+          "y": 336,
+          "w": 78,
+          "h": 44
+        },
+        "renaming": {
+          "x": 107,
+          "y": 32,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "renaming",
+          "events": [
+            "NODE.RENAME"
+          ],
+          "lines": [
+            "NODE.RENAME"
+          ],
+          "points": [
+            [
+              143,
+              336
+            ],
+            [
+              143,
+              76
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 194,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "renaming",
+          "to": "idle",
+          "events": [
+            "RENAME.CANCEL",
+            "RENAME.SUBMIT"
+          ],
+          "lines": [
+            "RENAME.CANCEL",
+            "RENAME.SUBMIT"
+          ],
+          "points": [
+            [
+              180,
+              76
+            ],
+            [
+              180,
+              102
+            ],
+            [
+              169,
+              102
+            ],
+            [
+              169,
+              336
+            ]
+          ],
+          "label": {
+            "x": 176,
+            "y": 186,
+            "w": 102,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

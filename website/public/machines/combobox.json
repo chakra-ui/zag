@@ -1,0 +1,1684 @@
+{
+  "id": "combobox",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "closed.idle",
+      "label": "idle",
+      "parent": "closed",
+      "initial": true
+    },
+    {
+      "id": "closed.focused",
+      "label": "focused",
+      "parent": "closed",
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open.interacting",
+      "label": "interacting",
+      "parent": "open",
+      "initial": true
+    },
+    {
+      "id": "open.suggesting",
+      "label": "suggesting",
+      "parent": "open",
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHTED_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "POSITIONING.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SELECTED_ITEMS.SYNC",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.suggesting",
+      "event": "CONTROLLED.OPEN",
+      "guard": "isChangeEvent"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "isOpenControlled && autoComplete"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "autoComplete"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "isOpenControlled && autoComplete"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_UP",
+      "guard": "autoComplete"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": "closed.idle",
+      "event": "INPUT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": "isOpenControlled && openOnChange"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.suggesting",
+      "event": "INPUT.CHANGE",
+      "guard": "openOnChange"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "INPUT.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ESCAPE",
+      "guard": "isCustomValue && !allowCustomValue"
+    },
+    {
+      "from": "closed.focused",
+      "to": "closed.idle",
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open.interacting",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "open.interacting",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "INPUT.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open.interacting",
+      "event": "INPUT.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "closed.focused",
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open.interacting",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open.interacting",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "closed.focused",
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "CONTROLLED.CLOSE",
+      "guard": "restoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "closed.idle",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "INPUT.ENTER",
+      "guard": "isCustomValue && !hasHighlightedItem && !allowCustomValue"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": "isOpenControlled && closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "INPUT.ENTER",
+      "guard": "closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": "isOpenControlled && closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "ITEM.CLICK",
+      "guard": "closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": "isOpenControlled && isCustomValue && !allowCustomValue"
+    },
+    {
+      "from": "open",
+      "to": "closed.idle",
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": "isCustomValue && !allowCustomValue"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.idle",
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isHighlightedItemRemoved && hasCollectionItems && autoHighlight"
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isHighlightedItemRemoved"
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "autoComplete && isLastItemHighlighted"
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "autoComplete && isFirstItemHighlighted"
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": "open.suggesting",
+      "event": "INPUT.CHANGE",
+      "guard": "autoComplete"
+    },
+    {
+      "from": "open.interacting",
+      "to": "open.suggesting",
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.END",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "INPUT.HOME",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "LAYER.ESCAPE",
+      "guard": "isOpenControlled && autoComplete"
+    },
+    {
+      "from": "open.interacting",
+      "to": "closed.focused",
+      "event": "LAYER.ESCAPE",
+      "guard": "autoComplete"
+    },
+    {
+      "from": "open.interacting",
+      "to": null,
+      "event": "LAYER.ESCAPE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open.interacting",
+      "to": "closed.focused",
+      "event": "LAYER.ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isHighlightedItemRemoved && hasCollectionItems && autoHighlight"
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isHighlightedItemRemoved"
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "autoHighlight"
+    },
+    {
+      "from": "open.suggesting",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": "open.interacting",
+      "event": "INPUT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": "open.interacting",
+      "event": "INPUT.END",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": "open.interacting",
+      "event": "INPUT.HOME",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": "open.interacting",
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "open.suggesting",
+      "to": null,
+      "event": "LAYER.ESCAPE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open.suggesting",
+      "to": "closed.focused",
+      "event": "LAYER.ESCAPE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1487,
+      "height": 560,
+      "states": {
+        "closed": {
+          "x": 966,
+          "y": 50,
+          "w": 438,
+          "h": 199
+        },
+        "closed.idle": {
+          "x": 1302,
+          "y": 148,
+          "w": 78,
+          "h": 44
+        },
+        "closed.focused": {
+          "x": 990,
+          "y": 135,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 99,
+          "y": 49,
+          "w": 476,
+          "h": 215
+        },
+        "open.interacting": {
+          "x": 419,
+          "y": 122,
+          "w": 132,
+          "h": 44
+        },
+        "open.suggesting": {
+          "x": 123,
+          "y": 109,
+          "w": 124,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed.focused",
+          "to": "open.suggesting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.CHANGE"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.CHANGE"
+          ],
+          "points": [
+            [
+              1091,
+              144
+            ],
+            [
+              1101,
+              144
+            ],
+            [
+              1101,
+              94
+            ],
+            [
+              1455,
+              94
+            ],
+            [
+              1455,
+              480
+            ],
+            [
+              48,
+              480
+            ],
+            [
+              48,
+              131
+            ],
+            [
+              123,
+              131
+            ]
+          ],
+          "label": {
+            "x": 713,
+            "y": 487,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "open.interacting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "+3 more"
+          ],
+          "points": [
+            [
+              1091,
+              152
+            ],
+            [
+              1111,
+              152
+            ],
+            [
+              1111,
+              105
+            ],
+            [
+              1445,
+              105
+            ],
+            [
+              1445,
+              384
+            ],
+            [
+              58,
+              384
+            ],
+            [
+              58,
+              228
+            ],
+            [
+              399,
+              228
+            ],
+            [
+              399,
+              149
+            ],
+            [
+              419,
+              149
+            ]
+          ],
+          "label": {
+            "x": 710,
+            "y": 391,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "closed.idle",
+          "events": [
+            "INPUT.BLUR",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "INPUT.BLUR",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              1091,
+              161
+            ],
+            [
+              1101,
+              161
+            ],
+            [
+              1101,
+              159
+            ],
+            [
+              1302,
+              159
+            ]
+          ],
+          "label": {
+            "x": 1121,
+            "y": 116,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "open.interacting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.CLICK",
+            "OPEN",
+            "+1 more"
+          ],
+          "points": [
+            [
+              1380,
+              170
+            ],
+            [
+              1435,
+              170
+            ],
+            [
+              1435,
+              288
+            ],
+            [
+              68,
+              288
+            ],
+            [
+              68,
+              239
+            ],
+            [
+              409,
+              239
+            ],
+            [
+              409,
+              157
+            ],
+            [
+              419,
+              157
+            ]
+          ],
+          "label": {
+            "x": 713,
+            "y": 295,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "closed.focused",
+          "events": [
+            "INPUT.FOCUS",
+            "VALUE.CLEAR"
+          ],
+          "lines": [
+            "INPUT.FOCUS",
+            "VALUE.CLEAR"
+          ],
+          "points": [
+            [
+              1302,
+              170
+            ],
+            [
+              1091,
+              170
+            ]
+          ],
+          "label": {
+            "x": 1157,
+            "y": 173,
+            "w": 89,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "ITEM.CLICK",
+            "TRIGGER.CLICK",
+            "VALUE.CLEAR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "+3 more"
+          ],
+          "points": [
+            [
+              575,
+              103
+            ],
+            [
+              616,
+              103
+            ],
+            [
+              616,
+              80
+            ],
+            [
+              877,
+              80
+            ],
+            [
+              877,
+              157
+            ],
+            [
+              961,
+              157
+            ],
+            [
+              990,
+              157
+            ]
+          ],
+          "label": {
+            "x": 710,
+            "y": 87,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.idle",
+          "events": [
+            "CONTROLLED.CLOSE",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "CONTROLLED.CLOSE",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              575,
+              154
+            ],
+            [
+              606,
+              154
+            ],
+            [
+              606,
+              224
+            ],
+            [
+              1292,
+              224
+            ],
+            [
+              1292,
+              181
+            ],
+            [
+              1302,
+              181
+            ]
+          ],
+          "label": {
+            "x": 690,
+            "y": 231,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.interacting",
+          "to": "open.suggesting",
+          "events": [
+            "INPUT.CHANGE"
+          ],
+          "lines": [
+            "INPUT.CHANGE"
+          ],
+          "points": [
+            [
+              419,
+              131
+            ],
+            [
+              247,
+              131
+            ]
+          ],
+          "label": {
+            "x": 281,
+            "y": 104,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.interacting",
+          "to": "closed.focused",
+          "events": [
+            "LAYER.ESCAPE"
+          ],
+          "lines": [
+            "LAYER.ESCAPE"
+          ],
+          "points": [
+            [
+              551,
+              144
+            ],
+            [
+              580,
+              144
+            ],
+            [
+              616,
+              144
+            ],
+            [
+              616,
+              176
+            ],
+            [
+              877,
+              176
+            ],
+            [
+              877,
+              168
+            ],
+            [
+              961,
+              168
+            ],
+            [
+              990,
+              168
+            ]
+          ],
+          "label": {
+            "x": 723,
+            "y": 183,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.suggesting",
+          "to": "open.interacting",
+          "events": [
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.END",
+            "INPUT.HOME",
+            "ITEM.POINTER_MOVE"
+          ],
+          "lines": [
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.END",
+            "+2 more"
+          ],
+          "points": [
+            [
+              247,
+              142
+            ],
+            [
+              399,
+              142
+            ],
+            [
+              399,
+              140
+            ],
+            [
+              419,
+              140
+            ]
+          ],
+          "label": {
+            "x": 267,
+            "y": 145,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open.suggesting",
+          "to": "closed.focused",
+          "events": [
+            "LAYER.ESCAPE"
+          ],
+          "lines": [
+            "LAYER.ESCAPE"
+          ],
+          "points": [
+            [
+              247,
+              120
+            ],
+            [
+              257,
+              120
+            ],
+            [
+              257,
+              93
+            ],
+            [
+              606,
+              93
+            ],
+            [
+              606,
+              32
+            ],
+            [
+              887,
+              32
+            ],
+            [
+              887,
+              146
+            ],
+            [
+              961,
+              146
+            ],
+            [
+              990,
+              146
+            ]
+          ],
+          "label": {
+            "x": 723,
+            "y": 39,
+            "w": 95,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 1050,
+      "height": 992,
+      "states": {
+        "closed": {
+          "x": 188,
+          "y": 663,
+          "w": 356,
+          "h": 246
+        },
+        "closed.idle": {
+          "x": 378,
+          "y": 841,
+          "w": 78,
+          "h": 44
+        },
+        "closed.focused": {
+          "x": 336,
+          "y": 707,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 260,
+          "y": 83,
+          "w": 329,
+          "h": 278
+        },
+        "open.interacting": {
+          "x": 366,
+          "y": 293,
+          "w": 132,
+          "h": 44
+        },
+        "open.suggesting": {
+          "x": 330,
+          "y": 127,
+          "w": 124,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed.focused",
+          "to": "open.suggesting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.CHANGE"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.CHANGE"
+          ],
+          "points": [
+            [
+              357,
+              751
+            ],
+            [
+              357,
+              761
+            ],
+            [
+              212,
+              761
+            ],
+            [
+              212,
+              960
+            ],
+            [
+              1017,
+              960
+            ],
+            [
+              1017,
+              32
+            ],
+            [
+              392,
+              32
+            ],
+            [
+              392,
+              127
+            ]
+          ],
+          "label": {
+            "x": 896,
+            "y": 492,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "open.interacting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "+3 more"
+          ],
+          "points": [
+            [
+              377,
+              751
+            ],
+            [
+              377,
+              771
+            ],
+            [
+              223,
+              771
+            ],
+            [
+              223,
+              950
+            ],
+            [
+              879,
+              950
+            ],
+            [
+              879,
+              42
+            ],
+            [
+              553,
+              42
+            ],
+            [
+              553,
+              78
+            ],
+            [
+              553,
+              273
+            ],
+            [
+              445,
+              273
+            ],
+            [
+              445,
+              293
+            ]
+          ],
+          "label": {
+            "x": 751,
+            "y": 476,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "closed.idle",
+          "events": [
+            "INPUT.BLUR",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "INPUT.BLUR",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              397,
+              751
+            ],
+            [
+              397,
+              831
+            ],
+            [
+              398,
+              831
+            ],
+            [
+              398,
+              841
+            ]
+          ],
+          "label": {
+            "x": 234,
+            "y": 781,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "open.interacting",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.CLICK",
+            "OPEN",
+            "+1 more"
+          ],
+          "points": [
+            [
+              417,
+              885
+            ],
+            [
+              417,
+              914
+            ],
+            [
+              417,
+              940
+            ],
+            [
+              734,
+              940
+            ],
+            [
+              734,
+              52
+            ],
+            [
+              564,
+              52
+            ],
+            [
+              564,
+              78
+            ],
+            [
+              564,
+              283
+            ],
+            [
+              471,
+              283
+            ],
+            [
+              471,
+              293
+            ]
+          ],
+          "label": {
+            "x": 613,
+            "y": 476,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "closed.focused",
+          "events": [
+            "INPUT.FOCUS",
+            "VALUE.CLEAR"
+          ],
+          "lines": [
+            "INPUT.FOCUS",
+            "VALUE.CLEAR"
+          ],
+          "points": [
+            [
+              417,
+              841
+            ],
+            [
+              417,
+              751
+            ]
+          ],
+          "label": {
+            "x": 420,
+            "y": 781,
+            "w": 89,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "ITEM.CLICK",
+            "TRIGGER.CLICK",
+            "VALUE.CLEAR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "+3 more"
+          ],
+          "points": [
+            [
+              294,
+              361
+            ],
+            [
+              294,
+              574
+            ],
+            [
+              387,
+              574
+            ],
+            [
+              387,
+              658
+            ],
+            [
+              387,
+              707
+            ]
+          ],
+          "label": {
+            "x": 166,
+            "y": 476,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.idle",
+          "events": [
+            "CONTROLLED.CLOSE",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "CONTROLLED.CLOSE",
+            "LAYER.INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              442,
+              361
+            ],
+            [
+              442,
+              392
+            ],
+            [
+              596,
+              392
+            ],
+            [
+              596,
+              574
+            ],
+            [
+              519,
+              574
+            ],
+            [
+              519,
+              658
+            ],
+            [
+              519,
+              831
+            ],
+            [
+              437,
+              831
+            ],
+            [
+              437,
+              841
+            ]
+          ],
+          "label": {
+            "x": 429,
+            "y": 492,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "open.interacting",
+          "to": "open.suggesting",
+          "events": [
+            "INPUT.CHANGE"
+          ],
+          "lines": [
+            "INPUT.CHANGE"
+          ],
+          "points": [
+            [
+              392,
+              293
+            ],
+            [
+              392,
+              171
+            ]
+          ],
+          "label": {
+            "x": 295,
+            "y": 215,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.interacting",
+          "to": "closed.focused",
+          "events": [
+            "LAYER.ESCAPE"
+          ],
+          "lines": [
+            "LAYER.ESCAPE"
+          ],
+          "points": [
+            [
+              432,
+              337
+            ],
+            [
+              432,
+              366
+            ],
+            [
+              432,
+              392
+            ],
+            [
+              412,
+              392
+            ],
+            [
+              412,
+              658
+            ],
+            [
+              412,
+              707
+            ]
+          ],
+          "label": {
+            "x": 311,
+            "y": 500,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.suggesting",
+          "to": "open.interacting",
+          "events": [
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.END",
+            "INPUT.HOME",
+            "ITEM.POINTER_MOVE"
+          ],
+          "lines": [
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.END",
+            "+2 more"
+          ],
+          "points": [
+            [
+              423,
+              171
+            ],
+            [
+              423,
+              181
+            ],
+            [
+              418,
+              181
+            ],
+            [
+              418,
+              293
+            ]
+          ],
+          "label": {
+            "x": 421,
+            "y": 191,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open.suggesting",
+          "to": "closed.focused",
+          "events": [
+            "LAYER.ESCAPE"
+          ],
+          "lines": [
+            "LAYER.ESCAPE"
+          ],
+          "points": [
+            [
+              361,
+              171
+            ],
+            [
+              361,
+              181
+            ],
+            [
+              284,
+              181
+            ],
+            [
+              284,
+              392
+            ],
+            [
+              149,
+              392
+            ],
+            [
+              149,
+              584
+            ],
+            [
+              362,
+              584
+            ],
+            [
+              362,
+              658
+            ],
+            [
+              362,
+              707
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 500,
+            "w": 95,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

@@ -146,7 +146,7 @@ const service = useMachine(menu.machine, {
 In a vertical menubar, `Up` / `Down` move between triggers, `ArrowRight` opens a
 menu, and `ArrowLeft` closes it back to its trigger.
 
-### Disabling the menubar
+### Disabled state
 
 Set `disabled` on the menubar to disable every trigger at once.
 
@@ -161,7 +161,7 @@ const service = useMachine(menubar.machine, {
 
 </Example>
 
-### Looping focus
+### Loop focus
 
 By default, arrowing past the first or last trigger wraps around. Set
 `loopFocus` to `false` to stop at the ends.
@@ -201,7 +201,7 @@ See the [menu styling guide](/components/menu#styling-guide).
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The menubar machine exposes the following context properties:
 
@@ -213,7 +213,7 @@ The menubar `api` exposes the following methods:
 
 <ApiTable name="menubar" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="menubar" />
 
@@ -223,6 +223,6 @@ Follows the
 [WAI-ARIA Menubar pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/) —
 the bar is a single tab stop and arrow keys move focus between menus.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="menubar" />

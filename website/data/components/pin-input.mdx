@@ -56,7 +56,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="pin-input/usage.mdx" />
 
-### Setting a default value
+### Initial value
 
 Set `defaultValue` to define the initial pin value. It must be an array of
 strings.
@@ -82,7 +82,7 @@ value of the pin input.
 
 </Example>
 
-### Setting input count
+### Input count
 
 Set `count` to define the number of input fields to render.
 
@@ -96,7 +96,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Changing the placeholder
+### Placeholder
 
 To customize the default pin input placeholder (○) for each input, pass the
 `placeholder` prop and set it to your desired value.
@@ -127,7 +127,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Auto-submitting on complete
+### Submit on complete
 
 Set `autoSubmit` to automatically submit the owning form when all inputs are
 filled.
@@ -142,7 +142,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Allowing alphanumeric values
+### Alphanumeric values
 
 By default, the pin input accepts only number values but you can choose between
 `numeric`, `alphanumeric` and `alphabetic` values. To change the input mode,
@@ -158,7 +158,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Using a custom pattern
+### Custom pattern
 
 Use `pattern` to provide a custom regex for validating input values. Each
 character entered is checked against this pattern.
@@ -173,7 +173,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Using OTP mode
+### OTP mode
 
 To trigger smartphone OTP auto-suggestion, it is recommended to set the
 `autocomplete` attribute to "one-time-code". The pin-input machine provides
@@ -190,7 +190,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Securing the text input
+### Masked input
 
 When collecting private or sensitive information using the pin input, you might
 need to mask the value entered, similar to `<input type="password"/>`. Pass the
@@ -206,7 +206,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 The pin input machine invokes several callback functions when the user enters:
 
@@ -237,7 +237,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Sanitizing pasted values
+### Paste sanitizing
 
 Use `sanitizeValue` to strip dashes, spaces, or other formatting from pasted
 values before validation.
@@ -252,7 +252,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Autofocus and selection behavior
+### Autofocus
 
 Use `autoFocus` to focus the first input on mount, and `selectOnFocus` to select
 the active character on focus.
@@ -284,7 +284,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Submitting with an external form
+### External form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree. Use `required` to mark the input as required for form validation.
@@ -301,7 +301,7 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Customizing accessibility labels
+### Accessibility labels
 
 Use `translations.inputLabel` to customize screen-reader labels per input.
 
@@ -365,7 +365,7 @@ root and input parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The pin input machine exposes the following context properties:
 
@@ -377,12 +377,12 @@ The pin input `api` exposes the following methods:
 
 <ApiTable name="pin-input" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="pin-input" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="pin-input" />

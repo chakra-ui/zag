@@ -25,7 +25,7 @@ There is no ListView and no `onInsert`. `onDrop` gives you `source`, `values`,
 
 <CodeSnippet id="dnd/installation.mdx" />
 
-Pair it with [`ListCollection`](/guides/collection) when you want
+Pair it with [`ListCollection`](/utilities/list-collection) when you want
 `insertBefore`, `moveAfter`, `append`, and `remove` instead of splicing arrays
 by hand.
 
@@ -92,7 +92,7 @@ shows a between-indicator.
 `canDrop` is how you decide which placements are legal. Passing a handler does
 not enable a placement. `dropPlacements` does.
 
-## Updating your data
+## Update data
 
 `onDrop` is the only mutation hook you need:
 
@@ -149,7 +149,7 @@ setItems((items) =>
 for writing the list. `onDragEnd` includes `dropped: boolean` so you can tell
 cancel from a completed drop.
 
-## Allowing and blocking drops
+## Drop rules
 
 ```ts
 canDrag: (value) => source.has(value),
@@ -253,7 +253,7 @@ The machine is unstyled. Hook CSS to the data attributes:
 Indicators are `position: absolute` siblings of the row. Give the row
 `position: relative`. See the full attribute list below.
 
-## What this package does not do
+## Non-goals
 
 It does not speak HTML5 `DataTransfer`. Values are strings, not mime types.
 Dropping a Finder folder onto a list is
@@ -270,7 +270,7 @@ Start with a `ListCollection` and one `onDrop`. Placement is the API.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 <ContextTable name="dnd" />
 

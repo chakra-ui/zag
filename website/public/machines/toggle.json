@@ -1,0 +1,54 @@
+{
+  "id": "toggle",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "PRESS.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PRESS.TOGGLE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

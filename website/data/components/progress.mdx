@@ -56,7 +56,7 @@ The progress package exports two key functions:
 Then render the [linear](#linear) or [circular](#circular) parts with the
 framework integration helpers.
 
-### Setting the value
+### Initial value
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state.
 
@@ -77,7 +77,7 @@ progress bar.
 api.setValue(50)
 ```
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react to progress updates.
 
@@ -94,7 +94,7 @@ const service = useMachine(progress.machine, {
 
 </Example>
 
-### Setting the minimum and maximum values
+### Min and max
 
 By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
@@ -129,7 +129,7 @@ const service = useMachine(progress.machine, {
 
 </Example>
 
-### Customizing value text
+### Value text
 
 Progress bars can only be interpreted by sighted users. To include a text
 description to support assistive technologies like screen readers, use the
@@ -154,7 +154,7 @@ Then you need to render the `valueText` part in your component.
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
-### Localizing percentage formatting
+### Percent formatting
 
 Use `locale` and `formatOptions` to customize number formatting.
 
@@ -201,7 +201,7 @@ A ring that fills clockwise.
 
 <CodeSnippet id="progress/circular.mdx" />
 
-### Setting the size of the circle
+### Circle size
 
 Use the `--size` CSS variable to set the size of the circle.
 
@@ -215,7 +215,7 @@ Use the `--size` CSS variable to set the size of the circle.
 
 </Example>
 
-### Setting the thickness of the circle
+### Circle thickness
 
 Use the `--thickness` CSS variable to set the thickness of the ring.
 
@@ -275,7 +275,7 @@ selector.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The progress machine exposes the following context properties:
 
@@ -287,10 +287,10 @@ The progress `api` exposes the following methods:
 
 <ApiTable name="progress" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="progress" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="progress" />

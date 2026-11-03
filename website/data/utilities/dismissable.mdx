@@ -1,0 +1,261 @@
+---
+title: Dismissable
+description: Close layers on Escape, outside clicks and outside focus.
+package: "@zag-js/dismissable"
+---
+
+Track a layer, such as a popover, menu or dialog, and close it when the user
+presses Escape, clicks outside or moves focus outside. Open layers form a stack,
+so only the topmost layer reacts, and closing a parent closes its children.
+
+<Resources pkg="@zag-js/dismissable" />
+
+**Features**
+
+- Dismisses on Escape, pointer down outside and focus outside
+- Keeps a stack of layers, so nested layers close in order
+- Blocks pointer events outside modal layers
+- Exposes each layer's index and nesting for styling
+
+## Installation
+
+```bash
+npm install @zag-js/dismissable
+```
+
+## Usage
+
+Pass the layer's element, or a function that returns it, and a dismiss handler.
+The return value removes the layer and its listeners.
+
+```ts
+import { trackDismissableElement } from "@zag-js/dismissable"
+
+const content = document.getElementById("popover-content")
+const trigger = document.getElementById("popover-trigger")
+
+const cleanup = trackDismissableElement(content, {
+  type: "popover",
+  exclude: [trigger],
+  onLayerChange(layer) {
+    content.dataset.layerIndex = String(layer.index)
+  },
+  onDismiss(event) {
+    content.hidden = true
+  },
+})
+
+// When the popover closes
+cleanup()
+```
+
+Exclude the trigger. Otherwise a click on it dismisses the layer and the
+trigger's click handler opens it again.
+
+## Prevent dismissal
+
+Each handler receives the event before the layer is dismissed. Call
+`event.preventDefault()` to keep the layer open.
+
+```ts
+trackDismissableElement(content, {
+  onLayerChange() {},
+  onDismiss: close,
+  onEscapeKeyDown(event) {
+    if (hasUnsavedChanges()) event.preventDefault()
+  },
+  onPointerDownOutside(event) {
+    // a right-click outside
+    if (event.detail.contextmenu) event.preventDefault()
+  },
+  onFocusOutside(event) {
+    event.preventDefault()
+  },
+})
+```
+
+`onInteractOutside` runs for both pointer and focus events, after the specific
+handler. `event.detail` holds:
+
+- `originalEvent`: the `PointerEvent` or `FocusEvent`
+- `target`: the element the user interacted with
+- `focusable`: whether that element can take focus
+- `contextmenu`: whether the pointer down opens a context menu
+
+Use `focusable` to skip restoring focus to the trigger when the user clicked
+into another input.
+
+## Nested layers
+
+Layers opened inside another layer nest under it. The stack decides which layer
+handles each event:
+
+- Escape only dismisses the topmost layer.
+- A click inside a child layer doesn't dismiss its parent, even when the child
+  is portalled.
+- Closing a parent dismisses its children.
+
+To keep a child open when its parent closes, prevent the request in
+`onRequestDismiss`.
+
+```ts
+trackDismissableElement(submenu, {
+  type: "menu",
+  onLayerChange() {},
+  onDismiss: closeSubmenu,
+  onRequestDismiss(event) {
+    // event.detail.targetLayer is the parent that closed
+    event.preventDefault()
+  },
+})
+```
+
+Layers that share a `group` are peers, not parent and child. Closing one doesn't
+dismiss the other, so a menubar can switch between its menus.
+
+## Modal layers
+
+Set `pointerBlocking` to disable pointer events on the rest of the page while
+the layer is open. A click outside still dismisses the layer.
+
+```ts
+trackDismissableElement(dialog, {
+  type: "dialog",
+  pointerBlocking: true,
+  persistentElements: [() => document.getElementById("toast-region")],
+  onLayerChange() {},
+  onDismiss: closeDialog,
+})
+```
+
+`persistentElements` stay interactive and never trigger a dismiss. Use them for
+toasts or other UI that sits on top of a modal.
+
+## Outside elements
+
+Some UI lives outside every layer but shouldn't dismiss them, like a toast
+region. Register it as a branch. Interacting with a branch dismisses no layer.
+
+```ts
+import { trackDismissableBranch } from "@zag-js/dismissable"
+
+const cleanup = trackDismissableBranch(() => document.getElementById("toaster"))
+```
+
+## Layer styles
+
+`onLayerChange` receives a `LayerSnapshot` whenever the layer's position in the
+stack changes.
+
+```ts
+interface LayerSnapshot {
+  active: boolean
+  type: LayerType
+  index: number
+  nested: boolean
+  hasNested: boolean
+  nestedCount: number
+  blocked: boolean
+}
+```
+
+`nested` and `hasNested` only count layers of the same type, so a menu inside a
+dialog is not nested.
+
+Store it, then spread the attribute and style helpers on your element.
+
+```ts
+import {
+  getDismissableLayerAttrs,
+  getDismissableLayerStyle,
+} from "@zag-js/dismissable"
+
+const attrs = getDismissableLayerAttrs(layer)
+// { "data-nested": "menu", "data-has-nested": undefined }
+
+const style = getDismissableLayerStyle(layer, { pointerEvents: true })
+// { "--layer-index": "2", "--nested-layer-count": "0", pointerEvents: "auto" }
+```
+
+The style options:
+
+- `zIndex`: set `--z-index: var(--layer-index)`. Use it on the element that
+  creates the stacking context, like a dialog backdrop or positioner.
+- `zIndexFallback`: set `z-index: var(--z-index, var(--layer-index))` on a
+  popper positioner.
+- `pointerEvents`: set `pointer-events: none` while a modal layer sits above
+  this one.
+
+## Machine usage
+
+Dialog, popover, menu, select, combobox, hover card and the other overlay
+machines call `trackDismissableElement` in an effect while open. They map their
+`closeOnEscape` and `closeOnInteractOutside` props to `preventDefault()` calls,
+and forward `onEscapeKeyDown`, `onInteractOutside`, `onPointerDownOutside`,
+`onFocusOutside`, `onRequestDismiss` and `persistentElements` from their props.
+Their `onDismiss` sends a close event to the machine.
+
+The machine stores the snapshot in context and spreads the layer helpers in
+`connect`. That's where the `data-nested` attribute and `--layer-index` variable
+on overlay parts come from.
+
+## API Reference
+
+### trackDismissableElement
+
+```ts
+function trackDismissableElement(
+  node: HTMLElement | null | (() => HTMLElement | null),
+  options: DismissableElementOptions,
+): () => void
+```
+
+**Options**
+
+- `onDismiss` (required): called with the event that dismissed the layer
+- `onLayerChange` (required): called with the layer's `LayerSnapshot`
+- `type`: the layer type, `"dialog"` (default), `"popover"`, `"menu"`,
+  `"listbox"` or any string
+- `exclude`: elements, or a function returning them, that don't count as outside
+- `persistentElements`: functions returning elements that stay interactive and
+  don't dismiss
+- `pointerBlocking`: block pointer events outside the layer. Accepts a boolean
+  or a function.
+- `group`: layers with the same group are peers, not parent and child
+- `defer`: wait a frame before resolving the node and listening. Use it when the
+  element mounts after the effect runs.
+- `getRootNode`: the root to query from, for shadow DOM and iframes
+- `warnOnMissingNode`: warn when the node is missing. Defaults to `true`.
+- `debug`: log the events that dismiss the layer
+- `onEscapeKeyDown`, `onPointerDownOutside`, `onFocusOutside`,
+  `onInteractOutside`, `onRequestDismiss`: see
+  [Preventing dismissal](#prevent-dismissal)
+
+### trackDismissableBranch
+
+```ts
+function trackDismissableBranch(
+  node: HTMLElement | null | (() => HTMLElement | null),
+  options?: { defer?: boolean; getRootNode?: () => Node },
+): () => void
+```
+
+Marks an element outside all layers as safe to interact with.
+
+### getDismissableLayerAttrs
+
+```ts
+function getDismissableLayerAttrs(layer: LayerSnapshot | null | undefined): {
+  "data-nested": LayerType | undefined
+  "data-has-nested": LayerType | undefined
+}
+```
+
+### getDismissableLayerStyle
+
+```ts
+function getDismissableLayerStyle(
+  layer: LayerSnapshot | null | undefined,
+  options?: DismissableLayerStyleOptions,
+): DismissableLayerStyle
+```

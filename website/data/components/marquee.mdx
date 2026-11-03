@@ -53,7 +53,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="marquee/usage.mdx" />
 
-### Auto-filling content
+### Autofill content
 
 To automatically duplicate content to fill the container and prevent gaps during
 animation, set the `autoFill` property in the machine's context to `true`.
@@ -84,7 +84,7 @@ to render (original + clones). Use this value in your loop:
 > **Note:** The `api.multiplier` property is also available if you need to know
 > the duplication factor specifically (number of clones excluding the original).
 
-### Changing the scroll direction
+### Scroll direction
 
 To change the scroll direction, set the `side` property in the machine's context
 to one of: `"start"`, `"end"`, `"top"`, or `"bottom"`.
@@ -106,7 +106,7 @@ const service = useMachine(marquee.machine, {
 - `"top"` — Scrolls from bottom to top (vertical)
 - `"bottom"` — Scrolls from top to bottom (vertical)
 
-### Adjusting animation speed
+### Animation speed
 
 To control how fast the marquee scrolls, set the `speed` property in the
 machine's context. The value is in pixels per second.
@@ -127,7 +127,7 @@ const service = useMachine(marquee.machine, {
 - Lower values create slower, more readable scrolling
 - Speed is automatically adjusted based on content and container size
 
-### Setting spacing between items
+### Item spacing
 
 To customize the gap between marquee items, set the `spacing` property in the
 machine's context to a valid CSS unit.
@@ -142,7 +142,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Reversing the animation direction
+### Reverse direction
 
 To reverse the animation direction without changing the scroll side, set the
 `reverse` property in the machine's context to `true`.
@@ -157,7 +157,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Pausing on user interaction
+### Pause on interaction
 
 To pause the marquee when the user hovers or focuses any element inside it, set
 the `pauseOnInteraction` property in the machine's context to `true`.
@@ -175,7 +175,7 @@ const service = useMachine(marquee.machine, {
 This is especially important for accessibility when your marquee contains
 interactive elements like links or buttons.
 
-### Setting initial paused state
+### Initial paused
 
 To start the marquee in a paused state, set the `defaultPaused` property in the
 machine's context to `true`.
@@ -190,7 +190,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Controlled paused state
+### Controlled paused
 
 Use `paused` and `onPauseChange` to control playback externally.
 
@@ -207,7 +207,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Delaying the animation start
+### Start delay
 
 To add a delay before the animation starts, set the `delay` property in the
 machine's context to a value in seconds.
@@ -222,7 +222,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Limiting loop iterations
+### Loop limit
 
 By default, the marquee loops infinitely. To limit the number of loops, set the
 `loopCount` property in the machine's context.
@@ -239,7 +239,7 @@ const service = useMachine(marquee.machine, {
 
 > Setting `loopCount` to `0` (default) creates an infinite loop.
 
-### Listening for loop completion
+### Loop completion
 
 When the marquee completes a single loop iteration, the `onLoopComplete`
 callback is invoked.
@@ -256,7 +256,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Listening for animation completion
+### Animation completion
 
 When the marquee completes all loops and stops (only for finite loops), the
 `onComplete` callback is invoked.
@@ -274,7 +274,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Controlling the marquee programmatically
+### Programmatic control
 
 The marquee API provides methods to control playback:
 
@@ -296,7 +296,7 @@ api.restart()
 
 </Example>
 
-### Monitoring pause state changes
+### Pause changes
 
 When the marquee pause state changes, the `onPauseChange` callback is invoked.
 
@@ -313,7 +313,7 @@ const service = useMachine(marquee.machine, {
 
 </Example>
 
-### Adding fade gradients at edges
+### Edge fade
 
 To add fade gradients at the edges of the marquee, use the `getEdgeProps`
 method:
@@ -427,7 +427,7 @@ The machine automatically sets these CSS variables:
 - `--marquee-loop-count` — Number of iterations (or "infinite")
 - `--marquee-translate` — Transform value for animations
 
-### Styling parts
+### Part styling
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
@@ -514,7 +514,7 @@ direction:
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The marquee machine exposes the following context properties:
 
@@ -526,7 +526,7 @@ The marquee `api` exposes the following methods:
 
 <ApiTable name="marquee" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="marquee" />
 
@@ -544,7 +544,7 @@ The marquee component includes proper ARIA attributes:
 - `aria-label` describing the marquee content
 - `aria-hidden="true"` on cloned content to prevent duplicate announcements
 
-### Keyboard Interactions
+### Keyboard interactions
 
 When `pauseOnInteraction` is enabled:
 

@@ -1,0 +1,532 @@
+{
+  "id": "async-list",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "loading",
+      "label": "loading",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "sorting",
+      "label": "sorting",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "loading",
+      "event": "RELOAD",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "FILTER",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "LOAD_MORE",
+      "guard": "hasCursor"
+    },
+    {
+      "from": "idle",
+      "to": "sorting",
+      "event": "SORT",
+      "guard": "hasSortFn"
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "SORT",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "idle",
+      "event": "ABORT",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "idle",
+      "event": "ERROR",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "loading",
+      "event": "FILTER",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "idle",
+      "event": "SUCCESS",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "idle",
+      "event": "ABORT",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "idle",
+      "event": "ERROR",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "loading",
+      "event": "FILTER",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "loading",
+      "event": "RELOAD",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "sorting",
+      "event": "SORT",
+      "guard": "hasSortFn"
+    },
+    {
+      "from": "sorting",
+      "to": "loading",
+      "event": "SORT",
+      "guard": null
+    },
+    {
+      "from": "sorting",
+      "to": "idle",
+      "event": "SUCCESS",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 937,
+      "height": 296,
+      "states": {
+        "idle": {
+          "x": 431,
+          "y": 83,
+          "w": 78,
+          "h": 44
+        },
+        "loading": {
+          "x": 804,
+          "y": 90,
+          "w": 101,
+          "h": 44
+        },
+        "sorting": {
+          "x": 48,
+          "y": 90,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "loading",
+          "events": [
+            "FILTER",
+            "LOAD_MORE",
+            "SORT"
+          ],
+          "lines": [
+            "FILTER",
+            "LOAD_MORE",
+            "SORT"
+          ],
+          "points": [
+            [
+              509,
+              98
+            ],
+            [
+              535,
+              98
+            ],
+            [
+              535,
+              95
+            ],
+            [
+              720,
+              95
+            ],
+            [
+              720,
+              101
+            ],
+            [
+              804,
+              101
+            ]
+          ],
+          "label": {
+            "x": 619,
+            "y": 32,
+            "w": 75,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "sorting",
+          "events": [
+            "SORT"
+          ],
+          "lines": [
+            "SORT"
+          ],
+          "points": [
+            [
+              431,
+              98
+            ],
+            [
+              347,
+              98
+            ],
+            [
+              347,
+              95
+            ],
+            [
+              175,
+              95
+            ],
+            [
+              175,
+              101
+            ],
+            [
+              149,
+              101
+            ]
+          ],
+          "label": {
+            "x": 269,
+            "y": 64,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "idle",
+          "events": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "lines": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "points": [
+            [
+              804,
+              112
+            ],
+            [
+              509,
+              112
+            ]
+          ],
+          "label": {
+            "x": 626,
+            "y": 119,
+            "w": 62,
+            "h": 56
+          }
+        },
+        {
+          "from": "sorting",
+          "to": "idle",
+          "events": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "lines": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "points": [
+            [
+              149,
+              112
+            ],
+            [
+              431,
+              112
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 119,
+            "w": 62,
+            "h": 56
+          }
+        },
+        {
+          "from": "sorting",
+          "to": "loading",
+          "events": [
+            "FILTER",
+            "RELOAD",
+            "SORT"
+          ],
+          "lines": [
+            "FILTER",
+            "RELOAD",
+            "SORT"
+          ],
+          "points": [
+            [
+              149,
+              123
+            ],
+            [
+              175,
+              123
+            ],
+            [
+              175,
+              200
+            ],
+            [
+              720,
+              200
+            ],
+            [
+              720,
+              123
+            ],
+            [
+              804,
+              123
+            ]
+          ],
+          "label": {
+            "x": 442,
+            "y": 207,
+            "w": 56,
+            "h": 56
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 343,
+      "height": 760,
+      "states": {
+        "idle": {
+          "x": 103,
+          "y": 358,
+          "w": 78,
+          "h": 44
+        },
+        "loading": {
+          "x": 104,
+          "y": 684,
+          "w": 101,
+          "h": 44
+        },
+        "sorting": {
+          "x": 104,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "loading",
+          "events": [
+            "FILTER",
+            "LOAD_MORE",
+            "SORT"
+          ],
+          "lines": [
+            "FILTER",
+            "LOAD_MORE",
+            "SORT"
+          ],
+          "points": [
+            [
+              129,
+              402
+            ],
+            [
+              129,
+              684
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 518,
+            "w": 75,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "sorting",
+          "events": [
+            "SORT"
+          ],
+          "lines": [
+            "SORT"
+          ],
+          "points": [
+            [
+              129,
+              358
+            ],
+            [
+              129,
+              76
+            ]
+          ],
+          "label": {
+            "x": 81,
+            "y": 202,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "idle",
+          "events": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "lines": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "points": [
+            [
+              155,
+              684
+            ],
+            [
+              155,
+              402
+            ]
+          ],
+          "label": {
+            "x": 162,
+            "y": 518,
+            "w": 62,
+            "h": 56
+          }
+        },
+        {
+          "from": "sorting",
+          "to": "idle",
+          "events": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "lines": [
+            "ABORT",
+            "ERROR",
+            "SUCCESS"
+          ],
+          "points": [
+            [
+              155,
+              76
+            ],
+            [
+              155,
+              358
+            ]
+          ],
+          "label": {
+            "x": 162,
+            "y": 186,
+            "w": 62,
+            "h": 56
+          }
+        },
+        {
+          "from": "sorting",
+          "to": "loading",
+          "events": [
+            "FILTER",
+            "RELOAD",
+            "SORT"
+          ],
+          "lines": [
+            "FILTER",
+            "RELOAD",
+            "SORT"
+          ],
+          "points": [
+            [
+              180,
+              76
+            ],
+            [
+              180,
+              102
+            ],
+            [
+              248,
+              102
+            ],
+            [
+              248,
+              600
+            ],
+            [
+              180,
+              600
+            ],
+            [
+              180,
+              684
+            ]
+          ],
+          "label": {
+            "x": 255,
+            "y": 352,
+            "w": 56,
+            "h": 56
+          }
+        }
+      ]
+    }
+  }
+}

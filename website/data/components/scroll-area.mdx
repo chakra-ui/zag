@@ -50,7 +50,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="scroll-area/usage.mdx" />
 
-### Programmatic scrolling to edges
+### Scroll to edge
 
 You can programmatically scroll to any edge of the scroll area using the
 `scrollToEdge` method:
@@ -71,7 +71,7 @@ api.scrollToEdge({
 
 </Example>
 
-### Programmatic scrolling to coordinates
+### Scroll to position
 
 Use the `scrollTo` method to scroll to specific coordinates:
 
@@ -94,7 +94,7 @@ api.scrollTo({
 
 </Example>
 
-### Reading scroll position and overflow
+### Scroll position
 
 The API provides several properties to check the current scroll state:
 
@@ -117,7 +117,7 @@ const progress = api.getScrollProgress() // { x: number, y: number }
 
 </Example>
 
-### Rendering scrollbars only when needed
+### Conditional scrollbars
 
 Only render scrollbars when there's overflow content:
 
@@ -240,7 +240,7 @@ Different styles can be applied based on scrollbar orientation:
 
 The scroll area's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The scroll area machine exposes the following context properties:
 
@@ -252,10 +252,10 @@ The scroll area `api` exposes the following methods:
 
 <ApiTable name="scroll-area" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="scroll-area" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="scroll-area" />

@@ -105,7 +105,7 @@ Pass the tree collection to the machine to create the tree view.
 
 </Example>
 
-### Expanding and Collapsing Nodes
+### Expand and collapse
 
 By default, the tree view will expand or collapse when clicking the branch
 control. To control the expanded state of the tree view, use the `api.expand`
@@ -143,7 +143,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Setting the default expanded nodes
+### Initial expanded
 
 To set the default expanded nodes, use `defaultExpandedValue`.
 
@@ -157,7 +157,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Setting the default selected nodes
+### Initial selection
 
 To set the default selected nodes, use `defaultSelectedValue`.
 
@@ -171,7 +171,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Controlled expanded and selected values
+### Controlled expansion and selection
 
 Use controlled props when expansion or selection is managed externally.
 
@@ -193,7 +193,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Indentation Guide
+### Indentation guide
 
 When rendering a branch node in the tree view, you can render the `indentGuide`
 element by using the `api.getIndentGuideProps()` function.
@@ -227,7 +227,7 @@ element by using the `api.getIndentGuideProps()` function.
 
 </Example>
 
-### Listening for selection
+### Item selection
 
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
@@ -245,7 +245,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Listening for expanding and collapsing
+### Expanded changes
 
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
@@ -263,7 +263,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Listening for focus and checked changes
+### Focus and checked changes
 
 Use `onFocusChange` and `onCheckedChange` when you need focus/checkbox state.
 
@@ -284,7 +284,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Programmatic tree control
+### Programmatic control
 
 Use the connected API for imperative interactions.
 
@@ -301,7 +301,7 @@ api.toggleChecked("node_modules", true)
 
 </Example>
 
-### Controlling branch click behavior
+### Branch click behavior
 
 Set `expandOnClick` to control whether clicking a branch toggles expansion.
 
@@ -316,7 +316,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Controlling typeahead
+### Typeahead
 
 Set `typeahead` to disable keyboard typeahead matching.
 
@@ -331,7 +331,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Lazy Loading
+### Lazy loading
 
 > **Added in v1.15.0**
 
@@ -389,7 +389,7 @@ function TreeAsync() {
 
 </Example>
 
-### Renaming Nodes
+### Rename nodes
 
 The tree view supports renaming node labels inline, perfect for file explorers,
 content management systems, and other applications where users need to edit item
@@ -408,7 +408,7 @@ To enable renaming:
 
 </Example>
 
-### Controlling which nodes can be renamed
+### Renamable nodes
 
 Use the `canRename` callback to control which nodes are renameable based on node
 type or custom logic.
@@ -427,7 +427,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Validating rename input
+### Rename validation
 
 Use the `onBeforeRename` callback to validate the new name before accepting the
 change. Return `false` to reject the rename.
@@ -453,7 +453,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Tracking rename events
+### Rename events
 
 Use the `onRenameStart` callback to track when users start renaming, useful for
 analytics or showing contextual hints.
@@ -510,7 +510,7 @@ expose `data-state="checked" | "unchecked" | "indeterminate"` for styling.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tree view machine exposes the following context properties:
 
@@ -522,11 +522,11 @@ The tree view `api` exposes the following methods:
 
 <ApiTable name="tree-view" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="tree-view" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="tree-view" />
 
@@ -535,6 +535,6 @@ The tree view `api` exposes the following methods:
 Adheres to the
 [Tree View WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treeview).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tree-view" />

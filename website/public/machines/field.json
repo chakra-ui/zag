@@ -1,0 +1,102 @@
+{
+  "id": "field",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTROL.BLUR",
+      "guard": "shouldCommit"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTROL.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTROL.CHANGE",
+      "guard": "shouldCommit"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTROL.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTROL.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ERRORS.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SUBMIT.INVALID",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALIDATE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALIDATE.RESOLVE",
+      "guard": "isCurrentValidation"
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

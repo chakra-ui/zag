@@ -1,3 +1,4 @@
+import siteConfig from "site.config"
 import { snippets } from "./source"
 import apiJson, {
   getAccessibilityDoc,
@@ -167,8 +168,8 @@ export function expandResources(content: string, component: any): string {
   const resources = [
     "## Resources\n\n",
     `[Latest version: v${component.version}](${component.npmUrl})`,
-    component.visualizeUrl
-      ? `[Logic Visualizer](${component.visualizeUrl})`
+    component.logicUrl
+      ? `[Machine logic (JSON)](${siteConfig.url}${component.logicUrl})`
       : "",
     `[Source Code](${component.sourceUrl})`,
   ]

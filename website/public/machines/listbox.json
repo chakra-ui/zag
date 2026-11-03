@@ -1,0 +1,150 @@
+{
+  "id": "listbox",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHT.FIRST",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHT.LAST",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHT.NEXT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHT.PREV",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHTED_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "CONTENT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "CONTENT.FOCUS",
+      "guard": "hasHighlightedValue"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "CONTENT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "CONTENT.TYPEAHEAD",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "NAVIGATE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

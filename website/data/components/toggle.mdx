@@ -65,7 +65,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Controlled pressed state
+### Controlled pressed
 
 Use `pressed` and `onPressedChange` for controlled usage.
 
@@ -82,7 +82,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the pressed state changes, `onPressedChange` is called with the next
 boolean value.
@@ -172,7 +172,7 @@ When disabled, `data-disabled` is set on the root and indicator.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The toggle machine exposes the following context properties:
 
@@ -184,7 +184,7 @@ The toggle `api` exposes the following methods:
 
 <ApiTable name="toggle" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="toggle" />
 
@@ -193,6 +193,6 @@ The toggle `api` exposes the following methods:
 Implements a [button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) with
 `aria-pressed` reflecting the pressed state.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="toggle" />

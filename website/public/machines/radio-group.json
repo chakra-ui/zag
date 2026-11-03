@@ -1,0 +1,84 @@
+{
+  "id": "radio-group",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "INDICATOR_RESIZE",
+      "guard": "isIndicatorTransitioning"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INDICATOR_RESIZE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_ACTIVE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_FOCUSED",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_HOVERED",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": "!isTrusted"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

@@ -70,7 +70,11 @@ export function Sidebar(props: { tabId?: string }) {
                     scrollIntoView={standalone}
                   >
                     {item.label}
-                    {item.new && <span className={styles.badge}>New</span>}
+                    {item.new && (
+                      <span className={styles.newDot} title="New">
+                        <span className={styles.srOnly}>, new</span>
+                      </span>
+                    )}
                     {item.beta && <span className={styles.badge}>Beta</span>}
                   </DocLink>
                 ))}

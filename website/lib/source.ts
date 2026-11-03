@@ -35,7 +35,8 @@ export interface Doc {
   params: string[]
   npmUrl?: string
   sourceUrl?: string
-  visualizeUrl?: string
+  /** machine states and transitions as JSON, served from /public/machines */
+  logicUrl?: string
   version?: string
   frontmatter: {
     title: string
@@ -112,10 +113,20 @@ function resolvePackageSource(packageSlug: string) {
 
   return {
     sourceUrl: `${siteConfig.repo.treeUrl}/${sourceDir}`,
-    visualizeUrl: sourceDir.startsWith("packages/machines/")
-      ? `https://zag-visualizer.vercel.app/${packageSlug}`
+    logicUrl: sourceDir.startsWith("packages/machines/")
+      ? machineLogicUrl(packageSlug)
       : "",
   }
+}
+
+// a diagram only helps when the machine moves between states
+function machineLogicUrl(slug: string) {
+  const file = join(process.cwd(), "public/machines", `${slug}.json`)
+  if (!fs.existsSync(file)) return undefined
+  const { states } = JSON.parse(fs.readFileSync(file, "utf8")) as {
+    states: unknown[]
+  }
+  return states.length > 1 ? `/machines/${slug}.json` : undefined
 }
 
 type Category = "overview" | "guides" | "components" | "utilities"
@@ -152,7 +163,7 @@ function toDoc(entry: Entry, category: Category): Doc {
 
   if (category === "components") {
     doc.sourceUrl = `${siteConfig.repo.treeUrl}/packages/machines/${packageSlug}`
-    doc.visualizeUrl = `https://zag-visualizer.vercel.app/${packageSlug}`
+    doc.logicUrl = machineLogicUrl(packageSlug)
   }
 
   if (category === "utilities") {

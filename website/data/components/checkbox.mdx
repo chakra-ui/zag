@@ -50,7 +50,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="checkbox/usage.mdx" />
 
-### Setting the initial checked state
+### Initial checked
 
 Set `defaultChecked` to `true` to start checked.
 
@@ -78,7 +78,7 @@ const service = useMachine(checkbox.machine, {
 
 </Example>
 
-### Controlled checkbox
+### Controlled checked
 
 Use `checked` and `onCheckedChange` to control state externally.
 
@@ -88,7 +88,7 @@ Use `checked` and `onCheckedChange` to control state externally.
 
 </Example>
 
-### Disabling the checkbox
+### Disabled state
 
 Set `disabled` to `true` to prevent interaction.
 
@@ -102,7 +102,7 @@ const service = useMachine(checkbox.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the checked state changes, `onCheckedChange` is invoked.
 
@@ -119,7 +119,7 @@ const service = useMachine(checkbox.machine, {
 
 </Example>
 
-### Read-only checkbox
+### Read-only state
 
 Set `readOnly` to keep the checkbox focusable but prevent toggling.
 
@@ -133,7 +133,7 @@ const service = useMachine(checkbox.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use checkbox within forms, set `name` and render `api.getHiddenInputProps()`.
 
@@ -154,7 +154,7 @@ form correctly.
 <input {...api.getHiddenInputProps()} />
 ```
 
-### Customizing submitted value
+### Submitted value
 
 Set `value` to customize the submitted form value when checked.
 
@@ -169,7 +169,7 @@ const service = useMachine(checkbox.machine, {
 
 </Example>
 
-### Associating with an external form
+### External form
 
 If the input belongs to a different form element, set `form`.
 
@@ -245,7 +245,7 @@ root, control and label parts.
 }
 ```
 
-### Invalid State
+### Invalid state
 
 When the checkbox is invalid, the `data-invalid` attribute is added to the root,
 control and label parts.
@@ -266,7 +266,7 @@ control and label parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The checkbox machine exposes the following context properties:
 
@@ -278,12 +278,12 @@ The checkbox `api` exposes the following methods:
 
 <ApiTable name="checkbox" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="checkbox" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="checkbox" />

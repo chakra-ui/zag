@@ -1,0 +1,278 @@
+{
+  "id": "popover",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "TOGGLE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "TOGGLE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POSITIONING.SET",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TOGGLE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "TOGGLE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 594,
+      "height": 208,
+      "states": {
+        "closed": {
+          "x": 468,
+          "y": 80,
+          "w": 94,
+          "h": 44
+        },
+        "open": {
+          "x": 48,
+          "y": 80,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TOGGLE"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TOGGLE"
+          ],
+          "points": [
+            [
+              468,
+              95
+            ],
+            [
+              126,
+              95
+            ]
+          ],
+          "label": {
+            "x": 240,
+            "y": 32,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TOGGLE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TOGGLE"
+          ],
+          "points": [
+            [
+              126,
+              109
+            ],
+            [
+              152,
+              109
+            ],
+            [
+              152,
+              112
+            ],
+            [
+              384,
+              112
+            ],
+            [
+              384,
+              109
+            ],
+            [
+              468,
+              109
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 119,
+            "w": 122,
+            "h": 56
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 356,
+      "height": 428,
+      "states": {
+        "closed": {
+          "x": 138,
+          "y": 352,
+          "w": 94,
+          "h": 44
+        },
+        "open": {
+          "x": 143,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TOGGLE"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TOGGLE"
+          ],
+          "points": [
+            [
+              169,
+              352
+            ],
+            [
+              169,
+              76
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TOGGLE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TOGGLE"
+          ],
+          "points": [
+            [
+              195,
+              76
+            ],
+            [
+              195,
+              268
+            ],
+            [
+              201,
+              268
+            ],
+            [
+              201,
+              352
+            ]
+          ],
+          "label": {
+            "x": 202,
+            "y": 186,
+            "w": 122,
+            "h": 56
+          }
+        }
+      ]
+    }
+  }
+}

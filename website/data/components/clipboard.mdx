@@ -44,7 +44,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="clipboard/usage.mdx" />
 
-### Setting the clipboard value
+### Clipboard value
 
 Set `value` to control what gets copied.
 
@@ -58,7 +58,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Setting an initial value
+### Initial value
 
 Use `defaultValue` for uncontrolled initial value.
 
@@ -72,7 +72,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react when the clipboard value changes.
 
@@ -88,7 +88,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Listening to copy events
+### Copy events
 
 When the value is copied, `onStatusChange` is fired.
 
@@ -104,7 +104,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Checking if the value is copied
+### Copied state
 
 Use `api.copied` to check if the value was copied.
 
@@ -120,7 +120,7 @@ if (api.copied) {
 
 </Example>
 
-### Changing the timeout
+### Timeout
 
 By default, the copied feedback resets after `3000ms`. Set `timeout` to change
 this delay.
@@ -147,7 +147,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The clipboard machine exposes the following context properties:
 
@@ -159,6 +159,6 @@ The clipboard `api` exposes the following methods:
 
 <ApiTable name="clipboard" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="clipboard" />

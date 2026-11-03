@@ -1,0 +1,486 @@
+{
+  "id": "angle-slider",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": null,
+      "event": "DOC.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "focused",
+      "event": "DOC.POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "dragging",
+      "event": "CONTROL.POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "THUMB.ARROW_DEC",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "THUMB.ARROW_INC",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "THUMB.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "THUMB.END",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "THUMB.HOME",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "CONTROL.POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "THUMB.FOCUS",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1092,
+      "height": 213,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 110,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 459,
+          "y": 120,
+          "w": 101,
+          "h": 44
+        },
+        "dragging": {
+          "x": 951,
+          "y": 110,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "focused",
+          "events": [
+            "DOC.POINTER_UP"
+          ],
+          "lines": [
+            "DOC.POINTER_UP"
+          ],
+          "points": [
+            [
+              951,
+              132
+            ],
+            [
+              609,
+              132
+            ],
+            [
+              609,
+              135
+            ],
+            [
+              560,
+              135
+            ]
+          ],
+          "label": {
+            "x": 713,
+            "y": 101,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "dragging",
+          "events": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "lines": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "points": [
+            [
+              560,
+              149
+            ],
+            [
+              867,
+              149
+            ],
+            [
+              867,
+              143
+            ],
+            [
+              951,
+              143
+            ]
+          ],
+          "label": {
+            "x": 693,
+            "y": 156,
+            "w": 148,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "THUMB.BLUR"
+          ],
+          "lines": [
+            "THUMB.BLUR"
+          ],
+          "points": [
+            [
+              459,
+              135
+            ],
+            [
+              351,
+              135
+            ],
+            [
+              351,
+              132
+            ],
+            [
+              126,
+              132
+            ]
+          ],
+          "label": {
+            "x": 240,
+            "y": 101,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "lines": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "points": [
+            [
+              126,
+              121
+            ],
+            [
+              152,
+              121
+            ],
+            [
+              152,
+              63
+            ],
+            [
+              867,
+              63
+            ],
+            [
+              867,
+              121
+            ],
+            [
+              951,
+              121
+            ]
+          ],
+          "label": {
+            "x": 435,
+            "y": 32,
+            "w": 148,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "THUMB.FOCUS"
+          ],
+          "lines": [
+            "THUMB.FOCUS"
+          ],
+          "points": [
+            [
+              126,
+              143
+            ],
+            [
+              152,
+              143
+            ],
+            [
+              152,
+              149
+            ],
+            [
+              459,
+              149
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 156,
+            "w": 89,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 555,
+      "height": 684,
+      "states": {
+        "idle": {
+          "x": 296,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 301,
+          "y": 320,
+          "w": 101,
+          "h": 44
+        },
+        "dragging": {
+          "x": 286,
+          "y": 608,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "focused",
+          "events": [
+            "DOC.POINTER_UP"
+          ],
+          "lines": [
+            "DOC.POINTER_UP"
+          ],
+          "points": [
+            [
+              341,
+              608
+            ],
+            [
+              341,
+              390
+            ],
+            [
+              335,
+              390
+            ],
+            [
+              335,
+              364
+            ]
+          ],
+          "label": {
+            "x": 227,
+            "y": 474,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "dragging",
+          "events": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "lines": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "points": [
+            [
+              368,
+              364
+            ],
+            [
+              368,
+              608
+            ]
+          ],
+          "label": {
+            "x": 375,
+            "y": 474,
+            "w": 148,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "THUMB.BLUR"
+          ],
+          "lines": [
+            "THUMB.BLUR"
+          ],
+          "points": [
+            [
+              335,
+              320
+            ],
+            [
+              335,
+              76
+            ]
+          ],
+          "label": {
+            "x": 247,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "lines": [
+            "CONTROL.POINTER_DOWN"
+          ],
+          "points": [
+            [
+              316,
+              76
+            ],
+            [
+              316,
+              102
+            ],
+            [
+              202,
+              102
+            ],
+            [
+              202,
+              524
+            ],
+            [
+              313,
+              524
+            ],
+            [
+              313,
+              608
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 330,
+            "w": 148,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "THUMB.FOCUS"
+          ],
+          "lines": [
+            "THUMB.FOCUS"
+          ],
+          "points": [
+            [
+              355,
+              76
+            ],
+            [
+              355,
+              236
+            ],
+            [
+              368,
+              236
+            ],
+            [
+              368,
+              320
+            ]
+          ],
+          "label": {
+            "x": 362,
+            "y": 186,
+            "w": 89,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

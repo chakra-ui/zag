@@ -57,7 +57,7 @@ The positioner is rendered in a `Portal` (or `Teleport`/`use:portal` depending
 on your framework). Zag automatically preserves the correct tab order after the
 trigger, even though the content lives elsewhere in the DOM.
 
-### Managing focus within popover
+### Focus management
 
 When the popover opens, focus moves to the first focusable element. To customize
 this, set `initialFocusEl`.
@@ -76,7 +76,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-### Changing the modality
+### Modality
 
 In some cases, you might want the popover to be **modal**. This means that
 it'll:
@@ -125,7 +125,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-### Controlled open state
+### Controlled open
 
 Use `open` and `onOpenChange` to control visibility externally.
 
@@ -168,7 +168,7 @@ return (
 
 </Example>
 
-### Changing the placement
+### Placement
 
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
@@ -185,7 +185,7 @@ const service = useMachine(popover.machine, {
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -236,7 +236,7 @@ return (
 When the popover is open and a different trigger is clicked, it repositions
 without closing. Focus returns to the correct trigger on close.
 
-### Usage within dialog
+### Inside a dialog
 
 When using the popover within a dialog, avoid rendering the popover in a
 `Portal` or `Teleport`. This is because the dialog will trap focus within it,
@@ -246,7 +246,7 @@ and the popover will be rendered outside the dialog.
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Open and closed state
+### Open state
 
 When the popover is expanded, we add a `data-state` and `data-placement`
 attribute to the trigger.
@@ -279,7 +279,7 @@ When the popover is expanded, `data-placement` is added to trigger and content.
 }
 ```
 
-### Compensating for scrollbar width
+### Scrollbar width
 
 When `modal` is `true`, Zag applies `--scrollbar-width` on the root element. Use
 this CSS variable to keep fixed or sticky elements aligned when the popover
@@ -316,7 +316,7 @@ the `--arrow-shadow-color` variable.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The popover machine exposes the following context properties:
 
@@ -328,11 +328,11 @@ The popover `api` exposes the following methods:
 
 <ApiTable name="popover" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="popover" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="popover" />
 
@@ -341,6 +341,6 @@ The popover `api` exposes the following methods:
 Adheres to the
 [Dialog WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialogmodal).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="popover" />

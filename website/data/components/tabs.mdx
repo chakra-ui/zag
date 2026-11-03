@@ -50,7 +50,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="tabs/usage.mdx" />
 
-### Setting the initially selected tab
+### Initial tab
 
 To set the initially selected tab, pass the `defaultValue` property to the
 machine's context.
@@ -78,7 +78,7 @@ To clear selection (when `deselectable` is enabled), use:
 api.clearValue()
 ```
 
-### Controlled tabs
+### Controlled value
 
 To control the selected tab programmatically, pass the `value` and
 `onValueChange` properties to the machine function.
@@ -89,7 +89,7 @@ To control the selected tab programmatically, pass the `value` and
 
 </Example>
 
-### Changing the orientation
+### Orientation
 
 The default orientation of the tabs is horizontal. To change the orientation,
 set the `orientation` property in the machine's context to `"vertical"`.
@@ -104,7 +104,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Showing an indicator
+### Indicator
 
 To show an active indicator when a tab is selected, you add the
 `tabIndicatorProps` object provided by the `connect` function.
@@ -115,7 +115,7 @@ To show an active indicator when a tab is selected, you add the
 
 </Example>
 
-### Disabling a tab
+### Disabled tab
 
 To disable a tab, set the `disabled` property in the `getTriggerProps` to
 `true`.
@@ -133,7 +133,7 @@ clickable.
 
 </Example>
 
-### Listening for events
+### Events
 
 - `onValueChange` — Callback invoked when the selected tab changes.
 - `onFocusChange` — Callback invoked when the focused tab changes.
@@ -155,7 +155,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Allowing deselection
+### Deselection
 
 Set `deselectable` to allow clicking the active tab to clear the current value.
 
@@ -169,7 +169,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Custom navigation for link tabs
+### Link tabs
 
 Use `navigate` when your tab triggers are rendered as links.
 
@@ -186,7 +186,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Manual tab activation
+### Manual activation
 
 By default, a tab is selected when it receives focus from either keyboard or
 pointer interaction. This is called "automatic tab activation".
@@ -204,7 +204,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Looping keyboard navigation
+### Loop navigation
 
 Set `loopFocus` to control whether arrow-key navigation wraps at the ends.
 
@@ -218,7 +218,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### RTL Support
+### RTL support
 
 The tabs machine provides support right to left writing directions. In this
 mode, the layout and keyboard interaction is flipped.
@@ -235,7 +235,7 @@ const service = useMachine(tabs.machine, {
 
 </Example>
 
-### Programmatic tab control
+### Programmatic control
 
 Use the connected API for imperative navigation and focus.
 
@@ -320,7 +320,7 @@ use this to set the style for the horizontal or vertical tabs.
 }
 ```
 
-### The tab indicator
+### Tab indicator
 
 Animate the indicator with a CSS transition. It gets `data-instant` when it
 should snap instead (first render, resize, `dir` or `orientation` change), and
@@ -347,7 +347,7 @@ the triggers get `data-indicator-pending` until it's measured.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tabs machine exposes the following context properties:
 
@@ -359,16 +359,16 @@ The tabs `api` exposes the following methods:
 
 <ApiTable name="tabs" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="tabs" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="tabs" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tabs" />

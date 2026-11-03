@@ -39,7 +39,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="presence/usage.mdx" />
 
-### Running code after exit animation
+### After exit animation
 
 Use `onExitComplete` to run logic after the exit animation finishes.
 
@@ -56,7 +56,7 @@ const service = useMachine(presence.machine, {
 
 </Example>
 
-### Running code after enter animation
+### After enter animation
 
 > `onEnterComplete` is only available from `v1.43.2`
 
@@ -80,7 +80,7 @@ const service = useMachine(presence.machine, {
 
 </Example>
 
-### Applying presence changes immediately
+### Immediate presence
 
 Set `immediate` to `true` to skip deferring present-state changes to the next
 frame.
@@ -148,7 +148,7 @@ function Example() {
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The presence machine exposes the following context properties:
 

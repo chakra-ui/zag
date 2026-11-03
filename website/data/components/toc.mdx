@@ -52,7 +52,7 @@ representing the headings on the page.
 
 <CodeSnippet id="toc/usage.mdx" />
 
-### Adding an indicator
+### Indicator
 
 Use `getIndicatorProps()` to render an animated bar that follows the active
 item. The indicator position is exposed as CSS variables on the root element.
@@ -79,7 +79,7 @@ item. The indicator position is exposed as CSS variables on the root element.
 
 </Example>
 
-### Activating every visible heading
+### All visible headings
 
 By default, only the topmost visible heading is active. Near the end of the
 page, the last headings take turns as you scroll, so short sections at the
@@ -92,7 +92,7 @@ const service = useMachine(toc.machine, {
 })
 ```
 
-### Configuring the observer
+### Observer options
 
 Control how headings are detected with `rootMargin` and `threshold`.
 
@@ -122,7 +122,7 @@ const service = useMachine(toc.machine, {
 
 </Example>
 
-### Auto-scrolling the TOC
+### TOC auto-scroll
 
 When the TOC, or a wrapper around it, is scrollable, the machine scrolls it to
 keep the first active item visible. It never scrolls the content, so it doesn't
@@ -138,7 +138,7 @@ const service = useMachine(toc.machine, {
 
 </Example>
 
-### Listening for active changes
+### Active changes
 
 Use `onActiveChange` to respond when visible headings change. The callback
 receives both `activeIds` and `activeItems`.
@@ -173,7 +173,7 @@ const service = useMachine(toc.machine, {
 
 </Example>
 
-### Getting item state
+### Item state
 
 Use `getItemState` to check if an item is active, first, or last.
 
@@ -223,7 +223,7 @@ link.
 }
 ```
 
-### Depth-based indentation
+### Depth indentation
 
 Use the `--depth` CSS variable to indent items based on heading level.
 
@@ -254,7 +254,7 @@ The indicator position is exposed as CSS variables on the root element: `--top`,
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The table of contents machine exposes the following context properties:
 
@@ -266,10 +266,10 @@ The table of contents `api` exposes the following methods:
 
 <ApiTable name="toc" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="toc" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="toc" />

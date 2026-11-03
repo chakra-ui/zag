@@ -1,0 +1,108 @@
+---
+title: Grid collection
+description:
+  A list collection laid out in rows and columns, for grid keyboard navigation.
+package: "@zag-js/collection"
+---
+
+A [list collection](/utilities/list-collection) laid out in rows and columns,
+like an emoji picker or image gallery.
+
+<Resources pkg="@zag-js/collection" />
+
+## Installation
+
+```ts
+import * as listbox from "@zag-js/listbox"
+
+const collection = listbox.gridCollection({ items, columnCount: 4 }) // GridCollection
+```
+
+To use the class on its own:
+
+```bash
+npm install @zag-js/collection
+```
+
+## Create a collection
+
+Pass the items and `columnCount`. Items fill the grid row by row.
+
+```ts
+import { GridCollection } from "@zag-js/collection"
+
+const grid = new GridCollection({
+  items: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
+  columnCount: 4,
+})
+
+grid.getRowCount() // 3
+grid.getCell(1, 2) // "g"
+grid.getValueCell("g") // { row: 1, column: 2 }
+grid.getNextRowValue("b") // "f"
+```
+
+It accepts every list collection option, including `itemToValue`, `itemToString`
+and `isItemDisabled`. See
+[custom item shapes](/utilities/list-collection#custom-item-shapes).
+
+| Option        | Type          | Default  |
+| ------------- | ------------- | -------- |
+| `items`       | `Iterable<T>` | required |
+| `columnCount` | `number`      | required |
+
+## Rows
+
+`getRows()` chunks the items into rows.
+
+```tsx title="emoji-grid.tsx"
+import { GridCollection } from "@zag-js/collection"
+
+interface Emoji {
+  value: string
+  label: string
+}
+
+export function EmojiGrid(props: { collection: GridCollection<Emoji> }) {
+  return (
+    <div role="grid">
+      {props.collection.getRows().map((row, rowIndex) => (
+        <div role="row" key={rowIndex}>
+          {row.map((item) => (
+            <span role="gridcell" key={item.value} aria-label={item.label}>
+              {item.value}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+## Methods
+
+These add to the [list methods](/utilities/list-collection#methods), which all
+work on a grid collection too.
+
+| Method                              | Returns                           |
+| ----------------------------------- | --------------------------------- |
+| `getRows()`                         | Items chunked into rows           |
+| `getRowCount()`                     | The number of rows                |
+| `getCell(row, column)`              | The item, or `null`               |
+| `getCellIndex(row, column)`         | The flat index                    |
+| `getValueCell(value)`               | `{ row, column }`, or `null`      |
+| `getNextRowValue(value, loop?)`     | The value below                   |
+| `getPreviousRowValue(value, loop?)` | The value above                   |
+| `getFirstEnabledColumnIndex(row)`   | The first enabled column in a row |
+| `getLastEnabledColumnIndex(row)`    | The last enabled column in a row  |
+
+Pass `loop: true` to wrap from the last row to the first, and back.
+
+## Type guard
+
+```ts
+import { isGridCollection } from "@zag-js/collection"
+
+isGridCollection(value) // value is GridCollection
+```

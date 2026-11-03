@@ -53,3 +53,13 @@ export const badge = css({
   lineHeight: "18px",
   color: "primary",
 })
+
+// marks recently added pages; the hidden text keeps it announced
+export const newDot = css({
+  boxSize: "1.5",
+  flexShrink: "0",
+  rounded: "full",
+  bg: "primary.solid",
+})
+
+export const srOnly = css({ srOnly: true })

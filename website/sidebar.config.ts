@@ -59,7 +59,6 @@ export const tabs: SidebarTab[] = [
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
-          { label: "Collection", id: "collection" },
           { label: "Programmatic control", id: "programmatic-control" },
           { label: "TypeScript", id: "typescript", new: true },
         ]),
@@ -172,8 +171,29 @@ export const tabs: SidebarTab[] = [
         ]),
       },
       {
+        label: "Collection",
+        items: docs("utilities", [
+          { label: "List Collection", id: "list-collection", new: true },
+          { label: "Grid Collection", id: "grid-collection", new: true },
+          { label: "Tree Collection", id: "tree-collection", new: true },
+          {
+            label: "Page List Collection",
+            id: "page-list-collection",
+            new: true,
+          },
+        ]),
+      },
+      {
+        label: "Text",
+        items: docs("utilities", [
+          { label: "Highlight Word", id: "highlight-word", new: true },
+          { label: "i18n", id: "i18n", new: true },
+        ]),
+      },
+      {
         label: "Interaction",
         items: docs("utilities", [
+          { label: "Dismissable", id: "dismissable", new: true },
           { label: "Drag and Drop", id: "dnd", new: true },
           { label: "Focus Trap", id: "focus-trap" },
           { label: "Hotkeys", id: "hotkeys" },

@@ -56,7 +56,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="listbox/usage.mdx" />
 
-### Setting the initial selection
+### Initial selection
 
 To set the initial selection, you can use the `defaultValue` property.
 
@@ -71,7 +71,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Controlling the selection
+### Controlled selection
 
 Use `value` and `onValueChange` to control selection externally.
 
@@ -89,7 +89,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Controlling the highlighted item
+### Controlled highlight
 
 Use `highlightedValue` and `onHighlightChange` to control highlighted state.
 
@@ -118,7 +118,7 @@ Here's an example of how to support searching through a list of items.
 
 </Example>
 
-### Selecting multiple items
+### Multiple selection
 
 To enable multiple selection, set the `selectionMode` property to `multiple` or
 `extended`.
@@ -134,7 +134,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Selection Modes
+### Selection modes
 
 Use `selectionMode` to control selection behavior:
 
@@ -157,7 +157,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Selecting on highlight
+### Select on highlight
 
 Set `selectOnHighlight` to `true` to select items as they become highlighted.
 
@@ -171,7 +171,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Disallowing select-all shortcuts
+### Disable select-all
 
 Set `disallowSelectAll` to disable `Cmd/Ctrl + A` selection.
 
@@ -186,7 +186,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Listening for item selection
+### Item selection
 
 Use `onSelect` to react whenever an item is selected.
 
@@ -203,7 +203,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Disabling items
+### Disabled items
 
 To disable an item, return `true` from the collection's `isItemDisabled`.
 
@@ -323,7 +323,7 @@ The disabled state is applied to the item that is currently disabled.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The listbox machine exposes the following context properties:
 
@@ -335,11 +335,11 @@ The listbox `api` exposes the following methods:
 
 <ApiTable name="listbox" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="listbox" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="listbox" />
 

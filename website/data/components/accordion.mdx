@@ -58,7 +58,7 @@ recommended by the
 design pattern to ensure the accordion has the appropriate hierarchy on the
 page.
 
-### Opening multiple items
+### Multiple open
 
 Set `multiple` to `true` to allow more than one expanded item at a time.
 
@@ -72,7 +72,7 @@ const service = useMachine(accordion.machine, {
 
 </Example>
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to define expanded items on first render.
 
@@ -93,7 +93,7 @@ const service = useMachine(accordion.machine, {
 
 </Example>
 
-### Controlled accordions
+### Controlled value
 
 Use `value` and `onValueChange` to control expanded items externally.
 
@@ -103,7 +103,7 @@ Use `value` and `onValueChange` to control expanded items externally.
 
 </Example>
 
-### Keeping one item open
+### Keep one open
 
 Items can be closed by clicking them again. Set `collapsible` to `false` to
 always keep one item open.
@@ -120,7 +120,7 @@ const service = useMachine(accordion.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 When the accordion value changes, the `onValueChange` callback is invoked.
 
@@ -137,7 +137,7 @@ const service = useMachine(accordion.machine, {
 
 </Example>
 
-### Listening for focus changes
+### Focus changes
 
 Use `onFocusChange` to react when keyboard focus moves between item triggers.
 
@@ -168,7 +168,7 @@ const service = useMachine(accordion.machine, {
 
 </Example>
 
-### Disabling an accordion item
+### Disabled items
 
 To disable a specific accordion item, pass the `disabled: true` property to the
 `getItemProps`, `getItemTriggerProps` and `getItemContentProps`.
@@ -203,7 +203,7 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
-### Searching closed items with find-in-page
+### Find-in-page
 
 Set `hiddenUntilFound` to keep closed items searchable with the browser's
 find-in-page. When a match is found inside a closed item, the item expands and
@@ -230,7 +230,7 @@ updated, the item is hidden again.
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Open and closed state
+### Open state
 
 When an accordion item expands or collapses, `data-state` is set to `open` or
 `closed` on the item, trigger, and content elements.
@@ -300,7 +300,7 @@ component's props.
 
 The accordion's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The accordion machine exposes the following context properties:
 
@@ -312,12 +312,12 @@ The accordion `api` exposes the following methods:
 
 <ApiTable name="accordion" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="accordion" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="accordion" />

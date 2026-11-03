@@ -142,7 +142,7 @@ const components: Record<string, FC<any>> = {
                   <code className={table.key}>{prop}</code>
                 </td>
                 <td className={table.td}>
-                  <code className={table.type}>{value}</code>
+                  <code className={table.fullType}>{value}</code>
                 </td>
               </tr>
             ))}

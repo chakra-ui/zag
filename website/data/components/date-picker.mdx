@@ -62,7 +62,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="date-picker/usage.mdx" />
 
-### Setting the initial date
+### Initial date
 
 To set the initial value rendered by the date picker, set `defaultValue`.
 
@@ -76,7 +76,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Controlling the selected date
+### Controlled value
 
 Use the `value` and `onValueChange` properties to programmatically control the
 selected date.
@@ -102,7 +102,7 @@ const nextValue = datepicker.parse("2022-01-01")
 api.setValue([nextValue])
 ```
 
-### Controlling the open state
+### Controlled open
 
 Use `open` and `onOpenChange` to control the popup state.
 
@@ -130,7 +130,7 @@ api.setOpen(true)
 api.setOpen(false)
 ```
 
-### Setting the min and max dates
+### Min and max dates
 
 To constrain the date range that can be selected by the user, set the `min` and
 `max` properties.
@@ -148,7 +148,7 @@ const service = useMachine(datepicker.machine, {
 
 When min or max is reached, previous/next triggers are disabled.
 
-### Changing the start of the week
+### Week start
 
 Set `startOfWeek` from `0` to `6` (`0` is Sunday, `6` is Saturday).
 
@@ -162,7 +162,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Disabling the date picker
+### Disabled state
 
 Set `disabled` to `true` to disable the picker.
 
@@ -176,7 +176,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Rendering month and year pickers
+### Month and year pickers
 
 Render month and year selects with `api.getMonthSelectProps` and
 `api.getYearSelectProps`.
@@ -205,7 +205,7 @@ Render month and year selects with `api.getMonthSelectProps` and
 
 </Example>
 
-### Marking unavailable dates
+### Unavailable dates
 
 Set `isDateUnavailable` and return `true` for blocked dates.
 
@@ -224,7 +224,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Setting the calendar starting view
+### Starting view
 
 The default view is `day`. Set `defaultView` to `day`, `month`, or `year` to
 change it.
@@ -239,7 +239,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Setting the read-only mode
+### Read-only state
 
 Set `readOnly` to `true` to prevent value changes.
 
@@ -253,7 +253,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Required and invalid state
+### Required and invalid
 
 Use `required` and `invalid` for form validation and UI state.
 
@@ -268,7 +268,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Setting the focused date
+### Focused date
 
 By default, focused date is the first selected date or today. Set
 `defaultFocusedValue` to override it.
@@ -283,7 +283,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Rendering the calendar inline
+### Inline calendar
 
 To render the calendar inline, set `inline` to `true`.
 
@@ -297,7 +297,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Usage within a form
+### Form usage
 
 Set `name` to include the picker in form data.
 
@@ -311,7 +311,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Rendering fixed number of weeks
+### Fixed weeks
 
 Set `fixedWeeks` to `true` to always render 6 weeks and avoid layout jumps
 between months.
@@ -326,7 +326,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Showing week numbers
+### Week numbers
 
 Set `showWeekNumbers` to `true` to enable a week-number column in day view.
 
@@ -377,7 +377,7 @@ Then render the week-number header and cells in your day table.
 </table>
 ```
 
-### Choosing a selection mode
+### Selection mode
 
 Use `selectionMode` to switch between `single`, `multiple`, and `range`.
 
@@ -400,7 +400,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Using range presets
+### Range presets
 
 In range mode, `api.getPresetTriggerProps` accepts a preset key like
 `"last7Days"` or a custom `DateValue[]`.
@@ -434,7 +434,7 @@ const service = useMachine(datepicker.machine, {
 </button>
 ```
 
-### Customizing format and parse behavior
+### Format and parse
 
 Use `format` and `parse` to control how input text is displayed and parsed.
 
@@ -493,7 +493,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-### Setting locale and timezone
+### Locale and timezone
 
 Set `locale` and `timeZone` to control date rendering.
 
@@ -508,7 +508,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Using custom calendar systems
+### Calendar systems
 
 Pass a dedicated `createCalendar` function so you only ship the calendar your
 locale needs.
@@ -545,7 +545,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-### Restricting available views
+### Available views
 
 Use `minView` and `maxView` to limit view navigation.
 
@@ -560,7 +560,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Controlling open behavior
+### Open behavior
 
 By default, the picker closes after selection and does not open on input click.
 You can change both behaviors.
@@ -584,7 +584,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-### Allowing outside-day selection
+### Outside days
 
 Days outside the visible month are disabled by default. Set
 `outsideDaySelectable` to `true` if you want them selectable.
@@ -599,7 +599,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Listening to date changes
+### Date changes
 
 Use `onValueChange` to listen for date changes.
 
@@ -616,7 +616,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Listening to view changes
+### View changes
 
 Use `onViewChange` to listen for view changes.
 
@@ -633,7 +633,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Controlling the focused date
+### Controlled focus
 
 Use `focusedValue` and `onFocusChange` to control keyboard focus in the
 calendar.
@@ -651,7 +651,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Listening to focus and visible range changes
+### Focus and range changes
 
 Use `onFocusChange` for focused-date changes and `onVisibleRangeChange` for
 visible-range changes.
@@ -671,7 +671,7 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-### Rendering multiple months
+### Multiple months
 
 To display multiple months:
 
@@ -772,7 +772,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Open State
+### Open state
 
 ```css
 [data-date-picker-trigger] {
@@ -786,7 +786,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Cell States
+### Cell states
 
 ```css
 [data-date-picker-table-cell-trigger] {
@@ -818,7 +818,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Range Selection States
+### Range selection states
 
 When using `selectionMode: "range"`, additional data attributes are available on
 day, month, and year table cell triggers for styling the selected and hovered
@@ -854,7 +854,7 @@ ranges.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The date picker machine exposes the following context properties:
 
@@ -866,10 +866,10 @@ The date picker `api` exposes the following methods:
 
 <ApiTable name="date-picker" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="date-picker" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="date-picker" />

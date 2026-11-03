@@ -45,6 +45,11 @@ const nextConfig = {
   redirects: async () => [
     ...mergedPageRedirects,
     {
+      source: "/guides/collection",
+      destination: "/utilities/list-collection",
+      permanent: true,
+    },
+    {
       source: "/overview/whats-a-machine",
       destination: "/guides/custom-machine-concepts",
       permanent: true,

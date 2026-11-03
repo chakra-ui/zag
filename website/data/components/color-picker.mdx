@@ -4,11 +4,8 @@ description: Using the color-picker machine in your project.
 package: "@zag-js/color-picker"
 ---
 
-The color picker is an input widget used to select a color value from a
-predefined list or a color area.
-
-This component builds on top of the native `<input type=color>` experience and
-provides a more customizable and consistent user experience.
+Lets users pick a color from a color area or a list of swatches. It builds on
+the native `<input type=color>` with more control over the UI.
 
 <Resources pkg="@zag-js/color-picker" />
 
@@ -59,7 +56,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="color-picker/usage.mdx" />
 
-### Setting the initial color
+### Initial color
 
 Set `defaultValue` to define the initial color.
 
@@ -73,7 +70,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Controlled color picker
+### Controlled value
 
 Use `value` and `onValueChange` to control color externally.
 
@@ -86,7 +83,7 @@ Use `value` and `onValueChange` to control color externally.
 
 </Example>
 
-### Listening for change events
+### Value changes
 
 When the user selects a color using the color picker, the `onValueChange` and
 `onValueChangeEnd` events will be fired.
@@ -110,7 +107,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Using a custom color format
+### Custom color format
 
 By default, the color picker's output format is `rgba`. You can change this
 format to either `hsla` or `hsba` with `format`.
@@ -131,7 +128,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Wide gamut (OKLab / OKLCH)
+### Wide gamut colors
 
 The **2D color area** stays **HSBA** (saturation × brightness, **hue** on the
 third-axis slider) for a familiar control surface, even when the **output
@@ -150,7 +147,7 @@ cube in linear RGB space. When `false`, your OKLab/OKLCH **string** may still be
 wide-gamut while **hex** or 8-bit **RGBA** outputs **clamp**—use this flag for
 badges, tooltips, or warnings.
 
-### Setting the initial format
+### Initial format
 
 Use `defaultFormat` to set the initial output format.
 
@@ -181,7 +178,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Showing color presets
+### Color presets
 
 Adding color presets as swatches can help users pick colors faster. To support
 this, use the `getSwatchTriggerProps(...)` and `getSwatchProps(...)` to get the
@@ -193,7 +190,7 @@ props needed to render swatch buttons.
 
 </Example>
 
-### Closing after swatch selection
+### Close on swatch select
 
 Set `closeOnSelect` to close the popup when a swatch is selected.
 
@@ -207,7 +204,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Disabling the color picker
+### Disabled state
 
 Set `disabled` to `true` to disable user interaction.
 
@@ -221,7 +218,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Controlling the open and closed state
+### Controlled open
 
 Use `open` and `onOpenChange` to control whether the picker is visible.
 
@@ -241,7 +238,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 You can also leverage the `api.setOpen(...)` method to control the open and
 closed state of the color picker.
 
-### Positioning the popup
+### Positioning
 
 Use `positioning` to control popup placement and collision behavior.
 
@@ -255,7 +252,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Setting initial focus when opened
+### Initial focus
 
 Use `initialFocusEl` to choose which element receives focus when the popup
 opens.
@@ -284,7 +281,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 </Example>
 
-### Controlling individual color channel
+### Color channels
 
 In some cases, you may want to allow users to control the values of each color
 channel individually. You can do this using an input element or a slider
@@ -301,7 +298,7 @@ To support this, use the `getChannelInputProps(...)` to show the channel inputs.
 
 </Example>
 
-### Showing a color preview
+### Color preview
 
 To display the value of a color, use the `getSwatchProps(...)` and pass the
 color value. To show the current color value, use `api.value`.
@@ -315,7 +312,7 @@ color value. To show the current color value, use `api.value`.
 > You can pass `respectAlpha: false` to show the color value without the alpha
 > channel
 
-### Adding an eyedropper
+### Eyedropper
 
 The eye dropper tool is a native browser feature that lets users pick a color
 from a current page's canvas. To support this, use the
@@ -329,7 +326,7 @@ from a current page's canvas. To support this, use the
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use the color picker in a form, set `name` and render the hidden input.
 
@@ -348,7 +345,7 @@ const service = useMachine(colorPicker.machine, {
 Each color picker part includes a component-scoped data attribute to help you
 identify and style it easily.
 
-### Open and closed state
+### Open state
 
 When the color picker is open or closed, the `data-state` attribute is added to
 the trigger, content, control parts.
@@ -405,7 +402,7 @@ label, control, trigger and option parts.
 }
 ```
 
-### Swatch State
+### Swatch state
 
 When a swatch's color value matches the color picker's value, the
 `data-state=checked` attribute is added to the swatch part.
@@ -418,7 +415,7 @@ When a swatch's color value matches the color picker's value, the
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The color picker machine exposes the following context properties:
 
@@ -430,16 +427,16 @@ The color picker `api` exposes the following methods:
 
 <ApiTable name="color-picker" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="color-picker" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="color-picker" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="color-picker" />

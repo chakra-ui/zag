@@ -1,0 +1,120 @@
+{
+  "id": "navigation-menu",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTENT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTENT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTENT.POINTERENTER",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTENT.POINTERLEAVE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.NAVIGATE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isItemOpen"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER.POINTERENTER",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER.POINTERLEAVE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VIEWPORT.POSITION",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

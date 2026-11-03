@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="hover-card/usage.mdx" />
 
-### Setting the initial state
+### Initial state
 
 Set `defaultOpen` to `true` to start with the hover card open.
 
@@ -68,7 +68,7 @@ const service = useMachine(hoverCard.machine, {
 
 </Example>
 
-### Controlled open state
+### Controlled open
 
 Use `open` and `onOpenChange` to control visibility externally.
 
@@ -85,7 +85,7 @@ const service = useMachine(hoverCard.machine, {
 
 </Example>
 
-### Customizing open and close delays
+### Open and close delays
 
 Use `openDelay` and `closeDelay` to control hover timing.
 
@@ -100,7 +100,7 @@ const service = useMachine(hoverCard.machine, {
 
 </Example>
 
-### Positioning the hover card
+### Positioning
 
 Use `positioning` to control placement and offsets.
 
@@ -158,7 +158,7 @@ return (
 When hovering a different trigger while the card is open, it repositions without
 closing.
 
-### Disabling the hover card
+### Disabled state
 
 Set `disabled` to `true` to prevent it from opening.
 
@@ -172,7 +172,7 @@ const service = useMachine(hoverCard.machine, {
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
@@ -227,7 +227,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Open and closed state
+### Open state
 
 The hover card exposes a `data-state` attribute that can be used to style the
 hover card based on its open-close state.
@@ -256,7 +256,7 @@ You can use CSS variables to style the arrow.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The hover card machine exposes the following context properties:
 
@@ -268,11 +268,11 @@ The hover card `api` exposes the following methods:
 
 <ApiTable name="hover-card" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="hover-card" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="hover-card" />
 
@@ -286,7 +286,7 @@ of something the user can already get to another way.
 > able to read or act on belongs on the page the trigger links to, not only in
 > the card.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 The trigger is a normal focusable element. Focusing it opens the card so
 keyboard users see the same preview, but focus never enters the content.

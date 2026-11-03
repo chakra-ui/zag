@@ -48,7 +48,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
-### Defining the steps
+### Define steps
 
 Pass an array of items to the machine. Each item needs a unique `value`, which
 is how every part and API method addresses it.
@@ -80,7 +80,7 @@ Items carry four optional flags:
   returned to.
 - `invalid` — the step fails validation and blocks forward navigation.
 
-### Rendering the steps
+### Render steps
 
 `api.items` holds the steps still in the flow, so disabled steps drop out of the
 render without filtering. `api.index` and `api.count` use the same positions,
@@ -118,7 +118,7 @@ const api = steps.connect<PropTypes, Step>(service, normalizeProps)
 api.item?.icon // string
 ```
 
-### Setting the initial step
+### Initial step
 
 Set the initial step by passing `defaultValue` to the machine context.
 
@@ -132,7 +132,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Controlled current step
+### Controlled step
 
 Use `value` and `onValueChange` for controlled usage.
 
@@ -153,7 +153,7 @@ const service = useMachine(steps.machine, {
 The value is `null` when there is no current step, such as while `items` is
 still loading.
 
-### Listening for steps completion
+### Steps completion
 
 Moving past the last step sets the value to `steps.COMPLETE` and invokes
 `onComplete`. Render the terminal screen with
@@ -190,7 +190,7 @@ or not you apply it.
 > When you look up the current item from `value`, handle `steps.COMPLETE`.
 > Prefer `api.item`, which is `null` once complete.
 
-### Tracking completed steps
+### Completed steps
 
 Completion is its own controllable value, so it survives navigating backwards.
 
@@ -210,7 +210,7 @@ const service = useMachine(steps.machine, {
 > `goToNextStep` marks the step it leaves as completed, so `onCompletedChange`
 > also fires on navigation.
 
-### Enforcing linear steps
+### Linear steps
 
 To enforce linear steps, set the `linear` prop to `true`. Every step before the
 one being navigated to must then be completed, optional, or disabled.
@@ -228,7 +228,7 @@ const service = useMachine(steps.machine, {
 > An unvisited `optional` step satisfies this rule, so a jump past a run of
 > optional steps is allowed even in linear mode.
 
-### Validating steps
+### Step validation
 
 The machine does not validate anything itself. Derive `invalid` for each item
 from your form state, and the step blocks forward navigation and gets
@@ -253,7 +253,7 @@ Error messages stay with your form. To show them only after the user tries to
 move on, record the step in `onNavigationBlocked` when `reason` is `"invalid"`.
 For asynchronous validation, keep the step `invalid` until the check resolves.
 
-### Reacting to blocked navigation
+### Blocked navigation
 
 When navigation is refused, `onNavigationBlocked` fires with the reason and the
 step responsible.
@@ -271,7 +271,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Skipping optional steps
+### Optional steps
 
 Mark a step `optional` and render a `skipTrigger`. Unlike `next`, skipping
 ignores `invalid` and does not mark the step completed. It gets `skipped`
@@ -289,7 +289,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Locking a completed step
+### Lock completed step
 
 Set `editable: false` to stop a step being revisited once it is completed.
 `next` and `prev` pass over locked steps, so the user is never stranded.
@@ -304,7 +304,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Changing the orientation
+### Orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
@@ -336,7 +336,7 @@ api.resetStep()
 
 </Example>
 
-### Localizing the progress bar
+### Localization
 
 The progress bar is labelled "Progress" and announces its value as "Step 2 of 3:
 Payment", or "50% complete" when the step has no `title`. Pass `translations` to
@@ -428,7 +428,7 @@ To style the incomplete step, you can use the `data-incomplete` attribute.
 }
 ```
 
-### Skipped, invalid and locked steps
+### Step states
 
 ```css
 [data-steps-item][data-skipped] {
@@ -453,7 +453,7 @@ invalid, or current and invalid.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The steps machine exposes the following context properties:
 
@@ -465,10 +465,10 @@ The steps `api` exposes the following methods:
 
 <ApiTable name="steps" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="steps" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="steps" />

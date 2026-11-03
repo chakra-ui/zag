@@ -53,7 +53,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="angle-slider/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to define the initial slider value.
 
@@ -67,7 +67,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Controlled angle slider
+### Controlled value
 
 Use `value` and `onValueChange` to control the value externally.
 
@@ -77,7 +77,7 @@ Use `value` and `onValueChange` to control the value externally.
 
 </Example>
 
-### Setting the value's granularity
+### Granularity
 
 By default, `step` is `1`, so values move in whole-number increments. Set `step`
 to control granularity.
@@ -94,7 +94,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked.
@@ -115,7 +115,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Read-only mode
+### Read-only state
 
 Set `readOnly` to prevent updates while preserving focus and form semantics.
 
@@ -129,7 +129,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Usage in forms
+### Form usage
 
 To submit the value with a form:
 
@@ -146,7 +146,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Labeling the thumb for assistive tech
+### Thumb labels
 
 Use `aria-label` or `aria-labelledby` when you need custom labeling.
 
@@ -160,7 +160,7 @@ const service = useMachine(angleSlider.machine, {
 
 </Example>
 
-### Using angle slider marks
+### Slider marks
 
 To show marks or ticks along the angle slider track, use the exposed
 `api.getMarkerProps()` method to position the angle slider marks at desired
@@ -176,7 +176,7 @@ angles.
 
 Each part includes a component-scoped data attribute you can target in CSS.
 
-### Disabled State
+### Disabled state
 
 When the angle slider is disabled, the `data-disabled` attribute is added to the
 root, label, control, thumb and marker.
@@ -203,7 +203,7 @@ root, label, control, thumb and marker.
 }
 ```
 
-### Invalid State
+### Invalid state
 
 When the slider is invalid, the `data-invalid` attribute is added to the root,
 control, value text, label, thumb, and marker parts.
@@ -234,7 +234,7 @@ control, value text, label, thumb, and marker parts.
 }
 ```
 
-### Styling the markers
+### Marker styling
 
 ```css
 [data-angle-slider-marker][data-state="(at|under|over)-value"] {
@@ -244,7 +244,7 @@ control, value text, label, thumb, and marker parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The angle slider machine exposes the following context properties:
 
@@ -256,14 +256,14 @@ The angle slider `api` exposes the following methods:
 
 <ApiTable name="angle-slider" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="angle-slider" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="angle-slider" />
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="angle-slider" />

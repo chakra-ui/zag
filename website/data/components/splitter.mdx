@@ -55,7 +55,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="splitter/usage.mdx" />
 
-### Setting the initial size
+### Initial size
 
 To set the initial size of the splitter panels, use the `defaultSize` property.
 Ensure the `defaultSize` totals to `100`.
@@ -91,7 +91,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Listening for resize events
+### Resize events
 
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
 `onResizeEnd` callbacks are invoked.
@@ -115,7 +115,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Changing the orientation
+### Orientation
 
 By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
@@ -132,7 +132,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Specifying constraints
+### Constraints
 
 Use the `panels` property to specify constraints like `minSize` and `maxSize`
 for the splitter panels.
@@ -151,7 +151,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Configuring keyboard resize step
+### Keyboard step
 
 Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
 
@@ -166,7 +166,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Setting the collapsed size
+### Collapsed size
 
 Set the `collapsedSize` and `collapsible` of a panel to specify the collapsed
 size of the panel.
@@ -190,7 +190,7 @@ const service = useMachine(splitter.machine, {
 This allows the user to drag the splitter to collapse the panel to the
 `collapsedSize`.
 
-### Listening for collapse events
+### Collapse events
 
 When the splitter panel is collapsed, the `onCollapse` callback is invoked.
 Alternatively, the `onExpand` callback is invoked when the panel is expanded.
@@ -211,7 +211,7 @@ const service = useMachine(splitter.machine, {
 
 </Example>
 
-### Programmatic panel control
+### Programmatic control
 
 Use the connected API to resize, collapse, or expand panels from code.
 
@@ -227,7 +227,7 @@ api.resetSizes()
 
 </Example>
 
-### Multi-drag with registry
+### Registry multi-drag
 
 When you have nested splitters (e.g. horizontal and vertical), users can drag at
 handle intersections to resize both directions simultaneously. Use
@@ -323,7 +323,7 @@ is set on the trigger element.
 
 The splitter's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The splitter machine exposes the following context properties:
 
@@ -335,6 +335,6 @@ The splitter `api` exposes the following methods:
 
 <ApiTable name="splitter" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="splitter" />

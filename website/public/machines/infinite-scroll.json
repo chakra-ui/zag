@@ -1,0 +1,546 @@
+{
+  "id": "infinite-scroll",
+  "initial": "inactive",
+  "states": [
+    {
+      "id": "inactive",
+      "label": "inactive",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "loading",
+      "label": "loading",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "inactive",
+      "event": "AVAILABILITY.CHANGED",
+      "guard": "!canObserve"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "idle",
+      "event": "COUNT.CHANGED",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "LOAD.REQUESTED",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "LOAD.STARTED",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "idle",
+      "event": "OBSERVER.RESYNC",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "idle",
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "loading",
+      "event": "SENTINEL.INTERSECT",
+      "guard": "didGrow"
+    },
+    {
+      "from": "inactive",
+      "to": "idle",
+      "event": "AVAILABILITY.CHANGED",
+      "guard": "canObserve"
+    },
+    {
+      "from": "inactive",
+      "to": "loading",
+      "event": "LOAD.REQUESTED",
+      "guard": "hasMore"
+    },
+    {
+      "from": "inactive",
+      "to": "idle",
+      "event": "RESET",
+      "guard": "canObserve"
+    },
+    {
+      "from": "loading",
+      "to": "idle",
+      "event": "COUNT.CHANGED",
+      "guard": "isLoadSettled && canObserve"
+    },
+    {
+      "from": "loading",
+      "to": "inactive",
+      "event": "COUNT.CHANGED",
+      "guard": "isLoadSettled"
+    },
+    {
+      "from": "loading",
+      "to": "idle",
+      "event": "LOAD.DONE",
+      "guard": "canObserve"
+    },
+    {
+      "from": "loading",
+      "to": "inactive",
+      "event": "LOAD.DONE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1121,
+      "height": 308,
+      "states": {
+        "inactive": {
+          "x": 48,
+          "y": 189,
+          "w": 109,
+          "h": 44
+        },
+        "idle": {
+          "x": 545,
+          "y": 80,
+          "w": 78,
+          "h": 44
+        },
+        "loading": {
+          "x": 988,
+          "y": 121,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "loading",
+          "events": [
+            "LOAD.REQUESTED",
+            "LOAD.STARTED",
+            "SENTINEL.INTERSECT"
+          ],
+          "lines": [
+            "LOAD.REQUESTED",
+            "LOAD.STARTED",
+            "SENTINEL.INTERSECT"
+          ],
+          "points": [
+            [
+              623,
+              95
+            ],
+            [
+              904,
+              95
+            ],
+            [
+              904,
+              130
+            ],
+            [
+              988,
+              130
+            ]
+          ],
+          "label": {
+            "x": 743,
+            "y": 32,
+            "w": 135,
+            "h": 56
+          }
+        },
+        {
+          "from": "inactive",
+          "to": "idle",
+          "events": [
+            "AVAILABILITY.CHANGED",
+            "RESET"
+          ],
+          "lines": [
+            "AVAILABILITY.CHANGED",
+            "RESET"
+          ],
+          "points": [
+            [
+              157,
+              200
+            ],
+            [
+              183,
+              200
+            ],
+            [
+              183,
+              102
+            ],
+            [
+              545,
+              102
+            ]
+          ],
+          "label": {
+            "x": 267,
+            "y": 55,
+            "w": 148,
+            "h": 40
+          }
+        },
+        {
+          "from": "inactive",
+          "to": "loading",
+          "events": [
+            "LOAD.REQUESTED"
+          ],
+          "lines": [
+            "LOAD.REQUESTED"
+          ],
+          "points": [
+            [
+              157,
+              211
+            ],
+            [
+              904,
+              211
+            ],
+            [
+              904,
+              147
+            ],
+            [
+              988,
+              147
+            ]
+          ],
+          "label": {
+            "x": 525,
+            "y": 180,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "idle",
+          "events": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "lines": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "points": [
+            [
+              988,
+              139
+            ],
+            [
+              659,
+              139
+            ],
+            [
+              659,
+              109
+            ],
+            [
+              623,
+              109
+            ]
+          ],
+          "label": {
+            "x": 760,
+            "y": 146,
+            "w": 102,
+            "h": 40
+          }
+        },
+        {
+          "from": "loading",
+          "to": "inactive",
+          "events": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "lines": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "points": [
+            [
+              988,
+              156
+            ],
+            [
+              914,
+              156
+            ],
+            [
+              914,
+              228
+            ],
+            [
+              183,
+              228
+            ],
+            [
+              183,
+              222
+            ],
+            [
+              157,
+              222
+            ]
+          ],
+          "label": {
+            "x": 528,
+            "y": 235,
+            "w": 102,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 569,
+      "height": 732,
+      "states": {
+        "inactive": {
+          "x": 346,
+          "y": 32,
+          "w": 109,
+          "h": 44
+        },
+        "idle": {
+          "x": 163,
+          "y": 336,
+          "w": 78,
+          "h": 44
+        },
+        "loading": {
+          "x": 178,
+          "y": 656,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "loading",
+          "events": [
+            "LOAD.REQUESTED",
+            "LOAD.STARTED",
+            "SENTINEL.INTERSECT"
+          ],
+          "lines": [
+            "LOAD.REQUESTED",
+            "LOAD.STARTED",
+            "SENTINEL.INTERSECT"
+          ],
+          "points": [
+            [
+              189,
+              380
+            ],
+            [
+              189,
+              572
+            ],
+            [
+              198,
+              572
+            ],
+            [
+              198,
+              656
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 490,
+            "w": 135,
+            "h": 56
+          }
+        },
+        {
+          "from": "inactive",
+          "to": "idle",
+          "events": [
+            "AVAILABILITY.CHANGED",
+            "RESET"
+          ],
+          "lines": [
+            "AVAILABILITY.CHANGED",
+            "RESET"
+          ],
+          "points": [
+            [
+              373,
+              76
+            ],
+            [
+              373,
+              102
+            ],
+            [
+              202,
+              102
+            ],
+            [
+              202,
+              336
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 148,
+            "h": 40
+          }
+        },
+        {
+          "from": "inactive",
+          "to": "loading",
+          "events": [
+            "LOAD.REQUESTED"
+          ],
+          "lines": [
+            "LOAD.REQUESTED"
+          ],
+          "points": [
+            [
+              401,
+              76
+            ],
+            [
+              401,
+              102
+            ],
+            [
+              411,
+              102
+            ],
+            [
+              411,
+              572
+            ],
+            [
+              239,
+              572
+            ],
+            [
+              239,
+              656
+            ]
+          ],
+          "label": {
+            "x": 297,
+            "y": 346,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "idle",
+          "events": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "lines": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "points": [
+            [
+              218,
+              656
+            ],
+            [
+              218,
+              572
+            ],
+            [
+              215,
+              572
+            ],
+            [
+              215,
+              380
+            ]
+          ],
+          "label": {
+            "x": 222,
+            "y": 498,
+            "w": 102,
+            "h": 40
+          }
+        },
+        {
+          "from": "loading",
+          "to": "inactive",
+          "events": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "lines": [
+            "COUNT.CHANGED",
+            "LOAD.DONE"
+          ],
+          "points": [
+            [
+              259,
+              656
+            ],
+            [
+              259,
+              582
+            ],
+            [
+              428,
+              582
+            ],
+            [
+              428,
+              76
+            ]
+          ],
+          "label": {
+            "x": 435,
+            "y": 338,
+            "w": 102,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

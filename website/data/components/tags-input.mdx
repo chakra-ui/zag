@@ -57,7 +57,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="tags-input/usage.mdx" />
 
-### Navigating and editing tags
+### Tag navigation
 
 When the input has an empty value or the caret is at the start position, the
 tags can be selected with the left and right arrow keys. When a tag has visual
@@ -67,7 +67,7 @@ focus:
   the change.
 - Pressing `Delete` or `Backspace` will delete the tag that has "visual" focus.
 
-### Setting the initial tags
+### Initial tags
 
 To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
@@ -82,7 +82,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Controlled tags input
+### Controlled value
 
 To control the tags input programmatically, pass the `value` and `onValueChange`
 properties to the machine function.
@@ -93,7 +93,7 @@ properties to the machine function.
 
 </Example>
 
-### Controlled input value
+### Controlled input
 
 Use `inputValue` and `onInputValueChange` when you need to control the typing
 state separately.
@@ -111,7 +111,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Removing all tags
+### Clear tags
 
 The tags input will remove all tags when the clear button is clicked. To remove
 all tags, use the provided `clearTriggerProps` function from the `api`.
@@ -131,7 +131,7 @@ all tags, use the provided `clearTriggerProps` function from the `api`.
 
 To programmatically remove all tags, use `api.clearValue()`.
 
-### Usage within forms
+### Form usage
 
 The tags input works when placed within a form and the form is submitted. We
 achieve this by:
@@ -154,7 +154,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Limiting the number of tags
+### Max tags
 
 To limit the number of tags within the component, you can set the `max` property
 to the limit you want. The default value is `Infinity`.
@@ -173,7 +173,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Validating Tags
+### Tag validation
 
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
@@ -198,7 +198,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Allow Duplicates
+### Allow duplicates
 
 By default, duplicate tags are prevented. For use cases like sentence builders
 or repeatable tokens, set `allowDuplicates: true`:
@@ -251,7 +251,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Enable tag editing
+### Tag editing
 
 By default, tags are add/remove only. To allow inline editing — double-clicking
 a tag or focusing it and pressing `Enter` — set `editable: true`.
@@ -280,7 +280,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Listening for events
+### Events
 
 During the lifetime of the tags input interaction, here's a list of events we
 emit:
@@ -310,7 +310,7 @@ const service = useMachine(tagsInput.machine, {
 
 </Example>
 
-### Programmatic tag operations
+### Programmatic control
 
 Use the API for imperative updates.
 
@@ -413,7 +413,7 @@ When a tag is highlighted via the keyboard navigation or pointer hover, a
 }
 ```
 
-### Readonly state
+### Read-only state
 
 When the tags input is in its readonly state, the `data-readonly` attribute is
 set on the root, label, input and control.
@@ -438,7 +438,7 @@ set on the root, label, input and control.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tags input machine exposes the following context properties:
 
@@ -450,12 +450,12 @@ The tags input `api` exposes the following methods:
 
 <ApiTable name="tags-input" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="tags-input" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tags-input" />

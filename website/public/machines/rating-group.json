@@ -1,0 +1,536 @@
+{
+  "id": "rating-group",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focus",
+      "label": "focus",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "hover",
+      "label": "hover",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLEAR_VALUE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "ARROW_RIGHT",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "CLICK",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "END",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "GROUP_POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "HOME",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "POINTER_OVER",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "SPACE",
+      "guard": "isValueEmpty"
+    },
+    {
+      "from": "hover",
+      "to": null,
+      "event": "CLICK",
+      "guard": null
+    },
+    {
+      "from": "hover",
+      "to": "focus",
+      "event": "GROUP_POINTER_LEAVE",
+      "guard": "isRadioFocused"
+    },
+    {
+      "from": "hover",
+      "to": "idle",
+      "event": "GROUP_POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "hover",
+      "to": null,
+      "event": "POINTER_OVER",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focus",
+      "event": "FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "hover",
+      "event": "GROUP_POINTER_OVER",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1023,
+      "height": 213,
+      "states": {
+        "idle": {
+          "x": 527,
+          "y": 120,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 905,
+          "y": 110,
+          "w": 86,
+          "h": 44
+        },
+        "hover": {
+          "x": 48,
+          "y": 110,
+          "w": 86,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              905,
+              132
+            ],
+            [
+              662,
+              132
+            ],
+            [
+              662,
+              135
+            ],
+            [
+              605,
+              135
+            ]
+          ],
+          "label": {
+            "x": 750,
+            "y": 101,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "hover",
+          "to": "focus",
+          "events": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "lines": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              134,
+              121
+            ],
+            [
+              160,
+              121
+            ],
+            [
+              160,
+              63
+            ],
+            [
+              821,
+              63
+            ],
+            [
+              821,
+              121
+            ],
+            [
+              905,
+              121
+            ]
+          ],
+          "label": {
+            "x": 495,
+            "y": 32,
+            "w": 141,
+            "h": 24
+          }
+        },
+        {
+          "from": "hover",
+          "to": "idle",
+          "events": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "lines": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              134,
+              132
+            ],
+            [
+              411,
+              132
+            ],
+            [
+              411,
+              135
+            ],
+            [
+              527,
+              135
+            ]
+          ],
+          "label": {
+            "x": 244,
+            "y": 101,
+            "w": 141,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "FOCUS"
+          ],
+          "lines": [
+            "FOCUS"
+          ],
+          "points": [
+            [
+              605,
+              149
+            ],
+            [
+              821,
+              149
+            ],
+            [
+              821,
+              143
+            ],
+            [
+              905,
+              143
+            ]
+          ],
+          "label": {
+            "x": 746,
+            "y": 156,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "hover",
+          "events": [
+            "GROUP_POINTER_OVER"
+          ],
+          "lines": [
+            "GROUP_POINTER_OVER"
+          ],
+          "points": [
+            [
+              527,
+              149
+            ],
+            [
+              160,
+              149
+            ],
+            [
+              160,
+              143
+            ],
+            [
+              134,
+              143
+            ]
+          ],
+          "label": {
+            "x": 247,
+            "y": 156,
+            "w": 135,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 558,
+      "height": 684,
+      "states": {
+        "idle": {
+          "x": 332,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 315,
+          "y": 608,
+          "w": 86,
+          "h": 44
+        },
+        "hover": {
+          "x": 319,
+          "y": 32,
+          "w": 86,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              358,
+              608
+            ],
+            [
+              358,
+              364
+            ]
+          ],
+          "label": {
+            "x": 310,
+            "y": 474,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "hover",
+          "to": "focus",
+          "events": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "lines": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              341,
+              76
+            ],
+            [
+              341,
+              102
+            ],
+            [
+              195,
+              102
+            ],
+            [
+              195,
+              524
+            ],
+            [
+              337,
+              524
+            ],
+            [
+              337,
+              608
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 330,
+            "w": 141,
+            "h": 24
+          }
+        },
+        {
+          "from": "hover",
+          "to": "idle",
+          "events": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "lines": [
+            "GROUP_POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              362,
+              76
+            ],
+            [
+              362,
+              102
+            ],
+            [
+              367,
+              102
+            ],
+            [
+              367,
+              236
+            ],
+            [
+              358,
+              236
+            ],
+            [
+              358,
+              320
+            ]
+          ],
+          "label": {
+            "x": 220,
+            "y": 186,
+            "w": 141,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "FOCUS"
+          ],
+          "lines": [
+            "FOCUS"
+          ],
+          "points": [
+            [
+              384,
+              364
+            ],
+            [
+              384,
+              390
+            ],
+            [
+              380,
+              390
+            ],
+            [
+              380,
+              608
+            ]
+          ],
+          "label": {
+            "x": 387,
+            "y": 474,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "hover",
+          "events": [
+            "GROUP_POINTER_OVER"
+          ],
+          "lines": [
+            "GROUP_POINTER_OVER"
+          ],
+          "points": [
+            [
+              384,
+              320
+            ],
+            [
+              384,
+              76
+            ]
+          ],
+          "label": {
+            "x": 391,
+            "y": 186,
+            "w": 135,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "id": "date-input",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.ADJUST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.ARROW_RIGHT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.BACKSPACE",
+      "guard": "isActiveSegmentPlaceholder"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.BACKSPACE",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "SEGMENT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.END",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.FOCUS",
+      "guard": "isActiveSegmentFocus"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.HOME",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.INPUT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "SEGMENT.PASTE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "SEGMENT.FOCUS",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 581,
+      "height": 144,
+      "states": {
+        "idle": {
+          "x": 471,
+          "y": 48,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 48,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "SEGMENT.BLUR"
+          ],
+          "lines": [
+            "SEGMENT.BLUR"
+          ],
+          "points": [
+            [
+              149,
+              63
+            ],
+            [
+              471,
+              63
+            ]
+          ],
+          "label": {
+            "x": 263,
+            "y": 32,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "SEGMENT.FOCUS"
+          ],
+          "lines": [
+            "SEGMENT.FOCUS"
+          ],
+          "points": [
+            [
+              471,
+              77
+            ],
+            [
+              387,
+              77
+            ],
+            [
+              387,
+              80
+            ],
+            [
+              175,
+              80
+            ],
+            [
+              175,
+              77
+            ],
+            [
+              149,
+              77
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 87,
+            "w": 102,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 316,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 123,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 115,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "SEGMENT.BLUR"
+          ],
+          "lines": [
+            "SEGMENT.BLUR"
+          ],
+          "points": [
+            [
+              149,
+              76
+            ],
+            [
+              149,
+              320
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "SEGMENT.FOCUS"
+          ],
+          "lines": [
+            "SEGMENT.FOCUS"
+          ],
+          "points": [
+            [
+              175,
+              320
+            ],
+            [
+              175,
+              102
+            ],
+            [
+              182,
+              102
+            ],
+            [
+              182,
+              76
+            ]
+          ],
+          "label": {
+            "x": 182,
+            "y": 186,
+            "w": 102,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

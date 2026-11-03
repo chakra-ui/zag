@@ -3,9 +3,8 @@ title: Floating Panel
 description: A floating window that contains one or more panes.
 ---
 
-A floating panel is a detachable window that floats above the main interface,
-typically used for displaying and editing properties. The panel can be dragged,
-resized, and positioned anywhere on the screen for optimal workflow.
+A window that floats above the page and can be dragged, resized and
+repositioned. Use it for property or settings panels.
 
 > Think of the panel that pops up in Figma when you click `variables` or try to
 > set a color.
@@ -59,7 +58,7 @@ Then use the framework integration helpers:
 
 ### Resizing
 
-#### Setting the initial size
+#### Initial size
 
 To set the initial size of the floating panel, you can pass the `defaultSize`
 prop to the machine.
@@ -74,7 +73,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Controlling the size
+#### Controlled size
 
 Use `size` and `onSizeChange` to control size externally.
 
@@ -107,7 +106,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Setting size constraints
+#### Size constraints
 
 You can also control the minimum allowed dimensions of the panel by using the
 `minSize` and `maxSize` props.
@@ -141,7 +140,7 @@ const service = useMachine(floatingPanel.machine, {
 
 ### Positioning
 
-#### Setting the initial position
+#### Initial position
 
 To specify the initial position of the floating panel, use the `defaultPosition`
 prop. If `defaultPosition` is not provided, the floating panel will be initially
@@ -178,7 +177,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Controlling the position
+#### Controlled position
 
 To control the position of the floating panel programmatically, you can pass the
 `position` and `onPositionChange` prop to the machine.
@@ -212,7 +211,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Controlling positioning strategy
+#### Positioning strategy
 
 Use `strategy` to control positioning behavior (`fixed` or `absolute`).
 
@@ -226,7 +225,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Snapping to a grid
+#### Grid snapping
 
 Use `gridSize` to snap drag and resize interactions to a grid.
 
@@ -240,7 +239,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Allowing overflow outside boundaries
+#### Overflow
 
 Set `allowOverflow` to `true` to let the panel move outside boundary limits.
 
@@ -258,7 +257,7 @@ const service = useMachine(floatingPanel.machine, {
 
 The floating panel generates a variety of events that you can handle.
 
-#### Open State
+#### Open state
 
 When the floating panel is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
@@ -276,7 +275,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Position Change
+#### Position change
 
 When the position of the floating panel changes, these callbacks are invoked:
 
@@ -324,7 +323,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-#### Minimizing and Maximizing
+#### Minimize and maximize
 
 The floating panel can be minimized, default, and maximized by clicking the
 respective buttons in the header. We refer to this as the panel's `stage`.
@@ -353,7 +352,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-### Persisting size and position when closed
+### Persist size and position
 
 Set `persistRect` to `true` to preserve size and position across close and
 reopen.
@@ -368,7 +367,7 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-### Customizing accessibility labels
+### Accessibility labels
 
 Use `translations` to customize stage control labels.
 
@@ -464,7 +463,7 @@ attributes:
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The floating panel machine exposes the following context properties:
 
@@ -476,10 +475,10 @@ The floating panel `api` exposes the following methods:
 
 <ApiTable name="floating-panel" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="floating-panel" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="floating-panel" />

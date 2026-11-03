@@ -55,7 +55,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="dialog/usage.mdx" />
 
-### Managing focus within the dialog
+### Focus management
 
 When the dialog opens, it focuses the first focusable element and keeps keyboard
 focus inside the dialog.
@@ -85,7 +85,7 @@ const service = useMachine(dialog.machine, {
 
 To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
-### Dialog vs non-modal dialog
+### Modal vs non-modal
 
 Set `modal` to `false` to allow interaction with content behind the dialog.
 
@@ -108,7 +108,7 @@ page.
 }
 ```
 
-### Closing the dialog on interaction outside
+### Close on outside click
 
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
@@ -137,7 +137,7 @@ const service = useMachine(dialog.machine, {
 })
 ```
 
-### Listening for open state changes
+### Open state changes
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -154,7 +154,7 @@ const service = useMachine(dialog.machine, {
 
 </Example>
 
-### Closing with Escape
+### Escape to close
 
 Set `closeOnEscape` to `false` if the dialog should not close on `Esc`.
 
@@ -168,7 +168,7 @@ const service = useMachine(dialog.machine, {
 
 </Example>
 
-### Controlled dialog
+### Controlled open
 
 To control the dialog's open state, pass the `open` and `onOpenChange`
 properties.
@@ -179,7 +179,7 @@ properties.
 
 </Example>
 
-### Controlling the scroll behavior
+### Scroll behavior
 
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set `preventScroll` to `false`.
@@ -194,7 +194,7 @@ const service = useMachine(dialog.machine, {
 
 </Example>
 
-### Creating an alert dialog
+### Alert dialog
 
 The dialog supports both `dialog` and `alertdialog` roles. It uses `dialog` by
 default. Set `role` to `alertdialog` for urgent actions.
@@ -269,7 +269,7 @@ api.triggerValue // => string | null
 api.setTriggerValue("2")
 ```
 
-### Labeling without a visible title
+### Hidden label
 
 If you do not render a title element, provide `aria-label`.
 
@@ -317,7 +317,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Open and closed state
+### Open state
 
 The dialog has two states: `open` and `closed`. You can use the `data-state`
 attribute to style the dialog or trigger based on its state.
@@ -332,7 +332,7 @@ attribute to style the dialog or trigger based on its state.
 }
 ```
 
-### Compensating for scrollbar width
+### Scrollbar width
 
 When `preventScroll` is enabled, Zag applies `--scrollbar-width` on the root
 element. Use this CSS variable to keep fixed or sticky elements aligned when the
@@ -374,7 +374,7 @@ stack automatically applies data attributes to help create visual hierarchy.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The dialog machine exposes the following context properties:
 
@@ -386,11 +386,11 @@ The dialog `api` exposes the following methods:
 
 <ApiTable name="dialog" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="dialog" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="dialog" />
 
@@ -399,6 +399,6 @@ The dialog `api` exposes the following methods:
 Adheres to the
 [Alert and Message Dialogs WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="dialog" />

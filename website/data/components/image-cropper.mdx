@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="image-cropper/usage.mdx" />
 
-### Setting the initial crop
+### Initial crop
 
 Pass an `initialCrop` to start from a specific rectangle. The size is
 constrained to your min/max and viewport, and the position is clamped within the
@@ -87,7 +87,7 @@ const service = useMachine(imageCropper.machine, {
 
 </Example>
 
-### Crop shape and aspect ratio
+### Crop shape
 
 - `cropShape` can be `"rectangle"` or `"circle"`.
 - `aspectRatio` can lock the crop to a width/height ratio. When `aspectRatio` is
@@ -105,7 +105,7 @@ const service = useMachine(imageCropper.machine, {
 
 </Example>
 
-### Controlling zoom, rotation, and flip
+### Zoom, rotate, flip
 
 You can configure defaults and limits, and also control them programmatically
 using the API.
@@ -131,7 +131,7 @@ api.setFlip({ vertical: true }) // set vertical flip on
 
 </Example>
 
-### Controlled transform values
+### Controlled transform
 
 Use controlled props and callbacks when transform values are managed by your
 state.
@@ -157,7 +157,7 @@ const service = useMachine(imageCropper.machine, {
 
 </Example>
 
-### Listening for crop changes
+### Crop changes
 
 Use `onCropChange` to react when the crop rectangle changes.
 
@@ -190,7 +190,7 @@ api.resize("nw", -4)
 
 </Example>
 
-### Setting the crop programmatically
+### Programmatic crop
 
 Use `api.setCrop(rect)` to place the crop area at a rect in viewport
 coordinates, like `api.crop`. Use it for presets, numeric fields, or a "center"
@@ -219,7 +219,7 @@ doesn't match the aspect ratio, the crop shrinks to fit inside it. Unlike
 > `setCrop` does nothing when `fixedCropArea` is set. To set the crop on mount,
 > use `initialCrop`.
 
-### Getting the cropped image
+### Cropped image
 
 Use `api.getCroppedImage` to export the current crop, taking
 zoom/rotation/flip/pan into account.
@@ -252,11 +252,11 @@ browser canvas limits, so use `maxSize` to constrain output dimensions when
 needed. Exports are never upscaled beyond natural resolution. The method
 resolves to `null` if the browser cannot create or encode the canvas.
 
-### Understanding coordinate systems
+### Coordinate systems
 
 The image cropper uses two different coordinate systems:
 
-#### 1. Viewport Coordinates (`api.crop`)
+#### Viewport coordinates
 
 These are the coordinates you see in the UI, relative to the visible viewport:
 
@@ -276,7 +276,7 @@ console.log(api.crop)
 - Perfect for UI rendering and controls
 - Used by `initialCrop`
 
-#### 2. Natural Image Coordinates (`api.getCropData()`)
+#### Natural coordinates
 
 These are the absolute pixel bounds in the original image after inverting pan,
 zoom, flip, and rotation:
@@ -324,7 +324,7 @@ console.log(cropData)
 - Sending crop data to your backend for server-side processing
 - Exporting crop configuration to external tools
 
-#### Example: Server-side cropping
+#### Server-side cropping
 
 ```tsx
 // Frontend: Get natural coordinates
@@ -344,7 +344,7 @@ await fetch("/api/crop-image", {
 // - With rotation, map corners to outputSize with an affine transform.
 ```
 
-#### Transformation example
+#### Transform example
 
 Here's how the coordinates relate with a zoom of 2x:
 
@@ -469,13 +469,13 @@ Adheres to the
 [Slider WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider)
 for the crop area handles.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="image-cropper" />
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The image cropper machine exposes the following context properties:
 
@@ -487,10 +487,10 @@ The image cropper `api` exposes the following methods:
 
 <ApiTable name="image-cropper" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="image-cropper" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="image-cropper" />

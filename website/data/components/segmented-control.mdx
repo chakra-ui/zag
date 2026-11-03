@@ -49,7 +49,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="segmented-control/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the segmented control's initial value.
 
@@ -63,7 +63,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Controlled segmented value
+### Controlled value
 
 Use `value` and `onValueChange` for controlled usage.
 
@@ -80,7 +80,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Programmatic value control
+### Programmatic value
 
 Use the connected API when you need imperative updates.
 
@@ -93,7 +93,7 @@ api.clearValue()
 
 </Example>
 
-### Focusing from code
+### Programmatic focus
 
 Use `api.focus()` to move focus to the selected item (or first enabled item).
 
@@ -105,7 +105,7 @@ api.focus()
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the segmented control value changes, the `onValueChange` callback is
 invoked.
@@ -123,7 +123,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use segmented control in forms, set `name` and render
 `api.getItemHiddenInputProps({ value })` for each item.
@@ -196,7 +196,7 @@ and text parts.
 }
 ```
 
-### Disabled State
+### Disabled state
 
 When the radio is disabled, the `data-disabled` attribute is added to the item
 and text parts.
@@ -211,7 +211,7 @@ and text parts.
 }
 ```
 
-### Invalid State
+### Invalid state
 
 When the radio is invalid, the `data-invalid` attribute is added to the item and
 text parts.
@@ -228,7 +228,7 @@ text parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The radio group machine exposes the following context properties:
 
@@ -240,6 +240,6 @@ The radio group `api` exposes the following methods:
 
 <ApiTable name="radio-group" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="radio-group" />

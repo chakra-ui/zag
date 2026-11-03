@@ -10,7 +10,7 @@ it upgrades without code changes.
 > Still on v0? Follow the [v0 to v1 guide](https://zagjs.com/guides/migration)
 > first.
 
-## Upgrade the packages
+## Upgrade packages
 
 Update every `@zag-js/*` package together. Machines and framework adapters share
 one version, so mixing v1 and v2 packages isn't supported.
@@ -45,7 +45,7 @@ the machine id, and each part exposes the attribute name as `attr`.
 + ...parts.trigger.attrs(scope.id)
 ```
 
-## Select and Combobox
+## Select and combobox
 
 `role="listbox"` moves from the content part to a new `list` part. Wrap the
 items in `getListProps()` inside `getContentProps()`.
@@ -96,7 +96,7 @@ automatically.
 + <Portal>
 ```
 
-## Pin Input
+## Pin input
 
 `count` is now required. The machine no longer counts the inputs in the DOM.
 
@@ -107,7 +107,7 @@ automatically.
   })
 ```
 
-## Tags Input
+## Tags input
 
 `editable` now defaults to `false`. Set it to keep inline editing of tags.
 
@@ -142,7 +142,7 @@ Three props are renamed.
 + api.getNodeCellProps(nodeProps)
 ```
 
-## Toggle and Toggle Group
+## Toggle and toggle group
 
 - Toggle group uses toggle-button semantics in every mode: `role="group"` and
   `aria-pressed`, with no radio roles and no `aria-checked`.
@@ -156,7 +156,7 @@ Three props are renamed.
 + screen.getByRole("button", { pressed: true })
 ```
 
-## Floating Panel and Image Cropper
+## Floating panel and image cropper
 
 Handle naming is the same across both machines now.
 
@@ -166,7 +166,7 @@ Handle naming is the same across both machines now.
 - Image cropper: `HandleProps.position` is `placement`, `data-position` is
   `data-placement`, and `handles` is `placements`.
 
-## Async List
+## Async list
 
 Filter and sorting state are generic. The machine takes four type parameters,
 `Item, Filter, Sorting, Cursor`, instead of two.
@@ -200,7 +200,7 @@ These aren't API changes, but code that relies on the old behavior needs a look.
   `scrubberCursor` part with `getScrubberCursorProps()`.
 - **Color Picker:** `getGamutOverlay()` replaces the `gamutOverlay` property.
 
-## For adapter and library authors
+## Adapter authors
 
 - `@zag-js/dismissable`: `trackDismissableElement` requires `onLayerChange`.
   Apply the emitted layer index, nesting and pointer-blocking state in your

@@ -4,12 +4,8 @@ description: Load the next page when the user scrolls near the edge.
 package: "@zag-js/infinite-scroll"
 ---
 
-Infinite scroll is not a data loader. It watches a sentinel and calls
-`onLoadMore` when that sentinel approaches the scroll edge.
-
-You own the fetch. Pair it with [`async-list`](/utilities/async-list) for
-cursors, abort, and `hasMore`. Infinite scroll owns the observer, the growth
-guard, and the loading indicators.
+Calls `onLoadMore` when a sentinel nears the scroll edge. You own the fetch;
+pair it with [`async-list`](/utilities/async-list) for cursors and `hasMore`.
 
 <Resources pkg="@zag-js/infinite-scroll" />
 
@@ -29,7 +25,7 @@ guard, and the loading indicators.
 
 <CodeSnippet id="infinite-scroll/installation.mdx" />
 
-## Usage with async-list
+## Async list
 
 `async-list` fetches and appends pages. Infinite scroll decides when. Wire four
 values and put the sentinel at the edge you want to load from.
@@ -57,7 +53,7 @@ default). Put it before the items for a chat thread (`edge: "start"`).
 `getIndicatorProps({ type })` hides itself unless `status` matches. `type` is
 `"loading"` or `"complete"`.
 
-### Why not a scroll listener
+### Why not scroll events
 
 A `scrollTop + clientHeight >= scrollHeight` check fires more than once per
 page, including while a request is in flight. An IntersectionObserver with no
@@ -69,7 +65,7 @@ the next load until `count` has increased. If the first page does not fill the
 viewport, the sentinel is still intersecting, so it loads again
 (`reason: "autofill"`) until the list can scroll or `hasMore` is false.
 
-## Chat and the start edge
+## Chat layout
 
 Set `edge: "start"` and put the sentinel above the messages. The machine
 snapshots the scroll position before the load and corrects it after `count`
@@ -103,7 +99,7 @@ const service = useMachine(infiniteScroll.machine, {
 </div>
 ```
 
-## Loading without async-list
+## Without async-list
 
 Omit `loading` and return a promise from `onLoadMore`. The machine stays in
 `loading` until that promise settles.
@@ -155,7 +151,7 @@ useMachine(infiniteScroll.machine, {
 Set `orientation: "horizontal"` for a sideways scroller. RTL uses `dir: "rtl"`
 so the start edge stays on the correct side.
 
-## The scroll container
+## Scroll container
 
 The observer uses the nearest scrolling ancestor of the sentinel. Make that
 element keyboard-reachable: `tabIndex={0}`, or put focusable content inside it.
@@ -212,7 +208,7 @@ The sentinel also has `data-edge`. The indicator has `data-state` matching
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 <ContextTable name="infinite-scroll" />
 
@@ -220,10 +216,9 @@ The sentinel also has `data-edge`. The indicator has `data-state` matching
 
 <ApiTable name="infinite-scroll" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="infinite-scroll" />
 
-Same four props work inside a
-[menu](/components/menu#async-loading-with-infinite-scroll), select, or listbox.
-Mount the sentinel only while the list is open.
+Same four props work inside a [menu](/components/menu#infinite-scroll), select,
+or listbox. Mount the sentinel only while the list is open.

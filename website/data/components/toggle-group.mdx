@@ -49,7 +49,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="toggle-group/usage.mdx" />
 
-### Changing the orientation
+### Orientation
 
 By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
@@ -65,7 +65,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
@@ -83,7 +83,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Controlled toggle group
+### Controlled value
 
 Use `value` and `onValueChange` for controlled usage.
 
@@ -100,7 +100,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Allowing multiple selection
+### Multiple selection
 
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
@@ -115,7 +115,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Disabling the toggle group
+### Disabled state
 
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
@@ -146,7 +146,7 @@ Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
 
 </Example>
 
-### Disabling focus loop
+### Disable focus loop
 
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loopFocus` property in the machine's context to `false`.
@@ -161,7 +161,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Disabling roving focus management
+### Disable roving focus
 
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
@@ -176,7 +176,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Allowing or preventing deselection
+### Deselection
 
 Use `deselectable` to control whether the active item can be toggled off in
 single-select mode.
@@ -191,7 +191,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Programmatic value control
+### Programmatic value
 
 Use the API for imperative updates.
 
@@ -207,7 +207,7 @@ api.setValue(["bold", "italic"])
 
 Each part includes a component-specific data attribute you can target in CSS.
 
-### Pressed State
+### Pressed state
 
 When pressed, `data-pressed` is applied to the toggle button.
 
@@ -250,7 +250,7 @@ matching toggle button.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The toggle group machine exposes the following context properties:
 
@@ -262,7 +262,7 @@ The toggle group `api` exposes the following methods:
 
 <ApiTable name="toggle-group" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="toggle-group" />
 
@@ -272,6 +272,6 @@ Uses roving tabindex to manage focus movement among toggle buttons. Items are
 rendered as buttons with `aria-pressed` in both single and multiple selection
 modes.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="toggle-group" />

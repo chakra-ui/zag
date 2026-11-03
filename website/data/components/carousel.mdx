@@ -71,7 +71,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting the initial slide
+### Initial slide
 
 Set `defaultPage` to define the initial page.
 
@@ -89,7 +89,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Controlling the current page
+### Controlled page
 
 Use `page` and `onPageChange` for controlled navigation.
 
@@ -107,7 +107,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting slides per page
+### Slides per page
 
 Set `slidesPerPage` to control how many slides are visible per page.
 
@@ -121,7 +121,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting slides per move
+### Slides per move
 
 Set `slidesPerMove` to control how many slides advance on next/previous.
 
@@ -145,7 +145,7 @@ const service = useMachine(carousel.machine, {
   browser's native scrolling and CSS Scroll Snap determine slide movement for
   optimal performance and UX.
 
-### Looping pages
+### Loop pages
 
 Set `loop` to `true` to wrap around from last to first page.
 
@@ -159,7 +159,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting the gap between slides
+### Slide gap
 
 Set `spacing` to control the gap between slides.
 
@@ -173,7 +173,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting viewport padding
+### Viewport padding
 
 Set `itemSpacing` to keep neighboring slides partially visible.
 
@@ -201,7 +201,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Listening for page changes
+### Page changes
 
 When the carousel page changes, the `onPageChange` callback is invoked.
 
@@ -218,7 +218,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Listening for drag and autoplay status
+### Drag and autoplay status
 
 Use status callbacks to react to dragging and autoplay lifecycle changes.
 
@@ -237,7 +237,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Dragging the carousel
+### Dragging
 
 Set `allowMouseDrag` to `true` to drag the carousel with a mouse.
 
@@ -251,7 +251,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Autoplaying the carousel
+### Autoplay
 
 Set `autoPlay` to `true` to start automatic slide movement.
 
@@ -274,7 +274,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Customizing accessibility messages
+### Accessibility messages
 
 Use `translations` to customize localized trigger, item, and progress text.
 
@@ -354,7 +354,7 @@ indicator.
 
 The carousel's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The carousel machine exposes the following context properties:
 
@@ -366,10 +366,10 @@ The carousel `api` exposes the following methods:
 
 <ApiTable name="carousel" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="carousel" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="carousel" />

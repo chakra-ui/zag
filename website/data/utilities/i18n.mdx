@@ -1,0 +1,246 @@
+---
+title: i18n
+description:
+  Cached locale-aware formatters, text filters and locale direction helpers.
+package: "@zag-js/i18n-utils"
+---
+
+Small wrappers around the `Intl` APIs. Each formatter is cached by locale and
+options, so calling it in a render loop doesn't create a new `Intl` object each
+time. The file upload machine uses `formatBytes` to format file sizes.
+
+<Resources pkg="@zag-js/i18n-utils" />
+
+## Installation
+
+```bash
+npm install @zag-js/i18n-utils
+```
+
+## Numbers
+
+`formatNumber` takes `Intl.NumberFormat` options.
+
+```ts
+import { formatNumber } from "@zag-js/i18n-utils"
+
+formatNumber(1234.5, "de-DE") // "1.234,5"
+formatNumber(0.25, "en-US", { style: "percent" }) // "25%"
+formatNumber(1234.5, "en-US", { style: "currency", currency: "USD" }) // "$1,234.50"
+```
+
+## File sizes
+
+`formatBytes` picks the largest unit that keeps the value above 1.
+
+```ts
+import { formatBytes } from "@zag-js/i18n-utils"
+
+formatBytes(1500) // "1.5 kB"
+formatBytes(1500, "en-US", { unitDisplay: "long" }) // "1.5 kilobytes"
+formatBytes(1_000_000, "en-US", { unit: "bit" }) // "1 Mb"
+```
+
+| Option        | Values                                | Default     |
+| ------------- | ------------------------------------- | ----------- |
+| `precision`   | significant digits                    | `3`         |
+| `unitSystem`  | `"decimal"` (1000), `"binary"` (1024) | `"decimal"` |
+| `unit`        | `"byte"`, `"bit"`                     | `"byte"`    |
+| `unitDisplay` | `"short"`, `"long"`, `"narrow"`       | `"short"`   |
+
+The locale defaults to `"en-US"`.
+
+## Lists
+
+`formatList` joins strings with the locale's conjunction or disjunction.
+
+```ts
+import { formatList } from "@zag-js/i18n-utils"
+
+formatList(["Red", "Green", "Blue"], "en-US") // "Red, Green, and Blue"
+formatList(["Red", "Green", "Blue"], "en-US", { type: "disjunction" }) // "Red, Green, or Blue"
+formatList(["Rot", "Grün", "Blau"], "de-DE") // "Rot, Grün und Blau"
+```
+
+## Relative time
+
+`formatRelativeTime` formats the distance from now to a date, in the largest
+whole unit.
+
+```ts
+import { formatRelativeTime } from "@zag-js/i18n-utils"
+
+const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+
+formatRelativeTime(threeDaysAgo, "en-US") // "3 days ago"
+
+const yesterday = new Date(Date.now() - 25 * 60 * 60 * 1000)
+
+formatRelativeTime(yesterday, "en-US", { numeric: "auto" }) // "yesterday"
+```
+
+## Time
+
+`formatTime` formats an `"HH:mm"` or `"HH:mm:ss"` string, or a `Date`. It
+returns `null` for invalid input.
+
+```ts
+import { formatTime } from "@zag-js/i18n-utils"
+
+formatTime("14:30", "en-US") // "14:30"
+formatTime("14:30", "en-US", { format: "12h" }) // "2:30 PM"
+formatTime("09:05:07", "en-US", {
+  format: "12h",
+  withSeconds: true,
+  amLabel: "a.m.",
+  pmLabel: "p.m.",
+}) // "9:05:07 a.m."
+formatTime("25:00", "en-US") // null
+```
+
+| Option        | Values           | Default  |
+| ------------- | ---------------- | -------- |
+| `format`      | `"24h"`, `"12h"` | `"24h"`  |
+| `withSeconds` | `boolean`        | `false`  |
+| `amLabel`     | `string`         | locale's |
+| `pmLabel`     | `string`         | locale's |
+
+## Text filtering
+
+`createFilter` compares strings with an `Intl.Collator` set to search. With
+`sensitivity: "base"`, case and accents are ignored.
+
+```ts
+import { createFilter } from "@zag-js/i18n-utils"
+
+const filter = createFilter({ locale: "en-US", sensitivity: "base" })
+
+filter.contains("Café au lait", "cafe") // true
+filter.startsWith("Ärger", "ar") // true
+filter.endsWith("Résumé", "ume") // true
+```
+
+Use it to filter combobox items:
+
+```ts
+const items = countries.filter((country) =>
+  filter.contains(country.label, inputValue),
+)
+```
+
+An empty query matches every string.
+
+## Text sorting
+
+`createCollator` returns a cached `Intl.Collator`.
+
+```ts
+import { createCollator } from "@zag-js/i18n-utils"
+
+const collator = createCollator("sv-SE")
+
+names.sort(collator.compare)
+```
+
+The locale defaults to `"en-US"`.
+
+## Text direction
+
+`isRTL` and `getLocaleDir` read the locale's script.
+
+```ts
+import { getLocaleDir, isRTL } from "@zag-js/i18n-utils"
+
+isRTL("ar-EG") // true
+isRTL("en-US") // false
+getLocaleDir("he") // "rtl"
+```
+
+Set it on the root element:
+
+```ts
+document.documentElement.dir = getLocaleDir(locale)
+```
+
+## Browser locale
+
+`getDefaultLocale` returns the browser's language and its direction. It falls
+back to `"en-US"` on the server or when the language is invalid.
+
+```ts
+import { getDefaultLocale } from "@zag-js/i18n-utils"
+
+getDefaultLocale() // { locale: "en-US", dir: "ltr" }
+```
+
+`trackLocale` calls `onLocaleChange` right away, then again whenever the user
+changes their browser language. It returns a cleanup function.
+
+```ts
+import { trackLocale } from "@zag-js/i18n-utils"
+
+const cleanup = trackLocale({
+  onLocaleChange({ locale, dir }) {
+    document.documentElement.lang = locale
+    document.documentElement.dir = dir
+  },
+})
+```
+
+Pass `getRootNode` to listen on the window of an iframe or shadow root.
+
+## API Reference
+
+```ts
+function formatNumber(
+  value: number,
+  locale: string,
+  options?: Intl.NumberFormatOptions,
+): string
+
+function formatBytes(
+  bytes: number,
+  locale?: string,
+  options?: FormatBytesOptions,
+): string
+
+function formatList(
+  list: string[],
+  locale: string,
+  options?: Intl.ListFormatOptions,
+): string
+
+function formatRelativeTime(
+  value: Date,
+  locale: string,
+  options?: Intl.RelativeTimeFormatOptions,
+): string
+
+function formatTime(
+  value: string | Date,
+  locale: string,
+  options?: FormatTimeOptions,
+): string | null
+
+function createFilter(options?: FilterOptions): {
+  startsWith(string: string, substring: string): boolean
+  endsWith(string: string, substring: string): boolean
+  contains(string: string, substring: string): boolean
+}
+
+function createCollator(
+  locale?: string,
+  options?: Intl.CollatorOptions,
+): Intl.Collator
+
+function isRTL(locale: string): boolean
+
+function getLocaleDir(locale: string): "ltr" | "rtl"
+
+function getDefaultLocale(): Locale
+
+function trackLocale(options?: LocaleOptions): () => void
+```
+
+`FilterOptions` is `Intl.CollatorOptions` plus `locale`. `Locale` is
+`{ locale: string; dir: "ltr" | "rtl" }`.

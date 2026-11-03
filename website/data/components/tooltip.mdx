@@ -60,7 +60,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="tooltip/usage.mdx" />
 
-### Customizing the timings
+### Timings
 
 By default, the tooltip opens after `400ms` and closes after `150ms`. You can
 customize this by passing the `openDelay` and `closeDelay` context properties.
@@ -76,7 +76,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Changing the placement
+### Placement
 
 The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
@@ -94,7 +94,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Adding an arrow
+### Arrow
 
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
@@ -137,7 +137,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Making the tooltip interactive
+### Interactive tooltip
 
 Set the `interactive` context property to `true` to make the tooltip
 interactive.
@@ -155,7 +155,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -206,7 +206,7 @@ return (
 When hovering a different trigger while the tooltip is open, it repositions
 without closing. `aria-describedby` is scoped to the active trigger.
 
-### Controlled tooltip
+### Controlled open
 
 Use `open` and `onOpenChange` for controlled usage.
 
@@ -249,7 +249,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 }
 ```
 
-### Open and close states
+### Open state
 
 When the tooltip is open, the `data-state` attribute is added to the trigger
 
@@ -263,7 +263,7 @@ When the tooltip is open, the `data-state` attribute is added to the trigger
 }
 ```
 
-### Styling the arrow
+### Arrow styling
 
 When using arrows within the menu, you can style it using css variables.
 
@@ -276,7 +276,7 @@ When using arrows within the menu, you can style it using css variables.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tooltip machine exposes the following context properties:
 
@@ -288,16 +288,16 @@ The tooltip `api` exposes the following methods:
 
 <ApiTable name="tooltip" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="tooltip" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="tooltip" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tooltip" />

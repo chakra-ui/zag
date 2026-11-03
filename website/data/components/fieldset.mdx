@@ -55,7 +55,7 @@ Then use the framework integration helpers:
 Root props are meant for a native `<fieldset>`. That keeps browser disabled
 inheritance and form semantics intact.
 
-### Disabling the group
+### Disabled state
 
 Set `disabled` to disable every descendant control.
 
@@ -82,7 +82,7 @@ Zag controls that track form state) observe that attribute and mirror
 `data-disabled` on their own parts. Nested fieldsets also pick up an ancestor's
 disabled state for styling via `data-disabled`.
 
-### Marking the group invalid
+### Invalid state
 
 Set `invalid` for a group-level error, such as "pick at least one option" on a
 checkbox group.
@@ -110,7 +110,7 @@ Fieldset `invalid` does **not** mark nested fields invalid. Each `@zag-js/field`
 keeps its own validity. Use fieldset invalid for the group message, and field
 invalid for per-control messages.
 
-### Adding helper text
+### Helper text
 
 <Example id="FieldsetHelperText">
 
@@ -165,7 +165,7 @@ const fieldApi = field.connect(fieldService, normalizeProps)
 Disable the fieldset and the phone field's input gets `disabled` and
 `data-disabled` without passing a prop into the field machine.
 
-### Grouping radios or checkboxes
+### Grouping
 
 Use a fieldset when one legend labels several options. Keep each option's own
 label next to the control.
@@ -196,11 +196,11 @@ The same pattern works with `@zag-js/radio-group` or `@zag-js/checkbox` as the
 controls inside the fieldset. Put the group label on the legend, not on a field
 label, when the accessible name applies to the whole set.
 
-### Integrating with form libraries
+### Form libraries
 
 Fieldset only needs `disabled` and `invalid` from a form library. Per-control
 validation still belongs on each field (see the
-[Field](/components/field#integrating-with-react-hook-form) docs).
+[Field](/components/field#react-hook-form) docs).
 
 <Example>
 
@@ -258,7 +258,7 @@ disabled. The native `disabled` attribute is only set from this fieldset's own
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The fieldset machine exposes the following context properties:
 

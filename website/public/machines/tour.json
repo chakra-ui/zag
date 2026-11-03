@@ -1,0 +1,500 @@
+{
+  "id": "tour",
+  "initial": "tourInactive",
+  "states": [
+    {
+      "id": "tourInactive",
+      "label": "tourInactive",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "running",
+      "label": "running",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "running.resolving",
+      "label": "resolving",
+      "parent": "running",
+      "initial": true
+    },
+    {
+      "id": "running.scrolling",
+      "label": "scrolling",
+      "parent": "running",
+      "initial": false
+    },
+    {
+      "id": "running.waiting",
+      "label": "waiting",
+      "parent": "running",
+      "initial": false
+    },
+    {
+      "id": "running.active",
+      "label": "active",
+      "parent": "running",
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "running.scrolling",
+      "event": "STEP.CHANGED",
+      "guard": "isValidStep && hasResolvedTarget"
+    },
+    {
+      "from": "*",
+      "to": "running.resolving",
+      "event": "STEP.CHANGED",
+      "guard": "isValidStep && hasTarget"
+    },
+    {
+      "from": "*",
+      "to": "running.waiting",
+      "event": "STEP.CHANGED",
+      "guard": "isValidStep && isWaitingStep"
+    },
+    {
+      "from": "*",
+      "to": "running.active",
+      "event": "STEP.CHANGED",
+      "guard": "isValidStep"
+    },
+    {
+      "from": "*",
+      "to": "running.scrolling",
+      "event": "STEP.ROUTE",
+      "guard": "isValidStep && hasResolvedTarget"
+    },
+    {
+      "from": "*",
+      "to": "running.resolving",
+      "event": "STEP.ROUTE",
+      "guard": "isValidStep && hasTarget"
+    },
+    {
+      "from": "*",
+      "to": "running.waiting",
+      "event": "STEP.ROUTE",
+      "guard": "isValidStep && isWaitingStep"
+    },
+    {
+      "from": "*",
+      "to": "running.active",
+      "event": "STEP.ROUTE",
+      "guard": "isValidStep"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "STEPS.SET",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": "tourInactive",
+      "event": "DISMISS",
+      "guard": "isLastStep"
+    },
+    {
+      "from": "running",
+      "to": "tourInactive",
+      "event": "DISMISS",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": "tourInactive",
+      "event": "SKIP",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": null,
+      "event": "STEP.NEXT",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": null,
+      "event": "STEP.PREV",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": null,
+      "event": "STEP.SET",
+      "guard": null
+    },
+    {
+      "from": "running.resolving",
+      "to": "tourInactive",
+      "event": "TARGET.NOT_FOUND",
+      "guard": null
+    },
+    {
+      "from": "running.resolving",
+      "to": "running.scrolling",
+      "event": "TARGET.RESOLVED",
+      "guard": null
+    },
+    {
+      "from": "running.scrolling",
+      "to": "running.active",
+      "event": "SCROLL.END",
+      "guard": null
+    },
+    {
+      "from": "tourInactive",
+      "to": null,
+      "event": "START",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1217,
+      "height": 252,
+      "states": {
+        "tourInactive": {
+          "x": 1046,
+          "y": 120,
+          "w": 139,
+          "h": 44
+        },
+        "running": {
+          "x": 48,
+          "y": 32,
+          "w": 651,
+          "h": 188
+        },
+        "running.resolving": {
+          "x": 72,
+          "y": 88,
+          "w": 116,
+          "h": 44
+        },
+        "running.scrolling": {
+          "x": 343,
+          "y": 81,
+          "w": 116,
+          "h": 44
+        },
+        "running.waiting": {
+          "x": 80,
+          "y": 152,
+          "w": 101,
+          "h": 44
+        },
+        "running.active": {
+          "x": 581,
+          "y": 81,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "running",
+          "to": "tourInactive",
+          "events": [
+            "DISMISS",
+            "SKIP"
+          ],
+          "lines": [
+            "DISMISS",
+            "SKIP"
+          ],
+          "points": [
+            [
+              699,
+              145
+            ],
+            [
+              730,
+              145
+            ],
+            [
+              730,
+              152
+            ],
+            [
+              962,
+              152
+            ],
+            [
+              962,
+              149
+            ],
+            [
+              1046,
+              149
+            ]
+          ],
+          "label": {
+            "x": 844,
+            "y": 159,
+            "w": 62,
+            "h": 40
+          }
+        },
+        {
+          "from": "running.resolving",
+          "to": "tourInactive",
+          "events": [
+            "TARGET.NOT_FOUND"
+          ],
+          "lines": [
+            "TARGET.NOT_FOUND"
+          ],
+          "points": [
+            [
+              188,
+              118
+            ],
+            [
+              198,
+              118
+            ],
+            [
+              198,
+              135
+            ],
+            [
+              1046,
+              135
+            ]
+          ],
+          "label": {
+            "x": 814,
+            "y": 104,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "running.resolving",
+          "to": "running.scrolling",
+          "events": [
+            "TARGET.RESOLVED"
+          ],
+          "lines": [
+            "TARGET.RESOLVED"
+          ],
+          "points": [
+            [
+              188,
+              103
+            ],
+            [
+              343,
+              103
+            ]
+          ],
+          "label": {
+            "x": 208,
+            "y": 76,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "running.scrolling",
+          "to": "running.active",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              459,
+              103
+            ],
+            [
+              581,
+              103
+            ]
+          ],
+          "label": {
+            "x": 479,
+            "y": 76,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 443,
+      "height": 701,
+      "states": {
+        "tourInactive": {
+          "x": 211,
+          "y": 625,
+          "w": 139,
+          "h": 44
+        },
+        "running": {
+          "x": 48,
+          "y": 32,
+          "w": 363,
+          "h": 328
+        },
+        "running.resolving": {
+          "x": 150,
+          "y": 76,
+          "w": 116,
+          "h": 44
+        },
+        "running.scrolling": {
+          "x": 131,
+          "y": 184,
+          "w": 116,
+          "h": 44
+        },
+        "running.waiting": {
+          "x": 286,
+          "y": 76,
+          "w": 101,
+          "h": 44
+        },
+        "running.active": {
+          "x": 142,
+          "y": 292,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "running",
+          "to": "tourInactive",
+          "events": [
+            "DISMISS",
+            "SKIP"
+          ],
+          "lines": [
+            "DISMISS",
+            "SKIP"
+          ],
+          "points": [
+            [
+              267,
+              360
+            ],
+            [
+              267,
+              391
+            ],
+            [
+              304,
+              391
+            ],
+            [
+              304,
+              625
+            ]
+          ],
+          "label": {
+            "x": 311,
+            "y": 475,
+            "w": 62,
+            "h": 40
+          }
+        },
+        {
+          "from": "running.resolving",
+          "to": "tourInactive",
+          "events": [
+            "TARGET.NOT_FOUND"
+          ],
+          "lines": [
+            "TARGET.NOT_FOUND"
+          ],
+          "points": [
+            [
+              228,
+              120
+            ],
+            [
+              228,
+              130
+            ],
+            [
+              257,
+              130
+            ],
+            [
+              257,
+              625
+            ]
+          ],
+          "label": {
+            "x": 129,
+            "y": 483,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "running.resolving",
+          "to": "running.scrolling",
+          "events": [
+            "TARGET.RESOLVED"
+          ],
+          "lines": [
+            "TARGET.RESOLVED"
+          ],
+          "points": [
+            [
+              189,
+              120
+            ],
+            [
+              189,
+              184
+            ]
+          ],
+          "label": {
+            "x": 72,
+            "y": 140,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "running.scrolling",
+          "to": "running.active",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              189,
+              228
+            ],
+            [
+              189,
+              292
+            ]
+          ],
+          "label": {
+            "x": 105,
+            "y": 248,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

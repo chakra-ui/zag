@@ -1,0 +1,1024 @@
+{
+  "id": "drawer",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "closing",
+      "label": "closing",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "swipe-area-dragging",
+      "label": "swipe-area-dragging",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "swiping-open",
+      "label": "swiping-open",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "SNAP_POINT.SET",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "swipe-area-dragging",
+      "event": "SWIPE_AREA.START",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "closed",
+      "event": "ANIMATION_END",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closing",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closing",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_CANCEL",
+      "guard": "isDragging"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_CANCEL",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": "isDragging"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": "shouldStartDragging"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_UP",
+      "guard": "shouldCloseOnSwipe && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closing",
+      "event": "POINTER_UP",
+      "guard": "shouldCloseOnSwipe"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_UP",
+      "guard": "isDragging"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "SNAP_BACK",
+      "guard": "isDragging"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "swipe-area-dragging",
+      "to": "closed",
+      "event": "POINTER_CANCEL",
+      "guard": null
+    },
+    {
+      "from": "swipe-area-dragging",
+      "to": "swiping-open",
+      "event": "POINTER_MOVE",
+      "guard": "hasSwipeIntent"
+    },
+    {
+      "from": "swipe-area-dragging",
+      "to": "closed",
+      "event": "POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "swiping-open",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "swiping-open",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "swiping-open",
+      "to": "closed",
+      "event": "POINTER_CANCEL",
+      "guard": null
+    },
+    {
+      "from": "swiping-open",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "swiping-open",
+      "to": null,
+      "event": "POINTER_UP",
+      "guard": "shouldOpenOnSwipe && isOpenControlled"
+    },
+    {
+      "from": "swiping-open",
+      "to": "open",
+      "event": "POINTER_UP",
+      "guard": "shouldOpenOnSwipe"
+    },
+    {
+      "from": "swiping-open",
+      "to": "closed",
+      "event": "POINTER_UP",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1595,
+      "height": 435,
+      "states": {
+        "open": {
+          "x": 1485,
+          "y": 94,
+          "w": 78,
+          "h": 44
+        },
+        "closing": {
+          "x": 593,
+          "y": 90,
+          "w": 101,
+          "h": 44
+        },
+        "swipe-area-dragging": {
+          "x": 48,
+          "y": 220,
+          "w": 192,
+          "h": 44
+        },
+        "swiping-open": {
+          "x": 555,
+          "y": 346,
+          "w": 139,
+          "h": 44
+        },
+        "closed": {
+          "x": 1029,
+          "y": 232,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "points": [
+            [
+              1123,
+              254
+            ],
+            [
+              1401,
+              254
+            ],
+            [
+              1401,
+              120
+            ],
+            [
+              1485,
+              120
+            ]
+          ],
+          "label": {
+            "x": 1260,
+            "y": 261,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed",
+          "to": "swipe-area-dragging",
+          "events": [
+            "SWIPE_AREA.START"
+          ],
+          "lines": [
+            "SWIPE_AREA.START"
+          ],
+          "points": [
+            [
+              1029,
+              250
+            ],
+            [
+              948,
+              250
+            ],
+            [
+              948,
+              225
+            ],
+            [
+              266,
+              225
+            ],
+            [
+              266,
+              231
+            ],
+            [
+              240,
+              231
+            ]
+          ],
+          "label": {
+            "x": 564,
+            "y": 194,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "closing",
+          "to": "closed",
+          "events": [
+            "ANIMATION_END"
+          ],
+          "lines": [
+            "ANIMATION_END"
+          ],
+          "points": [
+            [
+              694,
+              123
+            ],
+            [
+              720,
+              123
+            ],
+            [
+              720,
+              169
+            ],
+            [
+              958,
+              169
+            ],
+            [
+              958,
+              241
+            ],
+            [
+              1029,
+              241
+            ]
+          ],
+          "label": {
+            "x": 807,
+            "y": 176,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "closing",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER_VALUE.SET"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER_VALUE.SET"
+          ],
+          "points": [
+            [
+              694,
+              101
+            ],
+            [
+              720,
+              101
+            ],
+            [
+              720,
+              95
+            ],
+            [
+              1401,
+              95
+            ],
+            [
+              1401,
+              103
+            ],
+            [
+              1485,
+              103
+            ]
+          ],
+          "label": {
+            "x": 1022,
+            "y": 32,
+            "w": 128,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closing",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              1485,
+              112
+            ],
+            [
+              694,
+              112
+            ]
+          ],
+          "label": {
+            "x": 1025,
+            "y": 119,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "swipe-area-dragging",
+          "to": "closed",
+          "events": [
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              240,
+              242
+            ],
+            [
+              938,
+              242
+            ],
+            [
+              938,
+              258
+            ],
+            [
+              1029,
+              258
+            ]
+          ],
+          "label": {
+            "x": 571,
+            "y": 249,
+            "w": 108,
+            "h": 40
+          }
+        },
+        {
+          "from": "swipe-area-dragging",
+          "to": "swiping-open",
+          "events": [
+            "POINTER_MOVE"
+          ],
+          "lines": [
+            "POINTER_MOVE"
+          ],
+          "points": [
+            [
+              240,
+              253
+            ],
+            [
+              266,
+              253
+            ],
+            [
+              266,
+              368
+            ],
+            [
+              555,
+              368
+            ]
+          ],
+          "label": {
+            "x": 350,
+            "y": 375,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "swiping-open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CLOSE",
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              694,
+              361
+            ],
+            [
+              720,
+              361
+            ],
+            [
+              720,
+              267
+            ],
+            [
+              1029,
+              267
+            ]
+          ],
+          "label": {
+            "x": 804,
+            "y": 274,
+            "w": 108,
+            "h": 56
+          }
+        },
+        {
+          "from": "swiping-open",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              694,
+              375
+            ],
+            [
+              730,
+              375
+            ],
+            [
+              730,
+              355
+            ],
+            [
+              1411,
+              355
+            ],
+            [
+              1411,
+              129
+            ],
+            [
+              1485,
+              129
+            ]
+          ],
+          "label": {
+            "x": 1029,
+            "y": 362,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 782,
+      "height": 1032,
+      "states": {
+        "open": {
+          "x": 384,
+          "y": 956,
+          "w": 78,
+          "h": 44
+        },
+        "closing": {
+          "x": 138,
+          "y": 320,
+          "w": 101,
+          "h": 44
+        },
+        "swipe-area-dragging": {
+          "x": 375,
+          "y": 32,
+          "w": 192,
+          "h": 44
+        },
+        "swiping-open": {
+          "x": 611,
+          "y": 320,
+          "w": 139,
+          "h": 44
+        },
+        "closed": {
+          "x": 384,
+          "y": 642,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN"
+          ],
+          "points": [
+            [
+              431,
+              686
+            ],
+            [
+              431,
+              956
+            ]
+          ],
+          "label": {
+            "x": 310,
+            "y": 806,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed",
+          "to": "swipe-area-dragging",
+          "events": [
+            "SWIPE_AREA.START"
+          ],
+          "lines": [
+            "SWIPE_AREA.START"
+          ],
+          "points": [
+            [
+              422,
+              642
+            ],
+            [
+              422,
+              556
+            ],
+            [
+              423,
+              556
+            ],
+            [
+              423,
+              76
+            ]
+          ],
+          "label": {
+            "x": 295,
+            "y": 330,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "closing",
+          "to": "closed",
+          "events": [
+            "ANIMATION_END"
+          ],
+          "lines": [
+            "ANIMATION_END"
+          ],
+          "points": [
+            [
+              214,
+              364
+            ],
+            [
+              214,
+              390
+            ],
+            [
+              398,
+              390
+            ],
+            [
+              398,
+              556
+            ],
+            [
+              403,
+              556
+            ],
+            [
+              403,
+              642
+            ]
+          ],
+          "label": {
+            "x": 290,
+            "y": 490,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "closing",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER_VALUE.SET"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER_VALUE.SET"
+          ],
+          "points": [
+            [
+              163,
+              364
+            ],
+            [
+              163,
+              390
+            ],
+            [
+              182,
+              390
+            ],
+            [
+              182,
+              882
+            ],
+            [
+              400,
+              882
+            ],
+            [
+              400,
+              956
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 640,
+            "w": 128,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closing",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              415,
+              956
+            ],
+            [
+              415,
+              872
+            ],
+            [
+              199,
+              872
+            ],
+            [
+              199,
+              390
+            ],
+            [
+              189,
+              390
+            ],
+            [
+              189,
+              364
+            ]
+          ],
+          "label": {
+            "x": 206,
+            "y": 640,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "swipe-area-dragging",
+          "to": "closed",
+          "events": [
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              471,
+              76
+            ],
+            [
+              471,
+              102
+            ],
+            [
+              440,
+              102
+            ],
+            [
+              440,
+              642
+            ]
+          ],
+          "label": {
+            "x": 447,
+            "y": 322,
+            "w": 108,
+            "h": 40
+          }
+        },
+        {
+          "from": "swipe-area-dragging",
+          "to": "swiping-open",
+          "events": [
+            "POINTER_MOVE"
+          ],
+          "lines": [
+            "POINTER_MOVE"
+          ],
+          "points": [
+            [
+              519,
+              76
+            ],
+            [
+              519,
+              236
+            ],
+            [
+              681,
+              236
+            ],
+            [
+              681,
+              320
+            ]
+          ],
+          "label": {
+            "x": 526,
+            "y": 186,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "swiping-open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CLOSE",
+            "POINTER_CANCEL",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              657,
+              364
+            ],
+            [
+              657,
+              390
+            ],
+            [
+              579,
+              390
+            ],
+            [
+              579,
+              556
+            ],
+            [
+              459,
+              556
+            ],
+            [
+              459,
+              642
+            ]
+          ],
+          "label": {
+            "x": 465,
+            "y": 474,
+            "w": 108,
+            "h": 56
+          }
+        },
+        {
+          "from": "swiping-open",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "POINTER_UP"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              704,
+              364
+            ],
+            [
+              704,
+              400
+            ],
+            [
+              604,
+              400
+            ],
+            [
+              604,
+              872
+            ],
+            [
+              446,
+              872
+            ],
+            [
+              446,
+              956
+            ]
+          ],
+          "label": {
+            "x": 611,
+            "y": 648,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

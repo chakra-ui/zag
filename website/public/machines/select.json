@@ -1,0 +1,912 @@
+{
+  "id": "select",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLEAR.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHTED_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": "isTriggerClickEvent"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": "isTriggerArrowUpEvent"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": "isTriggerArrowDownEvent || isTriggerEnterEvent"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_DOWN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "TRIGGER.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_LEFT",
+      "guard": "!multiple && hasSelectedItems"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_LEFT",
+      "guard": "!multiple"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_RIGHT",
+      "guard": "!multiple && hasSelectedItems"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_RIGHT",
+      "guard": "!multiple"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ARROW_UP",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "TRIGGER.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "TRIGGER.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.END",
+      "guard": "!multiple"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.ENTER",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "TRIGGER.ENTER",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.HOME",
+      "guard": "!multiple"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.TYPEAHEAD",
+      "guard": "!multiple"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": "isTriggerClickEvent"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "TRIGGER.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CLOSE",
+      "guard": "restoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "idle",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_DOWN",
+      "guard": "hasHighlightedItem && loop && isLastItemHighlighted"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_DOWN",
+      "guard": "hasHighlightedItem"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_UP",
+      "guard": "hasHighlightedItem && loop && isFirstItemHighlighted"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_UP",
+      "guard": "hasHighlightedItem"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.END",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.HOME",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CONTENT.TYPEAHEAD",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CONTROLLED.CLOSE",
+      "guard": "restoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "idle",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": "closeOnSelect && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "ITEM.CLICK",
+      "guard": "closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POSITIONING.SET",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "SCROLL_ARROW.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "SCROLL_ARROW.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1035,
+      "height": 357,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 94,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 459,
+          "y": 216,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 925,
+          "y": 190,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.ARROW_DOWN",
+            "TRIGGER.ARROW_UP",
+            "TRIGGER.CLICK",
+            "TRIGGER.ENTER"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.ARROW_DOWN",
+            "+3 more"
+          ],
+          "points": [
+            [
+              560,
+              231
+            ],
+            [
+              596,
+              231
+            ],
+            [
+              596,
+              216
+            ],
+            [
+              925,
+              216
+            ]
+          ],
+          "label": {
+            "x": 680,
+            "y": 137,
+            "w": 135,
+            "h": 72
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "TRIGGER.BLUR"
+          ],
+          "lines": [
+            "TRIGGER.BLUR"
+          ],
+          "points": [
+            [
+              459,
+              231
+            ],
+            [
+              364,
+              231
+            ],
+            [
+              364,
+              168
+            ],
+            [
+              162,
+              168
+            ],
+            [
+              162,
+              120
+            ],
+            [
+              126,
+              120
+            ]
+          ],
+          "label": {
+            "x": 240,
+            "y": 137,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              126,
+              103
+            ],
+            [
+              152,
+              103
+            ],
+            [
+              152,
+              95
+            ],
+            [
+              851,
+              95
+            ],
+            [
+              851,
+              199
+            ],
+            [
+              925,
+              199
+            ]
+          ],
+          "label": {
+            "x": 452,
+            "y": 32,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "TRIGGER.FOCUS"
+          ],
+          "lines": [
+            "TRIGGER.FOCUS"
+          ],
+          "points": [
+            [
+              126,
+              129
+            ],
+            [
+              152,
+              129
+            ],
+            [
+              152,
+              245
+            ],
+            [
+              459,
+              245
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 252,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "ITEM.CLICK",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "ITEM.CLICK",
+            "+1 more"
+          ],
+          "points": [
+            [
+              925,
+              225
+            ],
+            [
+              841,
+              225
+            ],
+            [
+              841,
+              245
+            ],
+            [
+              560,
+              245
+            ]
+          ],
+          "label": {
+            "x": 687,
+            "y": 252,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "idle",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "points": [
+            [
+              925,
+              208
+            ],
+            [
+              841,
+              208
+            ],
+            [
+              841,
+              112
+            ],
+            [
+              126,
+              112
+            ]
+          ],
+          "label": {
+            "x": 448,
+            "y": 119,
+            "w": 122,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 599,
+      "height": 744,
+      "states": {
+        "idle": {
+          "x": 155,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 371,
+          "y": 326,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 305,
+          "y": 668,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.ARROW_DOWN",
+            "TRIGGER.ARROW_UP",
+            "TRIGGER.CLICK",
+            "TRIGGER.ENTER"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.ARROW_DOWN",
+            "+3 more"
+          ],
+          "points": [
+            [
+              405,
+              370
+            ],
+            [
+              405,
+              584
+            ],
+            [
+              352,
+              584
+            ],
+            [
+              352,
+              668
+            ]
+          ],
+          "label": {
+            "x": 264,
+            "y": 486,
+            "w": 135,
+            "h": 72
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "TRIGGER.BLUR"
+          ],
+          "lines": [
+            "TRIGGER.BLUR"
+          ],
+          "points": [
+            [
+              405,
+              326
+            ],
+            [
+              405,
+              112
+            ],
+            [
+              202,
+              112
+            ],
+            [
+              202,
+              76
+            ]
+          ],
+          "label": {
+            "x": 304,
+            "y": 186,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              171,
+              76
+            ],
+            [
+              171,
+              102
+            ],
+            [
+              169,
+              102
+            ],
+            [
+              169,
+              594
+            ],
+            [
+              321,
+              594
+            ],
+            [
+              321,
+              668
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 320,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "TRIGGER.FOCUS"
+          ],
+          "lines": [
+            "TRIGGER.FOCUS"
+          ],
+          "points": [
+            [
+              217,
+              76
+            ],
+            [
+              217,
+              102
+            ],
+            [
+              438,
+              102
+            ],
+            [
+              438,
+              326
+            ]
+          ],
+          "label": {
+            "x": 445,
+            "y": 186,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "ITEM.CLICK",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "ITEM.CLICK",
+            "+1 more"
+          ],
+          "points": [
+            [
+              367,
+              668
+            ],
+            [
+              367,
+              594
+            ],
+            [
+              438,
+              594
+            ],
+            [
+              438,
+              370
+            ]
+          ],
+          "label": {
+            "x": 445,
+            "y": 486,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "idle",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE"
+          ],
+          "points": [
+            [
+              336,
+              668
+            ],
+            [
+              336,
+              584
+            ],
+            [
+              186,
+              584
+            ],
+            [
+              186,
+              76
+            ]
+          ],
+          "label": {
+            "x": 193,
+            "y": 328,
+            "w": 122,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

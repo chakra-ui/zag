@@ -1,0 +1,462 @@
+{
+  "id": "presence",
+  "initial": "unmounted",
+  "states": [
+    {
+      "id": "mounted",
+      "label": "mounted",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "unmountSuspended",
+      "label": "unmountSuspended",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "unmounted",
+      "label": "unmounted",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "NODE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PRESENCE.CHANGED",
+      "guard": null
+    },
+    {
+      "from": "mounted",
+      "to": "unmounted",
+      "event": "UNMOUNT",
+      "guard": null
+    },
+    {
+      "from": "mounted",
+      "to": "unmountSuspended",
+      "event": "UNMOUNT.SUSPEND",
+      "guard": null
+    },
+    {
+      "from": "unmountSuspended",
+      "to": "mounted",
+      "event": "MOUNT",
+      "guard": null
+    },
+    {
+      "from": "unmountSuspended",
+      "to": "unmounted",
+      "event": "UNMOUNT",
+      "guard": null
+    },
+    {
+      "from": "unmounted",
+      "to": "mounted",
+      "event": "MOUNT",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1084,
+      "height": 212,
+      "states": {
+        "mounted": {
+          "x": 553,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        },
+        "unmountSuspended": {
+          "x": 48,
+          "y": 58,
+          "w": 170,
+          "h": 44
+        },
+        "unmounted": {
+          "x": 936,
+          "y": 58,
+          "w": 116,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "mounted",
+          "to": "unmounted",
+          "events": [
+            "UNMOUNT"
+          ],
+          "lines": [
+            "UNMOUNT"
+          ],
+          "points": [
+            [
+              654,
+              63
+            ],
+            [
+              852,
+              63
+            ],
+            [
+              852,
+              69
+            ],
+            [
+              936,
+              69
+            ]
+          ],
+          "label": {
+            "x": 764,
+            "y": 32,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "mounted",
+          "to": "unmountSuspended",
+          "events": [
+            "UNMOUNT.SUSPEND"
+          ],
+          "lines": [
+            "UNMOUNT.SUSPEND"
+          ],
+          "points": [
+            [
+              553,
+              63
+            ],
+            [
+              244,
+              63
+            ],
+            [
+              244,
+              69
+            ],
+            [
+              218,
+              69
+            ]
+          ],
+          "label": {
+            "x": 328,
+            "y": 32,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmountSuspended",
+          "to": "mounted",
+          "events": [
+            "MOUNT"
+          ],
+          "lines": [
+            "MOUNT"
+          ],
+          "points": [
+            [
+              218,
+              80
+            ],
+            [
+              469,
+              80
+            ],
+            [
+              469,
+              77
+            ],
+            [
+              553,
+              77
+            ]
+          ],
+          "label": {
+            "x": 361,
+            "y": 87,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmountSuspended",
+          "to": "unmounted",
+          "events": [
+            "UNMOUNT"
+          ],
+          "lines": [
+            "UNMOUNT"
+          ],
+          "points": [
+            [
+              218,
+              91
+            ],
+            [
+              244,
+              91
+            ],
+            [
+              244,
+              148
+            ],
+            [
+              852,
+              148
+            ],
+            [
+              852,
+              91
+            ],
+            [
+              936,
+              91
+            ]
+          ],
+          "label": {
+            "x": 573,
+            "y": 155,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmounted",
+          "to": "mounted",
+          "events": [
+            "MOUNT"
+          ],
+          "lines": [
+            "MOUNT"
+          ],
+          "points": [
+            [
+              936,
+              80
+            ],
+            [
+              680,
+              80
+            ],
+            [
+              680,
+              77
+            ],
+            [
+              654,
+              77
+            ]
+          ],
+          "label": {
+            "x": 771,
+            "y": 87,
+            "w": 49,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 393,
+      "height": 684,
+      "states": {
+        "mounted": {
+          "x": 135,
+          "y": 320,
+          "w": 101,
+          "h": 44
+        },
+        "unmountSuspended": {
+          "x": 126,
+          "y": 32,
+          "w": 170,
+          "h": 44
+        },
+        "unmounted": {
+          "x": 144,
+          "y": 608,
+          "w": 116,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "mounted",
+          "to": "unmounted",
+          "events": [
+            "UNMOUNT"
+          ],
+          "lines": [
+            "UNMOUNT"
+          ],
+          "points": [
+            [
+              169,
+              364
+            ],
+            [
+              169,
+              524
+            ],
+            [
+              173,
+              524
+            ],
+            [
+              173,
+              608
+            ]
+          ],
+          "label": {
+            "x": 101,
+            "y": 474,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "mounted",
+          "to": "unmountSuspended",
+          "events": [
+            "UNMOUNT.SUSPEND"
+          ],
+          "lines": [
+            "UNMOUNT.SUSPEND"
+          ],
+          "points": [
+            [
+              169,
+              320
+            ],
+            [
+              169,
+              76
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmountSuspended",
+          "to": "mounted",
+          "events": [
+            "MOUNT"
+          ],
+          "lines": [
+            "MOUNT"
+          ],
+          "points": [
+            [
+              211,
+              76
+            ],
+            [
+              211,
+              102
+            ],
+            [
+              202,
+              102
+            ],
+            [
+              202,
+              320
+            ]
+          ],
+          "label": {
+            "x": 209,
+            "y": 186,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmountSuspended",
+          "to": "unmounted",
+          "events": [
+            "UNMOUNT"
+          ],
+          "lines": [
+            "UNMOUNT"
+          ],
+          "points": [
+            [
+              254,
+              76
+            ],
+            [
+              254,
+              102
+            ],
+            [
+              292,
+              102
+            ],
+            [
+              292,
+              524
+            ],
+            [
+              231,
+              524
+            ],
+            [
+              231,
+              608
+            ]
+          ],
+          "label": {
+            "x": 299,
+            "y": 330,
+            "w": 62,
+            "h": 24
+          }
+        },
+        {
+          "from": "unmounted",
+          "to": "mounted",
+          "events": [
+            "MOUNT"
+          ],
+          "lines": [
+            "MOUNT"
+          ],
+          "points": [
+            [
+              202,
+              608
+            ],
+            [
+              202,
+              364
+            ]
+          ],
+          "label": {
+            "x": 209,
+            "y": 474,
+            "w": 49,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

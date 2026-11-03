@@ -7,10 +7,6 @@ package: "@zag-js/async-list"
 The async list is used to display a list of items that are loaded
 asynchronously. Usually paired with the combobox or select component.
 
-> This was inspired by React Stately's
-> [useAsyncList](https://react-spectrum.adobe.com/react-stately/useAsyncList.html)
-> hook.
-
 <Resources pkg="@zag-js/async-list" />
 
 **Features**
@@ -41,7 +37,7 @@ The async list package exports two key functions:
 
 <CodeSnippet id="async-list/usage.mdx" />
 
-### Loading and Error States
+### Loading and error states
 
 The async list machine will automatically return the `error` and `loading`
 properties in the `api` when the `load` function returns an error or is loading.
@@ -87,7 +83,7 @@ To load the next page as the user scrolls, pair this with
 [infinite-scroll](/utilities/infinite-scroll). Async list owns the cursor and
 items. Infinite scroll owns the sentinel.
 
-### Reloading the data
+### Reload data
 
 Use the `api.reload` method to reload the data.
 
@@ -194,7 +190,7 @@ const service = useMachine(asyncList.machine, {
 })
 ```
 
-### Aborting requests
+### Abort requests
 
 Use the `api.abort` method to abort the current request.
 
@@ -212,7 +208,7 @@ const service = useMachine(asyncList.machine, {
 })
 ```
 
-### Registering external dependencies
+### External dependencies
 
 In even more complex scenarios, you may need to register external dependencies
 that trigger a reload of the data.
@@ -231,7 +227,7 @@ const service = useMachine(asyncList.machine, {
 })
 ```
 
-## Composing with a collection
+## With a collection
 
 Async list is a data loader. It handles fetching, pagination, sorting, and
 filtering, but it doesn't own the list structure. To render items in a
@@ -299,7 +295,7 @@ const appendItem = (item: Item) => setCollection((c) => c.append(item))
 
 The async list's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The async list machine exposes the following context properties:
 

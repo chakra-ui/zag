@@ -48,7 +48,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="switch/usage.mdx" />
 
-### Making it checked by default
+### Default checked
 
 Use the `defaultChecked` property to make a switch checked by default.
 
@@ -62,7 +62,7 @@ const service = useMachine(zagSwitch.machine, {
 
 </Example>
 
-### Controlled checked state
+### Controlled checked
 
 Use `checked` and `onCheckedChange` for controlled usage.
 
@@ -79,7 +79,7 @@ const service = useMachine(zagSwitch.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the switch value changes, the `onCheckedChange` callback is invoked.
 
@@ -109,7 +109,7 @@ api.toggleChecked()
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use switch in forms, set `name` and render `api.getHiddenInputProps()`.
 
@@ -161,7 +161,7 @@ root, control and label parts.
 }
 ```
 
-### Disabled State
+### Disabled state
 
 When the switch is disabled, the `data-disabled` attribute is added to the root,
 control and label parts.
@@ -180,7 +180,7 @@ control and label parts.
 }
 ```
 
-### Invalid State
+### Invalid state
 
 When the switch is invalid, the `data-invalid` attribute is added to the root,
 control and label parts.
@@ -201,7 +201,7 @@ control and label parts.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The switch machine exposes the following context properties:
 
@@ -213,7 +213,7 @@ The switch `api` exposes the following methods:
 
 <ApiTable name="switch" />
 
-### Data Attributes
+### Data attributes
 
 <DataAttrTable name="switch" />
 
@@ -222,6 +222,6 @@ The switch `api` exposes the following methods:
 Adheres to the
 [Switch WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="switch" />

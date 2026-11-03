@@ -52,7 +52,7 @@ Then use the framework integration helpers:
 
 <CodeSnippet id="qr-code/usage.mdx" />
 
-### Setting the QR code value
+### QR code value
 
 Set `value` to control the encoded content.
 
@@ -67,7 +67,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting an initial value
+### Initial value
 
 Use `defaultValue` for an uncontrolled initial value.
 
@@ -81,7 +81,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react when the encoded value changes.
 
@@ -98,7 +98,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting pixel size
+### Pixel size
 
 Use `pixelSize` to control QR code density.
 
@@ -113,7 +113,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting the correction level
+### Correction level
 
 Error correction allows for the QR code to be blocked or resized while still
 recognizable. In some cases where the link is too long or the logo overlay
@@ -143,7 +143,7 @@ const service = useMachine(qrCode.machine, {
 > The alternative is to enlarge the QRCode by increasing the size of the `svg`
 > element.
 
-### Adding an overlay logo
+### Overlay logo
 
 To add a logo overlay to the QR code, render the image part. The logo will be
 automatically centered within the QR code. Downloads and `getDataUrl` include
@@ -162,7 +162,7 @@ the overlay when it is rendered.
 
 </Example>
 
-### Changing the color
+### Color
 
 To change the color of the QR code, set the `fill` attribute on the `path` part.
 
@@ -184,7 +184,7 @@ To change the background color of the QR code, set the `background-color`
 }
 ```
 
-### Exporting the QR code
+### Export
 
 To export the QR code as an image, use `api.getDataUrl`. If an overlay is
 rendered, it is included in the file.
@@ -230,7 +230,7 @@ Each part includes a component-scoped data attribute you can target in CSS.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The QR code machine exposes the following context properties:
 
