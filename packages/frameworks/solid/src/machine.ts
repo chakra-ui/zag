@@ -27,7 +27,7 @@ import {
   watchEffect,
 } from "@zag-js/core"
 import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
-import { type Accessor, createMemo, mergeProps, onCleanup, onMount, untrack } from "solid-js"
+import { type Accessor, createMemo, flush as flushSolid, merge, onCleanup, onSettled, untrack } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { createEffectSync, createTrack } from "./track"
@@ -55,26 +55,28 @@ export function useMachine<T extends MachineSchema>(
 
   const prop: any = createProp(props)
 
-  const context: any = machine.context?.({
-    prop,
-    bindable: createBindable,
-    get scope() {
-      return scope()
-    },
-    flush,
-    getContext() {
-      return ctx as any
-    },
-    getComputed() {
-      return computed as any
-    },
-    getRefs() {
-      return refs as any
-    },
-    getEvent() {
-      return getEvent()
-    },
-  })
+  const context: any = untrack(() =>
+    machine.context?.({
+      prop,
+      bindable: createBindable,
+      get scope() {
+        return scope()
+      },
+      flush,
+      getContext() {
+        return ctx as any
+      },
+      getComputed() {
+        return computed as any
+      },
+      getRefs() {
+        return refs as any
+      },
+      getEvent() {
+        return getEvent()
+      },
+    }),
+  )
 
   const ctx: BindableContext<T> = {
     get(key) {
@@ -102,7 +104,7 @@ export function useMachine<T extends MachineSchema>(
   const eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = (): any =>
-    mergeProps(eventRef.current, {
+    merge(eventRef.current, {
       current() {
         return eventRef.current
       },
@@ -112,7 +114,7 @@ export function useMachine<T extends MachineSchema>(
     })
 
   const getState = () =>
-    mergeProps(state, {
+    merge(state, {
       matches(...values: T["state"][]) {
         const current = state.get()
         return values.some((value) => matchesState(current as string, value as string))
@@ -123,7 +125,7 @@ export function useMachine<T extends MachineSchema>(
       },
     })
 
-  const refs = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
+  const refs = createRefs(untrack(() => machine.refs?.({ prop, context: ctx })) ?? {})
 
   const getParams = (): Params<T> => ({
     state: getState(),
@@ -206,15 +208,21 @@ export function useMachine<T extends MachineSchema>(
     notify()
   }
 
-  const reconcileEffects = () => {
+  const readEffectDeps = () => {
+    const values: [EffectRecord, any[]][] = []
+    for (const record of effects.current.values()) {
+      if (record.deps) values.push([record, record.deps.map((d) => d())])
+    }
+    return values
+  }
+
+  const reconcileEffects = (values: [EffectRecord, any[]][]) => {
     if (status !== MachineStatus.Started) return
 
     let stale: EffectRecord[] | undefined
 
-    for (const record of effects.current.values()) {
-      const deps = record.deps
-      if (!deps) continue
-      const next = deps.map((d) => d())
+    for (const [record, next] of values) {
+      if (!effects.current.has(record.id)) continue
       if (!next.some((value, index) => !isEqual(record.values![index], value))) continue
       record.values = next
       // setup() reads live values, so an already-queued restart covers this change too
@@ -344,14 +352,22 @@ export function useMachine<T extends MachineSchema>(
 
   machine.watch?.(getParams())
 
-  onMount(() => {
-    const started = status === MachineStatus.Started
-    status = MachineStatus.Started
-    debug(started ? "rehydrating..." : "initializing...")
-    state.invoke(state.initial!, INIT_STATE)
+  onSettled(() => {
+    let cancelled = false
+    // Entry actions may flush, which onSettled forbids.
+    queueMicrotask(() => {
+      if (cancelled) return
+      const started = status === MachineStatus.Started
+      status = MachineStatus.Started
+      debug(started ? "rehydrating..." : "initializing...")
+      state.invoke(state.initial!, INIT_STATE)
+    })
+    return () => {
+      cancelled = true
+    }
   })
 
-  notify = createEffectSync(reconcileEffects)
+  notify = createEffectSync(readEffectDeps, reconcileEffects)
 
   return {
     state: getState(),
@@ -370,6 +386,7 @@ export function useMachine<T extends MachineSchema>(
 
 function flush(fn: VoidFunction) {
   fn()
+  flushSolid()
 }
 
 function access<T>(value: T | Accessor<T>) {

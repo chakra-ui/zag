@@ -3,36 +3,49 @@ import { isFunction } from "@zag-js/utils"
 import { createEffect, createMemo, createSignal, type Accessor, onCleanup, untrack } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
-  const initial = props().value ?? props().defaultValue
+  const initial = untrack(() => props().value ?? props().defaultValue)
 
-  const eq = props().isEqual ?? Object.is
+  const eq = untrack(() => props().isEqual ?? Object.is)
 
-  const [value, setValue] = createSignal(initial as T)
+  // Machines need immediate reads; Solid signals commit on flush.
+  let value = initial as T
+  const [version, setVersion] = createSignal(0)
   const controlled = createMemo(() => props().value !== undefined)
 
-  const valueRef = { current: value() }
+  const valueRef = { current: value }
 
-  createEffect(() => {
-    const v = controlled() ? props().value : value()
-    valueRef.current = v as T
-  })
+  createEffect(
+    () => (controlled() ? props().value : undefined),
+    (v) => {
+      valueRef.current = v === undefined ? value : (v as T)
+    },
+  )
 
   const set = (v: T | ((prev: T) => T)) => {
-    const prev = untrack(() => (controlled() ? props().value : value())) as T
+    const isControlled = untrack(controlled)
+    const prev = untrack(() => (isControlled ? props().value : value)) as T
     const next = isFunction(v) ? v(prev) : v
 
     if (props().debug) {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled()) setValue(next as any)
+    if (!isControlled && !Object.is(next, prev)) {
+      value = next as T
+      valueRef.current = value
+      setVersion((n) => n + 1)
+    }
     if (!eq(next, prev)) {
       props().onChange?.(next, prev)
     }
   }
 
   function get(): T {
-    const v = (controlled() ? props().value : value) as T
+    if (!controlled()) {
+      version()
+      return value
+    }
+    const v = props().value as T
     return isFunction(v) ? v() : v
   }
 

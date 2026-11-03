@@ -92,6 +92,42 @@ test.describe("toast / overlap", () => {
     await I.seeToastsOverlap()
   })
 
+  test("hovering the gaps keeps the stack expanded and paused", async ({ page }) => {
+    await I.clickExact("Show toast", 3)
+    await I.mouseIntoRegion()
+    await I.seeToastsStacked()
+    await page.waitForTimeout(500)
+
+    const boxes = await page
+      .getByRole("status")
+      .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().toJSON()).sort((a, b) => a.y - b.y))
+
+    for (let i = 1; i < boxes.length; i++) {
+      const stayedExpanded = I.getToast().evaluate(
+        (toast) =>
+          new Promise<boolean>((resolve) => {
+            let collapsed = false
+            const observer = new MutationObserver(() => {
+              collapsed ||= !toast.hasAttribute("data-stack")
+            })
+            observer.observe(toast, { attributes: true, attributeFilter: ["data-stack"] })
+            setTimeout(() => {
+              observer.disconnect()
+              resolve(!collapsed)
+            }, 1000)
+          }),
+      )
+      await page.mouse.move(boxes[i].x + boxes[i].width / 2, (boxes[i - 1].bottom + boxes[i].y) / 2, { steps: 12 })
+      expect(await stayedExpanded).toBe(true)
+      await I.seeToastsStacked()
+      await I.seeToastArePaused()
+    }
+
+    await I.mouseOutOfRegion()
+    await I.seeToastsOverlap()
+    await I.seeToastsAreNotPaused()
+  })
+
   test("hotkey focuses the region", async () => {
     await I.clickExact("Show toast", 2)
     await I.pressHotkey()

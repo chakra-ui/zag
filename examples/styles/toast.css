@@ -7,7 +7,6 @@
   width: 356px;
   min-height: 52px;
   padding: 14px 14px 14px 16px;
-  overflow: hidden;
   overflow-wrap: anywhere;
   border-radius: var(--z-radius-lg);
   background: var(--z-bg);

@@ -1,6 +1,6 @@
 import { createNormalizer } from "@zag-js/types"
 import { isNumber, isObject, isString } from "@zag-js/utils"
-import type { JSX } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 export type PropTypes = JSX.IntrinsicElements & {
   element: JSX.HTMLAttributes<any>
@@ -33,6 +33,11 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
 
   for (const key in props) {
     const value = props[key]
+
+    if (key.startsWith("aria-") && typeof value === "boolean") {
+      normalized[key] = String(value)
+      continue
+    }
 
     if (key === "readOnly" && value === false) {
       continue

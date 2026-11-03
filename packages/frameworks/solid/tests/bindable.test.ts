@@ -1,27 +1,92 @@
 import { renderHook } from "@solidjs/testing-library"
-import { batch, createSignal } from "solid-js"
+import { createEffect, createSignal, flush } from "solid-js"
 import { createBindable } from "../src/bindable"
 
 describe("bindable updates", () => {
-  test("functional updates accumulate inside a batch", () => {
+  test("refs update immediately for uncontrolled writes", () => {
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0 })))
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
+    result.set(1)
+    expect(result.ref.current).toBe(1)
+
+    result.set((prev) => prev + 1)
+    expect(result.ref.current).toBe(2)
+
+    flush()
+    expect(result.ref.current).toBe(2)
+  })
+
+  test("refs follow controlled values and restore the uncontrolled value", () => {
+    const [value, setValue] = createSignal<number | undefined>(undefined)
+    const { result } = renderHook(() => createBindable(() => ({ value: value(), defaultValue: 1 })))
+
+    result.set(2)
+    expect(result.ref.current).toBe(2)
+
+    setValue(10)
+    flush()
+    expect(result.ref.current).toBe(10)
+
+    result.set(20)
+    flush()
+    expect(result.ref.current).toBe(10)
+
+    setValue(undefined)
+    flush()
+    expect(result.ref.current).toBe(2)
+    expect(result.get()).toBe(2)
+  })
+
+  test("unchanged writes do not notify reactive consumers", () => {
+    const onRead = vi.fn()
+    const { result } = renderHook(() => {
+      const value = createBindable(() => ({ defaultValue: 1 }))
+      createEffect(() => value.get(), onRead)
+      return value
     })
+
+    expect(onRead).toHaveBeenCalledOnce()
+
+    result.set(1)
+    flush()
+
+    expect(onRead).toHaveBeenCalledOnce()
+  })
+
+  test("custom equality does not suppress reactive value updates", () => {
+    const onRead = vi.fn()
+    const onChange = vi.fn()
+    const { result } = renderHook(() => {
+      const value = createBindable(() => ({ defaultValue: 1, isEqual: () => true, onChange }))
+      createEffect(() => value.get(), onRead)
+      return value
+    })
+
+    result.set(2)
+    flush()
+
+    expect(result.get()).toBe(2)
+    expect(onRead).toHaveBeenCalledTimes(2)
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
+  test("functional updates accumulate within a tick", () => {
+    const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0 })))
+
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(3)
   })
 
-  test("functional updates see direct writes in the same batch", () => {
+  test("functional updates see direct writes in the same tick", () => {
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0 })))
 
-    batch(() => {
-      result.set(10)
-      result.set((prev) => prev + 1)
-    })
+    result.set(10)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(11)
   })
@@ -30,11 +95,10 @@ describe("bindable updates", () => {
     const onChange = vi.fn()
     const { result } = renderHook(() => createBindable(() => ({ defaultValue: 0, onChange })))
 
-    batch(() => {
-      result.set(1)
-      result.set(1)
-      result.set((prev) => prev + 1)
-    })
+    result.set(1)
+    result.set(1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(onChange.mock.calls).toEqual([
       [1, 0],
@@ -42,17 +106,19 @@ describe("bindable updates", () => {
     ])
   })
 
-  test("controlled updates read parent changes within a batch", () => {
+  test("controlled updates read the parent's value once it has flushed", () => {
     const { result } = renderHook(() => {
       const [value, setValue] = createSignal(0)
       return createBindable(() => ({ value: value(), onChange: setValue }))
     })
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-    })
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
+    expect(result.get()).toBe(1)
 
+    result.set((prev) => prev + 1)
+    flush()
     expect(result.get()).toBe(2)
   })
 
@@ -60,10 +126,9 @@ describe("bindable updates", () => {
     const onChange = vi.fn()
     const { result } = renderHook(() => createBindable(() => ({ value: 10, onChange })))
 
-    batch(() => {
-      result.set((prev) => prev + 1)
-      result.set((prev) => prev + 1)
-    })
+    result.set((prev) => prev + 1)
+    result.set((prev) => prev + 1)
+    flush()
 
     expect(result.get()).toBe(10)
     expect(onChange.mock.calls).toEqual([
