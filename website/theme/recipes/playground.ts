@@ -197,6 +197,8 @@ export const playground = defineSlotRecipe({
       outline: "none",
       _focusVisible: { borderColor: "accent" },
       "&[type=number]": { w: "16", textAlign: "end" },
+      // inline beside its label, sized to the longest option
+      "&:is(select)": { w: "auto", maxW: "60%", cursor: "pointer" },
     },
     bar: {
       display: "flex",
