@@ -74,14 +74,10 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
     `Use web browsing to access links and information: ${pageUrl}\n\nI want to ask some questions about ${title || "this documentation"}.`,
   )
 
-  // Use the new API route for MDX content
-  const apiPath = slug.startsWith("/") ? slug.slice(1) : slug
-  const mdxApiUrl = `/api/mdx/${apiPath}`
-
   const menuItems: MenuItem[] = [
     {
-      label: "View as MDX",
-      href: mdxApiUrl,
+      label: "View as Markdown",
+      href: `${slug}.md`,
       icon: FaMarkdown,
     },
     {

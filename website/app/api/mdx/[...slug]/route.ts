@@ -1,78 +1,11 @@
-import {
-  components,
-  getComponentPaths,
-  guides,
-  overviews,
-  snippets,
-  utilities,
-} from "lib/source"
-import { expandComponentContent } from "lib/mdx-expansion"
+import { docStaticParams, resolveDoc } from "lib/doc-content"
 import { NextRequest, NextResponse } from "next/server"
 
 // Every docs page is known at build time, so "Copy page" reads a static file
 export const dynamic = "force-static"
 
 export function generateStaticParams() {
-  return [
-    ...getComponentPaths().map(({ params }) => ({
-      slug: ["components", ...params.slug],
-    })),
-    ...overviews.map((doc) => ({ slug: ["overview", doc.slug] })),
-    ...guides.map((doc) => ({ slug: ["guides", doc.slug] })),
-    ...utilities.map((doc) => ({ slug: ["utilities", doc.slug] })),
-  ]
-}
-
-// Default finder function for most collections
-const defaultFindBy = (d: any, slug: string) => d.slug === slug
-
-// Define collection mappings for cleaner lookups
-const collections: Record<
-  string,
-  {
-    data: any[]
-    findBy?: (d: any, slug: string) => boolean
-  }
-> = {
-  overview: { data: overviews },
-  components: { data: components },
-  guides: { data: guides },
-  utilities: { data: utilities },
-  snippets: {
-    data: snippets,
-    findBy: (d, slug) => d.key === slug,
-  },
-}
-
-type CollectionType = keyof typeof collections
-
-function findDocument(category: string, slug: string) {
-  // First, try to find in the specified category
-  const collection = collections[category as CollectionType]
-  if (collection) {
-    const findBy = collection.findBy || defaultFindBy
-    const doc = collection.data.find((d) => findBy(d, slug))
-    if (doc) {
-      return {
-        doc,
-        contentType:
-          category === "components" ? "component" : (category as string),
-      }
-    }
-  }
-
-  // If not found or invalid category, search all collections using the category as the slug
-  for (const [type, collection] of Object.entries(collections)) {
-    if (type === "snippets") continue // Skip snippets for direct slug search
-
-    const findBy = collection.findBy || defaultFindBy
-    const doc = collection.data.find((d) => findBy(d, category))
-    if (doc) {
-      return { doc, contentType: type === "components" ? "component" : type }
-    }
-  }
-
-  return { doc: null, contentType: null }
+  return docStaticParams()
 }
 
 export async function GET(
@@ -85,35 +18,13 @@ export async function GET(
     return NextResponse.json({ error: "No slug provided" }, { status: 400 })
   }
 
-  let category = slug[0]
-  let rest = slug.slice(1)
-  let framework: string | undefined
+  const resolved = resolveDoc(slug)
 
-  // Check if the path is like /components/react/avatar
-  // If second segment is a framework, extract it
-  if (category === "components" && rest.length >= 2) {
-    const possibleFramework = rest[0]
-    if (["react", "vue", "solid", "svelte"].includes(possibleFramework)) {
-      framework = possibleFramework
-      rest = rest.slice(1) // Remove framework from the path
-    }
-  }
-
-  const searchSlug = rest.join("/")
-  const { doc, contentType } = findDocument(category, searchSlug)
-
-  if (!doc) {
+  if (!resolved) {
     return NextResponse.json({ error: "Content not found" }, { status: 404 })
   }
 
-  // Get the raw content
-  let rawContent = doc.body?.raw || doc.raw || doc.content || ""
-
-  // Expand component content (CodeSnippets, ApiTable, ContextTable, etc.) if content type is component
-  if (contentType === "component" && rawContent) {
-    const componentId = doc.slug // The slug is the component ID (e.g., "accordion", "dialog", etc.)
-    rawContent = expandComponentContent(rawContent, componentId, doc, framework)
-  }
+  const { doc, contentType, framework, content } = resolved
 
   // Return the page data
   const response = {
@@ -125,7 +36,7 @@ export async function GET(
     framework, // Include the framework if specified
 
     // Content with expanded snippets
-    content: rawContent,
+    content,
     html: doc.body?.html || doc.html,
 
     // Package info
