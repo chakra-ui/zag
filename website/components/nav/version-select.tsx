@@ -2,18 +2,9 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import packageJson from "@zag-js/react/package.json"
 import Link from "next/link"
-import { HiChevronDown } from "react-icons/hi"
+import { HiCheck, HiChevronDown } from "react-icons/hi"
 import { css } from "styled-system/css"
-import { Box, HStack, styled } from "styled-system/jsx"
-
-const dot = css({
-  boxSize: "1.5",
-  rounded: "full",
-  flexShrink: "0",
-  bg: "border.primary.bold",
-  boxShadow:
-    "0 0 0 3px color-mix(in srgb, var(--colors-border-primary-bold) 22%, transparent)",
-})
+import { Box, styled } from "styled-system/jsx"
 
 export const VersionSelect = () => {
   const service = useMachine(menu.machine, {
@@ -33,22 +24,20 @@ export const VersionSelect = () => {
       <styled.button
         display={{ base: "none", sm: "inline-flex" }}
         alignItems="center"
-        gap="1.5"
+        gap="1"
         h="6"
-        ps="2"
-        pe="1.5"
-        borderWidth="1px"
-        borderColor="border"
+        ps="2.5"
+        pe="2"
         rounded="full"
-        fontFamily="mono"
-        fontSize="11px"
+        fontSize="13px"
+        fontWeight="medium"
         lineHeight="1"
         cursor="pointer"
-        bg="transparent"
-        color="text.muted"
-        transition="color 120ms, border-color 120ms"
-        _hover={{ color: "text.bold", borderColor: "border.bold" }}
-        _open={{ color: "text.bold", borderColor: "border.bold" }}
+        bg="ink/6"
+        color="ink"
+        transition="background 120ms"
+        _hover={{ bg: "ink/10" }}
+        _open={{ bg: "ink/10" }}
         _focusVisible={{
           outline: "2px solid",
           outlineColor: "border.primary.bold",
@@ -57,10 +46,10 @@ export const VersionSelect = () => {
         aria-label={`Zag.js version ${current.label}, switch version`}
         {...api.getTriggerProps()}
       >
-        <span className={dot} aria-hidden />
-        {current.label}
+        {current.tag}
         <styled.span
           display="inline-flex"
+          color="ink.muted"
           transition="transform 120ms"
           css={{ "[data-state=open] > &": { transform: "rotate(180deg)" } }}
           aria-hidden
@@ -73,69 +62,57 @@ export const VersionSelect = () => {
         <Portal>
           <div {...api.getPositionerProps()}>
             <Box
-              width="208px"
+              width="220px"
               zIndex="1000"
-              fontFamily="mono"
-              fontSize="12px"
+              fontSize="14px"
               bg="bg.popover"
               isolation="isolate"
-              borderWidth="1px"
-              borderColor="border.bold"
-              rounded="md"
-              boxShadow="0 16px 40px -16px rgb(0 0 0 / 0.45)"
-              overflow="hidden"
+              rounded="12px"
+              p="1.5"
+              boxShadow={{
+                base: "0 0 0 1px rgb(0 0 0 / 0.08), 0 1px 1px rgb(0 0 0 / 0.02), 0 4px 8px -4px rgb(0 0 0 / 0.04), 0 16px 24px -8px rgb(0 0 0 / 0.06)",
+                _dark:
+                  "0 0 0 1px rgb(255 255 255 / 0.1), 0 16px 32px -8px rgb(0 0 0 / 0.6)",
+              }}
               outline="0"
               {...api.getContentProps()}
             >
-              <styled.p
-                px="3"
-                py="2"
-                fontSize="10px"
-                letterSpacing="0.12em"
-                textTransform="uppercase"
-                color="text.muted"
-                borderBottomWidth="1px"
-                borderColor="border"
-              >
-                Versions
-              </styled.p>
-              <Box p="1">
-                {items.map((item) => (
-                  <Link
-                    key={item.value}
-                    href={item.value}
-                    {...api.getItemProps({ value: item.value })}
-                    className={css({
-                      display: "block",
-                      px: "2",
-                      py: "1.5",
-                      rounded: "sm",
-                      cursor: "pointer",
-                      color: "text.muted",
-                      _highlighted: { bg: "bg.muted", color: "text.bold" },
-                    })}
-                  >
-                    <HStack justify="space-between" gap="3">
-                      <HStack gap="2">
-                        <Box
-                          boxSize="1.5"
-                          rounded="full"
-                          bg={
-                            item === current
-                              ? "border.primary.bold"
-                              : "border.bold"
-                          }
-                          aria-hidden
-                        />
-                        <Box color={item === current ? "text.bold" : undefined}>
-                          {item.tag}
-                        </Box>
-                      </HStack>
-                      <Box opacity="0.7">{item.label}</Box>
-                    </HStack>
-                  </Link>
-                ))}
-              </Box>
+              {items.map((item) => (
+                <Link
+                  key={item.value}
+                  href={item.value}
+                  aria-current={item === current ? "true" : undefined}
+                  {...api.getItemProps({ value: item.value })}
+                  className={css({
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2",
+                    h: "9",
+                    px: "2",
+                    rounded: "6px",
+                    cursor: "pointer",
+                    color: "text",
+                    _highlighted: { bg: "bg.muted", color: "text.bold" },
+                  })}
+                >
+                  <Box fontWeight="medium" color="text.bold">
+                    {item.tag}
+                  </Box>
+                  <Box fontFamily="mono" fontSize="12px" color="text.muted">
+                    {item.label}
+                  </Box>
+                  {item === current && (
+                    <Box
+                      ms="auto"
+                      display="inline-flex"
+                      color="text.bold"
+                      aria-hidden
+                    >
+                      <HiCheck size={15} />
+                    </Box>
+                  )}
+                </Link>
+              ))}
             </Box>
           </div>
         </Portal>

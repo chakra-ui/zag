@@ -1,0 +1,403 @@
+---
+title: Core concepts
+description: What a framework adapter does.
+---
+
+An adapter connects Zag's machines to a framework. This page covers each part an
+adapter owns and how the official adapters implement it.
+
+```text
+machine + user props
+  -> useMachine()
+  -> service
+  -> connect(service, normalizeProps)
+  -> element props
+```
+
+The machines and every `connect` function are shared. Your adapter provides
+`useMachine`, `normalizeProps`, `mergeProps`, and a way to put props on
+elements.
+
+## Pick a starting point
+
+Don't write the runtime from scratch. Port the official adapter whose reactivity
+model is closest to your framework.
+
+| Reactivity model                 | Start from                                                                                                                                                       |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hook-based rendering             | [React](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/react) or [Preact](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/preact) |
+| Signals and computed values      | [Solid](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/solid)                                                                                    |
+| Refs and watchers                | [Vue](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vue)                                                                                        |
+| Compiler-managed reactivity      | [Svelte](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/svelte)                                                                                  |
+| Subscriptions, no component tree | [Vanilla](https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vanilla)                                                                                |
+
+Every adapter has the same files:
+
+```text
+src/
+  bindable.ts        # reactive values the machine reads and writes
+  refs.ts            # mutable values that never re-render
+  track.ts           # maps `track` to the framework's effect primitive
+  machine.ts         # useMachine: the runtime and lifecycle
+  normalize-props.ts # converts prop names to the framework's format
+  index.ts           # exports useMachine, normalizeProps, mergeProps
+```
+
+## Run the machine
+
+`useMachine(machine, props)` returns a `Service`. Every `connect` function reads
+from it.
+
+```ts
+import type { Machine, MachineSchema, InputProps, Service } from "@zag-js/core"
+
+declare function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
+  props?: InputProps<T>,
+): Service<T>
+```
+
+The service has these members:
+
+| Member        | What it does                                                           |
+| ------------- | ---------------------------------------------------------------------- |
+| `state`       | The current state. Has `get()`, `matches(...states)` and `hasTag(tag)` |
+| `context`     | Reactive machine values: `get`, `set`, `initial`, `hash`               |
+| `prop(key)`   | Reads a user prop after the machine's defaults are applied             |
+| `refs`        | Non-reactive values: `get`, `set`                                      |
+| `computed`    | Derived values, computed on read                                       |
+| `scope`       | DOM lookups bound to the machine id and root node                      |
+| `send(event)` | Dispatches an event                                                    |
+| `event`       | The last event, plus `current()` and `previous()`                      |
+| `getStatus()` | `MachineStatus.NotStarted`, `Started` or `Stopped`                     |
+
+Most of the runtime is framework-free and comes from `@zag-js/core`. Import
+these helpers instead of rewriting them:
+
+```ts
+import {
+  createScope,
+  createReplaceTracker,
+  findTransition,
+  getExitEnterStates,
+  resolveStateValue,
+  matchesState,
+  hasTag,
+  isWatchEffect,
+  watchEffect,
+  INIT_STATE,
+  MachineStatus,
+} from "@zag-js/core"
+```
+
+### Props and scope
+
+Read user props through a function, so the machine always sees current values.
+Apply the machine's defaults on every read.
+
+```ts
+import { compact } from "@zag-js/utils"
+
+const prop = (key) => {
+  const props =
+    machine.props?.({ props: compact(userProps), scope }) ?? userProps
+  return props[key]
+}
+```
+
+Create the scope from `id`, `ids` and `getRootNode`. Machines use it to find
+their elements. If your framework renders into shadow DOM, default `getRootNode`
+to the shadow root.
+
+```ts
+const scope = createScope({ id, ids, getRootNode })
+```
+
+### Bindable
+
+A bindable is a value the machine owns, unless the user controls it. That is how
+`value` and `defaultValue` work on every component. Machines create bindables in
+`machine.context`.
+
+```ts
+interface Bindable<T> {
+  initial: T | undefined
+  ref: any
+  get(): T
+  set(value: T | ((prev: T) => T)): void
+  invoke(nextValue: T, prevValue: T): void
+  hash(value: T): string
+}
+```
+
+The logic is the same in every adapter. Only the storage changes.
+
+```ts
+export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
+  const initial = props().value ?? props().defaultValue
+  const eq = props().isEqual ?? Object.is
+  const controlled = () => props().value !== undefined
+  // store: your framework's reactive value
+  return {
+    initial,
+    ref: store,
+    get: () => (controlled() ? props().value! : store.value),
+    set(nextValue) {
+      const prev = this.get()
+      const next = typeof nextValue === "function" ? nextValue(prev) : nextValue
+      if (!controlled()) store.value = next
+      if (!eq(next, prev)) props().onChange?.(next, prev)
+    },
+    invoke: (next, prev) => props().onChange?.(next, prev),
+    hash: (value) => props().hash?.(value) ?? String(value),
+  }
+}
+```
+
+Keep two rules:
+
+- Call `props()` on every read. A controlled value must always be current.
+- Call `onChange` only when the value changes. Otherwise a controlled component
+  loops.
+
+The bindable function also carries two helpers, `bindable.cleanup(fn)` and
+`bindable.ref(defaultValue)`. Map `cleanup` to your unmount hook. `ref` returns
+a plain `{ get, set }` box.
+
+The machine's current state is also a bindable. Its `onChange` runs the
+transition: exit effects, exit actions, transition actions, enter effects, then
+entry actions. Copy that function as it is.
+
+### Refs
+
+Refs hold values that change often and should never re-render, like timers or
+the last pointer position.
+
+```ts
+export function createRefs<T>(refs: T) {
+  const ref = { current: refs }
+  return {
+    get: <K extends keyof T>(key: K) => ref.current[key],
+    set: <K extends keyof T>(key: K, value: T[K]) => {
+      ref.current[key] = value
+    },
+  }
+}
+```
+
+### Computed
+
+`computed(key)` calls `machine.computed[key]` with `context`, `event`, `prop`,
+`refs`, `scope` and `computed`. React and the vanilla adapter compute on every
+read. You can memoize with your framework's computed primitive, but reading
+fresh is always correct.
+
+### Event dispatch
+
+`send` queues the event in a microtask, then finds and runs the transition.
+
+```ts
+const send = (event) => {
+  if (status !== MachineStatus.Started) return
+  queueMicrotask(() => {
+    const current = state.get()
+    const { transitions, source } = findTransition(machine, current, event.type)
+    const transition = choose(transitions)
+    if (!transition) return
+    transitionRef = transition
+    const target = resolveStateValue(
+      machine,
+      transition.target ?? current,
+      source,
+    )
+    if (target !== current) state.set(target)
+    else if (transition.reenter) state.invoke(current, current)
+    else action(transition.actions)
+  })
+}
+```
+
+Events may set `replaces`. A later event with the same key drops an earlier one
+that hasn't run yet. `createReplaceTracker()` handles this.
+
+### Effects lifecycle
+
+Effects run while a state is active and clean up when it exits. Keep one record
+per effect invocation, keyed by an id, not by state path.
+
+An effect can return a cleanup function or a `watchEffect(deps, setup)`. A watch
+effect re-runs `setup` when its deps change, without leaving the state. After
+each update, compare the deps and restart the ones that changed. The
+`reconcileEffects` function in each adapter does this.
+
+### Start and stop
+
+Start the machine once the elements are in the DOM. Effects query them right
+away.
+
+```ts
+// on mount
+status = MachineStatus.Started
+state.invoke(state.initial!, INIT_STATE)
+
+// on unmount
+status = MachineStatus.Stopped
+effects.forEach((record) => record.cleanup?.("exit"))
+effects.clear()
+action(machine.exit)
+```
+
+| Adapter | Start                               | Stop                     |
+| ------- | ----------------------------------- | ------------------------ |
+| React   | `useLayoutEffect`, then a microtask | the layout effect return |
+| Solid   | `onMount`                           | `onCleanup`              |
+| Vue     | `onMounted`                         | `onBeforeUnmount`        |
+| Svelte  | `onMount`                           | `onDestroy`              |
+| Vanilla | `machine.start()`                   | `machine.stop()`         |
+
+Vue also buffers events sent before mount, because children mount before their
+parent.
+
+## Integrate reactivity
+
+Machines watch values with `track` inside `watch`:
+
+```ts
+watch({ track, prop, action }) {
+  track([() => prop("disabled")], () => {
+    action(["syncDisabled"])
+  })
+}
+```
+
+Deps return primitives, so a shallow comparison is enough. Each adapter maps the
+three reactive pieces to its own primitives:
+
+| Adapter | Bindable storage             | `track`                  | Re-render trigger     |
+| ------- | ---------------------------- | ------------------------ | --------------------- |
+| React   | `useState` + `useRef`        | `useEffect` with deps    | state setter          |
+| Preact  | `useState` + `useRef`        | `useEffect` with deps    | state setter          |
+| Solid   | `createSignal`               | `createEffect`           | signal reads          |
+| Vue     | `shallowRef`                 | `watch`                  | ref reads             |
+| Svelte  | `$state`                     | `$effect`                | rune reads            |
+| Vanilla | `proxy` from `@zag-js/store` | dep check on each notify | `subscribe` callbacks |
+
+`flush(fn)` lets a machine apply an update synchronously. React wraps it in
+`flushSync`, Svelte in `flushSync`, Vue waits for `nextTick`. If your framework
+has no sync flush, run `fn` in a microtask.
+
+## Normalize props
+
+`connect` returns props in one canonical, React-like shape. `createNormalizer`
+from `@zag-js/types` wraps a function that converts one props object.
+
+```ts
+import { createNormalizer } from "@zag-js/types"
+
+const propMap: Record<string, string> = {
+  onFocus: "onFocusin",
+  onBlur: "onFocusout",
+  onChange: "onInput",
+  onDoubleClick: "onDblclick",
+  htmlFor: "for",
+  className: "class",
+  defaultValue: "value",
+  defaultChecked: "checked",
+}
+
+export const normalizeProps = createNormalizer((props) => {
+  const normalized: Record<string, any> = {}
+  for (let [key, value] of Object.entries(props)) {
+    if (value === undefined) continue
+    if (key in propMap) key = propMap[key]
+    normalized[key.toLowerCase()] = value
+  }
+  return normalized
+})
+```
+
+Some mappings change behavior, not just spelling:
+
+- `onChange` becomes `onInput`. The DOM `change` event fires on blur, not on
+  every keystroke.
+- `onFocus` and `onBlur` become `focusin` and `focusout`. Those bubble.
+- `defaultValue` and `defaultChecked` become `value` and `checked`.
+- SVG attributes like `viewBox` keep their case.
+- Style objects use camelCase keys and `--custom` properties. Convert them if
+  your framework wants kebab-case or strings.
+- `children` is a plain string when present. Map it to text content or drop it.
+
+What the official adapters change:
+
+| Adapter | Events                                 | Names                    | Style                   |
+| ------- | -------------------------------------- | ------------------------ | ----------------------- |
+| React   | unchanged                              | unchanged                | object                  |
+| Preact  | focus, blur, change, double-click      | unchanged                | object                  |
+| Solid   | focus, blur, change, double-click      | `class`, `for`           | kebab-case object       |
+| Vue     | `onX` to `onXxx`, focus, blur, change  | lowercase, SVG preserved | object                  |
+| Svelte  | lowercase `onxxx`, focus, blur, change | lowercase, SVG preserved | attachment per property |
+| Vanilla | lowercase `onxxx`, focus, blur, change | lowercase, SVG preserved | applied per property    |
+
+## Merge props
+
+Users merge their own handlers and classes with Zag's props. Re-export
+`mergeProps` from `@zag-js/core`:
+
+```ts
+export { mergeProps } from "@zag-js/core"
+```
+
+It chains `on*` handlers, joins `class` and `className`, merges style objects
+and strings, and lets later values win for everything else. Solid wraps it in a
+proxy so reactive props stay live. Svelte keeps symbol keys for attachments.
+
+## Apply props
+
+If your framework spreads objects onto elements, users are done:
+
+```tsx
+<button {...api.getTriggerProps()}>Open</button>
+```
+
+If it can't, ship a directive, action or helper. The vanilla `spreadProps`
+handles the cases that are easy to miss:
+
+- Remove attributes that disappear between updates.
+- Swap event listeners without leaving old ones attached.
+- Set `value`, `checked` and `selected` as properties, not attributes.
+- Patch styles one property at a time. Zag writes some styles directly, like
+  `--x` and `--y` for positioning.
+
+```ts
+import { spreadProps } from "@zag-js/vanilla"
+
+const cleanup = spreadProps(element, normalizedProps)
+```
+
+## Testing
+
+Each official adapter has `machine.test.ts`, `nested-states.test.ts` and
+`watch-effect.test.ts` in its `tests` folder. Port them to your framework.
+
+Then check these components in a browser:
+
+- Checkbox for controlled and uncontrolled values
+- Tooltip for effects, timers and cleanup
+- Combobox for keyboard events, collections and positioning
+
+Before you publish, confirm that:
+
+- user props update the machine while it runs
+- effects clean up on unmount
+- event listeners don't pile up across updates
+- server rendering doesn't touch the DOM before mount
+
+Declare Zag and your framework as peer dependencies, and list the versions you
+test. When you upgrade Zag, diff your runtime against the adapter you started
+from.
+
+## Next
+
+- [TypeScript](/guides/framework-adapter-typescript) types the adapter.
+- [Example](/guides/framework-adapter-example) builds a Lit adapter step by
+  step.

@@ -38,10 +38,10 @@
   pre[class*="language-"] {
     padding: 1em 0;
     border-width: 1px;
-    border-color: var(--colors-border);
+    border-color: var(--colors-line);
     margin-top: 2em;
     overflow: auto;
-    border-radius: var(--radii-md);
+    border-radius: var(--radii-xl);
   }
 
   [data-framework] pre {

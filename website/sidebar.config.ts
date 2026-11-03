@@ -37,40 +37,25 @@ export const tabs: SidebarTab[] = [
     icon: LuCompass,
     groups: [
       {
-        label: "Get Started",
-        items: docs("overview", [
-          { label: "Introduction", id: "introduction" },
-          { label: "Installation", id: "installation" },
-          { label: "FAQ", id: "faq" },
-        ]),
+        label: "Get started",
+        items: [
+          ...docs("overview", [
+            { label: "Introduction", id: "introduction" },
+            { label: "Installation", id: "installation" },
+          ]),
+          ...docs("guides", [{ label: "Migrating to v2", id: "migration" }]),
+          ...docs("overview", [
+            { label: "FAQ", id: "faq" },
+            {
+              label: "Changelog",
+              id: "changelogs",
+              href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
+            },
+          ]),
+        ],
       },
       {
-        label: "Browse",
-        items: docs("overview", [
-          { label: "All Components", id: "components" },
-          { label: "All Utilities", id: "utilities" },
-        ]),
-      },
-      {
-        label: "Resources",
-        items: docs("overview", [
-          {
-            label: "Changelog",
-            id: "changelogs",
-            href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
-          },
-          { label: "LLMs.txt", id: "llms-txt" },
-        ]),
-      },
-    ],
-  },
-  {
-    id: "guides",
-    label: "Guides",
-    icon: LuBookOpen,
-    groups: [
-      {
-        label: "Core",
+        label: "Essentials",
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
@@ -80,22 +65,8 @@ export const tabs: SidebarTab[] = [
         ]),
       },
       {
-        label: "Build something",
-        items: docs("guides", [
-          {
-            label: "Panda design system",
-            id: "design-system-with-panda",
-            new: true,
-          },
-        ]),
-      },
-      {
-        label: "Advanced",
-        items: docs("guides", [
-          { label: "Building machines", id: "building-machines" },
-          { label: "Framework adapters", id: "framework-adapters" },
-          { label: "Migrating to v2", id: "migration" },
-        ]),
+        label: "AI agents",
+        items: docs("overview", [{ label: "LLMs.txt", id: "llms-txt" }]),
       },
     ],
   },
@@ -212,6 +183,38 @@ export const tabs: SidebarTab[] = [
         label: "Animation",
         // a building block for the others, so it sits here; its URL stays under /components
         items: docs("components", [{ label: "Presence", id: "presence" }]),
+      },
+    ],
+  },
+  {
+    id: "guides",
+    label: "Guides",
+    icon: LuBookOpen,
+    groups: [
+      {
+        label: "Design system",
+        items: docs("guides", [
+          { label: "Overview", id: "design-system-overview" },
+          { label: "Creating the hook", id: "design-system-hook" },
+          { label: "Creating components", id: "design-system-components" },
+          { label: "Styling components", id: "design-system-styling" },
+        ]),
+      },
+      {
+        label: "Custom machine",
+        items: docs("guides", [
+          { label: "Core concepts", id: "custom-machine-concepts" },
+          { label: "TypeScript", id: "custom-machine-typescript" },
+          { label: "Counter example", id: "custom-machine-example" },
+        ]),
+      },
+      {
+        label: "New framework",
+        items: docs("guides", [
+          { label: "Core concepts", id: "framework-adapter-concepts" },
+          { label: "TypeScript", id: "framework-adapter-typescript" },
+          { label: "Example", id: "framework-adapter-example" },
+        ]),
       },
     ],
   },

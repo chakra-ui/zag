@@ -2,16 +2,13 @@
 
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { Icon } from "components/ui/icon"
 import type { JSX } from "react"
 import { useState } from "react"
 import { FaMarkdown } from "react-icons/fa"
 import { HiChevronDown, HiExternalLink } from "react-icons/hi"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
 import siteConfig from "site.config"
-import { css } from "styled-system/css"
-import { docAction } from "styled-system/recipes"
-import { HStack, Stack } from "styled-system/jsx"
+import * as styles from "./copy-page-widget.css"
 
 interface CopyPageWidgetProps {
   slug: string
@@ -39,12 +36,8 @@ const CopyPageButton = ({ slug }: { slug: string }) => {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className={docAction({ segment: true })}
-    >
-      <Icon as={copied ? LuCopyCheck : LuCopy} />
+    <button type="button" onClick={handleCopy} className={styles.copy}>
+      {copied ? <LuCopyCheck aria-hidden /> : <LuCopy aria-hidden />}
       <span>{copied ? "Copied" : "Copy page"}</span>
     </button>
   )
@@ -53,8 +46,7 @@ const CopyPageButton = ({ slug }: { slug: string }) => {
 type MenuItem = {
   label: string
   icon: React.ComponentType | (() => JSX.Element)
-  href?: string
-  onClick?: () => void
+  href: string
 }
 
 const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
@@ -105,109 +97,42 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
       <button
         {...api.getTriggerProps()}
         aria-label="More page actions"
-        className={docAction({ segment: true, iconOnly: true })}
+        className={styles.trigger}
       >
-        <Icon as={HiChevronDown} />
+        <HiChevronDown aria-hidden />
       </button>
       <Portal>
         <div {...api.getPositionerProps()}>
-          <Stack
-            width="200px"
-            zIndex="1000"
-            fontSize="13px"
-            bg="bg.popover"
-            gap="0"
-            padding="1"
-            isolation="isolate"
-            listStyleType="none"
-            borderWidth="1px"
-            borderColor="border"
-            rounded="md"
-            boxShadow="md"
-            outline="0"
-            {...api.getContentProps()}
-          >
+          <div className={styles.content} {...api.getContentProps()}>
             {menuItems.map((item) => {
               const IconComponent = item.icon
-              const itemProps = api.getItemProps({ value: item.label })
-
-              if (item.onClick) {
-                return (
-                  <button
-                    key={item.label}
-                    onClick={item.onClick}
-                    {...itemProps}
-                    className={itemStyles}
-                  >
-                    <Icon as={IconComponent} />
-                    <span>{item.label}</span>
-                  </button>
-                )
-              }
-
               return (
                 <a
                   key={item.label}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  {...itemProps}
-                  className={itemStyles}
+                  {...api.getItemProps({ value: item.label })}
+                  className={styles.item}
                 >
-                  <Icon as={IconComponent} />
+                  <IconComponent />
                   <span>{item.label}</span>
-                  <Icon
-                    as={HiExternalLink}
-                    ml="auto"
-                    fontSize="xs"
-                    opacity="0.6"
-                  />
+                  <HiExternalLink className={styles.external} aria-hidden />
                 </a>
               )
             })}
-          </Stack>
+          </div>
         </div>
       </Portal>
     </>
   )
 }
 
-const itemStyles = css({
-  px: "2",
-  h: "8",
-  rounded: "sm",
-  color: "fg.muted",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  gap: "2",
-  textDecoration: "none",
-  width: "100%",
-  bg: "transparent",
-  border: "none",
-  textAlign: "left",
-  _highlighted: {
-    bg: "bg.control",
-    color: "fg",
-  },
-})
-
 export const CopyPageWidget = ({ slug, title }: CopyPageWidgetProps) => {
   return (
-    <HStack
-      flexShrink="0"
-      alignItems="stretch"
-      h="8"
-      gap="0"
-      divideX="1px"
-      divideColor="border"
-      borderWidth="1px"
-      borderColor="border"
-      rounded="lg"
-      overflow="hidden"
-    >
+    <div className={styles.root}>
       <CopyPageButton slug={slug} />
       <ActionMenu slug={slug} title={title} />
-    </HStack>
+    </div>
   )
 }

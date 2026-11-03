@@ -1,32 +1,25 @@
-import { Box } from "styled-system/jsx"
-import { A11ySection } from "./_components/a11y.section"
-import { ClosingSection } from "./_components/closing.section"
-import { DeepSection } from "./_components/deep.section"
-import { EventsSection } from "./_components/events.section"
-import { HeroSection } from "./_components/hero.section"
-import { PartsSection } from "./_components/parts.section"
-import { ProofStrip } from "./_components/proof-strip"
-import { StatesSection } from "./_components/states.section"
-import { StylingSection } from "./_components/styling.section"
-import { TourSection } from "./_components/tour.section"
+import { DeepSection, FeaturesSection } from "./_home/features"
+import { FrameworksSection } from "./_home/frameworks-section"
+import { HeroSection } from "./_home/hero-section"
+import { root } from "./_home/home.css"
+import { LoopObserver } from "./_home/loop-observer"
+import { ProofSection } from "./_home/proof-section"
+import { StartSection } from "./_home/start-section"
+import { StylingSection } from "./_home/styling-section"
 
 export default function Page() {
   return (
-    <>
-      <Box maxW="1440px" mx="auto">
+    <div className={root}>
+      <LoopObserver />
+      <main id="top">
         <HeroSection />
-      </Box>
-      <ProofStrip />
-      <Box maxW="1440px" mx="auto">
-        <TourSection />
-        <StatesSection />
-        <EventsSection />
-        <PartsSection />
-        <A11ySection />
-      </Box>
-      <StylingSection />
-      <DeepSection />
-      <ClosingSection />
-    </>
+        <ProofSection />
+        <FrameworksSection />
+        <FeaturesSection />
+        <StylingSection />
+        <DeepSection />
+        <StartSection />
+      </main>
+    </div>
   )
 }

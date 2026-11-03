@@ -1,18 +1,16 @@
-import { absoluteUrl, JsonLd } from "components/json-ld"
-import { mdxComponents } from "components/docs/mdx-components"
 import { PostActions } from "app/(site)/blog/_components/post-actions"
 import { PostCover } from "app/(site)/blog/_components/post-cover"
-import { Chip } from "components/ui/chip"
+import { typePill } from "app/(site)/blog/blog.css"
+import { mdxComponents } from "components/docs/mdx-components"
 import { TableOfContents } from "components/docs/toc"
+import { absoluteUrl, JsonLd } from "components/json-ld"
 import { createPageMetadata } from "lib/seo"
 import { getPostBody, posts } from "lib/source"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import siteConfig from "site.config"
-import { Box } from "styled-system/jsx"
-import { blogPost } from "styled-system/recipes"
-import { gutter } from "../../_components/shared"
+import * as styles from "./post.css"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -48,7 +46,6 @@ export default async function PostPage({ params }: PageProps) {
   const newer = posts[index - 1]
   const older = posts[index + 1]
 
-  const styles = blogPost()
   const date = post.date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -57,7 +54,7 @@ export default async function PostPage({ params }: PageProps) {
   })
 
   return (
-    <Box px={gutter}>
+    <>
       <JsonLd
         data={{
           "@type": "BlogPosting",
@@ -79,13 +76,10 @@ export default async function PostPage({ params }: PageProps) {
             ← All posts
           </Link>
           <div className={styles.meta}>
-            <Chip tone={post.type === "release" ? "accent" : "neutral"}>
-              {post.type}
-            </Chip>
-            <span className={styles.date}>
-              <time dateTime={post.date.toISOString()}>{date}</time> ·{" "}
-              {post.readingTime} min read
-            </span>
+            <span className={typePill({ type: post.type })}>{post.type}</span>
+            <time dateTime={post.date.toISOString()}>{date}</time>
+            <span aria-hidden>·</span>
+            <span>{post.readingTime} min read</span>
           </div>
           <h1 className={styles.title}>{post.title}</h1>
           <p className={styles.lead}>{post.description}</p>
@@ -115,15 +109,11 @@ export default async function PostPage({ params }: PageProps) {
             <Body components={mdxComponents} />
           </div>
           <nav aria-label="More posts" className={styles.pager}>
-            {older ? (
+            {older && (
               <Link href={`/blog/${older.slug}`} className={styles.pagerLink}>
-                <span className={styles.pagerLabel}>Older</span>
-                <span className={styles.pagerTitle} data-part="title">
-                  ← {older.title}
-                </span>
+                <span className={styles.pagerLabel}>← Previous post</span>
+                <span className={styles.pagerTitle}>{older.title}</span>
               </Link>
-            ) : (
-              <span />
             )}
             {newer && (
               <Link
@@ -131,10 +121,8 @@ export default async function PostPage({ params }: PageProps) {
                 className={styles.pagerLink}
                 data-end=""
               >
-                <span className={styles.pagerLabel}>Newer</span>
-                <span className={styles.pagerTitle} data-part="title">
-                  {newer.title} →
-                </span>
+                <span className={styles.pagerLabel}>Next post →</span>
+                <span className={styles.pagerTitle}>{newer.title}</span>
               </Link>
             )}
           </nav>
@@ -150,19 +138,19 @@ export default async function PostPage({ params }: PageProps) {
                 rel="noopener noreferrer"
                 className={styles.asideLink}
               >
-                Edit on GitHub ↗
+                Edit on GitHub
               </a>
               <Link
                 href="/blog/rss.xml"
                 prefetch={false}
                 className={styles.asideLink}
               >
-                Subscribe via RSS ↗
+                Subscribe via RSS
               </Link>
             </div>
           </div>
         </aside>
       </div>
-    </Box>
+    </>
   )
 }

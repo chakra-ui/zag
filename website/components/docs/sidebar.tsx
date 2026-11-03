@@ -1,11 +1,10 @@
-import Link from "next/link"
 import { docHref, getActiveTab, isCurrentDoc } from "lib/pagination-utils"
-import { type LinkProps } from "next/link"
+import Link, { type LinkProps } from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
 import { tabs } from "sidebar.config"
-import { docsNav } from "styled-system/recipes"
 import { useFramework } from "./framework"
+import * as styles from "./sidebar.css"
 
 interface DocLinkProps {
   href: LinkProps["href"]
@@ -14,7 +13,7 @@ interface DocLinkProps {
   children: React.ReactNode
 }
 
-const DocLink = (props: DocLinkProps) => {
+function DocLink(props: DocLinkProps) {
   const asPath = usePathname()
   const { href, current, scrollIntoView, children } = props
   const linkRef = useRef<HTMLAnchorElement>(null)
@@ -30,7 +29,6 @@ const DocLink = (props: DocLinkProps) => {
     container.scrollTop += linkTop - containerTop - container.clientHeight / 2
   }, [scrollIntoView, current, asPath])
 
-  const styles = docsNav()
   return (
     <li>
       <Link
@@ -46,40 +44,41 @@ const DocLink = (props: DocLinkProps) => {
 }
 
 /**
- * Only the active tab's groups. The mobile menu passes `tabId` to show another
- * tab, and keeps its own scroll so the tab switcher stays in view.
+ * Only the active section's pages. The mobile menu passes `tabId` to show another
+ * section, and keeps its own scroll so its switcher stays in view.
  */
 export function Sidebar(props: { tabId?: string }) {
   const { framework } = useFramework()
   const pathname = usePathname()
   const tab =
     tabs.find((tab) => tab.id === props.tabId) ?? getActiveTab(pathname)
-
-  const styles = docsNav()
+  const standalone = !props.tabId
 
   return (
-    <nav aria-label={`${tab.label} navigation`}>
-      <ul className={styles.root}>
-        {tab.groups.map((group) => (
-          <li key={group.label} className={styles.group}>
-            <h5 className={styles.heading}>{group.label}</h5>
-            <ul className={styles.list}>
-              {group.items.map((item) => (
-                <DocLink
-                  key={`${item.section}/${item.id}`}
-                  href={docHref(item, framework)}
-                  current={isCurrentDoc(item, pathname)}
-                  scrollIntoView={!props.tabId}
-                >
-                  {item.label}
-                  {item.new && <span className={styles.badge}>New</span>}
-                  {item.beta && <span className={styles.badge}>Beta</span>}
-                </DocLink>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className={styles.root}>
+      <nav aria-label={`${tab.label} navigation`}>
+        <ul className={styles.groups}>
+          {tab.groups.map((group) => (
+            <li key={group.label} className={styles.group}>
+              <h5 className={styles.heading}>{group.label}</h5>
+              <ul className={styles.list}>
+                {group.items.map((item) => (
+                  <DocLink
+                    key={`${item.section}/${item.id}`}
+                    href={docHref(item, framework)}
+                    current={isCurrentDoc(item, pathname)}
+                    scrollIntoView={standalone}
+                  >
+                    {item.label}
+                    {item.new && <span className={styles.badge}>New</span>}
+                    {item.beta && <span className={styles.badge}>Beta</span>}
+                  </DocLink>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   )
 }

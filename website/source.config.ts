@@ -1,8 +1,8 @@
 import { defineCollections, defineConfig } from "fumadocs-mdx/config"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import rehypeCodeTitles from "rehype-code-titles"
 import remarkDirective from "remark-directive"
 import { z } from "zod"
+import { rehypeCodeTitle } from "./lib/rehype-code-title"
 import { remarkAdmonition } from "./lib/remark-utils"
 import { rehypeSvelte } from "./lib/svelte-highlight"
 
@@ -69,7 +69,7 @@ export default defineConfig({
     remarkCodeTabOptions: false,
     remarkPlugins: (v) => [remarkDirective, remarkAdmonition, ...v],
     rehypePlugins: (v) => [
-      rehypeCodeTitles,
+      rehypeCodeTitle,
       [rehypeSvelte, { ignoreMissing: true }],
       ...v,
       [

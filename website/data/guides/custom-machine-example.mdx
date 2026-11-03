@@ -1,0 +1,520 @@
+---
+title: Counter example
+description: Build a counter machine end to end.
+---
+
+This page builds a counter from scratch: a value with decrement and increment
+buttons, a `min` and `max`, and arrow key support. You write the anatomy, DOM
+helpers, types, machine and `connect`, then render it in React.
+
+```text
+counter/
+├── counter.anatomy.ts
+├── counter.dom.ts
+├── counter.types.ts
+├── counter.machine.ts
+├── counter.connect.ts
+└── index.ts
+```
+
+Install the packages the machine imports.
+
+```bash
+pnpm add @zag-js/core @zag-js/anatomy @zag-js/dom-query @zag-js/types @zag-js/react
+```
+
+## Anatomy
+
+The anatomy names the parts users render. Each part gets a data attribute for
+styling and DOM lookups.
+
+```ts
+// counter.anatomy.ts
+import { createAnatomy } from "@zag-js/anatomy"
+
+export const anatomy = createAnatomy("counter").parts(
+  "root",
+  "label",
+  "decrementTrigger",
+  "value",
+  "incrementTrigger",
+)
+
+export const parts = anatomy.build()
+```
+
+`parts.value.attrs(id)` returns `{ "data-counter-value": id }`.
+
+## DOM helpers
+
+Ids are only needed for parts that ARIA attributes point to. Element lookups go
+through the anatomy, scoped to this instance.
+
+```ts
+// counter.dom.ts
+import type { Scope } from "@zag-js/core"
+import { parts } from "./counter.anatomy"
+
+export const getLabelId = (scope: Scope) =>
+  scope.ids?.label ?? `${scope.id}:label`
+
+export const getValueId = (scope: Scope) =>
+  scope.ids?.value ?? `${scope.id}:value`
+
+export const getValueEl = (scope: Scope) =>
+  scope.query(scope.selector(parts.value))
+```
+
+## Types
+
+Props, the schema and the api. `min`, `max`, `step` and `defaultValue` have
+defaults, so they go in `defaultPropKey`.
+
+```ts
+// counter.types.ts
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { CommonProperties, PropTypes } from "@zag-js/types"
+
+export interface ValueChangeDetails {
+  value: number
+}
+
+export interface CounterProps extends CommonProperties {
+  /**
+   * The ids of the counter parts. Useful for composition.
+   */
+  ids?: Partial<{ label: string; value: string }> | undefined
+  /**
+   * The controlled value.
+   */
+  value?: number | undefined
+  /**
+   * The initial value when uncontrolled.
+   * @default 0
+   */
+  defaultValue?: number | undefined
+  /**
+   * The smallest allowed value.
+   * @default 0
+   */
+  min?: number | undefined
+  /**
+   * The largest allowed value.
+   * @default 10
+   */
+  max?: number | undefined
+  /**
+   * The amount to add or remove per step.
+   * @default 1
+   */
+  step?: number | undefined
+  /**
+   * Whether the counter is disabled.
+   */
+  disabled?: boolean | undefined
+  /**
+   * Called when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+}
+
+type PropsWithDefault = "defaultValue" | "min" | "max" | "step"
+
+export interface CounterSchema {
+  state: "idle" | "focused"
+  props: CounterProps
+  defaultPropKey: PropsWithDefault
+  context: {
+    value: number
+  }
+  computed: {
+    canIncrement: boolean
+    canDecrement: boolean
+  }
+  event: EventObject
+  action: "increment" | "decrement" | "setValue" | "focusValue"
+  guard: "canIncrement" | "canDecrement"
+  effect: string
+}
+
+export type CounterService = Service<CounterSchema>
+
+export type CounterMachine = Machine<CounterSchema>
+
+export interface CounterApi<T extends PropTypes = PropTypes> {
+  /**
+   * The current value.
+   */
+  value: number
+  /**
+   * Whether the counter has keyboard focus.
+   */
+  focused: boolean
+  /**
+   * Sets the value. It is clamped to `min` and `max`.
+   */
+  setValue: (value: number) => void
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getDecrementTriggerProps: () => T["button"]
+  getValueProps: () => T["element"]
+  getIncrementTriggerProps: () => T["button"]
+}
+```
+
+## Machine
+
+The value is a bindable, so the counter works controlled or uncontrolled.
+`canIncrement` and `canDecrement` are computed, and the guards reuse them. The
+two states track focus for styling.
+
+```ts
+// counter.machine.ts
+import { createMachine } from "@zag-js/core"
+import * as dom from "./counter.dom"
+import type { CounterSchema } from "./counter.types"
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max)
+
+export const machine = createMachine<CounterSchema>({
+  props({ props }) {
+    return {
+      defaultValue: 0,
+      min: 0,
+      max: 10,
+      step: 1,
+      ...props,
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable }) {
+    return {
+      value: bindable<number>(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({ value })
+        },
+      })),
+    }
+  },
+
+  computed: {
+    canIncrement: ({ context, prop }) =>
+      !prop("disabled") && context.get("value") < prop("max"),
+    canDecrement: ({ context, prop }) =>
+      !prop("disabled") && context.get("value") > prop("min"),
+  },
+
+  on: {
+    INCREMENT: {
+      guard: "canIncrement",
+      actions: ["increment", "focusValue"],
+    },
+    DECREMENT: {
+      guard: "canDecrement",
+      actions: ["decrement", "focusValue"],
+    },
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+  },
+
+  states: {
+    idle: {
+      on: {
+        FOCUS: { target: "focused" },
+      },
+    },
+    focused: {
+      on: {
+        BLUR: { target: "idle" },
+      },
+    },
+  },
+
+  implementations: {
+    guards: {
+      canIncrement: ({ computed }) => computed("canIncrement"),
+      canDecrement: ({ computed }) => computed("canDecrement"),
+    },
+    actions: {
+      increment({ context, prop }) {
+        context.set("value", (value) =>
+          Math.min(value + prop("step"), prop("max")),
+        )
+      },
+      decrement({ context, prop }) {
+        context.set("value", (value) =>
+          Math.max(value - prop("step"), prop("min")),
+        )
+      },
+      setValue({ context, event, prop }) {
+        context.set("value", clamp(event.value, prop("min"), prop("max")))
+      },
+      focusValue({ scope }) {
+        dom.getValueEl(scope)?.focus()
+      },
+    },
+  },
+})
+```
+
+`INCREMENT`, `DECREMENT` and `VALUE.SET` live in the top-level `on`, since they
+work the same in both states. `focusValue` moves focus back to the value after a
+button click, so the arrow keys keep working.
+
+## Connect
+
+`connect` turns the service into props for each part. The value is a
+`spinbutton`. It takes focus and handles the keyboard. The buttons use
+`tabIndex: -1` so they don't add extra tab stops.
+
+```ts
+// counter.connect.ts
+import { dataAttr } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./counter.anatomy"
+import * as dom from "./counter.dom"
+import type { CounterApi, CounterService } from "./counter.types"
+
+export function connect<T extends PropTypes>(
+  service: CounterService,
+  normalize: NormalizeProps<T>,
+): CounterApi<T> {
+  const { state, context, computed, prop, send, scope } = service
+
+  const value = context.get("value")
+  const focused = state.matches("focused")
+  const disabled = !!prop("disabled")
+
+  return {
+    value,
+    focused,
+    setValue(value) {
+      send({ type: "VALUE.SET", value, replaces: "value" })
+    },
+
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs(scope.id),
+        role: "group",
+        "aria-labelledby": dom.getLabelId(scope),
+        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getLabelProps() {
+      return normalize.element({
+        ...parts.label.attrs(scope.id),
+        id: dom.getLabelId(scope),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getDecrementTriggerProps() {
+      return normalize.button({
+        ...parts.decrementTrigger.attrs(scope.id),
+        type: "button",
+        tabIndex: -1,
+        "aria-label": "Decrease",
+        "aria-controls": dom.getValueId(scope),
+        disabled: !computed("canDecrement"),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "DECREMENT" })
+        },
+      })
+    },
+
+    getValueProps() {
+      return normalize.element({
+        ...parts.value.attrs(scope.id),
+        id: dom.getValueId(scope),
+        role: "spinbutton",
+        tabIndex: disabled ? undefined : 0,
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-valuenow": value,
+        "aria-valuemin": prop("min"),
+        "aria-valuemax": prop("max"),
+        "aria-disabled": disabled || undefined,
+        "data-focus": dataAttr(focused),
+        onFocus() {
+          send({ type: "FOCUS" })
+        },
+        onBlur() {
+          send({ type: "BLUR" })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented || disabled) return
+
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "INCREMENT" })
+            },
+            ArrowDown() {
+              send({ type: "DECREMENT" })
+            },
+            Home() {
+              send({ type: "VALUE.SET", value: prop("min") })
+            },
+            End() {
+              send({ type: "VALUE.SET", value: prop("max") })
+            },
+          }
+
+          const exec = keyMap[event.key]
+          if (!exec) return
+          exec(event)
+          event.preventDefault()
+        },
+      })
+    },
+
+    getIncrementTriggerProps() {
+      return normalize.button({
+        ...parts.incrementTrigger.attrs(scope.id),
+        type: "button",
+        tabIndex: -1,
+        "aria-label": "Increase",
+        "aria-controls": dom.getValueId(scope),
+        disabled: !computed("canIncrement"),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "INCREMENT" })
+        },
+      })
+    },
+  }
+}
+```
+
+`setValue` tags its event with `replaces`, so calling it twice in a row keeps
+only the last value. Internal events stay untagged.
+
+## Exports
+
+```ts
+// index.ts
+export { anatomy } from "./counter.anatomy"
+export { connect } from "./counter.connect"
+export { machine } from "./counter.machine"
+export type {
+  CounterApi as Api,
+  CounterMachine as Machine,
+  CounterProps as Props,
+  CounterService as Service,
+  ValueChangeDetails,
+} from "./counter.types"
+```
+
+## Use in React
+
+Pass the machine to `useMachine`, then call `connect` with the adapter's
+`normalizeProps`. The component generates `id` with `useId`.
+
+```tsx
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+import * as counter from "./counter"
+
+interface CounterProps extends Omit<counter.Props, "id"> {
+  label: string
+}
+
+export function Counter(props: CounterProps) {
+  const { label, ...machineProps } = props
+  const service = useMachine(counter.machine, { id: useId(), ...machineProps })
+  const api = counter.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <span {...api.getLabelProps()}>{label}</span>
+      <button {...api.getDecrementTriggerProps()}>-</button>
+      <span {...api.getValueProps()}>{api.value}</span>
+      <button {...api.getIncrementTriggerProps()}>+</button>
+    </div>
+  )
+}
+```
+
+```tsx
+<Counter
+  label="Guests"
+  min={1}
+  max={8}
+  defaultValue={2}
+  onValueChange={(details) => console.log(details.value)}
+/>
+```
+
+To control it, pass `value` and update it in `onValueChange`.
+
+```tsx
+import { useState } from "react"
+
+export function GuestPicker() {
+  const [guests, setGuests] = useState(2)
+
+  return (
+    <Counter
+      label="Guests"
+      value={guests}
+      onValueChange={(details) => setGuests(details.value)}
+    />
+  )
+}
+```
+
+## Styling
+
+Style the parts with their data attributes, and the states with `data-focus`,
+`data-disabled` and `:disabled`.
+
+```css
+[data-counter-root] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
+}
+
+[data-counter-value] {
+  min-width: 3ch;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+
+  &[data-focus] {
+    outline: 2px solid royalblue;
+  }
+}
+
+[data-counter-decrement-trigger],
+[data-counter-increment-trigger] {
+  width: 32px;
+  height: 32px;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+}
+```
+
+## Next
+
+- [Core concepts](/guides/custom-machine-concepts): every part of the machine
+  config.
+- [TypeScript](/guides/custom-machine-typescript): stricter event and name
+  types.

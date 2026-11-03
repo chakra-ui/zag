@@ -1,5 +1,11 @@
 import { defineConfig } from "@pandacss/dev"
-import { brands, grays, greens, semanticColors } from "./theme/colors"
+import {
+  brands,
+  grays,
+  greens,
+  semanticColors,
+  siteColors,
+} from "./theme/colors"
 import { recipes, slotRecipes } from "./theme/recipes"
 
 export default defineConfig({
@@ -85,8 +91,8 @@ export default defineConfig({
           },
         },
         fonts: {
-          heading: { value: "var(--font-body), sans-serif" },
-          body: { value: "var(--font-body), sans-serif" },
+          heading: { value: "var(--font-body), system-ui, sans-serif" },
+          body: { value: "var(--font-body), system-ui, sans-serif" },
           mono: {
             value:
               "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
@@ -98,24 +104,10 @@ export default defineConfig({
           bg: {
             ...semanticColors.bg,
             DEFAULT: semanticColors.bg.page,
-            subtle: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
-            },
-            bold: {
-              value: {
-                _light: "{colors.gray.100}",
-                _dark: "{colors.gray.870}",
-              },
-            },
-            muted: {
-              value: {
-                _light: "{colors.gray.100}",
-                _dark: "{colors.gray.870}",
-              },
-            },
-            popover: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.905}" },
-            },
+            subtle: { value: "{colors.surface}" },
+            bold: { value: { _light: "#eef1ef", _dark: "#1a1f1d" } },
+            muted: { value: { _light: "#eef1ef", _dark: "#1a1f1d" } },
+            popover: { value: "{colors.surface}" },
             primary: {
               // pair with text.inverse: white in light, near-black in dark
               subtle: {
@@ -154,41 +146,20 @@ export default defineConfig({
                 },
               },
             },
+            // code sits on a raised plate, like the homepage panels
             code: {
               block: {
-                value: {
-                  _light: "{colors.gray.50}",
-                  _dark: "{colors.gray.905}",
-                },
+                value: { _light: "{colors.surface}", _dark: "#121615" },
               },
-              inline: {
-                value: {
-                  _light: "{colors.blackAlpha.100}",
-                  _dark: "{colors.whiteAlpha.100}",
-                },
-              },
+              inline: { value: { _light: "#eceeec", _dark: "#1c2120" } },
             },
           },
           text: {
-            DEFAULT: {
-              value: { _light: "{colors.gray.900}", _dark: "{colors.gray.50}" },
-            },
-            bold: {
-              value: { _light: "{colors.gray.950}", _dark: "{colors.white}" },
-            },
+            DEFAULT: { value: "{colors.ink}" },
+            bold: { value: { _light: "#0e110f", _dark: "#f4f7f5" } },
             // both clear WCAG AA (4.5:1) on bg and bg.muted in each theme
-            subtle: {
-              value: {
-                _light: "{colors.gray.700}",
-                _dark: "{colors.gray.300}",
-              },
-            },
-            muted: {
-              value: {
-                _light: "{colors.gray.600}",
-                _dark: "{colors.gray.400}",
-              },
-            },
+            subtle: { value: { _light: "#4a524d", _dark: "#b3bbb6" } },
+            muted: { value: "{colors.ink.muted}" },
             inverse: {
               value: { _light: "{colors.white}", _dark: "{colors.gray.950}" },
             },
@@ -210,6 +181,7 @@ export default defineConfig({
               },
             },
           },
+          ...siteColors,
           fg: semanticColors.fg,
           accent: semanticColors.accent,
           syntax: semanticColors.syntax,
@@ -349,7 +321,7 @@ export default defineConfig({
         "display.2xl": {
           value: {
             fontSize: { base: "4xl", md: "5xl" },
-            fontWeight: "bold",
+            fontWeight: "semibold",
             lineHeight: "1.25",
             letterSpacing: "-0.025em",
           },
@@ -357,7 +329,7 @@ export default defineConfig({
         "display.xl": {
           value: {
             fontSize: { base: "3xl", md: "4xl" },
-            fontWeight: "bold",
+            fontWeight: "semibold",
             lineHeight: "1.25",
             letterSpacing: "-0.025em",
           },
@@ -365,7 +337,7 @@ export default defineConfig({
         "display.lg": {
           value: {
             fontSize: { base: "2xl", md: "3xl" },
-            fontWeight: "bold",
+            fontWeight: "semibold",
             letterSpacing: "-0.025em",
             lineHeight: "1.2",
           },
@@ -373,7 +345,7 @@ export default defineConfig({
         "display.md": {
           value: {
             fontSize: { base: "xl", md: "2xl" },
-            fontWeight: "bold",
+            fontWeight: "semibold",
             lineHeight: "1.4",
             letterSpacing: "-0.025em",
           },
@@ -445,7 +417,7 @@ export default defineConfig({
       textRendering: "geometricprecision",
       textSizeAdjust: "100%",
       WebkitFontSmoothing: "antialiased",
-      bg: "bg.page",
+      bg: "canvas",
     },
 
     "*": {
@@ -463,20 +435,6 @@ export default defineConfig({
       "& mark": {
         color: "text.primary.bold",
         fontWeight: "semibold",
-      },
-    },
-
-    "table:not([role])": {
-      width: "100%",
-      marginY: "8",
-      "& th": {
-        bg: "bg.bold",
-      },
-      "& th, & td": {
-        borderWidth: "1px",
-        py: "3",
-        px: "5",
-        textAlign: "start",
       },
     },
 
@@ -498,7 +456,7 @@ export default defineConfig({
         listStyleType: "revert",
       },
       "& :is(h2, h3, h4)": {
-        // clears the sticky top nav and docs tab bar
+        // clears the sticky header
         scrollMarginTop: "32",
         "&:hover": {
           "& a.anchor": { opacity: 1 },

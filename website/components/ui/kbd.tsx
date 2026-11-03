@@ -1,23 +1,6 @@
-import { styled } from "styled-system/jsx"
+import { cx } from "styled-system/css"
+import { kbd } from "./kbd.css"
 
-export const Kbd = styled("kbd", {
-  base: {
-    fontFamily: "mono",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minW: "6",
-    h: "6",
-    px: "1.5",
-    fontSize: "12px",
-    lineHeight: "1",
-    letterSpacing: "0.02em",
-    bg: "bg",
-    color: "text.bold",
-    borderWidth: "1px",
-    borderBottomWidth: "2px",
-    borderColor: "border.bold",
-    rounded: "sm",
-    whiteSpace: "nowrap",
-  },
-})
+export function Kbd(props: React.ComponentProps<"kbd">) {
+  return <kbd {...props} className={cx(kbd, props.className)} />
+}

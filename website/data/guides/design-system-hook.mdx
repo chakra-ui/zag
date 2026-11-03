@@ -1,0 +1,206 @@
+---
+title: Creating the hook
+description: Wrap a Zag machine in a reusable hook.
+---
+
+Every component in your design system starts as a hook. The hook owns the
+machine, accepts the same props as the machine, and returns the api your
+components spread onto elements. This guide builds `useSlider`, and the next two
+pages turn it into styled compound components.
+
+<GuideMeta items={["10 min", "React", "Beginner"]} />
+
+<Steps>
+
+## Install the packages
+
+Add the machine and the adapter for your framework.
+
+```bash
+pnpm add @zag-js/slider @zag-js/react
+```
+
+## Write the hook
+
+The hook does three things: calls `useMachine` with the props, calls `connect`
+with `normalizeProps`, and returns the result.
+
+```tsx
+// components/slider/use-slider.ts
+"use client"
+
+import { normalizeProps, useMachine, type PropTypes } from "@zag-js/react"
+import * as slider from "@zag-js/slider"
+import { useId } from "react"
+
+export interface UseSliderProps extends Omit<slider.Props, "id"> {
+  /**
+   * The id of the slider. Defaults to a generated id.
+   */
+  id?: string | undefined
+}
+
+export type UseSliderReturn = slider.Api<PropTypes>
+
+export function useSlider(props: UseSliderProps = {}): UseSliderReturn {
+  const generatedId = useId()
+  const service = useMachine(slider.machine, {
+    ...props,
+    id: props.id ?? generatedId,
+  })
+  return slider.connect(service, normalizeProps)
+}
+```
+
+- `useMachine` starts the machine and re-renders when its state changes.
+- `connect` reads the current state and returns the api: values, methods, and
+  prop getters like `getThumbProps()`.
+- `normalizeProps` converts the prop getters' output to the shape React expects.
+
+`slider.Props` requires an `id`. The hook makes it optional and falls back to
+`useId`, so callers only pass one when they need a stable id.
+
+## Use the hook
+
+Spread each prop getter onto its element. The api also exposes state, such as
+`api.value` and `api.dragging`.
+
+```tsx
+import { useSlider } from "./use-slider"
+
+export function Volume() {
+  const api = useSlider({ defaultValue: [40] })
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Volume</label>
+      <output {...api.getValueTextProps()}>{api.value.at(0)}</output>
+      <div {...api.getControlProps()}>
+        <div {...api.getTrackProps()}>
+          <div {...api.getRangeProps()} />
+        </div>
+        {api.value.map((_, index) => (
+          <div key={index} {...api.getThumbProps({ index })}>
+            <input {...api.getHiddenInputProps({ index })} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+The slider value is always an array. One entry renders one thumb, two entries
+render a range slider.
+
+## Control the value
+
+The hook passes props straight to the machine, so both modes work without extra
+code.
+
+Pass `defaultValue` to let the machine own the value.
+
+```tsx
+const api = useSlider({ defaultValue: [40] })
+```
+
+Pass `value` and `onValueChange` to own the value yourself.
+
+```tsx
+const [value, setValue] = useState([40])
+
+const api = useSlider({
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+When `value` is set, the machine reads it on every render and calls
+`onValueChange` instead of updating itself.
+
+## Forward events
+
+Callbacks are props too, so callers pass them through the hook. The slider has
+three:
+
+- `onValueChange` fires on every change while the user drags or presses keys.
+- `onValueChangeEnd` fires once when the change is done. Use it for saves and
+  network requests.
+- `onFocusChange` fires when a thumb gains or loses focus.
+
+```tsx
+const api = useSlider({
+  defaultValue: [40],
+  onValueChangeEnd(details) {
+    saveVolume(details.value[0])
+  },
+})
+```
+
+Don't wrap these in your own state or effects. The machine already calls them at
+the right time.
+
+## Set ids
+
+Zag finds elements by id, so each slider needs a unique `id`. The hook generates
+one with `useId`. Pass your own when the id must be stable across renders, for
+example in tests.
+
+```tsx
+const api = useSlider({ id: "volume" })
+```
+
+To point a part at an element you render elsewhere, pass `ids`. The machine uses
+these ids for the elements and for the ARIA attributes that reference them.
+
+```tsx
+const api = useSlider({
+  ids: {
+    label: "volume-label",
+    thumb: (index) => `volume-thumb-${index}`,
+  },
+})
+```
+
+> Don't set `id` on an element by hand after spreading its props. Zag can't
+> update the ARIA references if it doesn't know the id. See
+> [Composition](/guides/composition) for details.
+
+## Other frameworks
+
+The hook has the same shape in every adapter. What changes is how props stay
+reactive and how you derive the api.
+
+- **Vue**: pass a getter or `computed` to `useMachine`, and wrap `connect` in
+  `computed`.
+- **Solid**: pass an accessor to `useMachine`, and wrap `connect` in
+  `createMemo`.
+- **Svelte**: pass a function to `useMachine`, and wrap `connect` in `$derived`.
+
+```ts
+// Vue: composables/use-slider.ts
+import * as slider from "@zag-js/slider"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, toValue, useId, type MaybeRefOrGetter } from "vue"
+
+export function useSlider(props: MaybeRefOrGetter<Partial<slider.Props>>) {
+  const generatedId = useId()
+  const service = useMachine(
+    slider.machine,
+    computed(() => {
+      const value = toValue(props)
+      return { ...value, id: value.id ?? generatedId }
+    }),
+  )
+  return computed(() => slider.connect(service, normalizeProps))
+}
+```
+
+</Steps>
+
+## Next
+
+Turn the hook into compound components in
+[Creating components](/guides/design-system-components).

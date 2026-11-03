@@ -3,16 +3,33 @@ export interface ShowcaseItem {
   description: string
   href: string
   image: string
-  featured?: true
 }
 
+// outside teams first, our own projects (Chakra, Ark, Park) last
 export const showcaseItems: ShowcaseItem[] = [
   {
-    name: "Chakra UI",
-    description: "Create accessible React apps with speed",
-    href: "https://chakra-ui.com",
-    image: "/showcase/chakra-ui.png",
-    featured: true,
+    name: "OVHCloud Design System",
+    description: "The design system of OVHCloud",
+    href: "https://ovh.github.io/design-system/latest",
+    image: "/showcase/ovhcloud.png",
+  },
+  {
+    name: "Pando Design System",
+    description: "PluralSight's Design System",
+    href: "https://pando.pluralsight.com/92687036d/p/498dc1-pando-design-system",
+    image: "/showcase/pando.png",
+  },
+  {
+    name: "NDLA",
+    description: "The Norwegian Digital Learning Arena",
+    href: "https://ndla.no/en",
+    image: "/showcase/ndla.png",
+  },
+  {
+    name: "Skeleton",
+    description: "The adaptive design system for Tailwind CSS",
+    href: "https://www.skeleton.dev",
+    image: "/showcase/skeleton.png",
   },
   {
     name: "Harmonizer",
@@ -21,30 +38,16 @@ export const showcaseItems: ShowcaseItem[] = [
     image: "/showcase/harmonizer.png",
   },
   {
-    name: "Ark UI",
-    description: "Headless component library for any framework",
-    href: "https://ark-ui.com",
-    image: "/showcase/ark-ui.png",
-    featured: true,
-  },
-  {
     name: "Wallet UI",
     description: "Modern UI library for the Wallet Standard",
     href: "https://wallet-ui.dev",
     image: "/showcase/wallet-ui.png",
   },
   {
-    name: "Park UI",
-    description: "Build your own Design System with Panda and Ark UI",
-    href: "https://park-ui.com",
-    image: "/showcase/park-ui.png",
-    featured: true,
-  },
-  {
-    name: "Skeleton",
-    description: "The adaptive design system for Tailwind CSS",
-    href: "https://www.skeleton.dev",
-    image: "/showcase/skeleton.png",
+    name: "Cerberus Design System",
+    description: "Guarding brand integrity with a flexible design system",
+    href: "https://cerberus.digitalu.design",
+    image: "/showcase/cerberus.png",
   },
   {
     name: "CoreX UI",
@@ -65,27 +68,21 @@ export const showcaseItems: ShowcaseItem[] = [
     image: "/showcase/tark-ui.png",
   },
   {
-    name: "Pando Design System",
-    description: "PluralSight's Design System",
-    href: "https://pando.pluralsight.com/92687036d/p/498dc1-pando-design-system",
-    image: "/showcase/pando.png",
+    name: "Chakra UI",
+    description: "Create accessible React apps with speed",
+    href: "https://chakra-ui.com",
+    image: "/showcase/chakra-ui.png",
   },
   {
-    name: "OVHCloud Design System",
-    description: "The design system of OVHCloud",
-    href: "https://ovh.github.io/design-system/latest",
-    image: "/showcase/ovhcloud.png",
+    name: "Ark UI",
+    description: "Headless component library for any framework",
+    href: "https://ark-ui.com",
+    image: "/showcase/ark-ui.png",
   },
   {
-    name: "NDLA",
-    description: "The Norwegian Digital Learning Arena",
-    href: "https://ndla.no/en",
-    image: "/showcase/ndla.png",
-  },
-  {
-    name: "Cerberus Design System",
-    description: "Guarding brand integrity with a flexible design system",
-    href: "https://cerberus.digitalu.design",
-    image: "/showcase/cerberus.png",
+    name: "Park UI",
+    description: "Build your own Design System with Panda and Ark UI",
+    href: "https://park-ui.com",
+    image: "/showcase/park-ui.png",
   },
 ]

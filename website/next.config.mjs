@@ -46,9 +46,19 @@ const nextConfig = {
     ...mergedPageRedirects,
     {
       source: "/overview/whats-a-machine",
-      destination: "/guides/building-machines",
+      destination: "/guides/custom-machine-concepts",
       permanent: true,
     },
+    // the build-your-own guides were split into sections
+    ...[
+      ["building-machines", "custom-machine-concepts"],
+      ["framework-adapters", "framework-adapter-concepts"],
+      ["design-system-with-panda", "design-system-overview"],
+    ].map(([from, to]) => ({
+      source: `/guides/${from}`,
+      destination: `/guides/${to}`,
+      permanent: true,
+    })),
     {
       source: "/discord",
       destination: "https://discord.gg/ww6HE5xaZ2",

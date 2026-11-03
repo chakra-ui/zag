@@ -1,53 +1,30 @@
-import { styled } from "styled-system/jsx"
+import { Fragment } from "react"
+import * as styles from "./doc-table.css"
 
-export const DocTable = styled("div", {
-  base: {
-    my: "6",
-    borderWidth: "1px",
-    borderColor: "border",
-    rounded: "md",
-    overflow: "hidden",
-    fontSize: "sm",
-  },
-})
+interface GroupedTableProps {
+  /** part name → { key: description } */
+  data: Record<string, Record<string, string>>
+}
 
-export const DocTableHead = styled("div", {
-  base: {
-    display: "grid",
-    columnGap: "6",
-    px: "4",
-    py: "2",
-    bg: "bg.code.inline",
-    borderBottomWidth: "1px",
-    borderColor: "border",
-    fontFamily: "mono",
-    fontSize: "11px",
-    fontWeight: "medium",
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    color: "text.muted",
-  },
-})
+/** Rows grouped by the part they belong to, used for data attributes and CSS variables */
+export function GroupedDocTable(props: GroupedTableProps) {
+  return (
+    <div className={styles.table}>
+      {Object.entries(props.data).map(([part, entries]) => (
+        <Fragment key={part}>
+          <div className={styles.group}>{part}</div>
+          {Object.entries(entries)
+            .filter(([, value]) => value !== "")
+            .map(([key, value]) => (
+              <div key={key} className={styles.row}>
+                <code className={styles.key}>{key}</code>
+                <div className={styles.value}>{value}</div>
+              </div>
+            ))}
+        </Fragment>
+      ))}
+    </div>
+  )
+}
 
-export const DocTableRow = styled("div", {
-  base: {
-    display: "grid",
-    gridTemplateColumns: { base: "1fr", sm: "minmax(0, 2fr) minmax(0, 3fr)" },
-    columnGap: "6",
-    rowGap: "1.5",
-    alignItems: "baseline",
-    px: "4",
-    py: "3",
-    "& + &": { borderTopWidth: "1px", borderColor: "border.subtle" },
-  },
-})
-
-export const DocTableKey = styled("code", {
-  base: {
-    fontFamily: "mono",
-    fontSize: "13px",
-    fontWeight: "medium",
-    color: "text.bold",
-    overflowWrap: "anywhere",
-  },
-})
+export { styles as docTable }

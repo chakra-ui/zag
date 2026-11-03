@@ -1,47 +1,49 @@
 "use client"
 
-import { useScrollSpy } from "lib/use-scrollspy"
-import Link from "next/link"
-import { docsNav } from "styled-system/recipes"
+import { type TocEntry, useToc } from "lib/use-toc"
+import * as styles from "./toc.css"
 
-type TOC = Array<{
-  content: string
-  slug: string
-  lvl: number
-}>
-
-export function TableOfContents({
-  data = [],
-  title = "On this page",
-  getSlug = (slug) => `#${slug}`,
-}: {
-  data: TOC
+interface TableOfContentsProps {
+  data: TocEntry[]
   title?: string
   getSlug?: (slug: string) => string
-}) {
-  const activeId = useScrollSpy(data.map((item) => `[id="${item.slug}"]`))
+}
 
-  const styles = docsNav({ variant: "toc" })
+export function TableOfContents(props: TableOfContentsProps) {
+  const {
+    data = [],
+    title = "On this page",
+    getSlug = (slug) => `#${slug}`,
+  } = props
+  const api = useToc(data)
 
   return (
-    <nav className={`toc ${styles.root}`} aria-labelledby="toc-heading">
-      <h2 id="toc-heading" className={styles.heading}>
-        {title}
-      </h2>
-      <ul className={styles.list}>
-        {data.map((item, index) => (
-          <li key={item.slug + index}>
-            <Link
-              href={getSlug(item.slug)}
-              aria-current={activeId === item.slug ? "location" : undefined}
-              data-depth={item.lvl > 2 ? "nested" : undefined}
-              className={styles.link}
-            >
-              {item.content}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className={styles.root} {...api.getRootProps()}>
+      <nav {...api.getNavProps()}>
+        <h2 className={styles.heading} {...api.getTitleProps()}>
+          {title}
+        </h2>
+        {/* the indicator rect is measured from the list, so they share an origin */}
+        <div className={styles.track}>
+          <ul className={styles.list} {...api.getListProps()}>
+            {data.map((entry) => {
+              const item = { value: entry.slug, depth: entry.lvl }
+              return (
+                <li key={entry.slug} {...api.getItemProps({ item })}>
+                  <a
+                    href={getSlug(entry.slug)}
+                    className={styles.link}
+                    {...api.getLinkProps({ item })}
+                  >
+                    {entry.content}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+          <div className={styles.indicator} {...api.getIndicatorProps()} />
+        </div>
+      </nav>
+    </div>
   )
 }

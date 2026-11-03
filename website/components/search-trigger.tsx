@@ -26,19 +26,17 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         alignItems="center"
         justifyContent={{ base: "center", md: "flex-start" }}
         gap="2"
-        bg="bg.muted"
+        bg="ink/5"
         fontSize="13px"
-        h="9"
+        h="34px"
         minW="9"
         px={{ base: "0", md: "3" }}
         pe={{ md: "1.5" }}
-        borderWidth="1px"
-        borderColor="border"
-        color="text.muted"
+        color="ink.muted"
         cursor="pointer"
-        rounded="md"
-        transition="border-color 120ms, color 120ms"
-        _hover={{ borderColor: "border.bold", color: "text" }}
+        rounded="full"
+        transition="background 120ms, color 120ms"
+        _hover={{ bg: "ink/8", color: "ink" }}
         _focusVisible={{
           outline: "2px solid",
           outlineColor: "border.primary.bold",
@@ -52,22 +50,15 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
           ml="auto"
           flex="none"
           fontFamily="mono"
-          fontSize="11px"
+          fontSize="12px"
           h="5"
           minW="9"
-          px="1.5"
           display="inline-flex"
           alignItems="center"
           justifyContent="center"
           gap="0.5"
-          lineHeight="1"
-          letterSpacing="0.04em"
-          rounded="sm"
-          borderWidth="1px"
-          borderColor="border"
-          borderBottomWidth="2px"
-          bg="bg"
-          color="text.muted"
+          wordSpacing="-0.4em"
+          color="ink.muted"
         >
           {shortcut}
         </styled.kbd>

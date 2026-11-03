@@ -1,11 +1,11 @@
 import { ThemeProvider } from "next-themes"
 import { type Metadata } from "next"
-import { Geist_Mono, Wix_Madefor_Text } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google"
 import siteConfig from "site.config"
 import "../styles/index.css"
 import "../styles/prism.css"
 
-const wixMadeforText = Wix_Madefor_Text({
+const geist = Geist({
   subsets: ["latin"],
   variable: "--font-body",
 })
@@ -85,7 +85,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={`${wixMadeforText.variable} ${geistMono.variable}`}
+      className={`${geist.variable} ${geistMono.variable}`}
     >
       <head>
         {/* ternary, not &&: an empty domain renders as a text node and breaks hydration */}

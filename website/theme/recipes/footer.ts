@@ -1,10 +1,12 @@
 import { defineSlotRecipe } from "@pandacss/dev"
+import { container } from "../layout"
 
 export const siteFooter = defineSlotRecipe({
   className: "site-footer",
   description: "Site footer: brand cell, link columns and the credits row",
   slots: [
     "root",
+    "mark",
     "inner",
     "grid",
     "brand",
@@ -20,12 +22,26 @@ export const siteFooter = defineSlotRecipe({
     "credit",
   ],
   base: {
-    root: { borderTopWidth: "1px", borderColor: "border" },
-    inner: {
-      maxW: "1440px",
-      mx: "auto",
-      px: { base: "4", md: "6", lg: "16", xl: "120px" },
+    root: {
+      position: "relative",
+      overflow: "hidden",
+      bg: "canvas",
+      borderTopWidth: "1px",
+      borderColor: "line",
+      fontFamily: "body",
     },
+    // faint logo stroke in the corner
+    mark: {
+      position: "absolute",
+      right: "-60px",
+      bottom: "-90px",
+      width: "420px",
+      height: "360px",
+      color: "primary.solid",
+      opacity: "0.06",
+      pointerEvents: "none",
+    },
+    inner: { ...container, pt: "72px" },
     grid: {
       display: "grid",
       gridTemplateColumns: {
@@ -46,9 +62,9 @@ export const siteFooter = defineSlotRecipe({
     },
     description: {
       mt: "4",
-      fontSize: "15px",
+      fontSize: "14px",
       lineHeight: "1.6",
-      color: "fg.muted",
+      color: "ink.muted",
       maxW: "22rem",
     },
     socials: { display: "flex", gap: "1.5", mt: "4", ms: "-1.5" },
@@ -56,23 +72,20 @@ export const siteFooter = defineSlotRecipe({
       p: "1.5",
       rounded: "sm",
       fontSize: "18px",
-      color: { base: "gray.700", _dark: "fg.muted" },
+      color: "ink.muted",
       transitionProperty: "color, background",
       transitionDuration: "fast",
-      _hover: { color: "fg", bg: "bg.control" },
+      _hover: { color: "ink", bg: "bg.control" },
       _focusVisible: { outline: "2px solid", outlineColor: "accent" },
     },
     license: {
       display: "flex",
       alignItems: "center",
       gap: "2",
-      fontFamily: "mono",
-      fontSize: "11px",
-      letterSpacing: "0.1em",
-      textTransform: "uppercase",
-      color: "fg.muted",
+      fontSize: "13px",
+      color: "ink.muted",
     },
-    dot: { boxSize: "1.5", rounded: "full", bg: "accent" },
+    dot: { boxSize: "1.5", rounded: "full", bg: "primary.solid" },
     column: {
       display: "flex",
       flexDirection: "column",
@@ -84,19 +97,18 @@ export const siteFooter = defineSlotRecipe({
     },
     heading: {
       mb: "1.5",
-      fontFamily: "mono",
-      fontSize: "11px",
-      letterSpacing: "0.1em",
-      textTransform: "uppercase",
-      color: "fg.subtle",
+      fontSize: "14px",
+      fontWeight: "medium",
+      letterSpacing: "-0.01em",
+      color: "ink",
     },
     link: {
       w: "fit-content",
       fontSize: "14px",
-      color: { base: "gray.800", _dark: "gray.200" },
+      color: "ink.muted",
       transitionProperty: "color",
       transitionDuration: "fast",
-      _hover: { color: "accent" },
+      _hover: { color: "ink" },
     },
     credits: {
       display: "flex",
@@ -106,7 +118,7 @@ export const siteFooter = defineSlotRecipe({
       pt: "5",
       pb: "6",
       fontSize: "13px",
-      color: "fg.subtle",
+      color: "ink.muted",
     },
     credit: {
       color: "inherit",

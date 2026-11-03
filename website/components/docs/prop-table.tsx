@@ -1,7 +1,7 @@
 import apiJson from "@zag-js/docs"
 import { groupProps, type PropMeta } from "lib/prop-groups"
 import { Box } from "styled-system/jsx"
-import { propTable } from "styled-system/recipes"
+import * as styles from "./prop-table.css"
 
 interface ApiTableProps {
   type: "api" | "context"
@@ -19,7 +19,6 @@ export const PropTable = (props: ApiTableProps) => {
   const rows = isProps
     ? groupProps(entries).flatMap((group) => group.props)
     : entries
-  const styles = propTable()
 
   return (
     <div className={styles.root}>
@@ -40,7 +39,9 @@ export const PropTable = (props: ApiTableProps) => {
               {isProps && (
                 <td className={styles.td} width="1%">
                   {item.defaultValue ? (
-                    <code className={styles.default}>{item.defaultValue}</code>
+                    <code className={styles.defaultValue}>
+                      {item.defaultValue}
+                    </code>
                   ) : (
                     <span className={styles.empty} aria-label="no default">
                       —

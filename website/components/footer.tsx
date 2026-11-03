@@ -25,7 +25,7 @@ const columns: FooterColumn[] = [
     title: "Learn",
     links: [
       { title: "Styling", href: "/guides/styling" },
-      { title: "Building machines", href: "/guides/building-machines" },
+      { title: "Custom machines", href: "/guides/custom-machine-concepts" },
       { title: "Migrating to v2", href: "/guides/migration" },
       { title: "LLMs.txt", href: "/overview/llms-txt" },
     ],
@@ -118,6 +118,14 @@ export function Footer() {
   const styles = siteFooter()
   return (
     <footer className={styles.root}>
+      <svg className={styles.mark} viewBox="232 -4 146 126" aria-hidden="true">
+        <path
+          d="M243.68 67.7895L310.68 13.0287L265.18 112L369.68 7"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="19"
+        />
+      </svg>
       <div className={styles.inner}>
         <div className={styles.grid}>
           <div className={styles.brand}>

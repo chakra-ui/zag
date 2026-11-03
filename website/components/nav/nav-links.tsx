@@ -20,9 +20,9 @@ export function NavLinks() {
             alignItems: "center",
             h: "full",
             fontSize: "14px",
-            color: "text.muted",
+            color: "ink.muted",
             transition: "color 120ms",
-            _hover: { color: "text.bold" },
+            _hover: { color: "ink" },
             outline: "none",
             "&:focus-visible > span": {
               outline: "2px solid",
@@ -30,18 +30,7 @@ export function NavLinks() {
               outlineOffset: "4px",
               rounded: "xs",
             },
-            _currentPage: {
-              color: "text.bold",
-              _after: {
-                content: '""',
-                position: "absolute",
-                left: "0",
-                right: "0",
-                bottom: "-1px",
-                h: "1px",
-                bg: "text.bold",
-              },
-            },
+            _currentPage: { color: "ink" },
           })}
         >
           <span>{link.label}</span>
@@ -72,18 +61,13 @@ export const navLinks: NavLink[] = [
     isActive: (pathname) => pathname.startsWith("/components"),
   },
   {
-    href: "/blog",
-    label: "Blog",
-    isActive: (pathname) => pathname.startsWith("/blog"),
-  },
-  {
     href: "/showcase",
     label: "Showcase",
     isActive: (pathname) => pathname.startsWith("/showcase"),
   },
   {
-    href: "/community",
-    label: "Community",
-    isActive: (pathname) => pathname.startsWith("/community"),
+    href: "/blog",
+    label: "Blog",
+    isActive: (pathname) => pathname.startsWith("/blog"),
   },
 ]
