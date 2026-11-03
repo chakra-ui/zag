@@ -33,7 +33,8 @@
   "devDependencies": {
     "@testing-library/preact": "^3.2.6",
     "clean-package": "2.2.0",
-    "preact": "11.1.1"
+    "preact": "11.1.1",
+    "preact-render-to-string": "6.8.2"
   },
   "peerDependencies": {
     "preact": ">=11.0.0"

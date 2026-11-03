@@ -1,4 +1,5 @@
 import { render } from "@testing-library/preact"
+import { renderToString } from "preact-render-to-string"
 import { Portal } from "../src"
 import { flush } from "./render"
 
@@ -58,5 +59,16 @@ describe("preact Portal", () => {
 
     expect(host.querySelector('[data-portaled="scoped"]')).not.toBeNull()
     host.remove()
+  })
+
+  test("renders nothing on the server, so hydration has no inline copy to keep", () => {
+    const html = renderToString(
+      <main>
+        <Portal>
+          <div data-portaled="server" />
+        </Portal>
+      </main>,
+    )
+    expect(html).toBe("<main></main>")
   })
 })

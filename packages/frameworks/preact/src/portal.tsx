@@ -1,5 +1,5 @@
 import { createPortal, toChildArray, type ComponentChildren, type JSX, type RefObject } from "preact"
-import { useLayoutEffect, useReducer } from "preact/hooks"
+import { useLayoutEffect, useState } from "preact/hooks"
 
 export interface PortalProps {
   disabled?: boolean | undefined
@@ -10,14 +10,15 @@ export interface PortalProps {
 export const Portal = (props: PortalProps & { children?: ComponentChildren }): JSX.Element => {
   const { children, container, disabled, getRootNode } = props
 
-  const [, forceUpdate] = useReducer((c) => c + 1, 0)
+  // Not server-rendered: hydration would keep an inline copy beside the portaled one
+  const [mounted, setMounted] = useState(false)
 
   useLayoutEffect(() => {
-    forceUpdate({})
+    setMounted(true)
   }, [])
 
-  const isServer = typeof window === "undefined"
-  if (isServer || disabled) return <>{children}</>
+  if (disabled) return <>{children}</>
+  if (!mounted) return <></>
 
   const doc = getRootNode?.().ownerDocument ?? document
   const mountNode = container?.current ?? doc.body
