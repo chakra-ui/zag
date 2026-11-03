@@ -6,9 +6,10 @@ export interface GridCollectionOptions<T> extends CollectionOptions<T> {
   columnCount: number
 }
 
-export class GridCollection<T extends CollectionItem = CollectionItem> extends ListCollection<T> {
+export class GridCollection<T extends CollectionItem = CollectionItem> extends ListCollection<T, GridCollection<T>> {
   columnCount: number
   private rows: T[][] | null = null
+  private rowsSource: T[] | null = null
 
   constructor(options: GridCollectionOptions<T>) {
     const { columnCount } = options
@@ -16,12 +17,17 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
     this.columnCount = columnCount
   }
 
+  protected override createCollection(items: T[]): GridCollection<T> {
+    return new GridCollection({ ...this.options, items, columnCount: this.columnCount })
+  }
+
   /**
    * Returns the row data in the grid
    */
   getRows = (): T[][] => {
-    if (!this.rows) {
-      this.rows = chunk([...this.items], this.columnCount)
+    if (!this.rows || this.rowsSource !== this.items) {
+      this.rowsSource = this.items
+      this.rows = chunk([...this.getOrderedItems()], this.columnCount)
     }
     return this.rows
   }

@@ -85,6 +85,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "grid", title: "Grid" },
+      { slug: "grouped", title: "Grouped" },
+      { slug: "grouped-grid", title: "Grouped Grid" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "transfer", title: "Transfer" },
@@ -290,6 +292,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-controlled", title: "Multiple Controlled" },
       { slug: "tabs", title: "Tabs" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "grouped", title: "Grouped" },
     ],
   },
   {
@@ -324,6 +327,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "virtualized", title: "Virtualized" },
       { slug: "emoji-picker", title: "Emoji Picker" },
       { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
+      { slug: "grouped", title: "Grouped" },
     ],
   },
   {

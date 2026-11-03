@@ -698,3 +698,37 @@ test.describe("combobox / highlighted on mount", () => {
     expect(await I.content.evaluate((el) => el.scrollTop)).toBe(0)
   })
 })
+
+// Grouped order: Fruit (Apple, Apricot, Banana, Cherry), Vegetable (Avocado, Asparagus, Broccoli, Carrot, Celery*)
+test.describe("combobox / grouped", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox/grouped")
+  })
+
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
+  })
+
+  test("should navigate in grouped order", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Apple")
+
+    for (const item of ["Apricot", "Banana", "Cherry", "Avocado"]) {
+      await I.pressKey("ArrowDown")
+      await I.seeItemIsHighlighted(item)
+    }
+  })
+
+  test("should navigate filtered items in grouped order", async () => {
+    // "o" matches Avocado, Apricot, Broccoli, Carrot in source order.
+    // Groups follow first appearance, so Vegetable comes first
+    await I.type("o")
+    await I.seeItemIsHighlighted("Avocado")
+    for (const item of ["Broccoli", "Carrot", "Apricot"]) {
+      await I.pressKey("ArrowDown")
+      await I.seeItemIsHighlighted(item)
+    }
+  })
+})

@@ -196,3 +196,57 @@ test.describe("listbox", () => {
     await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })
+
+// Grouped order: Fruit (Apple, Apricot, Banana, Cherry), Vegetable (Avocado, Asparagus, Broccoli, Carrot, Celery*)
+test.describe("listbox / grouped", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ListboxModel(page)
+    await I.goto("/listbox/grouped")
+  })
+
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
+  })
+
+  test("should navigate in grouped order", async () => {
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Apple")
+
+    for (const item of ["Apricot", "Banana", "Cherry", "Avocado"]) {
+      await I.pressKey("ArrowDown")
+      await I.seeItemIsHighlighted(item)
+    }
+
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Carrot")
+  })
+
+  test("should cycle typeahead matches in grouped order", async () => {
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Apple")
+    for (const item of ["Apricot", "Avocado", "Asparagus", "Apple"]) {
+      await I.type("a")
+      await I.seeItemIsHighlighted(item)
+    }
+  })
+
+  // Rows: [Apple, Apricot] [Banana, Cherry] [Avocado, Asparagus] [Broccoli, Carrot] [Celery*]
+  test("[grid] should navigate rows in grouped order", async () => {
+    await I.goto("/listbox/grouped-grid")
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Apple")
+
+    const steps: Array<[string, string]> = [
+      ["ArrowRight", "Apricot"],
+      ["ArrowDown", "Cherry"],
+      ["ArrowDown", "Asparagus"],
+      ["ArrowLeft", "Avocado"],
+      ["ArrowDown", "Broccoli"],
+      ["ArrowUp", "Avocado"],
+    ]
+    for (const [key, item] of steps) {
+      await I.pressKey(key)
+      await I.seeItemIsHighlighted(item)
+    }
+  })
+})

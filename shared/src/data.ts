@@ -444,3 +444,16 @@ export const tourReplacedTargetData: StepDetails[] = [
     actions: [{ label: "Done", action: "dismiss" }],
   },
 ]
+
+// Groups interleave so the grouped (display) order differs from the source order
+export const groupedData = [
+  { label: "Apple", value: "apple", type: "Fruit" },
+  { label: "Avocado", value: "avocado", type: "Vegetable" },
+  { label: "Apricot", value: "apricot", type: "Fruit" },
+  { label: "Asparagus", value: "asparagus", type: "Vegetable" },
+  { label: "Banana", value: "banana", type: "Fruit" },
+  { label: "Broccoli", value: "broccoli", type: "Vegetable" },
+  { label: "Cherry", value: "cherry", type: "Fruit" },
+  { label: "Carrot", value: "carrot", type: "Vegetable" },
+  { label: "Celery", value: "celery", type: "Vegetable", disabled: true },
+]

@@ -418,6 +418,105 @@ describe("list collection", () => {
     `)
   })
 
+  test("update, upsert, insert and move with grouped collection", () => {
+    const list = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+    })
+
+    const bun: GroupItem = { label: "Bun", value: "bun", type: "runtime" }
+    const values = (collection: ListCollection<GroupItem>) => collection.items.map((item) => item.value)
+
+    expect(values(list.update("node", bun))).toEqual(["react", "bun", "vue", "deno", "solid"])
+    expect(values(list.upsert("node", bun))).toEqual(["react", "bun", "vue", "deno", "solid"])
+    expect(values(list.insertBefore("node", bun))).toEqual(["react", "bun", "node", "vue", "deno", "solid"])
+    expect(values(list.insertAfter("node", bun))).toEqual(["react", "node", "bun", "vue", "deno", "solid"])
+    expect(values(list.move("node", 0))).toEqual(["node", "react", "vue", "deno", "solid"])
+  })
+
+  test("search with grouped collection follows the grouped order", () => {
+    const list = new ListCollection({
+      items: [
+        { label: "Apple", value: "apple", type: "fruit" },
+        { label: "Avocado", value: "avocado", type: "vegetable" },
+        { label: "Apricot", value: "apricot", type: "fruit" },
+      ],
+      groupBy: (item) => item.type,
+    })
+
+    const search = (currentValue: string | null) =>
+      list.search("a", { state: { keysSoFar: "", timer: -1 }, currentValue })
+
+    expect(search(null)).toBe("apple")
+    expect(search("apple")).toBe("apricot")
+    expect(search("apricot")).toBe("avocado")
+    expect(search("avocado")).toBe("apple")
+  })
+
+  test("grouped caches rebuild when items is reassigned", () => {
+    const list = new ListCollection({ items: groupItems, groupBy: (item) => item.type })
+    expect(list.at(0)?.value).toBe("react")
+    expect(list.indexOf("vue")).toBe(1)
+
+    list.items = [{ label: "Bun", value: "bun", type: "runtime" }, ...groupItems.slice(1)]
+
+    // "runtime" now appears first: bun, node, deno, vue, solid
+    expect(list.at(0)?.value).toBe("bun")
+    expect(list.indexOf("bun")).toBe(0)
+    expect(list.indexOf("vue")).toBe(3)
+    expect(list.indexOf("react")).toBe(-1)
+  })
+
+  test("indexOf stays correct past the lookup map threshold", () => {
+    const list = new ListCollection({ items: [...items, { label: "Dup", value: "react" }] })
+    for (let i = 0; i < 6; i++) {
+      expect(list.indexOf("react")).toBe(0)
+      expect(list.indexOf("angular")).toBe(3)
+      expect(list.indexOf("missing")).toBe(-1)
+    }
+
+    list.items = list.items.slice(1)
+    for (let i = 0; i < 6; i++) expect(list.indexOf("react")).toBe(list.items.length - 1)
+  })
+
+  test("mutations work on subclasses with custom constructors", () => {
+    class TaggedCollection extends ListCollection<Item, TaggedCollection> {
+      constructor(
+        options: { items: Item[] },
+        public tag: string,
+      ) {
+        super(options)
+      }
+      protected override createCollection(items: Item[]): TaggedCollection {
+        return new TaggedCollection({ ...this.options, items }, this.tag)
+      }
+    }
+
+    class PlainSubclass extends ListCollection<Item> {
+      constructor(
+        options: { items: Item[] },
+        private required: string,
+      ) {
+        super(options)
+      }
+      getTag() {
+        return this.required
+      }
+    }
+
+    const tagged = new TaggedCollection({ items }, "x").append({ label: "Svelte", value: "svelte" })
+    expect(tagged).toBeInstanceOf(TaggedCollection)
+    expect(tagged.tag).toBe("x")
+    expect(tagged.size).toBe(5)
+
+    // Without an override, mutations fall back to a plain ListCollection instead of crashing
+    const plain = new PlainSubclass({ items }, "y").append({ label: "Svelte", value: "svelte" })
+    expect(plain.size).toBe(5)
+    expect(plain).not.toBeInstanceOf(PlainSubclass)
+    expectTypeOf(plain).toEqualTypeOf<ListCollection<Item>>()
+    expectTypeOf(tagged).toEqualTypeOf<TaggedCollection>()
+  })
+
   test("upsert / update existing item", () => {
     const updatedItem = { label: "React 18", value: "react", disabled: false }
     const next = list.upsert("react", updatedItem)
