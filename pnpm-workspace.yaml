@@ -14,3 +14,7 @@ allowBuilds:
 trustPolicyExclude:
   - chokidar@4.0.3
   - semver@6.3.1
+
+# Panda ships from the chakra-ui org, so new releases can land the same day
+minimumReleaseAgeExclude:
+  - "@pandacss/*"
