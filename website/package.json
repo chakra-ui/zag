@@ -93,7 +93,6 @@
     "react-icons": "5.7.0",
     "refractor": "^5.0.0",
     "unist-util-visit": "5.2.0",
-    "use-match-media-hook": "1.0.1",
     "zod": "4.5.4"
   },
   "devDependencies": {

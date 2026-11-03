@@ -7,19 +7,26 @@ import { getActiveTab } from "lib/pagination-utils"
 import { useRouteChange } from "lib/use-route-change"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useRef, type ReactNode } from "react"
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react"
 import { HiArrowRight, HiMenu, HiX } from "react-icons/hi"
 import { tabs as docsTabs } from "sidebar.config"
 import siteConfig from "site.config"
 import { css, cx } from "styled-system/css"
 import { Box, Flex, Grid, HStack, styled } from "styled-system/jsx"
-import useMatchMedia from "use-match-media-hook"
 import { FrameworkSelect } from "../docs/framework-select"
 import { LogoWithLink } from "../logo"
 import { Sidebar } from "../docs/sidebar"
 import { focusRing, navCluster, navControl } from "./control"
 import { navLinks } from "./nav-links"
 import { VersionSelect } from "./version-select"
+
+const desktopQuery = "(min-width: 1024px)"
+
+function subscribeDesktop(onChange: () => void) {
+  const mql = window.matchMedia(desktopQuery)
+  mql.addEventListener("change", onChange)
+  return () => mql.removeEventListener("change", onChange)
+}
 
 const eyebrow = css({
   fontFamily: "mono",
@@ -77,7 +84,11 @@ export function MobileNav(props: { className?: string }) {
   const initialRef = useRef<HTMLButtonElement | null>(null)
   const pathname = usePathname()
 
-  const [desktop] = useMatchMedia([`(min-width: 1024px)`])
+  const desktop = useSyncExternalStore(
+    subscribeDesktop,
+    () => window.matchMedia(desktopQuery).matches,
+    () => false,
+  )
 
   useEffect(() => {
     if (desktop) api.setOpen(false)

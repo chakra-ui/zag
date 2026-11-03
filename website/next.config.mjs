@@ -4,9 +4,6 @@ import { mergedPageRedirects } from "./redirects.mjs"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   agentRules: false,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     remotePatterns: [
       {
