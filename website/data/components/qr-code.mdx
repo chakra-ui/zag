@@ -56,6 +56,8 @@ Then use the framework integration helpers:
 
 Set `value` to control the encoded content.
 
+<Example id="QrCodeValue">
+
 ```tsx {3}
 const service = useMachine(qrCode.machine, {
   // ...
@@ -63,9 +65,13 @@ const service = useMachine(qrCode.machine, {
 })
 ```
 
+</Example>
+
 ### Setting an initial value
 
 Use `defaultValue` for an uncontrolled initial value.
+
+<Example id="QrCodeDefaultValue">
 
 ```tsx
 const service = useMachine(qrCode.machine, {
@@ -73,9 +79,13 @@ const service = useMachine(qrCode.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 Use `onValueChange` to react when the encoded value changes.
+
+<Example id="QrCodeValueChange">
 
 ```tsx
 const service = useMachine(qrCode.machine, {
@@ -86,9 +96,13 @@ const service = useMachine(qrCode.machine, {
 })
 ```
 
+</Example>
+
 ### Setting pixel size
 
 Use `pixelSize` to control QR code density.
+
+<Example id="QrCodePixelSize">
 
 ```tsx
 const service = useMachine(qrCode.machine, {
@@ -96,6 +110,8 @@ const service = useMachine(qrCode.machine, {
   pixelSize: 8,
 })
 ```
+
+</Example>
 
 ### Setting the correction level
 
@@ -113,12 +129,16 @@ The QR code machine accepts the following error correction levels:
 To set the error correction level, pass the `encoding.ecc` or
 `encoding.boostEcc` context property.
 
+<Example id="QrCodeEcc">
+
 ```tsx {3}
 const service = useMachine(qrCode.machine, {
   value: "...",
   encoding: { ecc: "H" },
 })
 ```
+
+</Example>
 
 > The alternative is to enlarge the QRCode by increasing the size of the `svg`
 > element.
@@ -129,6 +149,8 @@ To add a logo overlay to the QR code, render the image part. The logo will be
 automatically centered within the QR code. Downloads and `getDataUrl` include
 the overlay when it is rendered.
 
+<Example id="QrCodeOverlay">
+
 ```tsx {3}
 <div {...api.getRootProps()}>
   <svg {...api.getFrameProps()}>{/** ... */}</svg>
@@ -138,15 +160,21 @@ the overlay when it is rendered.
 </div>
 ```
 
+</Example>
+
 ### Changing the color
 
 To change the color of the QR code, set the `fill` attribute on the `path` part.
+
+<Example id="QrCodeColor">
 
 ```css
 [data-qr-code-pattern] {
   fill: green;
 }
 ```
+
+</Example>
 
 To change the background color of the QR code, set the `background-color`
 
@@ -172,7 +200,11 @@ api.getDataUrl("image/png").then((url) => {
 
 You can also use `api.getDownloadTriggerProps` to create a download button.
 
+<Example id="QrCodeExport">
+
 <CodeSnippet id="qr-code/download.mdx" />
+
+</Example>
 
 ## Styling guide
 

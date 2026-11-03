@@ -24,27 +24,50 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         width="full"
         display="flex"
         alignItems="center"
+        justifyContent={{ base: "center", md: "flex-start" }}
         gap="2"
-        bg="bg"
-        fontSize="sm"
-        py="2"
-        pl="2"
-        pr="3"
+        bg="bg.muted"
+        fontSize="13px"
+        h="9"
+        minW="9"
+        px={{ base: "0", md: "3" }}
+        pe={{ md: "1.5" }}
         borderWidth="1px"
         borderColor="border"
         color="text.muted"
         cursor="pointer"
-        rounded="sm"
+        rounded="md"
+        transition="border-color 120ms, color 120ms"
+        _hover={{ borderColor: "border.bold", color: "text" }}
+        _focusVisible={{
+          outline: "2px solid",
+          outlineColor: "border.primary.bold",
+          outlineOffset: "2px",
+        }}
       >
         <Icon as={HiOutlineSearch} fontSize="md" />
-        <styled.span hideBelow="md">Quick search...</styled.span>
+        <styled.span hideBelow="md">Search docs</styled.span>
         <styled.kbd
           hideBelow="md"
           ml="auto"
           flex="none"
-          fontFamily="inherit"
-          fontWeight="semibold"
-          fontSize="xs"
+          fontFamily="mono"
+          fontSize="11px"
+          h="5"
+          minW="9"
+          px="1.5"
+          display="inline-flex"
+          alignItems="center"
+          justifyContent="center"
+          gap="0.5"
+          lineHeight="1"
+          letterSpacing="0.04em"
+          rounded="sm"
+          borderWidth="1px"
+          borderColor="border"
+          borderBottomWidth="2px"
+          bg="bg"
+          color="text.muted"
         >
           {shortcut}
         </styled.kbd>

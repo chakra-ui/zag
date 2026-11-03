@@ -64,15 +64,21 @@ is pen or touch.
 
 Use `defaultOpen` for an uncontrolled initial state.
 
+<Example>
+
 ```tsx
 const service = useMachine(menu.machine, {
   defaultOpen: true,
 })
 ```
 
+</Example>
+
 ### Controlling open state
 
 Use `open` and `onOpenChange` to control the open state.
+
+<Example id="ContextMenuControlled">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -84,9 +90,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for highlighted items
 
 Use `onHighlightChange` to react when keyboard or pointer highlight changes.
+
+<Example id="ContextMenuHighlight">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -97,9 +107,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for item selection
 
 Use `onSelect` to react when an item is selected.
+
+<Example id="ContextMenuSelection">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -110,9 +124,13 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Positioning the menu
 
 Use `positioning` to configure menu placement.
+
+<Example id="ContextMenuPositioning">
 
 ```tsx
 const service = useMachine(menu.machine, {
@@ -120,15 +138,21 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+</Example>
+
 ### Keeping the menu open after selection
 
 Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
+
+<Example id="ContextMenuKeepOpen">
 
 ```tsx
 const service = useMachine(menu.machine, {
   closeOnSelect: false,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

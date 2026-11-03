@@ -27,30 +27,32 @@ export function Listbox(props: ListboxProps) {
   return (
     <div className={styles.Root} {...api.getRootProps()}>
       <div className={styles.Content} {...api.getContentProps()}>
-        {groups.map(([group, items]) => (
-          <div
-            className={styles.ItemGroup}
-            key={group}
-            {...api.getItemGroupProps({ id: group })}
-          >
-            <p
-              className={styles.ItemGroupLabel}
-              {...api.getItemGroupLabelProps({ htmlFor: group })}
+        <div {...api.getListProps()}>
+          {groups.map(([group, items]) => (
+            <div
+              className={styles.ItemGroup}
+              key={group}
+              {...api.getItemGroupProps({ id: group })}
             >
-              {group}
-            </p>
-            {items.map((item) => (
-              <div
-                className={styles.Item}
-                key={item.id}
-                {...api.getItemProps({ item })}
+              <p
+                className={styles.ItemGroupLabel}
+                {...api.getItemGroupLabelProps({ htmlFor: group })}
               >
-                <img src={item.image_url} alt="" />
-                {item.name}
-              </div>
-            ))}
-          </div>
-        ))}
+                {group}
+              </p>
+              {items.map((item) => (
+                <div
+                  className={styles.Item}
+                  key={item.id}
+                  {...api.getItemProps({ item })}
+                >
+                  <img src={item.image_url} alt="" />
+                  {item.name}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

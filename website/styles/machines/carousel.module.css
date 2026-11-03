@@ -1,14 +1,17 @@
 @layer recipes {
   .Root {
-    width: 400px;
-    height: 250px;
-    border-width: 2px;
-    border-color: var(--colors-border-subtle);
     position: relative;
-    box-sizing: content-box;
+    width: 100%;
+    max-width: 400px;
+    height: 250px;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--colors-bg-control);
   }
 
   .ItemGroup {
+    height: 100%;
     scrollbar-width: none;
     -webkit-scrollbar-width: none;
     -ms-overflow-style: none;
@@ -24,71 +27,121 @@
 
   .Item {
     & > img {
+      display: block;
       height: 250px;
       width: 100%;
       object-fit: cover;
+      user-select: none;
     }
   }
 
   .Control {
-    border-width: 1px;
-    border-color: var(--colors-border-subtle);
-    background: var(--colors-bg-subtle);
-    padding: 0.5rem;
-    gap: 0.5rem;
+    position: absolute;
     display: flex;
     align-items: center;
-    position: absolute;
+    gap: 0.375rem;
+    padding: 0.25rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 9999px;
+    background: var(--colors-bg-raised);
+    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.35);
 
     &[data-orientation="horizontal"] {
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 1rem;
+      inset-inline-start: 50%;
+      inset-block-end: 0.75rem;
+      translate: -50% 0;
     }
 
     &[data-orientation="vertical"] {
-      top: 50%;
-      transform: translateY(-50%);
-      right: 1rem;
+      inset-block-start: 50%;
+      inset-inline-end: 0.75rem;
+      translate: 0 -50%;
       flex-direction: column;
     }
   }
 
   .PrevTrigger,
-  .NextTrigger {
+  .NextTrigger,
+  .AutoplayTrigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    color: var(--colors-fg-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition:
+      background 150ms ease-out,
+      color 150ms ease-out;
+
+    &:hover:not(:disabled) {
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
+    }
+
     &:focus-visible {
-      outline: 2px solid var(--colors-bg-primary-bold);
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
     &:disabled {
-      opacity: 0.5;
-      filter: grayscale(100%);
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     &[data-orientation="vertical"] {
-      transform: rotate(90deg);
+      rotate: 90deg;
     }
+  }
+
+  .AutoplayTrigger[data-orientation="vertical"] {
+    rotate: none;
   }
 
   .IndicatorGroup {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.375rem;
+    padding-inline: 0.25rem;
 
     &[data-orientation="vertical"] {
       flex-direction: column;
+      padding-inline: 0;
+      padding-block: 0.25rem;
     }
   }
 
   .Indicator {
-    width: 0.625rem;
-    height: 0.625rem;
+    width: 0.5rem;
+    height: 0.5rem;
     border-radius: 9999px;
-    background: gray;
+    background: var(--colors-border-strong);
     cursor: pointer;
+    transition:
+      background 150ms ease-out,
+      width 150ms ease-out;
+
+    &:hover {
+      background: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
 
     &[data-current] {
-      background: var(--colors-bg-primary-bold);
+      background: var(--colors-accent);
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Indicator,
+  .PrevTrigger,
+  .NextTrigger,
+  .AutoplayTrigger {
+    transition: none;
   }
 }

@@ -28,22 +28,22 @@
 
 <template>
   <template v-if="nodeState.isBranch">
-    <div v-bind="api.getBranchProps(nodeProps)">
-      <div v-bind="api.getBranchControlProps(nodeProps)">
+    <div v-bind="api.getNodeGroupProps(nodeProps)">
+      <div v-bind="api.getNodeProps(nodeProps)">
         <FolderIcon />
         <span
-          v-bind="api.getBranchTextProps(nodeProps)"
+          v-bind="api.getNodeTextProps(nodeProps)"
           :style="{ display: nodeState.renaming ? 'none' : 'inline' }"
         >
           {{ node.name }}
         </span>
         <input v-bind="api.getNodeRenameInputProps(nodeProps)" />
-        <span v-bind="api.getBranchIndicatorProps(nodeProps)">
+        <span v-bind="api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })">
           <ChevronRightIcon />
         </span>
       </div>
-      <div v-bind="api.getBranchContentProps(nodeProps)">
-        <div v-bind="api.getBranchIndentGuideProps(nodeProps)" />
+      <div v-bind="api.getNodeGroupContentProps(nodeProps)">
+        <div v-bind="api.getIndentGuideProps(nodeProps)" />
         <TreeNode
           v-for="(childNode, index) in node.children"
           :key="childNode.id"
@@ -55,10 +55,10 @@
     </div>
   </template>
   <template v-else>
-    <div v-bind="api.getItemProps(nodeProps)">
+    <div v-bind="api.getNodeProps(nodeProps)">
       <FileIcon />
       <span
-        v-bind="api.getItemTextProps(nodeProps)"
+        v-bind="api.getNodeTextProps(nodeProps)"
         :style="{ display: nodeState.renaming ? 'none' : 'inline' }"
       >
         {{ node.name }}

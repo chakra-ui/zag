@@ -51,15 +51,21 @@ Then use the framework integration helpers:
 
 Use the `defaultValue` property to set the rating's initial value.
 
+<Example id="RatingInitialValue">
+
 ```tsx {2}
 const service = useMachine(rating.machine, {
   defaultValue: 2.5,
 })
 ```
 
+</Example>
+
 ### Controlled rating value
 
 Use `value` and `onValueChange` to control the rating externally.
+
+<Example id="RatingControlled">
 
 ```tsx
 const service = useMachine(rating.machine, {
@@ -70,18 +76,26 @@ const service = useMachine(rating.machine, {
 })
 ```
 
+</Example>
+
 ### Setting and clearing value programmatically
 
 Use `api.setValue` or `api.clearValue` when you need imperative control.
+
+<Example id="RatingSetValue">
 
 ```tsx
 api.setValue(4)
 api.clearValue()
 ```
 
+</Example>
+
 ### Allowing half items
 
 Enable `allowHalf` when your UX needs fractional ratings.
+
+<Example id="RatingHalf">
 
 ```tsx
 const service = useMachine(rating.machine, {
@@ -89,9 +103,13 @@ const service = useMachine(rating.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the rating value changes, the `onValueChange` callback is invoked.
+
+<Example id="RatingValueChange">
 
 ```tsx {2-7}
 const service = useMachine(rating.machine, {
@@ -102,9 +120,13 @@ const service = useMachine(rating.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for hover changes
 
 Use `onHoverChange` to react to hover previews before selection.
+
+<Example id="RatingHoverChange">
 
 ```tsx
 const service = useMachine(rating.machine, {
@@ -114,10 +136,14 @@ const service = useMachine(rating.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing screen reader value text
 
 Use `translations.ratingValueText` to customize how each rating item is
 announced.
+
+<Example>
 
 ```tsx
 const service = useMachine(rating.machine, {
@@ -127,15 +153,21 @@ const service = useMachine(rating.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use rating in forms, set `name` and render `api.getHiddenInputProps()`.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(rating.machine, {
   name: "rating",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

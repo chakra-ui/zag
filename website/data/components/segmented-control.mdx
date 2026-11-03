@@ -53,15 +53,21 @@ Then use the framework integration helpers:
 
 Use the `defaultValue` property to set the segmented control's initial value.
 
+<Example id="SegmentedControlDefaultValue">
+
 ```tsx {2}
 const service = useMachine(radio.machine, {
   defaultValue: "apple",
 })
 ```
 
+</Example>
+
 ### Controlled segmented value
 
 Use `value` and `onValueChange` for controlled usage.
+
+<Example id="SegmentedControlControlled">
 
 ```tsx
 const service = useMachine(radio.machine, {
@@ -72,27 +78,39 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic value control
 
 Use the connected API when you need imperative updates.
+
+<Example id="SegmentedControlProgrammatic">
 
 ```tsx
 api.setValue("orange")
 api.clearValue()
 ```
 
+</Example>
+
 ### Focusing from code
 
 Use `api.focus()` to move focus to the selected item (or first enabled item).
+
+<Example id="SegmentedControlFocus">
 
 ```tsx
 api.focus()
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the segmented control value changes, the `onValueChange` callback is
 invoked.
+
+<Example id="SegmentedControlValueChange">
 
 ```tsx {2-7}
 const service = useMachine(radio.machine, {
@@ -103,10 +121,14 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use segmented control in forms, set `name` and render
 `api.getItemHiddenInputProps({ value })` for each item.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(radio.machine, {
@@ -114,15 +136,21 @@ const service = useMachine(radio.machine, {
 })
 ```
 
+</Example>
+
 ### Vertical orientation
 
 Set `orientation` when you need a vertical layout.
+
+<Example id="SegmentedControlVertical">
 
 ```tsx
 const service = useMachine(radio.machine, {
   orientation: "vertical",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

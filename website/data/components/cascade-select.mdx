@@ -58,6 +58,8 @@ Use the `collection` function to create a tree collection from your hierarchical
 data. Pass a `rootNode` along with functions to extract each node's value,
 string label, and children.
 
+<Example>
+
 ```ts
 import * as cascadeSelect from "@zag-js/cascade-select"
 
@@ -103,13 +105,19 @@ const collection = cascadeSelect.collection<Node>({
 })
 ```
 
+</Example>
+
 ### Create the cascade select
 
 > Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
 Then use the framework integration helpers:
 
+<Example id="CascadeSelectBasic">
+
 <CodeSnippet id="cascade-select/usage.mdx" />
+
+</Example>
 
 ### Setting the initial value
 
@@ -117,6 +125,8 @@ Use the `defaultValue` property to set the initial value of the cascade select.
 
 > The `value` property must be an array of string paths. Each path is an array
 > of values from the root to the selected leaf item.
+
+<Example id="CascadeSelectInitialValue">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -126,9 +136,13 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled selection
 
 Use `value` and `onValueChange` for controlled selection state.
+
+<Example id="CascadeSelectControlled">
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -141,9 +155,13 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Selecting multiple values
 
 To allow selecting multiple values, set the `multiple` property to `true`.
+
+<Example id="CascadeSelectMultiple">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -153,11 +171,15 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Hover triggering
 
 By default, items are highlighted when clicked. To highlight items on hover
 instead (like a traditional cascading menu), set the `highlightTrigger` property
 to `"hover"`.
+
+<Example id="CascadeSelectHover">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -167,11 +189,15 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Allowing parent selection
 
 By default, only leaf nodes (items without children) can be selected. To allow
 parent (branch) nodes to also be selectable, set `allowParentSelection` to
 `true`.
+
+<Example id="CascadeSelectParentSelection">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -181,10 +207,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Close on select
 
 By default, the menu closes when you select an item. Set `closeOnSelect` to
 `false` to keep it open.
+
+<Example id="CascadeSelectKeepOpen">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -194,10 +224,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Looping the keyboard navigation
 
 By default, arrow-key navigation stops at the first and last items. Set
 `loopFocus: true` to loop back around.
+
+<Example id="CascadeSelectLoopFocus">
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -207,10 +241,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for highlight changes
 
 When an item is highlighted with the pointer or keyboard, use the
 `onHighlightChange` to listen for the change and do something with it.
+
+<Example id="CascadeSelectHighlight">
 
 ```tsx {3-6}
 const service = useMachine(cascadeSelect.machine, {
@@ -222,9 +260,13 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Setting the initial highlighted path
 
 Use `defaultHighlightedValue` to set the initially highlighted path.
+
+<Example id="CascadeSelectInitialHighlight">
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -234,10 +276,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled highlighted path
 
 Use `highlightedValue` and `onHighlightChange` to control highlighting
 externally.
+
+<Example id="CascadeSelectControlledHighlight">
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -250,10 +296,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for selection changes
 
 When an item is selected, use the `onValueChange` property to listen for the
 change and do something with it.
+
+<Example id="CascadeSelectValueChange">
 
 ```tsx {4-7}
 const service = useMachine(cascadeSelect.machine, {
@@ -266,9 +316,13 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for open and close events
 
 Use `onOpenChange` to listen for open and close events.
+
+<Example id="CascadeSelectOpenChange">
 
 ```tsx {4-7}
 const service = useMachine(cascadeSelect.machine, {
@@ -281,10 +335,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling open state
 
 Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for an
 uncontrolled initial state.
+
+<Example id="CascadeSelectControlledOpen">
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -296,6 +354,8 @@ const service = useMachine(cascadeSelect.machine, {
   },
 })
 ```
+
+</Example>
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -309,6 +369,8 @@ const service = useMachine(cascadeSelect.machine, {
 
 Use `positioning` to configure placement and collision behavior.
 
+<Example id="CascadeSelectPositioning">
+
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
   id: useId(),
@@ -320,10 +382,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Custom scroll behavior
 
 Use `scrollToIndexFn` to customize how each level scrolls highlighted items into
 view.
+
+<Example>
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -336,9 +402,13 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing the trigger label
 
 Use `formatValue` to control how selected paths are rendered in the trigger.
+
+<Example id="CascadeSelectFormatValue">
 
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
@@ -352,10 +422,14 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within a form
 
 To use cascade select in a form, pass `name`. A hidden input is rendered with
 `getHiddenInputProps()`.
+
+<Example>
 
 ```tsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -367,6 +441,8 @@ const service = useMachine(cascadeSelect.machine, {
 // In your JSX
 <input {...api.getHiddenInputProps()} />
 ```
+
+</Example>
 
 If the hidden input belongs to a different form element, also set `form`.
 
@@ -383,6 +459,8 @@ const service = useMachine(cascadeSelect.machine, {
 
 Use `readOnly`, `required`, and `invalid` to control interaction and form state.
 
+<Example id="CascadeSelectReadOnly">
+
 ```tsx
 const service = useMachine(cascadeSelect.machine, {
   id: useId(),
@@ -392,6 +470,8 @@ const service = useMachine(cascadeSelect.machine, {
   invalid: false,
 })
 ```
+
+</Example>
 
 ## Styling guide
 
@@ -435,11 +515,11 @@ When an item is highlighted, via keyboard navigation or pointer, it is given a
 
 ### Branch items
 
-When an item has children (is a branch node), it is given a `data-has-children`
-attribute.
+When an item has children (is a branch node), its `data-type` attribute is
+`branch`. Leaf items get `leaf`.
 
 ```css
-[data-cascade-select-item][data-has-children] {
+[data-cascade-select-item][data-type="branch"] {
   /* styles for items with children (branch nodes) */
 }
 ```

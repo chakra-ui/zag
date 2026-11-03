@@ -1,0 +1,359 @@
+---
+title: Build a design system with Panda
+description:
+  Style Zag machines with Panda CSS tokens and slot recipes, then ship them as a
+  preset.
+---
+
+Zag gives you the behavior, Panda gives you the tokens and recipes. By the end
+you'll have a Button, a Menu and a Slider that share one theme, and a pattern
+you can repeat for the rest.
+
+<GuideMeta items={["25 min", "Panda CSS", "React", "Intermediate"]} />
+
+<Steps>
+
+## Install the pieces
+
+Panda for styles, plus the Zag machines you need and the React adapter.
+
+```bash
+pnpm add @zag-js/react @zag-js/menu @zag-js/slider
+pnpm add -D @pandacss/dev && pnpm panda init
+```
+
+`panda init` writes a `panda.config.ts` and a `styled-system` folder. Follow
+[Panda's install guide](https://panda-css.com/docs/overview/getting-started) for
+your bundler if you haven't set it up before.
+
+## Name your colors once
+
+Semantic tokens describe roles, not shades. Every component reads from these, so
+a theme change is one edit.
+
+```ts
+// panda.config.ts
+import { defineConfig } from "@pandacss/dev"
+
+export default defineConfig({
+  preflight: true,
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda"],
+  include: ["./src/**/*.{ts,tsx}"],
+  outdir: "styled-system",
+  jsxFramework: "react",
+  theme: {
+    extend: {
+      semanticTokens: {
+        colors: {
+          accent: {
+            value: { base: "{colors.green.600}", _dark: "{colors.green.400}" },
+          },
+          surface: { value: { base: "white", _dark: "{colors.gray.900}" } },
+          fg: {
+            value: { base: "{colors.gray.900}", _dark: "{colors.gray.50}" },
+          },
+          muted: {
+            value: { base: "{colors.gray.200}", _dark: "{colors.gray.700}" },
+          },
+        },
+      },
+    },
+  },
+})
+```
+
+## Turn Zag's parts into recipe slots
+
+Every Zag package exports its anatomy. Pass its keys to a slot recipe and you
+get one class per part, named the same way Zag names them.
+
+```ts
+// recipes/menu.ts
+import { defineSlotRecipe } from "@pandacss/dev"
+import { anatomy } from "@zag-js/menu"
+
+export const menu = defineSlotRecipe({
+  className: "menu",
+  slots: anatomy.keys(),
+  base: {
+    content: {
+      minW: "40",
+      p: "1",
+      bg: "surface",
+      rounded: "lg",
+      borderWidth: "1px",
+      borderColor: "muted",
+      outline: "none",
+    },
+    item: {
+      px: "2.5",
+      py: "1.5",
+      rounded: "md",
+      cursor: "pointer",
+      _highlighted: { bg: "accent/15" },
+    },
+  },
+})
+```
+
+Register it in the config and run `pnpm panda codegen`:
+
+```ts
+// panda.config.ts
+import { menu } from "./recipes/menu"
+
+export default defineConfig({
+  // ...
+  theme: {
+    extend: {
+      // ...
+      slotRecipes: { menu },
+    },
+  },
+})
+```
+
+> **Note**: `_highlighted` reads the `data-highlighted` attribute Zag already
+> puts on the item. You never wire up hover or keyboard classes yourself.
+
+## Wrap the machine and the recipe in one component
+
+The component owns the machine and spreads each part's props next to its recipe
+class. Callers pass machine props straight through.
+
+```tsx
+// components/menu.tsx
+import * as menu from "@zag-js/menu"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { useId } from "react"
+import { menu as menuRecipe } from "styled-system/recipes"
+
+interface MenuProps extends Omit<menu.Props, "id"> {
+  label: string
+  items: { value: string; label: string }[]
+}
+
+export function Menu(props: MenuProps) {
+  const { label, items, ...machineProps } = props
+  const service = useMachine(menu.machine, { id: useId(), ...machineProps })
+  const api = menu.connect(service, normalizeProps)
+  const styles = menuRecipe()
+
+  return (
+    <>
+      <button className={styles.trigger} {...api.getTriggerProps()}>
+        {label}
+      </button>
+      <Portal>
+        <div className={styles.positioner} {...api.getPositionerProps()}>
+          <ul className={styles.content} {...api.getContentProps()}>
+            {items.map((item) => (
+              <li
+                key={item.value}
+                className={styles.item}
+                {...api.getItemProps({ value: item.value })}
+              >
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Portal>
+    </>
+  )
+}
+```
+
+```tsx
+<Menu
+  label="Edit"
+  items={[
+    { value: "rename", label: "Rename" },
+    { value: "duplicate", label: "Duplicate" },
+    { value: "archive", label: "Archive" },
+  ]}
+  onSelect={(details) => console.log(details.value)}
+/>
+```
+
+## Add size and tone variants
+
+Variants live on the recipe. Panda generates a `MenuVariantProps` type and a
+`splitVariantProps` helper, so the component can take variants and machine props
+side by side.
+
+```ts
+// recipes/menu.ts
+export const menu = defineSlotRecipe({
+  // ...
+  variants: {
+    size: {
+      sm: { item: { fontSize: "sm", py: "1" } },
+      md: { item: { fontSize: "md", py: "1.5" } },
+    },
+  },
+  defaultVariants: { size: "md" },
+})
+```
+
+```tsx
+// components/menu.tsx
+import {
+  menu as menuRecipe,
+  type MenuVariantProps,
+} from "styled-system/recipes"
+
+interface MenuProps extends Omit<menu.Props, "id">, MenuVariantProps {
+  label: string
+  items: { value: string; label: string }[]
+}
+
+export function Menu(props: MenuProps) {
+  const [variantProps, rest] = menuRecipe.splitVariantProps(props)
+  const { label, items, ...machineProps } = rest
+  const service = useMachine(menu.machine, { id: useId(), ...machineProps })
+  const api = menu.connect(service, normalizeProps)
+  const styles = menuRecipe(variantProps)
+  // ...same markup as before
+}
+```
+
+The Button has no machine, so it's a plain recipe. Its `tone` variant reads the
+same `accent` token as the menu.
+
+```ts
+// recipes/button.ts
+import { defineRecipe } from "@pandacss/dev"
+
+export const button = defineRecipe({
+  className: "button",
+  base: {
+    px: "4",
+    py: "2",
+    rounded: "lg",
+    fontWeight: "semibold",
+    cursor: "pointer",
+  },
+  variants: {
+    tone: {
+      solid: { bg: "accent", color: "surface" },
+      ghost: { color: "fg", _hover: { bg: "accent/15" } },
+    },
+  },
+  defaultVariants: { tone: "solid" },
+})
+```
+
+## Repeat for Slider, and ship a preset
+
+The Slider follows the same three moves: anatomy keys for slots, part props next
+to part classes, machine props passed through.
+
+```ts
+// recipes/slider.ts
+import { defineSlotRecipe } from "@pandacss/dev"
+import { anatomy } from "@zag-js/slider"
+
+export const slider = defineSlotRecipe({
+  className: "slider",
+  slots: anatomy.keys(),
+  base: {
+    root: { display: "flex", flexDirection: "column", gap: "2", w: "full" },
+    control: { position: "relative", display: "flex", alignItems: "center" },
+    track: { flex: "1", h: "1.5", rounded: "full", bg: "muted" },
+    range: { h: "full", rounded: "full", bg: "accent" },
+    thumb: {
+      boxSize: "5",
+      rounded: "full",
+      bg: "white",
+      borderWidth: "2px",
+      borderColor: "accent",
+      _focusVisible: { outline: "2px solid", outlineColor: "accent" },
+    },
+  },
+})
+```
+
+```tsx
+// components/slider.tsx
+import * as slider from "@zag-js/slider"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+import { slider as sliderRecipe } from "styled-system/recipes"
+
+interface SliderProps extends Omit<slider.Props, "id"> {
+  label: string
+}
+
+export function Slider(props: SliderProps) {
+  const { label, ...machineProps } = props
+  const service = useMachine(slider.machine, { id: useId(), ...machineProps })
+  const api = slider.connect(service, normalizeProps)
+  const styles = sliderRecipe()
+
+  return (
+    <div className={styles.root} {...api.getRootProps()}>
+      <label className={styles.label} {...api.getLabelProps()}>
+        {label}
+      </label>
+      <output className={styles.valueText} {...api.getValueTextProps()}>
+        {api.value.at(0)}
+      </output>
+      <div className={styles.control} {...api.getControlProps()}>
+        <div className={styles.track} {...api.getTrackProps()}>
+          <div className={styles.range} {...api.getRangeProps()} />
+        </div>
+        {api.value.map((_, index) => (
+          <div
+            key={index}
+            className={styles.thumb}
+            {...api.getThumbProps({ index })}
+          >
+            <input {...api.getHiddenInputProps({ index })} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+To share the theme across apps, move the tokens and recipes into a preset. Each
+app adds it to `presets` and gets the same Button, Menu and Slider styles.
+
+```ts
+// preset.ts
+import { definePreset } from "@pandacss/dev"
+import { button } from "./recipes/button"
+import { menu } from "./recipes/menu"
+import { slider } from "./recipes/slider"
+
+export const acmePreset = definePreset({
+  name: "acme",
+  theme: {
+    extend: {
+      semanticTokens: {
+        colors: {
+          // the tokens from step 2
+        },
+      },
+      recipes: { button },
+      slotRecipes: { menu, slider },
+    },
+  },
+})
+```
+
+```ts
+// panda.config.ts in each app
+import { defineConfig } from "@pandacss/dev"
+import { acmePreset } from "@acme/panda-preset"
+
+export default defineConfig({
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda", acmePreset],
+  include: ["./src/**/*.{ts,tsx}"],
+  outdir: "styled-system",
+})
+```
+
+</Steps>

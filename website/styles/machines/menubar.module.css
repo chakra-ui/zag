@@ -2,10 +2,78 @@
   .Root {
     display: inline-flex;
     gap: 0.25rem;
+    padding: 0.25rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
 
     &[data-orientation="vertical"] {
       flex-direction: column;
       width: 10rem;
+    }
+  }
+
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    height: 2rem;
+    padding-inline: 0.75rem;
+    border-radius: 6px;
+    color: var(--colors-fg-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: start;
+    cursor: pointer;
+    transition:
+      background 150ms ease-out,
+      color 150ms ease-out;
+
+    &:hover,
+    &[data-state="open"] {
+      background: var(--colors-bg-control);
+      color: var(--colors-fg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+
+    &[data-state="open"] {
+      color: var(--colors-accent);
+    }
+
+    &[data-disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        background: transparent;
+        color: var(--colors-fg-muted);
+      }
+    }
+  }
+
+  .SubTrigger {
+    justify-content: space-between;
+
+    &[data-state="open"] {
+      background: var(--colors-accent-tint);
+      color: var(--colors-accent);
+    }
+  }
+
+  .SubIndicator {
+    color: var(--colors-fg-subtle);
+
+    [dir="rtl"] & {
+      rotate: 180deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Trigger {
+      transition: none;
     }
   }
 }

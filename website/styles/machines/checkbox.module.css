@@ -1,53 +1,72 @@
 @layer recipes {
   .Root {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
     user-select: none;
-    font-size: 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--colors-fg);
+    cursor: pointer;
 
     &[data-disabled] {
-      opacity: 0.5;
-      filter: grayscale(100%);
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    &[data-readonly] {
+      cursor: default;
     }
   }
 
   .Control {
-    width: 24px;
-    height: 24px;
-    border-radius: 0.275rem;
-    border: solid 1px;
-    border-color: var(--colors-border-bold);
-    color: var(--colors-text-inverse);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 5px;
+    background: var(--colors-bg-control);
+    color: var(--colors-bg-page);
+    transition:
+      background 150ms ease-out,
+      border-color 150ms ease-out;
 
-    &[data-hover] {
-      background: var(--colors-bg-bold);
+    & svg {
+      width: 0.75rem;
+      height: 0.75rem;
     }
 
-    &[data-focus] {
-      outline: 2px solid var(--colors-bg-primary-bold);
+    &[data-hover] {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
-    &[data-disabled] {
-      background: var(--colors-bg-bold) !important;
-      border-color: var(--colors-border-bold) !important;
-      filter: grayscale(100%);
+    &[data-state="checked"],
+    &[data-state="indeterminate"] {
+      background: var(--colors-accent);
+      border-color: var(--colors-accent);
     }
 
     &[data-invalid] {
       border-color: var(--colors-border-error);
     }
 
-    &[data-state="indeterminate"] {
-      background: #ffffff;
-      border-color: grey;
-      color: grey;
+    &[data-disabled] {
+      background: var(--colors-bg-control);
+      border-color: var(--colors-border-strong);
+      color: var(--colors-fg-subtle);
     }
+  }
+}
 
-    &[data-state="checked"] {
-      background: var(--colors-bg-primary-subtle);
-      border-color: var(--colors-bg-primary-subtle);
-    }
+@media (prefers-reduced-motion: reduce) {
+  .Control {
+    transition: none;
   }
 }

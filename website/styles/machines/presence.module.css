@@ -2,14 +2,14 @@
   @keyframes fadeOut {
     to {
       opacity: 0;
-      scale: 0.8;
+      scale: 0.96;
     }
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      scale: 0.8;
+      scale: 0.96;
     }
     to {
       opacity: 1;
@@ -20,45 +20,87 @@
   .Root {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    width: 50%;
-    transform-origin: top center;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 20rem;
   }
 
   .Trigger {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: start;
-    cursor: pointer;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
     font-weight: 500;
-    padding-inline: 1rem;
-    padding-block: 0.25rem;
-    background: var(--colors-bg-primary-subtle);
-    color: var(--colors-text-inverse);
+    cursor: pointer;
+    transition: border-color 150ms ease-out;
+
+    &:hover {
+      border-color: var(--colors-fg-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
   }
 
   .Output {
+    font-family: var(--fonts-mono);
+    font-size: 0.75rem;
+    color: var(--colors-fg-subtle);
+  }
+
+  .Slot {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding-inline: 0.75rem;
-    border: 2px dotted var(--colors-border-bold);
+    justify-content: center;
+    width: 100%;
+    max-width: 16rem;
+    min-height: 6rem;
   }
 
   .Content {
-    min-width: 200px;
-    background: var(--colors-bg-subtle);
-    padding: 24px;
-    min-height: 100px;
-    border-width: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 16rem;
+    min-height: 6rem;
+    padding: 1.5rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg-muted);
+    font-size: 0.875rem;
+    box-shadow: 0 12px 32px -16px rgb(0 0 0 / 0.3);
 
     &[data-state="open"] {
-      animation: fadeIn 0.3s forwards;
+      animation: fadeIn 240ms ease-out forwards;
     }
 
     &[data-state="closed"] {
-      animation: fadeOut 0.2s forwards;
+      animation: fadeOut 180ms ease-in forwards;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Content[data-state="open"] {
+    animation-duration: 1ms;
+  }
+
+  .Content[data-state="closed"] {
+    animation-duration: 1ms;
+  }
+
+  .Trigger {
+    transition: none;
   }
 }

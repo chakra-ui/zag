@@ -72,23 +72,33 @@ focus:
 To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
 
+<Example id="TagsInputInitialValue">
+
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
   defaultValue: ["React", "Redux", "TypeScript"],
 })
 ```
 
+</Example>
+
 ### Controlled tags input
 
 To control the tags input programmatically, pass the `value` and `onValueChange`
 properties to the machine function.
 
+<Example id="TagsInputControlled">
+
 <CodeSnippet id="tags-input/controlled.mdx" />
+
+</Example>
 
 ### Controlled input value
 
 Use `inputValue` and `onInputValueChange` when you need to control the typing
 state separately.
+
+<Example id="TagsInputControlledInput">
 
 ```tsx
 const service = useMachine(tagsInput.machine, {
@@ -99,10 +109,14 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
+</Example>
+
 ### Removing all tags
 
 The tags input will remove all tags when the clear button is clicked. To remove
 all tags, use the provided `clearTriggerProps` function from the `api`.
+
+<Example id="TagsInputClear">
 
 ```tsx {4}
 //...
@@ -112,6 +126,8 @@ all tags, use the provided `clearTriggerProps` function from the `api`.
 </div>
 //...
 ```
+
+</Example>
 
 To programmatically remove all tags, use `api.clearValue()`.
 
@@ -127,12 +143,16 @@ achieve this by:
 To get this feature working you need to pass a `name` option to the context and
 render the hidden input with `api.getHiddenInputProps()`.
 
+<Example>
+
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
   name: "tags",
   defaultValue: ["React", "Redux", "TypeScript"],
 })
 ```
+
+</Example>
 
 ### Limiting the number of tags
 
@@ -142,12 +162,16 @@ to the limit you want. The default value is `Infinity`.
 When the tag reaches the limit, new tags cannot be added except the
 `allowOverflow` option is passed to the context.
 
+<Example id="TagsInputMax">
+
 ```tsx {2-3}
 const service = useMachine(tagsInput.machine, {
   max: 10,
   allowOverflow: true,
 })
 ```
+
+</Example>
 
 ### Validating Tags
 
@@ -161,6 +185,8 @@ determine whether to accept or reject a tag.
 Common use-cases for validating tags include enforcing format, length, or
 content rules.
 
+<Example id="TagsInputValidate">
+
 ```tsx {2-4}
 const service = useMachine(tagsInput.machine, {
   validate(details) {
@@ -170,16 +196,22 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
+</Example>
+
 ### Allow Duplicates
 
 By default, duplicate tags are prevented. For use cases like sentence builders
 or repeatable tokens, set `allowDuplicates: true`:
+
+<Example id="TagsInputDuplicates">
 
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
   allowDuplicates: true,
 })
 ```
+
+</Example>
 
 ### Blur behavior
 
@@ -189,11 +221,15 @@ take by passing the `blurBehavior` option to the context.
 - `"add"` — Adds the tag to the list of tags.
 - `"clear"` — Clears the tags input value.
 
+<Example id="TagsInputBlur">
+
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
   blurBehavior: "add",
 })
 ```
+
+</Example>
 
 ### Paste behavior
 
@@ -205,16 +241,22 @@ When a value is pasted, the machine will:
 - check if the value is a valid tag based on the `validate` option
 - split the value by the `delimiter` option passed
 
+<Example id="TagsInputPaste">
+
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
   addOnPaste: true,
 })
 ```
 
+</Example>
+
 ### Enable tag editing
 
 By default, tags are add/remove only. To allow inline editing — double-clicking
 a tag or focusing it and pressing `Enter` — set `editable: true`.
+
+<Example id="TagsInputEditable">
 
 ```tsx {2}
 const service = useMachine(tagsInput.machine, {
@@ -222,15 +264,21 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
+</Example>
+
 ### Custom tag delimiter
 
 Use `delimiter` to control how tags are created from key presses and paste.
+
+<Example id="TagsInputDelimiter">
 
 ```tsx
 const service = useMachine(tagsInput.machine, {
   delimiter: ";",
 })
 ```
+
+</Example>
 
 ### Listening for events
 
@@ -241,6 +289,8 @@ emit:
 - `onHighlightChange` — invoked when a tag has visual focus.
 - `onValueInvalid` — invoked when the max tag count is reached or the `validate`
   function returns `false`.
+
+<Example id="TagsInputEvents">
 
 ```tsx
 const service = useMachine(tagsInput.machine, {
@@ -258,9 +308,13 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic tag operations
 
 Use the API for imperative updates.
+
+<Example id="TagsInputProgrammatic">
 
 ```tsx
 api.addValue("React")
@@ -270,6 +324,8 @@ api.clearValue("React") // clear one
 api.setValueAtIndex(0, "Vue")
 api.focus()
 ```
+
+</Example>
 
 ## Styling guide
 

@@ -48,15 +48,21 @@ Then use the framework integration helpers:
 
 Set `value` to control what gets copied.
 
+<Example id="ClipboardValue">
+
 ```tsx {2}
 const service = useMachine(clipboard.machine, {
   value: "Hello, world!",
 })
 ```
 
+</Example>
+
 ### Setting an initial value
 
 Use `defaultValue` for uncontrolled initial value.
+
+<Example id="ClipboardDefaultValue">
 
 ```tsx
 const service = useMachine(clipboard.machine, {
@@ -64,9 +70,13 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 Use `onValueChange` to react when the clipboard value changes.
+
+<Example id="ClipboardValueChange">
 
 ```tsx
 const service = useMachine(clipboard.machine, {
@@ -76,9 +86,13 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
+</Example>
+
 ### Listening to copy events
 
 When the value is copied, `onStatusChange` is fired.
+
+<Example id="ClipboardStatus">
 
 ```tsx {2}
 const service = useMachine(clipboard.machine, {
@@ -88,9 +102,13 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
+</Example>
+
 ### Checking if the value is copied
 
 Use `api.copied` to check if the value was copied.
+
+<Example id="ClipboardCopied">
 
 ```tsx {2}
 const api = clipboard.connect(service)
@@ -100,16 +118,22 @@ if (api.copied) {
 }
 ```
 
+</Example>
+
 ### Changing the timeout
 
 By default, the copied feedback resets after `3000ms`. Set `timeout` to change
 this delay.
+
+<Example id="ClipboardTimeout">
 
 ```tsx {2}
 const service = useMachine(clipboard.machine, {
   timeout: 5000,
 })
 ```
+
+</Example>
 
 ## Styling guide
 

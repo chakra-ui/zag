@@ -62,7 +62,11 @@ trigger, even though the content lives elsewhere in the DOM.
 When the popover opens, focus moves to the first focusable element. To customize
 this, set `initialFocusEl`.
 
+<Example id="PopoverInitialFocus">
+
 <CodeSnippet id="popover/initial-focus.mdx" />
+
+</Example>
 
 To disable automatic focus on open, set `autoFocus` to `false`.
 
@@ -85,11 +89,15 @@ it'll:
 To make the popover modal, set the `modal: true` property in the machine's
 context.
 
+<Example id="PopoverModal">
+
 ```tsx {2}
 const service = useMachine(popover.machine, {
   modal: true,
 })
 ```
+
+</Example>
 
 ### Close behavior
 
@@ -98,11 +106,15 @@ The popover is designed to close on blur and when the `esc` key is pressed.
 To prevent it from closing on blur (clicking or focusing outside), pass the
 `closeOnInteractOutside` property and set it to `false`.
 
+<Example id="PopoverCloseBehavior">
+
 ```tsx {2}
 const service = useMachine(popover.machine, {
   closeOnInteractOutside: false,
 })
 ```
+
+</Example>
 
 To prevent it from closing when the `esc` key is pressed, pass the
 `closeOnEscape` property and set it to `false`.
@@ -117,6 +129,8 @@ const service = useMachine(popover.machine, {
 
 Use `open` and `onOpenChange` to control visibility externally.
 
+<Example id="PopoverControlled">
+
 ```tsx
 const service = useMachine(popover.machine, {
   open,
@@ -126,10 +140,14 @@ const service = useMachine(popover.machine, {
 })
 ```
 
+</Example>
+
 ### Adding an arrow
 
 To render an arrow within the popover, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
+
+<Example id="PopoverArrow">
 
 ```tsx {6-8}
 //...
@@ -148,10 +166,14 @@ return (
 //...
 ```
 
+</Example>
+
 ### Changing the placement
 
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
+
+<Example id="PopoverPlacement">
 
 ```tsx {2-4}
 const service = useMachine(popover.machine, {
@@ -161,9 +183,13 @@ const service = useMachine(popover.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for open state changes
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
+
+<Example id="PopoverOpenChange">
 
 ```tsx {2-7}
 const service = useMachine(popover.machine, {
@@ -174,10 +200,14 @@ const service = useMachine(popover.machine, {
 })
 ```
 
+</Example>
+
 ### Multiple triggers
 
 A single popover instance can be shared across multiple trigger elements. Pass a
 `value` to `getTriggerProps` to identify each trigger.
+
+<Example id="PopoverMultipleTriggers">
 
 ```tsx
 const service = useMachine(popover.machine, {
@@ -200,6 +230,8 @@ return (
   </>
 )
 ```
+
+</Example>
 
 When the popover is open and a different trigger is clicked, it repositions
 without closing. Focus returns to the correct trigger on close.

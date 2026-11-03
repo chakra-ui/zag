@@ -1,6 +1,6 @@
 import { ThemeProvider } from "next-themes"
 import { type Metadata } from "next"
-import { Wix_Madefor_Text } from "next/font/google"
+import { Geist_Mono, Wix_Madefor_Text } from "next/font/google"
 import siteConfig from "site.config"
 import "../styles/index.css"
 import "../styles/prism.css"
@@ -8,6 +8,11 @@ import "../styles/prism.css"
 const wixMadeforText = Wix_Madefor_Text({
   subsets: ["latin"],
   variable: "--font-body",
+})
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 })
 
 export const metadata: Metadata = {
@@ -80,7 +85,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={wixMadeforText.variable}
+      className={`${wixMadeforText.variable} ${geistMono.variable}`}
     >
       <head>
         {/* ternary, not &&: an empty domain renders as a text node and breaks hydration */}

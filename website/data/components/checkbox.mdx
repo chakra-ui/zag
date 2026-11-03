@@ -54,15 +54,21 @@ Then use the framework integration helpers:
 
 Set `defaultChecked` to `true` to start checked.
 
+<Example id="CheckboxDefaultChecked">
+
 ```tsx {2}
 const service = useMachine(checkbox.machine, {
   defaultChecked: true,
 })
 ```
 
+</Example>
+
 ### Indeterminate checkboxes
 
 Set `defaultChecked` or `checked` to `"indeterminate"` for a tri-state checkbox.
+
+<Example id="CheckboxIndeterminate">
 
 ```tsx {2}
 const service = useMachine(checkbox.machine, {
@@ -70,15 +76,23 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled checkbox
 
 Use `checked` and `onCheckedChange` to control state externally.
 
+<Example id="CheckboxControlled">
+
 <CodeSnippet id="checkbox/controlled.mdx" />
+
+</Example>
 
 ### Disabling the checkbox
 
 Set `disabled` to `true` to prevent interaction.
+
+<Example id="CheckboxDisabled">
 
 ```tsx {2}
 const service = useMachine(checkbox.machine, {
@@ -86,9 +100,13 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the checked state changes, `onCheckedChange` is invoked.
+
+<Example id="CheckboxCheckedChange">
 
 ```tsx {2-5}
 const service = useMachine(checkbox.machine, {
@@ -99,9 +117,13 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
+</Example>
+
 ### Read-only checkbox
 
 Set `readOnly` to keep the checkbox focusable but prevent toggling.
+
+<Example id="CheckboxReadOnly">
 
 ```tsx {2}
 const service = useMachine(checkbox.machine, {
@@ -109,15 +131,21 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use checkbox within forms, set `name` and render `api.getHiddenInputProps()`.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(checkbox.machine, {
   name: "fruits",
 })
 ```
+
+</Example>
 
 Next, render the hidden input and ensure the value changes get propagated to the
 form correctly.
@@ -130,6 +158,8 @@ form correctly.
 
 Set `value` to customize the submitted form value when checked.
 
+<Example>
+
 ```tsx
 const service = useMachine(checkbox.machine, {
   name: "newsletter",
@@ -137,9 +167,13 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
+</Example>
+
 ### Associating with an external form
 
 If the input belongs to a different form element, set `form`.
+
+<Example>
 
 ```tsx
 const service = useMachine(checkbox.machine, {
@@ -147,6 +181,8 @@ const service = useMachine(checkbox.machine, {
   form: "settings-form",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

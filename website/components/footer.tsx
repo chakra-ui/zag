@@ -2,7 +2,8 @@ import Link from "next/link"
 import { FaDiscord, FaGithub, FaXTwitter } from "react-icons/fa6"
 import siteConfig from "site.config"
 import { css } from "styled-system/css"
-import { Box, Grid, Stack } from "styled-system/jsx"
+import { Box } from "styled-system/jsx"
+import { siteFooter } from "styled-system/recipes"
 import { Logo } from "./logo"
 
 interface FooterColumn {
@@ -46,6 +47,7 @@ const columns: FooterColumn[] = [
       { title: "Showcase", href: "/showcase" },
       { title: "Community", href: "/community" },
       { title: "Team", href: "/team" },
+      { title: "Brand", href: "/brand" },
       { title: "Changelog", href: `${siteConfig.repo.blobUrl}/CHANGELOG.md` },
     ],
   },
@@ -57,36 +59,41 @@ const socials = [
   { icon: <FaXTwitter />, href: "https://x.com/zag_js", label: "X" },
 ]
 
-const linkStyles = css({
-  textStyle: "sm",
-  color: "text.muted",
-  transition: "color 0.15s",
-  _hover: { color: "text" },
-})
-
-const eyebrow = css({
-  fontSize: "xs",
-  fontWeight: "semibold",
-  textTransform: "uppercase",
-  letterSpacing: "wide",
-  color: "text.subtle",
-})
-
 function FooterLink(props: { href: string; children: React.ReactNode }) {
-  const external = props.href.startsWith("http")
-  return external ? (
+  const { link } = siteFooter()
+  return props.href.startsWith("http") ? (
     <a
       href={props.href}
       target="_blank"
       rel="noopener noreferrer"
-      className={linkStyles}
+      className={link}
     >
       {props.children}
     </a>
   ) : (
-    <Link href={props.href} className={linkStyles}>
+    <Link href={props.href} className={link}>
       {props.children}
     </Link>
+  )
+}
+
+function Copyright() {
+  return <span dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
+}
+
+function Credit() {
+  return (
+    <span>
+      A project by{" "}
+      <a
+        href="https://chakra-ui.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={css({ color: "text", _hover: { color: "text.bold" } })}
+      >
+        Chakra Systems
+      </a>
+    </span>
   )
 }
 
@@ -95,88 +102,84 @@ export function FooterCredits() {
     <Box
       display="flex"
       flexWrap="wrap"
+      alignItems="center"
       gap="4"
       justifyContent="space-between"
-      textStyle="sm"
-      color="text.subtle"
+      fontSize="13px"
+      color="text.muted"
     >
-      <span dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
-      <span>
-        A project by{" "}
-        <a
-          href="https://chakra-ui.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={css({ _hover: { color: "text" } })}
-        >
-          Chakra Systems
-        </a>
-      </span>
+      <Copyright />
+      <Credit />
     </Box>
   )
 }
 
 export function Footer() {
+  const styles = siteFooter()
   return (
-    <Box as="footer" borderTopWidth="1px" borderColor="border.subtle" mt="20">
-      <Box maxW="8xl" mx="auto" px={{ base: "4", sm: "6", md: "8" }} py="12">
-        <Grid
-          gap="10"
-          gridTemplateColumns={{
-            base: "repeat(2, minmax(0, 1fr))",
-            lg: "1.5fr repeat(4, minmax(0, 1fr))",
-          }}
-        >
-          <Stack gap="4" gridColumn={{ base: "1 / -1", lg: "auto" }}>
-            <Link
-              href="/"
-              aria-label="Zag.js home"
-              className={css({ width: "fit-content" })}
-            >
-              <Logo height="7" />
-            </Link>
-            <Box
-              textStyle="sm"
-              color="text.muted"
-              maxW="16rem"
-              lineHeight="1.6"
-            >
-              {siteConfig.description}
-            </Box>
-            <Box display="flex" gap="3" color="text.subtle">
-              {socials.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={css({ p: "1", _hover: { color: "text" } })}
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </Box>
-          </Stack>
-
-          {columns.map((column) => (
-            <Stack key={column.title} gap="3">
-              <span className={eyebrow}>{column.title}</span>
-              <Stack gap="2.5">
-                {column.links.map((link) => (
-                  <FooterLink key={link.title} href={link.href}>
-                    {link.title}
-                  </FooterLink>
+    <footer className={styles.root}>
+      <div className={styles.inner}>
+        <div className={styles.grid}>
+          <div className={styles.brand}>
+            <div>
+              <Link
+                href="/"
+                aria-label="Zag.js home"
+                className={css({ display: "block", w: "fit-content" })}
+              >
+                <Logo height="7" />
+              </Link>
+              <p className={styles.description}>{siteConfig.description}</p>
+              <div className={styles.socials}>
+                {socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.social}
+                  >
+                    {social.icon}
+                  </a>
                 ))}
-              </Stack>
-            </Stack>
+              </div>
+            </div>
+            <p className={styles.license}>
+              <span className={styles.dot} />
+              v2 · MIT licensed
+            </p>
+          </div>
+          {columns.map((column) => (
+            <nav
+              key={column.title}
+              aria-label={column.title}
+              className={styles.column}
+            >
+              <p className={styles.heading}>{column.title}</p>
+              {column.links.map((link) => (
+                <FooterLink key={link.title} href={link.href}>
+                  {link.title}
+                </FooterLink>
+              ))}
+            </nav>
           ))}
-        </Grid>
-
-        <Box mt="14" pt="6" borderTopWidth="1px" borderColor="border.subtle">
-          <FooterCredits />
-        </Box>
-      </Box>
-    </Box>
+        </div>
+        <div className={styles.credits}>
+          <Copyright />
+          <span>
+            A project by{" "}
+            <a
+              href="https://chakra-ui.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.credit}
+            >
+              Chakra Systems
+            </a>
+          </span>
+        </div>
+      </div>
+    </footer>
   )
 }

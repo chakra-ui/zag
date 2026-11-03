@@ -1,4 +1,5 @@
 import { createMDX } from "fumadocs-mdx/next"
+import { mergedPageRedirects } from "./redirects.mjs"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -17,6 +18,7 @@ const nextConfig = {
   },
   experimental: {
     externalDir: true,
+    agentUpgrade: "security",
   },
   // /api/mdx reads page sources and package versions at request time
   outputFileTracingIncludes: {
@@ -26,6 +28,7 @@ const nextConfig = {
     ],
   },
   redirects: async () => [
+    ...mergedPageRedirects,
     {
       source: "/overview/whats-a-machine",
       destination: "/guides/building-machines",

@@ -28,8 +28,6 @@ type TOC = {
   lvl: number
 }
 
-// ponytail: first 160 characters per section keeps the index small; index whole
-// sections if people search for phrases deeper in a page
 function excerpt(raw?: string) {
   if (!raw) return undefined
   const text = raw.replace(/[`*]/g, "").replace(/\s+/g, " ").trim()

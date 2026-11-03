@@ -41,22 +41,24 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 
   if (nodeState.isBranch) {
     return (
-      <div {...api.getBranchProps(nodeProps)}>
-        <div {...api.getBranchControlProps(nodeProps)}>
+      <div {...api.getNodeGroupProps(nodeProps)}>
+        <div {...api.getNodeProps(nodeProps)}>
           <FolderIcon />
           <span
-            {...api.getBranchTextProps(nodeProps)}
+            {...api.getNodeTextProps(nodeProps)}
             style={{ display: nodeState.renaming ? "none" : "inline" }}
           >
             {node.name}
           </span>
           <input {...api.getNodeRenameInputProps(nodeProps)} />
-          <span {...api.getBranchIndicatorProps(nodeProps)}>
+          <span
+            {...api.getNodeIndicatorProps({ ...nodeProps, type: "expanded" })}
+          >
             <ChevronRightIcon />
           </span>
         </div>
-        <div {...api.getBranchContentProps(nodeProps)}>
-          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+        <div {...api.getNodeGroupContentProps(nodeProps)}>
+          <div {...api.getIndentGuideProps(nodeProps)} />
           {node.children?.map((childNode, index) => (
             <TreeNode
               key={childNode.id}
@@ -71,10 +73,10 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   }
 
   return (
-    <div {...api.getItemProps(nodeProps)}>
+    <div {...api.getNodeProps(nodeProps)}>
       <FileIcon />
       <span
-        {...api.getItemTextProps(nodeProps)}
+        {...api.getNodeTextProps(nodeProps)}
         style={{ display: nodeState.renaming ? "none" : "inline" }}
       >
         {node.name}

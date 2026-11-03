@@ -1,11 +1,12 @@
 import { Portal } from "@zag-js/react"
 import { Icon } from "components/ui/icon"
 import { useSearch } from "lib/use-search"
+import type { SearchMetaItem } from "lib/search-meta"
 import Link from "next/link"
-import { BiSearch } from "react-icons/bi"
-import { HiDocument, HiHashtag } from "react-icons/hi"
+import { Fragment, useEffect, useState } from "react"
+import { HiOutlineSearch } from "react-icons/hi"
 import { css } from "styled-system/css"
-import { Box, Stack, styled } from "styled-system/jsx"
+import { Box, styled } from "styled-system/jsx"
 import { SearchTrigger } from "./search-trigger"
 
 const sectionLabels: Record<string, string> = {
@@ -16,148 +17,415 @@ const sectionLabels: Record<string, string> = {
   blog: "Blog",
 }
 
-// secondary text, which follows the row's color once it's highlighted
-const dim = css({
+const EXIT_MS = 140
+
+const getSection = (item: SearchMetaItem) => item.url.split("/")[1] ?? ""
+
+function getTrail(item: SearchMetaItem) {
+  if (item.type === "lvl1") return null
+  const { lvl1, lvl2 } = item.hierarchy
+  if (item.type === "lvl3" && lvl2) return `${lvl1} / ${lvl2}`
+  return lvl1
+}
+
+function groupBySection(items: SearchMetaItem[]) {
+  const groups: { key: string; section: string; items: SearchMetaItem[] }[] = []
+  for (const item of items) {
+    const section = getSection(item)
+    const last = groups[groups.length - 1]
+    if (last && last.section === section) last.items.push(item)
+    else
+      groups.push({
+        key: `${section}-${groups.length}`,
+        section,
+        items: [item],
+      })
+  }
+  return groups
+}
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
+function Highlight(props: { text: string; query: string }) {
+  const { text, query } = props
+  if (query.length < 3) return <>{text}</>
+  const parts = text.split(new RegExp(`(${escapeRegExp(query)})`, "gi"))
+  return (
+    <>
+      {parts.map((part, index) =>
+        index % 2 === 1 ? (
+          <mark key={index} className={markStyle}>
+            {part}
+          </mark>
+        ) : (
+          <Fragment key={index}>{part}</Fragment>
+        ),
+      )}
+    </>
+  )
+}
+
+const markStyle = css({
+  bg: "transparent",
+  color: "text.bold",
+  fontWeight: "semibold",
+})
+
+const keyChip = css({
+  fontFamily: "mono",
+  fontSize: "11px",
+  h: "5",
+  minW: "5",
+  px: "1.5",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+  letterSpacing: "0.04em",
+  rounded: "sm",
+  borderWidth: "1px",
+  borderColor: "border",
+  borderBottomWidth: "2px",
+  bg: "bg",
   color: "text.muted",
-  "[data-highlighted] &": { color: "inherit" },
+})
+
+const motion = {
+  transitionProperty: "opacity, transform",
+  transitionDuration: `${EXIT_MS}ms`,
+  transitionTimingFunction: "cubic-bezier(0.2, 0, 0, 1)",
+  _motionReduce: { transitionDuration: "0ms" },
+}
+
+const itemStyle = css({
+  position: "relative",
+  display: "flex",
+  alignItems: "center",
+  gap: "3",
+  ps: "3.5",
+  pe: "3",
+  py: "2.5",
+  rounded: "sm",
+  textDecoration: "none",
+  color: "text.muted",
+  cursor: "pointer",
+  scrollMarginBlock: "8",
+  _before: {
+    content: '""',
+    position: "absolute",
+    insetBlock: "2",
+    insetInlineStart: "0",
+    w: "2px",
+    rounded: "full",
+    bg: "bg.primary.subtle",
+    opacity: "0",
+  },
+  _highlighted: {
+    bg: { base: "bg.muted", _dark: "whiteAlpha.100" },
+    _before: { opacity: "1" },
+  },
 })
 
 export function Search() {
   const { dialog_api, combobox_api, results } = useSearch()
+  const open = dialog_api.open
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      return
+    }
+    const timer = setTimeout(() => setMounted(false), EXIT_MS)
+    return () => clearTimeout(timer)
+  }, [open])
+
+  const query = combobox_api.inputValue.trim()
+  const groups = groupBySection(results)
+  const noResults = query.length >= 3 && results.length === 0
+  const listProps = combobox_api.getContentProps()
 
   return (
     <>
       <SearchTrigger {...dialog_api.getTriggerProps()} />
-      {dialog_api.open && (
+      {(open || mounted) && (
         <Portal>
           <styled.div
             position="fixed"
             inset="0"
-            bg="blackAlpha.700"
             zIndex="1000"
+            bg={{ base: "blackAlpha.300", _dark: "blackAlpha.600" }}
+            backdropFilter="blur(3px)"
+            css={motion}
+            opacity="1"
+            _closed={{ opacity: "0" }}
             {...dialog_api.getBackdropProps()}
+            hidden={false}
+            data-state={open ? "open" : "closed"}
           />
           <styled.div
             display="flex"
             flexDirection="column"
             alignItems="center"
-            height="100vh"
-            width="100vw"
             position="fixed"
-            zIndex="1000"
             inset="0"
+            zIndex="1000"
+            px={{ base: "4", md: "6" }}
+            pt={{ base: "4", md: "12vh" }}
+            pb="4"
             {...dialog_api.getPositionerProps()}
           >
             <styled.div
-              mt="90px"
               width="full"
-              maxW="600px"
-              rounded="md"
-              bg="bg"
+              maxW="640px"
+              maxH="full"
+              display="flex"
+              flexDirection="column"
+              overflow="hidden"
+              rounded="lg"
+              bg="bg.popover"
               borderWidth="1px"
-              borderColor="border"
-              shadow="xl"
+              borderColor="border.bold"
+              boxShadow="0 24px 64px -24px rgb(0 0 0 / 0.45), 0 2px 6px -2px rgb(0 0 0 / 0.08)"
               position="relative"
               pointerEvents="auto"
+              outline="0"
+              css={{
+                ...motion,
+                "@starting-style": {
+                  opacity: "0",
+                  transform: "translateY(-6px) scale(0.99)",
+                },
+              }}
+              _closed={{
+                opacity: "0",
+                transform: "translateY(-4px) scale(0.99)",
+              }}
               {...dialog_api.getContentProps()}
+              hidden={false}
+              inert={!open || undefined}
+              data-state={open ? "open" : "closed"}
             >
               <styled.h2 srOnly {...dialog_api.getTitleProps()}>
                 Search the docs
               </styled.h2>
 
-              <Stack gap="0" {...combobox_api.getRootProps()}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                minH="0"
+                {...combobox_api.getRootProps()}
+              >
                 <styled.div
-                  height="64px"
+                  h="14"
+                  flexShrink="0"
                   display="flex"
                   alignItems="center"
-                  borderBottomWidth="1px"
-                  borderBottomColor="border"
-                  position="relative"
-                  fontSize="lg"
+                  gap="3"
                   px="4"
+                  borderBottomWidth="1px"
+                  borderColor="border"
                 >
                   <Icon
-                    as={BiSearch}
-                    color="gray.300"
-                    mr="4"
-                    fontSize="1.3em"
+                    as={HiOutlineSearch}
+                    fontSize="18px"
+                    color="text.muted"
+                    flexShrink="0"
                   />
                   <styled.input
-                    width="full"
+                    flex="1"
+                    minW="0"
+                    h="full"
                     outline="0"
                     bg="transparent"
                     border="none"
-                    fontSize="lg"
-                    color="text"
+                    fontSize={{ base: "16px", md: "17px" }}
+                    color="text.bold"
+                    _placeholder={{ color: "text.muted" }}
                     {...combobox_api.getInputProps()}
+                    placeholder="Search docs"
                   />
+                  <styled.button
+                    type="button"
+                    className={keyChip}
+                    cursor="pointer"
+                    transition="color 120ms, border-color 120ms"
+                    _hover={{ color: "text.bold", borderColor: "border.bold" }}
+                    _focusVisible={{
+                      outline: "2px solid",
+                      outlineColor: "border.primary.bold",
+                      outlineOffset: "2px",
+                    }}
+                    {...dialog_api.getCloseTriggerProps()}
+                    aria-label="Close search"
+                  >
+                    esc
+                  </styled.button>
                 </styled.div>
+
                 <styled.div
-                  flex="1"
-                  listStyleType="none"
-                  maxHeight="340px"
+                  minH="0"
+                  maxH={{
+                    base: "calc(100dvh - 160px)",
+                    md: "min(440px, 60vh)",
+                  }}
                   overflowY="auto"
-                  px="1"
-                  {...combobox_api.getContentProps()}
+                  overscrollBehavior="contain"
+                  p="1.5"
+                  outline="0"
+                  {...listProps}
+                  hidden={listProps.hidden || results.length === 0}
                 >
-                  {results.map((item) => {
-                    const isLvl1 = item.type === "lvl1"
-                    return (
-                      <Link
-                        key={item.url}
-                        href={item.url}
-                        className={css({
-                          px: "3",
-                          py: "1",
-                          _highlighted: {
-                            bg: "bg.primary.bold",
-                            color: "text.inverse",
-                          },
-                          display: "flex",
-                          alignItems: "center",
-                          minHeight: "14",
-                          textDecoration: "none",
+                  {groups.map((group, index) => (
+                    <styled.div
+                      key={group.key}
+                      mt={index > 0 ? "2" : undefined}
+                      {...combobox_api.getItemGroupProps({ id: group.key })}
+                    >
+                      <styled.div
+                        px="3.5"
+                        pt="2"
+                        pb="1.5"
+                        fontFamily="mono"
+                        fontSize="10px"
+                        letterSpacing="0.12em"
+                        textTransform="uppercase"
+                        color="text.muted"
+                        {...combobox_api.getItemGroupLabelProps({
+                          htmlFor: group.key,
                         })}
-                        {...combobox_api.getItemProps({ item })}
                       >
-                        <Icon
-                          as={isLvl1 ? HiDocument : HiHashtag}
-                          opacity={0.4}
-                        />
-
-                        <Box flex="1" minW="0" ml="4">
-                          {!isLvl1 && (
+                        {sectionLabels[group.section] ?? group.section}
+                      </styled.div>
+                      {group.items.map((item) => {
+                        const trail = getTrail(item)
+                        return (
+                          <Link
+                            key={item.url}
+                            href={item.url}
+                            className={itemStyle}
+                            {...combobox_api.getItemProps({ item })}
+                          >
+                            <Box flex="1" minW="0">
+                              {trail && (
+                                <Box
+                                  fontFamily="mono"
+                                  fontSize="11px"
+                                  lineHeight="1.4"
+                                  truncate
+                                >
+                                  {trail}
+                                </Box>
+                              )}
+                              <Box
+                                fontSize="14px"
+                                fontWeight="medium"
+                                lineHeight="1.45"
+                                color="text.bold"
+                                truncate
+                              >
+                                <Highlight text={item.content} query={query} />
+                              </Box>
+                              {item.text && (
+                                <Box fontSize="13px" lineHeight="1.45" truncate>
+                                  <Highlight text={item.text} query={query} />
+                                </Box>
+                              )}
+                            </Box>
                             <Box
-                              fontWeight="medium"
-                              fontSize="xs"
-                              className={dim}
+                              flexShrink="0"
+                              fontFamily="mono"
+                              fontSize="10px"
+                              letterSpacing="0.06em"
+                              px="1.5"
+                              h="5"
+                              display="inline-flex"
+                              alignItems="center"
+                              rounded="sm"
+                              borderWidth="1px"
+                              borderColor="border"
+                              aria-hidden
                             >
-                              {item.hierarchy.lvl1}
+                              {item.type === "lvl1"
+                                ? "page"
+                                : item.type === "lvl2"
+                                  ? "h2"
+                                  : "h3"}
                             </Box>
-                          )}
-                          <Box fontWeight="semibold">{item.content}</Box>
-                          {item.text && (
-                            <Box fontSize="sm" truncate className={dim}>
-                              {item.text}
-                            </Box>
-                          )}
-                        </Box>
-
-                        <Box
-                          flexShrink="0"
-                          ms="3"
-                          fontSize="xs"
-                          fontWeight="medium"
-                          className={dim}
-                        >
-                          {sectionLabels[item.url.split("/")[1]]}
-                        </Box>
-                      </Link>
-                    )
-                  })}
+                          </Link>
+                        )
+                      })}
+                    </styled.div>
+                  ))}
                 </styled.div>
-              </Stack>
-              <div />
+
+                {results.length === 0 && (
+                  <styled.output
+                    display="block"
+                    px="5"
+                    py="10"
+                    textAlign="center"
+                    fontFamily="mono"
+                    fontSize="12px"
+                    color="text.muted"
+                  >
+                    {noResults ? (
+                      <>
+                        <styled.p color="text.bold">
+                          no results for &ldquo;{query}&rdquo;
+                        </styled.p>
+                        <styled.p mt="1.5">
+                          try a component name, like menu or dialog
+                        </styled.p>
+                      </>
+                    ) : (
+                      <styled.p>loading index&hellip;</styled.p>
+                    )}
+                  </styled.output>
+                )}
+              </Box>
+
+              <styled.div
+                display={{ base: "none", sm: "flex" }}
+                flexShrink="0"
+                alignItems="center"
+                gap="4"
+                px="4"
+                h="10"
+                borderTopWidth="1px"
+                borderColor="border"
+                fontFamily="mono"
+                fontSize="11px"
+                color="text.muted"
+                aria-hidden
+              >
+                <styled.span
+                  display="inline-flex"
+                  alignItems="center"
+                  gap="1.5"
+                >
+                  <kbd className={keyChip}>↑</kbd>
+                  <kbd className={keyChip}>↓</kbd>
+                  navigate
+                </styled.span>
+                <styled.span
+                  display="inline-flex"
+                  alignItems="center"
+                  gap="1.5"
+                >
+                  <kbd className={keyChip}>↵</kbd>
+                  open
+                </styled.span>
+                <styled.span
+                  display="inline-flex"
+                  alignItems="center"
+                  gap="1.5"
+                >
+                  <kbd className={keyChip}>esc</kbd>
+                  close
+                </styled.span>
+              </styled.div>
             </styled.div>
           </styled.div>
         </Portal>

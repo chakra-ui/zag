@@ -57,6 +57,8 @@ representing the headings on the page.
 Use `getIndicatorProps()` to render an animated bar that follows the active
 item. The indicator position is exposed as CSS variables on the root element.
 
+<Example id="TocIndicator">
+
 ```tsx {6}
 <div {...api.getRootProps()}>
   <nav {...api.getNavProps()}>
@@ -75,6 +77,8 @@ item. The indicator position is exposed as CSS variables on the root element.
 </div>
 ```
 
+</Example>
+
 ### Activating every visible heading
 
 By default, only the topmost visible heading is active. Near the end of the
@@ -92,6 +96,8 @@ const service = useMachine(toc.machine, {
 
 Control how headings are detected with `rootMargin` and `threshold`.
 
+<Example id="TocObserver">
+
 ```tsx {2-3}
 const service = useMachine(toc.machine, {
   rootMargin: "-20px 0% -40% 0%",
@@ -99,10 +105,14 @@ const service = useMachine(toc.machine, {
 })
 ```
 
+</Example>
+
 ### Custom scroll container
 
 By default, the machine observes the document viewport. Pass `scrollEl` to
 observe headings within a specific scrollable container.
+
+<Example id="TocScrollContainer">
 
 ```tsx {2}
 const service = useMachine(toc.machine, {
@@ -110,11 +120,15 @@ const service = useMachine(toc.machine, {
 })
 ```
 
+</Example>
+
 ### Auto-scrolling the TOC
 
 When the TOC, or a wrapper around it, is scrollable, the machine scrolls it to
 keep the first active item visible. It never scrolls the content, so it doesn't
 interrupt scrolling to a heading. Disable this with `autoScroll`.
+
+<Example id="TocNoAutoScroll">
 
 ```tsx {2}
 const service = useMachine(toc.machine, {
@@ -122,10 +136,14 @@ const service = useMachine(toc.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for active changes
 
 Use `onActiveChange` to respond when visible headings change. The callback
 receives both `activeIds` and `activeItems`.
+
+<Example id="TocActiveChange">
 
 ```tsx {2-5}
 const service = useMachine(toc.machine, {
@@ -136,9 +154,13 @@ const service = useMachine(toc.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled active state
 
 Use `activeIds` and `onActiveChange` for controlled usage.
+
+<Example id="TocControlled">
 
 ```tsx
 const service = useMachine(toc.machine, {
@@ -149,14 +171,20 @@ const service = useMachine(toc.machine, {
 })
 ```
 
+</Example>
+
 ### Getting item state
 
 Use `getItemState` to check if an item is active, first, or last.
+
+<Example id="TocItemState">
 
 ```tsx
 const itemState = api.getItemState({ item })
 // itemState => { active: boolean, first: boolean, last: boolean, depth: number }
 ```
+
+</Example>
 
 ## Styling guide
 

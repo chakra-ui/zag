@@ -61,11 +61,15 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial value. The value must be a `string`.
 
+<Example id="NumberInputDefaultValue">
+
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
   defaultValue: "13",
 })
 ```
+
+</Example>
 
 ### Controlled value
 
@@ -74,13 +78,19 @@ Use `value` and `onValueChange` to control the value externally.
 > **Note:** Since the value can be formatted, it's important to preserve the
 > value as a string.
 
+<Example id="NumberInputControlled">
+
 <CodeSnippet id="number-input/controlled.mdx" />
+
+</Example>
 
 ### Setting a minimum and maximum value
 
 Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
 range.
+
+<Example id="NumberInputMinMax">
 
 ```tsx {2,3}
 const service = useMachine(numberInput.machine, {
@@ -89,12 +99,16 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 > To allow the value overflow the specified min or max, set the
 > `allowOverflow: true` in the context.
 
 ### Validating overflow and underflow
 
 Use `onValueInvalid` to react when the value goes below `min` or above `max`.
+
+<Example id="NumberInputValueInvalid">
 
 ```tsx
 const service = useMachine(numberInput.machine, {
@@ -108,6 +122,8 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Scrubbing the input value
 
 Number input supports the scrubber interaction pattern. To use this pattern,
@@ -116,7 +132,11 @@ spread `api.getScrubberProps()` on the scrubbing element.
 It uses the Pointer lock API and tracks the pointer movement. It also renders a
 virtual cursor which mimics the real cursor's pointer.
 
+<Example id="NumberInputScrubber">
+
 <CodeSnippet id="number-input/scrubber.mdx" />
+
+</Example>
 
 ### Using the mousewheel to change value
 
@@ -124,11 +144,15 @@ The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
 the machine's context.
 
+<Example id="NumberInputMouseWheel">
+
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
   allowMouseWheel: true,
 })
 ```
+
+</Example>
 
 ### Clamp value when user blurs the input
 
@@ -138,15 +162,21 @@ input.
 
 To disable this behavior, pass `clampValueOnBlur` and set to `false`.
 
+<Example id="NumberInputNoClamp">
+
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
   clampValueOnBlur: false,
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 When the value changes, the `onValueChange` callback is invoked.
+
+<Example id="NumberInputValueChange">
 
 ```tsx {2-7}
 const service = useMachine(numberInput.machine, {
@@ -156,6 +186,8 @@ const service = useMachine(numberInput.machine, {
   },
 })
 ```
+
+</Example>
 
 `details.reason` says what caused the change, so you can tell a deliberate entry
 from a drag.
@@ -180,6 +212,8 @@ It fires when the input is blurred or `Enter` is pressed, when a stepper press
 or scrub gesture ends, and alongside each key or wheel step. A scrub that
 streams a hundred steps commits once.
 
+<Example id="NumberInputValueCommit">
+
 ```tsx
 const service = useMachine(numberInput.machine, {
   onValueCommit(details) {
@@ -189,9 +223,13 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for focus changes
 
 Use `onFocusChange` to react to focus and blur transitions.
+
+<Example id="NumberInputFocusChange">
 
 ```tsx
 const service = useMachine(numberInput.machine, {
@@ -202,10 +240,14 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Usage within forms
 
 To use the number input within forms, set the `name` property in the machine's
 context.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
@@ -213,11 +255,15 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Adjusting the precision of the value
 
 To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
 `maximumFractionDigits` or `minimumFractionDigits`
+
+<Example id="NumberInputPrecision">
 
 ```tsx {2-5}
 const service = useMachine(numberInput.machine, {
@@ -228,9 +274,13 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling long press spin
 
 To disable the long press spin, set the `spinOnPress` to `false`.
+
+<Example id="NumberInputNoSpin">
 
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
@@ -238,9 +288,13 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Choosing mobile keyboard type
 
 Set `inputMode` to hint the keyboard type on mobile.
+
+<Example>
 
 ```tsx
 const service = useMachine(numberInput.machine, {
@@ -248,10 +302,14 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Format and parse value
 
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
+
+<Example id="NumberInputCurrency">
 
 ```tsx {2-5}
 const service = useMachine(numberInput.machine, {
@@ -262,9 +320,13 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Customizing accessibility labels
 
 Use `translations` to customize increment/decrement labels and value text.
+
+<Example>
 
 ```tsx
 const service = useMachine(numberInput.machine, {
@@ -276,10 +338,14 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
+</Example>
+
 ### Submitting with an external form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
+
+<Example>
 
 ```tsx
 const service = useMachine(numberInput.machine, {
@@ -287,6 +353,8 @@ const service = useMachine(numberInput.machine, {
   form: "checkout-form",
 })
 ```
+
+</Example>
 
 ## Styling guide
 

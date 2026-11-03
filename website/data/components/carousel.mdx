@@ -61,11 +61,15 @@ Then use the framework integration helpers:
 
 Set `orientation` to `vertical` to render a vertical carousel.
 
+<Example id="CarouselVertical">
+
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   orientation: "vertical",
 })
 ```
+
+</Example>
 
 ### Setting the initial slide
 
@@ -75,15 +79,21 @@ Set `defaultPage` to define the initial page.
 > layout. It does not necessarily correspond to the index of the slide in the
 > carousel.
 
+<Example id="CarouselInitialPage">
+
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   defaultPage: 2,
 })
 ```
 
+</Example>
+
 ### Controlling the current page
 
 Use `page` and `onPageChange` for controlled navigation.
+
+<Example id="CarouselControlled">
 
 ```tsx
 const service = useMachine(carousel.machine, {
@@ -95,9 +105,13 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Setting slides per page
 
 Set `slidesPerPage` to control how many slides are visible per page.
+
+<Example id="CarouselSlidesPerPage">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
@@ -105,15 +119,21 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Setting slides per move
 
 Set `slidesPerMove` to control how many slides advance on next/previous.
+
+<Example id="CarouselSlidesPerMove">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   slidesPerMove: 2,
 })
 ```
+
+</Example>
 
 **Considerations**
 
@@ -129,15 +149,21 @@ const service = useMachine(carousel.machine, {
 
 Set `loop` to `true` to wrap around from last to first page.
 
+<Example id="CarouselLoop">
+
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   loop: true,
 })
 ```
 
+</Example>
+
 ### Setting the gap between slides
 
 Set `spacing` to control the gap between slides.
+
+<Example id="CarouselSpacing">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
@@ -145,9 +171,13 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Setting viewport padding
 
 Set `itemSpacing` to keep neighboring slides partially visible.
+
+<Example id="CarouselItemSpacing">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
@@ -155,9 +185,13 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Variable-width slides
 
 Set `autoSize` to `true` when slides have different widths.
+
+<Example id="CarouselAutoSize">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
@@ -165,9 +199,13 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for page changes
 
 When the carousel page changes, the `onPageChange` callback is invoked.
+
+<Example id="CarouselPageChange">
 
 ```tsx {2-5}
 const service = useMachine(carousel.machine, {
@@ -178,9 +216,13 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for drag and autoplay status
 
 Use status callbacks to react to dragging and autoplay lifecycle changes.
+
+<Example id="CarouselStatus">
 
 ```tsx
 const service = useMachine(carousel.machine, {
@@ -193,15 +235,21 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
+</Example>
+
 ### Dragging the carousel
 
 Set `allowMouseDrag` to `true` to drag the carousel with a mouse.
+
+<Example id="CarouselMouseDrag">
 
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   allowMouseDrag: true,
 })
 ```
+
+</Example>
 
 ### Autoplaying the carousel
 
@@ -216,15 +264,21 @@ const service = useMachine(carousel.machine, {
 Alternatively, you can configure the autoplay interval by setting the `delay`
 property.
 
+<Example id="CarouselAutoplay">
+
 ```tsx {2}
 const service = useMachine(carousel.machine, {
   autoPlay: { delay: 2000 },
 })
 ```
 
+</Example>
+
 ### Customizing accessibility messages
 
 Use `translations` to customize localized trigger, item, and progress text.
+
+<Example>
 
 ```tsx
 const service = useMachine(carousel.machine, {
@@ -240,6 +294,8 @@ const service = useMachine(carousel.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

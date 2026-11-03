@@ -60,6 +60,8 @@ Pass an `initialCrop` to start from a specific rectangle. The size is
 constrained to your min/max and viewport, and the position is clamped within the
 viewport.
 
+<Example id="ImageCropperInitialCrop">
+
 ```tsx {2-6}
 const service = useMachine(imageCropper.machine, {
   initialCrop: { x: 40, y: 40, width: 240, height: 240 },
@@ -68,16 +70,22 @@ const service = useMachine(imageCropper.machine, {
 const api = imageCropper.connect(service, normalizeProps)
 ```
 
+</Example>
+
 ### Fixed crop area
 
 Lock the crop window and allow only panning/zooming of the image beneath it by
 setting `fixedCropArea: true`.
+
+<Example id="ImageCropperFixed">
 
 ```tsx {2}
 const service = useMachine(imageCropper.machine, {
   fixedCropArea: true,
 })
 ```
+
+</Example>
 
 ### Crop shape and aspect ratio
 
@@ -86,6 +94,8 @@ const service = useMachine(imageCropper.machine, {
   not set and `cropShape` is `"rectangle"`, holding Shift while resizing locks
   to the current ratio.
 
+<Example id="ImageCropperCircle">
+
 ```tsx {2-3}
 const service = useMachine(imageCropper.machine, {
   cropShape: "circle",
@@ -93,10 +103,14 @@ const service = useMachine(imageCropper.machine, {
 })
 ```
 
+</Example>
+
 ### Controlling zoom, rotation, and flip
 
 You can configure defaults and limits, and also control them programmatically
 using the API.
+
+<Example id="ImageCropperTransform">
 
 ```tsx {2-6}
 const service = useMachine(imageCropper.machine, {
@@ -115,10 +129,14 @@ api.flipHorizontally() // toggle horizontal flip
 api.setFlip({ vertical: true }) // set vertical flip on
 ```
 
+</Example>
+
 ### Controlled transform values
 
 Use controlled props and callbacks when transform values are managed by your
 state.
+
+<Example id="ImageCropperControlled">
 
 ```tsx
 const service = useMachine(imageCropper.machine, {
@@ -137,9 +155,13 @@ const service = useMachine(imageCropper.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for crop changes
 
 Use `onCropChange` to react when the crop rectangle changes.
+
+<Example id="ImageCropperCropChange">
 
 ```tsx
 const service = useMachine(imageCropper.machine, {
@@ -150,10 +172,14 @@ const service = useMachine(imageCropper.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic resizing
 
 Use `api.resize(handle, delta)` to resize from any handle programmatically.
 Positive `delta` grows outward, negative shrinks inward.
+
+<Example id="ImageCropperResize">
 
 ```tsx
 // Grow the selection by 8px from the right edge
@@ -162,11 +188,15 @@ api.resize("e", 8)
 api.resize("nw", -4)
 ```
 
+</Example>
+
 ### Setting the crop programmatically
 
 Use `api.setCrop(rect)` to place the crop area at a rect in viewport
 coordinates, like `api.crop`. Use it for presets, numeric fields, or a "center"
 button.
+
+<Example id="ImageCropperSetCrop">
 
 ```tsx
 const { crop, viewportRect } = api
@@ -178,6 +208,8 @@ api.setCrop({
   y: (viewportRect.height - crop.height) / 2,
 })
 ```
+
+</Example>
 
 The rect is constrained the same way as `initialCrop`: `minSize`/`maxSize`,
 `aspectRatio` (or `cropShape: "circle"`), and the viewport bounds. When the rect
@@ -191,6 +223,8 @@ doesn't match the aspect ratio, the crop shrinks to fit inside it. Unlike
 
 Use `api.getCroppedImage` to export the current crop, taking
 zoom/rotation/flip/pan into account.
+
+<Example id="ImageCropperExport">
 
 ```tsx
 // Blob (default)
@@ -211,6 +245,8 @@ if (blob) {
 }
 ```
 
+</Example>
+
 Exports use the crop's natural resolution by default. Large images can exceed
 browser canvas limits, so use `maxSize` to constrain output dimensions when
 needed. Exports are never upscaled beyond natural resolution. The method
@@ -224,10 +260,14 @@ The image cropper uses two different coordinate systems:
 
 These are the coordinates you see in the UI, relative to the visible viewport:
 
+<Example id="ImageCropperCoordinates">
+
 ```tsx
 console.log(api.crop)
 // { x: 50, y: 30, width: 200, height: 150 }
 ```
+
+</Example>
 
 **Characteristics:**
 
@@ -335,6 +375,8 @@ api.getCropData()
 
 Configure keyboard nudge steps for move/resize:
 
+<Example id="ImageCropperNudge">
+
 ```tsx {2-4}
 const service = useMachine(imageCropper.machine, {
   nudgeStep: 1,
@@ -343,6 +385,8 @@ const service = useMachine(imageCropper.machine, {
 })
 ```
 
+</Example>
+
 ### Accessibility
 
 - The root is a live region with helpful descriptions of crop, zoom, and
@@ -350,6 +394,8 @@ const service = useMachine(imageCropper.machine, {
 - The selection exposes slider-like semantics to assistive tech and supports
   keyboard movement, resizing (Alt+Arrows), and zooming (+/-).
 - Customize accessible labels and descriptions via `translations`:
+
+<Example>
 
 ```tsx {2-7}
 const service = useMachine(imageCropper.machine, {
@@ -360,6 +406,8 @@ const service = useMachine(imageCropper.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

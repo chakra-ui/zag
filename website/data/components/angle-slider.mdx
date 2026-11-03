@@ -57,17 +57,25 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial slider value.
 
+<Example id="AngleSliderInitialValue">
+
 ```tsx {2}
 const service = useMachine(angleSlider.machine, {
   defaultValue: 45,
 })
 ```
 
+</Example>
+
 ### Controlled angle slider
 
 Use `value` and `onValueChange` to control the value externally.
 
+<Example id="AngleSliderControlled">
+
 <CodeSnippet id="angle-slider/controlled.mdx" />
+
+</Example>
 
 ### Setting the value's granularity
 
@@ -76,16 +84,22 @@ to control granularity.
 
 For example, set `step` to `0.01` for two-decimal precision:
 
+<Example id="AngleSliderStep">
+
 ```tsx {2}
 const service = useMachine(angleSlider.machine, {
   step: 0.01,
 })
 ```
 
+</Example>
+
 ### Listening for changes
 
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked.
+
+<Example id="AngleSliderValueChange">
 
 ```tsx {2-7}
 const service = useMachine(angleSlider.machine, {
@@ -99,15 +113,21 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
+</Example>
+
 ### Read-only mode
 
 Set `readOnly` to prevent updates while preserving focus and form semantics.
+
+<Example id="AngleSliderReadOnly">
 
 ```tsx {2}
 const service = useMachine(angleSlider.machine, {
   readOnly: true,
 })
 ```
+
+</Example>
 
 ### Usage in forms
 
@@ -116,15 +136,21 @@ To submit the value with a form:
 - Set `name` on the machine.
 - Render the hidden input from `api.getHiddenInputProps()`.
 
+<Example>
+
 ```tsx {2}
 const service = useMachine(angleSlider.machine, {
   name: "wind-direction",
 })
 ```
 
+</Example>
+
 ### Labeling the thumb for assistive tech
 
 Use `aria-label` or `aria-labelledby` when you need custom labeling.
+
+<Example>
 
 ```tsx {2}
 const service = useMachine(angleSlider.machine, {
@@ -132,13 +158,19 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
+</Example>
+
 ### Using angle slider marks
 
 To show marks or ticks along the angle slider track, use the exposed
 `api.getMarkerProps()` method to position the angle slider marks at desired
 angles.
 
+<Example id="AngleSliderMarks">
+
 <CodeSnippet id="angle-slider/tick-marks.mdx" />
+
+</Example>
 
 ## Styling guide
 

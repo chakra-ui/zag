@@ -53,6 +53,8 @@ Then use the framework integration helpers:
 Pass an array of items to the machine. Each item needs a unique `value`, which
 is how every part and API method addresses it.
 
+<Example id="StepsDefinition">
+
 ```tsx
 const service = useMachine(steps.machine, {
   items: [
@@ -62,6 +64,8 @@ const service = useMachine(steps.machine, {
   ],
 })
 ```
+
+</Example>
 
 `title` and `description` are optional. When the current step has a `title`, the
 progress bar announces it, for example "Step 2 of 3: Payment".
@@ -82,6 +86,8 @@ Items carry four optional flags:
 render without filtering. `api.index` and `api.count` use the same positions,
 which makes "Step 2 of 3" straightforward.
 
+<Example id="StepsRendering">
+
 ```tsx
 {
   api.items.map((item, index) => (
@@ -97,6 +103,8 @@ which makes "Step 2 of 3" straightforward.
   Step {api.index + 1} of {api.count}
 </p>
 ```
+
+</Example>
 
 Pass your item type to `connect` to keep any extra fields typed on `api.item`
 and `api.items`.
@@ -114,15 +122,21 @@ api.item?.icon // string
 
 Set the initial step by passing `defaultValue` to the machine context.
 
+<Example id="StepsInitialStep">
+
 ```tsx {2}
 const service = useMachine(steps.machine, {
   defaultValue: "payment",
 })
 ```
 
+</Example>
+
 ### Controlled current step
 
 Use `value` and `onValueChange` for controlled usage.
+
+<Example id="StepsControlled">
 
 ```tsx
 const service = useMachine(steps.machine, {
@@ -133,6 +147,8 @@ const service = useMachine(steps.machine, {
   },
 })
 ```
+
+</Example>
 
 The value is `null` when there is no current step, such as while `items` is
 still loading.
@@ -151,6 +167,8 @@ the last step.
 The completed content is a focusable region, not a tab panel. Finishing moves
 focus to it, so the button the user pressed being disabled doesn't drop focus.
 
+<Example id="StepsCompletion">
+
 ```tsx {2-4}
 const service = useMachine(steps.machine, {
   onComplete(details) {
@@ -158,6 +176,8 @@ const service = useMachine(steps.machine, {
   },
 })
 ```
+
+</Example>
 
 Because completion is a value, the usual value props control it. Start on the
 completed screen with `defaultValue: steps.COMPLETE`, or set it from your own
@@ -174,6 +194,8 @@ or not you apply it.
 
 Completion is its own controllable value, so it survives navigating backwards.
 
+<Example id="StepsCompletedValues">
+
 ```tsx
 const service = useMachine(steps.machine, {
   completedValues,
@@ -183,6 +205,8 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+</Example>
+
 > `goToNextStep` marks the step it leaves as completed, so `onCompletedChange`
 > also fires on navigation.
 
@@ -191,11 +215,15 @@ const service = useMachine(steps.machine, {
 To enforce linear steps, set the `linear` prop to `true`. Every step before the
 one being navigated to must then be completed, optional, or disabled.
 
+<Example id="StepsLinear">
+
 ```tsx {2}
 const service = useMachine(steps.machine, {
   linear: true,
 })
 ```
+
+</Example>
 
 > An unvisited `optional` step satisfies this rule, so a jump past a run of
 > optional steps is allowed even in linear mode.
@@ -205,6 +233,8 @@ const service = useMachine(steps.machine, {
 The machine does not validate anything itself. Derive `invalid` for each item
 from your form state, and the step blocks forward navigation and gets
 `data-invalid`.
+
+<Example id="StepsValidation">
 
 ```tsx
 const errors = validate(formData)
@@ -217,6 +247,8 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+</Example>
+
 Error messages stay with your form. To show them only after the user tries to
 move on, record the step in `onNavigationBlocked` when `reason` is `"invalid"`.
 For asynchronous validation, keep the step `invalid` until the check resolves.
@@ -225,6 +257,8 @@ For asynchronous validation, keep the step `invalid` until the check resolves.
 
 When navigation is refused, `onNavigationBlocked` fires with the reason and the
 step responsible.
+
+<Example id="StepsBlocked">
 
 ```tsx {2-5}
 const service = useMachine(steps.machine, {
@@ -235,11 +269,15 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+</Example>
+
 ### Skipping optional steps
 
 Mark a step `optional` and render a `skipTrigger`. Unlike `next`, skipping
 ignores `invalid` and does not mark the step completed. It gets `skipped`
 instead.
+
+<Example id="StepsSkip">
 
 ```tsx
 const service = useMachine(steps.machine, {
@@ -249,10 +287,14 @@ const service = useMachine(steps.machine, {
 // <button {...api.getSkipTriggerProps()}>Skip</button>
 ```
 
+</Example>
+
 ### Locking a completed step
 
 Set `editable: false` to stop a step being revisited once it is completed.
 `next` and `prev` pass over locked steps, so the user is never stranded.
+
+<Example id="StepsLocked">
 
 ```tsx
 const service = useMachine(steps.machine, {
@@ -260,11 +302,15 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
 orientation of the steps.
+
+<Example id="StepsVertical">
 
 ```tsx {2}
 const service = useMachine(steps.machine, {
@@ -272,9 +318,13 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic navigation
 
 Use the API methods to move through the flow in code.
+
+<Example id="StepsProgrammatic">
 
 ```tsx
 api.setValue("review")
@@ -284,11 +334,15 @@ api.skipStep()
 api.resetStep()
 ```
 
+</Example>
+
 ### Localizing the progress bar
 
 The progress bar is labelled "Progress" and announces its value as "Step 2 of 3:
 Payment", or "50% complete" when the step has no `title`. Pass `translations` to
 change either.
+
+<Example>
 
 ```tsx
 const service = useMachine(steps.machine, {
@@ -299,6 +353,8 @@ const service = useMachine(steps.machine, {
   },
 })
 ```
+
+</Example>
 
 ## Styling guide
 

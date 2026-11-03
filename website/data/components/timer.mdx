@@ -55,11 +55,15 @@ Then use the framework integration helpers:
 Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
 
+<Example id="TimerStartValue">
+
 ```tsx
 const service = useMachine(timer.machine, {
   startMs: 1000 * 60 * 60, // 1 hour
 })
 ```
+
+</Example>
 
 Alternatively, you can also use the `timer.parse` function to convert a date
 time string or object into milliseconds
@@ -76,22 +80,30 @@ const service = useMachine(timer.machine, {
 Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
 
+<Example id="TimerAutoStart">
+
 ```tsx
 const service = useMachine(timer.machine, {
   autoStart: true,
 })
 ```
 
+</Example>
+
 ### Usage as countdown timer
 
 To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
+
+<Example id="TimerCountdown">
 
 ```tsx
 const service = useMachine(timer.machine, {
   countdown: true,
 })
 ```
+
+</Example>
 
 ### Setting the target value
 
@@ -112,16 +124,22 @@ const service = useMachine(timer.machine, {
 When `targetMs` is set and `countdown=false|undefined`, the timer ticks up to
 the specified target time.
 
+<Example id="TimerTarget">
+
 ```tsx
 const service = useMachine(timer.machine, {
   targetMs: 1000 * 60 * 60, // 1 hour
 })
 ```
 
+</Example>
+
 ### Setting the tick interval
 
 Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
+
+<Example id="TimerInterval">
 
 ```tsx
 const service = useMachine(timer.machine, {
@@ -129,10 +147,14 @@ const service = useMachine(timer.machine, {
 })
 ```
 
+</Example>
+
 ### Listening to tick events
 
 When the timer ticks, the `onTick` callback is invoked. You can listen to this
 event and update your UI accordingly.
+
+<Example id="TimerTick">
 
 ```tsx
 const service = useMachine(timer.machine, {
@@ -143,9 +165,13 @@ const service = useMachine(timer.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for completion events
 
 When the timer reaches the target time, the `onComplete` callback is invoked.
+
+<Example id="TimerComplete">
 
 ```tsx
 const service = useMachine(timer.machine, {
@@ -157,9 +183,13 @@ const service = useMachine(timer.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic timer controls
 
 Use the connected API for timer actions.
+
+<Example id="TimerProgrammatic">
 
 ```tsx
 api.start()
@@ -168,6 +198,8 @@ api.resume()
 api.reset()
 api.restart()
 ```
+
+</Example>
 
 ## Methods and Properties
 

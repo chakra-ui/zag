@@ -65,6 +65,8 @@ Then use the framework integration helpers:
 By default, the tooltip opens after `400ms` and closes after `150ms`. You can
 customize this by passing the `openDelay` and `closeDelay` context properties.
 
+<Example id="TooltipTimings">
+
 ```tsx {2-3}
 const service = useMachine(tooltip.machine, {
   openDelay: 500,
@@ -72,11 +74,15 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+</Example>
+
 ### Changing the placement
 
 The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
 `positioning.placement` context property to the machine.
+
+<Example id="TooltipPlacement">
 
 ```tsx {2-4}
 const service = useMachine(tooltip.machine, {
@@ -86,10 +92,14 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+</Example>
+
 ### Adding an arrow
 
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
+
+<Example id="TooltipArrow">
 
 ```tsx {6-8}
 //...
@@ -106,11 +116,15 @@ return (
 //...
 ```
 
+</Example>
+
 ### Dismiss behavior
 
 Tooltips close on Escape, click, pointer down, and scroll by default. Configure
 these with `closeOnEscape`, `closeOnClick`, `closeOnPointerDown`, and
 `closeOnScroll`.
+
+<Example id="TooltipDismiss">
 
 ```tsx {2-5}
 const service = useMachine(tooltip.machine, {
@@ -121,6 +135,8 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+</Example>
+
 ### Making the tooltip interactive
 
 Set the `interactive` context property to `true` to make the tooltip
@@ -129,15 +145,21 @@ interactive.
 When a tooltip is interactive, it remains open as the pointer moves from the
 trigger into the content.
 
+<Example id="TooltipInteractive">
+
 ```tsx {2}
 const service = useMachine(tooltip.machine, {
   interactive: true,
 })
 ```
 
+</Example>
+
 ### Listening for open state changes
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
+
+<Example id="TooltipOpenChange">
 
 ```tsx {2-7}
 const service = useMachine(tooltip.machine, {
@@ -148,10 +170,14 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+</Example>
+
 ### Multiple triggers
 
 A single tooltip instance can be shared across multiple trigger elements. Pass a
 `value` to `getTriggerProps` to identify each trigger.
+
+<Example id="TooltipMultipleTriggers">
 
 ```tsx
 const service = useMachine(tooltip.machine, {
@@ -175,12 +201,16 @@ return (
 )
 ```
 
+</Example>
+
 When hovering a different trigger while the tooltip is open, it repositions
 without closing. `aria-describedby` is scoped to the active trigger.
 
 ### Controlled tooltip
 
 Use `open` and `onOpenChange` for controlled usage.
+
+<Example id="TooltipControlled">
 
 ```tsx
 const service = useMachine(tooltip.machine, {
@@ -191,13 +221,19 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+</Example>
+
 ### Programmatic open
 
 Use the connected API for imperative control.
 
+<Example id="TooltipProgrammatic">
+
 ```tsx
 api.setOpen(true)
 ```
+
+</Example>
 
 ## Styling guide
 

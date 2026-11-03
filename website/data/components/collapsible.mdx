@@ -52,21 +52,31 @@ Then use the framework integration helpers:
 
 Set `defaultOpen` to control the initial open state.
 
+<Example id="CollapsibleInitialOpen">
+
 ```tsx
 const service = useMachine(collapsible.machine, {
   defaultOpen: true,
 })
 ```
 
+</Example>
+
 ### Controlled collapsible
 
 Use `open` and `onOpenChange` to control the open state externally.
 
+<Example id="CollapsibleControlled">
+
 <CodeSnippet id="collapsible/controlled.mdx" />
+
+</Example>
 
 ### Listening for changes
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.
+
+<Example id="CollapsibleOpenChange">
 
 ```tsx {2-5}
 const service = useMachine(collapsible.machine, {
@@ -77,9 +87,13 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
+</Example>
+
 ### Disabling the collapsible
 
 Set `disabled` to `true` to disable interaction.
+
+<Example id="CollapsibleDisabled">
 
 ```tsx {2}
 const service = useMachine(collapsible.machine, {
@@ -87,17 +101,23 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
+</Example>
+
 ### Searching closed content with find-in-page
 
 Set `hiddenUntilFound` to keep the closed content searchable with the browser's
 find-in-page. When a match is found inside it, the collapsible opens and the
 match shows without the open animation.
 
+<Example id="CollapsibleHiddenUntilFound">
+
 ```tsx {2}
 const service = useMachine(collapsible.machine, {
   hiddenUntilFound: true,
 })
 ```
+
+</Example>
 
 In controlled mode, the open goes through `onOpenChange`. If `open` isn't
 updated, the content is hidden again.
@@ -112,6 +132,8 @@ Use `collapsedHeight` or `collapsedWidth` to create a "partially collapsed"
 state. When collapsed, the content keeps the specified minimum size instead of
 collapsing to `0px`.
 
+<Example id="CollapsiblePartial">
+
 ```tsx {3}
 const service = useMachine(collapsible.machine, {
   // Content shows 100px height when collapsed
@@ -119,12 +141,16 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
+</Example>
+
 This is useful for creating "show more/less" content sections or preview states
 where a portion of the content shows even when collapsed.
 
 ### Running code after close animation
 
 Use `onExitComplete` to run code when the close animation finishes.
+
+<Example id="CollapsibleExitComplete">
 
 ```tsx
 const service = useMachine(collapsible.machine, {
@@ -134,10 +160,14 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
+</Example>
+
 ### Animating the collapsible
 
 Use CSS animations to animate the collapsible when it expands and collapses. The
 `--height` and `--width` custom properties are attached to the content part.
+
+<Example id="CollapsibleAnimation">
 
 ```css
 @keyframes expand {
@@ -171,6 +201,8 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
   animation: collapse 110ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 ```
+
+</Example>
 
 ## Styling guide
 

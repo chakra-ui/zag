@@ -1,84 +1,94 @@
 @layer recipes {
   .Root {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     position: relative;
-    line-height: 0;
     width: fit-content;
-    --switch-track-diff: calc(
+    cursor: pointer;
+    --switch-track-width: 2.25rem;
+    --switch-track-height: 1.25rem;
+    --switch-thumb-size: calc(var(--switch-track-height) - 4px);
+    --switch-thumb-x: calc(
       var(--switch-track-width) - var(--switch-track-height)
     );
-    --switch-thumb-x: var(--switch-track-diff);
-    --switch-track-width: 2.7rem;
-    --switch-track-height: 1.5rem;
+
+    &[data-disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    &[data-readonly] {
+      cursor: default;
+    }
   }
 
   .Control {
     display: inline-flex;
+    align-items: center;
     flex-shrink: 0;
-    justify-content: flex-start;
-    box-sizing: content-box;
-    border-radius: 9999px;
-    padding: 0.125rem;
+    box-sizing: border-box;
     width: var(--switch-track-width);
     height: var(--switch-track-height);
-    transition-property:
-      background-color, border-color, color, fill, stroke, opacity, box-shadow,
-      transform;
-    transition-duration: 150ms;
-    background: var(--colors-bg-bold);
-    -webkit-box-pack: start;
+    padding: 2px;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 9999px;
+    background: var(--colors-bg-control);
+    transition:
+      background 150ms ease-out,
+      border-color 150ms ease-out;
 
-    &[data-state="checked"] {
-      background: var(--colors-bg-primary-bold);
+    &[data-hover] {
+      border-color: var(--colors-fg-subtle);
     }
 
-    &[data-focus] {
-      outline: 2px solid var(--colors-bg-primary-bold);
+    &[data-state="checked"] {
+      background: var(--colors-accent);
+      border-color: var(--colors-accent);
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--colors-accent);
       outline-offset: 2px;
     }
 
-    &[data-disabled] {
-      opacity: 0.5;
-
-      filter: grayscale(100%);
+    &[data-invalid] {
+      border-color: var(--colors-border-error);
     }
   }
 
   .Thumb {
-    background: var(--colors-bg-subtle);
-    transition-property: transform;
-    transition-duration: 200ms;
-    border-radius: inherit;
-    width: var(--switch-track-height);
-    height: var(--switch-track-height);
-    position: relative;
-
-    &::before {
-      -webkit-transition: background-color 0.2s ease-in-out;
-      transition: background-color 0.2s ease-in-out;
-      position: absolute;
-      --thumb-size: calc(var(--switch-track-height) + 0.7rem);
-      height: var(--thumb-size);
-      width: var(--thumb-size);
-      background: transparent;
-      content: "";
-      z-index: 1;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: inherit;
-    }
+    width: var(--switch-thumb-size);
+    height: var(--switch-thumb-size);
+    margin-inline-start: -1px;
+    border-radius: 9999px;
+    background: var(--colors-fg-subtle);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+    transition:
+      translate 150ms ease-out,
+      background 150ms ease-out;
 
     &[data-state="checked"] {
-      transform: translateX(var(--switch-thumb-x));
+      background: var(--colors-bg-page);
+      translate: var(--switch-thumb-x) 0;
+    }
+
+    [dir="rtl"] &[data-state="checked"] {
+      translate: calc(var(--switch-thumb-x) * -1) 0;
     }
   }
 
   .Label {
     font-size: 0.875rem;
     font-weight: 500;
+    color: var(--colors-fg);
     user-select: none;
-    margin-inline-start: 0.5rem;
+    margin-inline-start: 0.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Control,
+  .Thumb {
+    transition: none;
   }
 }

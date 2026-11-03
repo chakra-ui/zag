@@ -1,0 +1,25 @@
+@layer recipes {
+  .Area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 20rem;
+    height: 7rem;
+    border: 1px dashed var(--colors-border-strong);
+    border-radius: 10px;
+    background: var(--colors-bg-raised);
+    color: var(--colors-fg-subtle);
+    font-size: 0.875rem;
+    user-select: none;
+    -webkit-touch-callout: none;
+    transition:
+      border-color 150ms ease-out,
+      color 150ms ease-out;
+
+    &[data-state="open"] {
+      border-color: var(--colors-accent);
+      color: var(--colors-accent);
+    }
+  }
+}

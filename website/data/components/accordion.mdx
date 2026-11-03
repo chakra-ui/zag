@@ -62,15 +62,21 @@ page.
 
 Set `multiple` to `true` to allow more than one expanded item at a time.
 
+<Example id="AccordionMultiple">
+
 ```tsx {2}
 const service = useMachine(accordion.machine, {
   multiple: true,
 })
 ```
 
+</Example>
+
 ### Setting the initial value
 
 Set `defaultValue` to define expanded items on first render.
+
+<Example id="AccordionInitialValue">
 
 ```tsx
 // multiple mode
@@ -85,11 +91,17 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
+</Example>
+
 ### Controlled accordions
 
 Use `value` and `onValueChange` to control expanded items externally.
 
+<Example id="AccordionControlled">
+
 <CodeSnippet id="accordion/controlled.mdx" />
+
+</Example>
 
 ### Keeping one item open
 
@@ -98,15 +110,21 @@ always keep one item open.
 
 > Note: If `multiple` is `true`, items are always collapsible.
 
+<Example id="AccordionKeepOpen">
+
 ```tsx {2}
 const service = useMachine(accordion.machine, {
   collapsible: false,
 })
 ```
 
+</Example>
+
 ### Listening for value changes
 
 When the accordion value changes, the `onValueChange` callback is invoked.
+
+<Example id="AccordionValueChange">
 
 ```tsx {2-5}
 const service = useMachine(accordion.machine, {
@@ -117,9 +135,13 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
+</Example>
+
 ### Listening for focus changes
 
 Use `onFocusChange` to react when keyboard focus moves between item triggers.
+
+<Example id="AccordionFocusChange">
 
 ```tsx
 const service = useMachine(accordion.machine, {
@@ -130,15 +152,21 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
+</Example>
+
 ### Horizontal orientation
 
 Set `orientation` to `horizontal` when rendering items side by side.
+
+<Example id="AccordionHorizontal">
 
 ```tsx {2}
 const service = useMachine(accordion.machine, {
   orientation: "horizontal",
 })
 ```
+
+</Example>
 
 ### Disabling an accordion item
 
@@ -147,6 +175,8 @@ To disable a specific accordion item, pass the `disabled: true` property to the
 
 When an accordion item is disabled, it is skipped from keyboard navigation and
 can't be interacted with.
+
+<Example id="AccordionDisabled">
 
 ```tsx
 //...
@@ -163,6 +193,8 @@ can't be interacted with.
 //...
 ```
 
+</Example>
+
 You can also disable the entire accordion by setting `disabled` on the machine.
 
 ```tsx {2}
@@ -177,11 +209,15 @@ Set `hiddenUntilFound` to keep closed items searchable with the browser's
 find-in-page. When a match is found inside a closed item, the item expands and
 the match shows without the open animation.
 
+<Example id="AccordionHiddenUntilFound">
+
 ```tsx {2}
 const service = useMachine(accordion.machine, {
   hiddenUntilFound: true,
 })
 ```
+
+</Example>
 
 In controlled mode, the expansion goes through `onValueChange`. If `value` isn't
 updated, the item is hidden again.
