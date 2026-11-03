@@ -185,6 +185,9 @@ export const machine = createMachine<DatePickerSchema>({
       inputValue: bindable(() => ({
         defaultValue: "",
       })),
+      inputValueIndex: bindable(() => ({
+        defaultValue: 0,
+      })),
       activeIndex: bindable(() => ({
         defaultValue: 0,
         sync: true,
@@ -933,6 +936,7 @@ export const machine = createMachine<DatePickerSchema>({
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = computed("valueAsString")
         context.set("inputValue", valueAsString[activeIndex])
+        context.set("inputValueIndex", activeIndex)
       },
       focusPreviousDay(params) {
         const { context } = params
@@ -1165,13 +1169,13 @@ export const machine = createMachine<DatePickerSchema>({
       setInputValue({ context, event }) {
         if (context.get("activeIndex") !== event.index) return
         context.set("inputValue", event.value)
+        context.set("inputValueIndex", event.index)
       },
 
-      syncInputValue({ scope, context, event }) {
+      syncInputValue({ scope, context }) {
         queueMicrotask(() => {
           const inputEls = dom.getInputEls(scope)
-          const idx = event.index ?? context.get("activeIndex")
-          setElementValue(inputEls[idx], context.get("inputValue"))
+          setElementValue(inputEls[context.get("inputValueIndex")], context.get("inputValue"))
         })
       },
 
@@ -1215,6 +1219,7 @@ export const machine = createMachine<DatePickerSchema>({
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = getValueAsString(adjustedValues, prop)
         context.set("inputValue", valueAsString[event.index])
+        context.set("inputValueIndex", event.index)
       },
 
       resetView({ context }) {
