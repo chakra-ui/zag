@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { useEffectOnce } from "../../hooks/use-effect-once"
 import "@styles/menu.css"
 

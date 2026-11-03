@@ -1,6 +1,7 @@
+import type { ComponentChildren } from "preact"
 import { Presence } from "./presence"
 
-export const Swap = (props: { children: React.ReactNode; open: boolean; fallback?: React.ReactNode }) => {
+export const Swap = (props: { children: ComponentChildren; open: boolean; fallback?: ComponentChildren }) => {
   const { children, open, fallback } = props
   return (
     <>

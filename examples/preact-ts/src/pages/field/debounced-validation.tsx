@@ -1,6 +1,6 @@
 import * as field from "@zag-js/field"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useRef, useState } from "react"
+import { useId, useRef, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/field.css"

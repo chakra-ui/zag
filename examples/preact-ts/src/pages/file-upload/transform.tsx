@@ -1,7 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { compressAccurately } from "image-conversion"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/file-upload.css"
 
 export default function Page() {

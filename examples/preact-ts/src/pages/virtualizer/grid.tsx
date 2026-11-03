@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { useGridVirtualizer } from "../../hooks/use-virtualizer"
 
 const estimateRowSize = () => CELL_HEIGHT

@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/angle-slider.css"
 
 const PRESETS = [0, 90, 180, 270]

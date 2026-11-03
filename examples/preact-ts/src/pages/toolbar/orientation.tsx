@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as toolbar from "@zag-js/toolbar"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
 import "@styles/toolbar.css"

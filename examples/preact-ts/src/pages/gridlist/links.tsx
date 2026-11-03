@@ -1,6 +1,6 @@
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/gridlist.css"

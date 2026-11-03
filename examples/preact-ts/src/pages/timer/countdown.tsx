@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as timer from "@zag-js/timer"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/timer.css"

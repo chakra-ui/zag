@@ -1,5 +1,5 @@
 import type { GroupMeta } from "@zag-js/virtualizer"
-import { useRef } from "react"
+import { useRef } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEMS_PER_GROUP = 50

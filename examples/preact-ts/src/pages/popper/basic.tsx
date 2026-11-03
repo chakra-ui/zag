@@ -1,5 +1,5 @@
 import { getPlacement, getPlacementStyles } from "@zag-js/popper"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks"
 
 const useSafeEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
 

@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { menuControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

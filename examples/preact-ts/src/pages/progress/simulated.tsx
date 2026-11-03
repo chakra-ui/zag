@@ -1,6 +1,6 @@
-import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useEffect, useId, useState } from "react"
+import * as progress from "@zag-js/progress"
+import { useEffect, useId, useState } from "preact/hooks"
 import "@styles/progress.css"
 
 export default function Page() {

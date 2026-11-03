@@ -1,10 +1,11 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
-import { useRouter, useSearchParams } from "../../lib/navigation"
-import { Suspense, useId, useState } from "react"
+import { Suspense } from "preact/compat"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { useRouter, useSearchParams } from "../../lib/navigation"
 import "@styles/tabs.css"
 
 function PageContent() {

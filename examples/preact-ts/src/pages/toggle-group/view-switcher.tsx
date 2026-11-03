@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as toggle from "@zag-js/toggle-group"
 import { LayoutGridIcon, ListIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/toggle-group.css"
 
 const views = [

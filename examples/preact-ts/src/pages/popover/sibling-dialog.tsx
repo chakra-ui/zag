@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import "@styles/popover.css"
 import "@styles/dialog.css"

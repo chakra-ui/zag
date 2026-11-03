@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId, useMemo, useRef } from "react"
+import { useId, useMemo, useRef } from "preact/hooks"
 import { useAsyncList } from "../../hooks/use-async-list"
 import "@styles/combobox.css"
 

@@ -1,5 +1,6 @@
 import { trapFocus, type TrapFocusOptions } from "@zag-js/focus-trap"
-import { useEffect, type RefObject } from "react"
+import type { RefObject } from "preact"
+import { useEffect } from "preact/hooks"
 
 export function useFocusTrap(
   ref: RefObject<HTMLElement | null>,

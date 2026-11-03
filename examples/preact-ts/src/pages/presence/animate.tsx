@@ -1,16 +1,17 @@
-import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import * as React from "react"
+import * as presence from "@zag-js/presence"
+import { cloneElement, isValidElement, toChildArray, type ComponentChildren, type VNode } from "preact"
+import { useLayoutEffect, useRef, useState } from "preact/hooks"
 import "@styles/presence.css"
 
 interface AnimatePresenceProps {
   onExitComplete?: () => void
-  children: React.ReactNode
+  children: ComponentChildren
 }
 
-function getChild(children: React.ReactNode) {
-  const child = Array.isArray(children) ? React.Children.only(children) : children
-  return React.isValidElement(child) ? child : undefined
+function getChild(children: ComponentChildren) {
+  const [child] = toChildArray(children)
+  return isValidElement(child) ? child : undefined
 }
 
 function AnimatePresence(props: AnimatePresenceProps) {
@@ -21,20 +22,20 @@ function AnimatePresence(props: AnimatePresenceProps) {
   const service = useMachine(presence.machine, { present, onExitComplete })
   const api = presence.connect(service, normalizeProps)
 
-  const lastPresentChild = React.useRef<React.ReactNode>(null)
+  const lastPresentChild = useRef<ComponentChildren>(null)
   const child = getChild(children)
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (child) lastPresentChild.current = child
   }, [child])
 
   if (!api.present) return null
 
   const renderChild = child || lastPresentChild.current
-  if (!React.isValidElement(renderChild)) return null
+  if (!isValidElement(renderChild)) return null
 
-  return React.cloneElement(
-    renderChild as React.ReactElement,
+  return cloneElement(
+    renderChild as VNode,
     {
       hidden: !api.present,
       "data-state": api.skip ? undefined : present ? "open" : "closed",
@@ -44,8 +45,8 @@ function AnimatePresence(props: AnimatePresenceProps) {
 }
 
 export default function Page() {
-  const [open, setOpen] = React.useState(true)
-  const [unmounted, setUnmounted] = React.useState(false)
+  const [open, setOpen] = useState(true)
+  const [unmounted, setUnmounted] = useState(false)
 
   return (
     <main style={{ minWidth: 400, padding: 40, display: "flex", flexDirection: "column", gap: "1rem" }}>

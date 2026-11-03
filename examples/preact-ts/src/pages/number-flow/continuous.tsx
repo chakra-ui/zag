@@ -1,6 +1,6 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/number-flow.css"

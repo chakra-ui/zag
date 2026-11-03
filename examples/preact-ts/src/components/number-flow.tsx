@@ -1,6 +1,6 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 
 interface NumberFlowProps extends Omit<numberFlow.Props, "id"> {
   className?: string

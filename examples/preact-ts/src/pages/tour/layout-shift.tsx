@@ -2,7 +2,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { tourLayoutShiftData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { XIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/tour.css"
 
 export default function Page() {

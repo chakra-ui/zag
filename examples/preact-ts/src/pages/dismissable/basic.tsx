@@ -6,10 +6,11 @@ import {
 } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
 import { Portal } from "@zag-js/preact"
-import { useEffect, useRef, useState } from "react"
+import type { CSSProperties, ComponentChildren } from "preact"
+import { useEffect, useRef, useState } from "preact/hooks"
 
 interface PopoverProps {
-  children?: React.ReactNode
+  children?: ComponentChildren
   bg: string
   id: string
   inert?: boolean
@@ -65,7 +66,7 @@ function Popover(props: PopoverProps) {
               background: bg,
               padding: 10,
               ...getDismissableLayerStyle(layer, { pointerEvents: true }),
-            } as React.CSSProperties
+            } as CSSProperties
           }
         >
           <h1>Sandbox</h1>

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react"
+import type { ComponentChildren } from "preact"
 import { useInfiniteScroll } from "../hooks/use-infinite-scroll"
 
 export interface LoadMoreProps {
@@ -11,7 +11,7 @@ export interface LoadMoreProps {
    * @default "div"
    */
   as?: "div" | "li"
-  children?: ReactNode
+  children?: ComponentChildren
 }
 
 /**

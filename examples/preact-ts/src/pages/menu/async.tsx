@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId, useRef } from "react"
+import { useId, useRef } from "preact/hooks"
 import { LoadMore } from "../../components/load-more"
 import { useAsyncList } from "../../hooks/use-async-list"
 import "@styles/menu.css"

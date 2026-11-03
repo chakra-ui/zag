@@ -1,7 +1,7 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as slider from "@zag-js/slider"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/slider.css"
 import "@styles/popover.css"
 

@@ -1,7 +1,7 @@
 import * as asyncList from "@zag-js/async-list"
 import * as infiniteScroll from "@zag-js/infinite-scroll"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/infinite-scroll.css"

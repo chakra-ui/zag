@@ -1,10 +1,11 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
-import { ReactNode, useId } from "react"
+import type { ComponentChildren } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/tooltip.css"
 
 interface TooltipProps {
-  children: ReactNode
+  children: ComponentChildren
   closeOnPointerDown?: boolean
 }
 

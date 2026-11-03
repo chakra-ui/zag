@@ -1,5 +1,6 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { useEffect, useState } from "react"
+import type { ComponentChildren } from "preact"
+import { useEffect, useState } from "preact/hooks"
 
 const store = createHotkeyStore()
 
@@ -90,7 +91,7 @@ export default function SequencesPage() {
   )
 }
 
-function Kbd({ children }: { children: React.ReactNode }) {
+function Kbd({ children }: { children: ComponentChildren }) {
   return (
     <code
       style={{

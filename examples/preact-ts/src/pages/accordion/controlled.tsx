@@ -2,7 +2,7 @@ import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { accordionFaqData } from "@zag-js/shared"
 import { ArrowRight } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Output } from "../../components/output"
 import "@styles/accordion.css"
 

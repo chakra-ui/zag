@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon, ChevronsUpDownIcon, LoaderCircleIcon, XIcon } from "lucide-preact"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import { Output } from "../../components/output"
 import { useAsyncList } from "../../hooks/use-async-list"
 import { useInfiniteScroll } from "../../hooks/use-infinite-scroll"

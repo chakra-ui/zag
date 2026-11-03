@@ -2,11 +2,11 @@ import { normalizeProps, useMachine } from "@zag-js/preact"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
-import { useId } from "react"
-import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import "@styles/tree-view.css"
 
 const estimateSize = () => ROW_HEIGHT

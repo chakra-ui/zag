@@ -1,9 +1,10 @@
-import { useEffect, useState, type ReactNode } from "react"
+import type { ComponentChildren } from "preact"
+import { useEffect, useState } from "preact/hooks"
 
 type ClientOnlyProps = {
-  children: ReactNode
+  children: ComponentChildren
   /** Shown until the client has mounted (SSR and first paint skip `children`). */
-  fallback?: ReactNode
+  fallback?: ComponentChildren
 }
 
 /**

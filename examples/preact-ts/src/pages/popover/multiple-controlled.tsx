@@ -1,6 +1,6 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/popover.css"
 
 const PopoverControlled = () => {

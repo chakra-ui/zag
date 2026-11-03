@@ -1,7 +1,7 @@
-import { useId, useState } from "react"
-import { createPortal } from "react-dom"
+import { createPortal, type ComponentProps } from "preact"
+import { useId, useState } from "preact/hooks"
 
-type IFrameProps = React.ComponentProps<"iframe">
+type IFrameProps = ComponentProps<"iframe">
 
 export const IFrame = function IFrame(props: IFrameProps) {
   const { children, ...rest } = props

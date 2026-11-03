@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as steps from "@zag-js/steps"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/steps.css"

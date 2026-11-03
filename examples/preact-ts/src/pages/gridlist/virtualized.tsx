@@ -1,10 +1,10 @@
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon } from "lucide-preact"
-import { useId, useMemo } from "react"
-import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { useId, useMemo } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import "@styles/gridlist.css"
 
 const estimateSize = () => ROW_HEIGHT

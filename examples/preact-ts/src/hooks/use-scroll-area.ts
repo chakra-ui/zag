@@ -1,6 +1,6 @@
 import { addDomEvent, getComputedStyle, getEventTarget, getWindow } from "@zag-js/dom-query"
 import { Direction } from "@zag-js/types"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "preact/hooks"
 
 export interface ScrollAreaProps {
   onScrollStart?: (e: Event) => void

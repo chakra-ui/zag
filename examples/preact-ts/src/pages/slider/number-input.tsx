@@ -1,7 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as slider from "@zag-js/slider"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/slider.css"
 import "@styles/number-input.css"
 

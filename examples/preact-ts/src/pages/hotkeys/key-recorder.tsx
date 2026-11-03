@@ -5,7 +5,8 @@ import {
   isHotkeyEqual,
   type RecordedHotkey,
 } from "@zag-js/hotkeys"
-import { useEffect, useRef, useState } from "react"
+import type { CSSProperties } from "preact"
+import { useEffect, useRef, useState } from "preact/hooks"
 
 interface ShortcutBinding {
   id: string
@@ -139,7 +140,7 @@ export default function KeyRecorderPage() {
   )
 }
 
-const kbdBtnStyle: React.CSSProperties = {
+const kbdBtnStyle: CSSProperties = {
   padding: "4px 10px",
   fontSize: "0.8rem",
   fontFamily: "monospace",
@@ -152,7 +153,7 @@ const kbdBtnStyle: React.CSSProperties = {
   textAlign: "center",
 }
 
-const smallBtnStyle: React.CSSProperties = {
+const smallBtnStyle: CSSProperties = {
   padding: "3px 8px",
   fontSize: "0.75rem",
   backgroundColor: "transparent",

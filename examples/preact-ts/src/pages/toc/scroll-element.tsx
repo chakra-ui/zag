@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { tocControls, tocData } from "@zag-js/shared"
 import * as toc from "@zag-js/toc"
-import { useId, useRef } from "react"
+import { useId, useRef } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

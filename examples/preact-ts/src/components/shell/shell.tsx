@@ -12,9 +12,10 @@ import {
   SearchIcon,
   SquareDashedIcon,
 } from "lucide-preact"
+import type { ComponentChildren } from "preact"
+import { useEffect, useId, useRef, useState } from "preact/hooks"
 import Link from "../../lib/link"
 import { usePathname } from "../../lib/navigation"
-import { useEffect, useId, useRef, useState } from "react"
 import { CommandPalette, type PaletteMode } from "./command-palette"
 import { readPref, writePref } from "./prefs"
 
@@ -102,7 +103,7 @@ function useHasInspector(pathname: string) {
   return hasInspector
 }
 
-export function Shell({ children }: { children: React.ReactNode }) {
+export function Shell({ children }: { children: ComponentChildren }) {
   const pathname = usePathname() || "/"
   const [layout, setLayout] = useCanvasLayout()
   const [fullscreen, setFullscreen] = useState(false)

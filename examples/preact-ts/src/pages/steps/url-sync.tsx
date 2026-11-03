@@ -1,9 +1,10 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as steps from "@zag-js/steps"
-import { usePathname, useRouter, useSearchParams } from "../../lib/navigation"
-import { Suspense, useId, useState } from "react"
+import { Suspense } from "preact/compat"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { usePathname, useRouter, useSearchParams } from "../../lib/navigation"
 import "@styles/steps.css"
 
 // Keep the URL readable instead of exposing `steps.COMPLETE`

@@ -1,6 +1,6 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
-import { useRef } from "react"
+import { useRef } from "preact/hooks"
 import "@styles/tooltip.css"
 
 export default function Page() {

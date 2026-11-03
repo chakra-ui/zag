@@ -2,7 +2,8 @@ import * as colorPicker from "@zag-js/color-picker"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import type { RenderableProps } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/color-picker.css"
 import "@styles/dialog.css"
 
@@ -57,7 +58,7 @@ const ColorPicker = () => {
   )
 }
 
-function Dialog(props: React.PropsWithChildren<{ title?: string }>) {
+function Dialog(props: RenderableProps<{ title?: string }>) {
   const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
 

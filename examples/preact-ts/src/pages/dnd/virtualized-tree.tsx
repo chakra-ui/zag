@@ -1,13 +1,14 @@
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
-import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import type { VirtualItem } from "@zag-js/virtualizer"
-import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
-import { type CSSProperties, type JSX, useId, useMemo, useState } from "react"
+import type { CSSProperties, JSX } from "preact"
+import { useId, useMemo, useState } from "preact/hooks"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import styles from "@styles/dnd-virtualized-tree.module.css"
 
 const estimateSize = () => ROW_HEIGHT
 

@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/angle-slider.css"
 
 export default function Page() {

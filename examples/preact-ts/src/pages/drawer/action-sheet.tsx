@@ -1,6 +1,6 @@
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer-action-sheet.module.css"
 

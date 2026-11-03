@@ -1,8 +1,9 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as toast from "@zag-js/toast"
 import { CircleCheck, CircleX, Info, LoaderCircle, TriangleAlert, XIcon } from "lucide-preact"
+import type { ComponentChildren, ComponentType } from "preact"
 
-const icons: Record<string, React.ElementType> = {
+const icons: Record<string, ComponentType> = {
   success: CircleCheck,
   error: CircleX,
   warning: TriangleAlert,
@@ -11,7 +12,7 @@ const icons: Record<string, React.ElementType> = {
 }
 
 interface ToastItemProps {
-  actor: toast.Options<React.ReactNode>
+  actor: toast.Options<ComponentChildren>
   index: number
   parent: toast.GroupService
 }

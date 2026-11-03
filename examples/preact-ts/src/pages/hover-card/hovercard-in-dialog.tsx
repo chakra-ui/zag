@@ -1,11 +1,12 @@
-import * as hoverCard from "@zag-js/hover-card"
 import * as dialog from "@zag-js/dialog"
+import * as hoverCard from "@zag-js/hover-card"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId, useRef } from "react"
+import type { RefObject } from "preact"
+import { useId, useRef } from "preact/hooks"
 import "@styles/hover-card.css"
 import "@styles/dialog.css"
 
-function HoverCard(props: { portalRef: React.RefObject<HTMLElement | null> }) {
+function HoverCard(props: { portalRef: RefObject<HTMLElement | null> }) {
   const service = useMachine(hoverCard.machine, { id: useId() })
   const api = hoverCard.connect(service, normalizeProps)
   return (

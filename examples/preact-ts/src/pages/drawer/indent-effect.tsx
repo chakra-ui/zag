@@ -1,9 +1,9 @@
-import styles from "@styles/drawer-indent-effect.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine, useSyncExternalStore } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { Presence } from "../../components/presence"
+import styles from "@styles/drawer-indent-effect.module.css"
 
 const stack = drawer.createStack()
 

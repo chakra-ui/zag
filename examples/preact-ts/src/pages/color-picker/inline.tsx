@@ -1,7 +1,7 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { colorPickerControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { Show } from "../../components/show"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

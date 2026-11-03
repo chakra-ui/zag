@@ -2,7 +2,7 @@ import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import * as tabs from "@zag-js/tabs"
 import { ChevronsUpDownIcon, GitBranchIcon, TagIcon } from "lucide-preact"
-import { useEffect, useId, useMemo, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "preact/hooks"
 import "@styles/select.css"
 import "@styles/tabs.css"
 

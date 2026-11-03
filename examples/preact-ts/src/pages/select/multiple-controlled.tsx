@@ -2,7 +2,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { ChevronsUpDownIcon } from "lucide-preact"
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import "@styles/select.css"
 
 const Select = (props: { id: string }) => {

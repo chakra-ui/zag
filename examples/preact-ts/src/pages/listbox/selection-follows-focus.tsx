@@ -1,7 +1,7 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { listboxData, type ListboxOption } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/listbox.css"

@@ -1,7 +1,7 @@
 import type { DateValue } from "@internationalized/date"
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/date-input.css"

@@ -2,7 +2,8 @@ import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tagsInput from "@zag-js/tags-input"
 import { XIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import type { TargetedKeyboardEvent } from "preact"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/tags-input.css"
@@ -35,7 +36,7 @@ export default function Page() {
   })
   const dndApi = dnd.connect(dndService, normalizeProps)
 
-  function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  function onInputKeyDown(event: TargetedKeyboardEvent<HTMLInputElement>) {
     const highlighted = tagsApi.highlightedValue
     if (!event.altKey || !highlighted) return
     const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0

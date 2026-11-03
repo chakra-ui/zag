@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react"
+import type { HTMLAttributes } from "preact"
 
 // Short values stay on one line
 function format(value: unknown) {

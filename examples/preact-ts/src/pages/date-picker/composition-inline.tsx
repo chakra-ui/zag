@@ -1,6 +1,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/date-picker.css"
 
 export default function Page() {

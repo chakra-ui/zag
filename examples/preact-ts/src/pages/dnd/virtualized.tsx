@@ -1,10 +1,10 @@
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as dnd from "@zag-js/dnd"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { GripVerticalIcon } from "lucide-preact"
-import { useId, useState } from "react"
-import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import styles from "@styles/dnd-list.module.css"
 
 const estimateSize = () => 40

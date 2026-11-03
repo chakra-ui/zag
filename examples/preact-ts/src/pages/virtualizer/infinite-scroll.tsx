@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/preact"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "preact/hooks"
 import { useInfiniteScroll } from "../../hooks/use-infinite-scroll"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 

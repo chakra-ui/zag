@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const estimateSize = () => 40

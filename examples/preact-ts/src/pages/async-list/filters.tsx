@@ -1,5 +1,5 @@
 import { LoaderCircleIcon } from "lucide-preact"
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { useAsyncList } from "../../hooks/use-async-list"
 import "@styles/async-list.css"
 

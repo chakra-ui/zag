@@ -1,10 +1,10 @@
 import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-preact"
-import { useId, useRef } from "react"
+import { useId, useRef } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
-import { useFocusTrap } from "../../hooks/use-focus-trap"
 import { Toolbar } from "../../components/toolbar"
+import { useFocusTrap } from "../../hooks/use-focus-trap"
 import "@styles/floating-panel.css"
 
 export default function Page() {

@@ -1,5 +1,5 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks"
+import { useVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
 const DEFAULT_ITEM_COUNT = 5_000
@@ -432,7 +432,7 @@ function TanStackWaterfall({
 
   return (
     <section>
-      <h2 style={{ color: "#f97316" }}>@tanstack/react-virtual — masonry lanes</h2>
+      <h2 style={{ color: "#f97316" }}>TanStack Virtual — masonry lanes</h2>
       <div
         ref={scrollRef}
         tabIndex={0}
@@ -580,7 +580,7 @@ export default function Page() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
         <MetricsDisplay label="@zag-js/virtualizer" metrics={zagMetrics} />
-        <MetricsDisplay label="@tanstack/react-virtual" metrics={tanstackMetrics} />
+        <MetricsDisplay label="TanStack Virtual" metrics={tanstackMetrics} />
       </div>
 
       {zagMetrics && tanstackMetrics && (

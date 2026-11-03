@@ -3,7 +3,8 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-preact"
-import { useId, useRef, useState, type KeyboardEvent } from "react"
+import type { CSSProperties, TargetedKeyboardEvent } from "preact"
+import { useId, useRef, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -68,7 +69,7 @@ export default function Page() {
     setEditing(false)
   }
 
-  function handleRenameKey(e: KeyboardEvent<HTMLInputElement>) {
+  function handleRenameKey(e: TargetedKeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault()
       commitRename()
@@ -154,7 +155,7 @@ export default function Page() {
               {selectedEvent ? (
                 <div
                   className="scheduler-event-popover-body"
-                  style={{ ["--event-color"]: selectedEvent.color } as React.CSSProperties}
+                  style={{ ["--event-color"]: selectedEvent.color } as CSSProperties}
                 >
                   <div className="scheduler-event-popover-row">
                     <span aria-hidden className="scheduler-event-popover-dot" />

@@ -1,7 +1,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tour from "@zag-js/tour"
 import { X } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/tour.css"

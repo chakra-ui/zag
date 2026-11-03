@@ -3,7 +3,8 @@ import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
-import { useEffect, useId, useMemo, useRef, useState } from "react"
+import type { ComponentProps } from "preact"
+import { useEffect, useId, useMemo, useRef, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/combobox.css"
@@ -66,7 +67,7 @@ export default function Page() {
 
   const api = combobox.connect(service, normalizeProps)
 
-  const textareaProps = api.getInputProps() as unknown as React.ComponentProps<"textarea">
+  const textareaProps = api.getInputProps() as unknown as ComponentProps<"textarea">
 
   return (
     <>

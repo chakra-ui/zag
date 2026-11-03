@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/angle-slider.css"
 
 const MARKERS = [0, 45, 90, 135, 180, 225, 270, 315]

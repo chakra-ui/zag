@@ -67,7 +67,7 @@ test.describe("virtualizer examples", () => {
         await page.waitForSelector("main", { state: "visible" })
         await I.dontSeeInConsole("flushSync was called from inside a lifecycle method", 3000)
         await expect(page.getByRole("heading", { name: "@zag-js/virtualizer" })).toBeVisible()
-        await expect(page.getByRole("heading", { name: "@tanstack/react-virtual" })).toBeVisible()
+        await expect(page.getByRole("heading", { name: /tanstack/i })).toBeVisible()
         await I.checkAccessibility("main")
       })
     }

@@ -1,5 +1,6 @@
 import { autoresizeTextarea } from "@zag-js/auto-resize"
-import { useEffect, useRef, useState } from "react"
+import type { TargetedEvent } from "preact"
+import { useEffect, useRef, useState } from "preact/hooks"
 
 export default function AutoresizeControlled() {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -9,7 +10,7 @@ export default function AutoresizeControlled() {
     return autoresizeTextarea(textareaRef.current)
   }, [])
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: TargetedEvent<HTMLTextAreaElement>) => {
     console.log("onChange fired:", e.currentTarget.value)
     setValue(e.currentTarget.value)
   }

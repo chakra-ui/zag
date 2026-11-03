@@ -1,7 +1,7 @@
 import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-preact"
-import { useId, useRef, useState } from "react"
+import { useId, useRef, useState } from "preact/hooks"
 import "@styles/floating-panel.css"
 
 export default function Page() {

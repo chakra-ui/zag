@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerResourceEvents, schedulerResources } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/scheduler.css"

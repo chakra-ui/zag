@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useMemo } from "react"
+import { useId, useMemo } from "preact/hooks"
 import "@styles/combobox.css"
 
 interface Item {

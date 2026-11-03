@@ -1,16 +1,17 @@
 import * as accordion from "@zag-js/accordion"
-import { accordionFaqData } from "@zag-js/shared"
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/preact"
+import { accordionFaqData } from "@zag-js/shared"
 import { ArrowRight } from "lucide-preact"
-import { useId } from "react"
+import type { ComponentChildren, ComponentProps } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/accordion.css"
 import "@styles/collapsible.css"
 
-interface ItemProps extends React.ComponentProps<"div"> {
+interface ItemProps extends ComponentProps<"div"> {
   open: boolean
   onOpenChange: (open: boolean) => void
-  children: React.ReactNode
+  children: ComponentChildren
 }
 
 function Collapsible(props: ItemProps) {

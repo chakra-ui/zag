@@ -3,7 +3,8 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-preact"
-import { useId, useRef, useState, type KeyboardEvent } from "react"
+import type { TargetedKeyboardEvent } from "preact"
+import { useId, useRef, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -71,7 +72,7 @@ export default function Page() {
     popoverApi.setOpen(false)
   }
 
-  function handleKey(e: KeyboardEvent<HTMLInputElement>) {
+  function handleKey(e: TargetedKeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault()
       commit()

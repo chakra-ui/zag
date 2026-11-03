@@ -1,7 +1,7 @@
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon, MinusIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Checkbox } from "../../components/checkbox"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

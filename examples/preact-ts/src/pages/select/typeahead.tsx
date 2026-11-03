@@ -1,7 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { ChevronsUpDownIcon, XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/select.css"
 
 interface Item {

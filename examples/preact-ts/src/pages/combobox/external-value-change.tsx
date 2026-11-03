@@ -2,7 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-preact"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import { Output } from "../../components/output"
 import "@styles/combobox.css"
 

@@ -1,6 +1,6 @@
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/collapsible.css"
 
 export default function Page() {

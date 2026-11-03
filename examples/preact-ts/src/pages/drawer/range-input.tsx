@@ -1,7 +1,7 @@
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { drawerControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

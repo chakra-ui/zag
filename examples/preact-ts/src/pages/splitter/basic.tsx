@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { splitterControls } from "@zag-js/shared"
 import * as splitter from "@zag-js/splitter"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

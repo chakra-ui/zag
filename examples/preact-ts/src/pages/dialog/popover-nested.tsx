@@ -2,11 +2,12 @@ import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId, type ReactNode } from "react"
+import type { ComponentChildren } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/dialog.css"
 import "@styles/popover.css"
 
-function DialogWrapper({ trigger, children }: { trigger: ReactNode; children: ReactNode }) {
+function DialogWrapper({ trigger, children }: { trigger: ComponentChildren; children: ComponentChildren }) {
   const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
 
@@ -32,7 +33,7 @@ function DialogWrapper({ trigger, children }: { trigger: ReactNode; children: Re
   )
 }
 
-function PopoverWrapper({ trigger, children }: { trigger: ReactNode; children: ReactNode }) {
+function PopoverWrapper({ trigger, children }: { trigger: ComponentChildren; children: ComponentChildren }) {
   const service = useMachine(popover.machine, { id: useId() })
   const api = popover.connect(service, normalizeProps)
 

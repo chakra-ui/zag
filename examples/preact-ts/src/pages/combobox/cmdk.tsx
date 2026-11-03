@@ -5,7 +5,7 @@ import { createFuzzySearch } from "@zag-js/fuzzy"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { commandData } from "@zag-js/shared"
-import { useEffect, useId, useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useState } from "preact/hooks"
 import { Highlight } from "../../components/highlight"
 import "@styles/cmdk.css"
 

@@ -1,8 +1,8 @@
 import { createFilter } from "@zag-js/i18n-utils"
 import { componentRoutesData, getComponentExamples } from "@zag-js/shared"
 import { ArrowRightIcon, SearchIcon } from "lucide-preact"
+import { useMemo, useState } from "preact/hooks"
 import Link from "../lib/link"
-import { useMemo, useState } from "react"
 
 const { contains } = createFilter({ sensitivity: "base" })
 

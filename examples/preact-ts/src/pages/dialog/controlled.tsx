@@ -1,8 +1,8 @@
-import "@styles/dialog.css"
 import * as dialog from "@zag-js/dialog"
+import "@styles/dialog.css"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useState } from "react"
+import { useState } from "preact/hooks"
 
 export default function Dialog() {
   const [open, setOpen] = useState(false)

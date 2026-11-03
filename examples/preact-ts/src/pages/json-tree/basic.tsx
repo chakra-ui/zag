@@ -9,11 +9,12 @@ import {
   keyPathToKey,
 } from "@zag-js/json-tree-utils"
 import { jsonTreeData } from "@zag-js/shared"
+import type { ComponentChildren } from "preact"
 
 interface KeyNodeProps {
   node: JsonNode
 }
-const KeyNode = (props: KeyNodeProps): React.ReactNode => {
+const KeyNode = (props: KeyNodeProps): ComponentChildren => {
   const { node } = props
   const key = keyPathToKey(node.keyPath, { excludeRoot: true })
   return (
@@ -29,7 +30,7 @@ const KeyNode = (props: KeyNodeProps): React.ReactNode => {
 interface ValueNodeProps {
   node: JsonNodeHastElement
 }
-const ValueNode = (props: ValueNodeProps): React.ReactNode => {
+const ValueNode = (props: ValueNodeProps): ComponentChildren => {
   const { node } = props
 
   // Handle text nodes

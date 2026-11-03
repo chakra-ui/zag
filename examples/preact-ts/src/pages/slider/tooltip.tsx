@@ -1,7 +1,7 @@
 import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as slider from "@zag-js/slider"
 import * as tooltip from "@zag-js/tooltip"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/slider.css"
 import "@styles/tooltip.css"
 

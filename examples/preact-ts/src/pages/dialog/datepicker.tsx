@@ -2,7 +2,8 @@ import * as datePicker from "@zag-js/date-picker"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import type { RenderableProps } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/dialog.css"
 import "@styles/date-picker.css"
 
@@ -129,7 +130,7 @@ const DatePicker = () => {
   )
 }
 
-function Dialog(props: React.PropsWithChildren) {
+function Dialog(props: RenderableProps<{}>) {
   const service = useMachine(dialog.machine, { id: useId() })
   const api = dialog.connect(service, normalizeProps)
   return (

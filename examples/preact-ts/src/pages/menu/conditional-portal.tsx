@@ -1,10 +1,11 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId, useState, type ReactNode } from "react"
+import type { ComponentChildren } from "preact"
+import { useId, useState } from "preact/hooks"
 
 // the consumer pattern from issue #3323: content stays mounted while closed and is
 // re-parented into a portal when open, so a doomed node exists at layer-effect time
-const ConditionalPortal = ({ enabled, children }: { enabled: boolean; children: ReactNode }) =>
+const ConditionalPortal = ({ enabled, children }: { enabled: boolean; children: ComponentChildren }) =>
   enabled ? <Portal>{children}</Portal> : <div hidden>{children}</div>
 
 export default function Page() {

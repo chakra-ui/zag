@@ -1,6 +1,6 @@
-import * as qrCode from "@zag-js/qr-code"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import * as qrCode from "@zag-js/qr-code"
+import { useId, useState } from "preact/hooks"
 import "@styles/qr-code.css"
 
 export default function Page() {

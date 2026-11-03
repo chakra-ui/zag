@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import * as steps from "@zag-js/steps"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

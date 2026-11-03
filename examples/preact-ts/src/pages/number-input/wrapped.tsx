@@ -1,7 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { MinusIcon, PlusIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/number-input.css"
 
 export default function Page() {

@@ -1,7 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ChevronDownIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/collapsible.css"
 
 export default function Page() {

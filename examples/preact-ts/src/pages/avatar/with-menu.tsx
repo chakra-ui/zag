@@ -2,7 +2,7 @@ import * as avatar from "@zag-js/avatar"
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { avatarData } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/avatar.css"
 import "@styles/menu.css"
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
 import { trackFocusVisible } from "@zag-js/focus-visible"
+import { useEffect, useState } from "preact/hooks"
 
 function useFocusVisible() {
   const [focusVisible, setFocusVisible] = useState(false)

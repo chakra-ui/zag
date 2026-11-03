@@ -1,6 +1,6 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useMemo } from "react"
+import { useId, useMemo } from "preact/hooks"
 import "@styles/listbox.css"
 
 interface Item {

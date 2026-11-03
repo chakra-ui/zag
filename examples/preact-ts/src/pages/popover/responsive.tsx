@@ -1,7 +1,7 @@
 import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/popover.css"
 
 export default function Page() {

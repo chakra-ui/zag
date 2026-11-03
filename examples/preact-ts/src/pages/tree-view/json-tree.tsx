@@ -1,5 +1,3 @@
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
 import type { TreeCollection } from "@zag-js/collection"
 import {
   type JsonNode,
@@ -16,9 +14,12 @@ import {
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { jsonTreeData } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
-import styles from "@styles/json-tree-view.module.css"
 import { ChevronRightIcon } from "lucide-preact"
-import { type JSX, useId, useMemo } from "react"
+import type { JSX } from "preact"
+import { useId, useMemo } from "preact/hooks"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import styles from "@styles/json-tree-view.module.css"
 
 const DEFAULT_EXPANDED_DEPTH = 2
 

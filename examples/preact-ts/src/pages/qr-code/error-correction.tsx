@@ -1,6 +1,7 @@
-import * as qrCode from "@zag-js/qr-code"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import * as qrCode from "@zag-js/qr-code"
+import type { CSSProperties } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/qr-code.css"
 
 type Ecc = "L" | "M" | "Q" | "H"
@@ -24,7 +25,7 @@ function Level(props: { ecc: Ecc; recovery: string }) {
 
   return (
     <div className="qr-tile">
-      <div {...api.getRootProps()} style={{ "--qr-size": "120px" } as React.CSSProperties}>
+      <div {...api.getRootProps()} style={{ "--qr-size": "120px" } as CSSProperties}>
         <svg {...api.getFrameProps()}>
           <path {...api.getPatternProps()} />
         </svg>

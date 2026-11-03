@@ -2,8 +2,9 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { ChevronsUpDownIcon } from "lucide-preact"
+import { Suspense } from "preact/compat"
+import { useId } from "preact/hooks"
 import { usePathname, useRouter, useSearchParams } from "../../lib/navigation"
-import { Suspense, useId } from "react"
 import "@styles/select.css"
 
 const collection = select.collection({

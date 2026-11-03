@@ -1,10 +1,12 @@
 import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useSearchParams } from "../../lib/navigation"
-import { createContext, Suspense, useContext, useId } from "react"
+import { createContext } from "preact"
+import { Suspense } from "preact/compat"
+import { useContext, useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { useSearchParams } from "../../lib/navigation"
 import "@styles/menu.css"
 
 const MenubarContext = createContext<menu.MenubarContext | undefined>(undefined)

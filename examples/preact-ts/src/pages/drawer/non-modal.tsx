@@ -1,9 +1,9 @@
-import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { Presence } from "../../components/presence"
+import styles from "@styles/drawer.module.css"
 
 export default function Page() {
   const service = useMachine(drawer.machine, {

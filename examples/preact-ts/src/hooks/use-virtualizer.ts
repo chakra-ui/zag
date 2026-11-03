@@ -8,7 +8,8 @@ import {
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react"
+import { useSyncExternalStore } from "preact/compat"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "preact/hooks"
 
 interface VirtualizerLike<O> {
   subscribe: (listener: () => void) => () => void

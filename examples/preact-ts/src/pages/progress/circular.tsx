@@ -1,6 +1,6 @@
-import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import * as progress from "@zag-js/progress"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/progress.css"

@@ -1,7 +1,7 @@
 import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ArrowRight } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/accordion.css"
 
 const sections = [

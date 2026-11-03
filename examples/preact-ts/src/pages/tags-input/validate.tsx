@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as tagsInput from "@zag-js/tags-input"
 import { XIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/tags-input.css"

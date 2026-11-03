@@ -1,6 +1,6 @@
-import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useState } from "react"
+import * as presence from "@zag-js/presence"
+import { useState } from "preact/hooks"
 import "@styles/presence.css"
 
 export default function Page() {

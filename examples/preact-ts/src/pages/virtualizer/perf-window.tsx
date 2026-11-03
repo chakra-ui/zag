@@ -1,6 +1,6 @@
-import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "@tanstack/react-virtual"
-import { useLayoutEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "preact/hooks"
 import { ClientOnly } from "../../components/client-only"
+import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
 const zagEstimateSize = () => ITEM_HEIGHT
@@ -91,7 +91,7 @@ function TanStackWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => v
 
   return (
     <div>
-      <h3 style={{ color: "#f97316" }}>@tanstack/react-virtual (Window)</h3>
+      <h3 style={{ color: "#f97316" }}>TanStack Virtual (Window)</h3>
       <BenchmarkButtons onRun={(scrollCount) => runWindowScrollBenchmark(scrollCount, onMetrics)} />
       <div
         ref={listRef}
@@ -287,13 +287,13 @@ function StickyHeader({
             fontSize: 13,
           }}
         >
-          @tanstack/react-virtual
+          TanStack Virtual
         </button>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <MetricsDisplay label="@zag-js/virtualizer" metrics={zagMetrics} />
-        <MetricsDisplay label="@tanstack/react-virtual" metrics={tanstackMetrics} />
+        <MetricsDisplay label="TanStack Virtual" metrics={tanstackMetrics} />
       </div>
 
       {zagMetrics && tanstackMetrics && (

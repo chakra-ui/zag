@@ -1,6 +1,6 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import "@styles/hover-card.css"
 

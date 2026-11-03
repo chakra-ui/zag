@@ -1,8 +1,9 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
+import { Suspense } from "preact/compat"
+import { useId } from "preact/hooks"
 import { usePathname, useRouter, useSearchParams } from "../../lib/navigation"
-import { Suspense, useId } from "react"
 import "@styles/dialog.css"
 
 function PageContent() {

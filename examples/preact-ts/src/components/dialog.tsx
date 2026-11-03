@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 
 interface Props extends Omit<dialog.Props, "id"> {}
 

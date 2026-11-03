@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as slider from "@zag-js/slider"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Output } from "../../components/output"
 import "@styles/slider.css"
 

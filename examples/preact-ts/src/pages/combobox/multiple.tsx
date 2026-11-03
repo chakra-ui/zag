@@ -3,10 +3,10 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-preact"
-import { useId, useMemo, useRef, useState } from "react"
-import { useControls } from "../../hooks/use-controls"
-import { Toolbar } from "../../components/toolbar"
+import { useId, useMemo, useRef, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 import "@styles/combobox.css"
 
 interface Item {

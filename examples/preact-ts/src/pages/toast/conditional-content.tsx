@@ -1,7 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as toast from "@zag-js/toast"
 import { XIcon } from "lucide-preact"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "preact/hooks"
 import "@styles/toast.css"
 
 interface ConditionalToastProps {

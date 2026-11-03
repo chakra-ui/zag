@@ -1,9 +1,10 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-preact"
-import { useSearchParams } from "../../lib/navigation"
-import { Suspense, useId } from "react"
+import { Suspense } from "preact/compat"
+import { useId } from "preact/hooks"
 import { ExampleProps } from "../../components/example-props"
+import { useSearchParams } from "../../lib/navigation"
 import "@styles/pagination.css"
 
 // Pages render as links; the URL is the source of truth

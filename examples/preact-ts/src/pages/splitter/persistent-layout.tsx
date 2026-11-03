@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
 import { isEqual } from "@zag-js/utils"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import { usePersistentMapState } from "../../hooks/use-persistent-state"
 import "@styles/splitter.css"
 

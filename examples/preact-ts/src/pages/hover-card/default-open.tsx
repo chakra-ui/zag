@@ -1,7 +1,7 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { hoverCardControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

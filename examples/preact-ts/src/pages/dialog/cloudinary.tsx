@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useEffect, useId, useRef } from "react"
+import { useEffect, useId, useRef } from "preact/hooks"
 
 declare global {
   interface Window {

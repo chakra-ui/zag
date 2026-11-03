@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react"
+import type { RefObject } from "preact"
+import { useEffect, useRef } from "preact/hooks"
 
 interface UseSentinelObserverOptions {
   getSentinel: () => HTMLElement | null
   onIntersect: () => void
-  rootRef?: React.RefObject<Element | null>
+  rootRef?: RefObject<Element | null>
   threshold?: number
 }
 

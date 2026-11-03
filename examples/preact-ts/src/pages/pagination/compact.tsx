@@ -1,7 +1,7 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { ExampleProps } from "../../components/example-props"
 import "@styles/pagination.css"
 

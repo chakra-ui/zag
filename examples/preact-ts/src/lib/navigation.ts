@@ -1,4 +1,5 @@
 import { useLocation } from "preact-iso"
+import { useEffect, useState } from "preact/hooks"
 
 // Stand-ins for the `next/navigation` hooks the shared examples use
 
@@ -15,7 +16,16 @@ export function usePathname() {
   return useLocation().path
 }
 
+// Prerendered HTML has no query string, so hydration must render without it
+let hydrating = typeof document !== "undefined" && !!document.querySelector("script[type=isodata]")
+
+export function endHydration() {
+  hydrating = false
+}
+
 export function useSearchParams() {
   const { url } = useLocation()
-  return new URLSearchParams(url.split("?")[1] ?? "")
+  const [hydrated, setHydrated] = useState(!hydrating)
+  useEffect(() => setHydrated(true), [])
+  return new URLSearchParams(hydrated ? (url.split("?")[1] ?? "") : "")
 }

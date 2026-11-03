@@ -1,7 +1,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
 import { InfoIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"

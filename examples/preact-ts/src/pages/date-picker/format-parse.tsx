@@ -1,7 +1,7 @@
 import { CalendarDate, DateValue } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/date-picker.css"
 
 // parse dd/mm/yy to DateValue

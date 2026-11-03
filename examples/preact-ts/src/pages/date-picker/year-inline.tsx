@@ -1,7 +1,7 @@
+import { parseDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
-import { parseDate } from "@internationalized/date"
+import { useId } from "preact/hooks"
 
 // an inline year view that renders beyond the decade in view, with min 2015 and max 2035
 export default function Page() {

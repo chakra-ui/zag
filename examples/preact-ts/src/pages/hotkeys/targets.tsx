@@ -1,9 +1,10 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { useEffect, useRef, useState } from "react"
+import type { CSSProperties } from "preact"
+import { useEffect, useRef, useState } from "preact/hooks"
 
 const store = createHotkeyStore()
 
-const boxStyle: React.CSSProperties = {
+const boxStyle: CSSProperties = {
   border: "2px solid #999",
   borderRadius: "0.5rem",
   padding: "1rem",

@@ -1,6 +1,6 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useEffect, useId, useRef } from "react"
+import { useEffect, useId, useRef } from "preact/hooks"
 import "@styles/popover.css"
 
 export default function Page() {

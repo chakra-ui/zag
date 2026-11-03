@@ -1,6 +1,7 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import type { TargetedEvent } from "preact"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/date-picker.css"
@@ -22,7 +23,7 @@ export default function Page() {
   const hasTime = value && "hour" in value
   const timeValue = hasTime ? `${pad(value.hour)}:${pad(value.minute)}` : "12:00"
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimeChange = (e: TargetedEvent<HTMLInputElement>) => {
     const [hours, minutes] = e.currentTarget.value.split(":").map(Number)
     if (!isNaN(hours) && !isNaN(minutes)) {
       api.setTime({ hour: hours, minute: minutes, second: 0 })

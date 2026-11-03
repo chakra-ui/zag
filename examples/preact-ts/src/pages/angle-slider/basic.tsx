@@ -1,7 +1,7 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { useMachine, normalizeProps } from "@zag-js/preact"
 import { angleSliderControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

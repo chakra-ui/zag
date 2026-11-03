@@ -1,7 +1,7 @@
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { gridListGridData } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/gridlist.css"

@@ -1,10 +1,10 @@
-import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/preact"
+import * as rating from "@zag-js/rating-group"
 import { ratingControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
+import { HalfStar, Star } from "../../components/rating-icons"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
-import { HalfStar, Star } from "../../components/rating-icons"
 import { useControls } from "../../hooks/use-controls"
 import "@styles/rating-group.css"
 

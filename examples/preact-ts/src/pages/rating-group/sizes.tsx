@@ -1,6 +1,7 @@
-import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import * as rating from "@zag-js/rating-group"
+import type { CSSProperties } from "preact"
+import { useId } from "preact/hooks"
 import { Star } from "../../components/rating-icons"
 import "@styles/rating-group.css"
 
@@ -19,7 +20,7 @@ function SizedRating(props: { label: string; size: string }) {
   const api = rating.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()} style={{ "--rating-size": props.size } as React.CSSProperties}>
+    <div {...api.getRootProps()} style={{ "--rating-size": props.size } as CSSProperties}>
       <label {...api.getLabelProps()}>{props.label}</label>
       <div {...api.getControlProps()}>
         {api.items.map((index) => (

@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/menu.css"
 
 export default function Page() {

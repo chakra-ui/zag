@@ -1,5 +1,5 @@
 import { allComponents, createGradient } from "@zag-js/anatomy-icons"
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import "@styles/anatomy.css"
 
 const accents = [

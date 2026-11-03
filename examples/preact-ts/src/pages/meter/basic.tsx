@@ -1,7 +1,7 @@
 import * as meter from "@zag-js/meter"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { meterControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

@@ -1,6 +1,7 @@
 import * as listbox from "@zag-js/listbox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
-import { useId, useState } from "react"
+import type { ComponentChildren } from "preact"
+import { useId, useState } from "preact/hooks"
 import "@styles/listbox.css"
 
 interface Item {
@@ -8,7 +9,7 @@ interface Item {
   value: string
 }
 
-function ListBox({ label, collection, ...props }: { label?: React.ReactNode } & Omit<listbox.Props<Item>, "id">) {
+function ListBox({ label, collection, ...props }: { label?: ComponentChildren } & Omit<listbox.Props<Item>, "id">) {
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     id: useId(),
     selectionMode: "multiple",

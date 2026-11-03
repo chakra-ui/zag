@@ -1,7 +1,7 @@
 import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
 import { editableControls } from "@zag-js/shared"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

@@ -4,7 +4,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
-import { useId, useRef, useState } from "react"
+import { useId, useRef, useState } from "preact/hooks"
 import "@styles/combobox.css"
 import "@styles/tags-input.css"
 

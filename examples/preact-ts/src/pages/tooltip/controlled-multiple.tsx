@@ -1,6 +1,6 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as tooltip from "@zag-js/tooltip"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/tooltip.css"
 
 const TooltipDemo = () => {

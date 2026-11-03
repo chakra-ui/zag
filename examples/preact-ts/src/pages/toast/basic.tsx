@@ -1,7 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { ToastItem } from "../../components/toast-item"
 import { Toolbar } from "../../components/toolbar"

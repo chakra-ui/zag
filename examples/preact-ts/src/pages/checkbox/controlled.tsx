@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { Checkbox } from "../../components/checkbox"
 import "@styles/checkbox.css"
 

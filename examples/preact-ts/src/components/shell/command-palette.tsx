@@ -4,9 +4,10 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { componentRoutesData, exampleRoutes, getComponentExamples } from "@zag-js/shared"
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-preact"
-import { useRouter } from "../../lib/navigation"
-import { useCallback, useId, useMemo, useRef, useState } from "react"
+import type { RefObject } from "preact"
+import { useCallback, useId, useMemo, useRef, useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { useRouter } from "../../lib/navigation"
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -194,7 +195,7 @@ interface PaletteListProps {
   api: combobox.Api
   items: PaletteItem[]
   currentValue: string | null
-  scrollToIndexRef: React.RefObject<ScrollToIndex | null>
+  scrollToIndexRef: RefObject<ScrollToIndex | null>
 }
 
 /** Virtualized rows (group headers and items); mounts with the dialog content */

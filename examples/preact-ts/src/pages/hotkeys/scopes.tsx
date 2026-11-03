@@ -1,5 +1,6 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { useEffect, useState } from "react"
+import type { CSSProperties, ComponentChildren } from "preact"
+import { useEffect, useState } from "preact/hooks"
 
 const store = createHotkeyStore({
   activeScopes: ["editor"],
@@ -108,7 +109,7 @@ export default function ScopesPage() {
   )
 }
 
-function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: ComponentChildren }) {
   return (
     <button
       onClick={onClick}
@@ -171,7 +172,7 @@ function Panel({
   )
 }
 
-const kbdStyle: React.CSSProperties = {
+const kbdStyle: CSSProperties = {
   display: "inline-block",
   padding: "2px 6px",
   fontSize: "0.8rem",

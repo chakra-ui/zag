@@ -1,11 +1,11 @@
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon } from "lucide-preact"
-import { useId, useMemo } from "react"
-import { useAsyncList } from "../../hooks/use-async-list"
-import { useInfiniteScroll } from "../../hooks/use-infinite-scroll"
+import { useId, useMemo } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import { useAsyncList } from "../../hooks/use-async-list"
+import { useInfiniteScroll } from "../../hooks/use-infinite-scroll"
 import "@styles/gridlist.css"
 
 interface Pokemon {

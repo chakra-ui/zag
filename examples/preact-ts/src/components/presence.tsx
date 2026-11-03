@@ -1,8 +1,9 @@
-import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { forwardRef, useEffect, useState } from "react"
+import * as presence from "@zag-js/presence"
+import type { HTMLAttributes, Ref, RefObject } from "preact"
+import { useEffect, useState } from "preact/hooks"
 
-interface PresenceProps extends React.HTMLAttributes<HTMLDivElement> {
+interface PresenceProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Whether to enable lazy mounting.
    */
@@ -15,10 +16,11 @@ interface PresenceProps extends React.HTMLAttributes<HTMLDivElement> {
    * Whether to unmount the component when it's not present.
    */
   unmountOnExit?: boolean
+  ref?: Ref<HTMLDivElement> | undefined
 }
 
-export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Presence(props, ref) {
-  const { hidden, lazyMount, skipAnimationOnMount, unmountOnExit, ...rest } = props
+export function Presence(props: PresenceProps) {
+  const { hidden, lazyMount, skipAnimationOnMount, unmountOnExit, ref, ...rest } = props
 
   const present = !hidden
   const service = useMachine(presence.machine, { present })
@@ -43,15 +45,15 @@ export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Prese
       {...rest}
     />
   )
-})
+}
 
-function mergeRefs<T>(...refs: (React.RefObject<T | null> | React.Ref<T>)[]) {
+function mergeRefs<T>(...refs: (RefObject<T | null> | Ref<T> | undefined)[]) {
   return (node: T | null) => {
     refs.forEach((ref) => {
       if (typeof ref === "function") {
         ref(node)
       } else if (ref != null) {
-        ;(ref as React.RefObject<T | null>).current = node
+        ;(ref as RefObject<T | null>).current = node
       }
     })
   }

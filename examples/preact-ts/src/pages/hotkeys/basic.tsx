@@ -1,5 +1,5 @@
 import { createHotkeyStore, formatHotkey, type HotkeyCommand } from "@zag-js/hotkeys"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "preact/hooks"
 
 const store = createHotkeyStore()
 

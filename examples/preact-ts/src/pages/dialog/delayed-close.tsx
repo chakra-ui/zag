@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import "@styles/dialog.css"
 

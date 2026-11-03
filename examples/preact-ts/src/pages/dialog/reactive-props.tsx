@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useState } from "preact/hooks"
 import "@styles/dialog.css"
 
 // A remount resets this to 0, so a steady count proves the dialog was never torn down.

@@ -1,11 +1,11 @@
-import styles from "@styles/drawer.module.css"
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+import styles from "@styles/drawer.module.css"
 
 interface User {
   id: number

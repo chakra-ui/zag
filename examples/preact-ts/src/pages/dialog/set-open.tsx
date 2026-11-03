@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 
 export default function Page() {
   const [log, setLog] = useState<boolean[]>([])

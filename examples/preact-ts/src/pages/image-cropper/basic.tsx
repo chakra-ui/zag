@@ -1,7 +1,7 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { imageCropperControls } from "@zag-js/shared"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"

@@ -1,9 +1,10 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { ReactNode, useState, type JSX } from "react"
+import type { ComponentChildren, HTMLAttributes, JSX } from "preact"
+import { useState } from "preact/hooks"
 
-type ToolbarProps = React.HTMLAttributes<HTMLDivElement> & {
+type ToolbarProps = HTMLAttributes<HTMLDivElement> & {
   controls?: null | (() => JSX.Element)
-  children: ReactNode
+  children: ComponentChildren
   viz?: boolean
 }
 

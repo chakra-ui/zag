@@ -1,6 +1,6 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as scrollArea from "@zag-js/scroll-area"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/scroll-area.css"

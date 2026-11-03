@@ -1,11 +1,11 @@
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
 import { ListCollection } from "@zag-js/collection"
 import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
-import styles from "@styles/dnd-list.module.css"
 import { GripVerticalIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import styles from "@styles/dnd-list.module.css"
 
 type Item = { id: string; name: string }
 

@@ -1,7 +1,8 @@
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
-import { useEffect, useRef, useState } from "react"
+import type { CSSProperties } from "preact"
+import { useEffect, useRef, useState } from "preact/hooks"
 import { Presence } from "../../components/presence"
 import "@styles/dialog.css"
 
@@ -140,7 +141,7 @@ export default function CommandDialogPage() {
   )
 }
 
-const kbdStyle: React.CSSProperties = {
+const kbdStyle: CSSProperties = {
   display: "inline-block",
   padding: "2px 6px",
   fontSize: "0.8rem",
@@ -151,7 +152,7 @@ const kbdStyle: React.CSSProperties = {
   boxShadow: "0 1px 0 #ccc",
 }
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
   width: "100%",
   padding: "14px 16px",
   fontSize: "1rem",
@@ -161,13 +162,13 @@ const inputStyle: React.CSSProperties = {
   boxSizing: "border-box",
 }
 
-const listStyle: React.CSSProperties = {
+const listStyle: CSSProperties = {
   maxHeight: "320px",
   overflowY: "auto",
   padding: "8px 0",
 }
 
-const categoryStyle: React.CSSProperties = {
+const categoryStyle: CSSProperties = {
   padding: "8px 16px 4px",
   fontSize: "0.7rem",
   fontWeight: 600,
@@ -176,14 +177,14 @@ const categoryStyle: React.CSSProperties = {
   color: "#999",
 }
 
-const itemStyle: React.CSSProperties = {
+const itemStyle: CSSProperties = {
   padding: "8px 16px",
   fontSize: "0.9rem",
   cursor: "pointer",
   color: "#333",
 }
 
-const emptyStyle: React.CSSProperties = {
+const emptyStyle: CSSProperties = {
   padding: "24px 16px",
   textAlign: "center",
   color: "#999",

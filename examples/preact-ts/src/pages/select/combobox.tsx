@@ -2,7 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { selectData } from "@zag-js/shared"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import "@styles/select.css"
 import "@styles/combobox.css"
 

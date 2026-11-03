@@ -1,7 +1,7 @@
-import * as select from "@zag-js/select"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import * as select from "@zag-js/select"
 import { ChevronsUpDownIcon } from "lucide-preact"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import "@styles/select.css"
 
 interface Item {

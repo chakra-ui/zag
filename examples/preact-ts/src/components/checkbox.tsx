@@ -1,11 +1,12 @@
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { CheckIcon, MinusIcon } from "lucide-preact"
-import { useId, type ReactNode } from "react"
+import type { ComponentChildren } from "preact"
+import { useId } from "preact/hooks"
 
 interface CheckboxProps extends Omit<checkbox.Props, "id"> {
-  label: ReactNode
-  description?: ReactNode
+  label: ComponentChildren
+  description?: ComponentChildren
   "data-testid"?: string
 }
 

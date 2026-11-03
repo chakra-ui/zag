@@ -1,6 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { memo, useId, useRef, useState } from "react"
+import { memo } from "preact/compat"
+import { useId, useRef, useState } from "preact/hooks"
 import "@styles/collapsible.css"
 
 const Collapse = memo(function Collapse(props: { value: number; open: boolean }) {

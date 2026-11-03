@@ -1,9 +1,10 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import * as scrollArea from "@zag-js/scroll-area"
-import { useId } from "react"
+import type { CSSProperties, ComponentChildren } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/scroll-area.css"
 
-const ScrollArea = (props: { children?: React.ReactNode; style?: React.CSSProperties }) => {
+const ScrollArea = (props: { children?: ComponentChildren; style?: CSSProperties }) => {
   const { children, ...rest } = props
   const service = useMachine(scrollArea.machine, { id: useId() })
   const api = scrollArea.connect(service, normalizeProps)

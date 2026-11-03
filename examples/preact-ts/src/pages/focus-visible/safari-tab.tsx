@@ -1,5 +1,5 @@
 import { getInteractionModality, trackFocusVisible, type Modality } from "@zag-js/focus-visible"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "preact/hooks"
 
 export default function Page() {
   const [modality, setModality] = useState<Modality | null>(null)

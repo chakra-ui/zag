@@ -1,5 +1,5 @@
-import { useVirtualizer } from "@tanstack/react-virtual"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "preact/hooks"
+import { useVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 100_000
@@ -178,7 +178,7 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
 
   return (
     <div>
-      <h2 style={{ color: "#f97316" }}>@tanstack/react-virtual</h2>
+      <h2 style={{ color: "#f97316" }}>TanStack Virtual</h2>
       <BenchmarkButtons
         onRun={(n) => {
           if (scrollRef.current) runScrollBenchmark(scrollRef.current, n, onMetrics)
@@ -245,7 +245,7 @@ export default function Page() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
         <MetricsDisplay label="@zag-js/virtualizer" metrics={zagMetrics} />
-        <MetricsDisplay label="@tanstack/react-virtual" metrics={tanstackMetrics} />
+        <MetricsDisplay label="TanStack Virtual" metrics={tanstackMetrics} />
       </div>
 
       {zagMetrics && tanstackMetrics && (

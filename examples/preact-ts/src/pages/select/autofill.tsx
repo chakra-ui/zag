@@ -1,3 +1,7 @@
+import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import * as select from "@zag-js/select"
+import { ChevronsUpDownIcon } from "lucide-preact"
+
 /**
  * Manual testing page for Select with browser autofill.
  *
@@ -9,10 +13,7 @@
  * 5. When Chrome shows "Use saved address", select it
  * 6. The State select should update to show the autofilled value
  */
-import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import * as select from "@zag-js/select"
-import { ChevronsUpDownIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/select.css"
 
 const US_STATES = [

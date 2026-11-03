@@ -1,7 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
-import { JSX, useId } from "react"
+import type { JSX } from "preact"
+import { useId } from "preact/hooks"
 import "@styles/tree-view.css"
 
 interface Node {

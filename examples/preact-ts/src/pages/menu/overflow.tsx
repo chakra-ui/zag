@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/menu.css"
 
 const items = [

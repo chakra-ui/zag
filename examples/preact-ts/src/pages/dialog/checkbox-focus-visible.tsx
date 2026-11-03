@@ -1,11 +1,11 @@
 import * as checkbox from "@zag-js/checkbox"
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
-import * as radio from "@zag-js/radio-group"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
+import * as radio from "@zag-js/radio-group"
 import * as zagSwitch from "@zag-js/switch"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 
 // Repro for chakra-ui#10918 / PR #3265.
 // Clicking a control with the MOUSE inside a focus-trapped overlay wrongly sets

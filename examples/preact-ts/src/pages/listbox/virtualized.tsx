@@ -1,6 +1,6 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import "@styles/listbox.css"
 

@@ -1,9 +1,9 @@
-import * as zagSwitch from "@zag-js/switch"
 import { useMachine, normalizeProps } from "@zag-js/preact"
-import { useId } from "react"
+import { switchControls } from "@zag-js/shared"
+import * as zagSwitch from "@zag-js/switch"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
-import { switchControls } from "@zag-js/shared"
 import { useControls } from "../../hooks/use-controls"
 import "@styles/switch.css"
 

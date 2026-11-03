@@ -1,11 +1,12 @@
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import * as splitter from "@zag-js/splitter"
-import { createContext, useContext, useId } from "react"
+import { createContext, type RenderableProps } from "preact"
+import { useContext, useId } from "preact/hooks"
 import "@styles/splitter.css"
 
 const PanelContext = createContext<splitter.Api>({} as any)
 
-const PanelGroup = (props: React.PropsWithChildren<Omit<splitter.Props, "id">>) => {
+const PanelGroup = (props: RenderableProps<Omit<splitter.Props, "id">>) => {
   const id = useId()
   const service = useMachine(splitter.machine, { ...props, id })
   const api = splitter.connect(service, normalizeProps)
@@ -16,7 +17,7 @@ const PanelGroup = (props: React.PropsWithChildren<Omit<splitter.Props, "id">>) 
   )
 }
 
-const Panel = (props: React.PropsWithChildren<splitter.PanelProps>) => {
+const Panel = (props: RenderableProps<splitter.PanelProps>) => {
   const api = useContext(PanelContext)
   return <div {...api.getPanelProps(props)}>{props.children}</div>
 }

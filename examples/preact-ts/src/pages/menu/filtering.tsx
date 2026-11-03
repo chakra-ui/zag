@@ -2,7 +2,8 @@ import { createFilter } from "@zag-js/i18n-utils"
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { menuFilterData } from "@zag-js/shared"
-import { useId, useState } from "react"
+import type { TargetedEvent } from "preact"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/menu.css"
@@ -40,7 +41,7 @@ export default function Page() {
                   placeholder="Search actions..."
                   {...mergeProps(api.getInputProps(), {
                     value: query,
-                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value),
+                    onChange: (event: TargetedEvent<HTMLInputElement>) => setQuery(event.currentTarget.value),
                   })}
                 />
                 <div {...api.getEmptyProps()}>{items.length === 0 && "No actions found"}</div>

@@ -1,10 +1,10 @@
-import { StateVisualizer } from "../../components/state-visualizer"
-import { Toolbar } from "../../components/toolbar"
 import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
-import styles from "@styles/dnd-kanban.module.css"
 import { GripVerticalIcon } from "lucide-preact"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import styles from "@styles/dnd-kanban.module.css"
 
 type Card = {
   id: string

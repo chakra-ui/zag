@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { XIcon } from "lucide-preact"
-import { useId } from "react"
+import { useId } from "preact/hooks"
 import "@styles/popover.css"
 import "@styles/dialog.css"
 

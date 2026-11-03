@@ -1,5 +1,5 @@
 import { ControlRecord, deepGet, deepSet, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
-import { useMemo, useState } from "react"
+import { useMemo, useState } from "preact/hooks"
 
 export function useControls<T extends ControlRecord>(config: T) {
   const [state, __setState] = useState(getControlDefaults(config))

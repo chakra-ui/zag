@@ -571,9 +571,6 @@ importers:
       react-hook-form:
         specifier: 7.72.0
         version: 7.72.0(react@19.3.1)
-      react-spinners:
-        specifier: 0.17.1
-        version: 0.17.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     devDependencies:
       '@types/form-serialize':
         specifier: 0.7.4
@@ -909,9 +906,12 @@ importers:
       '@internationalized/date':
         specifier: 3.12.4
         version: 3.12.4
-      '@tanstack/react-virtual':
-        specifier: 3.14.14
-        version: 3.14.14(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@tanstack/preact-form':
+        specifier: 1.30.5
+        version: 1.30.5(preact@11.1.1)
+      '@tanstack/virtual-core':
+        specifier: 3.19.6
+        version: 3.19.6
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -1200,9 +1200,6 @@ importers:
       lucide-preact:
         specifier: 1.66.0
         version: 1.66.0(preact@11.1.1)
-      match-sorter:
-        specifier: 8.1.0
-        version: 8.1.0
       preact:
         specifier: 11.1.1
         version: 11.1.1(preact-render-to-string@6.8.2)
@@ -1212,15 +1209,6 @@ importers:
       preact-render-to-string:
         specifier: 6.8.2
         version: 6.8.2(preact@11.1.1)
-      react-hook-form:
-        specifier: 7.72.0
-        version: 7.72.0(react@19.3.1)
-      react-spinners:
-        specifier: 0.17.1
-        version: 0.17.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      virtua:
-        specifier: ^0.49.0
-        version: 0.49.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(svelte@5.57.2(@typescript-eslint/types@8.69.0))(vue@3.5.44(typescript@6.0.3))
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.10.6
@@ -2230,6 +2218,9 @@ importers:
       preact:
         specifier: 11.1.1
         version: 11.1.1(preact-render-to-string@6.8.2)
+      preact-render-to-string:
+        specifier: 6.8.2
+        version: 6.8.2(preact@11.1.1)
 
   packages/frameworks/react:
     dependencies:
@@ -7812,11 +7803,33 @@ packages:
   '@swc/types@0.1.28':
     resolution: {integrity: sha512-V6Mnml8v09QALx6K0elJ7o9K/MkVDtW3t6L+7Ou/JcWtb3xwId2AH4FeOceySd2JaO87IMw4+6vSZxLm34LPbw==}
 
+  '@tanstack/devtools-event-client@0.4.4':
+    resolution: {integrity: sha512-6T5Yop/793YI+H+5J8Hsyj4kCih9sl4t3ElLgKioW5hk3ocn+ZdSJ94tT7vL7uabxSugWYBZlOTMPzEw2puvQw==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   '@tanstack/directive-functions-plugin@1.121.21':
     resolution: {integrity: sha512-B9z/HbF7gJBaRHieyX7f2uQ4LpLLAVAEutBZipH6w+CYD6RHRJvSVPzECGHF7icFhNWTiJQL2QR6K07s59yzEw==}
     engines: {node: '>=12'}
     peerDependencies:
       vite: '>=6.0.0'
+
+  '@tanstack/form-core@1.33.5':
+    resolution: {integrity: sha512-3dfx9MBP0aq5sXKteikG629X9oviptrQj0IFRk9YGcb+lB7Kv5x8S17oOSk1wUWgjQZ4xVJEMbKwOAODymocgA==}
+
+  '@tanstack/pacer-lite@0.1.1':
+    resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
+    engines: {node: '>=18'}
+
+  '@tanstack/preact-form@1.30.5':
+    resolution: {integrity: sha512-7TkvR0T4zd4pFT9xKq8BxISDzQeeiO/F5ZLMnPcvuca/DMyQgnbl3f8tQzzbMJIh5WtyaFUvza6cDn/JPCAHVA==}
+    peerDependencies:
+      preact: '>10.11.0'
+
+  '@tanstack/preact-store@0.13.5':
+    resolution: {integrity: sha512-+ONKQNVqoGBpCbvahHjW39d28vwBVNRUa927m5owRQS6fySTORPKbOV6HYBXt0qHxOA8r0llg1Bfy/FKXsj3qw==}
+    peerDependencies:
+      preact: ^10.0.0 || ^11.0.0-0
 
   '@tanstack/react-virtual@3.14.14':
     resolution: {integrity: sha512-eo/arVIpYi9rGJXR5y4fDoTiz+BBOc4HKVBKQMoPRswxJtP6HV8iupW/DkBE9TRh+PjzikIDHw2h7aV25g0Z4w==}
@@ -7832,8 +7845,14 @@ packages:
     resolution: {integrity: sha512-a05fzK+jBGacsSAc1vE8an7lpBh4H0PyIEcivtEyHLomgSeElAJxm9E2It/0nYRZ5Lh23m0okbhzJNaYWZpAOg==}
     engines: {node: '>=12'}
 
+  '@tanstack/store@0.11.2':
+    resolution: {integrity: sha512-sJ4mjol8uQsHV0gOJzzjwXfh2Fwm+Sz0+8deqiTm4jGbMdjzNSW+xZCFm0kUa870uhd8yi+DpKnZb5Kc4apa0Q==}
+
   '@tanstack/virtual-core@3.18.0':
     resolution: {integrity: sha512-8frWsyfyBwLGoDQ6wN6Lq3CoT8j4BPJUzE6nH4P9mruLhxPOamk82prC3JxRMLJzYnNa9ISaZ8NtfxEiOGkHEQ==}
+
+  '@tanstack/virtual-core@3.19.6':
+    resolution: {integrity: sha512-CsTW892z23gy7IyxYTTorVu1uZWB+0N349rSMgKz4rFLPpLza7F7TpcCKeI5iUAwYQCt8QUlOU67J+KXCxtpGw==}
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -11626,12 +11645,6 @@ packages:
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  react-spinners@0.17.1:
-    resolution: {integrity: sha512-YktwnYeMWpvior5/MCyl+gbFuIK98PLfsZ0sp92t15r4nMpWpXj77YyJiBiD2EM3Lcz1lNjpqICjt8gMGtxclw==}
-    peerDependencies:
-      react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   react@19.3.1:
     resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
@@ -12740,26 +12753,6 @@ packages:
   vinxi@0.5.11:
     resolution: {integrity: sha512-82Qm+EG/b2PRFBvXBbz1lgWBGcd9totIL6SJhnrZYfakjloTVG9+5l6gfO6dbCCtztm5pqWFzLY0qpZ3H3ww/w==}
     hasBin: true
-
-  virtua@0.49.3:
-    resolution: {integrity: sha512-k1Yn988Vz/L40uDtEWPjfdVo15Suumh4tU4/z5Srs0elNcU9DgBskqdh3llpHyAlXrCeHWTfcclYvY1uU4MmIg==}
-    peerDependencies:
-      react: '>=16.14.0'
-      react-dom: '>=16.14.0'
-      solid-js: '>=1.0'
-      svelte: '>=5.0'
-      vue: '>=3.2'
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      solid-js:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
 
   vite-dev-rpc@2.0.0:
     resolution: {integrity: sha512-yKwbTwdHKSD2k/aGqyWpPHepo45OQc8lH3/6IfT4ZqeKE26ooKvi4WIEKzqWav8v+9Is8u1k8q54hvOmqASazA==}
@@ -16146,6 +16139,8 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
+  '@tanstack/devtools-event-client@0.4.4': {}
+
   '@tanstack/directive-functions-plugin@1.121.21(supports-color@10.2.2)(vite@8.3.5(@types/node@25.9.9)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))':
     dependencies:
       '@babel/code-frame': 7.26.2
@@ -16158,6 +16153,25 @@ snapshots:
       vite: 8.3.5(@types/node@25.9.9)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/form-core@1.33.5':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.4.4
+      '@tanstack/pacer-lite': 0.1.1
+      '@tanstack/store': 0.11.2
+
+  '@tanstack/pacer-lite@0.1.1': {}
+
+  '@tanstack/preact-form@1.30.5(preact@11.1.1)':
+    dependencies:
+      '@tanstack/form-core': 1.33.5
+      '@tanstack/preact-store': 0.13.5(preact@11.1.1)
+      preact: 11.1.1(preact-render-to-string@6.8.2)
+
+  '@tanstack/preact-store@0.13.5(preact@11.1.1)':
+    dependencies:
+      '@tanstack/store': 0.11.2
+      preact: 11.1.1(preact-render-to-string@6.8.2)
 
   '@tanstack/react-virtual@3.14.14(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -16195,7 +16209,11 @@ snapshots:
       - supports-color
       - vite
 
+  '@tanstack/store@0.11.2': {}
+
   '@tanstack/virtual-core@3.18.0': {}
+
+  '@tanstack/virtual-core@3.19.6': {}
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -20875,11 +20893,6 @@ snapshots:
 
   react-is@17.0.2: {}
 
-  react-spinners@0.17.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
-    dependencies:
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-
   react@19.3.1: {}
 
   read-yaml-file@2.1.0:
@@ -22295,14 +22308,6 @@ snapshots:
       - webpack
       - xml2js
       - yaml
-
-  virtua@0.49.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(svelte@5.57.2(@typescript-eslint/types@8.69.0))(vue@3.5.44(typescript@6.0.3)):
-    optionalDependencies:
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-      solid-js: 1.9.17
-      svelte: 5.57.2(@typescript-eslint/types@8.69.0)
-      vue: 3.5.44(typescript@6.0.3)
 
   vite-dev-rpc@2.0.0(vite@8.3.5(@types/node@25.9.9)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)):
     dependencies:

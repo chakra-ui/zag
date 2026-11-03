@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-preact"
-import { useId, useState } from "react"
+import { useId, useState } from "preact/hooks"
 import "@styles/carousel.css"
 
 export default function Page() {

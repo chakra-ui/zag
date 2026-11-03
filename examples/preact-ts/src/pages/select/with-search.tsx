@@ -3,7 +3,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { ChevronsUpDownIcon } from "lucide-preact"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useState } from "preact/hooks"
 import "@styles/select.css"
 
 const { contains } = createFilter({ sensitivity: "base" })

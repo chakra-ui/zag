@@ -1,13 +1,14 @@
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
-import * as tooltip from "@zag-js/tooltip"
 import * as toolbar from "@zag-js/toolbar"
-import { useId } from "react"
+import * as tooltip from "@zag-js/tooltip"
+import type { ComponentChildren } from "preact"
+import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
 import "@styles/toolbar.css"
 import "@styles/tooltip.css"
 
-function IconButton(props: { api: toolbar.Api; value: string; label: string; children: React.ReactNode }) {
+function IconButton(props: { api: toolbar.Api; value: string; label: string; children: ComponentChildren }) {
   const { api, value, label, children } = props
   const triggerId = api.getItemId(value)
 
