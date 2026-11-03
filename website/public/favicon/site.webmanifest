@@ -1,14 +1,14 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "Zag.js",
+  "short_name": "Zag",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/android-chrome-256x256.png",
+      "src": "/favicon/android-chrome-256x256.png",
       "sizes": "256x256",
       "type": "image/png"
     }
