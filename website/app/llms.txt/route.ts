@@ -6,8 +6,9 @@ import sidebar from "../../sidebar.config"
 export const dynamic = "force-static"
 
 function formatDocItem(categoryId: string, docItem: any, framework?: string) {
+  if (docItem.href) return `- [${docItem.label}](${docItem.href})`
   const href = formatUrl(categoryId, docItem.id, framework)
-  return `- [${docItem.label}](${siteConfig.url}${href})`
+  return `- [${docItem.label}](${siteConfig.url}${href}.md)`
 }
 
 function formatCategory(category: any) {

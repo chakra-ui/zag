@@ -27,6 +27,20 @@ const nextConfig = {
       "./node_modules/@zag-js/*/package.json",
     ],
   },
+  // Every docs page has a markdown twin, at `<page>.md` or with `Accept: text/markdown`
+  rewrites: async () => ({
+    beforeFiles: [
+      {
+        source: "/:section(overview|guides|utilities|components)/:path*.md",
+        destination: "/api/md/:section/:path*",
+      },
+      {
+        source: "/:section(overview|guides|utilities|components)/:path*",
+        has: [{ type: "header", key: "accept", value: ".*text/markdown.*" }],
+        destination: "/api/md/:section/:path*",
+      },
+    ],
+  }),
   redirects: async () => [
     ...mergedPageRedirects,
     {
