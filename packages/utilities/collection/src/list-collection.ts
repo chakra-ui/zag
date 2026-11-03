@@ -18,22 +18,50 @@ const fallback: CollectionMethods<any> = {
   },
 }
 
-export class ListCollection<T extends CollectionItem = CollectionItem> {
+// Build the lookup map once linear scans have covered this many full passes
+const MAP_SCAN_PASSES = 2
+
+// Return type of `copy` and the mutation methods: `Self` when a subclass provides it
+type Collection<T extends CollectionItem, Self> = [Self] extends [never] ? ListCollection<T> : Self
+
+/**
+ * Subclasses that override `createCollection` can pass themselves as `Self`
+ * so mutation methods keep the subclass type.
+ */
+export class ListCollection<T extends CollectionItem = CollectionItem, Self = never> {
   /**
-   * The items in the collection
+   * The items in the collection.
+   * Treat as immutable: use `setItems`, `update`, etc. to get a new collection.
    */
   items: T[]
   private indexMap: Map<string, number> | null = null
+  private orderedItems: T[] | null = null
+  // `items` the caches were built from; reassigning `items` invalidates them
+  private cacheSource: T[] | null = null
+  private scannedCount = 0
 
-  constructor(private options: CollectionOptions<T>) {
+  constructor(protected options: CollectionOptions<T>) {
     this.items = [...options.items] as T[]
   }
 
   /**
    * Copy the collection
    */
-  copy = (items?: T[]) => {
-    return new ListCollection({ ...this.options, items: items ?? [...this.items] })
+  copy = (items?: T[]): Collection<T, Self> => {
+    return this.createCollection(items ?? [...this.items])
+  }
+
+  /**
+   * Creates the collection returned by `copy` and the mutation methods.
+   * Subclasses override this (and narrow the method types) to keep their type and state.
+   */
+  // No-op mutations return the same instance; `this` is `Self` for subclasses that pass it
+  private unchanged(): Collection<T, Self> {
+    return this as unknown as Collection<T, Self>
+  }
+
+  protected createCollection(items: T[]): Collection<T, Self> {
+    return new ListCollection({ ...this.options, items }) as Collection<T, Self>
   }
 
   /**
@@ -46,7 +74,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Function to update the collection items
    */
-  setItems = (items: T[]) => {
+  setItems = (items: T[]): Collection<T, Self> => {
     return this.copy(items)
   }
 
@@ -87,23 +115,35 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Get the item based on its index
    */
   at = (index: number): T | null => {
-    // If no grouping is used, use the simple array access
-    if (!this.options.groupBy && !this.options.groupSort) {
-      return this.items[index] ?? null
-    }
+    if (!this.isGrouped()) return this.items[index] ?? null
+    return this.getOrderedItems()[index] ?? null
+  }
 
-    // When grouping is used, get item based on grouped structure
-    let idx = 0
-    const groups = this.group()
+  // Prototype methods (not arrow fields) to avoid per-instance allocations
+  private isGrouped(): boolean {
+    return !!(this.options.groupBy || this.options.groupSort)
+  }
 
-    for (const [, items] of groups) {
-      for (const item of items) {
-        if (idx === index) return item
-        idx++
+  private syncCache(): void {
+    if (this.cacheSource === this.items) return
+    this.cacheSource = this.items
+    this.indexMap = null
+    this.orderedItems = null
+    this.scannedCount = 0
+  }
+
+  // Items in display order (grouped when `groupBy` is set)
+  protected getOrderedItems(): T[] {
+    if (!this.isGrouped()) return this.items
+    this.syncCache()
+    if (!this.orderedItems) {
+      const ordered: T[] = []
+      for (const [, items] of this.group()) {
+        for (const item of items) ordered.push(item)
       }
+      this.orderedItems = ordered
     }
-
-    return null
+    return this.orderedItems
   }
 
   private sortFn = (valueA: string, valueB: string): number => {
@@ -278,39 +318,37 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   indexOf = (value: string | null): number => {
     if (value == null) return -1
 
-    // If no grouping is used, use the simple findIndex
-    if (!this.options.groupBy && !this.options.groupSort) {
-      return this.items.findIndex((item) => this.getItemValue(item) === value)
+    this.syncCache()
+    // Stay linear until scans add up to the cost of building the map
+    if (!this.indexMap && !this.isGrouped() && this.scannedCount < this.items.length * MAP_SCAN_PASSES) {
+      const index = this.getItemIndex(value)
+      this.scannedCount += index === -1 ? this.items.length : index + 1
+      return index
     }
 
-    // Use cache for grouped lookups
     if (!this.indexMap) {
-      this.indexMap = new Map()
-      let idx = 0
-      const groups = this.group()
-      for (const [, items] of groups) {
-        for (const item of items) {
-          const itemValue = this.getItemValue(item)
-          if (itemValue != null) {
-            this.indexMap.set(itemValue, idx)
-          }
-          idx++
-        }
+      const map = new Map<string, number>()
+      const items = this.getOrderedItems()
+      for (let i = 0; i < items.length; i++) {
+        const itemValue = this.getItemValue(items[i])
+        // first match wins, like `findIndex`
+        if (itemValue != null && !map.has(itemValue)) map.set(itemValue, i)
       }
+      this.indexMap = map
     }
 
     return this.indexMap.get(value) ?? -1
   }
 
-  private getItemIndex = (value: string): number => {
+  // Index in `items` (source order), used by mutations
+  private getItemIndex(value: string): number {
     return this.items.findIndex((item) => this.getItemValue(item) === value)
   }
 
   private getByText = (text: string, current: string | null): T | undefined => {
     const currentIndex = current != null ? this.indexOf(current) : -1
     const isSingleKey = text.length === 1
-    const isGrouped = this.options.groupBy || this.options.groupSort
-    const items = isGrouped ? this.group().flatMap(([, items]) => items) : this.items
+    const items = this.getOrderedItems()
 
     // Use a single loop to filter and find the item
     for (let i = 0; i < items.length; i++) {
@@ -365,16 +403,16 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Update an item in the collection
    */
-  update = (value: string, item: T) => {
+  update = (value: string, item: T): Collection<T, Self> => {
     let index = this.getItemIndex(value)
-    if (index === -1) return this
+    if (index === -1) return this.unchanged()
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
   /**
    * Update an item in the collection if it exists, otherwise append it
    */
-  upsert = (value: string, item: T, mode: "append" | "prepend" = "append") => {
+  upsert = (value: string, item: T, mode: "append" | "prepend" = "append"): Collection<T, Self> => {
     let index = this.getItemIndex(value)
     if (index === -1) {
       const fn = mode === "append" ? this.append : this.prepend
@@ -386,18 +424,18 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Insert items at a specific index
    */
-  insert = (index: number, ...items: T[]) => {
+  insert = (index: number, ...items: T[]): Collection<T, Self> => {
     return this.copy(insert(this.items, index, ...items))
   }
 
   /**
    * Insert items before a specific value
    */
-  insertBefore = (value: string, ...items: T[]) => {
+  insertBefore = (value: string, ...items: T[]): Collection<T, Self> => {
     let toIndex = this.getItemIndex(value)
     if (toIndex === -1) {
       if (this.items.length === 0) toIndex = 0
-      else return this
+      else return this.unchanged()
     }
     return this.copy(insert(this.items, toIndex, ...items))
   }
@@ -405,11 +443,11 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Insert items after a specific value
    */
-  insertAfter = (value: string, ...items: T[]) => {
+  insertAfter = (value: string, ...items: T[]): Collection<T, Self> => {
     let toIndex = this.getItemIndex(value)
     if (toIndex === -1) {
       if (this.items.length === 0) toIndex = 0
-      else return this
+      else return this.unchanged()
     }
     return this.copy(insert(this.items, toIndex + 1, ...items))
   }
@@ -417,21 +455,21 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Prepend items to the collection
    */
-  prepend = (...items: T[]) => {
+  prepend = (...items: T[]): Collection<T, Self> => {
     return this.copy(insert(this.items, 0, ...items))
   }
 
   /**
    * Append items to the collection
    */
-  append = (...items: T[]) => {
+  append = (...items: T[]): Collection<T, Self> => {
     return this.copy(insert(this.items, this.items.length, ...items))
   }
 
   /**
    * Filter the collection
    */
-  filter = (fn: (itemString: string, index: number, item: T) => boolean) => {
+  filter = (fn: (itemString: string, index: number, item: T) => boolean): Collection<T, Self> => {
     const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index, item))
     return this.copy(filteredItems)
   }
@@ -439,7 +477,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Remove items from the collection
    */
-  remove = (...itemsOrValues: Array<T | string>) => {
+  remove = (...itemsOrValues: Array<T | string>): Collection<T, Self> => {
     const values = itemsOrValues.map((itemOrValue) =>
       typeof itemOrValue === "string" ? itemOrValue : this.getItemValue(itemOrValue),
     )
@@ -453,42 +491,38 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
-   * Move an item to a specific index
+   * Move an item to a specific index in `items` (source order, not grouped order)
    */
-  move = (value: string, toIndex: number) => {
+  move = (value: string, toIndex: number): Collection<T, Self> => {
     const fromIndex = this.getItemIndex(value)
-    if (fromIndex === -1) return this
+    if (fromIndex === -1) return this.unchanged()
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
   /**
    * Move items before a specific value
    */
-  moveBefore = (value: string, ...values: string[]) => {
-    let toIndex = this.items.findIndex((item) => this.getItemValue(item) === value)
-    if (toIndex === -1) return this
-    let indices = values
-      .map((value) => this.items.findIndex((item) => this.getItemValue(item) === value))
-      .sort((a, b) => a - b)
+  moveBefore = (value: string, ...values: string[]): Collection<T, Self> => {
+    const toIndex = this.getItemIndex(value)
+    if (toIndex === -1) return this.unchanged()
+    const indices = values.map((v) => this.getItemIndex(v)).sort((a, b) => a - b)
     return this.copy(move(this.items, indices, toIndex))
   }
 
   /**
    * Move items after a specific value
    */
-  moveAfter = (value: string, ...values: string[]) => {
-    let toIndex = this.items.findIndex((item) => this.getItemValue(item) === value)
-    if (toIndex === -1) return this
-    let indices = values
-      .map((value) => this.items.findIndex((item) => this.getItemValue(item) === value))
-      .sort((a, b) => a - b)
+  moveAfter = (value: string, ...values: string[]): Collection<T, Self> => {
+    const toIndex = this.getItemIndex(value)
+    if (toIndex === -1) return this.unchanged()
+    const indices = values.map((v) => this.getItemIndex(v)).sort((a, b) => a - b)
     return this.copy(move(this.items, indices, toIndex + 1))
   }
 
   /**
    * Reorder items
    */
-  reorder = (fromIndex: number, toIndex: number) => {
+  reorder = (fromIndex: number, toIndex: number): Collection<T, Self> => {
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
