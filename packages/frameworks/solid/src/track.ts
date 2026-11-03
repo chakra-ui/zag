@@ -11,25 +11,15 @@ export const createTrack = (deps: any[], effect: VoidFunction) => {
   createEffect(
     () => deps.map((d) => access(d)),
     (next) => {
-      let changed = false
-      for (let i = 0; i < next.length; i++) {
-        if (!isEqual(prevDeps[i], next[i])) {
-          changed = true
-          break
-        }
-      }
-      if (changed) {
+      if (next.some((dep, i) => !isEqual(prevDeps[i], dep))) {
         prevDeps = next
-        effect()
+        untrack(effect)
       }
     },
   )
 }
 
-/**
- * Solid does not re-render, so `notify` bumps a signal to re-read when the effect set changes.
- * `read` runs tracked (it subscribes to the effects' deps); `apply` runs untracked with its result.
- */
+/** Re-subscribe when the set of running effects changes. */
 export const createEffectSync = <T>(read: () => T, apply: (value: T) => void): VoidFunction => {
   const [version, setVersion] = createSignal(0)
   createEffect(

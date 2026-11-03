@@ -55,26 +55,28 @@ export function useMachine<T extends MachineSchema>(
 
   const prop: any = createProp(props)
 
-  const context: any = machine.context?.({
-    prop,
-    bindable: createBindable,
-    get scope() {
-      return scope()
-    },
-    flush,
-    getContext() {
-      return ctx as any
-    },
-    getComputed() {
-      return computed as any
-    },
-    getRefs() {
-      return refs as any
-    },
-    getEvent() {
-      return getEvent()
-    },
-  })
+  const context: any = untrack(() =>
+    machine.context?.({
+      prop,
+      bindable: createBindable,
+      get scope() {
+        return scope()
+      },
+      flush,
+      getContext() {
+        return ctx as any
+      },
+      getComputed() {
+        return computed as any
+      },
+      getRefs() {
+        return refs as any
+      },
+      getEvent() {
+        return getEvent()
+      },
+    }),
+  )
 
   const ctx: BindableContext<T> = {
     get(key) {
@@ -123,7 +125,7 @@ export function useMachine<T extends MachineSchema>(
       },
     })
 
-  const refs = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
+  const refs = createRefs(untrack(() => machine.refs?.({ prop, context: ctx })) ?? {})
 
   const getParams = (): Params<T> => ({
     state: getState(),
@@ -206,7 +208,6 @@ export function useMachine<T extends MachineSchema>(
     notify()
   }
 
-  // Tracked: subscribes to every running watch effect's deps.
   const readEffectDeps = () => {
     const values: [EffectRecord, any[]][] = []
     for (const record of effects.current.values()) {
@@ -352,10 +353,18 @@ export function useMachine<T extends MachineSchema>(
   machine.watch?.(getParams())
 
   onSettled(() => {
-    const started = status === MachineStatus.Started
-    status = MachineStatus.Started
-    debug(started ? "rehydrating..." : "initializing...")
-    state.invoke(state.initial!, INIT_STATE)
+    let cancelled = false
+    // Entry actions may flush, which onSettled forbids.
+    queueMicrotask(() => {
+      if (cancelled) return
+      const started = status === MachineStatus.Started
+      status = MachineStatus.Started
+      debug(started ? "rehydrating..." : "initializing...")
+      state.invoke(state.initial!, INIT_STATE)
+    })
+    return () => {
+      cancelled = true
+    }
   })
 
   notify = createEffectSync(readEffectDeps, reconcileEffects)
@@ -375,8 +384,6 @@ export function useMachine<T extends MachineSchema>(
   } as unknown as Service<T>
 }
 
-// Solid 2 batches writes until the microtask flush; apply them now so the DOM reflects `fn`.
-// Inside an effect the flush is already underway and this is a no-op.
 function flush(fn: VoidFunction) {
   fn()
   flushSolid()

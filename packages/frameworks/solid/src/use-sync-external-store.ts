@@ -5,7 +5,8 @@ export function useSyncExternalStore<T>(
   getSnapshot: () => T,
   _getServerSnapshot?: () => T,
 ): Accessor<T> {
-  const [snapshot, setSnapshot] = createSignal<T>(getSnapshot() as Exclude<T, Function>)
+  const initial = getSnapshot()
+  const [snapshot, setSnapshot] = createSignal<T>(() => initial)
 
   onSettled(() => {
     setSnapshot(() => getSnapshot())

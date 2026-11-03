@@ -414,7 +414,9 @@ describe("basic", () => {
       // Runs before the machine's watch effect, like an earlier sibling's effect
       createEffect(
         () => undefined,
-        () => setValue(true),
+        () => {
+          setValue(true)
+        },
       )
       return useMachine<any>(machine, () => ({ value: value() }))
     })
@@ -444,7 +446,9 @@ describe("basic", () => {
       // Runs before the machine's watch effect, like an earlier sibling's effect
       createEffect(
         () => undefined,
-        () => setValue(false),
+        () => {
+          setValue(false)
+        },
       )
       return useMachine<any>(machine, () => ({ value: value() }))
     })
@@ -913,6 +917,7 @@ describe("edge cases", () => {
     const { result, send } = renderMachine(machine)
 
     expect(result.state.get()).toBe("active")
+    await Promise.resolve()
     expect(entrySpy).toHaveBeenCalledTimes(1)
 
     await send({ type: "PING" })

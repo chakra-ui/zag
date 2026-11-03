@@ -2,6 +2,7 @@
   "extends": "../../../tsconfig.json",
   "include": ["src", "tests"],
   "compilerOptions": {
+    "jsxImportSource": "@solidjs/web",
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
   }
 }

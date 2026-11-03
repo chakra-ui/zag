@@ -8,7 +8,6 @@ export interface KeyProps<T> {
   children: (item: Accessor<T>, index: Accessor<number>) => JSX.Element
 }
 
-/** Renders a list keyed by `by`, so a row survives being replaced by a new object with the same key. */
 export function Key<T>(props: KeyProps<T>): JSX.Element {
   const by = props.by
   const key = typeof by === "function" ? by : (item: T) => item[by]
@@ -23,5 +22,5 @@ export function Key<T>(props: KeyProps<T>): JSX.Element {
     get children() {
       return props.children
     },
-  } as any)
+  })
 }

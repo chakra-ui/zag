@@ -3,13 +3,11 @@ import { isFunction } from "@zag-js/utils"
 import { createEffect, createMemo, createSignal, type Accessor, onCleanup, untrack } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
-  const initial = props().value ?? props().defaultValue
+  const initial = untrack(() => props().value ?? props().defaultValue)
 
-  const eq = props().isEqual ?? Object.is
+  const eq = untrack(() => props().isEqual ?? Object.is)
 
-  // Solid 2 applies writes when the batch flushes, so a signal read right after `set` still answers the
-  // old value. Machines read their context right after writing it, so the value lives here and the
-  // signal only tells readers it changed.
+  // Machines need immediate reads; Solid signals commit on flush.
   let value = initial as T
   const [version, setVersion] = createSignal(0)
   const controlled = createMemo(() => props().value !== undefined)
@@ -17,21 +15,22 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
   const valueRef = { current: value }
 
   createEffect(
-    () => (controlled() ? props().value : (version(), value)),
+    () => (controlled() ? props().value : undefined),
     (v) => {
-      valueRef.current = v as T
+      valueRef.current = v === undefined ? value : (v as T)
     },
   )
 
   const set = (v: T | ((prev: T) => T)) => {
-    const prev = untrack(() => (controlled() ? props().value : value)) as T
+    const isControlled = untrack(controlled)
+    const prev = untrack(() => (isControlled ? props().value : value)) as T
     const next = isFunction(v) ? v(prev) : v
 
     if (props().debug) {
       console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
     }
 
-    if (!controlled()) {
+    if (!isControlled && !Object.is(next, prev)) {
       value = next as T
       valueRef.current = value
       setVersion((n) => n + 1)

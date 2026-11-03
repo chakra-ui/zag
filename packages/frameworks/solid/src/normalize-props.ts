@@ -34,6 +34,11 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   for (const key in props) {
     const value = props[key]
 
+    if (key.startsWith("aria-") && typeof value === "boolean") {
+      normalized[key] = String(value)
+      continue
+    }
+
     if (key === "readOnly" && value === false) {
       continue
     }
