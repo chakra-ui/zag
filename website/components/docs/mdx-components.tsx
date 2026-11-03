@@ -16,8 +16,7 @@ import { Box, styled } from "styled-system/jsx"
 import { token } from "styled-system/tokens"
 import { Showcase } from "../../demos"
 import { FRAMEWORKS } from "../../lib/framework-utils"
-import { CodeSnippetTabs } from "./code-snippet-tabs"
-import { CopyButton } from "./copy-button"
+import { CodeSnippetTabs, type SnippetPanel } from "./code-snippet-tabs"
 import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
@@ -27,22 +26,22 @@ import { GuideCards } from "./guide-cards"
 import { Explorer } from "./explorer"
 import { Example } from "./example"
 import { explorerDemos } from "../../demos/explorer"
-import { LuFileCode } from "react-icons/lu"
-import * as codeBlock from "./code-block.css"
+import { CodeBlock } from "./code-block"
 import { PropTable } from "./prop-table"
 import * as table from "./prop-table.css"
 import * as styles from "./mdx.css"
 import { SectionIndex } from "./section-index"
 
-const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
+function snippetPanel(snippet: Snippet): SnippetPanel {
   const Body = getSnippetBody(snippet.key)
-  const textContent = snippet.body.raw.split("\n").slice(1, -1).join("\n")
-  return (
-    <div className="prose" id="snippet" data-framework={snippet.framework}>
-      {Body ? <Body components={components} /> : null}
-      <CopyButton content={textContent} />
-    </div>
-  )
+  return {
+    code: snippet.body.raw.split("\n").slice(1, -1).join("\n"),
+    node: (
+      <div className="prose" data-framework={snippet.framework}>
+        {Body ? <Body components={components} /> : null}
+      </div>
+    ),
+  }
 }
 
 function Anchor({ as: Comp = "a", className, ...props }: any) {
@@ -95,25 +94,7 @@ const components: Record<string, FC<any>> = {
   h4(props) {
     return <styled.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
   },
-  pre({ "data-title": title, ...props }) {
-    const pre = (
-      <styled.pre
-        tabIndex={0}
-        {...props}
-        className={`prose ${props.className}`}
-      />
-    )
-    if (!title) return pre
-    return (
-      <figure className={codeBlock.frame}>
-        <figcaption className={codeBlock.header}>
-          <LuFileCode aria-hidden />
-          {title}
-        </figcaption>
-        {pre}
-      </figure>
-    )
-  },
+  pre: CodeBlock,
   li(props) {
     return (
       <styled.li
@@ -195,10 +176,7 @@ const components: Record<string, FC<any>> = {
         const snippet = allSnippets.find(
           (p) => p.id === props.id && p.framework === framework,
         )
-        return [
-          framework,
-          snippet ? <SnippetItem key={framework} snippet={snippet} /> : null,
-        ]
+        return [framework, snippet ? snippetPanel(snippet) : null]
       }),
     )
     return <CodeSnippetTabs id={props.id} panels={panels} />

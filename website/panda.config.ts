@@ -423,7 +423,26 @@ export default defineConfig({
     "*": {
       borderColor: "border",
       borderStyle: "solid",
+      // thin, rounded scrollbars that follow the theme
+      scrollbarWidth: "thin",
+      scrollbarColor:
+        "color-mix(in srgb, {colors.ink} 22%, transparent) transparent",
     },
+
+    // Safari still styles scrollbars through the webkit pseudo-elements
+    "*::-webkit-scrollbar": { width: "10px", height: "10px" },
+    "*::-webkit-scrollbar-track": { bg: "transparent" },
+    "*::-webkit-scrollbar-thumb": {
+      bg: "color-mix(in srgb, {colors.ink} 22%, transparent)",
+      rounded: "full",
+      border: "2px solid transparent",
+      backgroundClip: "padding-box",
+    },
+    "*::-webkit-scrollbar-thumb:hover": {
+      bg: "color-mix(in srgb, {colors.ink} 38%, transparent)",
+      backgroundClip: "padding-box",
+    },
+    "*::-webkit-scrollbar-corner": { bg: "transparent" },
 
     ".focus-outline": {
       "&:focus, &[data-focus]": {

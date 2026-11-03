@@ -213,7 +213,7 @@ export const tabs: SidebarTab[] = [
         items: docs("guides", [
           { label: "Core concepts", id: "framework-adapter-concepts" },
           { label: "TypeScript", id: "framework-adapter-typescript" },
-          { label: "Example", id: "framework-adapter-example" },
+          { label: "Lit example", id: "framework-adapter-example" },
         ]),
       },
     ],

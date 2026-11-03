@@ -48,10 +48,6 @@
     border: 0;
   }
 
-  [data-framework] > .prose > .prose {
-    max-height: 480px;
-  }
-
   * + pre[class*="language-"] {
     margin-bottom: 2em;
   }
