@@ -2,9 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from "react"
 import { HiChevronDown } from "react-icons/hi"
-import { LuFileCode } from "react-icons/lu"
 import { cx } from "styled-system/css"
 import * as styles from "./code-block.css"
+import { FileIcon } from "./file-icon"
 
 // matches styles.pre's max height; a little slack so near-misses don't get a toggle
 const collapsedHeight = 480
@@ -65,7 +65,7 @@ export function CodeBlock({ "data-title": title, ...props }: CodeBlockProps) {
   return (
     <figure className={styles.frame}>
       <figcaption className={styles.header}>
-        <LuFileCode aria-hidden />
+        <FileIcon name={title} />
         {title}
       </figcaption>
       {body}

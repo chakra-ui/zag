@@ -26,27 +26,9 @@ Install the steps package:
 
 ## Anatomy
 
-Check the steps anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="steps" />
 
 ## Usage
-
-Import the steps package:
-
-```tsx
-import * as steps from "@zag-js/steps"
-```
-
-The steps package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
@@ -358,101 +340,6 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-steps-root] {
-  /* styles for the root part */
-}
-
-[data-steps-root][data-orientation="horizontal|vertical"] {
-  /* styles for the root part based on orientation */
-}
-
-[data-steps-list] {
-  /* styles for the list part */
-}
-
-[data-steps-list][data-orientation="horizontal|vertical"] {
-  /* styles for the list part based on orientation */
-}
-
-[data-steps-separator] {
-  /* styles for the separator part */
-}
-
-[data-steps-separator][data-orientation="horizontal|vertical"] {
-  /* styles for the separator part based on orientation */
-}
-```
-
-### Current step
-
-To style the current step, you can use the `data-current` attribute.
-
-```css
-[data-steps-item][data-current] {
-  /* item styles for the current step */
-}
-
-[data-steps-separator][data-current] {
-  /* separator styles for the current step */
-}
-```
-
-### Completed step
-
-To style the completed step, you can use the `data-complete` attribute.
-
-```css
-[data-steps-item][data-complete] {
-  /* item styles for the completed step */
-}
-
-[data-steps-separator][data-complete] {
-  /* separator styles for the completed step */
-}
-```
-
-### Incomplete step
-
-To style the incomplete step, you can use the `data-incomplete` attribute.
-
-```css
-[data-steps-item][data-incomplete] {
-  /* item styles for the incomplete step */
-}
-
-[data-steps-separator][data-incomplete] {
-  /* separator styles for the incomplete step */
-}
-```
-
-### Step states
-
-```css
-[data-steps-item][data-skipped] {
-  /* the flow moved past this step without completing it */
-}
-
-[data-steps-item][data-invalid] {
-  /* the step fails validation */
-}
-
-[data-steps-item][data-locked] {
-  /* the step is completed and cannot be returned to */
-}
-
-[data-steps-item][data-optional] {
-  /* the step can be skipped */
-}
-```
-
-These are independent because several apply at once. A step can be completed and
-invalid, or current and invalid.
-
 ## Methods and Properties
 
 ### Machine context
@@ -468,6 +355,12 @@ The steps `api` exposes the following methods:
 <ApiTable name="steps" />
 
 ### Data attributes
+
+Each part has a `data-steps-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The step state attributes are independent. A step can be completed and invalid,
+or current and invalid.
 
 <DataAttrTable name="steps" />
 

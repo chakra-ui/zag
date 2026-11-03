@@ -30,29 +30,9 @@ Install the carousel package:
 
 ## Anatomy
 
-Check the carousel anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="carousel" />
 
 ## Usage
-
-Import the carousel package:
-
-```tsx
-import * as carousel from "@zag-js/carousel"
-```
-
-The carousel package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 > **Note:** The carousel requires that you provide a `count` property in the
 > machine context. This is the total number of slides.
@@ -299,59 +279,6 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-carousel-root] {
-  /* styles for the root part */
-}
-
-[data-carousel-item-group] {
-  /* styles for the item-group part */
-}
-
-[data-carousel-item] {
-  /* styles for the root part */
-}
-
-[data-carousel-control] {
-  /* styles for the control part */
-}
-
-[data-carousel-next-trigger] {
-  /* styles for the next-trigger part */
-}
-
-[data-carousel-previous-trigger] {
-  /* styles for the previous trigger part */
-}
-
-[data-carousel-indicator-group] {
-  /* styles for the indicator-group part */
-}
-
-[data-carousel-indicator] {
-  /* styles for the indicator part */
-}
-
-[data-carousel-autoplay-trigger] {
-  /* styles for the autoplay-trigger part */
-}
-```
-
-### Active state
-
-When a carousel's indicator is active, a `data-current` attribute is set on the
-indicator.
-
-```css
-[data-carousel-indicator][data-current] {
-  /* styles for the indicator's active state */
-}
-```
-
 ## Methods and Properties
 
 The carousel's `api` exposes the following methods and properties:
@@ -369,6 +296,9 @@ The carousel `api` exposes the following methods:
 <ApiTable name="carousel" />
 
 ### Data attributes
+
+Each part has a `data-carousel-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="carousel" />
 

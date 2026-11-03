@@ -30,29 +30,9 @@ Install the editable package:
 
 ## Anatomy
 
-Check the editable anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="editable" />
 
 ## Usage
-
-Import the editable package:
-
-```tsx
-import * as editable from "@zag-js/editable"
-```
-
-The editable package exports two key functions:
-
-- `machine` - Behavior logic for the editable.
-- `connect` - Maps behavior to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="editable/usage.mdx" />
 
@@ -319,43 +299,6 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Focused state
-
-When the editable is in the focused mode, we set a `data-focus` attribute on the
-"area" part.
-
-```css
-[data-editable-area][data-focus] {
-  /* CSS for the editable's focus state */
-}
-```
-
-### Empty state
-
-When the editable's value is empty, the "area" part gets a
-`data-placeholder-shown` attribute.
-
-```css
-[data-editable-area][data-placeholder-shown] {
-  /* CSS for the editable's empty state */
-}
-```
-
-### Disabled state
-
-When the editable is disabled, we set a `data-disabled` attribute on the "area"
-part.
-
-```css
-[data-editable-area][data-disabled] {
-  /* CSS for the editable's focus state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -371,6 +314,9 @@ The editable `api` exposes the following methods:
 <ApiTable name="editable" />
 
 ### Data attributes
+
+Each part has a `data-editable-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="editable" />
 

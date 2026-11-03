@@ -29,25 +29,9 @@ Install the table of contents package:
 
 ## Anatomy
 
-Check the table of contents anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="toc" />
 
 ## Usage
-
-Import the table of contents package:
-
-```tsx
-import * as toc from "@zag-js/toc"
-```
-
-The table of contents package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
 
 You'll need to provide `items` — an array of `{ value, depth }` objects
 representing the headings on the page.
@@ -188,42 +172,7 @@ const itemState = api.getItemState({ item })
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-toc-root] {
-  /* styles for the root container */
-}
-
-[data-toc-nav] {
-  /* styles for the nav landmark */
-}
-
-[data-toc-link] {
-  /* styles for each link */
-}
-
-[data-toc-link][data-active] {
-  /* styles for the active link */
-}
-```
-
-### Active state
-
-When a heading is visible, `data-active` is set on the corresponding item and
-link.
-
-```css
-[data-toc-item][data-active] {
-  /* active item */
-}
-
-[data-toc-link][data-active] {
-  /* active link */
-}
-```
+## Styling
 
 ### Depth indentation
 
@@ -269,6 +218,9 @@ The table of contents `api` exposes the following methods:
 <ApiTable name="toc" />
 
 ### Data attributes
+
+Each part has a `data-toc-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="toc" />
 

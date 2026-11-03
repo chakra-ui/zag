@@ -39,11 +39,6 @@ Install the date-input package:
 
 ## Anatomy
 
-Check the date-input anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="date-input" />
 
 ## Usage
@@ -54,16 +49,8 @@ Import the package:
 import * as dateInput from "@zag-js/date-input"
 ```
 
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-- `parse` - Parses an ISO 8601 date string.
-
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Then use the framework integration helpers:
+The package also exports `parse`, which turns an ISO 8601 string into a date
+value.
 
 <CodeSnippet id="date-input/usage.mdx" />
 
@@ -564,88 +551,6 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-date-input-root] {
-  /* styles for the root container */
-}
-
-[data-date-input-label] {
-  /* styles for the label */
-}
-
-[data-date-input-control] {
-  /* styles for the control container */
-}
-
-[data-date-input-segment-group] {
-  /* styles for the segment group */
-}
-
-[data-date-input-segment] {
-  /* styles for each segment */
-}
-
-[data-date-input-hidden-input] {
-  /* styles for the hidden input */
-}
-```
-
-### State attributes
-
-```css
-[data-date-input-root] {
-  &[data-disabled] {
-    /* styles for disabled state */
-  }
-
-  &[data-readonly] {
-    /* styles for read-only state */
-  }
-
-  &[data-invalid] {
-    /* styles for invalid state */
-  }
-}
-```
-
-### Segment states
-
-```css
-[data-date-input-segment] {
-  &[data-placeholder-shown] {
-    /* styles for placeholder segments */
-  }
-
-  &[data-type="month"] {
-    /* styles for month segments */
-  }
-
-  &[data-type="day"] {
-    /* styles for day segments */
-  }
-
-  &[data-type="year"] {
-    /* styles for year segments */
-  }
-
-  &[data-type="hour"] {
-    /* styles for hour segments */
-  }
-
-  &[data-type="minute"] {
-    /* styles for minute segments */
-  }
-
-  &[data-type="second"] {
-    /* styles for second segments */
-  }
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -661,6 +566,12 @@ The date input `api` exposes the following methods:
 <ApiTable name="date-input" />
 
 ### Data attributes
+
+Each part has a `data-date-input-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+Segments get `data-type` set to their date part, such as `month`, `day`, `year`,
+or `hour`.
 
 <DataAttrTable name="date-input" />
 

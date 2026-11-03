@@ -48,8 +48,7 @@ Store the value in a plain object. When an uncontrolled value changes, ask the
 host to re-render. A controlled value comes from a host property, so Lit already
 re-renders when it changes.
 
-```ts
-// zag-lit/bindable.ts
+```ts title="zag-lit/bindable.ts"
 import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
 import { isFunction } from "@zag-js/utils"
 
@@ -108,8 +107,7 @@ host.
 
 Refs never re-render, so a plain object is enough:
 
-```ts
-// zag-lit/refs.ts
+```ts title="zag-lit/refs.ts"
 export function createRefs<T>(refs: T) {
   return {
     get<K extends keyof T>(key: K): T[K] {
@@ -133,8 +131,7 @@ The controller is the vanilla `VanillaMachine` with three changes:
 - It checks `track` deps and `watchEffect` deps after each render, instead of on
   a subscription.
 
-```ts
-// zag-lit/machine.ts
+```ts title="zag-lit/machine.ts"
 import type {
   ActionsOrFn,
   Bindable,
@@ -562,8 +559,7 @@ Lit templates have no spread syntax, so props go through a directive that sets
 DOM attributes, properties and listeners. Normalize to DOM names, the same shape
 `spreadProps` expects:
 
-```ts
-// zag-lit/normalize-props.ts
+```ts title="zag-lit/normalize-props.ts"
 import { createNormalizer } from "@zag-js/types"
 
 const propMap: Record<string, string> = {
@@ -595,8 +591,7 @@ export const normalizeProps = createNormalizer((props) => {
 An element directive receives the element and the props. It calls `spreadProps`
 on every render, and removes listeners when the element leaves the DOM.
 
-```ts
-// zag-lit/spread.ts
+```ts title="zag-lit/spread.ts"
 import { nothing } from "lit"
 import {
   AsyncDirective,
@@ -641,8 +636,7 @@ need to drop the `@zag-js/vanilla` dependency.
 
 ## Export the adapter
 
-```ts
-// zag-lit/index.ts
+```ts title="zag-lit/index.ts"
 export { mergeProps } from "@zag-js/core"
 export { MachineController } from "./machine"
 export { normalizeProps } from "./normalize-props"
@@ -657,8 +651,7 @@ export { spread } from "./spread"
 Pass the controller a function that returns the machine props. It reads host
 properties, so a controlled `checked` stays current.
 
-```ts
-// zag-switch.ts
+```ts title="zag-switch.ts"
 import * as zagSwitch from "@zag-js/switch"
 import { css, html, LitElement } from "lit"
 import { MachineController, normalizeProps, spread } from "./zag-lit"

@@ -32,24 +32,9 @@ Install the tree view package:
 
 ## Anatomy
 
-Check the tree view anatomy and part names.
-
 <Anatomy id="tree-view" />
 
 ## Usage
-
-Import the tree view package:
-
-```tsx
-import * as tree from "@zag-js/tree-view"
-```
-
-The tree view package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 ### Create the tree collection
 
@@ -484,32 +469,6 @@ const service = useMachine(tree.machine, {
 - IME composition events are properly handled
 - `data-renaming` attribute added for styling
 
-## Styling guide
-
-### Checked state
-
-When using checkbox selection (`onCheckedChange`), node elements expose
-`data-checked` and `data-indeterminate` attributes, and node checkbox elements
-expose `data-state="checked" | "unchecked" | "indeterminate"` for styling.
-
-```css
-[data-tree-view-node][data-checked] {
-  /* styles for fully checked items */
-}
-
-[data-tree-view-node][data-indeterminate] {
-  /* styles for partially checked items (some children selected) */
-}
-
-[data-tree-view-node-checkbox][data-state="checked"] {
-  /* styles for fully checked branches */
-}
-
-[data-tree-view-node-checkbox][data-state="indeterminate"] {
-  /* styles for partially checked branches */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -525,6 +484,13 @@ The tree view `api` exposes the following methods:
 <ApiTable name="tree-view" />
 
 ### Data attributes
+
+Each part has a `data-tree-view-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+With checkbox selection, nodes get `data-checked`, or `data-indeterminate` when
+only some children are checked. Node checkboxes get `data-state` set to
+`checked`, `unchecked`, or `indeterminate`.
 
 <DataAttrTable name="tree-view" />
 

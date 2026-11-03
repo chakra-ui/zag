@@ -29,22 +29,9 @@ Install the meter package:
 
 ## Usage
 
-Import the meter package:
-
-```tsx
-import * as meter from "@zag-js/meter"
-```
-
-The meter package exports two key functions:
-
-- `machine` — State machine logic.
-- `connect` — Maps machine state to JSX props and event handlers.
-
 > Pass a unique `id` to `useMachine` so the label id used by `aria-labelledby`
 > stays unique. Override it with `ids.label` when the label lives outside the
 > machine.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="meter/usage.mdx" />
 
@@ -200,34 +187,6 @@ const service = useMachine(meter.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-meter-root] {
-  /* Styles for the root part */
-}
-
-[data-meter-label] {
-  /* Styles for the label part */
-}
-
-[data-meter-track] {
-  /* Styles for the track part */
-}
-
-[data-meter-indicator] {
-  /* Styles for the indicator part */
-}
-
-[data-meter-value-text] {
-  /* Styles for the value text part */
-}
-```
-
-The root, track, and indicator also have `data-orientation` and `data-state`.
-
 ## Methods and Properties
 
 ### Machine context
@@ -243,6 +202,9 @@ The meter `api` exposes the following methods:
 <ApiTable name="meter" />
 
 ### Data attributes
+
+Each part has a `data-meter-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="meter" />
 

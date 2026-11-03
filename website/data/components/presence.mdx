@@ -24,19 +24,6 @@ Install the presence package:
 
 ## Usage
 
-Import the presence package:
-
-```tsx
-import * as presence from "@zag-js/presence"
-```
-
-The presence package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="presence/usage.mdx" />
 
 ### After exit animation
@@ -96,7 +83,7 @@ const service = useMachine(presence.machine, {
 
 </Example>
 
-## Styling guide
+## Styling
 
 To style any entry and exit animations, set up the `@keyframes` and apply the
 animations.

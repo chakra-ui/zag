@@ -179,28 +179,6 @@ const service = useMachine(menubar.machine, {
 
 </Example>
 
-## Styling guide
-
-The menubar root exposes a few attributes you can target in CSS.
-
-```css
-[data-menubar-root][data-orientation="horizontal|vertical"] {
-  /* styles per orientation */
-}
-
-[data-menubar-root][data-disabled] {
-  /* styles when the whole bar is disabled */
-}
-
-/* present while any menu in the bar is open */
-[data-menubar-root][data-has-open-menu="true"] {
-  /* ... */
-}
-```
-
-Triggers are owned by the menu, so style them with the menu's `trigger` part.
-See the [menu styling guide](/components/menu#styling-guide).
-
 ## Methods and Properties
 
 ### Machine context
@@ -216,6 +194,12 @@ The menubar `api` exposes the following methods:
 <ApiTable name="menubar" />
 
 ### Data attributes
+
+Each part has a `data-menubar-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+Triggers belong to the menu, so style them with the menu's `trigger` part. See
+the [menu data attributes](/components/menu#data-attributes).
 
 <DataAttrTable name="menubar" />
 

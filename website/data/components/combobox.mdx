@@ -30,29 +30,12 @@ Install the combobox package:
 
 ## Anatomy
 
-Check the combobox anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="combobox" />
 
 ## Usage
 
-Import the combobox package:
-
-```tsx
-import * as combobox from "@zag-js/combobox"
-```
-
-These are the key exports:
-
-- `machine` - Behavior logic.
-- `connect` - Maps behavior to JSX props and event handlers.
-- `collection` - Creates a [collection interface](/overview/collection) from an
-  array of items.
-
-Then use the framework integration helpers:
+Use `combobox.collection` to create a
+[list collection](/utilities/list-collection) from your items.
 
 <CodeSnippet id="combobox/usage.mdx" />
 
@@ -688,116 +671,6 @@ rendered, since it announces its text to screen readers.
 To paginate, return a `cursor` from `load` and call `list.loadMore()` from
 [infinite scroll](/utilities/infinite-scroll) at the end of the list.
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open state
-
-When the combobox opens or closes, `data-state` is added to content, control,
-input, and trigger parts.
-
-```css
-[data-combobox-control][data-state="open|closed"] {
-  /* styles for open or closed control state */
-}
-
-[data-combobox-input][data-state="open|closed"] {
-  /* styles for open or closed input state */
-}
-
-[data-combobox-trigger][data-state="open|closed"] {
-  /* styles for open or closed trigger state */
-}
-
-[data-combobox-content][data-state="open|closed"] {
-  /* styles for open or closed content state */
-}
-```
-
-### Focused State
-
-When the combobox is focused, the `data-focus` attribute is added to the control
-and label parts.
-
-```css
-[data-combobox-control][data-focus] {
-  /* styles for control focus state */
-}
-
-[data-combobox-label][data-focus] {
-  /* styles for label focus state */
-}
-```
-
-### Disabled State
-
-When the combobox is disabled, the `data-disabled` attribute is added to the
-label, control, trigger and option parts.
-
-```css
-[data-combobox-label][data-disabled] {
-  /* styles for label disabled state */
-}
-
-[data-combobox-control][data-disabled] {
-  /* styles for control disabled state */
-}
-
-[data-combobox-trigger][data-disabled] {
-  /* styles for trigger disabled state */
-}
-
-[data-combobox-item][data-disabled] {
-  /* styles for item disabled state */
-}
-```
-
-### Invalid state
-
-When the combobox is invalid, the `data-invalid` attribute is added to the root,
-label, control and input parts.
-
-```css
-[data-combobox-root][data-invalid] {
-  /* styles for root invalid state */
-}
-
-[data-combobox-label][data-invalid] {
-  /* styles for label invalid state */
-}
-
-[data-combobox-control][data-invalid] {
-  /* styles for control invalid state */
-}
-
-[data-combobox-input][data-invalid] {
-  /* styles for input invalid state */
-}
-```
-
-### Selected state
-
-When a combobox item is selected, the `data-state` attribute is added to the
-item part.
-
-```css
-[data-combobox-item][data-state="checked|unchecked"] {
-  /* styles for item selected state */
-}
-```
-
-### Highlighted state
-
-When a combobox item is highlighted, the `data-highlighted` attribute is added
-to the item part.
-
-```css
-[data-combobox-item][data-highlighted] {
-  /* styles for item highlighted state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -813,6 +686,9 @@ The combobox `api` exposes the following methods:
 <ApiTable name="combobox" />
 
 ### Data attributes
+
+Each part has a `data-combobox-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="combobox" />
 

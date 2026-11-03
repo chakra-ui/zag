@@ -27,29 +27,12 @@ Install the select package:
 
 ## Anatomy
 
-Check the select anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="select" />
 
 ## Usage
 
-Import the select package:
-
-```tsx
-import * as select from "@zag-js/select"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-- `collection` - Creates a [collection interface](/overview/collection) from an
-  array of items.
-
-Then use the framework integration helpers:
+Use `select.collection` to create a
+[list collection](/utilities/list-collection) from your items.
 
 <CodeSnippet id="select/usage.mdx" />
 
@@ -652,97 +635,6 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open state
-
-When the select is open, the trigger and content is given a `data-state`
-attribute.
-
-```css
-[data-select-trigger][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-select-content][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-select-list] {
-  /* the listbox container — carries role=listbox */
-}
-```
-
-### Selected state
-
-Items are given a `data-state` attribute, indicating whether they are selected.
-
-```css
-[data-select-item][data-state="checked|unchecked"] {
-  /* styles for selected or unselected state */
-}
-```
-
-### Highlighted state
-
-When an item is highlighted, via keyboard navigation or pointer, it is given a
-`data-highlighted` attribute.
-
-```css
-[data-select-item][data-highlighted] {
-  /* styles for highlighted state */
-}
-```
-
-### Invalid state
-
-When the select is invalid, the label and trigger is given a `data-invalid`
-attribute.
-
-```css
-[data-select-label][data-invalid] {
-  /* styles for invalid state */
-}
-
-[data-select-trigger][data-invalid] {
-  /* styles for invalid state */
-}
-```
-
-### Disabled state
-
-When the select is disabled, the trigger and label is given a `data-disabled`
-attribute.
-
-```css
-[data-select-trigger][data-disabled] {
-  /* styles for disabled select state */
-}
-
-[data-select-label][data-disabled] {
-  /* styles for disabled label state */
-}
-
-[data-select-item][data-disabled] {
-  /* styles for disabled option state */
-}
-```
-
-> Optionally, when an item is disabled, it is given a `data-disabled` attribute.
-
-### Empty state
-
-When no option is selected, the trigger is given a `data-placeholder-shown`
-attribute.
-
-```css
-[data-select-trigger][data-placeholder-shown] {
-  /* styles for empty select state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -758,6 +650,9 @@ The select `api` exposes the following methods:
 <ApiTable name="select" />
 
 ### Data attributes
+
+Each part has a `data-select-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="select" />
 

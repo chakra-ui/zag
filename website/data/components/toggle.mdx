@@ -38,19 +38,6 @@ name its parts.
 
 ## Usage
 
-Import the toggle package:
-
-```tsx
-import * as toggle from "@zag-js/toggle"
-```
-
-The toggle package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="toggle/usage.mdx" />
 
 ### Default pressed state
@@ -144,34 +131,6 @@ visuals. The root remains the interactive `button`.
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-specific data attribute you can target in CSS.
-
-### Pressed state
-
-When pressed, `data-pressed` is applied to the root and indicator.
-
-```css
-[data-toggle-root][data-pressed] {
-  /* pressed */
-}
-
-[data-toggle-indicator][data-pressed] {
-  /* pressed indicator */
-}
-```
-
-### Disabled state
-
-When disabled, `data-disabled` is set on the root and indicator.
-
-```css
-[data-toggle-root][data-disabled] {
-  /* disabled */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -187,6 +146,9 @@ The toggle `api` exposes the following methods:
 <ApiTable name="toggle" />
 
 ### Data attributes
+
+Each part has a `data-toggle-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="toggle" />
 

@@ -29,29 +29,9 @@ Install the menu package:
 
 ## Anatomy
 
-Check the menu anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="menu" />
 
 ## Usage
-
-Import the menu package:
-
-```tsx
-import * as menu from "@zag-js/menu"
-```
-
-The menu package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="menu/usage.mdx" />
 
@@ -320,54 +300,7 @@ const service = useMachine(menu.machine, {
 })
 ```
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open state
-
-When the menu is open or closed, the content and trigger parts will have the
-`data-state` attribute.
-
-```css
-[data-menu-content][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-menu-trigger][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-```
-
-### Highlighted item
-
-When an item is highlighted, via keyboard navigation or pointer, it is given a
-`data-highlighted` attribute.
-
-```css
-[data-menu-item][data-highlighted] {
-  /* styles for highlighted state */
-}
-
-[data-menu-item][data-type="radio|checkbox"][data-highlighted] {
-  /* styles for highlighted state */
-}
-```
-
-### Disabled item
-
-When an item or an option item is disabled, it is given a `data-disabled`
-attribute.
-
-```css
-[data-menu-item][data-disabled] {
-  /* styles for disabled state */
-}
-
-[data-menu-item][data-type="radio|checkbox"][data-disabled] {
-  /* styles for disabled state */
-}
-```
+## Styling
 
 ### Arrows
 
@@ -377,16 +310,6 @@ When using arrows within the menu, you can style it using CSS variables.
 [data-menu-arrow] {
   --arrow-size: 20px;
   --arrow-background: red;
-}
-```
-
-### Checked item
-
-When an option item is checked, it is given a `data-state` attribute.
-
-```css
-[data-menu-item][data-type="radio|checkbox"][data-state="checked"] {
-  /* styles for checked state */
 }
 ```
 
@@ -405,6 +328,9 @@ The menu `api` exposes the following methods:
 <ApiTable name="menu" />
 
 ### Data attributes
+
+Each part has a `data-menu-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="menu" />
 

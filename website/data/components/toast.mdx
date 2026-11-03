@@ -29,22 +29,9 @@ Install the toast package:
 
 ## Anatomy
 
-Check the toast anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="toast" />
 
 ## Usage
-
-Import the toast package:
-
-```tsx
-import * as toast from "@zag-js/toast"
-```
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="toast/usage.mdx" />
 
@@ -458,7 +445,7 @@ const toaster = toast.createStore({
 
 </Example>
 
-## Styling guide
+## Styling
 
 ### Requirement
 
@@ -510,32 +497,6 @@ The snap-back and exit still animate. While swiping, the toast also has
 }
 ```
 
-### Toast styling
-
-When a toast is created and the `api.getRootProps()` from the `toast.connect` is
-used, the toast will have a `data-type` that matches the specified `type` at its
-creation.
-
-You can use this property to style the toast.
-
-```css
-[data-toast-root][data-type="info"] {
-  /* Styles for the specific toast type */
-}
-
-[data-toast-root][data-type="error"] {
-  /* Styles for the error toast type */
-}
-
-[data-toast-root][data-type="success"] {
-  /* Styles for the success toast type */
-}
-
-[data-toast-root][data-type="loading"] {
-  /* Styles for the loading toast type */
-}
-```
-
 ## Methods and Properties
 
 ### Machine API
@@ -545,6 +506,12 @@ The toast's `api` exposes the following methods:
 <ApiTable name="toast" />
 
 ### Data attributes
+
+Each part has a `data-toast-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The root gets `data-type` from the toast's `type`, such as `info`, `success`,
+`error`, or `loading`.
 
 <DataAttrTable name="toast" />
 

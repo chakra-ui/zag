@@ -27,11 +27,6 @@ Install the progress package:
 
 ## Anatomy
 
-Check the progress anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 The linear bar:
 
 <Anatomy id="linear-progress" />
@@ -47,13 +42,6 @@ Import the progress package:
 ```tsx
 import * as progress from "@zag-js/progress"
 ```
-
-The progress package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
 Then render the [linear](#linear) or [circular](#circular) parts with the
 framework integration helpers.
@@ -231,50 +219,6 @@ Use the `--thickness` CSS variable to set the thickness of the ring.
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-progress-root] {
-  /* Styles for the root part */
-}
-
-/* linear */
-[data-progress-track] {
-  /* Styles for the track part */
-}
-
-[data-progress-range] {
-  /* Styles for the range part */
-}
-
-/* circular */
-[data-progress-circle-track] {
-  /* Styles for the circle track part */
-}
-
-[data-progress-circle-range] {
-  /* Styles for the circle range part */
-}
-```
-
-### Indeterminate state
-
-To style the indeterminate state, you can use the `[data-state=indeterminate]`
-selector.
-
-```css
-[data-progress-root][data-state="indeterminate"] {
-  /* Styles for the root indeterminate state */
-}
-
-[data-progress-range][data-state="indeterminate"],
-[data-progress-circle-range][data-state="indeterminate"] {
-  /* Styles for the range indeterminate state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -290,6 +234,9 @@ The progress `api` exposes the following methods:
 <ApiTable name="progress" />
 
 ### Data attributes
+
+Each part has a `data-progress-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="progress" />
 

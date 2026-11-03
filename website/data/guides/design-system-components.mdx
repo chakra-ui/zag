@@ -8,8 +8,6 @@ components do that wiring once. You'll turn `useSlider` from the
 [previous page](/guides/design-system-hook) into `Slider.Root`, `Slider.Thumb`
 and the rest, each one rendering a single element.
 
-<GuideMeta items={["15 min", "React", "Intermediate"]} />
-
 ```tsx
 <Slider.Root defaultValue={[40]}>
   <Slider.Label>Volume</Slider.Label>
@@ -29,8 +27,7 @@ and the rest, each one rendering a single element.
 
 `Slider.Root` calls the hook. Every other part reads the api from context.
 
-```tsx
-// components/slider/slider-context.ts
+```tsx title="components/slider/slider-context.ts"
 "use client"
 
 import { createContext, useContext } from "react"
@@ -56,8 +53,7 @@ The root takes machine props and DOM props in one object. `slider.splitProps`
 separates them: the first half goes to the hook, the second half goes to the
 element.
 
-```tsx
-// components/slider/slider.tsx
+```tsx title="components/slider/slider.tsx"
 "use client"
 
 import { mergeProps } from "@zag-js/react"
@@ -112,8 +108,7 @@ thumb skips its keyboard handling when the event is already prevented:
 Each part reads the context, then merges its prop getter with the caller's
 props. Parts without arguments all look the same.
 
-```tsx
-// components/slider/slider.tsx (continued)
+```tsx title="components/slider/slider.tsx"
 export interface LabelProps extends ComponentProps<"label"> {}
 
 export function Label(props: LabelProps) {
@@ -164,8 +159,7 @@ A slider can have more than one thumb, so `getThumbProps` needs to know which
 one it's rendering. `Slider.Thumb` takes an `index` and passes it through.
 `slider.splitThumbProps` pulls `index`, `name` and `disabled` out of the props.
 
-```tsx
-// components/slider/slider.tsx (continued)
+```tsx title="components/slider/slider.tsx"
 export interface ThumbProps
   extends
     slider.ThumbProps,
@@ -202,8 +196,7 @@ part. Render one thumb per entry in the value.
 
 Markers work the same way. Each one takes the `value` it marks.
 
-```tsx
-// components/slider/slider.tsx (continued)
+```tsx title="components/slider/slider.tsx"
 export interface MarkerGroupProps extends ComponentProps<"div"> {}
 
 export function MarkerGroup(props: MarkerGroupProps) {
@@ -247,8 +240,7 @@ On React 18, wrap each part in `forwardRef` and pass the ref to the element.
 
 Group the parts under one name so callers import a single object.
 
-```tsx
-// components/slider/index.ts
+```tsx title="components/slider/index.ts"
 export * as Slider from "./slider"
 export { useSliderContext } from "./slider-context"
 export { useSlider } from "./use-slider"

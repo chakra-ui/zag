@@ -36,19 +36,6 @@ how we name its parts.
 
 ## Usage
 
-Import the toggle group package:
-
-```tsx
-import * as toggle from "@zag-js/toggle-group"
-```
-
-The toggle group package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="toggle-group/usage.mdx" />
 
 ### Orientation
@@ -205,51 +192,6 @@ api.setValue(["bold", "italic"])
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-specific data attribute you can target in CSS.
-
-### Pressed state
-
-When pressed, `data-pressed` is applied to the toggle button.
-
-```css
-[data-toggle-group-item][data-pressed] {
-  /* styles for toggle button */
-}
-```
-
-### Focused State
-
-Use native focus selectors to style the focused toggle button. Use
-`:focus-visible` for keyboard focus rings and `:focus-within` if the root should
-be styled while a toggle button is focused.
-
-```css
-[data-toggle-group-root]:focus-within {
-  /* styles for the focused root */
-}
-
-[data-toggle-group-item]:focus-visible {
-  /* styles for the focused toggle */
-}
-```
-
-### Disabled State
-
-When a toggle button is disabled, the `data-disabled` is applied to the root and
-matching toggle button.
-
-```css
-[data-toggle-group-root][data-disabled] {
-  /* styles for the root */
-}
-
-[data-toggle-group-item][data-disabled] {
-  /* styles for the toggle */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -265,6 +207,12 @@ The toggle group `api` exposes the following methods:
 <ApiTable name="toggle-group" />
 
 ### Data attributes
+
+Each part has a `data-toggle-group-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+Toggle buttons have no focus attribute. Use `:focus-visible` on the item and
+`:focus-within` on the root.
 
 <DataAttrTable name="toggle-group" />
 

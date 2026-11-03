@@ -8,8 +8,6 @@ track hover, focus or drag state themselves. You'll style the Slider from
 [Creating components](/guides/design-system-components) with plain CSS first,
 then move those styles into a Panda slot recipe you can ship as a preset.
 
-<GuideMeta items={["20 min", "Panda CSS", "React", "Intermediate"]} />
-
 <Steps>
 
 ## Target the parts
@@ -18,7 +16,7 @@ Each part gets a `data-{component}-{part}` attribute. The slider parts are
 `root`, `label`, `value-text`, `control`, `track`, `range`, `thumb`,
 `marker-group`, `marker` and `dragging-indicator`.
 
-```css
+```css title="components/slider/slider.css"
 [data-slider-root] {
   display: flex;
   flex-direction: column;
@@ -63,7 +61,7 @@ States are data attributes on the same parts. Most slider parts get
 `data-orientation`, so you can style a vertical slider with
 `[data-orientation="vertical"]`.
 
-```css
+```css title="components/slider/slider.css"
 [data-slider-root] {
   &[data-disabled] {
     opacity: 0.5;
@@ -95,7 +93,7 @@ States are data attributes on the same parts. Most slider parts get
 
 The thumb only gets `data-focus` and `data-dragging` when it is the active
 thumb, so a range slider highlights one thumb at a time. See the
-[slider styling guide](/components/react/slider#styling-guide) for every
+[slider data attributes](/components/react/slider#data-attributes) for every
 attribute.
 
 ## Set up Panda
@@ -117,8 +115,7 @@ connect it to your bundler.
 Semantic tokens describe roles, not shades. Every recipe reads from these, so a
 theme change is one edit.
 
-```ts
-// panda.config.ts
+```ts title="panda.config.ts"
 import { defineConfig } from "@pandacss/dev"
 
 export default defineConfig({
@@ -160,8 +157,7 @@ Panda's conditions read the same data attributes you used in CSS: `_disabled`
 matches `[data-disabled]`, `_invalid` matches `[data-invalid]`, `_dragging`
 matches `[data-dragging]` and `_vertical` matches `[data-orientation=vertical]`.
 
-```ts
-// recipes/slider.ts
+```ts title="recipes/slider.ts"
 import { defineSlotRecipe } from "@pandacss/dev"
 import { anatomy } from "@zag-js/slider"
 
@@ -215,8 +211,7 @@ with the `_invalid` styles on the range and thumb.
 Variants live on the recipe. `size` changes the track and thumb, `tone` swaps
 the fill color.
 
-```ts
-// recipes/slider.ts
+```ts title="recipes/slider.ts"
 export const slider = defineSlotRecipe({
   // ...
   variants: {
@@ -243,8 +238,7 @@ export const slider = defineSlotRecipe({
 
 Register the recipe, then run `pnpm panda codegen`.
 
-```ts
-// panda.config.ts
+```ts title="panda.config.ts"
 import { slider } from "./recipes/slider"
 
 export default defineConfig({
@@ -266,8 +260,7 @@ Codegen writes a `slider` function and a `SliderVariantProps` type to
 The root runs the recipe once and shares the classes through a second context.
 Add it next to the api context.
 
-```tsx
-// components/slider/slider-context.ts (continued)
+```tsx title="components/slider/slider-context.ts"
 import type { slider as sliderRecipe } from "styled-system/recipes"
 
 type SliderStyles = ReturnType<typeof sliderRecipe>
@@ -286,8 +279,7 @@ export function useSliderStyles() {
 The root splits three ways: variant props for the recipe, machine props for the
 hook, and the rest for the element.
 
-```tsx
-// components/slider/slider.tsx
+```tsx title="components/slider/slider.tsx"
 import {
   slider as sliderRecipe,
   type SliderVariantProps,
@@ -331,8 +323,7 @@ Each part adds its slot class between the prop getter and the caller's props.
 `mergeProps` joins the class names, so a caller's `className` adds to the recipe
 instead of replacing it.
 
-```tsx
-// components/slider/slider.tsx (continued)
+```tsx title="components/slider/slider.tsx"
 export function Track(props: TrackProps) {
   const api = useSliderContext()
   const styles = useSliderStyles()
@@ -383,8 +374,7 @@ Callers now pick variants next to machine props.
 
 To share the theme across apps, move the tokens and recipes into a preset.
 
-```ts
-// preset.ts
+```ts title="preset.ts"
 import { definePreset } from "@pandacss/dev"
 import { slider } from "./recipes/slider"
 
@@ -406,8 +396,7 @@ export const acmePreset = definePreset({
 Each app adds the preset, and includes the component package so Panda finds the
 recipe calls and generates their CSS.
 
-```ts
-// panda.config.ts in each app
+```ts title="panda.config.ts"
 import { defineConfig } from "@pandacss/dev"
 import { acmePreset } from "@acme/panda-preset"
 

@@ -35,26 +35,12 @@ Install the color picker package:
 To set up the color picker correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="color-picker" />
 
 ## Usage
 
-Import the color picker package:
-
-```tsx
-import * as colorPicker from "@zag-js/color-picker"
-```
-
-These are the key exports:
-
-- `machine` - Behavior logic for the color picker.
-- `connect` - Maps state to JSX props and event handlers.
-- `parse` - Parses a color string into a `Color` object.
-
-Then use the framework integration helpers:
+The package also exports `parse`, which turns a color string into a `Color`
+object.
 
 <CodeSnippet id="color-picker/usage.mdx" />
 
@@ -342,79 +328,6 @@ const service = useMachine(colorPicker.machine, {
 
 </Example>
 
-## Styling guide
-
-Each color picker part includes a component-scoped data attribute to help you
-identify and style it easily.
-
-### Open state
-
-When the color picker is open or closed, the `data-state` attribute is added to
-the trigger, content, control parts.
-
-```css
-[data-color-picker-control][data-state="open|closed"] {
-  /* styles for control open or state */
-}
-
-[data-color-picker-trigger][data-state="open|closed"] {
-  /* styles for control open or state */
-}
-
-[data-color-picker-content][data-state="open|closed"] {
-  /* styles for control open or state */
-}
-```
-
-### Focused State
-
-When the color picker is focused, the `data-focus` attribute is added to the
-control and label parts.
-
-```css
-[data-color-picker-control][data-focus] {
-  /* styles for control focus state */
-}
-
-[data-color-picker-label][data-focus] {
-  /* styles for label focus state */
-}
-```
-
-### Disabled State
-
-When the color picker is disabled, the `data-disabled` attribute is added to the
-label, control, trigger and option parts.
-
-```css
-[data-color-picker-label][data-disabled] {
-  /* styles for label disabled state */
-}
-
-[data-color-picker-control][data-disabled] {
-  /* styles for control disabled state */
-}
-
-[data-color-picker-trigger][data-disabled] {
-  /* styles for trigger disabled state */
-}
-
-[data-color-picker-swatch-trigger][data-disabled] {
-  /* styles for item disabled state */
-}
-```
-
-### Swatch state
-
-When a swatch's color value matches the color picker's value, the
-`data-state=checked` attribute is added to the swatch part.
-
-```css
-[data-color-picker-swatch-trigger][data-state="checked|unchecked"] {
-  /* styles for swatch's checked state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -430,6 +343,9 @@ The color picker `api` exposes the following methods:
 <ApiTable name="color-picker" />
 
 ### Data attributes
+
+Each part has a `data-color-picker-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="color-picker" />
 

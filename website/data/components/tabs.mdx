@@ -28,27 +28,9 @@ Install the tabs package:
 
 ## Anatomy
 
-Check the tabs anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="tabs" />
 
 ## Usage
-
-Import the tabs package:
-
-```tsx
-import * as tabs from "@zag-js/tabs"
-```
-
-The tabs package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="tabs/usage.mdx" />
 
@@ -252,75 +234,7 @@ api.focus()
 
 </Example>
 
-## Styling guide
-
-### Selected state
-
-When a tab is selected, a `data-selected` attribute is added to the trigger and
-content elements.
-
-```css
-[data-tabs-trigger][data-state="active"] {
-  /* Styles for selected tab */
-}
-
-[data-tabs-content][data-state="active"] {
-  /* Styles for selected tab */
-}
-```
-
-### Disabled state
-
-When a tab is disabled, a `data-disabled` attribute is added to the trigger
-element.
-
-```css
-[data-tabs-trigger][data-disabled] {
-  /* Styles for disabled tab */
-}
-```
-
-### Focused state
-
-When a tab is focused, you the `:focus` or `:focus-visible` pseudo-class to
-style it.
-
-```css
-[data-tabs-trigger]:focus {
-  /* Styles for focused tab */
-}
-```
-
-When any tab is focused, the list is given a `data-focus` attribute.
-
-```css
-[data-tabs-list][data-focus] {
-  /* Styles for when any tab is focused */
-}
-```
-
-### Orientation styles
-
-All parts of the tabs component have the `data-orientation` attribute. You can
-use this to set the style for the horizontal or vertical tabs.
-
-```css
-[data-tabs-trigger][data-orientation="(horizontal|vertical)"] {
-  /* Styles for horizontal/vertical tabs */
-}
-
-[data-tabs-root][data-orientation="(horizontal|vertical)"] {
-  /* Styles for horizontal/vertical root */
-}
-
-[data-tabs-indicator][data-orientation="(horizontal|vertical)"] {
-  /* Styles for horizontal/vertical tab-indicator */
-}
-
-[data-tabs-list][data-orientation="(horizontal|vertical)"] {
-  /* Styles for horizontal/vertical list */
-}
-```
+## Styling
 
 ### Tab indicator
 
@@ -362,6 +276,9 @@ The tabs `api` exposes the following methods:
 <ApiTable name="tabs" />
 
 ### Data attributes
+
+Each part has a `data-tabs-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="tabs" />
 

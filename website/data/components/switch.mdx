@@ -26,27 +26,9 @@ Install the switch package:
 
 ## Anatomy
 
-Check the switch anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="switch" />
 
 ## Usage
-
-Import the switch package:
-
-```tsx
-import * as zagSwitch from "@zag-js/switch"
-```
-
-The switch package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="switch/usage.mdx" />
 
@@ -140,67 +122,6 @@ const service = useMachine(zagSwitch.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Focused State
-
-When the switch input is focused, the `data-focus` attribute is added to the
-root, control and label parts.
-
-```css
-[data-switch-root][data-focus] {
-  /* styles for root focus state */
-}
-
-[data-switch-control][data-focus] {
-  /* styles for control focus state */
-}
-
-[data-switch-label][data-focus] {
-  /* styles for label focus state */
-}
-```
-
-### Disabled state
-
-When the switch is disabled, the `data-disabled` attribute is added to the root,
-control and label parts.
-
-```css
-[data-switch-root][data-disabled] {
-  /* styles for root disabled state */
-}
-
-[data-switch-control][data-disabled] {
-  /* styles for control disabled state */
-}
-
-[data-switch-label][data-disabled] {
-  /* styles for label disabled state */
-}
-```
-
-### Invalid state
-
-When the switch is invalid, the `data-invalid` attribute is added to the root,
-control and label parts.
-
-```css
-[data-switch-root][data-invalid] {
-  /* styles for root invalid state */
-}
-
-[data-switch-control][data-invalid] {
-  /* styles for control invalid state */
-}
-
-[data-switch-label][data-invalid] {
-  /* styles for label invalid state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -216,6 +137,9 @@ The switch `api` exposes the following methods:
 <ApiTable name="switch" />
 
 ### Data attributes
+
+Each part has a `data-switch-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="switch" />
 

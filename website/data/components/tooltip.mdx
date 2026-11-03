@@ -33,32 +33,14 @@ Install the tooltip package:
 
 ## Anatomy
 
-Check the tooltip anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="tooltip" />
 
 ## Usage
-
-Import the tooltip package:
-
-```tsx
-import * as tooltip from "@zag-js/tooltip"
-```
-
-The tooltip package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
 
 To get tooltip working, you'll need to:
 
 - Set up the tooltip portal (shared container for tooltips)
 - Add `triggerProps` and `tooltipProps` to the right elements
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="tooltip/usage.mdx" />
 
@@ -237,33 +219,7 @@ api.setOpen(true)
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-tooltip-trigger] {
-  /* styles for the content */
-}
-
-[data-tooltip-content] {
-  /* styles for the content */
-}
-```
-
-### Open state
-
-When the tooltip is open, the `data-state` attribute is added to the trigger
-
-```css
-[data-tooltip-trigger][data-state="open|closed"] {
-  /* styles for the trigger's expanded state */
-}
-
-[data-tooltip-content][data-state="open|closed"] {
-  /* styles for the trigger's expanded state */
-}
-```
+## Styling
 
 ### Arrow styling
 
@@ -291,6 +247,9 @@ The tooltip `api` exposes the following methods:
 <ApiTable name="tooltip" />
 
 ### Data attributes
+
+Each part has a `data-tooltip-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="tooltip" />
 

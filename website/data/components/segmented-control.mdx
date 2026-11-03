@@ -25,27 +25,9 @@ Install the radio group package:
 
 ## Anatomy
 
-Check the segmented control anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="segmented-control" />
 
 ## Usage
-
-Import the radio group package:
-
-```tsx
-import * as radio from "@zag-js/radio-group"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="segmented-control/usage.mdx" />
 
@@ -152,9 +134,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
+## Styling
 
 ### Indicator
 
@@ -181,51 +161,6 @@ should snap instead (first render or resize), and the items get
 }
 ```
 
-### Focused State
-
-When the radio input is focused, the `data-focus` attribute is added to the item
-and text parts.
-
-```css
-[data-radio-group-item][data-focus] {
-  /* styles for radio focus state */
-}
-
-[data-radio-group-item-text][data-focus] {
-  /* styles for radio text focus state */
-}
-```
-
-### Disabled state
-
-When the radio is disabled, the `data-disabled` attribute is added to the item
-and text parts.
-
-```css
-[data-radio-group-item][data-disabled] {
-  /* styles for radio disabled state */
-}
-
-[data-radio-group-item-text][data-disabled] {
-  /* styles for radio text disabled state */
-}
-```
-
-### Invalid state
-
-When the radio is invalid, the `data-invalid` attribute is added to the item and
-text parts.
-
-```css
-[data-radio-group-item][data-invalid] {
-  /* styles for radio invalid state */
-}
-
-[data-radio-group-item-text][data-invalid] {
-  /* styles for radio text invalid state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -241,5 +176,8 @@ The radio group `api` exposes the following methods:
 <ApiTable name="radio-group" />
 
 ### Data attributes
+
+Each part has a `data-radio-group-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="radio-group" />

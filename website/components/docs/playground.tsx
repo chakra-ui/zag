@@ -4,11 +4,11 @@ import { CodePanel } from "components/ui/code-panel"
 import { defaultOf, getChangedProps } from "lib/changed-props"
 import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
-import { LuFileCode } from "react-icons/lu"
 import { SiStackblitz } from "react-icons/si"
 import { playground } from "styled-system/recipes"
 import * as bar from "./code-bar.css"
 import { CopyButton } from "./copy-button"
+import { FileIcon } from "./file-icon"
 
 type OptionSet<V> = { default: V; options: V[]; required?: boolean }
 
@@ -219,7 +219,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       </div>
       <div className={bar.bar}>
         <span className={bar.file}>
-          <LuFileCode aria-hidden />
+          <FileIcon name={`${name}.tsx`} />
           {name}.tsx
         </span>
         <div className={bar.actions}>

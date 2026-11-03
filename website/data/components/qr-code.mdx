@@ -30,27 +30,9 @@ Install the QR code package:
 
 ## Anatomy
 
-Check the QR code anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="qr-code" />
 
 ## Usage
-
-Import the QR code package:
-
-```tsx
-import * as qrCode from "@zag-js/qr-code"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="qr-code/usage.mdx" />
 
@@ -207,28 +189,6 @@ You can also use `api.getDownloadTriggerProps` to create a download button.
 <CodeSnippet id="qr-code/download.mdx" />
 
 </Example>
-
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-qr-code-root] {
-  /* Styles for the root part */
-}
-
-[data-qr-code-frame] {
-  /* Styles for the svg part */
-}
-
-[data-qr-code-pattern] {
-  /* Styles for the path */
-}
-
-[data-qr-code-overlay] {
-  /* Styles for the logo */
-}
-```
 
 ## Methods and Properties
 

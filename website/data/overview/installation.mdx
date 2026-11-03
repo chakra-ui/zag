@@ -29,6 +29,17 @@ yarn add @zag-js/react
 
 > Congrats! You're ready to use tooltip machine in your project.
 
+## How components work
+
+Every component follows the same three steps:
+
+- Import the package. It exports `machine` (the state logic) and `connect` (maps
+  state to props and event handlers).
+- Run the machine with your framework's `useMachine`, and pass a unique `id` so
+  generated element ids stay stable across renders and the server.
+- Call `connect` with `normalizeProps` and spread the returned props on your
+  elements.
+
 ## Machine usage
 
 Here's an example of the tooltip machine used in a React.js project.

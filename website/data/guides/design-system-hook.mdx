@@ -8,8 +8,6 @@ machine, accepts the same props as the machine, and returns the api your
 components spread onto elements. This guide builds `useSlider`, and the next two
 pages turn it into styled compound components.
 
-<GuideMeta items={["10 min", "React", "Beginner"]} />
-
 <Steps>
 
 ## Install packages
@@ -25,8 +23,7 @@ pnpm add @zag-js/slider @zag-js/react
 The hook does three things: calls `useMachine` with the props, calls `connect`
 with `normalizeProps`, and returns the result.
 
-```tsx
-// components/slider/use-slider.ts
+```tsx title="components/slider/use-slider.ts"
 "use client"
 
 import { normalizeProps, useMachine, type PropTypes } from "@zag-js/react"
@@ -179,8 +176,7 @@ reactive and how you derive the api.
   `createMemo`.
 - **Svelte**: pass a function to `useMachine`, and wrap `connect` in `$derived`.
 
-```ts
-// Vue: composables/use-slider.ts
+```ts title="composables/use-slider.ts"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, toValue, useId, type MaybeRefOrGetter } from "vue"

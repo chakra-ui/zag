@@ -31,29 +31,9 @@ Install the navigation menu package:
 
 ## Anatomy
 
-Check the navigation menu anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="navigation-menu" />
 
 ## Usage
-
-Import the navigation menu package:
-
-```tsx
-import * as navigationMenu from "@zag-js/navigation-menu"
-```
-
-The navigation menu package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="navigation-menu/usage.mdx" />
 
@@ -283,51 +263,7 @@ const service = useMachine(navigationMenu.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open state
-
-When content is open or closed, it receives a `data-state` attribute:
-
-```css
-[data-navigation-menu-content][data-state="open|closed"] {
-  /* Styles for open or closed content */
-}
-
-[data-navigation-menu-trigger][data-state="open|closed"] {
-  /* Styles for open or closed trigger */
-}
-
-[data-navigation-menu-viewport][data-state="open|closed"] {
-  /* Styles for viewport open/closed state */
-}
-```
-
-### Selected item
-
-When an item is selected (open), it receives `data-state="open"`:
-
-```css
-[data-navigation-menu-item][data-state="open"] {
-  /* Styles for open item */
-}
-```
-
-### Disabled state
-
-Disabled items have a `data-disabled` attribute:
-
-```css
-[data-navigation-menu-item][data-disabled] {
-  /* Styles for disabled items */
-}
-
-[data-navigation-menu-trigger][data-disabled] {
-  /* Styles for disabled triggers */
-}
-```
+## Styling
 
 ### Orientation styles
 
@@ -346,16 +282,6 @@ All parts have a `data-orientation` attribute:
 [data-navigation-menu-list][data-orientation="vertical"] {
   display: flex;
   flex-direction: column;
-}
-```
-
-### Current link
-
-Links marked as current have a `data-current` attribute:
-
-```css
-[data-navigation-menu-link][data-current] {
-  /* Styles for current page link */
 }
 ```
 
@@ -441,6 +367,8 @@ content, so it can animate between items.
 }
 ```
 
+## Methods and Properties
+
 ### Machine context
 
 The navigation menu machine exposes the following context properties:
@@ -454,6 +382,9 @@ The navigation menu `api` exposes the following methods:
 <ApiTable name="navigation-menu" />
 
 ### Data attributes
+
+Each part has a `data-navigation-menu-<part>` attribute. Combine it with the
+state attributes below to style each state.
 
 <DataAttrTable name="navigation-menu" />
 

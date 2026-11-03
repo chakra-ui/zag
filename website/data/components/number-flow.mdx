@@ -36,19 +36,6 @@ Unlike most machines in Zag.js, a digit is not one element. You render a strip
 of `0-9` cells inside each digit, and the machine translates the strip so the
 right cell lands in view.
 
-Import the number-flow package:
-
-```tsx
-import * as numberFlow from "@zag-js/number-flow"
-```
-
-The number-flow package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
 Rendering takes two collections from the `api`:
 
 - `api.segments` is the formatted value broken into ordered pieces. A segment is
@@ -290,7 +277,7 @@ const service = useMachine(numberFlow.machine, {
 
 </Example>
 
-## Styling guide
+## Styling
 
 The machine sets the structural styles inline, so you do not need to write them.
 The digit gets `overflow: hidden` and a fixed `1lh` height, the track is a flex
@@ -337,32 +324,6 @@ Add a mask to fade it out instead:
 }
 ```
 
-### Entry and exit
-
-When the number gains or loses a digit or symbol (`999` to `1,000`), that
-segment grows or shrinks in place while it fades. Use `[data-entering]` and
-`[data-exiting]` to style it during that transition.
-
-```css
-[data-number-flow-digit][data-exiting] {
-  /* a digit on its way out */
-}
-```
-
-### Rolling state
-
-Use the `[data-state]` attribute to style the number while it rolls.
-
-```css
-[data-number-flow-root][data-state="rolling"] {
-  /* styles while any digit is moving */
-}
-
-[data-number-flow-root][data-state="idle"] {
-  /* styles at rest */
-}
-```
-
 ### Trend state
 
 Use the `[data-trend]` attribute to style by the direction of the last change.
@@ -375,32 +336,6 @@ It holds `up`, `down`, or `none`, and stays set for the whole roll.
 
 [data-number-flow-root][data-trend="down"] {
   color: red;
-}
-```
-
-### Reduced motion state
-
-Use the `[data-reduced-motion]` attribute to style the number when animations
-are suppressed.
-
-```css
-[data-number-flow-root][data-reduced-motion] {
-  /* styles when the roll is disabled */
-}
-```
-
-### Target a digit
-
-Every digit carries its decimal place in `[data-place]`, counted from the
-decimal point. Symbols carry their `Intl` type in `[data-type]`.
-
-```css
-[data-number-flow-digit][data-place="0"] {
-  /* the ones column */
-}
-
-[data-number-flow-symbol][data-type="currency"] {
-  /* the currency symbol */
 }
 ```
 
@@ -417,3 +352,15 @@ The number-flow machine exposes the following context properties:
 The number-flow `api` exposes the following methods:
 
 <ApiTable name="number-flow" />
+
+### Data attributes
+
+Each part has a `data-number-flow-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+`data-entering` and `data-exiting` mark a digit or symbol that is being added or
+removed. Each digit has `data-place`, its decimal place counted from the decimal
+point. Symbols have `data-type`, their `Intl` part type such as `currency`.
+`data-reduced-motion` is present when animations are suppressed.
+
+<DataAttrTable name="number-flow" />

@@ -32,27 +32,9 @@ Install the floating panel package:
 
 ## Anatomy
 
-Check the floating panel anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="floating-panel" />
 
 ## Usage
-
-Import the floating panel package:
-
-```tsx
-import * as floatingPanel from "@zag-js/floating-panel"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps behavior to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="floating-panel/usage.mdx" />
 
@@ -385,82 +367,6 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
-## Styling guide
-
-The floating panel component uses data attributes to style its various parts.
-Each part includes a component-scoped data attribute that you can use to target
-specific elements.
-
-```css
-[data-floating-panel-content] {
-  /* Add styles for the main panel container */
-}
-
-[data-floating-panel-body] {
-  /* Add styles for the panel's content area */
-}
-
-[data-floating-panel-header] {
-  /* Add styles for the panel's header */
-}
-
-[data-floating-panel-stage-trigger] {
-  /* Add styles for state buttons in the header */
-}
-
-[data-floating-panel-resize-trigger] {
-  /* Add styles for resize handles */
-}
-
-/* North and south resize handles */
-[data-floating-panel-resize-trigger][data-placement="n"],
-[data-floating-panel-resize-trigger][data-placement="s"] {
-  /* Add styles for north and south resize handles */
-}
-
-/* East and west resize handles */
-[data-floating-panel-resize-trigger][data-placement="e"],
-[data-floating-panel-resize-trigger][data-placement="w"] {
-  /* Add styles for east and west resize handles */
-}
-
-/* Corner resize handles */
-[data-floating-panel-resize-trigger][data-placement="ne"],
-[data-floating-panel-resize-trigger][data-placement="nw"],
-[data-floating-panel-resize-trigger][data-placement="se"],
-[data-floating-panel-resize-trigger][data-placement="sw"] {
-  /* Add styles for corner resize handles */
-}
-```
-
-### Dragging
-
-When dragging the panel, the `[data-dragging]` attribute is applied to the
-panel.
-
-```css
-[data-floating-panel-content][data-dragging] {
-  /* Add styles for dragging state */
-}
-```
-
-### Stacking
-
-The floating panel has several states that can be targeted using data
-attributes:
-
-```css
-/* When the panel is the topmost element */
-[data-floating-panel-content][data-topmost] {
-  /* Add styles for topmost state */
-}
-
-/* When the panel is behind another panel */
-[data-floating-panel-content][data-behind] {
-  /* Add styles for behind state */
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -476,6 +382,12 @@ The floating panel `api` exposes the following methods:
 <ApiTable name="floating-panel" />
 
 ### Data attributes
+
+Each part has a `data-floating-panel-<part>` attribute. Combine it with the
+state attributes below to style each state.
+
+Resize triggers get `data-placement` set to their edge or corner: `n`, `s`, `e`,
+`w`, `ne`, `nw`, `se`, or `sw`.
 
 <DataAttrTable name="floating-panel" />
 

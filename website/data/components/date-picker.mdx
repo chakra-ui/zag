@@ -36,11 +36,6 @@ Install the date-picker package:
 
 ## Anatomy
 
-Check the date-picker anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="date-picker" />
 
 ## Usage
@@ -51,16 +46,8 @@ Import the package:
 import * as datepicker from "@zag-js/date-picker"
 ```
 
-These are the key exports:
-
-- `machine` - Behavior logic.
-- `connect` - Maps behavior to JSX props and event handlers.
-- `parse` - Parses an ISO 8601 date string.
-
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Then use the framework integration helpers:
+The package also exports `parse`, which turns an ISO 8601 string into a date
+value.
 
 <CodeSnippet id="date-picker/usage.mdx" />
 
@@ -752,108 +739,6 @@ const service = useMachine(datepicker.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-date-picker-root] {
-  /* styles for the root part */
-}
-
-[data-date-picker-input] {
-  /* styles for the input part */
-}
-
-[data-date-picker-trigger] {
-  /* styles for the trigger part */
-}
-
-[data-date-picker-content] {
-  /* styles for the input part */
-}
-```
-
-### Open state
-
-```css
-[data-date-picker-trigger] {
-  &[data-state="open"] {
-    /* styles for the open state */
-  }
-
-  &[data-state="closed"] {
-    /* styles for the closed state */
-  }
-}
-```
-
-### Cell states
-
-```css
-[data-date-picker-table-cell-trigger] {
-  /* styles for the cell */
-
-  &[data-selected] {
-    /* styles for the selected date */
-  }
-
-  &[data-focus] {
-    /* styles for the focused date */
-  }
-
-  &[data-disabled] {
-    /* styles for the disabled date */
-  }
-
-  &[data-unavailable] {
-    /* styles for the unavailable date */
-  }
-
-  &[data-today] {
-    /* styles for the today date */
-  }
-
-  &[data-weekend] {
-    /* styles for the weekend date */
-  }
-}
-```
-
-### Range selection states
-
-When using `selectionMode: "range"`, additional data attributes are available on
-day, month, and year table cell triggers for styling the selected and hovered
-ranges.
-
-```css
-[data-date-picker-table-cell-trigger] {
-  &[data-range-start] {
-    /* styles for the start of the selected range */
-  }
-
-  &[data-range-end] {
-    /* styles for the end of the selected range */
-  }
-
-  &[data-in-range] {
-    /* styles for dates within the selected range */
-  }
-
-  &[data-in-hover-range] {
-    /* styles for dates within the hovered range preview */
-  }
-
-  &[data-hover-range-start] {
-    /* styles for the start of the hovered range */
-  }
-
-  &[data-hover-range-end] {
-    /* styles for the end of the hovered range */
-  }
-}
-```
-
 ## Methods and Properties
 
 ### Machine context
@@ -869,6 +754,9 @@ The date picker `api` exposes the following methods:
 <ApiTable name="date-picker" />
 
 ### Data attributes
+
+Each part has a `data-date-picker-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="date-picker" />
 

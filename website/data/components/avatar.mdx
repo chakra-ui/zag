@@ -24,29 +24,9 @@ Install the avatar package:
 
 ## Anatomy
 
-Check the avatar anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="avatar" />
 
 ## Usage
-
-Import the avatar package:
-
-```tsx
-import * as avatar from "@zag-js/avatar"
-```
-
-The avatar package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="avatar/usage.mdx" />
 
@@ -96,24 +76,6 @@ Two cases the machine already covers, so you don't have to:
 If the image is loaded by something that doesn't fire `load` and `error` on the
 element itself, drive the lifecycle with `api.setLoaded()` and `api.setError()`.
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-avatar-root] {
-  /* Styles for the root part */
-}
-
-[data-avatar-image] {
-  /* Styles for the image part */
-}
-
-[data-avatar-fallback] {
-  /* Styles for the fallback part */
-}
-```
-
 ## Creating a component
 
 Create your avatar component by abstracting the machine into your own component.
@@ -144,5 +106,8 @@ The avatar `api` exposes the following methods:
 <ApiTable name="avatar" />
 
 ### Data attributes
+
+Each part has a `data-avatar-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="avatar" />

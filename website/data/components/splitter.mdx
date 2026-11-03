@@ -33,27 +33,9 @@ Install the splitter package:
 
 ## Anatomy
 
-Check the splitter anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="splitter" />
 
 ## Usage
-
-Import the splitter package:
-
-```tsx
-import * as splitter from "@zag-js/splitter"
-```
-
-The splitter package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="splitter/usage.mdx" />
 
@@ -286,41 +268,6 @@ const registry = splitter.registry({
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Resize trigger
-
-When a resize trigger is horizontal or vertical, a `data-orientation` attribute
-is set on the trigger element.
-
-```css
-[data-splitter-resize-trigger] {
-  /* styles for the item */
-}
-
-[data-splitter-resize-trigger][data-orientation="horizontal"] {
-  /* styles for the item is horizontal state */
-}
-
-[data-splitter-resize-trigger][data-orientation="vertical"] {
-  /* styles for the item is horizontal state */
-}
-
-[data-splitter-resize-trigger][data-focus] {
-  /* styles for the item is focus state */
-}
-
-[data-splitter-resize-trigger]:active {
-  /* styles for the item is active state */
-}
-
-[data-splitter-resize-trigger][data-disabled] {
-  /* styles for the item is disabled state */
-}
-```
-
 ## Methods and Properties
 
 The splitter's `api` exposes the following methods and properties:
@@ -338,5 +285,8 @@ The splitter `api` exposes the following methods:
 <ApiTable name="splitter" />
 
 ### Data attributes
+
+Each part has a `data-splitter-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="splitter" />

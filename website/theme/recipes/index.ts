@@ -6,7 +6,7 @@ import { twoToneHeading } from "./heading"
 import { docAction } from "./docs"
 import { example } from "./example"
 import { explorer } from "./explorer"
-import { guideMeta, steps } from "./guide"
+import { steps } from "./guide"
 import { siteFooter } from "./footer"
 import { inspector } from "./inspector"
 import { community, pageHeader, showcaseCard, team } from "./listing"
@@ -18,7 +18,6 @@ export const recipes = {
   chip,
   docAction,
   steps,
-  guideMeta,
 }
 
 export const slotRecipes = {

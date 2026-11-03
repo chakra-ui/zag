@@ -28,8 +28,7 @@ pnpm add @zag-js/core @zag-js/anatomy @zag-js/dom-query @zag-js/types @zag-js/re
 The anatomy names the parts users render. Each part gets a data attribute for
 styling and DOM lookups.
 
-```ts
-// counter.anatomy.ts
+```ts title="counter.anatomy.ts"
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("counter").parts(
@@ -50,8 +49,7 @@ export const parts = anatomy.build()
 Ids are only needed for parts that ARIA attributes point to. Element lookups go
 through the anatomy, scoped to this instance.
 
-```ts
-// counter.dom.ts
+```ts title="counter.dom.ts"
 import type { Scope } from "@zag-js/core"
 import { parts } from "./counter.anatomy"
 
@@ -70,8 +68,7 @@ export const getValueEl = (scope: Scope) =>
 Props, the schema and the api. `min`, `max`, `step` and `defaultValue` have
 defaults, so they go in `defaultPropKey`.
 
-```ts
-// counter.types.ts
+```ts title="counter.types.ts"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes } from "@zag-js/types"
 
@@ -168,8 +165,7 @@ The value is a bindable, so the counter works controlled or uncontrolled.
 `canIncrement` and `canDecrement` are computed, and the guards reuse them. The
 two states track focus for styling.
 
-```ts
-// counter.machine.ts
+```ts title="counter.machine.ts"
 import { createMachine } from "@zag-js/core"
 import * as dom from "./counter.dom"
 import type { CounterSchema } from "./counter.types"
@@ -275,8 +271,7 @@ button click, so the arrow keys keep working.
 `spinbutton`. It takes focus and handles the keyboard. The buttons use
 `tabIndex: -1` so they don't add extra tab stops.
 
-```ts
-// counter.connect.ts
+```ts title="counter.connect.ts"
 import { dataAttr } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./counter.anatomy"
@@ -400,8 +395,7 @@ only the last value. Internal events stay untagged.
 
 ## Exports
 
-```ts
-// index.ts
+```ts title="index.ts"
 export { anatomy } from "./counter.anatomy"
 export { connect } from "./counter.connect"
 export { machine } from "./counter.machine"
@@ -419,7 +413,7 @@ export type {
 Pass the machine to `useMachine`, then call `connect` with the adapter's
 `normalizeProps`. The component generates `id` with `useId`.
 
-```tsx
+```tsx title="counter.tsx"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import * as counter from "./counter"
@@ -456,7 +450,7 @@ export function Counter(props: CounterProps) {
 
 To control it, pass `value` and update it in `onValueChange`.
 
-```tsx
+```tsx title="guest-picker.tsx"
 import { useState } from "react"
 
 export function GuestPicker() {
@@ -477,7 +471,7 @@ export function GuestPicker() {
 Style the parts with their data attributes, and the states with `data-focus`,
 `data-disabled` and `:disabled`.
 
-```css
+```css title="counter.css"
 [data-counter-root] {
   display: inline-flex;
   align-items: center;
