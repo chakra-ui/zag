@@ -12,14 +12,6 @@ export const Frame = styled("div", {
   },
 })
 
-export const Band = styled("section", {
-  base: {
-    borderTopWidth: "1px",
-    borderColor: "border",
-    position: "relative",
-  },
-})
-
 export const Pad = styled("div", {
   base: {
     px: { base: "4", sm: "6", md: "10" },
