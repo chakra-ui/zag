@@ -18,25 +18,21 @@ const fallback: CollectionMethods<any> = {
   },
 }
 
-// Build the lookup map once linear scans have covered this many full passes
+// Full linear passes allowed before building the lookup map
 const MAP_SCAN_PASSES = 2
 
-// Return type of `copy` and the mutation methods: `Self` when a subclass provides it
 type Collection<T extends CollectionItem, Self> = [Self] extends [never] ? ListCollection<T> : Self
 
 /**
- * Subclasses that override `createCollection` can pass themselves as `Self`
- * so mutation methods keep the subclass type.
+ * Pass `Self` (and override `createCollection`) to keep a subclass type through mutations.
  */
 export class ListCollection<T extends CollectionItem = CollectionItem, Self = never> {
   /**
-   * The items in the collection.
-   * Treat as immutable: use `setItems`, `update`, etc. to get a new collection.
+   * The items in the collection. Treat as immutable.
    */
   items: T[]
   private indexMap: Map<string, number> | null = null
   private orderedItems: T[] | null = null
-  // `items` the caches were built from; reassigning `items` invalidates them
   private cacheSource: T[] | null = null
   private scannedCount = 0
 
@@ -51,15 +47,13 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     return this.createCollection(items ?? [...this.items])
   }
 
-  /**
-   * Creates the collection returned by `copy` and the mutation methods.
-   * Subclasses override this (and narrow the method types) to keep their type and state.
-   */
-  // No-op mutations return the same instance; `this` is `Self` for subclasses that pass it
   private unchanged(): Collection<T, Self> {
     return this as unknown as Collection<T, Self>
   }
 
+  /**
+   * Creates the collection returned by `copy` and the mutation methods.
+   */
   protected createCollection(items: T[]): Collection<T, Self> {
     return new ListCollection({ ...this.options, items }) as Collection<T, Self>
   }
@@ -119,7 +113,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     return this.getOrderedItems()[index] ?? null
   }
 
-  // Prototype methods (not arrow fields) to avoid per-instance allocations
   private isGrouped(): boolean {
     return !!(this.options.groupBy || this.options.groupSort)
   }
@@ -132,7 +125,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     this.scannedCount = 0
   }
 
-  // Items in display order (grouped when `groupBy` is set)
   protected getOrderedItems(): T[] {
     if (!this.isGrouped()) return this.items
     this.syncCache()
@@ -319,7 +311,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     if (value == null) return -1
 
     this.syncCache()
-    // Stay linear until scans add up to the cost of building the map
     if (!this.indexMap && !this.isGrouped() && this.scannedCount < this.items.length * MAP_SCAN_PASSES) {
       const index = this.getItemIndex(value)
       this.scannedCount += index === -1 ? this.items.length : index + 1
@@ -331,7 +322,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
       const items = this.getOrderedItems()
       for (let i = 0; i < items.length; i++) {
         const itemValue = this.getItemValue(items[i])
-        // first match wins, like `findIndex`
         if (itemValue != null && !map.has(itemValue)) map.set(itemValue, i)
       }
       this.indexMap = map
@@ -340,7 +330,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     return this.indexMap.get(value) ?? -1
   }
 
-  // Index in `items` (source order), used by mutations
   private getItemIndex(value: string): number {
     return this.items.findIndex((item) => this.getItemValue(item) === value)
   }
@@ -491,7 +480,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
   }
 
   /**
-   * Move an item to a specific index in `items` (source order, not grouped order)
+   * Move an item to a specific index in `items` (source order)
    */
   move = (value: string, toIndex: number): Collection<T, Self> => {
     const fromIndex = this.getItemIndex(value)

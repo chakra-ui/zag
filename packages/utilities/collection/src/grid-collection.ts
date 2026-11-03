@@ -25,7 +25,6 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
    * Returns the row data in the grid
    */
   getRows = (): T[][] => {
-    // Chunk in display order so rows match `getCell` / `getValueCell`
     if (!this.rows || this.rowsSource !== this.items) {
       this.rowsSource = this.items
       this.rows = chunk([...this.getOrderedItems()], this.columnCount)
