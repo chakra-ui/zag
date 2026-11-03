@@ -87,6 +87,9 @@ jobs:
       - name: Run TypeScript type check
         run: pnpm typecheck
 
+      - name: Type check website
+        run: pnpm website typecheck
+
   checks:
     name: Check for various issues
     runs-on: ubuntu-latest

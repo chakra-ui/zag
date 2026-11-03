@@ -13,8 +13,7 @@
     "plop-templates",
     "**/*.d.ts",
     "**/.output",
-    "website/styled-system",
-    "website/.velite"
+    "website/styled-system"
   ],
   "env": { "browser": true, "node": true, "es2024": true },
   "categories": {

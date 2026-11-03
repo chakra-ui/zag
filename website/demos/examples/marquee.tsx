@@ -46,9 +46,10 @@ function Track(props: { api: marquee.Api; edges?: boolean; link?: boolean }) {
               props.link ? (
                 <a
                   key={i}
-                  href="#"
+                  href={`https://en.wikipedia.org/wiki/${item.name}`}
+                  target="_blank"
+                  rel="noreferrer"
                   className={styles.Item}
-                  onClick={(event) => event.preventDefault()}
                   {...api.getItemProps()}
                 >
                   <span className={styles.Logo}>{item.logo}</span>
