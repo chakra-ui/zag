@@ -140,12 +140,12 @@ export const docsNav = defineSlotRecipe({
           rounded: "0",
           fontSize: "13px",
           lineHeight: "1.45",
-          _hover: { color: "fg", bg: "transparent" },
           "&[data-depth=nested]": {
             ps: "6",
             fontSize: "12px",
             color: "fg.subtle",
           },
+          _hover: { color: "fg", bg: "transparent" },
           "&[aria-current]": { color: "fg" },
         },
       },
