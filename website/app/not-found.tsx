@@ -1,88 +1,57 @@
 import { Footer } from "components/footer"
-import { IsoNotFound } from "components/illustrations/not-found"
-import { Btn, Eyebrow, Frame, Lead, Pad, Title } from "components/ui/layout"
 import { TopNav } from "components/nav/top-nav"
 import { componentsHref } from "lib/pagination-utils"
-import { Box, Grid, HStack, styled } from "styled-system/jsx"
+import Link from "next/link"
+import { LuArrowRight } from "react-icons/lu"
+import { button } from "styled-system/recipes"
+import * as styles from "./not-found.css"
 
 export default function NotFound() {
   return (
-    <Box>
+    <>
       <TopNav />
-      <Frame>
-        <Grid
-          as="main"
-          columns={{ base: 1, lg: 2 }}
-          gap="0"
-          alignItems="center"
-        >
-          <Pad py={{ base: "16", md: "24" }}>
-            <Eyebrow mb="3">
-              404 · state <styled.span color="accent">not_found</styled.span>
-            </Eyebrow>
-            <Title as="h1">This page isn&apos;t in any state we know</Title>
-            <Lead mt="4">
-              The link may be old, or the page may have moved. Here are a few
-              places that definitely exist.
-            </Lead>
+      <main className={styles.main}>
+        <div className={styles.machine} aria-hidden>
+          <span className={styles.state}>visiting</span>
+          <span className={styles.edge}>
+            NAVIGATE
+            <LuArrowRight />
+          </span>
+          <span className={styles.missing}>not_found</span>
+        </div>
 
-            <HStack gap="3" flexWrap="wrap" mt={{ base: "10", md: "12" }}>
-              <Btn href="/">Go home</Btn>
-              <Btn href="/overview/introduction" tone="ghost">
-                Read the docs
-              </Btn>
-              <Btn href={componentsHref} tone="ghost">
-                Browse components
-              </Btn>
-            </HStack>
-            <styled.p mt="5" fontSize="14px" color="text.muted">
-              Looking for something specific? Press{" "}
-              <styled.kbd
-                fontFamily="mono"
-                fontSize="12px"
-                px="1.5"
-                py="0.5"
-                borderWidth="1px"
-                borderColor="border"
-                borderRadius="sm"
-                color="text.bold"
-              >
-                ⌘K
-              </styled.kbd>{" "}
-              or{" "}
-              <styled.kbd
-                fontFamily="mono"
-                fontSize="12px"
-                px="1.5"
-                py="0.5"
-                borderWidth="1px"
-                borderColor="border"
-                borderRadius="sm"
-                color="text.bold"
-              >
-                Ctrl K
-              </styled.kbd>{" "}
-              to search.
-            </styled.p>
-          </Pad>
-          <Box
-            borderLeftWidth={{ base: "0", lg: "1px" }}
-            borderTopWidth={{ base: "1px", lg: "0" }}
-            borderColor="border"
-            p={{ base: "4", md: "10" }}
-            h="full"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
+        <p className={styles.code}>404</p>
+        <h1 className={styles.title}>
+          This page isn&apos;t in any state we know
+        </h1>
+        <p className={styles.lead}>
+          The link may be old, or the page moved. These places definitely exist.
+        </p>
+
+        <div className={styles.actions}>
+          <Link href="/" className={button({ variant: "solid" })}>
+            Go home
+          </Link>
+          <Link
+            href="/overview/introduction"
+            className={button({ variant: "outline" })}
           >
-            <Box w="full" maxW="580px">
-              <IsoNotFound />
-            </Box>
-          </Box>
-        </Grid>
-        <Box borderTopWidth="1px" borderColor="border" />
-      </Frame>
+            Read the docs
+          </Link>
+          <Link
+            href={componentsHref}
+            className={button({ variant: "outline" })}
+          >
+            Browse components
+          </Link>
+        </div>
+
+        <p className={styles.hint}>
+          Looking for something? Press <kbd className={styles.kbd}>⌘K</kbd> to
+          search.
+        </p>
+      </main>
       <Footer />
-    </Box>
+    </>
   )
 }

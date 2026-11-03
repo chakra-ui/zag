@@ -103,6 +103,8 @@ export function useSearch(): UseSearchReturn {
     id: "search-combobox",
     placeholder: "Search the docs",
     inputBehavior: "autohighlight",
+    // results always show inside the dialog, so Escape belongs to the dialog
+    inline: true,
     selectionBehavior: "clear",
     collection,
     navigate({ value }) {

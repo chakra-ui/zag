@@ -9,10 +9,10 @@ import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable
 import {
   AnimationFrame,
   clickIfLink,
+  createSharedMutationObserver,
   getModifierKeys,
   isApple,
   nextTick,
-  observeAttributes,
   raf,
   scrollIntoView,
   setCaretToEnd,
@@ -34,6 +34,11 @@ const { and, not } = guards
  * How long the input and results must stay unchanged before the result count is announced
  */
 const RESULTS_ANNOUNCEMENT_DELAY = 1000
+
+const activeDescendantObserver = /* @__PURE__ */ createSharedMutationObserver({
+  subtree: true,
+  attributeFilter: ["aria-activedescendant"],
+})
 
 export const machine = createMachine({
   props({ props }) {
@@ -756,8 +761,6 @@ export const machine = createMachine({
         })
       },
       scrollToHighlightedItem({ context, prop, scope }) {
-        const inputEl = dom.getInputEl(scope)
-
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
@@ -794,11 +797,13 @@ export const machine = createMachine({
         })
         cleanups.push(rafCleanup)
 
-        const observerCleanup = observeAttributes(inputEl, {
-          attributes: ["aria-activedescendant"],
-          callback: () => exec(false),
-        })
-        cleanups.push(observerCleanup)
+        // the input may mount after the machine starts (inline combobox in a dialog)
+        cleanups.push(
+          activeDescendantObserver.observe(scope.getRootNode(), (records) => {
+            const inputEl = dom.getInputEl(scope)
+            if (records.some((record) => record.target === inputEl)) exec(false)
+          }),
+        )
 
         return () => {
           cleanups.forEach((cleanup) => cleanup())

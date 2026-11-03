@@ -1,9 +1,11 @@
 "use client"
 
+import { HeartIcon } from "components/icons"
 import { getActiveTab, tabHref } from "lib/pagination-utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { tabs } from "sidebar.config"
+import siteConfig from "site.config"
 import * as styles from "./docs-subnav.css"
 import { useFramework } from "./framework"
 import { FrameworkSelect } from "./framework-select"
@@ -31,7 +33,18 @@ export function DocsSubnav() {
             </Link>
           ))}
         </nav>
-        <FrameworkSelect />
+        <div className={styles.end}>
+          <a
+            href={siteConfig.openCollective.url}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.sponsor}
+          >
+            <HeartIcon />
+            Sponsor
+          </a>
+          <FrameworkSelect />
+        </div>
       </div>
     </div>
   )

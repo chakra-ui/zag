@@ -60,3 +60,26 @@ export const tab = css({
     },
   },
 })
+
+export const end = css({ display: "flex", alignItems: "center", gap: "2" })
+
+// a filled pink heart so the ask is easy to spot
+export const sponsor = css({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "1.5",
+  h: "6",
+  ps: "2",
+  pe: "2.5",
+  rounded: "full",
+  fontSize: "13px",
+  fontWeight: "medium",
+  color: "ink",
+  transition: "background 120ms",
+  _hover: { bg: "color-mix(in srgb, #db2777 10%, transparent)" },
+  _focusVisible: {
+    outline: "2px solid {colors.primary}",
+    outlineOffset: "2px",
+  },
+  "& svg": { boxSize: "3.5", color: { base: "#db2777", _dark: "#f472b6" } },
+})
