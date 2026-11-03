@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
-    "@stackblitz/sdk": "^1.11.0",
+    "@stackblitz/sdk": "^1.11.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
@@ -81,9 +81,9 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
-    "fumadocs-core": "16.17.1",
-    "fumadocs-mdx": "15.4.7",
-    "hastscript": "9.0.1",
+    "fumadocs-core": "16.17.10",
+    "fumadocs-mdx": "15.4.10",
+    "hastscript": "9.0.3",
     "match-sorter": "8.3.0",
     "next": "16.4.3",
     "next-themes": "^0.4.6",
@@ -93,12 +93,12 @@
     "react-icons": "5.7.0",
     "refractor": "^5.0.0",
     "unist-util-visit": "5.2.0",
-    "zod": "4.5.4"
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@pandacss/dev": "^2.2.0",
-    "@pandacss/preset-base": "2.2.0",
-    "@pandacss/preset-panda": "2.2.0",
+    "@pandacss/dev": "^2.5.0",
+    "@pandacss/preset-base": "2.5.0",
+    "@pandacss/preset-panda": "2.5.0",
     "@types/mdx": "^2.0.14",
     "@types/react": "^19.2.18",
     "rehype-autolink-headings": "7.1.0",
