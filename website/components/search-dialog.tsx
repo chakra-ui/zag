@@ -1,22 +1,25 @@
 import { Portal } from "@zag-js/react"
-import { useSearch } from "lib/use-search"
+import { getSection, useSearch } from "lib/use-search"
 import type { SearchMetaItem } from "lib/search-meta"
 import Link from "next/link"
 import { Fragment, useEffect, useState } from "react"
 import { HiOutlineSearch } from "react-icons/hi"
+import { LuChevronRight } from "react-icons/lu"
 import { css } from "styled-system/css"
 import * as styles from "./search-dialog.css"
 import { SearchTrigger } from "./search-trigger"
 
 const sectionLabels: Record<string, string> = {
   overview: "Overview",
-  guides: "Guides",
+  guides: "Developer",
   components: "Components",
   utilities: "Utilities",
   blog: "Blog",
 }
 
-const getSection = (item: SearchMetaItem) => item.url.split("/")[1] ?? ""
+// headings show the page they sit on
+const getPage = (item: SearchMetaItem) =>
+  item.type === "lvl1" ? null : item.hierarchy.lvl1
 
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
@@ -111,34 +114,39 @@ export function Search() {
                   hidden={contentProps.hidden || results.length === 0}
                 >
                   <div className={styles.list} {...combobox_api.getListProps()}>
-                    {results.map((item) => {
-                      // pages show their section; headings show the page they belong to
-                      const page =
-                        item.type === "lvl1"
-                          ? sectionLabels[getSection(item)]
-                          : item.hierarchy.lvl1
-                      const snippet = item.text
+                    {results.map((item, index) => {
+                      const section = getSection(item)
+                      const startsGroup =
+                        index === 0 ||
+                        getSection(results[index - 1]) !== section
                       return (
-                        <Link
-                          key={item.url}
-                          href={item.url}
-                          className={styles.item}
-                          {...combobox_api.getItemProps({ item })}
-                        >
-                          <span className={styles.itemHead}>
+                        <Fragment key={item.url}>
+                          {startsGroup && (
+                            <div className={styles.group} aria-hidden>
+                              {sectionLabels[section] ?? section}
+                            </div>
+                          )}
+                          <Link
+                            href={item.url}
+                            className={styles.item}
+                            {...combobox_api.getItemProps({ item })}
+                          >
+                            {getPage(item) && (
+                              <>
+                                <span className={styles.trail}>
+                                  {getPage(item)}
+                                </span>
+                                <LuChevronRight
+                                  className={styles.chevron}
+                                  aria-hidden
+                                />
+                              </>
+                            )}
                             <span className={styles.itemTitle}>
                               <Highlight text={item.content} query={query} />
                             </span>
-                            {page && (
-                              <span className={styles.chip}>{page}</span>
-                            )}
-                          </span>
-                          {snippet && (
-                            <span className={styles.itemMeta}>
-                              <Highlight text={snippet} query={query} />
-                            </span>
-                          )}
-                        </Link>
+                          </Link>
+                        </Fragment>
                       )
                     })}
                   </div>

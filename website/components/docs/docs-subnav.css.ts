@@ -56,7 +56,7 @@ export const tab = css({
       bottom: "-1px",
       h: "2px",
       rounded: "full",
-      bg: "ink",
+      bg: "primary/60",
     },
   },
 })

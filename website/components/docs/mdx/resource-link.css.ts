@@ -48,11 +48,4 @@ export const mono = css({
   fontWeight: "normal",
 })
 
-export const version = css({
-  fontFamily: "mono",
-  fontSize: "12px",
-  fontWeight: "normal",
-  color: "ink.muted",
-})
-
 export const arrow = css({ boxSize: "3", opacity: "0.7" })

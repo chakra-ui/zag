@@ -3,7 +3,7 @@ import { components, guides, overviews, posts, utilities } from "lib/source"
 
 const sections = {
   overview: { label: "Overview", docs: overviews },
-  guides: { label: "Guides", docs: guides },
+  guides: { label: "Developer", docs: guides },
   components: { label: "Components", docs: components },
   utilities: { label: "Utilities", docs: utilities },
   blog: { label: "Blog", docs: posts },

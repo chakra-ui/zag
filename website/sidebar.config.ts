@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons/lib"
-import { LuBlocks, LuBookOpen, LuCompass, LuWrench } from "react-icons/lu"
+import { LuBlocks, LuCode, LuCompass, LuWrench } from "react-icons/lu"
 import siteConfig from "site.config"
 
 /** The URL section a page lives under: `/{section}/...` */
@@ -208,8 +208,8 @@ export const tabs: SidebarTab[] = [
   },
   {
     id: "guides",
-    label: "Guides",
-    icon: LuBookOpen,
+    label: "Developer",
+    icon: LuCode,
     groups: [
       {
         label: "Design system",
@@ -242,7 +242,7 @@ export const tabs: SidebarTab[] = [
 
 const sectionLabels: Record<Section, string> = {
   overview: "Overview",
-  guides: "Guides",
+  guides: "Developer",
   components: "Components",
   utilities: "Utilities",
 }

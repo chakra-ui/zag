@@ -1,6 +1,5 @@
 import { Footer } from "components/footer"
 import { TopNav } from "components/nav/top-nav"
-import { componentsHref } from "lib/pagination-utils"
 import Link from "next/link"
 import { LuArrowRight } from "react-icons/lu"
 import { button } from "styled-system/recipes"
@@ -8,7 +7,7 @@ import * as styles from "./not-found.css"
 
 export default function NotFound() {
   return (
-    <>
+    <div className={styles.page}>
       <TopNav />
       <main className={styles.main}>
         <div className={styles.machine} aria-hidden>
@@ -21,37 +20,29 @@ export default function NotFound() {
         </div>
 
         <p className={styles.code}>404</p>
-        <h1 className={styles.title}>
-          This page isn&apos;t in any state we know
-        </h1>
+        <h1 className={styles.title}>We couldn&apos;t find that page</h1>
         <p className={styles.lead}>
-          The link may be old, or the page moved. These places definitely exist.
+          It may have moved or been renamed. Search the docs or start from the
+          introduction.
         </p>
 
         <div className={styles.actions}>
-          <Link href="/" className={button({ variant: "solid" })}>
-            Go home
-          </Link>
           <Link
             href="/overview/introduction"
-            className={button({ variant: "outline" })}
+            className={button({ variant: "solid" })}
           >
             Read the docs
           </Link>
-          <Link
-            href={componentsHref}
-            className={button({ variant: "outline" })}
-          >
-            Browse components
+          <Link href="/" className={button({ variant: "outline" })}>
+            Go home
           </Link>
         </div>
 
         <p className={styles.hint}>
-          Looking for something? Press <kbd className={styles.kbd}>⌘K</kbd> to
-          search.
+          Press <kbd className={styles.kbd}>⌘K</kbd> to search
         </p>
       </main>
       <Footer />
-    </>
+    </div>
   )
 }

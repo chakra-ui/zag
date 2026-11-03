@@ -105,14 +105,26 @@ export const list = css({
   outline: "0",
 })
 
+export const group = css({
+  px: "3",
+  pt: "3",
+  pb: "1",
+  fontSize: "12px",
+  fontWeight: "medium",
+  color: "ink.muted",
+  _first: { pt: "1.5" },
+})
+
 export const item = css({
   position: "relative",
   display: "flex",
-  flexDirection: "column",
-  gap: "0.5",
+  alignItems: "center",
+  gap: "1",
+  minW: "0",
+  h: "9",
   px: "3",
-  py: "2.5",
   rounded: "lg",
+  fontSize: "14px",
   color: "ink",
   textDecoration: "none",
   cursor: "pointer",
@@ -123,7 +135,7 @@ export const item = css({
     _before: {
       content: '""',
       position: "absolute",
-      insetBlock: "2.5",
+      insetBlock: "2",
       insetInlineStart: "0",
       w: "2px",
       rounded: "full",
@@ -132,37 +144,26 @@ export const item = css({
   },
 })
 
-export const itemHead = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "2",
+export const trail = css({
+  flexShrink: "1",
   minW: "0",
+  maxW: "40%",
+  color: "ink.muted",
+  truncate: true,
+})
+
+export const chevron = css({
+  flexShrink: "0",
+  boxSize: "3.5",
+  color: "ink.muted",
+  opacity: "0.6",
 })
 
 export const itemTitle = css({
-  fontSize: "14px",
+  flex: "1",
+  minW: "0",
   fontWeight: "medium",
-  lineHeight: "1.4",
   truncate: true,
-})
-
-export const chip = css({
-  flexShrink: "0",
-  maxW: "45%",
-  px: "1.5",
-  rounded: "md",
-  bg: "ink/6",
-  fontSize: "11.5px",
-  lineHeight: "18px",
-  color: "ink.muted",
-  truncate: true,
-})
-
-export const itemMeta = css({
-  fontSize: "13px",
-  lineHeight: "1.5",
-  color: "ink.muted",
-  lineClamp: "2",
 })
 
 export const mark = css({

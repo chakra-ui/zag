@@ -35,7 +35,6 @@ export function ResourceLinkGroup(props: {
       >
         <LuPackage aria-hidden />
         <span className={styles.mono}>{pkg}</span>
-        <span className={styles.version}>{item.version}</span>
       </a>
       {item.logicUrl && (
         <MachineDiagram
@@ -50,7 +49,7 @@ export function ResourceLinkGroup(props: {
         className={styles.action}
       >
         <LuCode aria-hidden />
-        View source
+        Source
         <Arrow />
       </a>
       {pattern && (

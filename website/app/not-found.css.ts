@@ -1,8 +1,16 @@
 import { css } from "styled-system/css"
 import { container } from "theme/layout"
 
+export const page = css({
+  display: "flex",
+  flexDirection: "column",
+  minH: "100dvh",
+})
+
 export const main = css({
   ...container,
+  flex: "1",
+  justifyContent: "center",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
