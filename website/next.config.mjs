@@ -20,9 +20,13 @@ const nextConfig = {
     externalDir: true,
     agentUpgrade: "security",
   },
-  // /api/mdx reads page sources and package versions at request time
+  // /api/mdx and /api/md read page sources and package versions
   outputFileTracingIncludes: {
     "/api/mdx/[...slug]": [
+      "./data/**/*.mdx",
+      "./node_modules/@zag-js/*/package.json",
+    ],
+    "/api/md/[...slug]": [
       "./data/**/*.mdx",
       "./node_modules/@zag-js/*/package.json",
     ],

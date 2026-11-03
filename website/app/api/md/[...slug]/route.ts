@@ -13,13 +13,8 @@ export async function GET(
   context: { params: Promise<{ slug: string[] }> },
 ) {
   const { slug } = await context.params
-  const resolved = resolveDoc(slug)
-
-  if (!resolved) {
-    return new Response("Not found", { status: 404 })
-  }
-
-  const { doc, content } = resolved
+  // dynamicParams = false: only prerendered pages reach here, so the doc exists
+  const { doc, content } = resolveDoc(slug)!
   const text = `# ${doc.title}\n\n> ${doc.description}\n\n${content.trim()}\n`
 
   return new Response(text, {
