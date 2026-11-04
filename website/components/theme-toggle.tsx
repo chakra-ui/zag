@@ -1,6 +1,6 @@
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { FaMoon, FaSun } from "react-icons/fa"
+import { LuMoon, LuSun } from "react-icons/lu"
 import { css } from "styled-system/css"
 
 const fallback = css({
@@ -17,7 +17,7 @@ const fallback = css({
     outline: "2px solid",
     outlineColor: "border.primary.bold",
   },
-  "& svg": { boxSize: "4", fill: "currentcolor" },
+  "& svg": { boxSize: "4" },
 })
 
 export function ThemeToggle(props: { className?: string }) {
@@ -32,7 +32,7 @@ export function ThemeToggle(props: { className?: string }) {
   const label = mounted
     ? `Switch to ${isDark ? "light" : "dark"} mode`
     : "Toggle color mode"
-  const SwitchIcon = isDark ? FaSun : FaMoon
+  const SwitchIcon = isDark ? LuSun : LuMoon
 
   return (
     <button

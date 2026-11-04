@@ -1,0 +1,574 @@
+{
+  "id": "timer",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "running:temp",
+      "label": "running:temp",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "running",
+      "label": "running",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "paused",
+      "label": "paused",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "running:temp",
+      "event": "RESTART",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "running",
+      "event": "START",
+      "guard": null
+    },
+    {
+      "from": "paused",
+      "to": "idle",
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "paused",
+      "to": "running",
+      "event": "RESUME",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": "paused",
+      "event": "PAUSE",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": null,
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "running",
+      "to": "idle",
+      "event": "TICK",
+      "guard": "hasReachedTarget"
+    },
+    {
+      "from": "running",
+      "to": null,
+      "event": "TICK",
+      "guard": null
+    },
+    {
+      "from": "running:temp",
+      "to": "running",
+      "event": "CONTINUE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 972,
+      "height": 370,
+      "states": {
+        "idle": {
+          "x": 452,
+          "y": 48,
+          "w": 78,
+          "h": 44
+        },
+        "running:temp": {
+          "x": 411,
+          "y": 284,
+          "w": 139,
+          "h": 44
+        },
+        "running": {
+          "x": 839,
+          "y": 157,
+          "w": 101,
+          "h": 44
+        },
+        "paused": {
+          "x": 48,
+          "y": 157,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "running",
+          "events": [
+            "START"
+          ],
+          "lines": [
+            "START"
+          ],
+          "points": [
+            [
+              530,
+              63
+            ],
+            [
+              765,
+              63
+            ],
+            [
+              765,
+              164
+            ],
+            [
+              839,
+              164
+            ]
+          ],
+          "label": {
+            "x": 670,
+            "y": 32,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "paused",
+          "to": "idle",
+          "events": [
+            "RESET"
+          ],
+          "lines": [
+            "RESET"
+          ],
+          "points": [
+            [
+              142,
+              168
+            ],
+            [
+              168,
+              168
+            ],
+            [
+              168,
+              70
+            ],
+            [
+              452,
+              70
+            ]
+          ],
+          "label": {
+            "x": 252,
+            "y": 39,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "paused",
+          "to": "running",
+          "events": [
+            "RESUME"
+          ],
+          "lines": [
+            "RESUME"
+          ],
+          "points": [
+            [
+              142,
+              179
+            ],
+            [
+              839,
+              179
+            ]
+          ],
+          "label": {
+            "x": 453,
+            "y": 148,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "running",
+          "to": "paused",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              839,
+              186
+            ],
+            [
+              755,
+              186
+            ],
+            [
+              755,
+              196
+            ],
+            [
+              168,
+              196
+            ],
+            [
+              168,
+              190
+            ],
+            [
+              142,
+              190
+            ]
+          ],
+          "label": {
+            "x": 456,
+            "y": 203,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "running",
+          "to": "idle",
+          "events": [
+            "TICK"
+          ],
+          "lines": [
+            "TICK"
+          ],
+          "points": [
+            [
+              839,
+              172
+            ],
+            [
+              755,
+              172
+            ],
+            [
+              755,
+              123
+            ],
+            [
+              576,
+              123
+            ],
+            [
+              576,
+              77
+            ],
+            [
+              530,
+              77
+            ]
+          ],
+          "label": {
+            "x": 674,
+            "y": 130,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "running:temp",
+          "to": "running",
+          "events": [
+            "CONTINUE"
+          ],
+          "lines": [
+            "CONTINUE"
+          ],
+          "points": [
+            [
+              550,
+              306
+            ],
+            [
+              765,
+              306
+            ],
+            [
+              765,
+              194
+            ],
+            [
+              839,
+              194
+            ]
+          ],
+          "label": {
+            "x": 660,
+            "y": 313,
+            "w": 69,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 573,
+      "height": 684,
+      "states": {
+        "idle": {
+          "x": 77,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "running:temp": {
+          "x": 402,
+          "y": 320,
+          "w": 139,
+          "h": 44
+        },
+        "running": {
+          "x": 222,
+          "y": 608,
+          "w": 101,
+          "h": 44
+        },
+        "paused": {
+          "x": 219,
+          "y": 32,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "running",
+          "events": [
+            "START"
+          ],
+          "lines": [
+            "START"
+          ],
+          "points": [
+            [
+              103,
+              364
+            ],
+            [
+              103,
+              534
+            ],
+            [
+              239,
+              534
+            ],
+            [
+              239,
+              608
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 474,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "paused",
+          "to": "idle",
+          "events": [
+            "RESET"
+          ],
+          "lines": [
+            "RESET"
+          ],
+          "points": [
+            [
+              243,
+              76
+            ],
+            [
+              243,
+              102
+            ],
+            [
+              116,
+              102
+            ],
+            [
+              116,
+              320
+            ]
+          ],
+          "label": {
+            "x": 61,
+            "y": 186,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "paused",
+          "to": "running",
+          "events": [
+            "RESUME"
+          ],
+          "lines": [
+            "RESUME"
+          ],
+          "points": [
+            [
+              266,
+              76
+            ],
+            [
+              266,
+              102
+            ],
+            [
+              273,
+              102
+            ],
+            [
+              273,
+              608
+            ]
+          ],
+          "label": {
+            "x": 211,
+            "y": 330,
+            "w": 56,
+            "h": 24
+          }
+        },
+        {
+          "from": "running",
+          "to": "paused",
+          "events": [
+            "PAUSE"
+          ],
+          "lines": [
+            "PAUSE"
+          ],
+          "points": [
+            [
+              289,
+              608
+            ],
+            [
+              289,
+              524
+            ],
+            [
+              290,
+              524
+            ],
+            [
+              290,
+              76
+            ]
+          ],
+          "label": {
+            "x": 297,
+            "y": 330,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "running",
+          "to": "idle",
+          "events": [
+            "TICK"
+          ],
+          "lines": [
+            "TICK"
+          ],
+          "points": [
+            [
+              256,
+              608
+            ],
+            [
+              256,
+              524
+            ],
+            [
+              129,
+              524
+            ],
+            [
+              129,
+              364
+            ]
+          ],
+          "label": {
+            "x": 136,
+            "y": 474,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "running:temp",
+          "to": "running",
+          "events": [
+            "CONTINUE"
+          ],
+          "lines": [
+            "CONTINUE"
+          ],
+          "points": [
+            [
+              472,
+              364
+            ],
+            [
+              472,
+              524
+            ],
+            [
+              306,
+              524
+            ],
+            [
+              306,
+              608
+            ]
+          ],
+          "label": {
+            "x": 397,
+            "y": 474,
+            "w": 69,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,11 +1,13 @@
 ---
 title: Carousel
-description: Using the carousel machine in your project.
+description:
+  An accessible carousel built on CSS scroll snap, with slide indicators,
+  autoplay, looping and multiple slides per view.
 package: "@zag-js/carousel"
 ---
 
 A carousel component that leverages native CSS Scroll Snap for smooth,
-performant scrolling between slides.
+performant scrolling between slides
 
 <Resources pkg="@zag-js/carousel" />
 
@@ -28,29 +30,9 @@ Install the carousel package:
 
 ## Anatomy
 
-Check the carousel anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="carousel" />
 
 ## Usage
-
-Import the carousel package:
-
-```tsx
-import * as carousel from "@zag-js/carousel"
-```
-
-The carousel package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 > **Note:** The carousel requires that you provide a `count` property in the
 > machine context. This is the total number of slides.
@@ -71,7 +53,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting the initial slide
+### Initial slide
 
 Set `defaultPage` to define the initial page.
 
@@ -89,7 +71,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Controlling the current page
+### Controlled page
 
 Use `page` and `onPageChange` for controlled navigation.
 
@@ -107,7 +89,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting slides per page
+### Slides per page
 
 Set `slidesPerPage` to control how many slides are visible per page.
 
@@ -121,7 +103,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting slides per move
+### Slides per move
 
 Set `slidesPerMove` to control how many slides advance on next/previous.
 
@@ -145,7 +127,7 @@ const service = useMachine(carousel.machine, {
   browser's native scrolling and CSS Scroll Snap determine slide movement for
   optimal performance and UX.
 
-### Looping pages
+### Loop pages
 
 Set `loop` to `true` to wrap around from last to first page.
 
@@ -159,7 +141,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting the gap between slides
+### Slide gap
 
 Set `spacing` to control the gap between slides.
 
@@ -173,7 +155,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Setting viewport padding
+### Viewport padding
 
 Set `itemSpacing` to keep neighboring slides partially visible.
 
@@ -201,7 +183,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Listening for page changes
+### Page changes
 
 When the carousel page changes, the `onPageChange` callback is invoked.
 
@@ -218,7 +200,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Listening for drag and autoplay status
+### Drag and autoplay status
 
 Use status callbacks to react to dragging and autoplay lifecycle changes.
 
@@ -237,7 +219,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Dragging the carousel
+### Dragging
 
 Set `allowMouseDrag` to `true` to drag the carousel with a mouse.
 
@@ -251,7 +233,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Autoplaying the carousel
+### Autoplay
 
 Set `autoPlay` to `true` to start automatic slide movement.
 
@@ -274,7 +256,7 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-### Customizing accessibility messages
+### Accessibility messages
 
 Use `translations` to customize localized trigger, item, and progress text.
 
@@ -297,64 +279,11 @@ const service = useMachine(carousel.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-carousel-root] {
-  /* styles for the root part */
-}
-
-[data-carousel-item-group] {
-  /* styles for the item-group part */
-}
-
-[data-carousel-item] {
-  /* styles for the root part */
-}
-
-[data-carousel-control] {
-  /* styles for the control part */
-}
-
-[data-carousel-next-trigger] {
-  /* styles for the next-trigger part */
-}
-
-[data-carousel-previous-trigger] {
-  /* styles for the previous trigger part */
-}
-
-[data-carousel-indicator-group] {
-  /* styles for the indicator-group part */
-}
-
-[data-carousel-indicator] {
-  /* styles for the indicator part */
-}
-
-[data-carousel-autoplay-trigger] {
-  /* styles for the autoplay-trigger part */
-}
-```
-
-### Active state
-
-When a carousel's indicator is active, a `data-current` attribute is set on the
-indicator.
-
-```css
-[data-carousel-indicator][data-current] {
-  /* styles for the indicator's active state */
-}
-```
-
 ## Methods and Properties
 
 The carousel's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The carousel machine exposes the following context properties:
 
@@ -366,10 +295,13 @@ The carousel `api` exposes the following methods:
 
 <ApiTable name="carousel" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-carousel-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="carousel" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="carousel" />

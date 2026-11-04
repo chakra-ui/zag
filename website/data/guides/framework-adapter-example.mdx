@@ -1,0 +1,798 @@
+---
+title: Lit example
+description: Build a small Lit adapter and a switch.
+---
+
+This page builds a small adapter for [Lit](https://lit.dev) by porting the
+vanilla adapter, then uses it to render a switch
+
+```text
+zag-lit/
+  bindable.ts         # reactive values, backed by requestUpdate()
+  refs.ts             # non-reactive values
+  machine.ts          # MachineController: the runtime and lifecycle
+  normalize-props.ts  # DOM prop names
+  spread.ts           # directive that applies props to an element
+  index.ts
+zag-switch.ts         # the component
+```
+
+## Install packages
+
+```bash
+pnpm add lit @zag-js/core @zag-js/types @zag-js/utils @zag-js/vanilla @zag-js/switch
+```
+
+`@zag-js/vanilla` provides `spreadProps`, which the directive reuses.
+
+## Lifecycle mapping
+
+Lit maps cleanly onto the vanilla runtime:
+
+| Adapter need            | Lit                                    |
+| ----------------------- | -------------------------------------- |
+| Re-render               | `host.requestUpdate()`                 |
+| Mount                   | first `hostUpdated()`, DOM is rendered |
+| Unmount                 | `hostDisconnected()`                   |
+| `track` and effect deps | compared in `hostUpdated()`            |
+| Root node               | the element's `shadowRoot`             |
+| Spread props            | an element directive                   |
+
+A [reactive controller](https://lit.dev/docs/composition/controllers/) hooks
+into all of these, so the runtime is a controller.
+
+## Create the bindable
+
+Store the value in a plain object. When an uncontrolled value changes, ask the
+host to re-render. A controlled value comes from a host property, so Lit already
+re-renders when it changes.
+
+```ts title="zag-lit/bindable.ts"
+import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
+import { isFunction } from "@zag-js/utils"
+
+export function createBindable(notify: VoidFunction): BindableFn {
+  function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
+    const initial = props().value ?? props().defaultValue
+    const eq = props().isEqual ?? Object.is
+    const ref = { current: initial as T }
+
+    const controlled = () => props().value !== undefined
+    const get = () => (controlled() ? (props().value as T) : ref.current)
+
+    return {
+      initial,
+      ref,
+      get,
+      set(nextValue: T | ((prev: T) => T)) {
+        const prev = get()
+        const next = isFunction(nextValue) ? nextValue(prev) : nextValue
+        if (!controlled() && !Object.is(ref.current, next)) {
+          ref.current = next
+          notify()
+        }
+        if (!eq(next, prev)) props().onChange?.(next, prev)
+      },
+      invoke(nextValue: T, prevValue: T) {
+        props().onChange?.(nextValue, prevValue)
+      },
+      hash(value: T) {
+        return props().hash?.(value) ?? String(value)
+      },
+    }
+  }
+
+  // The controller stops the machine on disconnect, so there is nothing to register
+  bindable.cleanup = (_fn: VoidFunction) => {}
+
+  bindable.ref = <T>(defaultValue: T) => {
+    let value = defaultValue
+    return {
+      get: () => value,
+      set: (next: T) => {
+        value = next
+      },
+    }
+  }
+
+  return bindable
+}
+```
+
+The factory takes `notify`, so every bindable of one machine re-renders the same
+host.
+
+## Create refs
+
+Refs never re-render, so a plain object is enough:
+
+```ts title="zag-lit/refs.ts"
+export function createRefs<T>(refs: T) {
+  return {
+    get<K extends keyof T>(key: K): T[K] {
+      return refs[key]
+    },
+    set<K extends keyof T>(key: K, value: T[K]) {
+      refs[key] = value
+    },
+  }
+}
+```
+
+## Run the machine
+
+The controller is the vanilla `VanillaMachine` with three changes:
+
+- It builds the machine on the first `hostUpdate()`. Lit applies attributes
+  after the constructor, so reading props earlier misses `default-checked`.
+- It starts on the first `hostUpdated()`. Effects query elements, and they only
+  exist after the first render.
+- It checks `track` deps and `watchEffect` deps after each render, instead of on
+  a subscription.
+
+```ts title="zag-lit/machine.ts"
+import type {
+  ActionsOrFn,
+  Bindable,
+  BindableContext,
+  BindableRefs,
+  ChooseFn,
+  ComputedFn,
+  EffectParams,
+  EffectRecord,
+  EffectsOrFn,
+  GuardFn,
+  InputProps,
+  Machine,
+  MachineSchema,
+  Params,
+  PropFn,
+  Scope,
+  Service,
+  Transition,
+} from "@zag-js/core"
+import {
+  createReplaceTracker,
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  isWatchEffect,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+  watchEffect,
+} from "@zag-js/core"
+import {
+  compact,
+  ensure,
+  isEqual,
+  isFunction,
+  isString,
+  toArray,
+  warn,
+} from "@zag-js/utils"
+import type { ReactiveController, ReactiveControllerHost } from "lit"
+import { createBindable } from "./bindable"
+import { createRefs } from "./refs"
+
+type Host = ReactiveControllerHost & HTMLElement
+
+interface Tracker {
+  deps: Array<() => unknown>
+  fn: VoidFunction
+  prev: unknown[]
+}
+
+export class MachineController<
+  T extends MachineSchema,
+> implements ReactiveController {
+  scope!: Scope
+  prop!: PropFn<T>
+  context!: BindableContext<T>
+  refs!: BindableRefs<T>
+  computed!: ComputedFn<T>
+  private state!: Bindable<T["state"]>
+  private initialized = false
+
+  private status = MachineStatus.NotStarted
+  private event = { type: "" } as T["event"]
+  private previousEvent = { type: "" } as T["event"]
+  private transition: Transition<T> | null = null
+  private effects = new Map<number, EffectRecord>()
+  private effectId = 0
+  private trackers: Tracker[] = []
+  private replaceTracker = createReplaceTracker()
+
+  constructor(
+    private host: Host,
+    private machine: Machine<T>,
+    private getProps: () => InputProps<T>,
+  ) {
+    host.addController(this)
+  }
+
+  // Lit sets properties from attributes after the constructor, so build on the first update
+  private init() {
+    const { host, machine, getProps } = this
+    const bindable = createBindable(() => host.requestUpdate())
+
+    // Look up parts inside the shadow root, not the document
+    const { id, ids, getRootNode } = getProps() as any
+    this.scope = createScope({
+      id,
+      ids,
+      getRootNode: getRootNode ?? (() => host.shadowRoot ?? host.getRootNode()),
+    })
+
+    this.prop = (key) => {
+      const props: any = getProps()
+      const resolved: any =
+        machine.props?.({ props: compact(props), scope: this.scope }) ?? props
+      return resolved[key]
+    }
+
+    const context: any = machine.context?.({
+      prop: this.prop,
+      bindable,
+      scope: this.scope,
+      flush: (fn) => queueMicrotask(fn),
+      getContext: () => this.context as any,
+      getComputed: () => this.computed as any,
+      getRefs: () => this.refs as any,
+      getEvent: () => this.getEvent(),
+    })
+
+    this.context = {
+      get: (key) => context?.[key].get(),
+      set: (key, value) => context?.[key].set(value),
+      initial: (key) => context?.[key].initial,
+      hash: (key) => context?.[key].hash(context?.[key].get()),
+    }
+
+    this.refs = createRefs(
+      machine.refs?.({ prop: this.prop, context: this.context }) ?? {},
+    ) as BindableRefs<T>
+
+    this.computed = (key) => {
+      ensure(
+        machine.computed,
+        () => `[zag-js] No computed object found on machine`,
+      )
+      return machine.computed[key]({
+        context: this.context,
+        event: this.getEvent(),
+        prop: this.prop,
+        refs: this.refs,
+        scope: this.scope,
+        computed: this.computed,
+      })
+    }
+
+    this.state = bindable(() => ({
+      defaultValue: resolveStateValue(
+        machine,
+        machine.initialState({ prop: this.prop }),
+      ),
+      onChange: (nextState, prevState) =>
+        this.onStateChange(nextState, prevState),
+    }))
+  }
+
+  // Lifecycle
+
+  hostUpdate() {
+    if (this.initialized) return
+    this.initialized = true
+    this.init()
+  }
+
+  hostConnected() {
+    // Coming back after a disconnect: render once, then restart in `hostUpdated`
+    if (this.status === MachineStatus.Stopped) this.host.requestUpdate()
+  }
+
+  hostUpdated() {
+    if (!this.host.isConnected) return
+    if (this.status !== MachineStatus.Started) {
+      this.start()
+      return
+    }
+    this.callTrackers()
+    this.reconcileEffects()
+  }
+
+  hostDisconnected() {
+    this.stop()
+  }
+
+  private start() {
+    const restarting = this.status === MachineStatus.Stopped
+    this.status = MachineStatus.Started
+    if (!restarting) this.machine.watch?.(this.getParams())
+    this.state.invoke(
+      restarting ? this.state.get() : this.state.initial!,
+      INIT_STATE,
+    )
+  }
+
+  private stop() {
+    if (this.status !== MachineStatus.Started) return
+    this.status = MachineStatus.Stopped
+    this.effects.forEach((record) => record.cleanup?.("exit"))
+    this.effects.clear()
+    this.transition = null
+    this.action(this.machine.exit)
+  }
+
+  // Service
+
+  get service(): Service<T> {
+    return {
+      state: this.getState(),
+      send: this.send,
+      context: this.context,
+      prop: this.prop,
+      scope: this.scope,
+      refs: this.refs,
+      computed: this.computed,
+      event: this.getEvent(),
+      getStatus: () => this.status,
+    }
+  }
+
+  send: Service<T>["send"] = (event) => {
+    if (this.status !== MachineStatus.Started) return
+
+    const key = event.replaces
+    const token = key ? this.replaceTracker.claim(key) : undefined
+
+    queueMicrotask(() => {
+      if (this.status !== MachineStatus.Started) return
+      if (key && token && this.replaceTracker.isReplaced(key, token)) return
+
+      this.previousEvent = this.event
+      this.event = event
+
+      const current = this.state.get()
+      const { transitions, source } = findTransition(
+        this.machine,
+        current,
+        event.type,
+      )
+      const transition = this.choose(transitions)
+      if (!transition) return
+
+      this.transition = transition
+      const target = resolveStateValue(
+        this.machine,
+        transition.target ?? current,
+        source,
+      )
+
+      if (target !== current) this.state.set(target)
+      else if (transition.reenter) this.state.invoke(current, current)
+      else this.action(transition.actions)
+    })
+  }
+
+  // Transitions
+
+  private onStateChange(
+    nextState: T["state"],
+    prevState: T["state"] | undefined,
+  ) {
+    const { exiting, entering } = getExitEnterStates(
+      this.machine,
+      prevState,
+      nextState,
+      this.transition?.reenter,
+    )
+
+    exiting.forEach((item) => this.stopEffects(item.path))
+    exiting.forEach((item) => this.action(item.state?.exit))
+
+    this.action(this.transition?.actions)
+
+    entering.forEach((item) =>
+      this.startEffects(item.path, item.state?.effects),
+    )
+
+    if (prevState === INIT_STATE) {
+      this.action(this.machine.entry)
+      this.startEffects(INIT_STATE, this.machine.effects)
+    }
+
+    entering.forEach((item) => this.action(item.state?.entry))
+  }
+
+  private action = (keys: ActionsOrFn<T> | undefined) => {
+    const names = isFunction(keys) ? keys(this.getParams()) : keys
+    if (!names) return
+    for (const name of names) {
+      const fn = this.machine.implementations?.actions?.[name]
+      if (!fn)
+        warn(
+          `[zag-js] No implementation found for action "${JSON.stringify(name)}"`,
+        )
+      fn?.(this.getParams())
+    }
+  }
+
+  private guard = (key: T["guard"] | GuardFn<T>) => {
+    if (isFunction(key)) return key(this.getParams())
+    const fn = this.machine.implementations?.guards?.[key]
+    if (!fn)
+      warn(
+        `[zag-js] No implementation found for guard "${JSON.stringify(key)}"`,
+      )
+    return fn?.(this.getParams())
+  }
+
+  private choose: ChooseFn<T> = (transitions) => {
+    return toArray(transitions).find((t) => {
+      if (isString(t.guard)) return !!this.guard(t.guard)
+      if (isFunction(t.guard)) return t.guard(this.getParams())
+      return true
+    })
+  }
+
+  // Effects
+
+  private startEffects(path: string, keys: EffectsOrFn<T> | undefined) {
+    const names = isFunction(keys) ? keys(this.getParams()) : keys
+    if (!names) return
+
+    for (const name of names) {
+      const fn = this.machine.implementations?.effects?.[name]
+      if (!fn) {
+        warn(
+          `[zag-js] No implementation found for effect "${JSON.stringify(name)}"`,
+        )
+        continue
+      }
+
+      const result = fn({ ...this.getParams(), watchEffect } as EffectParams<T>)
+      const record: EffectRecord = {
+        id: ++this.effectId,
+        path,
+        cleanup: undefined,
+      }
+
+      if (isWatchEffect(result)) {
+        record.deps = result.deps
+        record.setup = result.setup
+        const cleanup = result.setup()
+        record.cleanup = isFunction(cleanup) ? cleanup : undefined
+        record.values = result.deps.map((dep) => dep())
+      } else if (isFunction(result)) {
+        record.cleanup = result
+      }
+
+      this.effects.set(record.id, record)
+    }
+  }
+
+  private stopEffects(path: string) {
+    for (const [id, record] of this.effects) {
+      if (record.path !== path) continue
+      record.cleanup?.("exit")
+      this.effects.delete(id)
+    }
+  }
+
+  // Re-run `watchEffect` setups whose deps changed since the last render
+  private reconcileEffects() {
+    for (const record of this.effects.values()) {
+      if (!record.deps) continue
+      const next = record.deps.map((dep) => dep())
+      if (next.every((value, index) => isEqual(record.values![index], value)))
+        continue
+      record.values = next
+      record.cleanup?.("restart")
+      const cleanup = record.setup!()
+      record.cleanup = isFunction(cleanup) ? cleanup : undefined
+    }
+  }
+
+  // Run `track` callbacks whose deps changed since the last render
+  private callTrackers() {
+    for (const tracker of this.trackers) {
+      const next = tracker.deps.map((dep) => dep())
+      if (isEqual(tracker.prev, next)) continue
+      tracker.prev = next
+      tracker.fn()
+    }
+  }
+
+  // Params
+
+  private getEvent(): Service<T>["event"] {
+    return {
+      ...this.event,
+      current: () => this.event,
+      previous: () => this.previousEvent,
+    } as Service<T>["event"]
+  }
+
+  private getState() {
+    return {
+      ...this.state,
+      matches: (...values: T["state"][]) =>
+        values.some((value) =>
+          matchesState(this.state.get() as string, value as string),
+        ),
+      hasTag: (tag: T["tag"]) => hasTag(this.machine, this.state.get(), tag),
+    }
+  }
+
+  private getParams(): Params<T> {
+    return {
+      state: this.getState(),
+      context: this.context,
+      event: this.getEvent(),
+      prop: this.prop,
+      send: this.send,
+      action: this.action,
+      guard: this.guard,
+      track: (deps, fn) => {
+        this.trackers.push({ deps, fn, prev: deps.map((dep) => dep()) })
+      },
+      refs: this.refs,
+      computed: this.computed,
+      flush: (fn) => fn(),
+      scope: this.scope,
+      choose: this.choose,
+    }
+  }
+}
+```
+
+`getRootNode` defaults to the shadow root. Machines find their parts with
+`scope.getById`, and those parts live inside the shadow root, not the document.
+
+## Normalize props
+
+Lit templates have no spread syntax, so props go through a directive that sets
+DOM attributes, properties and listeners. Normalize to DOM names, the same shape
+`spreadProps` expects:
+
+```ts title="zag-lit/normalize-props.ts"
+import { createNormalizer } from "@zag-js/types"
+
+const propMap: Record<string, string> = {
+  onFocus: "onFocusin",
+  onBlur: "onFocusout",
+  onChange: "onInput",
+  onDoubleClick: "onDblclick",
+  htmlFor: "for",
+  className: "class",
+  defaultValue: "value",
+  defaultChecked: "checked",
+}
+
+const preserveCase = new Set(["viewBox", "preserveAspectRatio"])
+
+export const normalizeProps = createNormalizer((props) => {
+  const normalized: Record<string, any> = {}
+  for (let [key, value] of Object.entries(props)) {
+    if (value === undefined) continue
+    if (key in propMap) key = propMap[key]
+    normalized[preserveCase.has(key) ? key : key.toLowerCase()] = value
+  }
+  return normalized
+})
+```
+
+## Spread props
+
+An element directive receives the element and the props. It calls `spreadProps`
+on every render, and removes listeners when the element leaves the DOM.
+
+```ts title="zag-lit/spread.ts"
+import { nothing } from "lit"
+import {
+  AsyncDirective,
+  directive,
+  PartType,
+  type ElementPart,
+  type PartInfo,
+} from "lit/async-directive.js"
+import { spreadProps, type Attrs } from "@zag-js/vanilla"
+
+class SpreadDirective extends AsyncDirective {
+  private cleanup: VoidFunction | undefined
+
+  constructor(partInfo: PartInfo) {
+    super(partInfo)
+    if (partInfo.type !== PartType.ELEMENT) {
+      throw new Error("spread() can only be used on an element")
+    }
+  }
+
+  render(_props: Attrs) {
+    return nothing
+  }
+
+  override update(part: ElementPart, [props]: [Attrs]) {
+    this.cleanup = spreadProps(part.element, props)
+    return nothing
+  }
+
+  protected override disconnected() {
+    this.cleanup?.()
+    this.cleanup = undefined
+  }
+}
+
+export const spread = directive(SpreadDirective)
+```
+
+`spreadProps` already handles removed attributes, listener swaps, `value` and
+`checked` as properties, and per-property styles. Write your own only if you
+need to drop the `@zag-js/vanilla` dependency.
+
+## Export the adapter
+
+```ts title="zag-lit/index.ts"
+export { mergeProps } from "@zag-js/core"
+export { MachineController } from "./machine"
+export { normalizeProps } from "./normalize-props"
+export { spread } from "./spread"
+```
+
+`mergeProps` works on normalized props too. It chains any key that starts with
+`on` and joins `class`.
+
+## Build a switch
+
+Pass the controller a function that returns the machine props. It reads host
+properties, so a controlled `checked` stays current.
+
+```ts title="zag-switch.ts"
+import * as zagSwitch from "@zag-js/switch"
+import { css, html, LitElement } from "lit"
+import { MachineController, normalizeProps, spread } from "./zag-lit"
+
+let uid = 0
+
+export class ZagSwitch extends LitElement {
+  static override properties = {
+    checked: { type: Boolean },
+    defaultChecked: { type: Boolean, attribute: "default-checked" },
+    disabled: { type: Boolean },
+    name: { type: String },
+  }
+
+  declare checked: boolean | undefined
+  declare defaultChecked: boolean
+  declare disabled: boolean
+  declare name: string | undefined
+
+  private machineId = `switch-${++uid}`
+
+  private machine = new MachineController(this, zagSwitch.machine, () => ({
+    id: this.machineId,
+    checked: this.checked,
+    defaultChecked: this.defaultChecked,
+    disabled: this.disabled,
+    name: this.name,
+    onCheckedChange: (details) => {
+      this.dispatchEvent(
+        new CustomEvent("checked-change", {
+          detail: details,
+          bubbles: true,
+          composed: true,
+        }),
+      )
+    },
+  }))
+
+  constructor() {
+    super()
+    this.defaultChecked = false
+    this.disabled = false
+  }
+
+  override render() {
+    const api = zagSwitch.connect(this.machine.service, normalizeProps)
+    return html`
+      <label ${spread(api.getRootProps())}>
+        <input ${spread(api.getHiddenInputProps())} />
+        <span ${spread(api.getControlProps())}>
+          <span ${spread(api.getThumbProps())}></span>
+        </span>
+        <span ${spread(api.getLabelProps())}><slot></slot></span>
+      </label>
+    `
+  }
+
+  static override styles = css`
+    [data-switch-root] {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    [data-switch-control] {
+      display: inline-flex;
+      width: 36px;
+      height: 20px;
+      padding: 2px;
+      border-radius: 999px;
+      background: #d4d4d8;
+      transition: background 150ms;
+    }
+    [data-switch-control][data-state="checked"] {
+      background: #16a34a;
+    }
+    [data-switch-control][data-focus-visible] {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+    [data-switch-thumb] {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: white;
+      transition: translate 150ms;
+    }
+    [data-switch-thumb][data-state="checked"] {
+      translate: 16px 0;
+    }
+    [data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  `
+}
+
+customElements.define("zag-switch", ZagSwitch)
+```
+
+Use it like any custom element:
+
+```html
+<zag-switch name="notifications">Notifications</zag-switch>
+<zag-switch default-checked>Dark mode</zag-switch>
+<zag-switch disabled>Disabled</zag-switch>
+
+<script type="module">
+  import "./zag-switch.js"
+
+  document.addEventListener("checked-change", (event) => {
+    console.log(event.target, event.detail.checked)
+  })
+</script>
+```
+
+Click, Space, hover, focus-visible and disabled all come from the machine. The
+element only renders.
+
+## Limitations
+
+This adapter is small on purpose. Before you publish one, handle these:
+
+- **Server rendering.** Nothing here runs on the server. With Lit SSR, guard DOM
+  access and start the machine only in the browser.
+- **Sync flush.** `bindable` ignores the `sync` option, and `flush` runs right
+  away. Lit renders asynchronously, so a machine can't force a render mid-event.
+- **Forms.** The hidden input lives in the shadow root, so an outer `<form>`
+  can't see it. Use `ElementInternals` and `static formAssociated = true` to
+  submit the value.
+- **Effect restarts.** `watchEffect` setups restart right after a render. The
+  React adapter batches restarts in a microtask. Copy that if a setup sets
+  context.
+- **Reconnects.** When the element moves in the DOM, the machine stops and
+  starts again from its current state. Entry actions run again.
+- **Ids.** A module counter makes ids unique. Let users pass `id` and `ids` if
+  they compose machines.
+
+Test the adapter the same way as the official ones. See
+[Core concepts](/guides/framework-adapter-concepts#testing).
+
+## Next
+
+- [Core concepts](/guides/framework-adapter-concepts) explains each piece.
+- [TypeScript](/guides/framework-adapter-typescript) covers the types used here.

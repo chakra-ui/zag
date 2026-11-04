@@ -4,9 +4,8 @@ description: Using the hotkeys utility in your project.
 package: "@zag-js/hotkeys"
 ---
 
-A framework-agnostic utility for managing keyboard shortcuts. Supports modifier
-combinations, key sequences, scopes, element targeting, recording, validation,
-and platform-adaptive keys.
+Manage keyboard shortcuts with modifiers, key sequences, scopes and keys that
+adapt to each platform, like ⌘ and Ctrl
 
 <Resources pkg="@zag-js/hotkeys" />
 
@@ -45,7 +44,7 @@ store.destroy()
 The `mod` modifier resolves to **Cmd on macOS** and **Ctrl on Windows/Linux**,
 so your shortcuts work across platforms without extra logic.
 
-### Usage with React
+### React
 
 ```tsx
 import { createHotkeyStore } from "@zag-js/hotkeys"
@@ -188,7 +187,7 @@ store.toggleScope("editor")
 store.getActiveScopes() // ["terminal"]
 ```
 
-## Targeting an element
+## Target element
 
 Use the `target` option to scope a command to a DOM subtree. The command only
 fires when the keyboard event originates inside the target.
@@ -233,7 +232,7 @@ store.disable("admin-panel")
 store.setEnabled("admin-panel", () => isAdmin)
 ```
 
-## Smart input handling
+## Smart input
 
 Hotkeys with modifiers (Ctrl, Cmd, Alt) **work inside form elements** by
 default, just like browser shortcuts. Bare keys are **blocked** there so they
@@ -269,7 +268,7 @@ store.register({
 
 ## Event options
 
-### preventDefault and stopPropagation
+### Stopping propagation
 
 ```tsx
 store.register({
@@ -413,7 +412,7 @@ unsubscribe()
 
 > Selectors should return primitives for reliable change detection.
 
-## Managing commands
+## Commands
 
 ```tsx
 // Register multiple commands at once
@@ -479,7 +478,7 @@ assertValidHotkey("mod+S") // ok
 assertValidHotkey("Foo+S") // throws Error
 ```
 
-## Formatting for display
+## Display formatting
 
 Use `formatHotkey` to render hotkey strings with platform-specific symbols:
 
@@ -510,7 +509,7 @@ formatHotkey("G > H", { sequenceSeparator: " then " })
 | `sequenceSeparator` | `string`                                  | `" then "` | Separator for key sequences        |
 | `useShortNames`     | `boolean`                                 | `true`     | Abbreviate modifier names          |
 
-## Recording hotkeys
+## Recording
 
 Use `createHotkeyRecorder` to let users record custom key combinations. It
 handles single chords and multi-step sequences.
@@ -575,7 +574,7 @@ const recorder = createHotkeyRecorder({
 })
 ```
 
-### Updating options
+### Update options
 
 Use `setOptions` to update callbacks without recreating the recorder. This
 avoids stale closure issues in React:
@@ -617,7 +616,7 @@ scope hotkeys to a specific panel or widget.
 
 ## Caveats
 
-### Symbol keys on non-US keyboard layouts
+### Non-US layouts
 
 **Cmd/Ctrl + symbol key** hotkeys (like `mod+/`, `mod+[`, `mod+]`) can fail on
 non-US keyboard layouts. On a German keyboard, `/` requires pressing Shift+7,
@@ -639,12 +638,12 @@ store.register([
 ])
 ```
 
-### Dead keys on international layouts
+### Dead keys
 
 Accent/compose keys on international layouts produce `event.key = "Dead"` and
 are automatically ignored. This prevents false matches during text composition.
 
-### macOS Option key in Firefox
+### macOS Option key
 
 On macOS, pressing Option (Alt) + a key produces composed characters (e.g.,
 Option+/ → ÷). The library handles this by falling back to physical key code

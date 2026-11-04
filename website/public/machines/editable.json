@@ -1,0 +1,262 @@
+{
+  "id": "editable",
+  "initial": "preview",
+  "states": [
+    {
+      "id": "preview",
+      "label": "preview",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "edit",
+      "label": "edit",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "edit",
+      "to": null,
+      "event": "CANCEL",
+      "guard": "isEditControlled"
+    },
+    {
+      "from": "edit",
+      "to": "preview",
+      "event": "CANCEL",
+      "guard": null
+    },
+    {
+      "from": "edit",
+      "to": "preview",
+      "event": "CONTROLLED.PREVIEW",
+      "guard": "isSubmitEvent"
+    },
+    {
+      "from": "edit",
+      "to": "preview",
+      "event": "CONTROLLED.PREVIEW",
+      "guard": null
+    },
+    {
+      "from": "edit",
+      "to": null,
+      "event": "SUBMIT",
+      "guard": "isEditControlled"
+    },
+    {
+      "from": "edit",
+      "to": "preview",
+      "event": "SUBMIT",
+      "guard": null
+    },
+    {
+      "from": "preview",
+      "to": "edit",
+      "event": "CONTROLLED.EDIT",
+      "guard": null
+    },
+    {
+      "from": "preview",
+      "to": null,
+      "event": "EDIT",
+      "guard": "isEditControlled"
+    },
+    {
+      "from": "preview",
+      "to": "edit",
+      "event": "EDIT",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 614,
+      "height": 192,
+      "states": {
+        "preview": {
+          "x": 481,
+          "y": 80,
+          "w": 101,
+          "h": 44
+        },
+        "edit": {
+          "x": 48,
+          "y": 80,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "edit",
+          "to": "preview",
+          "events": [
+            "CANCEL",
+            "CONTROLLED.PREVIEW",
+            "SUBMIT"
+          ],
+          "lines": [
+            "CANCEL",
+            "CONTROLLED.PREVIEW",
+            "SUBMIT"
+          ],
+          "points": [
+            [
+              126,
+              95
+            ],
+            [
+              481,
+              95
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 32,
+            "w": 135,
+            "h": 56
+          }
+        },
+        {
+          "from": "preview",
+          "to": "edit",
+          "events": [
+            "CONTROLLED.EDIT",
+            "EDIT"
+          ],
+          "lines": [
+            "CONTROLLED.EDIT",
+            "EDIT"
+          ],
+          "points": [
+            [
+              481,
+              109
+            ],
+            [
+              397,
+              109
+            ],
+            [
+              397,
+              112
+            ],
+            [
+              152,
+              112
+            ],
+            [
+              152,
+              109
+            ],
+            [
+              126,
+              109
+            ]
+          ],
+          "label": {
+            "x": 246,
+            "y": 119,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 369,
+      "height": 428,
+      "states": {
+        "preview": {
+          "x": 155,
+          "y": 352,
+          "w": 101,
+          "h": 44
+        },
+        "edit": {
+          "x": 163,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "edit",
+          "to": "preview",
+          "events": [
+            "CANCEL",
+            "CONTROLLED.PREVIEW",
+            "SUBMIT"
+          ],
+          "lines": [
+            "CANCEL",
+            "CONTROLLED.PREVIEW",
+            "SUBMIT"
+          ],
+          "points": [
+            [
+              189,
+              76
+            ],
+            [
+              189,
+              352
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 135,
+            "h": 56
+          }
+        },
+        {
+          "from": "preview",
+          "to": "edit",
+          "events": [
+            "CONTROLLED.EDIT",
+            "EDIT"
+          ],
+          "lines": [
+            "CONTROLLED.EDIT",
+            "EDIT"
+          ],
+          "points": [
+            [
+              222,
+              352
+            ],
+            [
+              222,
+              268
+            ],
+            [
+              215,
+              268
+            ],
+            [
+              215,
+              76
+            ]
+          ],
+          "label": {
+            "x": 222,
+            "y": 194,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

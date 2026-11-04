@@ -4,6 +4,9 @@ description: Label, describe, and validate a form control from one machine.
 package: "@zag-js/field"
 ---
 
+Field connects a label, helper text and error message to a native input,
+textarea or select, and runs browser and custom validation for you
+
 <Resources pkg="@zag-js/field" />
 
 <Showcase id="Field" />
@@ -34,27 +37,9 @@ Install the field package:
 To set up the field correctly, you'll need to understand its anatomy and how we
 name its parts.
 
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="field" />
 
 ## Usage
-
-Import the field package:
-
-```tsx
-import * as field from "@zag-js/field"
-```
-
-The field package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="field/usage.mdx" />
 
@@ -62,7 +47,7 @@ The field does **not** own the control's `name` or `value`. Put those on the
 native element yourself. Wrap the field in a `<form>` when you want submit and
 reset to work.
 
-### Making the field required
+### Required state
 
 Set `required` to mark the control as required and show a required indicator.
 
@@ -87,7 +72,7 @@ const service = useMachine(field.machine, {
 An empty required field stays quiet until the user edits it or the form is
 submitted. That matches how most form libraries treat `valueMissing`.
 
-### Disabling the field
+### Disabled state
 
 Set `disabled` to disable the control and mute validation UI.
 
@@ -105,7 +90,7 @@ const service = useMachine(field.machine, {
 A field inside `<fieldset disabled>` (or `@zag-js/fieldset` with `disabled`)
 picks that up from the DOM. You do not need to thread the prop yourself.
 
-### Making the field read only
+### Read-only state
 
 Set `readOnly` on the machine. It is applied to `getInputProps` and
 `getTextareaProps`. Native `<select>` has no `readOnly`, so `getSelectProps`
@@ -122,7 +107,7 @@ const service = useMachine(field.machine, {
 
 </Example>
 
-### Choosing when validation shows
+### Validation timing
 
 Set `validationMode` to control when committed errors become visible.
 
@@ -147,7 +132,7 @@ The browser still runs constraint validation on submit in every mode. The field
 listens for the control's `invalid` event, prevents the native tooltip, and
 commits your error UI instead.
 
-### Adding custom validation
+### Custom validation
 
 Pass `validate` to run your own rules. Return a string (or array of strings) for
 errors, or `null` / `undefined` when the value is fine.
@@ -170,7 +155,7 @@ const service = useMachine(field.machine, {
 is applied. Custom errors are mirrored with `setCustomValidity`, so the browser
 still blocks submit while your UI stays in charge of messaging.
 
-### Validating asynchronously
+### Async validation
 
 Return a `Promise` from `validate`. While it is in flight, `api.validating` is
 `true`. A newer run cancels the previous one, so a fast typist does not see a
@@ -203,7 +188,7 @@ validate({ value }) {
 }
 ```
 
-### Mapping native failures to custom messages
+### Custom error messages
 
 Render several error texts and point each at a `ValidityState` key with `match`.
 
@@ -229,7 +214,7 @@ Render several error texts and point each at a `ValidityState` key with `match`.
 
 Only visible error ids are referenced from `aria-describedby`.
 
-### Showing state indicators
+### State indicators
 
 `getIndicatorProps` keeps the element mounted and toggles `hidden`, so CSS
 transitions still run.
@@ -248,7 +233,7 @@ transitions still run.
 `api.valid` is tri-state: `null` until validation has run, then `true` or
 `false`. The valid indicator stays hidden while `valid` is `null`.
 
-### Using a select or textarea
+### Select or textarea
 
 Use the matching props getter. Behavior is the same as with an input.
 
@@ -271,7 +256,7 @@ Use the matching props getter. Behavior is the same as with an input.
 Pair a textarea with `@zag-js/auto-resize` when you want it to grow with
 content.
 
-### Building a multi-control field
+### Multi-control field
 
 When one label covers several controls (amount + currency), set `target` to the
 item the field should track for dirty, filled, and validity. Pass `{ item }` to
@@ -302,7 +287,7 @@ Only the tracked control gets focus, blur, and change listeners. Sibling
 controls still share `aria-invalid` and `disabled` when the field is invalid or
 disabled. Changing a sibling does not mark the field dirty.
 
-### Controlling dirty, touched, and invalid
+### Controlled field states
 
 Pass `dirty`, `touched`, or `invalid` when a parent or form library already owns
 those flags. User input will not overwrite them.
@@ -330,7 +315,7 @@ message in your error text node:
 </span>
 ```
 
-### Integrating with React Hook Form
+### React Hook Form
 
 Let the library own validation. Mirror its state into the field, and merge the
 field's input props with `register` (or a `Controller` render prop).
@@ -379,7 +364,7 @@ const api = field.connect(service, normalizeProps)
 `noValidate` turns off the browser's native bubbles so React Hook Form and the
 field share one error surface.
 
-### Integrating with TanStack Form
+### TanStack Form
 
 Same idea: mirror `invalid`, `dirty`, and `touched`, and bind the control's
 value through the form field API. Keep `useMachine` in its own component so
@@ -432,7 +417,7 @@ function UsernameField({ formField }) {
 
 </Example>
 
-### Composing with other Zag machines
+### Composing machines
 
 Field is a wrapper around a control, not a parent context other machines
 subscribe to. For a Zag checkbox, switch, or select:
@@ -480,7 +465,7 @@ const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
 For a plain custom control that is not another Zag machine, prefer
 `api.getControlProps()` on the focusable element.
 
-### Validating, clearing, and resetting from code
+### Programmatic validation
 
 <Example id="FieldValidateFromCode">
 
@@ -495,7 +480,7 @@ api.reset() // clear interaction state and re-baseline dirty from the control
 Form `reset` events are tracked automatically. After the browser restores
 default values, the field re-reads the control and returns to a pristine state.
 
-### Listening for validity changes
+### Validity changes
 
 <Example id="FieldValidityChange">
 
@@ -511,35 +496,13 @@ const service = useMachine(field.machine, {
 
 </Example>
 
-## Styling guide
+## Styling
 
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-field-root] {
-  /* styles for the root part */
-}
-
-[data-field-label] {
-  /* styles for the label part */
-}
-
-[data-field-control] {
-  /* styles for the input, textarea, or select */
-}
-
-[data-field-helper-text] {
-  /* styles for the helper text part */
-}
-
-[data-field-error-text] {
-  /* styles for the error text part */
-}
-
-[data-field-indicator] {
-  /* styles for required / valid / invalid / validating indicators */
-}
-```
+Each part has a `data-field-<part>` attribute, such as `data-field-root`,
+`data-field-label`, and `data-field-control`. The root gets `data-touched` after
+the control blurs, and `data-dirty` when the value differs from the baseline.
+The control gets `data-filled` when it has a value, and `data-focus` when
+focused.
 
 ### Invalid and valid
 
@@ -553,26 +516,6 @@ only when `api.valid === true` (not while it is still `null`).
 
 [data-field-control][data-valid] {
   border-color: green;
-}
-```
-
-### Touched, dirty, filled, focus
-
-```css
-[data-field-root][data-touched] {
-  /* user has blurred the control */
-}
-
-[data-field-root][data-dirty] {
-  /* value differs from the baseline */
-}
-
-[data-field-control][data-filled] {
-  /* control has a non-empty value */
-}
-
-[data-field-control][data-focus] {
-  /* control is focused */
 }
 ```
 
@@ -610,7 +553,7 @@ only when `api.valid === true` (not while it is still `null`).
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The field machine exposes the following context properties:
 

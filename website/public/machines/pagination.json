@@ -1,0 +1,78 @@
+{
+  "id": "pagination",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "FIRST_PAGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "LAST_PAGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "NEXT_PAGE",
+      "guard": "canGoToNextPage"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PREVIOUS_PAGE",
+      "guard": "canGoToPrevPage"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_PAGE",
+      "guard": "isValidPage"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_PAGE_SIZE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

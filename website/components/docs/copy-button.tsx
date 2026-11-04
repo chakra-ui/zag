@@ -1,43 +1,27 @@
 "use client"
 
-import { Icon } from "components/ui/icon"
-import { useState, type JSX } from "react"
-import { HiCheck, HiOutlineClipboardCopy } from "react-icons/hi"
-import { styled } from "styled-system/jsx"
+import { useState } from "react"
+import { LuCheck, LuCopy } from "react-icons/lu"
+import * as styles from "./copy-button.css"
 
-const StyledButton = styled("button", {
-  base: {
-    px: "2",
-    py: "1",
-    gap: "1",
-    borderWidth: "1px",
-    position: "absolute",
-    right: "5",
-    top: "3",
-    display: "flex",
-    alignItems: "center",
-    fontSize: "xs",
-    bg: "bg.subtle",
-    borderColor: "border.subtle",
-    cursor: "pointer",
-    _hover: { bg: "bg.muted" },
-  },
-})
-
-export function CopyButton({ content }: { content: string }): JSX.Element {
+export function CopyButton(props: { content: string }) {
   const [copied, setCopied] = useState(false)
-  const icon = copied ? HiCheck : HiOutlineClipboardCopy
+
+  const copy = () => {
+    navigator.clipboard?.writeText(props.content).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1200)
+    })
+  }
+
   return (
-    <StyledButton
+    <button
       type="button"
-      onClick={() => {
-        navigator.clipboard.writeText(content)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1000)
-      }}
+      className={styles.button}
+      onClick={copy}
+      aria-label={copied ? "Copied" : "Copy code"}
     >
-      <Icon as={icon} />
-      <span>{copied ? "Copied" : "Copy"}</span>
-    </StyledButton>
+      {copied ? <LuCheck aria-hidden /> : <LuCopy aria-hidden />}
+    </button>
   )
 }

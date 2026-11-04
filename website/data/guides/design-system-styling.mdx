@@ -1,0 +1,414 @@
+---
+title: Styling components
+description: Style Zag parts with data attributes and Panda recipes.
+---
+
+Style the Slider with the data attributes Zag puts on every part and state,
+first in plain CSS and then as a Panda slot recipe
+
+<Steps>
+
+## Target the parts
+
+Each part gets a `data-{component}-{part}` attribute. The slider parts are
+`root`, `label`, `value-text`, `control`, `track`, `range`, `thumb`,
+`marker-group`, `marker` and `dragging-indicator`.
+
+```css title="components/slider/slider.css"
+[data-slider-root] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+[data-slider-control] {
+  display: flex;
+  align-items: center;
+}
+
+[data-slider-track] {
+  flex: 1;
+  height: 6px;
+  border-radius: 9999px;
+  background: #e4e4e7;
+}
+
+[data-slider-range] {
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+}
+
+[data-slider-thumb] {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid #16a34a;
+}
+```
+
+Zag sets the layout styles inline: `position` on the control, track, range and
+thumb, plus the offsets that place the thumb and size the range. You only style
+how the parts look.
+
+## Style the states
+
+States are data attributes on the same parts. Most slider parts get
+`data-disabled`, `data-invalid`, `data-focus`, `data-dragging` and
+`data-orientation`, so you can style a vertical slider with
+`[data-orientation="vertical"]`.
+
+```css title="components/slider/slider.css"
+[data-slider-root] {
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+[data-slider-thumb] {
+  &:focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+  }
+
+  &[data-dragging] {
+    box-shadow: 0 0 0 4px rgb(22 163 74 / 0.2);
+  }
+}
+
+[data-slider-range][data-invalid] {
+  background: #dc2626;
+}
+
+[data-slider-marker] {
+  &[data-in-range] {
+    color: #16a34a;
+  }
+}
+```
+
+The thumb only gets `data-focus` and `data-dragging` when it is the active
+thumb, so a range slider highlights one thumb at a time. See the
+[slider data attributes](/components/react/slider#data-attributes) for every
+attribute.
+
+## Set up Panda
+
+Plain CSS works, but a design system needs shared tokens and variants. Install
+Panda and generate its config.
+
+```bash
+pnpm add -D @pandacss/dev
+pnpm panda init
+```
+
+`panda init` writes a `panda.config.ts` and a `styled-system` folder. Follow
+[Panda's install guide](https://panda-css.com/docs/overview/getting-started) to
+connect it to your bundler.
+
+## Define color tokens
+
+Semantic tokens describe roles, not shades. Every recipe reads from these, so a
+theme change is one edit.
+
+```ts title="panda.config.ts"
+import { defineConfig } from "@pandacss/dev"
+
+export default defineConfig({
+  preflight: true,
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda"],
+  include: ["./src/**/*.{ts,tsx}"],
+  outdir: "styled-system",
+  jsxFramework: "react",
+  theme: {
+    extend: {
+      semanticTokens: {
+        colors: {
+          accent: {
+            value: { base: "{colors.green.600}", _dark: "{colors.green.400}" },
+          },
+          danger: {
+            value: { base: "{colors.red.600}", _dark: "{colors.red.400}" },
+          },
+          surface: { value: { base: "white", _dark: "{colors.gray.900}" } },
+          fg: {
+            value: { base: "{colors.gray.900}", _dark: "{colors.gray.50}" },
+          },
+          muted: {
+            value: { base: "{colors.gray.200}", _dark: "{colors.gray.700}" },
+          },
+        },
+      },
+    },
+  },
+})
+```
+
+## Create a slot recipe
+
+Every Zag package exports its `anatomy`. Pass `anatomy.keys()` to a slot recipe
+and you get one class per part, named after Zag's parts.
+
+Panda's conditions read the same data attributes you used in CSS: `_disabled`
+matches `[data-disabled]`, `_invalid` matches `[data-invalid]`, `_dragging`
+matches `[data-dragging]` and `_vertical` matches `[data-orientation=vertical]`.
+
+```ts title="recipes/slider.ts"
+import { defineSlotRecipe } from "@pandacss/dev"
+import { anatomy } from "@zag-js/slider"
+
+export const slider = defineSlotRecipe({
+  className: "slider",
+  slots: anatomy.keys(),
+  base: {
+    root: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "2",
+      w: "full",
+      color: "fg",
+      _disabled: { opacity: "0.5", cursor: "not-allowed" },
+    },
+    label: { fontWeight: "medium" },
+    control: { display: "flex", alignItems: "center" },
+    track: { flex: "1", rounded: "full", bg: "muted" },
+    range: {
+      h: "full",
+      rounded: "full",
+      bg: "var(--slider-accent)",
+      _invalid: { bg: "danger" },
+    },
+    thumb: {
+      rounded: "full",
+      bg: "surface",
+      borderWidth: "2px",
+      borderColor: "var(--slider-accent)",
+      _invalid: { borderColor: "danger" },
+      _focusVisible: {
+        outline: "2px solid",
+        outlineColor: "var(--slider-accent)",
+        outlineOffset: "2px",
+      },
+      _dragging: {
+        boxShadow:
+          "0 0 0 4px color-mix(in srgb, var(--slider-accent) 20%, transparent)",
+      },
+    },
+  },
+})
+```
+
+The range and thumb read `--slider-accent` instead of a token. The `tone`
+variant in the next step sets that variable on the root, so it never competes
+with the `_invalid` styles on the range and thumb.
+
+## Add variants
+
+Variants live on the recipe. `size` changes the track and thumb, `tone` swaps
+the fill color.
+
+```ts title="recipes/slider.ts"
+export const slider = defineSlotRecipe({
+  // ...
+  variants: {
+    size: {
+      sm: {
+        label: { fontSize: "sm" },
+        track: { h: "1" },
+        thumb: { boxSize: "4" },
+      },
+      md: {
+        label: { fontSize: "md" },
+        track: { h: "1.5" },
+        thumb: { boxSize: "5" },
+      },
+    },
+    tone: {
+      accent: { root: { "--slider-accent": "{colors.accent}" } },
+      neutral: { root: { "--slider-accent": "{colors.fg}" } },
+    },
+  },
+  defaultVariants: { size: "md", tone: "accent" },
+})
+```
+
+Register the recipe, then run `pnpm panda codegen`.
+
+```ts title="panda.config.ts"
+import { slider } from "./recipes/slider"
+
+export default defineConfig({
+  // ...
+  theme: {
+    extend: {
+      // ...
+      slotRecipes: { slider },
+    },
+  },
+})
+```
+
+Codegen writes a `slider` function and a `SliderVariantProps` type to
+`styled-system/recipes`.
+
+## Apply the recipe
+
+The root runs the recipe once and shares the classes through a second context.
+Add it next to the api context.
+
+```tsx title="components/slider/slider-context.ts"
+import type { slider as sliderRecipe } from "styled-system/recipes"
+
+type SliderStyles = ReturnType<typeof sliderRecipe>
+
+export const SliderStylesContext = createContext<SliderStyles | null>(null)
+
+export function useSliderStyles() {
+  const styles = useContext(SliderStylesContext)
+  if (!styles) {
+    throw new Error("Slider parts must be rendered inside <Slider.Root>")
+  }
+  return styles
+}
+```
+
+The root splits three ways: variant props for the recipe, machine props for the
+hook, and the rest for the element.
+
+```tsx title="components/slider/slider.tsx"
+import {
+  slider as sliderRecipe,
+  type SliderVariantProps,
+} from "styled-system/recipes"
+import {
+  SliderContext,
+  SliderStylesContext,
+  useSliderContext,
+  useSliderStyles,
+} from "./slider-context"
+
+export interface RootProps
+  extends
+    UseSliderProps,
+    SliderVariantProps,
+    Omit<ComponentProps<"div">, keyof UseSliderProps> {}
+
+export function Root(props: RootProps) {
+  const [variantProps, rest] = sliderRecipe.splitVariantProps(props)
+  const [machineProps, localProps] = slider.splitProps(rest)
+  const api = useSlider(machineProps)
+  const styles = sliderRecipe(variantProps)
+
+  return (
+    <SliderContext.Provider value={api}>
+      <SliderStylesContext.Provider value={styles}>
+        <div
+          {...mergeProps(
+            api.getRootProps(),
+            { className: styles.root },
+            localProps,
+          )}
+        />
+      </SliderStylesContext.Provider>
+    </SliderContext.Provider>
+  )
+}
+```
+
+Each part adds its slot class between the prop getter and the caller's props.
+`mergeProps` joins the class names, so a caller's `className` adds to the recipe
+instead of replacing it.
+
+```tsx title="components/slider/slider.tsx"
+export function Track(props: TrackProps) {
+  const api = useSliderContext()
+  const styles = useSliderStyles()
+  return (
+    <div
+      {...mergeProps(api.getTrackProps(), { className: styles.track }, props)}
+    />
+  )
+}
+
+export function Thumb(props: ThumbProps) {
+  const [thumbProps, localProps] = slider.splitThumbProps(props)
+  const { children, ...rest } = localProps
+  const api = useSliderContext()
+  const styles = useSliderStyles()
+
+  return (
+    <div
+      {...mergeProps(
+        api.getThumbProps(thumbProps),
+        { className: styles.thumb },
+        rest,
+      )}
+    >
+      {children}
+      <input {...api.getHiddenInputProps(thumbProps)} />
+    </div>
+  )
+}
+```
+
+Repeat for `Label`, `ValueText`, `Control`, `Range`, `MarkerGroup` and `Marker`.
+Callers now pick variants next to machine props.
+
+```tsx
+<Slider.Root size="sm" tone="neutral" defaultValue={[40]}>
+  <Slider.Label>Volume</Slider.Label>
+  <Slider.Control>
+    <Slider.Track>
+      <Slider.Range />
+    </Slider.Track>
+    <Slider.Thumb index={0} />
+  </Slider.Control>
+</Slider.Root>
+```
+
+## Ship a preset
+
+To share the theme across apps, move the tokens and recipes into a preset.
+
+```ts title="preset.ts"
+import { definePreset } from "@pandacss/dev"
+import { slider } from "./recipes/slider"
+
+export const acmePreset = definePreset({
+  name: "acme",
+  theme: {
+    extend: {
+      semanticTokens: {
+        colors: {
+          // the tokens from "Define color tokens"
+        },
+      },
+      slotRecipes: { slider },
+    },
+  },
+})
+```
+
+Each app adds the preset, and includes the component package so Panda finds the
+recipe calls and generates their CSS.
+
+```ts title="panda.config.ts"
+import { defineConfig } from "@pandacss/dev"
+import { acmePreset } from "@acme/panda-preset"
+
+export default defineConfig({
+  presets: ["@pandacss/preset-base", "@pandacss/preset-panda", acmePreset],
+  include: [
+    "./src/**/*.{ts,tsx}",
+    "./node_modules/@acme/ui/dist/**/*.{js,mjs}",
+  ],
+  outdir: "styled-system",
+})
+```
+
+Repeat the same steps for every machine: a hook, compound parts, and a slot
+recipe built from the anatomy.
+
+</Steps>

@@ -1,10 +1,12 @@
 ---
 title: Steps
-description: Using the steps machine in your project.
+description:
+  A steps component that guides users through a multi-step process, tracking the
+  current, completed and upcoming steps.
 package: "@zag-js/steps"
 ---
 
-Steps guide users through a multi-step process.
+Steps guide users through a multi-step process
 
 <Resources pkg="@zag-js/steps" />
 
@@ -24,31 +26,13 @@ Install the steps package:
 
 ## Anatomy
 
-Check the steps anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="steps" />
 
 ## Usage
 
-Import the steps package:
-
-```tsx
-import * as steps from "@zag-js/steps"
-```
-
-The steps package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="steps/usage.mdx" />
 
-### Defining the steps
+### Define steps
 
 Pass an array of items to the machine. Each item needs a unique `value`, which
 is how every part and API method addresses it.
@@ -80,7 +64,7 @@ Items carry four optional flags:
   returned to.
 - `invalid` — the step fails validation and blocks forward navigation.
 
-### Rendering the steps
+### Render steps
 
 `api.items` holds the steps still in the flow, so disabled steps drop out of the
 render without filtering. `api.index` and `api.count` use the same positions,
@@ -118,7 +102,7 @@ const api = steps.connect<PropTypes, Step>(service, normalizeProps)
 api.item?.icon // string
 ```
 
-### Setting the initial step
+### Initial step
 
 Set the initial step by passing `defaultValue` to the machine context.
 
@@ -132,7 +116,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Controlled current step
+### Controlled step
 
 Use `value` and `onValueChange` for controlled usage.
 
@@ -153,7 +137,7 @@ const service = useMachine(steps.machine, {
 The value is `null` when there is no current step, such as while `items` is
 still loading.
 
-### Listening for steps completion
+### Steps completion
 
 Moving past the last step sets the value to `steps.COMPLETE` and invokes
 `onComplete`. Render the terminal screen with
@@ -190,7 +174,7 @@ or not you apply it.
 > When you look up the current item from `value`, handle `steps.COMPLETE`.
 > Prefer `api.item`, which is `null` once complete.
 
-### Tracking completed steps
+### Completed steps
 
 Completion is its own controllable value, so it survives navigating backwards.
 
@@ -210,7 +194,7 @@ const service = useMachine(steps.machine, {
 > `goToNextStep` marks the step it leaves as completed, so `onCompletedChange`
 > also fires on navigation.
 
-### Enforcing linear steps
+### Linear steps
 
 To enforce linear steps, set the `linear` prop to `true`. Every step before the
 one being navigated to must then be completed, optional, or disabled.
@@ -228,7 +212,7 @@ const service = useMachine(steps.machine, {
 > An unvisited `optional` step satisfies this rule, so a jump past a run of
 > optional steps is allowed even in linear mode.
 
-### Validating steps
+### Step validation
 
 The machine does not validate anything itself. Derive `invalid` for each item
 from your form state, and the step blocks forward navigation and gets
@@ -253,7 +237,7 @@ Error messages stay with your form. To show them only after the user tries to
 move on, record the step in `onNavigationBlocked` when `reason` is `"invalid"`.
 For asynchronous validation, keep the step `invalid` until the check resolves.
 
-### Reacting to blocked navigation
+### Blocked navigation
 
 When navigation is refused, `onNavigationBlocked` fires with the reason and the
 step responsible.
@@ -271,7 +255,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Skipping optional steps
+### Optional steps
 
 Mark a step `optional` and render a `skipTrigger`. Unlike `next`, skipping
 ignores `invalid` and does not mark the step completed. It gets `skipped`
@@ -289,7 +273,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Locking a completed step
+### Lock completed step
 
 Set `editable: false` to stop a step being revisited once it is completed.
 `next` and `prev` pass over locked steps, so the user is never stranded.
@@ -304,7 +288,7 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-### Changing the orientation
+### Orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
 set the `orientation` prop to `horizontal` or `vertical` to change the
@@ -336,7 +320,7 @@ api.resetStep()
 
 </Example>
 
-### Localizing the progress bar
+### Localization
 
 The progress bar is labelled "Progress" and announces its value as "Step 2 of 3:
 Payment", or "50% complete" when the step has no `title`. Pass `translations` to
@@ -356,104 +340,9 @@ const service = useMachine(steps.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-steps-root] {
-  /* styles for the root part */
-}
-
-[data-steps-root][data-orientation="horizontal|vertical"] {
-  /* styles for the root part based on orientation */
-}
-
-[data-steps-list] {
-  /* styles for the list part */
-}
-
-[data-steps-list][data-orientation="horizontal|vertical"] {
-  /* styles for the list part based on orientation */
-}
-
-[data-steps-separator] {
-  /* styles for the separator part */
-}
-
-[data-steps-separator][data-orientation="horizontal|vertical"] {
-  /* styles for the separator part based on orientation */
-}
-```
-
-### Current step
-
-To style the current step, you can use the `data-current` attribute.
-
-```css
-[data-steps-item][data-current] {
-  /* item styles for the current step */
-}
-
-[data-steps-separator][data-current] {
-  /* separator styles for the current step */
-}
-```
-
-### Completed step
-
-To style the completed step, you can use the `data-complete` attribute.
-
-```css
-[data-steps-item][data-complete] {
-  /* item styles for the completed step */
-}
-
-[data-steps-separator][data-complete] {
-  /* separator styles for the completed step */
-}
-```
-
-### Incomplete step
-
-To style the incomplete step, you can use the `data-incomplete` attribute.
-
-```css
-[data-steps-item][data-incomplete] {
-  /* item styles for the incomplete step */
-}
-
-[data-steps-separator][data-incomplete] {
-  /* separator styles for the incomplete step */
-}
-```
-
-### Skipped, invalid and locked steps
-
-```css
-[data-steps-item][data-skipped] {
-  /* the flow moved past this step without completing it */
-}
-
-[data-steps-item][data-invalid] {
-  /* the step fails validation */
-}
-
-[data-steps-item][data-locked] {
-  /* the step is completed and cannot be returned to */
-}
-
-[data-steps-item][data-optional] {
-  /* the step can be skipped */
-}
-```
-
-These are independent because several apply at once. A step can be completed and
-invalid, or current and invalid.
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The steps machine exposes the following context properties:
 
@@ -465,10 +354,16 @@ The steps `api` exposes the following methods:
 
 <ApiTable name="steps" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-steps-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The step state attributes are independent. A step can be completed and invalid,
+or current and invalid.
 
 <DataAttrTable name="steps" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="steps" />

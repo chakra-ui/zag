@@ -1,0 +1,998 @@
+{
+  "id": "tags-input",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused:input",
+      "label": "focused:input",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "navigating:tag",
+      "label": "navigating:tag",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "editing:tag",
+      "label": "editing:tag",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "ADD_TAG",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLEAR_TAG",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLEAR_VALUE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "focused:input",
+      "event": "CLICK_DELETE_TAG",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "editing:tag",
+      "event": "DOUBLE_CLICK_TAG",
+      "guard": "isTagEditable"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXTERNAL_BLUR",
+      "guard": "addOnBlur"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "EXTERNAL_BLUR",
+      "guard": "clearOnBlur"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INSERT_TAG",
+      "guard": "(!isAtMax || allowOverflow) && !isInputValueEmpty"
+    },
+    {
+      "from": "*",
+      "to": "navigating:tag",
+      "event": "POINTER_DOWN_TAG",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_INPUT_VALUE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE_AT_INDEX",
+      "guard": null
+    },
+    {
+      "from": "editing:tag",
+      "to": "navigating:tag",
+      "event": "TAG_INPUT_BLUR",
+      "guard": "isInputRelatedTarget"
+    },
+    {
+      "from": "editing:tag",
+      "to": "idle",
+      "event": "TAG_INPUT_BLUR",
+      "guard": null
+    },
+    {
+      "from": "editing:tag",
+      "to": "navigating:tag",
+      "event": "TAG_INPUT_ENTER",
+      "guard": "isEditedTagEmpty"
+    },
+    {
+      "from": "editing:tag",
+      "to": "navigating:tag",
+      "event": "TAG_INPUT_ENTER",
+      "guard": null
+    },
+    {
+      "from": "editing:tag",
+      "to": "navigating:tag",
+      "event": "TAG_INPUT_ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "editing:tag",
+      "to": null,
+      "event": "TAG_INPUT_TYPE",
+      "guard": null
+    },
+    {
+      "from": "focused:input",
+      "to": "navigating:tag",
+      "event": "ARROW_LEFT",
+      "guard": "hasTags && isCaretAtStart"
+    },
+    {
+      "from": "focused:input",
+      "to": "navigating:tag",
+      "event": "BACKSPACE",
+      "guard": "hasTags && isCaretAtStart"
+    },
+    {
+      "from": "focused:input",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": "addOnBlur"
+    },
+    {
+      "from": "focused:input",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": "clearOnBlur"
+    },
+    {
+      "from": "focused:input",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "DELETE",
+      "guard": "hasHighlightedTag"
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "DELIMITER_KEY",
+      "guard": null
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "ENTER",
+      "guard": null
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "PASTE",
+      "guard": "addOnPaste"
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "PASTE",
+      "guard": null
+    },
+    {
+      "from": "focused:input",
+      "to": null,
+      "event": "TYPE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused:input",
+      "event": "FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused:input",
+      "event": "POINTER_DOWN",
+      "guard": "!hasHighlightedTag"
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "ARROW_LEFT",
+      "guard": "!isCaretAtStart"
+    },
+    {
+      "from": "navigating:tag",
+      "to": null,
+      "event": "ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": null,
+      "event": "ARROW_RIGHT",
+      "guard": "hasTags && isCaretAtStart && !isLastTagHighlighted"
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "ARROW_RIGHT",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "BACKSPACE",
+      "guard": "!isCaretAtStart"
+    },
+    {
+      "from": "navigating:tag",
+      "to": null,
+      "event": "BACKSPACE",
+      "guard": "isFirstTagHighlighted"
+    },
+    {
+      "from": "navigating:tag",
+      "to": null,
+      "event": "BACKSPACE",
+      "guard": "hasHighlightedTag"
+    },
+    {
+      "from": "navigating:tag",
+      "to": null,
+      "event": "BACKSPACE",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "DELETE",
+      "guard": "!isCaretAtStart"
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "DELETE",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "editing:tag",
+      "event": "ENTER",
+      "guard": "isTagEditable && hasHighlightedTag"
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "PASTE",
+      "guard": "addOnPaste"
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "PASTE",
+      "guard": null
+    },
+    {
+      "from": "navigating:tag",
+      "to": "focused:input",
+      "event": "TYPE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1521,
+      "height": 347,
+      "states": {
+        "idle": {
+          "x": 944,
+          "y": 238,
+          "w": 78,
+          "h": 44
+        },
+        "focused:input": {
+          "x": 1342,
+          "y": 84,
+          "w": 147,
+          "h": 44
+        },
+        "navigating:tag": {
+          "x": 522,
+          "y": 80,
+          "w": 154,
+          "h": 44
+        },
+        "editing:tag": {
+          "x": 48,
+          "y": 90,
+          "w": 132,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "editing:tag",
+          "to": "navigating:tag",
+          "events": [
+            "TAG_INPUT_BLUR",
+            "TAG_INPUT_ENTER",
+            "TAG_INPUT_ESCAPE"
+          ],
+          "lines": [
+            "TAG_INPUT_BLUR",
+            "TAG_INPUT_ENTER",
+            "TAG_INPUT_ESCAPE"
+          ],
+          "points": [
+            [
+              180,
+              101
+            ],
+            [
+              206,
+              101
+            ],
+            [
+              206,
+              95
+            ],
+            [
+              522,
+              95
+            ]
+          ],
+          "label": {
+            "x": 290,
+            "y": 32,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "editing:tag",
+          "to": "idle",
+          "events": [
+            "TAG_INPUT_BLUR"
+          ],
+          "lines": [
+            "TAG_INPUT_BLUR"
+          ],
+          "points": [
+            [
+              180,
+              123
+            ],
+            [
+              206,
+              123
+            ],
+            [
+              206,
+              183
+            ],
+            [
+              854,
+              183
+            ],
+            [
+              854,
+              267
+            ],
+            [
+              944,
+              267
+            ]
+          ],
+          "label": {
+            "x": 545,
+            "y": 190,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused:input",
+          "to": "navigating:tag",
+          "events": [
+            "ARROW_LEFT",
+            "BACKSPACE"
+          ],
+          "lines": [
+            "ARROW_LEFT",
+            "BACKSPACE"
+          ],
+          "points": [
+            [
+              1342,
+              93
+            ],
+            [
+              1258,
+              93
+            ],
+            [
+              1258,
+              85
+            ],
+            [
+              702,
+              85
+            ],
+            [
+              702,
+              91
+            ],
+            [
+              676,
+              91
+            ]
+          ],
+          "label": {
+            "x": 942,
+            "y": 38,
+            "w": 82,
+            "h": 40
+          }
+        },
+        {
+          "from": "focused:input",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              1342,
+              110
+            ],
+            [
+              1258,
+              110
+            ],
+            [
+              1258,
+              158
+            ],
+            [
+              1053,
+              158
+            ],
+            [
+              1053,
+              253
+            ],
+            [
+              1022,
+              253
+            ]
+          ],
+          "label": {
+            "x": 1164,
+            "y": 127,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused:input",
+          "events": [
+            "FOCUS",
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "FOCUS",
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              1022,
+              267
+            ],
+            [
+              1268,
+              267
+            ],
+            [
+              1268,
+              119
+            ],
+            [
+              1342,
+              119
+            ]
+          ],
+          "label": {
+            "x": 1137,
+            "y": 274,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "focused:input",
+          "events": [
+            "ARROW_DOWN",
+            "ARROW_LEFT",
+            "ARROW_RIGHT",
+            "BACKSPACE",
+            "DELETE",
+            "ESCAPE",
+            "PASTE",
+            "TYPE"
+          ],
+          "lines": [
+            "ARROW_DOWN",
+            "ARROW_LEFT",
+            "ARROW_RIGHT",
+            "+5 more"
+          ],
+          "points": [
+            [
+              676,
+              102
+            ],
+            [
+              1342,
+              102
+            ]
+          ],
+          "label": {
+            "x": 938,
+            "y": 109,
+            "w": 89,
+            "h": 72
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              676,
+              113
+            ],
+            [
+              702,
+              113
+            ],
+            [
+              702,
+              127
+            ],
+            [
+              864,
+              127
+            ],
+            [
+              864,
+              253
+            ],
+            [
+              944,
+              253
+            ]
+          ],
+          "label": {
+            "x": 786,
+            "y": 134,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "editing:tag",
+          "events": [
+            "ENTER"
+          ],
+          "lines": [
+            "ENTER"
+          ],
+          "points": [
+            [
+              522,
+              109
+            ],
+            [
+              438,
+              109
+            ],
+            [
+              438,
+              112
+            ],
+            [
+              180,
+              112
+            ]
+          ],
+          "label": {
+            "x": 327,
+            "y": 119,
+            "w": 49,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 519,
+      "height": 1048,
+      "states": {
+        "idle": {
+          "x": 333,
+          "y": 654,
+          "w": 78,
+          "h": 44
+        },
+        "focused:input": {
+          "x": 135,
+          "y": 972,
+          "w": 147,
+          "h": 44
+        },
+        "navigating:tag": {
+          "x": 125,
+          "y": 352,
+          "w": 154,
+          "h": 44
+        },
+        "editing:tag": {
+          "x": 162,
+          "y": 32,
+          "w": 132,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "editing:tag",
+          "to": "navigating:tag",
+          "events": [
+            "TAG_INPUT_BLUR",
+            "TAG_INPUT_ENTER",
+            "TAG_INPUT_ESCAPE"
+          ],
+          "lines": [
+            "TAG_INPUT_BLUR",
+            "TAG_INPUT_ENTER",
+            "TAG_INPUT_ESCAPE"
+          ],
+          "points": [
+            [
+              195,
+              76
+            ],
+            [
+              195,
+              102
+            ],
+            [
+              176,
+              102
+            ],
+            [
+              176,
+              352
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "editing:tag",
+          "to": "idle",
+          "events": [
+            "TAG_INPUT_BLUR"
+          ],
+          "lines": [
+            "TAG_INPUT_BLUR"
+          ],
+          "points": [
+            [
+              261,
+              76
+            ],
+            [
+              261,
+              102
+            ],
+            [
+              335,
+              102
+            ],
+            [
+              335,
+              556
+            ],
+            [
+              385,
+              556
+            ],
+            [
+              385,
+              654
+            ]
+          ],
+          "label": {
+            "x": 342,
+            "y": 362,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused:input",
+          "to": "navigating:tag",
+          "events": [
+            "ARROW_LEFT",
+            "BACKSPACE"
+          ],
+          "lines": [
+            "ARROW_LEFT",
+            "BACKSPACE"
+          ],
+          "points": [
+            [
+              164,
+              972
+            ],
+            [
+              164,
+              396
+            ]
+          ],
+          "label": {
+            "x": 76,
+            "y": 656,
+            "w": 82,
+            "h": 40
+          }
+        },
+        {
+          "from": "focused:input",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              223,
+              972
+            ],
+            [
+              223,
+              888
+            ],
+            [
+              359,
+              888
+            ],
+            [
+              359,
+              698
+            ]
+          ],
+          "label": {
+            "x": 311,
+            "y": 830,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused:input",
+          "events": [
+            "FOCUS",
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "FOCUS",
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              385,
+              698
+            ],
+            [
+              385,
+              898
+            ],
+            [
+              253,
+              898
+            ],
+            [
+              253,
+              972
+            ]
+          ],
+          "label": {
+            "x": 392,
+            "y": 822,
+            "w": 95,
+            "h": 40
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "focused:input",
+          "events": [
+            "ARROW_DOWN",
+            "ARROW_LEFT",
+            "ARROW_RIGHT",
+            "BACKSPACE",
+            "DELETE",
+            "ESCAPE",
+            "PASTE",
+            "TYPE"
+          ],
+          "lines": [
+            "ARROW_DOWN",
+            "ARROW_LEFT",
+            "ARROW_RIGHT",
+            "+5 more"
+          ],
+          "points": [
+            [
+              202,
+              396
+            ],
+            [
+              202,
+              422
+            ],
+            [
+              181,
+              422
+            ],
+            [
+              181,
+              888
+            ],
+            [
+              194,
+              888
+            ],
+            [
+              194,
+              972
+            ]
+          ],
+          "label": {
+            "x": 188,
+            "y": 640,
+            "w": 89,
+            "h": 72
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              241,
+              396
+            ],
+            [
+              241,
+              422
+            ],
+            [
+              310,
+              422
+            ],
+            [
+              310,
+              566
+            ],
+            [
+              359,
+              566
+            ],
+            [
+              359,
+              654
+            ]
+          ],
+          "label": {
+            "x": 262,
+            "y": 506,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "navigating:tag",
+          "to": "editing:tag",
+          "events": [
+            "ENTER"
+          ],
+          "lines": [
+            "ENTER"
+          ],
+          "points": [
+            [
+              228,
+              352
+            ],
+            [
+              228,
+              76
+            ]
+          ],
+          "label": {
+            "x": 235,
+            "y": 202,
+            "w": 49,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

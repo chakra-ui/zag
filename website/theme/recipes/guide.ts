@@ -35,25 +35,3 @@ export const steps = defineRecipe({
     },
   },
 })
-
-export const guideMeta = defineRecipe({
-  className: "guide-meta",
-  description: "Time, stack and level chips under a guide's title",
-  base: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "2",
-    mt: "4",
-    mb: "8",
-    "& > span": {
-      px: "2.5",
-      py: "1",
-      rounded: "md",
-      borderWidth: "1px",
-      borderColor: "border",
-      fontFamily: "mono",
-      fontSize: "12px",
-      color: "fg.muted",
-    },
-  },
-})

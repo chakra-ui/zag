@@ -1,0 +1,510 @@
+{
+  "id": "menubar",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TYPEAHEAD",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "MENU.OPEN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "ROOT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.FOCUS_FIRST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.FOCUS_LAST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.FOCUS_NEXT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.FOCUS_PREV",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "MENU.OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "TRIGGER.FOCUS_IN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "MENU.CLOSE",
+      "guard": "isTransientClose"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "MENU.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "MENU.OPEN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.FOCUS_NEXT",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.FOCUS_PREV",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 981,
+      "height": 213,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 110,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 468,
+          "y": 120,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 871,
+          "y": 110,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "MENU.OPEN"
+          ],
+          "lines": [
+            "MENU.OPEN"
+          ],
+          "points": [
+            [
+              569,
+              135
+            ],
+            [
+              595,
+              135
+            ],
+            [
+              595,
+              132
+            ],
+            [
+              871,
+              132
+            ]
+          ],
+          "label": {
+            "x": 683,
+            "y": 101,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "ROOT.BLUR"
+          ],
+          "lines": [
+            "ROOT.BLUR"
+          ],
+          "points": [
+            [
+              468,
+              135
+            ],
+            [
+              384,
+              135
+            ],
+            [
+              384,
+              132
+            ],
+            [
+              126,
+              132
+            ]
+          ],
+          "label": {
+            "x": 260,
+            "y": 101,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "MENU.OPEN"
+          ],
+          "lines": [
+            "MENU.OPEN"
+          ],
+          "points": [
+            [
+              126,
+              121
+            ],
+            [
+              152,
+              121
+            ],
+            [
+              152,
+              63
+            ],
+            [
+              787,
+              63
+            ],
+            [
+              787,
+              121
+            ],
+            [
+              871,
+              121
+            ]
+          ],
+          "label": {
+            "x": 481,
+            "y": 32,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "TRIGGER.FOCUS_IN"
+          ],
+          "lines": [
+            "TRIGGER.FOCUS_IN"
+          ],
+          "points": [
+            [
+              126,
+              143
+            ],
+            [
+              152,
+              143
+            ],
+            [
+              152,
+              149
+            ],
+            [
+              468,
+              149
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 156,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "MENU.CLOSE"
+          ],
+          "lines": [
+            "MENU.CLOSE"
+          ],
+          "points": [
+            [
+              871,
+              143
+            ],
+            [
+              787,
+              143
+            ],
+            [
+              787,
+              149
+            ],
+            [
+              569,
+              149
+            ]
+          ],
+          "label": {
+            "x": 679,
+            "y": 156,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 416,
+      "height": 684,
+      "states": {
+        "idle": {
+          "x": 196,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 188,
+          "y": 320,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 196,
+          "y": 608,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "MENU.OPEN"
+          ],
+          "lines": [
+            "MENU.OPEN"
+          ],
+          "points": [
+            [
+              222,
+              364
+            ],
+            [
+              222,
+              390
+            ],
+            [
+              235,
+              390
+            ],
+            [
+              235,
+              608
+            ]
+          ],
+          "label": {
+            "x": 154,
+            "y": 474,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "ROOT.BLUR"
+          ],
+          "lines": [
+            "ROOT.BLUR"
+          ],
+          "points": [
+            [
+              222,
+              320
+            ],
+            [
+              222,
+              236
+            ],
+            [
+              235,
+              236
+            ],
+            [
+              235,
+              76
+            ]
+          ],
+          "label": {
+            "x": 154,
+            "y": 186,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "MENU.OPEN"
+          ],
+          "lines": [
+            "MENU.OPEN"
+          ],
+          "points": [
+            [
+              216,
+              76
+            ],
+            [
+              216,
+              102
+            ],
+            [
+              129,
+              102
+            ],
+            [
+              129,
+              524
+            ],
+            [
+              216,
+              524
+            ],
+            [
+              216,
+              608
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 330,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "TRIGGER.FOCUS_IN"
+          ],
+          "lines": [
+            "TRIGGER.FOCUS_IN"
+          ],
+          "points": [
+            [
+              255,
+              76
+            ],
+            [
+              255,
+              320
+            ]
+          ],
+          "label": {
+            "x": 262,
+            "y": 186,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "MENU.CLOSE"
+          ],
+          "lines": [
+            "MENU.CLOSE"
+          ],
+          "points": [
+            [
+              255,
+              608
+            ],
+            [
+              255,
+              364
+            ]
+          ],
+          "label": {
+            "x": 262,
+            "y": 474,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

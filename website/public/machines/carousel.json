@@ -1,0 +1,1478 @@
+{
+  "id": "carousel",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focus",
+      "label": "focus",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "settling",
+      "label": "settling",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "userScroll",
+      "label": "userScroll",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "autoplay",
+      "label": "autoplay",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "idle",
+      "event": "INDEX.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "idle",
+      "event": "PAGE.NEXT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "idle",
+      "event": "PAGE.PREV",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PAGE.SCROLL",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "idle",
+      "event": "PAGE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SNAP.REFRESH",
+      "guard": null
+    },
+    {
+      "from": "autoplay",
+      "to": "idle",
+      "event": "AUTOPLAY.PAUSE",
+      "guard": null
+    },
+    {
+      "from": "autoplay",
+      "to": null,
+      "event": "AUTOPLAY.TICK",
+      "guard": null
+    },
+    {
+      "from": "autoplay",
+      "to": "dragging",
+      "event": "DRAGGING.START",
+      "guard": null
+    },
+    {
+      "from": "autoplay",
+      "to": null,
+      "event": "SNAP.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": null,
+      "event": "DRAGGING",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "settling",
+      "event": "DRAGGING.END",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "INDEX.SET",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "PAGE.NEXT",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "PAGE.PREV",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "PAGE.SET",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "SNAP.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "userScroll",
+      "event": "USER.SCROLL",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "idle",
+      "event": "VIEWPORT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "autoplay",
+      "event": "AUTOPLAY.START",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "DRAGGING.START",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "SNAP.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "userScroll",
+      "event": "USER.SCROLL",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focus",
+      "event": "VIEWPORT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "settling",
+      "to": "dragging",
+      "event": "DRAGGING.START",
+      "guard": null
+    },
+    {
+      "from": "settling",
+      "to": "focus",
+      "event": "SCROLL.END",
+      "guard": "isFocused"
+    },
+    {
+      "from": "settling",
+      "to": "idle",
+      "event": "SCROLL.END",
+      "guard": null
+    },
+    {
+      "from": "userScroll",
+      "to": "dragging",
+      "event": "DRAGGING.START",
+      "guard": null
+    },
+    {
+      "from": "userScroll",
+      "to": "focus",
+      "event": "SCROLL.END",
+      "guard": "isFocused"
+    },
+    {
+      "from": "userScroll",
+      "to": "idle",
+      "event": "SCROLL.END",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1899,
+      "height": 530,
+      "states": {
+        "idle": {
+          "x": 463,
+          "y": 227,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 878,
+          "y": 349,
+          "w": 86,
+          "h": 44
+        },
+        "dragging": {
+          "x": 1758,
+          "y": 158,
+          "w": 109,
+          "h": 44
+        },
+        "settling": {
+          "x": 48,
+          "y": 62,
+          "w": 109,
+          "h": 44
+        },
+        "userScroll": {
+          "x": 1306,
+          "y": 343,
+          "w": 124,
+          "h": 44
+        },
+        "autoplay": {
+          "x": 869,
+          "y": 168,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "autoplay",
+          "to": "idle",
+          "events": [
+            "AUTOPLAY.PAUSE"
+          ],
+          "lines": [
+            "AUTOPLAY.PAUSE"
+          ],
+          "points": [
+            [
+              869,
+              183
+            ],
+            [
+              785,
+              183
+            ],
+            [
+              785,
+              171
+            ],
+            [
+              567,
+              171
+            ],
+            [
+              567,
+              233
+            ],
+            [
+              541,
+              233
+            ]
+          ],
+          "label": {
+            "x": 651,
+            "y": 140,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "autoplay",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              978,
+              190
+            ],
+            [
+              1004,
+              190
+            ],
+            [
+              1004,
+              180
+            ],
+            [
+              1758,
+              180
+            ]
+          ],
+          "label": {
+            "x": 1314,
+            "y": 187,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "dragging",
+          "to": "settling",
+          "events": [
+            "DRAGGING.END"
+          ],
+          "lines": [
+            "DRAGGING.END"
+          ],
+          "points": [
+            [
+              1758,
+              165
+            ],
+            [
+              1684,
+              165
+            ],
+            [
+              1684,
+              63
+            ],
+            [
+              183,
+              63
+            ],
+            [
+              183,
+              71
+            ],
+            [
+              157,
+              71
+            ]
+          ],
+          "label": {
+            "x": 876,
+            "y": 32,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "userScroll",
+          "events": [
+            "USER.SCROLL"
+          ],
+          "lines": [
+            "USER.SCROLL"
+          ],
+          "points": [
+            [
+              964,
+              364
+            ],
+            [
+              1004,
+              364
+            ],
+            [
+              1004,
+              361
+            ],
+            [
+              1306,
+              361
+            ]
+          ],
+          "label": {
+            "x": 1098,
+            "y": 330,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "VIEWPORT.BLUR"
+          ],
+          "lines": [
+            "VIEWPORT.BLUR"
+          ],
+          "points": [
+            [
+              878,
+              360
+            ],
+            [
+              785,
+              360
+            ],
+            [
+              785,
+              354
+            ],
+            [
+              587,
+              354
+            ],
+            [
+              587,
+              255
+            ],
+            [
+              541,
+              255
+            ]
+          ],
+          "label": {
+            "x": 654,
+            "y": 323,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "autoplay",
+          "events": [
+            "AUTOPLAY.START"
+          ],
+          "lines": [
+            "AUTOPLAY.START"
+          ],
+          "points": [
+            [
+              541,
+              238
+            ],
+            [
+              577,
+              238
+            ],
+            [
+              577,
+              188
+            ],
+            [
+              785,
+              188
+            ],
+            [
+              785,
+              197
+            ],
+            [
+              869,
+              197
+            ]
+          ],
+          "label": {
+            "x": 651,
+            "y": 195,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              541,
+              244
+            ],
+            [
+              785,
+              244
+            ],
+            [
+              785,
+              236
+            ],
+            [
+              1674,
+              236
+            ],
+            [
+              1674,
+              187
+            ],
+            [
+              1758,
+              187
+            ]
+          ],
+          "label": {
+            "x": 1088,
+            "y": 243,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "userScroll",
+          "events": [
+            "USER.SCROLL"
+          ],
+          "lines": [
+            "USER.SCROLL"
+          ],
+          "points": [
+            [
+              541,
+              249
+            ],
+            [
+              597,
+              249
+            ],
+            [
+              597,
+              261
+            ],
+            [
+              1004,
+              261
+            ],
+            [
+              1004,
+              292
+            ],
+            [
+              1222,
+              292
+            ],
+            [
+              1222,
+              352
+            ],
+            [
+              1306,
+              352
+            ]
+          ],
+          "label": {
+            "x": 879,
+            "y": 268,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "VIEWPORT.FOCUS"
+          ],
+          "lines": [
+            "VIEWPORT.FOCUS"
+          ],
+          "points": [
+            [
+              541,
+              260
+            ],
+            [
+              577,
+              260
+            ],
+            [
+              577,
+              371
+            ],
+            [
+              878,
+              371
+            ]
+          ],
+          "label": {
+            "x": 651,
+            "y": 378,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              157,
+              80
+            ],
+            [
+              1674,
+              80
+            ],
+            [
+              1674,
+              173
+            ],
+            [
+              1758,
+              173
+            ]
+          ],
+          "label": {
+            "x": 870,
+            "y": 87,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "focus",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              157,
+              97
+            ],
+            [
+              183,
+              97
+            ],
+            [
+              183,
+              466
+            ],
+            [
+              785,
+              466
+            ],
+            [
+              785,
+              382
+            ],
+            [
+              878,
+              382
+            ]
+          ],
+          "label": {
+            "x": 459,
+            "y": 473,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              157,
+              88
+            ],
+            [
+              193,
+              88
+            ],
+            [
+              193,
+              249
+            ],
+            [
+              463,
+              249
+            ]
+          ],
+          "label": {
+            "x": 267,
+            "y": 256,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              1430,
+              365
+            ],
+            [
+              1684,
+              365
+            ],
+            [
+              1684,
+              195
+            ],
+            [
+              1758,
+              195
+            ]
+          ],
+          "label": {
+            "x": 1540,
+            "y": 372,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "focus",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              1306,
+              369
+            ],
+            [
+              1222,
+              369
+            ],
+            [
+              1222,
+              378
+            ],
+            [
+              964,
+              378
+            ]
+          ],
+          "label": {
+            "x": 1101,
+            "y": 385,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              1306,
+              378
+            ],
+            [
+              1232,
+              378
+            ],
+            [
+              1232,
+              449
+            ],
+            [
+              567,
+              449
+            ],
+            [
+              567,
+              266
+            ],
+            [
+              541,
+              266
+            ]
+          ],
+          "label": {
+            "x": 883,
+            "y": 456,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 927,
+      "height": 1260,
+      "states": {
+        "idle": {
+          "x": 449,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 647,
+          "y": 608,
+          "w": 86,
+          "h": 44
+        },
+        "dragging": {
+          "x": 277,
+          "y": 1184,
+          "w": 109,
+          "h": 44
+        },
+        "settling": {
+          "x": 127,
+          "y": 32,
+          "w": 109,
+          "h": 44
+        },
+        "userScroll": {
+          "x": 602,
+          "y": 896,
+          "w": 124,
+          "h": 44
+        },
+        "autoplay": {
+          "x": 337,
+          "y": 608,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "autoplay",
+          "to": "idle",
+          "events": [
+            "AUTOPLAY.PAUSE"
+          ],
+          "lines": [
+            "AUTOPLAY.PAUSE"
+          ],
+          "points": [
+            [
+              373,
+              608
+            ],
+            [
+              373,
+              534
+            ],
+            [
+              322,
+              534
+            ],
+            [
+              322,
+              390
+            ],
+            [
+              459,
+              390
+            ],
+            [
+              459,
+              364
+            ]
+          ],
+          "label": {
+            "x": 208,
+            "y": 474,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "autoplay",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              392,
+              652
+            ],
+            [
+              392,
+              678
+            ],
+            [
+              331,
+              678
+            ],
+            [
+              331,
+              1184
+            ]
+          ],
+          "label": {
+            "x": 217,
+            "y": 906,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "dragging",
+          "to": "settling",
+          "events": [
+            "DRAGGING.END"
+          ],
+          "lines": [
+            "DRAGGING.END"
+          ],
+          "points": [
+            [
+              295,
+              1184
+            ],
+            [
+              295,
+              1110
+            ],
+            [
+              149,
+              1110
+            ],
+            [
+              149,
+              76
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 618,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "userScroll",
+          "events": [
+            "USER.SCROLL"
+          ],
+          "lines": [
+            "USER.SCROLL"
+          ],
+          "points": [
+            [
+              676,
+              652
+            ],
+            [
+              676,
+              678
+            ],
+            [
+              652,
+              678
+            ],
+            [
+              652,
+              896
+            ]
+          ],
+          "label": {
+            "x": 557,
+            "y": 762,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "VIEWPORT.BLUR"
+          ],
+          "lines": [
+            "VIEWPORT.BLUR"
+          ],
+          "points": [
+            [
+              669,
+              608
+            ],
+            [
+              669,
+              534
+            ],
+            [
+              633,
+              534
+            ],
+            [
+              633,
+              410
+            ],
+            [
+              498,
+              410
+            ],
+            [
+              498,
+              364
+            ]
+          ],
+          "label": {
+            "x": 525,
+            "y": 474,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "autoplay",
+          "events": [
+            "AUTOPLAY.START"
+          ],
+          "lines": [
+            "AUTOPLAY.START"
+          ],
+          "points": [
+            [
+              469,
+              364
+            ],
+            [
+              469,
+              400
+            ],
+            [
+              339,
+              400
+            ],
+            [
+              339,
+              524
+            ],
+            [
+              410,
+              524
+            ],
+            [
+              410,
+              608
+            ]
+          ],
+          "label": {
+            "x": 346,
+            "y": 474,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              478,
+              364
+            ],
+            [
+              478,
+              524
+            ],
+            [
+              470,
+              524
+            ],
+            [
+              470,
+              1100
+            ],
+            [
+              350,
+              1100
+            ],
+            [
+              350,
+              1184
+            ]
+          ],
+          "label": {
+            "x": 356,
+            "y": 762,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "userScroll",
+          "events": [
+            "USER.SCROLL"
+          ],
+          "lines": [
+            "USER.SCROLL"
+          ],
+          "points": [
+            [
+              488,
+              364
+            ],
+            [
+              488,
+              420
+            ],
+            [
+              495,
+              420
+            ],
+            [
+              495,
+              812
+            ],
+            [
+              627,
+              812
+            ],
+            [
+              627,
+              896
+            ]
+          ],
+          "label": {
+            "x": 502,
+            "y": 618,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "VIEWPORT.FOCUS"
+          ],
+          "lines": [
+            "VIEWPORT.FOCUS"
+          ],
+          "points": [
+            [
+              508,
+              364
+            ],
+            [
+              508,
+              400
+            ],
+            [
+              650,
+              400
+            ],
+            [
+              650,
+              524
+            ],
+            [
+              690,
+              524
+            ],
+            [
+              690,
+              608
+            ]
+          ],
+          "label": {
+            "x": 657,
+            "y": 474,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              171,
+              76
+            ],
+            [
+              171,
+              102
+            ],
+            [
+              166,
+              102
+            ],
+            [
+              166,
+              1100
+            ],
+            [
+              313,
+              1100
+            ],
+            [
+              313,
+              1184
+            ]
+          ],
+          "label": {
+            "x": 173,
+            "y": 618,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "focus",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              214,
+              76
+            ],
+            [
+              214,
+              102
+            ],
+            [
+              806,
+              102
+            ],
+            [
+              806,
+              524
+            ],
+            [
+              712,
+              524
+            ],
+            [
+              712,
+              608
+            ]
+          ],
+          "label": {
+            "x": 813,
+            "y": 330,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "settling",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              192,
+              76
+            ],
+            [
+              192,
+              112
+            ],
+            [
+              488,
+              112
+            ],
+            [
+              488,
+              320
+            ]
+          ],
+          "label": {
+            "x": 400,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "dragging",
+          "events": [
+            "DRAGGING.START"
+          ],
+          "lines": [
+            "DRAGGING.START"
+          ],
+          "points": [
+            [
+              664,
+              940
+            ],
+            [
+              664,
+              1110
+            ],
+            [
+              368,
+              1110
+            ],
+            [
+              368,
+              1184
+            ]
+          ],
+          "label": {
+            "x": 671,
+            "y": 1050,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "focus",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              676,
+              896
+            ],
+            [
+              676,
+              688
+            ],
+            [
+              704,
+              688
+            ],
+            [
+              704,
+              652
+            ]
+          ],
+          "label": {
+            "x": 683,
+            "y": 762,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "userScroll",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              701,
+              896
+            ],
+            [
+              701,
+              812
+            ],
+            [
+              789,
+              812
+            ],
+            [
+              789,
+              390
+            ],
+            [
+              517,
+              390
+            ],
+            [
+              517,
+              364
+            ]
+          ],
+          "label": {
+            "x": 796,
+            "y": 618,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

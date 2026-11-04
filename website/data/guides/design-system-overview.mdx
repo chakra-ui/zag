@@ -1,0 +1,35 @@
+---
+title: Overview
+description: Build your design system on Zag.
+---
+
+Build a component library on Zag, where you own the markup and styles while Zag
+handles state, keyboard and accessibility
+
+<GuideCards
+  items={[
+    {
+      title: "Creating the hook",
+      description: "Wrap the machine and return its api.",
+      href: "/guides/design-system-hook",
+      icon: "code",
+      result: "useSlider()",
+    },
+    {
+      title: "Creating components",
+      description: "Render one typed component per part.",
+      href: "/guides/design-system-components",
+      icon: "blocks",
+      result: "<Slider.Thumb />",
+    },
+    {
+      title: "Styling components",
+      description: "Style parts and states with a recipe.",
+      href: "/guides/design-system-styling",
+      icon: "palette",
+      result: "sliderRecipe",
+    },
+  ]}
+/>
+
+The examples use React. Every machine follows the same pattern.

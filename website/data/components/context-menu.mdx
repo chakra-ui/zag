@@ -1,13 +1,14 @@
 ---
 title: Context Menu
-description: Using the menu machine for context menus in your project.
+description:
+  An accessible right-click context menu with keyboard navigation, typeahead,
+  nested submenus and checkable items.
 package: "@zag-js/menu"
 slugAlias: "menu"
 ---
 
-An accessible dropdown and context menu that is used to display a list of
-actions or options that a user can choose when a trigger element is
-right-clicked or long pressed.
+A menu of actions that opens when the user right-clicks or long-presses an
+element
 
 <Resources pkg="@zag-js/menu" />
 
@@ -28,29 +29,9 @@ Install the menu package:
 
 ## Anatomy
 
-Check the menu anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="menu" />
 
 ## Usage
-
-Import the menu package:
-
-```tsx
-import * as menu from "@zag-js/menu"
-```
-
-The menu package exports two key functions:
-
-- `machine` - Behavior logic for the menu.
-- `connect` - Maps behavior to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 To show the menu when a trigger element is right-clicked, use
 `api.getContextTriggerProps()`.
@@ -60,7 +41,7 @@ is pen or touch.
 
 <CodeSnippet id="menu/context-menu.mdx" />
 
-### Default open state
+### Default open
 
 Use `defaultOpen` for an uncontrolled initial state.
 
@@ -74,7 +55,7 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-### Controlling open state
+### Controlled open
 
 Use `open` and `onOpenChange` to control the open state.
 
@@ -92,7 +73,7 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-### Listening for highlighted items
+### Highlight changes
 
 Use `onHighlightChange` to react when keyboard or pointer highlight changes.
 
@@ -109,7 +90,7 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-### Listening for item selection
+### Item selection
 
 Use `onSelect` to react when an item is selected.
 
@@ -126,7 +107,7 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-### Positioning the menu
+### Positioning
 
 Use `positioning` to configure menu placement.
 
@@ -140,7 +121,7 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-### Keeping the menu open after selection
+### Keep open on select
 
 Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
 
@@ -154,41 +135,9 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
-## Styling guide
+## Styling
 
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Highlighted item state
-
-When an item is highlighted, via keyboard navigation or pointer, it is given a
-`data-highlighted` attribute.
-
-```css
-[data-menu-item][data-highlighted] {
-  /* styles for highlighted state */
-}
-
-[data-menu-item][data-type="radio|checkbox"][data-highlighted] {
-  /* styles for highlighted state */
-}
-```
-
-### Disabled item state
-
-When an item or an option item is disabled, it is given a `data-disabled`
-attribute.
-
-```css
-[data-menu-item][data-disabled] {
-  /* styles for disabled state */
-}
-
-[data-menu-item][data-type="radio|checkbox"][data-disabled] {
-  /* styles for disabled state */
-}
-```
-
-### Using arrows
+### Arrows
 
 When using arrows within the menu, you can style it using CSS variables.
 
@@ -199,19 +148,9 @@ When using arrows within the menu, you can style it using CSS variables.
 }
 ```
 
-### Checked option item state
-
-When an option item is checked, it is given a `data-state` attribute.
-
-```css
-[data-menu-item][data-type="radio|checkbox"][data-state="checked"] {
-  /* styles for checked state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The menu machine exposes the following context properties:
 
@@ -223,11 +162,14 @@ The menu `api` exposes the following methods:
 
 <ApiTable name="menu" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-menu-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="menu" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="menu" />
 
@@ -237,6 +179,6 @@ Uses
 [aria-activedescendant](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/examples/menu-button-actions-active-descendant/)
 pattern to manage focus movement among menu items.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="context-menu" />

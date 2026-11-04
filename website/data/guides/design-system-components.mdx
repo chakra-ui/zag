@@ -1,0 +1,293 @@
+---
+title: Creating components
+description: Build compound components from a Zag hook.
+---
+
+Turn the `useSlider` hook from the [previous page](/guides/design-system-hook)
+into compound components like `Slider.Root` and `Slider.Thumb`
+
+```tsx
+<Slider.Root defaultValue={[40]}>
+  <Slider.Label>Volume</Slider.Label>
+  <Slider.ValueText />
+  <Slider.Control>
+    <Slider.Track>
+      <Slider.Range />
+    </Slider.Track>
+    <Slider.Thumb index={0} />
+  </Slider.Control>
+</Slider.Root>
+```
+
+<Steps>
+
+## Share the API
+
+`Slider.Root` calls the hook. Every other part reads the api from context.
+
+```tsx title="components/slider/slider-context.ts"
+"use client"
+
+import { createContext, useContext } from "react"
+import type { UseSliderReturn } from "./use-slider"
+
+export const SliderContext = createContext<UseSliderReturn | null>(null)
+
+export function useSliderContext() {
+  const api = useContext(SliderContext)
+  if (!api) {
+    throw new Error("Slider parts must be rendered inside <Slider.Root>")
+  }
+  return api
+}
+```
+
+The error makes a missing `Root` obvious instead of failing deep inside a prop
+getter.
+
+## Build the root
+
+The root takes machine props and DOM props in one object. `slider.splitProps`
+separates them: the first half goes to the hook, the second half goes to the
+element.
+
+```tsx title="components/slider/slider.tsx"
+"use client"
+
+import { mergeProps } from "@zag-js/react"
+import * as slider from "@zag-js/slider"
+import type { ComponentProps } from "react"
+import { SliderContext, useSliderContext } from "./slider-context"
+import { useSlider, type UseSliderProps } from "./use-slider"
+
+export interface RootProps
+  extends UseSliderProps, Omit<ComponentProps<"div">, keyof UseSliderProps> {}
+
+export function Root(props: RootProps) {
+  const [machineProps, localProps] = slider.splitProps(props)
+  const api = useSlider(machineProps)
+
+  return (
+    <SliderContext.Provider value={api}>
+      <div {...mergeProps(api.getRootProps(), localProps)} />
+    </SliderContext.Provider>
+  )
+}
+```
+
+`Omit<ComponentProps<"div">, keyof UseSliderProps>` drops DOM props that clash
+with machine props, such as `defaultValue` and `dir`. Without it, TypeScript
+merges two different `defaultValue` types.
+
+## Merge props
+
+Spreading `{...api.getRootProps()} {...props}` lets the caller's `style` or
+`onPointerDown` replace Zag's. `mergeProps` combines them:
+
+- Event handlers are chained. Both run, the caller's first.
+- `className` values are joined.
+- `style` objects are merged, so Zag's CSS variables survive.
+- Any other prop takes the last defined value.
+
+Because the caller's handler runs first, it can opt out of Zag's behavior. The
+thumb skips its keyboard handling when the event is already prevented:
+
+```tsx
+<Slider.Thumb
+  index={0}
+  onKeyDown={(event) => {
+    if (event.key === "Home") event.preventDefault()
+  }}
+/>
+```
+
+## Add the parts
+
+Each part reads the context, then merges its prop getter with the caller's
+props. Parts without arguments all look the same.
+
+```tsx title="components/slider/slider.tsx"
+export interface LabelProps extends ComponentProps<"label"> {}
+
+export function Label(props: LabelProps) {
+  const api = useSliderContext()
+  return <label {...mergeProps(api.getLabelProps(), props)} />
+}
+
+export interface ValueTextProps extends ComponentProps<"output"> {}
+
+export function ValueText(props: ValueTextProps) {
+  const { children, ...rest } = props
+  const api = useSliderContext()
+  return (
+    <output {...mergeProps(api.getValueTextProps(), rest)}>
+      {children ?? api.value.join(" - ")}
+    </output>
+  )
+}
+
+export interface ControlProps extends ComponentProps<"div"> {}
+
+export function Control(props: ControlProps) {
+  const api = useSliderContext()
+  return <div {...mergeProps(api.getControlProps(), props)} />
+}
+
+export interface TrackProps extends ComponentProps<"div"> {}
+
+export function Track(props: TrackProps) {
+  const api = useSliderContext()
+  return <div {...mergeProps(api.getTrackProps(), props)} />
+}
+
+export interface RangeProps extends ComponentProps<"div"> {}
+
+export function Range(props: RangeProps) {
+  const api = useSliderContext()
+  return <div {...mergeProps(api.getRangeProps(), props)} />
+}
+```
+
+`ValueText` falls back to the current value, so callers can drop it in without
+children.
+
+## Index the thumbs
+
+A slider can have more than one thumb, so `getThumbProps` needs to know which
+one it's rendering. `Slider.Thumb` takes an `index` and passes it through.
+`slider.splitThumbProps` pulls `index`, `name` and `disabled` out of the props.
+
+```tsx title="components/slider/slider.tsx"
+export interface ThumbProps
+  extends
+    slider.ThumbProps,
+    Omit<ComponentProps<"div">, keyof slider.ThumbProps> {}
+
+export function Thumb(props: ThumbProps) {
+  const [thumbProps, localProps] = slider.splitThumbProps(props)
+  const { children, ...rest } = localProps
+  const api = useSliderContext()
+
+  return (
+    <div {...mergeProps(api.getThumbProps(thumbProps), rest)}>
+      {children}
+      <input {...api.getHiddenInputProps(thumbProps)} />
+    </div>
+  )
+}
+```
+
+The thumb renders its hidden input, so forms receive the value without an extra
+part. Render one thumb per entry in the value.
+
+```tsx
+<Slider.Root defaultValue={[20, 80]}>
+  <Slider.Control>
+    <Slider.Track>
+      <Slider.Range />
+    </Slider.Track>
+    <Slider.Thumb index={0} />
+    <Slider.Thumb index={1} />
+  </Slider.Control>
+</Slider.Root>
+```
+
+Markers work the same way. Each one takes the `value` it marks.
+
+```tsx title="components/slider/slider.tsx"
+export interface MarkerGroupProps extends ComponentProps<"div"> {}
+
+export function MarkerGroup(props: MarkerGroupProps) {
+  const api = useSliderContext()
+  return <div {...mergeProps(api.getMarkerGroupProps(), props)} />
+}
+
+export interface MarkerProps
+  extends
+    slider.MarkerProps,
+    Omit<ComponentProps<"span">, keyof slider.MarkerProps> {}
+
+export function Marker(props: MarkerProps) {
+  const [markerProps, localProps] = slider.splitMarkerProps(props)
+  const api = useSliderContext()
+  return <span {...mergeProps(api.getMarkerProps(markerProps), localProps)} />
+}
+```
+
+## Forward refs
+
+In React 19, `ref` is a regular prop. It's part of `ComponentProps<"div">`, so
+it travels through `mergeProps` to the element with no extra code.
+
+```tsx
+function Volume() {
+  const thumbRef = useRef<HTMLDivElement>(null)
+  return (
+    <Slider.Root defaultValue={[40]}>
+      <Slider.Control>
+        <Slider.Thumb index={0} ref={thumbRef} />
+      </Slider.Control>
+    </Slider.Root>
+  )
+}
+```
+
+On React 18, wrap each part in `forwardRef` and pass the ref to the element.
+
+## Export the namespace
+
+Group the parts under one name so callers import a single object.
+
+```tsx title="components/slider/index.ts"
+export * as Slider from "./slider"
+export { useSliderContext } from "./slider-context"
+export { useSlider } from "./use-slider"
+export type { UseSliderProps, UseSliderReturn } from "./use-slider"
+```
+
+Export the context hook too. It lets callers build their own parts, such as a
+thumb tooltip that shows `api.getThumbValue(index)`.
+
+## Context access
+
+Any component inside `Slider.Root` can read the api with `useSliderContext`. Use
+it to show state or call methods from your own components.
+
+```tsx
+import { useSliderContext } from "./components/slider"
+
+function SliderValue() {
+  const api = useSliderContext()
+  return <output>{api.value.join(" - ")}</output>
+}
+
+function ResetButton() {
+  const api = useSliderContext()
+  return (
+    <button type="button" onClick={() => api.setValue([50])}>
+      Reset
+    </button>
+  )
+}
+```
+
+```tsx
+<Slider.Root defaultValue={[20]}>
+  <Slider.Label>Volume</Slider.Label>
+  <SliderValue />
+  <Slider.Control>
+    <Slider.Track>
+      <Slider.Range />
+    </Slider.Track>
+    <Slider.Thumb index={0} />
+  </Slider.Control>
+  <ResetButton />
+</Slider.Root>
+```
+
+</Steps>
+
+## Next
+
+Style the parts with data attributes and Panda recipes in
+[Styling components](/guides/design-system-styling).

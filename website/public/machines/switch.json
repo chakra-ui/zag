@@ -1,0 +1,72 @@
+{
+  "id": "switch",
+  "initial": "ready",
+  "states": [
+    {
+      "id": "ready",
+      "label": "ready",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.SET",
+      "guard": "!isTrusted"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.TOGGLE",
+      "guard": "!isTrusted"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CHECKED.TOGGLE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "CONTEXT.SET",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 166,
+      "height": 108,
+      "states": {
+        "ready": {
+          "x": 48,
+          "y": 32,
+          "w": 86,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 166,
+      "height": 108,
+      "states": {
+        "ready": {
+          "x": 48,
+          "y": 32,
+          "w": 86,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

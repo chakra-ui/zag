@@ -1,36 +1,29 @@
-import { AccessibilityDocKey, getAccessibilityDoc } from "@zag-js/docs"
-import { DocTable, DocTableHead, DocTableRow } from "components/ui/doc-table"
+import { type AccessibilityDocKey, getAccessibilityDoc } from "@zag-js/docs"
+import { docTable as styles } from "components/ui/doc-table"
 import { Kbd } from "components/ui/kbd"
-import { Box, HStack } from "styled-system/jsx"
 
-interface Props {
-  name: AccessibilityDocKey
-}
-
-const columns = { base: "1fr", sm: "minmax(0, 2fr) minmax(0, 3fr)" }
-
-export const KeyboardTable = (props: Props) => {
+export function KeyboardTable(props: { name: AccessibilityDocKey }) {
   const data = getAccessibilityDoc(props.name)
 
   return (
-    <DocTable>
-      <DocTableHead gridTemplateColumns={columns} hideBelow="sm">
+    <div className={styles.table}>
+      <div className={styles.head}>
         <span>Key</span>
         <span>Description</span>
-      </DocTableHead>
+      </div>
       {data.keyboard.map(({ keys, description }, index) => (
-        <DocTableRow key={index} alignItems="center">
-          <HStack gap="1.5" flexWrap="wrap">
+        <div key={index} className={styles.row}>
+          <div className={styles.keys}>
             {keys.map((k) => (
               <Kbd key={k}>{k}</Kbd>
             ))}
-          </HStack>
-          <Box
-            color="text.muted"
+          </div>
+          <div
+            className={styles.value}
             dangerouslySetInnerHTML={{ __html: description }}
           />
-        </DocTableRow>
+        </div>
       ))}
-    </DocTable>
+    </div>
   )
 }

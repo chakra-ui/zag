@@ -5,7 +5,7 @@ import siteConfig from "site.config"
 import "../styles/index.css"
 import "../styles/prism.css"
 
-const wixMadeforText = Wix_Madefor_Text({
+const bodyFont = Wix_Madefor_Text({
   subsets: ["latin"],
   variable: "--font-body",
 })
@@ -85,7 +85,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={`${wixMadeforText.variable} ${geistMono.variable}`}
+      className={`${bodyFont.variable} ${geistMono.variable}`}
     >
       <head>
         {/* ternary, not &&: an empty domain renders as a text node and breaks hydration */}

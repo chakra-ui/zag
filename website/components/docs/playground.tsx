@@ -4,9 +4,11 @@ import { CodePanel } from "components/ui/code-panel"
 import { defaultOf, getChangedProps } from "lib/changed-props"
 import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
-import { LuArrowUpRight, LuCheck, LuCopy } from "react-icons/lu"
-import { SiStackblitz, SiTypescript } from "react-icons/si"
-import { docAction, playground } from "styled-system/recipes"
+import { SiStackblitz } from "react-icons/si"
+import { playground } from "styled-system/recipes"
+import * as bar from "./code-bar.css"
+import { CopyButton } from "./copy-button"
+import { FileIcon } from "./file-icon"
 
 type OptionSet<V> = { default: V; options: V[]; required?: boolean }
 
@@ -53,7 +55,6 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
   const { name, component: Component, hideControls } = props
   const defaults = (props.defaultProps ?? {}) as Values
   const [values, setValues] = useState(() => initialValues(defaults))
-  const [copied, setCopied] = useState(false)
   const styles = playground()
 
   const keys = Object.keys(defaults)
@@ -119,7 +120,12 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                   )
                 }
 
-                if (isOptionSet(type) && type.options.length <= 3) {
+                // short sets like ltr/rtl fit a segmented control; longer labels get a select
+                if (
+                  isOptionSet(type) &&
+                  type.options.length <= 3 &&
+                  type.options.join("").length <= 12
+                ) {
                   return (
                     <div key={key} className={styles.control} data-stack="">
                       {label}
@@ -153,7 +159,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
 
                 if (isOptionSet(type)) {
                   return (
-                    <div key={key} className={styles.control} data-stack="">
+                    <div key={key} className={styles.control}>
                       {label}
                       <select
                         aria-labelledby={`${id}-label`}
@@ -211,34 +217,21 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
           </div>
         )}
       </div>
-      <div className={styles.bar}>
-        <span className={styles.file}>
-          <SiTypescript aria-hidden />
+      <div className={bar.bar}>
+        <span className={bar.file}>
+          <FileIcon name={`${name}.tsx`} />
           {name}.tsx
         </span>
-        <div className={styles.actions}>
+        <div className={bar.actions}>
           <button
             type="button"
-            className={docAction({ size: "sm" })}
-            onClick={() => {
-              navigator.clipboard?.writeText(code)
-              setCopied(true)
-              setTimeout(() => setCopied(false), 1200)
-            }}
-          >
-            {copied ? <LuCheck aria-hidden /> : <LuCopy aria-hidden />}
-            {copied ? "Copied" : "Copy"}
-          </button>
-          <button
-            type="button"
-            className={docAction({ size: "sm" })}
-            data-brand="stackblitz"
+            className={bar.action}
             onClick={() => openInStackblitz(name, values)}
           >
-            <SiStackblitz aria-hidden />
-            StackBlitz
-            <LuArrowUpRight data-part="arrow" aria-hidden />
+            <SiStackblitz data-brand aria-hidden />
+            Open in StackBlitz
           </button>
+          <CopyButton content={code} />
         </div>
       </div>
       <CodePanel

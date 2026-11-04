@@ -1,12 +1,13 @@
 ---
 title: Tooltip
-description: Using the tooltip machine in your project.
+description:
+  An accessible tooltip that shows a short label on hover or focus, with open
+  and close delays and positioning.
 package: "@zag-js/tooltip"
 ---
 
-A tooltip is a brief, informative message that appears when a user interacts
-with an element. Tooltips are usually initiated when a button is focused or
-hovered.
+A tooltip is a short message that appears when the user hovers or focuses an
+element
 
 <Resources pkg="@zag-js/tooltip" />
 
@@ -31,36 +32,18 @@ Install the tooltip package:
 
 ## Anatomy
 
-Check the tooltip anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="tooltip" />
 
 ## Usage
-
-Import the tooltip package:
-
-```tsx
-import * as tooltip from "@zag-js/tooltip"
-```
-
-The tooltip package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
 
 To get tooltip working, you'll need to:
 
 - Set up the tooltip portal (shared container for tooltips)
 - Add `triggerProps` and `tooltipProps` to the right elements
 
-Then use the framework integration helpers:
-
 <CodeSnippet id="tooltip/usage.mdx" />
 
-### Customizing the timings
+### Timings
 
 By default, the tooltip opens after `400ms` and closes after `150ms`. You can
 customize this by passing the `openDelay` and `closeDelay` context properties.
@@ -76,7 +59,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Changing the placement
+### Placement
 
 The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
@@ -94,7 +77,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Adding an arrow
+### Arrow
 
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
@@ -137,7 +120,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Making the tooltip interactive
+### Interactive tooltip
 
 Set the `interactive` context property to `true` to make the tooltip
 interactive.
@@ -155,7 +138,7 @@ const service = useMachine(tooltip.machine, {
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -206,7 +189,7 @@ return (
 When hovering a different trigger while the tooltip is open, it repositions
 without closing. `aria-describedby` is scoped to the active trigger.
 
-### Controlled tooltip
+### Controlled open
 
 Use `open` and `onOpenChange` for controlled usage.
 
@@ -235,35 +218,9 @@ api.setOpen(true)
 
 </Example>
 
-## Styling guide
+## Styling
 
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-tooltip-trigger] {
-  /* styles for the content */
-}
-
-[data-tooltip-content] {
-  /* styles for the content */
-}
-```
-
-### Open and close states
-
-When the tooltip is open, the `data-state` attribute is added to the trigger
-
-```css
-[data-tooltip-trigger][data-state="open|closed"] {
-  /* styles for the trigger's expanded state */
-}
-
-[data-tooltip-content][data-state="open|closed"] {
-  /* styles for the trigger's expanded state */
-}
-```
-
-### Styling the arrow
+### Arrow styling
 
 When using arrows within the menu, you can style it using css variables.
 
@@ -276,7 +233,7 @@ When using arrows within the menu, you can style it using css variables.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tooltip machine exposes the following context properties:
 
@@ -288,16 +245,19 @@ The tooltip `api` exposes the following methods:
 
 <ApiTable name="tooltip" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-tooltip-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="tooltip" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="tooltip" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tooltip" />

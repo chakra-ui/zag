@@ -1,0 +1,380 @@
+{
+  "id": "avatar",
+  "initial": "loading",
+  "states": [
+    {
+      "id": "loading",
+      "label": "loading",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "error",
+      "label": "error",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "loaded",
+      "label": "loaded",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "error",
+      "event": "img.unmount",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "loading",
+      "event": "src.change",
+      "guard": null
+    },
+    {
+      "from": "error",
+      "to": "loaded",
+      "event": "img.loaded",
+      "guard": null
+    },
+    {
+      "from": "loaded",
+      "to": "error",
+      "event": "img.error",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "error",
+      "event": "img.error",
+      "guard": null
+    },
+    {
+      "from": "loading",
+      "to": "loaded",
+      "event": "img.loaded",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 965,
+      "height": 213,
+      "states": {
+        "loading": {
+          "x": 48,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        },
+        "error": {
+          "x": 847,
+          "y": 110,
+          "w": 86,
+          "h": 44
+        },
+        "loaded": {
+          "x": 451,
+          "y": 120,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "error",
+          "to": "loaded",
+          "events": [
+            "img.loaded"
+          ],
+          "lines": [
+            "img.loaded"
+          ],
+          "points": [
+            [
+              847,
+              132
+            ],
+            [
+              571,
+              132
+            ],
+            [
+              571,
+              135
+            ],
+            [
+              545,
+              135
+            ]
+          ],
+          "label": {
+            "x": 655,
+            "y": 101,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "loaded",
+          "to": "error",
+          "events": [
+            "img.error"
+          ],
+          "lines": [
+            "img.error"
+          ],
+          "points": [
+            [
+              545,
+              149
+            ],
+            [
+              763,
+              149
+            ],
+            [
+              763,
+              143
+            ],
+            [
+              847,
+              143
+            ]
+          ],
+          "label": {
+            "x": 659,
+            "y": 156,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "error",
+          "events": [
+            "img.error"
+          ],
+          "lines": [
+            "img.error"
+          ],
+          "points": [
+            [
+              149,
+              63
+            ],
+            [
+              763,
+              63
+            ],
+            [
+              763,
+              121
+            ],
+            [
+              847,
+              121
+            ]
+          ],
+          "label": {
+            "x": 461,
+            "y": 32,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "loaded",
+          "events": [
+            "img.loaded"
+          ],
+          "lines": [
+            "img.loaded"
+          ],
+          "points": [
+            [
+              149,
+              77
+            ],
+            [
+              175,
+              77
+            ],
+            [
+              175,
+              142
+            ],
+            [
+              451,
+              142
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 149,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 378,
+      "height": 684,
+      "states": {
+        "loading": {
+          "x": 95,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        },
+        "error": {
+          "x": 199,
+          "y": 608,
+          "w": 86,
+          "h": 44
+        },
+        "loaded": {
+          "x": 201,
+          "y": 320,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "error",
+          "to": "loaded",
+          "events": [
+            "img.loaded"
+          ],
+          "lines": [
+            "img.loaded"
+          ],
+          "points": [
+            [
+              242,
+              608
+            ],
+            [
+              242,
+              390
+            ],
+            [
+              232,
+              390
+            ],
+            [
+              232,
+              364
+            ]
+          ],
+          "label": {
+            "x": 154,
+            "y": 474,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "loaded",
+          "to": "error",
+          "events": [
+            "img.error"
+          ],
+          "lines": [
+            "img.error"
+          ],
+          "points": [
+            [
+              264,
+              364
+            ],
+            [
+              264,
+              608
+            ]
+          ],
+          "label": {
+            "x": 271,
+            "y": 474,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "error",
+          "events": [
+            "img.error"
+          ],
+          "lines": [
+            "img.error"
+          ],
+          "points": [
+            [
+              129,
+              76
+            ],
+            [
+              129,
+              524
+            ],
+            [
+              221,
+              524
+            ],
+            [
+              221,
+              608
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 330,
+            "w": 75,
+            "h": 24
+          }
+        },
+        {
+          "from": "loading",
+          "to": "loaded",
+          "events": [
+            "img.loaded"
+          ],
+          "lines": [
+            "img.loaded"
+          ],
+          "points": [
+            [
+              162,
+              76
+            ],
+            [
+              162,
+              236
+            ],
+            [
+              248,
+              236
+            ],
+            [
+              248,
+              320
+            ]
+          ],
+          "label": {
+            "x": 169,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

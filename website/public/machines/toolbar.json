@@ -1,0 +1,190 @@
+{
+  "id": "toolbar",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": "focused",
+      "event": "DESCENDANT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEMS.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ROOT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ROOT.MOUSE_DOWN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ITEM.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ITEM.FOCUS_FIRST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ITEM.FOCUS_LAST",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ITEM.FOCUS_NEXT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ITEM.FOCUS_PREV",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "ROOT.FOCUS",
+      "guard": "!isClickFocus"
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "ITEM.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "ROOT.FOCUS",
+      "guard": "!isClickFocus"
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 561,
+      "height": 134,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 428,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "ITEM.FOCUS",
+            "ROOT.FOCUS"
+          ],
+          "lines": [
+            "ITEM.FOCUS",
+            "ROOT.FOCUS"
+          ],
+          "points": [
+            [
+              126,
+              54
+            ],
+            [
+              428,
+              54
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 61,
+            "w": 82,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 218,
+      "height": 412,
+      "states": {
+        "idle": {
+          "x": 97,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 85,
+          "y": 336,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "ITEM.FOCUS",
+            "ROOT.FOCUS"
+          ],
+          "lines": [
+            "ITEM.FOCUS",
+            "ROOT.FOCUS"
+          ],
+          "points": [
+            [
+              136,
+              76
+            ],
+            [
+              136,
+              336
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 82,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,16 +1,13 @@
 ---
 title: Meter
-description: Using the meter machine in your project.
+description:
+  A meter that shows a measurement within a known range, like disk usage or
+  battery level, with accessible value text.
 package: "@zag-js/meter"
 ---
 
-A meter shows a scalar measurement inside a known range: storage used, battery
-left, a score. Use [`progress`](/components/progress) when the value is how far
-a running task has gone.
-
-`low`, `high`, and `optimum` follow the HTML `<meter>` algorithm. The machine
-exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
-`least-optimal`.
+Shows a measurement inside a known range, like storage used or battery left; for
+task progress, use [`progress`](/components/progress)
 
 <Resources pkg="@zag-js/meter" />
 
@@ -32,22 +29,9 @@ Install the meter package:
 
 ## Usage
 
-Import the meter package:
-
-```tsx
-import * as meter from "@zag-js/meter"
-```
-
-The meter package exports two key functions:
-
-- `machine` — State machine logic.
-- `connect` — Maps machine state to JSX props and event handlers.
-
 > Pass a unique `id` to `useMachine` so the label id used by `aria-labelledby`
 > stays unique. Override it with `ids.label` when the label lives outside the
 > machine.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="meter/usage.mdx" />
 
@@ -55,7 +39,7 @@ The root carries `role="meter"`, `aria-valuemin`, `aria-valuemax`,
 `aria-valuenow`, `aria-valuetext`, and `aria-labelledby`. The visible value text
 is `aria-hidden` because assistive tech already reads `aria-valuetext`.
 
-### Setting the value
+### Initial value
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state. When
 neither is passed, the value defaults to the midpoint of `min` and `max`.
@@ -78,7 +62,7 @@ api.setToMin()
 api.setToMax()
 ```
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react to updates.
 
@@ -95,7 +79,7 @@ const service = useMachine(meter.machine, {
 
 </Example>
 
-### Setting the minimum and maximum values
+### Min and max
 
 By default the meter uses `min` `0` and `max` `100`.
 
@@ -113,7 +97,9 @@ const service = useMachine(meter.machine, {
 ### Thresholds
 
 Pass `low`, `high`, and `optimum`. They default the same way the HTML element
-does: `low` to `min`, `high` to `max`, `optimum` to the midpoint.
+does: `low` to `min`, `high` to `max`, `optimum` to the midpoint. The machine
+exposes the resulting region as `valueState`: `optimal`, `suboptimal`, or
+`least-optimal`.
 
 - If `optimum` is below `low`, a smaller value is better (disk usage).
 - If `optimum` is above `high`, a larger value is better (battery).
@@ -148,7 +134,7 @@ Style the fill with `data-state`:
 }
 ```
 
-### Customizing value text
+### Value text
 
 Use `translations.value` when the formatted number is not enough for assistive
 tech.
@@ -171,7 +157,7 @@ Render the `valueText` part if you also want that string on screen.
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
-### Localizing percentage formatting
+### Percent formatting
 
 `formatOptions` defaults to `{ style: "percent" }`. Pass a different
 `Intl.NumberFormat` style when the raw value should be shown.
@@ -201,37 +187,9 @@ const service = useMachine(meter.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-meter-root] {
-  /* Styles for the root part */
-}
-
-[data-meter-label] {
-  /* Styles for the label part */
-}
-
-[data-meter-track] {
-  /* Styles for the track part */
-}
-
-[data-meter-indicator] {
-  /* Styles for the indicator part */
-}
-
-[data-meter-value-text] {
-  /* Styles for the value text part */
-}
-```
-
-The root, track, and indicator also have `data-orientation` and `data-state`.
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The meter machine exposes the following context properties:
 
@@ -243,10 +201,13 @@ The meter `api` exposes the following methods:
 
 <ApiTable name="meter" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-meter-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="meter" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="meter" />

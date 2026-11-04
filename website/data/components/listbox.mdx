@@ -6,7 +6,7 @@ description:
 package: "@zag-js/listbox"
 ---
 
-A listbox displays selectable options in single or multiple selection modes.
+A listbox displays selectable options in single or multiple selection modes
 
 <Resources pkg="@zag-js/listbox" />
 
@@ -30,33 +30,13 @@ Install the listbox package:
 
 ## Anatomy
 
-Check the listbox anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="listbox" />
 
 ## Usage
 
-Import the listbox package:
-
-```tsx
-import * as listbox from "@zag-js/listbox"
-```
-
-The listbox package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="listbox/usage.mdx" />
 
-### Setting the initial selection
+### Initial selection
 
 To set the initial selection, you can use the `defaultValue` property.
 
@@ -71,7 +51,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Controlling the selection
+### Controlled selection
 
 Use `value` and `onValueChange` to control selection externally.
 
@@ -89,7 +69,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Controlling the highlighted item
+### Controlled highlight
 
 Use `highlightedValue` and `onHighlightChange` to control highlighted state.
 
@@ -118,7 +98,7 @@ Here's an example of how to support searching through a list of items.
 
 </Example>
 
-### Selecting multiple items
+### Multiple selection
 
 To enable multiple selection, set the `selectionMode` property to `multiple` or
 `extended`.
@@ -134,7 +114,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Selection Modes
+### Selection modes
 
 Use `selectionMode` to control selection behavior:
 
@@ -157,7 +137,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Selecting on highlight
+### Select on highlight
 
 Set `selectOnHighlight` to `true` to select items as they become highlighted.
 
@@ -171,7 +151,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Disallowing select-all shortcuts
+### Disable select-all
 
 Set `disallowSelectAll` to disable `Cmd/Ctrl + A` selection.
 
@@ -186,7 +166,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Listening for item selection
+### Item selection
 
 Use `onSelect` to react whenever an item is selected.
 
@@ -203,7 +183,7 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-### Disabling items
+### Disabled items
 
 To disable an item, return `true` from the collection's `isItemDisabled`.
 
@@ -260,70 +240,9 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-listbox-root] {
-  /* styles for the root part */
-}
-
-[data-listbox-label] {
-  /* styles for the label part */
-}
-
-[data-listbox-content] {
-  /* styles for the content part */
-}
-
-[data-listbox-list] {
-  /* styles for the list part (carries role=listbox) */
-}
-
-[data-listbox-item] {
-  /* styles for the item part */
-}
-
-[data-listbox-item-group] {
-  /* styles for the item group part */
-}
-```
-
-### Highlighted state
-
-The list keeps focus and points at the current item with
-`aria-activedescendant`, so the item you're on gets `data-highlighted`.
-
-```css
-[data-listbox-item][data-highlighted] {
-  /* styles for the highlighted item part */
-}
-```
-
-### Selected state
-
-The selected state is applied to the item that is currently selected.
-
-```css
-[data-listbox-item][data-selected] {
-  /* styles for the selected item part */
-}
-```
-
-### Disabled state
-
-The disabled state is applied to the item that is currently disabled.
-
-```css
-[data-listbox-item][data-disabled] {
-  /* styles for the disabled item part */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The listbox machine exposes the following context properties:
 
@@ -335,11 +254,17 @@ The listbox `api` exposes the following methods:
 
 <ApiTable name="listbox" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-listbox-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The list keeps focus and uses `aria-activedescendant`, so style the current item
+with `data-highlighted`, not `:focus`.
 
 <DataAttrTable name="listbox" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="listbox" />
 

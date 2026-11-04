@@ -7,7 +7,9 @@ import { openInStackblitz } from "lib/open-in-stackblitz"
 import { usePathname } from "next/navigation"
 import { useId } from "react"
 import { SiStackblitz } from "react-icons/si"
-import { docAction, example } from "styled-system/recipes"
+import { cx } from "styled-system/css"
+import { example } from "styled-system/recipes"
+import * as bar from "./code-bar.css"
 
 const demoNames: Record<string, string | null> = {
   progress: "progress-linear",
@@ -55,13 +57,11 @@ export function Example(props: ExampleProps) {
         {demoName && (
           <button
             type="button"
-            data-brand="stackblitz"
-            className={docAction()}
-            style={{ marginInlineStart: "auto" }}
+            className={cx(bar.action, bar.end)}
             onClick={() => openInStackblitz(demoName, {})}
           >
-            <SiStackblitz aria-hidden />
-            StackBlitz
+            <SiStackblitz data-brand aria-hidden />
+            Open in StackBlitz
           </button>
         )}
       </div>

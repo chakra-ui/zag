@@ -1,14 +1,11 @@
 import { PostCover } from "app/(site)/blog/_components/post-cover"
 import { PostFilters, PostList } from "app/(site)/blog/_components/post-list"
-import { Chip } from "components/ui/chip"
-import { TwoToneHeading } from "components/ui/heading"
+import { PageHeader, pageContainer } from "components/page/page-header"
 import { createPageMetadata } from "lib/seo"
 import { posts } from "lib/source"
 import Link from "next/link"
 import { Suspense } from "react"
-import { Box } from "styled-system/jsx"
-import { blogIndex, pageHeader } from "styled-system/recipes"
-import { gutter } from "../_components/shared"
+import * as styles from "./blog.css"
 
 export const metadata = createPageMetadata({
   title: "Blog",
@@ -25,58 +22,45 @@ const longDate = (date: Date) =>
   })
 
 export default function BlogPage() {
-  const header = pageHeader()
-  const styles = blogIndex()
   const featured = posts.find((post) => post.featured) ?? posts[0]
   const rest = posts
     .filter((post) => post !== featured)
     .map(({ toc: _toc, ...post }) => post)
 
   return (
-    <Box maxW="1440px" mx="auto" px={gutter} pb="24">
-      <header className={header.root}>
-        <div className={header.copy}>
-          <p className={header.eyebrow}>Blog</p>
-          <TwoToneHeading
-            as="h1"
-            title="Notes from the"
-            accent="machine room"
-            size="display"
-          />
-          <p className={header.lead}>
-            Releases, design decisions and how-to builds from the Zag team.{" "}
-            <Link href="/blog/rss.xml" prefetch={false}>
-              RSS ↗
+    <div className={pageContainer}>
+      <PageHeader
+        title="Blog"
+        lead={
+          <>
+            Releases, design decisions and how-to builds from the Zag team.
+            Follow along with the{" "}
+            <Link href="/blog/rss.xml" prefetch={false} className={styles.rss}>
+              RSS feed
             </Link>
-          </p>
-        </div>
-        <Suspense>
-          <PostFilters />
-        </Suspense>
-      </header>
+            .
+          </>
+        }
+        action={
+          <Suspense>
+            <PostFilters />
+          </Suspense>
+        }
+      />
 
       {featured && (
         <Link href={`/blog/${featured.slug}`} className={styles.featured}>
-          {featured.cover ? (
-            <PostCover cover={featured.cover} size="md" />
-          ) : (
-            <span className={styles.cover} aria-hidden>
-              <span className={styles.coverMeta}>{featured.type}</span>
-              <span className={styles.coverLabel}>{featured.title}</span>
-              <span className={styles.coverFoot}>
-                {featured.readingTime} min read
-              </span>
-            </span>
-          )}
+          {featured.cover && <PostCover cover={featured.cover} size="md" />}
           <span className={styles.featuredBody}>
             <span className={styles.meta}>
-              <Chip tone="accent">{featured.type}</Chip>
-              <time
-                dateTime={featured.date.toISOString()}
-                className={styles.date}
-              >
+              <span className={styles.typePill({ type: featured.type })}>
+                {featured.type}
+              </span>
+              <time dateTime={featured.date.toISOString()}>
                 {longDate(featured.date)}
               </time>
+              <span aria-hidden>·</span>
+              <span>{featured.readingTime} min read</span>
             </span>
             <span className={styles.featuredTitle}>{featured.title}</span>
             <span className={styles.featuredLead}>{featured.description}</span>
@@ -90,11 +74,9 @@ export default function BlogPage() {
         </Link>
       )}
 
-      <Box mt="12">
-        <Suspense>
-          <PostList posts={rest} />
-        </Suspense>
-      </Box>
-    </Box>
+      <Suspense>
+        <PostList posts={rest} />
+      </Suspense>
+    </div>
   )
 }

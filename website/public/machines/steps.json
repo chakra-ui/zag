@@ -1,0 +1,78 @@
+{
+  "id": "steps",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "idle",
+      "to": null,
+      "event": "COMPLETED.SET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "STEP.NEXT",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "STEP.PREV",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "STEP.RESET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "STEP.SKIP",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

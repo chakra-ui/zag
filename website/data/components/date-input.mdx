@@ -1,12 +1,14 @@
 ---
 title: Date Input
-description: Using the date-input machine in your project.
+description:
+  A segmented date input where users type the day, month and year in separate
+  fields, with locale-aware formatting.
 package: "@zag-js/date-input"
 status: beta
 ---
 
 A date input lets you enter a date by typing into segmented input fields (month,
-day, year, etc.) with validation and keyboard navigation.
+day, year, etc.) with validation and keyboard navigation
 
 > **Good to know**: The date input is built on top of the
 > [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
@@ -37,11 +39,6 @@ Install the date-input package:
 
 ## Anatomy
 
-Check the date-input anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="date-input" />
 
 ## Usage
@@ -52,20 +49,12 @@ Import the package:
 import * as dateInput from "@zag-js/date-input"
 ```
 
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-- `parse` - Parses an ISO 8601 date string.
-
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Then use the framework integration helpers:
+The package also exports `parse`, which turns an ISO 8601 string into a date
+value.
 
 <CodeSnippet id="date-input/usage.mdx" />
 
-### Rendering segments
+### Segments
 
 Use `api.getSegments()` to get the list of date segments. Each segment has a
 `type` (e.g., `"month"`, `"day"`, `"year"`, `"literal"`) and a `text` property
@@ -111,7 +100,7 @@ For range mode, pass the `index` to distinguish start and end date segments:
 </div>
 ```
 
-### Setting the initial date
+### Initial date
 
 To set the initial value rendered by the date input, set `defaultValue`.
 
@@ -125,7 +114,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Controlling the selected date
+### Controlled value
 
 Use `value` and `onValueChange` to programmatically control the selected date.
 
@@ -150,7 +139,7 @@ const nextValue = dateInput.parse("2024-01-15")
 api.setValue([nextValue])
 ```
 
-### Setting the min and max dates
+### Min and max dates
 
 To constrain the dates that can be entered, set the `min` and `max` properties.
 
@@ -168,7 +157,7 @@ const service = useMachine(dateInput.machine, {
 When typing values outside the range, invalid segments will be marked as
 invalid.
 
-### Disabling the date input
+### Disabled state
 
 Set `disabled` to `true` to make the input non-interactive.
 
@@ -182,7 +171,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Setting read-only mode
+### Read-only state
 
 Set `readOnly` to `true` to prevent value changes while allowing focus.
 
@@ -196,7 +185,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Required and invalid state
+### Required and invalid
 
 Use `required` and `invalid` for form validation and UI state.
 
@@ -211,7 +200,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Controlling date granularity
+### Granularity
 
 Set `granularity` to control the smallest unit displayed in the input.
 
@@ -227,7 +216,7 @@ const service = useMachine(dateInput.machine, {
 
 The available granularities are: `"day"`, `"hour"`, `"minute"`, and `"second"`.
 
-### Forcing leading zeros
+### Leading zeros
 
 Set `shouldForceLeadingZeros` to always display leading zeros in numeric fields
 (e.g., "01" instead of "1").
@@ -244,7 +233,7 @@ const service = useMachine(dateInput.machine, {
 
 By default, leading zeros follow the locale's conventions.
 
-### Controlling the placeholder date
+### Placeholder date
 
 Use `placeholderValue` to set the initial placeholder date, which is shown in
 unfilled segments.
@@ -271,7 +260,7 @@ const service = useMachine(dateInput.machine, {
 })
 ```
 
-### Listening to focus changes
+### Focus changes
 
 Use `onFocusChange` to listen for when the input gains or loses focus.
 
@@ -288,7 +277,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Choosing a selection mode
+### Selection mode
 
 Use `selectionMode` to allow entering a single date or a date range.
 
@@ -304,7 +293,7 @@ const service = useMachine(dateInput.machine, {
 
 In range mode, the input will have segments for both start and end dates.
 
-### Working with display values
+### Display values
 
 The `displayValues` property tracks partially entered dates while the user is
 typing. This is useful for showing the editing state before a complete date is
@@ -319,7 +308,7 @@ const displayValues = api.displayValues
 
 </Example>
 
-### Clearing the date
+### Clear value
 
 Use `api.clearValue()` to clear the selected date.
 
@@ -364,7 +353,7 @@ Then render each segment:
 </div>
 ```
 
-### Checking segment editability
+### Segment editability
 
 Use `api.getSegmentState()` to determine if a segment can be edited.
 
@@ -377,7 +366,7 @@ console.log(state.editable) // true if the segment is editable
 
 </Example>
 
-### Using the hidden input for forms
+### Hidden input
 
 The date input includes a hidden input element for form submission.
 
@@ -405,7 +394,7 @@ Multiple date inputs (range mode) can use a `name` prop on
 <input {...api.getHiddenInputProps({ index: 1, name: "endDate" })} />
 ```
 
-### Labeling the input
+### Input label
 
 Use `getLabelProps()` to properly label the input for accessibility.
 
@@ -420,7 +409,7 @@ Use `getLabelProps()` to properly label the input for accessibility.
 
 </Example>
 
-### Setting locale and timezone
+### Locale and timezone
 
 Set `locale` and `timeZone` to control date parsing and formatting.
 
@@ -435,7 +424,7 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-### Hour cycle (12-hour vs 24-hour time)
+### Hour cycle
 
 Set `hourCycle` to control time format display.
 
@@ -520,7 +509,7 @@ Use the date input within a form with standard HTML form handling:
 
 </Example>
 
-### Listening to date changes
+### Date changes
 
 Use `onValueChange` to listen for date changes.
 
@@ -562,91 +551,9 @@ const service = useMachine(dateInput.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-date-input-root] {
-  /* styles for the root container */
-}
-
-[data-date-input-label] {
-  /* styles for the label */
-}
-
-[data-date-input-control] {
-  /* styles for the control container */
-}
-
-[data-date-input-segment-group] {
-  /* styles for the segment group */
-}
-
-[data-date-input-segment] {
-  /* styles for each segment */
-}
-
-[data-date-input-hidden-input] {
-  /* styles for the hidden input */
-}
-```
-
-### State attributes
-
-```css
-[data-date-input-root] {
-  &[data-disabled] {
-    /* styles for disabled state */
-  }
-
-  &[data-readonly] {
-    /* styles for read-only state */
-  }
-
-  &[data-invalid] {
-    /* styles for invalid state */
-  }
-}
-```
-
-### Segment states
-
-```css
-[data-date-input-segment] {
-  &[data-placeholder-shown] {
-    /* styles for placeholder segments */
-  }
-
-  &[data-type="month"] {
-    /* styles for month segments */
-  }
-
-  &[data-type="day"] {
-    /* styles for day segments */
-  }
-
-  &[data-type="year"] {
-    /* styles for year segments */
-  }
-
-  &[data-type="hour"] {
-    /* styles for hour segments */
-  }
-
-  &[data-type="minute"] {
-    /* styles for minute segments */
-  }
-
-  &[data-type="second"] {
-    /* styles for second segments */
-  }
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The date input machine exposes the following context properties:
 
@@ -658,10 +565,16 @@ The date input `api` exposes the following methods:
 
 <ApiTable name="date-input" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-date-input-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+Segments get `data-type` set to their date part, such as `month`, `day`, `year`,
+or `hour`.
 
 <DataAttrTable name="date-input" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="date-input" />

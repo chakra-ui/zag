@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "typecheck": "panda codegen && fumadocs-mdx && tsc --noEmit",
     "gen:snippet": "plop snippet",
-    "gen:component": "plop component"
+    "gen:component": "plop component",
+    "machine-logic": "tsx scripts/machine-logic.ts"
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
@@ -72,8 +73,8 @@
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/timer": "workspace:*",
-    "@zag-js/toc": "workspace:*",
     "@zag-js/toast": "workspace:*",
+    "@zag-js/toc": "workspace:*",
     "@zag-js/toggle": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
@@ -101,8 +102,8 @@
     "@pandacss/preset-panda": "2.2.0",
     "@types/mdx": "^2.0.14",
     "@types/react": "^19.2.18",
+    "elkjs": "0.12.0",
     "rehype-autolink-headings": "7.1.0",
-    "rehype-code-titles": "1.2.1",
     "rehype-prism-plus": "2.0.2",
     "remark-directive": "4.0.0",
     "typescript": "6.0.3"

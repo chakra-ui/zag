@@ -1,12 +1,13 @@
 ---
 title: Editable
-description: Using the editable machine in your project.
+description:
+  Inline text editing that shows a value as text and switches to an input on
+  click, with submit and cancel controls.
 package: "@zag-js/editable"
 ---
 
-Editable is an input field used for editing a single line of text. It renders as
-static text and transforms into a text input field when the edit interaction is
-triggered (click, focus, or double-click).
+Editable shows text that turns into an input on click, focus or double-click,
+for quick inline edits
 
 <Resources pkg="@zag-js/editable" />
 
@@ -28,33 +29,13 @@ Install the editable package:
 
 ## Anatomy
 
-Check the editable anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="editable" />
 
 ## Usage
 
-Import the editable package:
-
-```tsx
-import * as editable from "@zag-js/editable"
-```
-
-The editable package exports two key functions:
-
-- `machine` - Behavior logic for the editable.
-- `connect` - Maps behavior to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="editable/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to define the initial value.
 
@@ -102,7 +83,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Editable supports two ways of listening for value changes:
 
@@ -124,7 +105,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Listening for revert events
+### Revert events
 
 Use `onValueRevert` to react when a user cancels editing.
 
@@ -140,7 +121,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Using custom controls
+### Custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
 mode. We use the render prop pattern to provide access to the internal state of
@@ -170,7 +151,7 @@ When using autoresize, the input and preview elements should not have any
 styles. Use `all: unset` if needed and pass any styles to the "area" element
 since it's shared by the input and preview elements.
 
-### Setting a maxWidth
+### Max width
 
 It is common to cap the width when auto-resizing. Set `max-width` on the area
 part in CSS.
@@ -194,7 +175,7 @@ const service = useMachine(editable.machine, {
 When the editable reaches the specified max-width, it'll clip the preview text
 with an ellipsis.
 
-### Editing with double click
+### Double-click editing
 
 The editable supports two modes of activating the "edit" state:
 
@@ -213,7 +194,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Customizing submit behavior
+### Submit behavior
 
 Use `submitMode` to control when edits are committed.
 
@@ -227,7 +208,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Usage with Textarea
+### Textarea
 
 Editable supports using a `textarea` instead of an `input` field. When a
 textarea is used, the editable will commit the value on `Cmd + Enter` or
@@ -246,7 +227,7 @@ textarea is used, the editable will commit the value on `Cmd + Enter` or
 
 </Example>
 
-### Customizing placeholder text
+### Placeholder text
 
 Set `placeholder` as a string or per-mode object.
 
@@ -263,7 +244,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Labeling the input
+### Input label
 
 Render the label part to name the input.
 
@@ -282,7 +263,7 @@ input"), since an `aria-labelledby` pointing to a missing element is
 [ignored](https://www.w3.org/TR/accname-1.2/#computation-steps). Set it to
 describe the value.
 
-### Customizing accessibility labels
+### Accessibility labels
 
 Use `translations` to customize control labels.
 
@@ -301,7 +282,7 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-### Submitting with an external form
+### External form
 
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
@@ -317,46 +298,9 @@ const service = useMachine(editable.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Focused state
-
-When the editable is in the focused mode, we set a `data-focus` attribute on the
-"area" part.
-
-```css
-[data-editable-area][data-focus] {
-  /* CSS for the editable's focus state */
-}
-```
-
-### Empty state
-
-When the editable's value is empty, the "area" part gets a
-`data-placeholder-shown` attribute.
-
-```css
-[data-editable-area][data-placeholder-shown] {
-  /* CSS for the editable's empty state */
-}
-```
-
-### Disabled state
-
-When the editable is disabled, we set a `data-disabled` attribute on the "area"
-part.
-
-```css
-[data-editable-area][data-disabled] {
-  /* CSS for the editable's focus state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The editable machine exposes the following context properties:
 
@@ -368,12 +312,15 @@ The editable `api` exposes the following methods:
 
 <ApiTable name="editable" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-editable-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="editable" />
 
 ## Accessibility
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="editable" />

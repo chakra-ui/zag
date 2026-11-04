@@ -2,26 +2,23 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { frameworks, type Framework } from "lib/framework-utils"
 import { usePathname, useRouter } from "next/navigation"
-import { HiChevronDown } from "react-icons/hi"
-import { css } from "styled-system/css"
-import { HStack, Stack, styled } from "styled-system/jsx"
+import { HiCheck, HiChevronDown } from "react-icons/hi"
 import { useFramework } from "./framework"
-import { Icon } from "../ui/icon"
+import * as styles from "./framework-select.css"
 
-// Same menu as the version switcher in the top nav
-export function FrameworkSelect() {
+export function FrameworkSelect(props: { id?: string }) {
   const { framework, setFramework } = useFramework()
   const router = useRouter()
   const asPath = usePathname()
 
   const service = useMachine(menu.machine, {
-    id: "framework-select",
-    positioning: { strategy: "fixed", placement: "bottom-end" },
+    id: props.id ?? "framework-select",
+    positioning: { strategy: "fixed", placement: "bottom-end", gutter: 6 },
     onSelect({ value }) {
-      const newFramework = value as Framework
-      setFramework?.(newFramework)
-      if (asPath.includes(framework) && newFramework !== framework) {
-        router.replace(asPath.replace(framework, newFramework))
+      const next = value as Framework
+      setFramework?.(next)
+      if (asPath.includes(framework) && next !== framework) {
+        router.replace(asPath.replace(framework, next))
       }
     },
   })
@@ -30,86 +27,42 @@ export function FrameworkSelect() {
   const current = frameworks[framework]
 
   return (
-    <HStack>
-      <styled.span
-        fontFamily="mono"
-        fontSize="11px"
-        textTransform="uppercase"
-        letterSpacing="0.12em"
-        color="text.muted"
-      >
-        Framework
-      </styled.span>
-      <styled.button
-        display="flex"
-        alignItems="center"
-        gap="1.5"
-        h="7"
-        borderWidth="1px"
-        borderColor="border"
-        rounded="full"
-        fontFamily="mono"
-        fontSize="12px"
-        px="3"
-        cursor="pointer"
-        bg="transparent"
-        color="text.bold"
-        _hover={{ borderColor: "border.bold" }}
+    <>
+      <button
+        className={styles.trigger}
+        aria-label={`Framework: ${current.label}, switch framework`}
         {...api.getTriggerProps()}
       >
-        <Icon as={current.icon} aria-hidden />
+        <current.icon aria-hidden />
         {current.label}
-        <Icon as={HiChevronDown} fontSize="md" />
-      </styled.button>
+        <HiChevronDown className={styles.chevron} aria-hidden />
+      </button>
 
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <Stack
-              width="180px"
-              zIndex="1000"
-              fontSize="13px"
-              bg="bg"
-              padding="1"
-              gap="0"
-              isolation="isolate"
-              listStyleType="none"
-              borderWidth="1px"
-              borderColor="border.bold"
-              rounded="md"
-              boxShadow="lg"
-              outline="0"
-              {...api.getContentProps()}
-            >
+            <div className={styles.content} {...api.getContentProps()}>
               {Object.entries(frameworks).map(([key, value]) => (
                 <div
                   key={key}
+                  className={styles.item}
                   {...api.getOptionItemProps({
                     type: "radio",
                     value: key,
                     checked: key === framework,
                   })}
-                  className={css({
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "2",
-                    px: "2",
-                    py: "1.5",
-                    rounded: "sm",
-                    cursor: "pointer",
-                    color: "text.muted",
-                    _checked: { color: "text.bold" },
-                    _highlighted: { bg: "bg.muted", color: "text.bold" },
-                  })}
                 >
-                  <Icon as={value.icon} aria-hidden />
+                  <value.icon aria-hidden />
                   {value.label}
+                  {key === framework && (
+                    <HiCheck className={styles.check} aria-hidden />
+                  )}
                 </div>
               ))}
-            </Stack>
+            </div>
           </div>
         </Portal>
       )}
-    </HStack>
+    </>
   )
 }

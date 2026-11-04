@@ -1,10 +1,12 @@
 ---
 title: Toggle Group
-description: Using the toggle-group machine in your project.
+description:
+  A group of toggle buttons where users switch one or more related options, with
+  arrow key navigation.
 package: "@zag-js/toggle-group"
 ---
 
-A toggle group lets users toggle one or more related options.
+A toggle group lets users toggle one or more related options
 
 <Resources pkg="@zag-js/toggle-group" />
 
@@ -34,22 +36,9 @@ how we name its parts.
 
 ## Usage
 
-Import the toggle group package:
-
-```tsx
-import * as toggle from "@zag-js/toggle-group"
-```
-
-The toggle group package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="toggle-group/usage.mdx" />
 
-### Changing the orientation
+### Orientation
 
 By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
@@ -65,7 +54,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
@@ -83,7 +72,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Controlled toggle group
+### Controlled value
 
 Use `value` and `onValueChange` for controlled usage.
 
@@ -100,7 +89,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Allowing multiple selection
+### Multiple selection
 
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
@@ -115,7 +104,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Disabling the toggle group
+### Disabled state
 
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
@@ -146,7 +135,7 @@ Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
 
 </Example>
 
-### Disabling focus loop
+### Disable focus loop
 
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loopFocus` property in the machine's context to `false`.
@@ -161,7 +150,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Disabling roving focus management
+### Disable roving focus
 
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
@@ -176,7 +165,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Allowing or preventing deselection
+### Deselection
 
 Use `deselectable` to control whether the active item can be toggled off in
 single-select mode.
@@ -191,7 +180,7 @@ const service = useMachine(toggle.machine, {
 
 </Example>
 
-### Programmatic value control
+### Programmatic value
 
 Use the API for imperative updates.
 
@@ -203,54 +192,9 @@ api.setValue(["bold", "italic"])
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-specific data attribute you can target in CSS.
-
-### Pressed State
-
-When pressed, `data-pressed` is applied to the toggle button.
-
-```css
-[data-toggle-group-item][data-pressed] {
-  /* styles for toggle button */
-}
-```
-
-### Focused State
-
-Use native focus selectors to style the focused toggle button. Use
-`:focus-visible` for keyboard focus rings and `:focus-within` if the root should
-be styled while a toggle button is focused.
-
-```css
-[data-toggle-group-root]:focus-within {
-  /* styles for the focused root */
-}
-
-[data-toggle-group-item]:focus-visible {
-  /* styles for the focused toggle */
-}
-```
-
-### Disabled State
-
-When a toggle button is disabled, the `data-disabled` is applied to the root and
-matching toggle button.
-
-```css
-[data-toggle-group-root][data-disabled] {
-  /* styles for the root */
-}
-
-[data-toggle-group-item][data-disabled] {
-  /* styles for the toggle */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The toggle group machine exposes the following context properties:
 
@@ -262,7 +206,13 @@ The toggle group `api` exposes the following methods:
 
 <ApiTable name="toggle-group" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-toggle-group-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+Toggle buttons have no focus attribute. Use `:focus-visible` on the item and
+`:focus-within` on the root.
 
 <DataAttrTable name="toggle-group" />
 
@@ -272,6 +222,6 @@ Uses roving tabindex to manage focus movement among toggle buttons. Items are
 rendered as buttons with `aria-pressed` in both single and multiple selection
 modes.
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="toggle-group" />

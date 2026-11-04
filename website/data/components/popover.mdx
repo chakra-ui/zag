@@ -1,12 +1,13 @@
 ---
 title: Popover
-description: Using the popover machine in your project.
+description:
+  An accessible popover that floats next to a trigger, with focus management,
+  positioning and outside click dismissal.
 package: "@zag-js/popover"
 ---
 
-A popover is a non-modal dialog that floats around a trigger. It is used to
-display contextual information to the user, and should be paired with a
-clickable trigger element.
+A popover is a non-modal panel that floats next to the trigger that opens it,
+for contextual content and actions
 
 <Resources pkg="@zag-js/popover" />
 
@@ -27,29 +28,9 @@ Install the popover package:
 
 ## Anatomy
 
-Check the popover anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="popover" />
 
 ## Usage
-
-Import the popover package:
-
-```tsx
-import * as popover from "@zag-js/popover"
-```
-
-The popover package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="popover/usage.mdx" />
 
@@ -57,7 +38,7 @@ The positioner is rendered in a `Portal` (or `Teleport`/`use:portal` depending
 on your framework). Zag automatically preserves the correct tab order after the
 trigger, even though the content lives elsewhere in the DOM.
 
-### Managing focus within popover
+### Focus management
 
 When the popover opens, focus moves to the first focusable element. To customize
 this, set `initialFocusEl`.
@@ -76,7 +57,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-### Changing the modality
+### Modality
 
 In some cases, you might want the popover to be **modal**. This means that
 it'll:
@@ -125,7 +106,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-### Controlled open state
+### Controlled open
 
 Use `open` and `onOpenChange` to control visibility externally.
 
@@ -168,7 +149,7 @@ return (
 
 </Example>
 
-### Changing the placement
+### Placement
 
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
@@ -185,7 +166,7 @@ const service = useMachine(popover.machine, {
 
 </Example>
 
-### Listening for open state changes
+### Open state changes
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -236,50 +217,15 @@ return (
 When the popover is open and a different trigger is clicked, it repositions
 without closing. Focus returns to the correct trigger on close.
 
-### Usage within dialog
+### Inside a dialog
 
 When using the popover within a dialog, avoid rendering the popover in a
 `Portal` or `Teleport`. This is because the dialog will trap focus within it,
 and the popover will be rendered outside the dialog.
 
-## Styling guide
+## Styling
 
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open and closed state
-
-When the popover is expanded, we add a `data-state` and `data-placement`
-attribute to the trigger.
-
-```css
-[data-popover-trigger][data-state="open|closed"] {
-  /* styles for the expanded state */
-}
-
-[data-popover-content][data-state="open|closed"] {
-  /* styles for the expanded state */
-}
-
-[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
-  /* styles for computed placement */
-}
-```
-
-### Position aware
-
-When the popover is expanded, `data-placement` is added to trigger and content.
-
-```css
-[data-popover-trigger][data-placement="(top|bottom)-(start|end)"] {
-  /* styles for computed placement */
-}
-
-[data-popover-content][data-placement="(top|bottom)-(start|end)"] {
-  /* styles for computed placement */
-}
-```
-
-### Compensating for scrollbar width
+### Scrollbar width
 
 When `modal` is `true`, Zag applies `--scrollbar-width` on the root element. Use
 this CSS variable to keep fixed or sticky elements aligned when the popover
@@ -316,7 +262,7 @@ the `--arrow-shadow-color` variable.
 
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The popover machine exposes the following context properties:
 
@@ -328,11 +274,17 @@ The popover `api` exposes the following methods:
 
 <ApiTable name="popover" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-popover-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The trigger and content get `data-placement` with the computed placement, such
+as `bottom-start`.
 
 <DataAttrTable name="popover" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="popover" />
 
@@ -341,6 +293,6 @@ The popover `api` exposes the following methods:
 Adheres to the
 [Dialog WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialogmodal).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="popover" />

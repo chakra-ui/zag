@@ -1,10 +1,12 @@
 ---
 title: Toast
-description: Using the toast machine in your project.
+description:
+  Toast notifications that show brief feedback after an action, with stacking,
+  timers, pause on hover and promise support.
 package: "@zag-js/toast"
 ---
 
-Toast provides brief feedback after an action.
+Toast provides brief feedback after an action
 
 <Resources pkg="@zag-js/toast" />
 
@@ -27,28 +29,15 @@ Install the toast package:
 
 ## Anatomy
 
-Check the toast anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="toast" />
 
 ## Usage
-
-Import the toast package:
-
-```tsx
-import * as toast from "@zag-js/toast"
-```
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="toast/usage.mdx" />
 
 To use toast effectively, understand these key parts:
 
-### Toast Group
+### Toast group
 
 - `toast.group.machine` - State machine logic for the toast region.
 - `toast.group.connect` - Maps group state to JSX props and subscriptions.
@@ -56,12 +45,12 @@ To use toast effectively, understand these key parts:
   > We recommend setting up the toast group machine once at the root of your
   > project.
 
-### Toast Item
+### Toast item
 
 - `toast.machine` - State machine logic for a single toast.
 - `toast.connect` - Maps toast state to JSX props and controls.
 
-### Creating a toast
+### Create a toast
 
 Common toast types are `info`, `success`, `warning`, `loading`, and `error`. You
 can also pass a custom type string.
@@ -100,7 +89,7 @@ The options you can pass in are:
 - `priority` — Queue priority (1–8, lower is higher). Auto-assigned based on
   `type` and `action` when omitted.
 
-### Changing the placement
+### Placement
 
 Placement is configured on the toast store and applies to the whole toast group.
 
@@ -132,7 +121,7 @@ const toaster = toast.createStore({
 > Be sure to set up the [required styles](#requirement) to make overlap work
 > correctly.
 
-### Changing the duration
+### Duration
 
 Every toast has a default visible duration depending on the `type` set. Here's
 the following toast types and matching default durations:
@@ -168,7 +157,7 @@ toaster.create({
 Use `toaster.create(...)` for new toasts and `toaster.update(id, ...)` to modify
 an existing one.
 
-### Using portals
+### Portals
 
 Using a portal is helpful to ensure that the toast is rendered outside the DOM
 hierarchy of the parent component. To render the toast in a portal, wrap the
@@ -227,7 +216,7 @@ toaster.dismiss(id)
 
 </Example>
 
-#### Updating from current properties
+#### Update from props
 
 Pass a function to derive an update from the latest toast properties. Its return
 value is shallowly merged into the toast.
@@ -251,7 +240,7 @@ toaster.pause()
 toaster.resume()
 ```
 
-### Handling promises
+### Promises
 
 The toast group API exposes a `toaster.promise()` function to allow you update
 the toast when it resolves or rejects.
@@ -290,7 +279,7 @@ const result = toaster.promise(fetchData(), {
 await result?.unwrap()
 ```
 
-### Pausing the toasts
+### Pause toasts
 
 There are three scenarios that pause toast timeout:
 
@@ -314,7 +303,7 @@ toaster.pause(id)
 
 </Example>
 
-### Limiting the number of toasts
+### Max toasts
 
 Toasts are great but displaying too many of them can sometimes hamper the user
 experience. To limit visible toasts, set `max` on the store.
@@ -360,7 +349,7 @@ toaster.create({
 
 </Example>
 
-### Focus Hotkey for toasts
+### Focus hotkey
 
 When a toast is created, you can focus the toast region by pressing the
 `alt + T`. This is useful for screen readers and keyboard navigation.
@@ -377,7 +366,7 @@ const service = useMachine(toast.group.machine, {
 
 </Example>
 
-### Listening for toast lifecycle
+### Toast lifecycle
 
 When a toast is created, you can listen for the status changes across its
 lifecycle using the `onStatusChange` callback when you call
@@ -426,7 +415,7 @@ toaster.create({ title: "Pinned", swipeDirections: [] })
 Swiping never starts on buttons, links or form fields. Add `data-swipe-ignore`
 to any other element that should keep its own pointer behavior.
 
-### Changing the gap between toasts
+### Toast gap
 
 When multiple toasts are rendered, a gap of `16px` is applied between each
 toast. To change this value, set `gap` on the store.
@@ -441,7 +430,7 @@ const toaster = toast.createStore({
 
 </Example>
 
-### Changing the offset
+### Offset
 
 The toast region has a default `1rem` offset from the viewport. Use the
 `offsets` store option to change this offset.
@@ -456,7 +445,7 @@ const toaster = toast.createStore({
 
 </Example>
 
-## Styling guide
+## Styling
 
 ### Requirement
 
@@ -508,32 +497,6 @@ The snap-back and exit still animate. While swiping, the toast also has
 }
 ```
 
-### Toast styling
-
-When a toast is created and the `api.getRootProps()` from the `toast.connect` is
-used, the toast will have a `data-type` that matches the specified `type` at its
-creation.
-
-You can use this property to style the toast.
-
-```css
-[data-toast-root][data-type="info"] {
-  /* Styles for the specific toast type */
-}
-
-[data-toast-root][data-type="error"] {
-  /* Styles for the error toast type */
-}
-
-[data-toast-root][data-type="success"] {
-  /* Styles for the success toast type */
-}
-
-[data-toast-root][data-type="loading"] {
-  /* Styles for the loading toast type */
-}
-```
-
 ## Methods and Properties
 
 ### Machine API
@@ -542,10 +505,16 @@ The toast's `api` exposes the following methods:
 
 <ApiTable name="toast" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-toast-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+The root gets `data-type` from the toast's `type`, such as `info`, `success`,
+`error`, or `loading`.
 
 <DataAttrTable name="toast" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="toast" />

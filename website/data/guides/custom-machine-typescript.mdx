@@ -1,0 +1,294 @@
+---
+title: TypeScript
+description: Type a machine and its API.
+---
+
+This page shows how to type a machine you write, and the
+[TypeScript guide](/guides/typescript) covers the types of existing machines
+
+## File layout
+
+Each machine splits its code by concern. Types live in one file and every other
+file imports from it.
+
+```text
+counter/
+├── counter.anatomy.ts   # parts
+├── counter.dom.ts       # ids and element lookups
+├── counter.types.ts     # props, schema, api
+├── counter.machine.ts   # createMachine
+├── counter.connect.ts   # connect
+└── index.ts             # public exports
+```
+
+## Props
+
+Props are the options users pass to `useMachine`. Extend `CommonProperties` from
+`@zag-js/types` to get `id` and `getRootNode`.
+
+```ts
+import type { CommonProperties } from "@zag-js/types"
+
+export interface ValueChangeDetails {
+  value: number
+}
+
+export interface CounterProps extends CommonProperties {
+  /**
+   * The controlled value.
+   */
+  value?: number | undefined
+  /**
+   * The initial value when uncontrolled.
+   * @default 0
+   */
+  defaultValue?: number | undefined
+  /**
+   * The smallest allowed value.
+   * @default 0
+   */
+  min?: number | undefined
+  /**
+   * Called when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+}
+```
+
+- Write optional props as `prop?: T | undefined`. Zag compiles with
+  `exactOptionalPropertyTypes`, and users may pass `undefined` explicitly.
+- Pass callbacks a details object, named after the callback: `onValueChange`
+  takes `ValueChangeDetails`. You can add fields later without breaking callers.
+- Add a JSDoc comment to every prop, with `@default` when there is one. Editors
+  show it on hover.
+
+## Defaulted props
+
+Props are optional for the user, but some always have a value inside the machine
+because `props()` fills them in. List those keys in `defaultPropKey`.
+
+```ts
+type PropsWithDefault = "defaultValue" | "min" | "max" | "step"
+
+export interface CounterSchema {
+  props: CounterProps
+  defaultPropKey: PropsWithDefault
+  // ...
+}
+```
+
+Inside the machine, `prop("min")` is now `number`, not `number | undefined`.
+Props without a default keep their optional type.
+
+```ts
+prop("min") // number
+prop("onValueChange") // ((details: ValueChangeDetails) => void) | undefined
+```
+
+The keys in `defaultPropKey` must match the defaults your `props()` returns.
+TypeScript can't check that for you, since `props()` ends with `...props`.
+
+`defaultPropKey` also controls what users must pass. With it, `useMachine` takes
+your props as written, so `id` stays required. Use `defaultPropKey: never` when
+nothing has a default.
+
+## Schema
+
+The schema is one interface that types every part of the machine.
+
+```ts
+import type { EventObject } from "@zag-js/core"
+
+export interface CounterSchema {
+  state: "idle" | "focused"
+  props: CounterProps
+  defaultPropKey: PropsWithDefault
+  context: {
+    value: number
+  }
+  computed: {
+    canIncrement: boolean
+    canDecrement: boolean
+  }
+  event: EventObject
+  action: "increment" | "decrement" | "setValue" | "focusValue"
+  guard: "canIncrement" | "canDecrement"
+  effect: string
+}
+```
+
+| Key              | What it types                                                      |
+| ---------------- | ------------------------------------------------------------------ |
+| `state`          | Union of state values. Nested states use dot paths: `"open.idle"`. |
+| `tag`            | Union of tags for `state.hasTag()`.                                |
+| `props`          | The props interface.                                               |
+| `defaultPropKey` | Prop keys that `props()` fills in.                                 |
+| `context`        | The value type of each bindable.                                   |
+| `refs`           | The type of each ref.                                              |
+| `computed`       | The return type of each computed value.                            |
+| `event`          | The events `send` accepts.                                         |
+| `action`         | Names in `implementations.actions`.                                |
+| `guard`          | Names in `implementations.guards`.                                 |
+| `effect`         | Names in `implementations.effects`. Use `never` if there are none. |
+
+Leave out keys you don't use, like `refs` or `tag`.
+
+## Names and events
+
+Zag's own machines set `action`, `guard` and `effect` to `string` and `event` to
+`EventObject`. That accepts any name and any event.
+
+For stricter checks, use unions. TypeScript then flags a typo in
+`actions: [...]` and requires an implementation for every name.
+
+Typing `event` as a union does the same for events. Keys under `on` must be
+known event types, and `send` rejects unknown ones.
+
+```ts
+type CounterEvent =
+  | { type: "INCREMENT" }
+  | { type: "DECREMENT" }
+  | { type: "VALUE.SET"; value: number }
+  | { type: "FOCUS" }
+  | { type: "BLUR" }
+
+export interface CounterSchema {
+  event: CounterEvent
+  // ...
+}
+```
+
+Inside implementations, `event` stays loosely typed, so `event.value` is `any`.
+Annotate it where it matters.
+
+## Create the machine
+
+Pass the schema to `createMachine`. Every callback in the config is then typed.
+
+```ts
+import { createMachine } from "@zag-js/core"
+import type { CounterSchema } from "./counter.types"
+
+export const machine = createMachine<CounterSchema>({
+  props({ props }) {
+    return { defaultValue: 0, min: 0, max: 10, step: 1, ...props }
+  },
+  // ...
+})
+```
+
+When you also need guard helpers or `choose`, use `setup`. It binds the schema
+once.
+
+```ts
+import { setup } from "@zag-js/core"
+import type { DisclosureSchema } from "./disclosure.types"
+
+const { createMachine, guards, choose } = setup<DisclosureSchema>()
+const { and, not } = guards
+
+export const machine = createMachine({
+  // ...
+})
+```
+
+## Service types
+
+`Service` is what `useMachine` returns and what `connect` receives. `Machine` is
+the config type. Export both from the types file.
+
+```ts
+import type { Machine, Service } from "@zag-js/core"
+
+export type CounterService = Service<CounterSchema>
+
+export type CounterMachine = Machine<CounterSchema>
+```
+
+## API type
+
+The api is what `connect` returns. Make it generic over `PropTypes`, so each
+adapter gets its own element types back.
+
+```ts
+import type { PropTypes } from "@zag-js/types"
+
+export interface CounterApi<T extends PropTypes = PropTypes> {
+  /**
+   * The current value.
+   */
+  value: number
+  /**
+   * Sets the value.
+   */
+  setValue: (value: number) => void
+  getRootProps: () => T["element"]
+  getDecrementTriggerProps: () => T["button"]
+  getIncrementTriggerProps: () => T["button"]
+}
+```
+
+Use `T["button"]`, `T["input"]` or `T["label"]` for those elements, and
+`T["element"]` for everything else.
+
+## Type connect
+
+`connect` takes the service and a `normalize` function, and returns the api.
+
+```ts
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { parts } from "./counter.anatomy"
+import type { CounterApi, CounterService } from "./counter.types"
+
+export function connect<T extends PropTypes>(
+  service: CounterService,
+  normalize: NormalizeProps<T>,
+): CounterApi<T> {
+  const { context, send, scope } = service
+
+  return {
+    value: context.get("value"),
+    setValue(value) {
+      send({ type: "VALUE.SET", value, replaces: "value" })
+    },
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs(scope.id),
+        role: "group",
+      })
+    },
+    // ...
+  }
+}
+```
+
+`normalize.button`, `normalize.input` and the others type their argument as the
+matching DOM attributes, so `onClick` gets a mouse event and `type` is checked.
+`normalize.element` accepts any element's attributes.
+
+## Public exports
+
+Export the runtime pieces by name and the types under short aliases. Users then
+write `counter.Props` and `counter.Api`.
+
+```ts
+export { anatomy } from "./counter.anatomy"
+export { connect } from "./counter.connect"
+export { machine } from "./counter.machine"
+export type {
+  CounterApi as Api,
+  CounterMachine as Machine,
+  CounterProps as Props,
+  CounterService as Service,
+  ValueChangeDetails,
+} from "./counter.types"
+```
+
+Keep the schema internal. Users never need it.
+
+## Next
+
+- [Counter example](/guides/custom-machine-example): build the counter end to
+  end.
+- [Core concepts](/guides/custom-machine-concepts): what each part of the config
+  does.

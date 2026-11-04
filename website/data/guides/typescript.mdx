@@ -4,8 +4,8 @@ description:
   Type machine props, wrapped components, the connected api and callbacks.
 ---
 
-Every Zag package ships its types. You import them from the same namespace as
-the machine, so `menu.machine`, `menu.Props` and `menu.Api` sit side by side.
+Every Zag package ships its types in the same namespace as the machine, like
+`menu.Props` and `menu.Api`
 
 ```ts
 import * as menu from "@zag-js/menu"
@@ -26,7 +26,7 @@ const defaults: Partial<menu.Props> = {
 }
 ```
 
-## Typing a wrapped component
+## Wrapped components
 
 When you wrap a machine in your own component, extend its props and leave out
 the ones the component sets itself. `id` is the usual one, since the component
@@ -53,7 +53,7 @@ export function Menu(props: MenuProps) {
 `menu.ItemProps` is the argument `getItemProps` takes, so the items you pass in
 already have the right shape.
 
-## The connected api
+## Connected API
 
 `connect` returns `menu.Api`. It's generic over the framework's element props,
 which each adapter exports as `PropTypes`. Use it when a child component
@@ -84,7 +84,7 @@ function MenuItems({ api, items }: MenuItemsProps) {
 The `PropTypes` parameter is what makes the getters return React's element props
 here, and Vue's or Solid's props in their adapters.
 
-## Typing callbacks
+## Callback types
 
 Each callback receives a details object, and each details type is exported by
 name. Use them when the handler lives outside the component.
@@ -110,7 +110,7 @@ The names follow the callback: `onValueChange` takes `ValueChangeDetails`,
 `onOpenChange` takes `OpenChangeDetails`, `onHighlightChange` takes
 `HighlightChangeDetails`.
 
-## Writing your own adapter
+## Custom adapter
 
 If you connect a machine in a framework Zag doesn't ship an adapter for, build
 the normalizer with `createNormalizer` from `@zag-js/types`. It maps Zag's
@@ -130,4 +130,5 @@ The base `PropTypes` types every part as a plain object. Adapters pass their own
 element types instead, which is how the getters come back typed for React, Vue
 or Solid.
 
-See [Framework adapters](/guides/framework-adapters) for the rest of an adapter.
+See [Framework adapters](/guides/framework-adapter-concepts) for the rest of an
+adapter.

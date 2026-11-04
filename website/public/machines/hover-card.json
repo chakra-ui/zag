@@ -1,0 +1,908 @@
+{
+  "id": "hover-card",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "opening",
+      "label": "opening",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open.idle",
+      "label": "idle",
+      "parent": "open",
+      "initial": true
+    },
+    {
+      "id": "open.closing",
+      "label": "closing",
+      "parent": "open",
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "opening",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "opening",
+      "event": "POINTER_ENTER",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": "opening",
+      "event": "TRIGGER_FOCUS",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "POSITIONING.SET",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_BLUR",
+      "guard": "isOpenControlled && !isPointer"
+    },
+    {
+      "from": "open",
+      "to": "closed",
+      "event": "TRIGGER_BLUR",
+      "guard": "!isPointer"
+    },
+    {
+      "from": "open.closing",
+      "to": null,
+      "event": "CLOSE_DELAY",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open.closing",
+      "to": "closed",
+      "event": "CLOSE_DELAY",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "POINTER_ENTER",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "SAFE_AREA.ENTER",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "TRIGGER_FOCUS",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "POINTER_ENTER",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": "open.closing",
+      "event": "SAFE_AREA.EXIT",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "opening",
+      "to": "closed",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": "closed",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": null,
+      "event": "OPEN_DELAY",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "opening",
+      "to": "open",
+      "event": "OPEN_DELAY",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": null,
+      "event": "POINTER_LEAVE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "opening",
+      "to": "closed",
+      "event": "POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "opening",
+      "to": null,
+      "event": "TRIGGER_BLUR",
+      "guard": "isOpenControlled && !isPointer"
+    },
+    {
+      "from": "opening",
+      "to": "closed",
+      "event": "TRIGGER_BLUR",
+      "guard": "!isPointer"
+    },
+    {
+      "from": "opening",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1339,
+      "height": 561,
+      "states": {
+        "closed": {
+          "x": 1213,
+          "y": 270,
+          "w": 94,
+          "h": 44
+        },
+        "opening": {
+          "x": 48,
+          "y": 90,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 484,
+          "y": 248,
+          "w": 382,
+          "h": 193
+        },
+        "open.idle": {
+          "x": 764,
+          "y": 360,
+          "w": 78,
+          "h": 44
+        },
+        "open.closing": {
+          "x": 508,
+          "y": 356,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN"
+          ],
+          "points": [
+            [
+              1213,
+              307
+            ],
+            [
+              1139,
+              307
+            ],
+            [
+              1139,
+              497
+            ],
+            [
+              400,
+              497
+            ],
+            [
+              400,
+              356
+            ],
+            [
+              484,
+              356
+            ]
+          ],
+          "label": {
+            "x": 620,
+            "y": 504,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "closed",
+          "to": "opening",
+          "events": [
+            "OPEN",
+            "POINTER_ENTER",
+            "TRIGGER_FOCUS"
+          ],
+          "lines": [
+            "OPEN",
+            "POINTER_ENTER",
+            "TRIGGER_FOCUS"
+          ],
+          "points": [
+            [
+              1213,
+              277
+            ],
+            [
+              1139,
+              277
+            ],
+            [
+              1139,
+              95
+            ],
+            [
+              175,
+              95
+            ],
+            [
+              175,
+              101
+            ],
+            [
+              149,
+              101
+            ]
+          ],
+          "label": {
+            "x": 627,
+            "y": 32,
+            "w": 102,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TRIGGER_BLUR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TRIGGER_BLUR"
+          ],
+          "points": [
+            [
+              866,
+              312
+            ],
+            [
+              1129,
+              312
+            ],
+            [
+              1129,
+              299
+            ],
+            [
+              1213,
+              299
+            ]
+          ],
+          "label": {
+            "x": 981,
+            "y": 319,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "open.closing",
+          "to": "closed",
+          "events": [
+            "CLOSE_DELAY"
+          ],
+          "lines": [
+            "CLOSE_DELAY"
+          ],
+          "points": [
+            [
+              609,
+              367
+            ],
+            [
+              619,
+              367
+            ],
+            [
+              619,
+              292
+            ],
+            [
+              1213,
+              292
+            ]
+          ],
+          "label": {
+            "x": 998,
+            "y": 261,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.closing",
+          "to": "open.idle",
+          "events": [
+            "CONTROLLED.OPEN",
+            "POINTER_ENTER",
+            "SAFE_AREA.ENTER",
+            "TRIGGER_FOCUS",
+            "TRIGGER_VALUE.SET"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "POINTER_ENTER",
+            "SAFE_AREA.ENTER",
+            "+2 more"
+          ],
+          "points": [
+            [
+              609,
+              378
+            ],
+            [
+              754,
+              378
+            ],
+            [
+              754,
+              374
+            ],
+            [
+              764,
+              374
+            ]
+          ],
+          "label": {
+            "x": 629,
+            "y": 303,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.closing",
+          "events": [
+            "SAFE_AREA.EXIT"
+          ],
+          "lines": [
+            "SAFE_AREA.EXIT"
+          ],
+          "points": [
+            [
+              764,
+              389
+            ],
+            [
+              609,
+              389
+            ]
+          ],
+          "label": {
+            "x": 633,
+            "y": 392,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "opening",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_LEAVE",
+            "TRIGGER_BLUR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_LEAVE",
+            "+1 more"
+          ],
+          "points": [
+            [
+              149,
+              112
+            ],
+            [
+              1129,
+              112
+            ],
+            [
+              1129,
+              285
+            ],
+            [
+              1213,
+              285
+            ]
+          ],
+          "label": {
+            "x": 617,
+            "y": 119,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "opening",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN_DELAY"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN_DELAY"
+          ],
+          "points": [
+            [
+              149,
+              123
+            ],
+            [
+              175,
+              123
+            ],
+            [
+              175,
+              346
+            ],
+            [
+              484,
+              346
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 353,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 881,
+      "height": 961,
+      "states": {
+        "closed": {
+          "x": 335,
+          "y": 885,
+          "w": 94,
+          "h": 44
+        },
+        "opening": {
+          "x": 131,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 358,
+          "y": 336,
+          "w": 312,
+          "h": 268
+        },
+        "open.idle": {
+          "x": 483,
+          "y": 536,
+          "w": 78,
+          "h": 44
+        },
+        "open.closing": {
+          "x": 460,
+          "y": 380,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN"
+          ],
+          "points": [
+            [
+              413,
+              885
+            ],
+            [
+              413,
+              801
+            ],
+            [
+              727,
+              801
+            ],
+            [
+              727,
+              252
+            ],
+            [
+              460,
+              252
+            ],
+            [
+              460,
+              336
+            ]
+          ],
+          "label": {
+            "x": 734,
+            "y": 461,
+            "w": 115,
+            "h": 24
+          }
+        },
+        {
+          "from": "closed",
+          "to": "opening",
+          "events": [
+            "OPEN",
+            "POINTER_ENTER",
+            "TRIGGER_FOCUS"
+          ],
+          "lines": [
+            "OPEN",
+            "POINTER_ENTER",
+            "TRIGGER_FOCUS"
+          ],
+          "points": [
+            [
+              351,
+              885
+            ],
+            [
+              351,
+              811
+            ],
+            [
+              156,
+              811
+            ],
+            [
+              156,
+              76
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 445,
+            "w": 102,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TRIGGER_BLUR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "TRIGGER_BLUR"
+          ],
+          "points": [
+            [
+              402,
+              604
+            ],
+            [
+              402,
+              801
+            ],
+            [
+              398,
+              801
+            ],
+            [
+              398,
+              885
+            ]
+          ],
+          "label": {
+            "x": 409,
+            "y": 719,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "open.closing",
+          "to": "closed",
+          "events": [
+            "CLOSE_DELAY"
+          ],
+          "lines": [
+            "CLOSE_DELAY"
+          ],
+          "points": [
+            [
+              485,
+              424
+            ],
+            [
+              485,
+              434
+            ],
+            [
+              382,
+              434
+            ],
+            [
+              382,
+              885
+            ]
+          ],
+          "label": {
+            "x": 287,
+            "y": 735,
+            "w": 89,
+            "h": 24
+          }
+        },
+        {
+          "from": "open.closing",
+          "to": "open.idle",
+          "events": [
+            "CONTROLLED.OPEN",
+            "POINTER_ENTER",
+            "SAFE_AREA.ENTER",
+            "TRIGGER_FOCUS",
+            "TRIGGER_VALUE.SET"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "POINTER_ENTER",
+            "SAFE_AREA.ENTER",
+            "+2 more"
+          ],
+          "points": [
+            [
+              510,
+              424
+            ],
+            [
+              510,
+              526
+            ],
+            [
+              509,
+              526
+            ],
+            [
+              509,
+              536
+            ]
+          ],
+          "label": {
+            "x": 393,
+            "y": 444,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "open.idle",
+          "to": "open.closing",
+          "events": [
+            "SAFE_AREA.EXIT"
+          ],
+          "lines": [
+            "SAFE_AREA.EXIT"
+          ],
+          "points": [
+            [
+              535,
+              536
+            ],
+            [
+              535,
+              424
+            ]
+          ],
+          "label": {
+            "x": 538,
+            "y": 468,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "opening",
+          "to": "closed",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_LEAVE",
+            "TRIGGER_BLUR"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "POINTER_LEAVE",
+            "+1 more"
+          ],
+          "points": [
+            [
+              182,
+              76
+            ],
+            [
+              182,
+              102
+            ],
+            [
+              173,
+              102
+            ],
+            [
+              173,
+              801
+            ],
+            [
+              366,
+              801
+            ],
+            [
+              366,
+              885
+            ]
+          ],
+          "label": {
+            "x": 180,
+            "y": 437,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "opening",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN_DELAY"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN_DELAY"
+          ],
+          "points": [
+            [
+              207,
+              76
+            ],
+            [
+              207,
+              252
+            ],
+            [
+              450,
+              252
+            ],
+            [
+              450,
+              336
+            ]
+          ],
+          "label": {
+            "x": 214,
+            "y": 186,
+            "w": 115,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

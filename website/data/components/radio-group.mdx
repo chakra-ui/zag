@@ -1,10 +1,12 @@
 ---
 title: Radio Group
-description: Using the radio group machine in your project.
+description:
+  An accessible radio group that lets users pick one option from a set, with
+  arrow key navigation and form support.
 package: "@zag-js/radio-group"
 ---
 
-A radio group lets users select one option from a set.
+A radio group lets users select one option from a set
 
 <Resources pkg="@zag-js/radio-group" />
 
@@ -28,31 +30,13 @@ Install the radio package:
 To set up the radio group correctly, you'll need to understand its anatomy and
 how we name its parts.
 
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="radio-group" />
 
 ## Usage
 
-Import the radio group package:
-
-```tsx
-import * as radio from "@zag-js/radio-group"
-```
-
-The radio package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="radio-group/usage.mdx" />
 
-### Disabling the radio group
+### Disabled state
 
 Set `disabled` to `true` to disable all radio items.
 
@@ -66,7 +50,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the radio group's initial value.
 
@@ -97,7 +81,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the radio group value changes, the `onValueChange` callback is invoked.
 
@@ -114,7 +98,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Usage within forms
+### Form usage
 
 To use radio group in forms, set `name`.
 
@@ -152,7 +136,7 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-### Read-only and required state
+### Read-only and required
 
 Use `readOnly` and `required` to control form behavior.
 
@@ -181,89 +165,9 @@ const service = useMachine(radio.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Checked State
-
-When the radio input is checked, the `data-state` attribute is added to the
-item, control, and text parts.
-
-```css
-[data-radio-group-item][data-state="checked|unchecked"] {
-  /* styles for radio checked or unchecked state */
-}
-
-[data-radio-group-item-control][data-state="checked|unchecked"] {
-  /* styles for radio checked or unchecked state */
-}
-
-[data-radio-group-item-text][data-state="checked|unchecked"] {
-  /* styles for radio checked or unchecked state */
-}
-```
-
-### Focused State
-
-When the radio input is focused, the `data-focus` attribute is added to the
-item, control and text parts.
-
-```css
-[data-radio-group-item][data-focus] {
-  /* styles for radio focus state */
-}
-
-[data-radio-group-item-control][data-focus] {
-  /* styles for radio control focus state */
-}
-
-[data-radio-group-item-text][data-focus] {
-  /* styles for radio text focus state */
-}
-```
-
-### Disabled State
-
-When the radio is disabled, the `data-disabled` attribute is added to the item,
-control and text parts.
-
-```css
-[data-radio-group-item][data-disabled] {
-  /* styles for radio disabled state */
-}
-
-[data-radio-group-item-control][data-disabled] {
-  /* styles for radio control disabled state */
-}
-
-[data-radio-group-item-text][data-disabled] {
-  /* styles for radio text disabled state */
-}
-```
-
-### Invalid State
-
-When the radio is invalid, the `data-invalid` attribute is added to the item,
-control and text parts.
-
-```css
-[data-radio-group-item][data-invalid] {
-  /* styles for radio invalid state */
-}
-
-[data-radio-group-item-control][data-invalid] {
-  /* styles for radio control invalid state */
-}
-
-[data-radio-group-item-text][data-invalid] {
-  /* styles for radio text invalid state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The radio group machine exposes the following context properties:
 
@@ -275,11 +179,18 @@ The radio group `api` exposes the following methods:
 
 <ApiTable name="radio-group" />
 
+### Data attributes
+
+Each part has a `data-radio-group-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+<DataAttrTable name="radio-group" />
+
 ## Accessibility
 
 Adheres to the
 [Radio Group WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radiobutton)
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="radio-group" />

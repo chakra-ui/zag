@@ -4,9 +4,8 @@ description: Using the fuzzy search utility in your project.
 package: "@zag-js/fuzzy"
 ---
 
-Fuzzy match, rank and highlight text. Matches favor consecutive letters and word
-starts, so `gp` ranks "Git: Push" above "Toggle panel". Case and diacritics are
-ignored.
+Fuzzy match, rank and highlight text, favoring consecutive letters and word
+starts while ignoring case and accents
 
 <Resources pkg="@zag-js/fuzzy" />
 
@@ -36,7 +35,7 @@ fuzzyScore("Preferences", "settings", ["settings", "options"])
 Each space-separated word can match on its own, so "theme dark" matches "Toggle
 dark theme".
 
-## Searching a list
+## List search
 
 `createFuzzySearch` returns the matching items, best match first. It caches each
 item's prepared text, and when the query only grows, it searches the previous
@@ -65,7 +64,7 @@ import { rankItems } from "@zag-js/fuzzy"
 const results = rankItems(items, (item) => myScore(item, query))
 ```
 
-## Highlighting matches
+## Highlight matches
 
 `getFuzzyMatchRanges` returns the matched `[start, end)` ranges. Pass them to
 `highlightRanges` from `@zag-js/highlight-word` to split the text.
@@ -82,7 +81,7 @@ const chunks = highlightRanges({
 chunks.map((chunk) => (chunk.match ? <mark>{chunk.text}</mark> : chunk.text))
 ```
 
-## With a combobox
+## Combobox
 
 Search, then pass the results to the combobox collection.
 
@@ -93,4 +92,4 @@ const collection = combobox.collection({
 ```
 
 For a command menu with nested pages, use it with a
-[`PageListCollection`](/guides/collection#page-list-collection).
+[`PageListCollection`](/utilities/page-list-collection).

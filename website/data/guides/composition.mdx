@@ -1,7 +1,12 @@
 ---
 title: Composition
-description: Best practices to compose events and components
+description:
+  How to merge your own event handlers and props with Zag's props, and compose
+  multiple machines together.
 ---
+
+Zag components expose spread props, and this guide shows how to add your own
+handlers and combine machines safely
 
 ## Event composition
 
@@ -154,9 +159,9 @@ function Example() {
 In the example above, you will notice that the popover and tooltip trigger share
 the same id. That's how to compose machines together.
 
-### Important: Customizing IDs and ARIA attributes
+### Custom IDs and ARIA
 
-#### Always use the `ids` context option
+#### Use the ids option
 
 When customizing element IDs, always use the `ids` option in the machine
 context. Never manually set the `id` attribute on elements using the prop
@@ -184,7 +189,7 @@ attributes across all related elements. When you set IDs manually, the machine
 can't update the corresponding `aria-labelledby`, `aria-describedby`, and other
 reference attributes.
 
-#### Pitfall: Custom IDs with missing elements
+#### Custom IDs pitfall
 
 When you configure custom IDs via the `ids` option, Zag generates ARIA reference
 attributes (like `aria-labelledby`) based on those IDs, regardless of whether
@@ -227,7 +232,7 @@ return (
 )
 ```
 
-## Custom window environment
+## Custom window
 
 Internally, we use DOM query methods like `document.querySelectorAll` and
 `document.getElementById` to locate elements within the machine.

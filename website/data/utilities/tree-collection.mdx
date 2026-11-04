@@ -1,0 +1,151 @@
+---
+title: Tree collection
+description: A tree of nodes with paths, traversal and immutable updates.
+package: "@zag-js/collection"
+---
+
+Wraps a tree of nodes, like a file system or nested navigation, with lookup,
+traversal and immutable updates
+
+<Resources pkg="@zag-js/collection" />
+
+## Installation
+
+```ts
+import * as tree from "@zag-js/tree-view"
+
+const collection = tree.collection({ rootNode }) // TreeCollection
+const files = tree.filePathCollection(["src/index.ts", "package.json"])
+```
+
+To use the class on its own:
+
+```bash
+npm install @zag-js/collection
+```
+
+## Create a collection
+
+Pass a single root node. Its children are the top-level items.
+
+```ts
+import { TreeCollection } from "@zag-js/collection"
+
+const tree = new TreeCollection({
+  rootNode: {
+    value: "ROOT",
+    label: "",
+    children: [
+      {
+        value: "src",
+        label: "src",
+        children: [{ value: "src/index.ts", label: "index.ts" }],
+      },
+      { value: "package.json", label: "package.json" },
+    ],
+  },
+})
+```
+
+By default, a node's `value`, `label`, `disabled` and `children` are read. Map
+other shapes with these options. They work like the
+[list collection options](/utilities/list-collection#custom-item-shapes), with
+`node` in place of `item`.
+
+| Option                | Type                               | Default               |
+| --------------------- | ---------------------------------- | --------------------- |
+| `rootNode`            | `T`                                | required              |
+| `nodeToValue`         | `(node: T) => string`              | `node.value`          |
+| `nodeToString`        | `(node: T) => string`              | `node.label` or value |
+| `isNodeDisabled`      | `(node: T) => boolean`             | `node.disabled`       |
+| `nodeToChildren`      | `(node: T) => any[]`               | `node.children`       |
+| `nodeToChildrenCount` | `(node: T) => number \| undefined` | `node.childrenCount`  |
+
+Set `childrenCount` on nodes whose children load later. Those count as branches
+before they have children.
+
+## Paths
+
+Tree methods take either a value or an index path. An index path lists the child
+index at each level from the root.
+
+```ts
+tree.getIndexPath("src/index.ts") // [0, 0]
+tree.getValue([0, 0]) // "src/index.ts"
+tree.getValuePath([0, 0]) // ["src", "src/index.ts"]
+tree.at([1]) // the package.json node
+tree.getDepth("src/index.ts") // 2
+```
+
+## Methods
+
+| Method                                         | Returns                                        |
+| ---------------------------------------------- | ---------------------------------------------- |
+| `findNode(value)`, `findNodes(values)`         | Nodes by value                                 |
+| `getFirstNode()`, `getLastNode()`              | The first or last enabled node                 |
+| `getNextNode(value, opts?)`                    | The next node in document order                |
+| `getPreviousNode(value, opts?)`                | The previous node in document order            |
+| `getParentNode(valueOrIndexPath)`              | The parent node                                |
+| `getParentNodes(valueOrIndexPath)`             | All ancestors                                  |
+| `getDescendantNodes(valueOrIndexPath, opts?)`  | All descendants                                |
+| `getDescendantValues(valueOrIndexPath, opts?)` | Values of all descendants                      |
+| `getSiblingNodes(indexPath)`                   | Siblings, including the node                   |
+| `getNextSibling(indexPath)`                    | The next enabled sibling                       |
+| `getPreviousSibling(indexPath)`                | The previous enabled sibling                   |
+| `getValues()`                                  | All values, depth first                        |
+| `getBranchValues(rootNode?, opts?)`            | Values of nodes with children                  |
+| `isBranchNode(node)`                           | Whether the node has children                  |
+| `contains(parentIndexPath, indexPath)`         | Whether one path is inside another             |
+| `visit({ onEnter, onLeave, skip })`            | Walk the tree                                  |
+| `flatten()`                                    | Nodes with `_parent`, `_children` and `_index` |
+| `sort(values)`                                 | Values in tree order                           |
+
+`getFirstNode`, `getLastNode`, `getNextNode`, `getPreviousNode`, `visit` and
+`getBranchValues` accept a `skip` function. Return `true` to skip a node and its
+children. To skip nodes inside collapsed branches, check the node's ancestors:
+
+```ts
+const expandedValue = ["src"]
+
+const next = tree.getNextNode("src", {
+  skip: ({ indexPath }) => {
+    const ancestors = tree.getValuePath(indexPath).slice(0, -1)
+    return ancestors.some((value) => !expandedValue.includes(value))
+  },
+})
+```
+
+## Update a tree
+
+Each returns a new `TreeCollection`.
+
+| Method                              | Change                                                                      |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| `insertBefore(indexPath, nodes)`    | Add nodes before a path                                                     |
+| `insertAfter(indexPath, nodes)`     | Add nodes after a path                                                      |
+| `replace(indexPath, node)`          | Replace a node                                                              |
+| `remove(indexPaths)`                | Remove nodes                                                                |
+| `move(fromIndexPaths, toIndexPath)` | Move nodes                                                                  |
+| `filter(predicate)`                 | Keep nodes where `predicate(node, indexPath)` is true, with their ancestors |
+| `copy(rootNode)`                    | A new tree with the same options                                            |
+
+## Build trees
+
+`filePathToTree` builds a tree from slash-separated paths. Each node's value is
+its full path.
+
+```ts
+import { filePathToTree } from "@zag-js/collection"
+
+const tree = filePathToTree(["src/index.ts", "src/utils/a.ts", "package.json"])
+
+tree.getBranchValues() // ["src", "src/utils"]
+```
+
+`flattenedToTree` rebuilds a tree from the output of `flatten()`.
+
+```ts
+import { flattenedToTree } from "@zag-js/collection"
+
+const copy = flattenedToTree(tree.flatten())
+```

@@ -1,10 +1,12 @@
 ---
 title: QR Code
-description: Using the QR code machine in your project.
+description:
+  Generate a QR code from text or a URL, rendered as SVG, with error correction
+  levels and an option to download it.
 package: "@zag-js/qr-code"
 ---
 
-A QR code encodes information or links that can be scanned with a phone or app.
+A QR code encodes information or links that can be scanned with a phone or app
 
 > **Good to know**: The QR code encoding logic is built on top of the
 > [`uqr`](https://github.com/unjs/uqr) library.
@@ -28,31 +30,13 @@ Install the QR code package:
 
 ## Anatomy
 
-Check the QR code anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="qr-code" />
 
 ## Usage
 
-Import the QR code package:
-
-```tsx
-import * as qrCode from "@zag-js/qr-code"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="qr-code/usage.mdx" />
 
-### Setting the QR code value
+### QR code value
 
 Set `value` to control the encoded content.
 
@@ -67,7 +51,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting an initial value
+### Initial value
 
 Use `defaultValue` for an uncontrolled initial value.
 
@@ -81,7 +65,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react when the encoded value changes.
 
@@ -98,7 +82,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting pixel size
+### Pixel size
 
 Use `pixelSize` to control QR code density.
 
@@ -113,7 +97,7 @@ const service = useMachine(qrCode.machine, {
 
 </Example>
 
-### Setting the correction level
+### Correction level
 
 Error correction allows for the QR code to be blocked or resized while still
 recognizable. In some cases where the link is too long or the logo overlay
@@ -143,7 +127,7 @@ const service = useMachine(qrCode.machine, {
 > The alternative is to enlarge the QRCode by increasing the size of the `svg`
 > element.
 
-### Adding an overlay logo
+### Overlay logo
 
 To add a logo overlay to the QR code, render the image part. The logo will be
 automatically centered within the QR code. Downloads and `getDataUrl` include
@@ -162,7 +146,7 @@ the overlay when it is rendered.
 
 </Example>
 
-### Changing the color
+### Color
 
 To change the color of the QR code, set the `fill` attribute on the `path` part.
 
@@ -184,7 +168,7 @@ To change the background color of the QR code, set the `background-color`
 }
 ```
 
-### Exporting the QR code
+### Export
 
 To export the QR code as an image, use `api.getDataUrl`. If an overlay is
 rendered, it is included in the file.
@@ -206,31 +190,9 @@ You can also use `api.getDownloadTriggerProps` to create a download button.
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-qr-code-root] {
-  /* Styles for the root part */
-}
-
-[data-qr-code-frame] {
-  /* Styles for the svg part */
-}
-
-[data-qr-code-pattern] {
-  /* Styles for the path */
-}
-
-[data-qr-code-overlay] {
-  /* Styles for the logo */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The QR code machine exposes the following context properties:
 

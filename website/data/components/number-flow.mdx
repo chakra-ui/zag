@@ -4,13 +4,8 @@ description: Animate a number by rolling each digit to its new value.
 package: "@zag-js/number-flow"
 ---
 
-Number Flow animates a value change by rolling each digit to its new value, the
-way a mechanical counter does. Use it for prices, scores, vote counts, and live
-metrics, where a number changing is worth noticing.
-
-Unlike most machines in Zag.js, a digit is not one element. You render a strip
-of `0-9` cells inside each digit, and the machine translates the strip so the
-right cell lands in view.
+Animates a number by rolling each digit to its new value, for prices, scores and
+live metrics
 
 <Resources pkg="@zag-js/number-flow" />
 
@@ -37,18 +32,9 @@ Install the number-flow package:
 
 ## Usage
 
-Import the number-flow package:
-
-```tsx
-import * as numberFlow from "@zag-js/number-flow"
-```
-
-The number-flow package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+Unlike most machines in Zag.js, a digit is not one element. You render a strip
+of `0-9` cells inside each digit, and the machine translates the strip so the
+right cell lands in view.
 
 Rendering takes two collections from the `api`:
 
@@ -65,7 +51,7 @@ derived from the decimal place, so a digit keeps its identity when the number
 grows or shrinks. Keying by index re-creates the DOM on every digit-count change
 and drops whatever roll was in flight.
 
-### Setting the initial value
+### Initial value
 
 Set `defaultValue` to render a starting value without controlling it.
 
@@ -80,7 +66,7 @@ const service = useMachine(numberFlow.machine, {
 
 </Example>
 
-### Controlling the value
+### Controlled value
 
 Use `value` and `onValueChange` to drive the number from your own state.
 
@@ -99,7 +85,7 @@ const service = useMachine(numberFlow.machine, {
 
 </Example>
 
-### Formatting the value
+### Value formatting
 
 Pass `formatOptions` straight through to `Intl.NumberFormat`, and `locale` to
 pick the numeral system and separators.
@@ -126,7 +112,7 @@ const service = useMachine(numberFlow.machine, {
 })
 ```
 
-### Adding a prefix or suffix
+### Prefix and suffix
 
 Use `prefix` and `suffix` for text that sits outside the formatted number and
 never rolls.
@@ -145,7 +131,7 @@ const service = useMachine(numberFlow.machine, {
 
 Both are included in `api.valueText`, so screen readers announce them.
 
-### Choosing the roll direction
+### Roll direction
 
 By default each digit takes its own shortest path, so `9` to `0` rolls forward
 one step instead of backward nine.
@@ -169,7 +155,7 @@ const service = useMachine(numberFlow.machine, {
 > is deliberate: it guarantees the digit always lands on a rendered cell rather
 > than scrolling past the end of its strip and showing nothing.
 
-### Spinning through every value
+### Spin through values
 
 Set `continuous` to spin through the intermediate values instead of taking the
 nearest path. A change from `0` to `12` rolls the ones digit twelve cells rather
@@ -225,7 +211,7 @@ const service = useMachine(numberFlow.machine, {
 
 </Example>
 
-### Reacting to the animation
+### Animation events
 
 `onAnimationStart` fires once when a roll begins, and `onAnimationComplete` once
 when every digit has settled. A burst of value changes that lands mid-roll
@@ -251,7 +237,7 @@ const service = useMachine(numberFlow.machine, {
 `places` holds the decimal place of each digit that moved. Place `0` is the ones
 column, `-1` the first fraction digit.
 
-### Announcing the value
+### Value announcements
 
 By default the root is exposed as a single image with `aria-label` set to the
 formatted value, so assistive technology reads the number rather than the strip
@@ -275,7 +261,7 @@ const service = useMachine(numberFlow.machine, {
 Render `api.announcedValueText` inside `getValueTextProps()`. It holds the
 settled value, which is what makes the debounce work.
 
-### Respecting reduced motion
+### Reduced motion
 
 When the user prefers reduced motion, the value snaps into place instead of
 rolling. Set `respectMotionPreference` to `false` to roll anyway.
@@ -291,7 +277,7 @@ const service = useMachine(numberFlow.machine, {
 
 </Example>
 
-## Styling guide
+## Styling
 
 The machine sets the structural styles inline, so you do not need to write them.
 The digit gets `overflow: hidden` and a fixed `1lh` height, the track is a flex
@@ -320,7 +306,7 @@ What is left to you is typography and color:
 > Use a font with tabular figures. Proportional digits change width as they
 > roll, which makes the number jitter.
 
-### Fading the edges
+### Edge fade
 
 By default a rolling digit is cut off sharply at the top and bottom of its line.
 Add a mask to fade it out instead:
@@ -338,33 +324,7 @@ Add a mask to fade it out instead:
 }
 ```
 
-### Entering and Exiting State
-
-When the number gains or loses a digit or symbol (`999` to `1,000`), that
-segment grows or shrinks in place while it fades. Use `[data-entering]` and
-`[data-exiting]` to style it during that transition.
-
-```css
-[data-number-flow-digit][data-exiting] {
-  /* a digit on its way out */
-}
-```
-
-### Rolling State
-
-Use the `[data-state]` attribute to style the number while it rolls.
-
-```css
-[data-number-flow-root][data-state="rolling"] {
-  /* styles while any digit is moving */
-}
-
-[data-number-flow-root][data-state="idle"] {
-  /* styles at rest */
-}
-```
-
-### Trend State
+### Trend state
 
 Use the `[data-trend]` attribute to style by the direction of the last change.
 It holds `up`, `down`, or `none`, and stays set for the whole roll.
@@ -379,35 +339,9 @@ It holds `up`, `down`, or `none`, and stays set for the whole roll.
 }
 ```
 
-### Reduced Motion State
-
-Use the `[data-reduced-motion]` attribute to style the number when animations
-are suppressed.
-
-```css
-[data-number-flow-root][data-reduced-motion] {
-  /* styles when the roll is disabled */
-}
-```
-
-### Targeting a specific digit
-
-Every digit carries its decimal place in `[data-place]`, counted from the
-decimal point. Symbols carry their `Intl` type in `[data-type]`.
-
-```css
-[data-number-flow-digit][data-place="0"] {
-  /* the ones column */
-}
-
-[data-number-flow-symbol][data-type="currency"] {
-  /* the currency symbol */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The number-flow machine exposes the following context properties:
 
@@ -418,3 +352,15 @@ The number-flow machine exposes the following context properties:
 The number-flow `api` exposes the following methods:
 
 <ApiTable name="number-flow" />
+
+### Data attributes
+
+Each part has a `data-number-flow-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+`data-entering` and `data-exiting` mark a digit or symbol that is being added or
+removed. Each digit has `data-place`, its decimal place counted from the decimal
+point. Symbols have `data-type`, their `Intl` part type such as `currency`.
+`data-reduced-motion` is present when animations are suppressed.
+
+<DataAttrTable name="number-flow" />

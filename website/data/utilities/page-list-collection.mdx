@@ -1,0 +1,119 @@
+---
+title: Page list collection
+description: A list collection for nested pages of items, like a command menu.
+package: "@zag-js/collection"
+---
+
+Shows one page of nested items at a time, like a command menu where "Change
+theme" opens a page of themes
+
+<Resources pkg="@zag-js/collection" />
+
+## Installation
+
+```bash
+npm install @zag-js/collection
+```
+
+## Create a collection
+
+Pass every item, on every page, as a flat list. An item with a `parent` lives on
+its parent's page. `items` holds the items on the open page.
+
+```ts
+import { PageListCollection } from "@zag-js/collection"
+
+const pages = new PageListCollection({
+  items: [
+    { value: "theme", label: "Change theme" },
+    { value: "light", label: "Light", parent: "theme" },
+    { value: "dark", label: "Dark", parent: "theme" },
+    { value: "docs", label: "Open docs" },
+  ],
+})
+
+pages.items // [Change theme, Open docs]
+pages.setPage("theme").items // [Light, Dark]
+```
+
+It accepts every list collection option, including `itemToValue`, `itemToString`
+and `isItemDisabled`. See
+[custom item shapes](/utilities/list-collection#custom-item-shapes).
+
+| Option         | Type                                       | Default              |
+| -------------- | ------------------------------------------ | -------------------- |
+| `items`        | `Iterable<T>`                              | required             |
+| `itemToParent` | `(item: T) => string \| null \| undefined` | `item.parent`        |
+| `isItemPage`   | `(item: T) => boolean`                     | `item.page === true` |
+| `page`         | `string \| null`                           | `null` (top level)   |
+
+An item with children opens a page. Use `isItemPage` for an item that opens a
+page without children yet, for example one that loads its items.
+
+## Page navigation
+
+Each method returns a new collection. Pass the current query, so it comes back
+when the user returns to the page.
+
+```ts
+let next = pages.setPage("theme", query) // open a page
+next = next.back(query) // the previous page in the history
+next = next.up(query) // the parent page
+next = next.reset() // the top level, with no history
+```
+
+After `back` or `up`, `restore` holds the query typed on that page and the item
+the user came from.
+
+```ts
+const { query, highlightedValue } = next.restore
+```
+
+`back` and `up` return the same collection when there's nowhere to go. Check
+`canGoBack` to show a back button.
+
+## Page search
+
+Search the open page with `getChildren()`, or include nested pages with
+`getDescendants()`. Show the results with `setItems`, which keeps the page.
+
+```ts
+const scope = query ? pages.getDescendants() : pages.getChildren()
+const collection = pages.setItems(
+  scope.filter((item) => item.label.includes(query)),
+)
+```
+
+For a deep result, `getAncestors(item)` returns the pages it lives under, from
+the top level down to its parent.
+
+## Methods
+
+These add to the [list methods](/utilities/list-collection#methods).
+
+| Member                      | Returns                                             |
+| --------------------------- | --------------------------------------------------- |
+| `page`                      | The open page's value, or `null` at the top level   |
+| `pageItem`                  | The open page's item, or `null`                     |
+| `canGoBack`                 | Whether there's a page in the history               |
+| `restore`                   | `{ query, highlightedValue }` after `back` or `up`  |
+| `allItems`                  | Items on every page                                 |
+| `getItem(value)`            | An item on any page, or `null`                      |
+| `getParentValue(item)`      | The parent's value, or `null`                       |
+| `isPage(item)`              | Whether the item opens a page                       |
+| `getChildren(page?)`        | Items on a page, the open one by default            |
+| `getDescendants(page?)`     | Items on a page and its nested pages, depth first   |
+| `getAncestors(item, page?)` | The item's ancestors below the open page            |
+| `getPath(page?)`            | Page items from the top level, for breadcrumbs      |
+| `setPage(page, query?)`     | A collection with the page open                     |
+| `back(query?)`              | A collection on the previous page                   |
+| `up(query?)`                | A collection on the parent page                     |
+| `reset(page?)`              | A collection on the top level or `page`, no history |
+
+## Type guard
+
+```ts
+import { isPageListCollection } from "@zag-js/collection"
+
+isPageListCollection(value) // value is PageListCollection
+```

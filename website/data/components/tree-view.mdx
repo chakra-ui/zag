@@ -1,13 +1,13 @@
 ---
 title: Tree View
-description: Using the tree view machine in your project.
+description:
+  An accessible tree view for nested data like file explorers, with expand and
+  collapse, selection and typeahead.
 package: "@zag-js/tree-view"
 ---
 
-The TreeView component provides a hierarchical view of data, similar to a file
-system explorer. It allows users to expand and collapse branches, select
-individual or multiple nodes, and traverse the hierarchy using keyboard
-navigation.
+A tree view shows nested data, like a file explorer, with expandable branches,
+selection and keyboard navigation
 
 <Resources pkg="@zag-js/tree-view" />
 
@@ -30,24 +30,9 @@ Install the tree view package:
 
 ## Anatomy
 
-Check the tree view anatomy and part names.
-
 <Anatomy id="tree-view" />
 
 ## Usage
-
-Import the tree view package:
-
-```tsx
-import * as tree from "@zag-js/tree-view"
-```
-
-The tree view package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-Then use the framework integration helpers:
 
 ### Create the tree collection
 
@@ -105,7 +90,7 @@ Pass the tree collection to the machine to create the tree view.
 
 </Example>
 
-### Expanding and Collapsing Nodes
+### Expand and collapse
 
 By default, the tree view will expand or collapse when clicking the branch
 control. To control the expanded state of the tree view, use the `api.expand`
@@ -143,7 +128,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Setting the default expanded nodes
+### Initial expanded
 
 To set the default expanded nodes, use `defaultExpandedValue`.
 
@@ -157,7 +142,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Setting the default selected nodes
+### Initial selection
 
 To set the default selected nodes, use `defaultSelectedValue`.
 
@@ -171,7 +156,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Controlled expanded and selected values
+### Controlled expansion and selection
 
 Use controlled props when expansion or selection is managed externally.
 
@@ -193,7 +178,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Indentation Guide
+### Indentation guide
 
 When rendering a branch node in the tree view, you can render the `indentGuide`
 element by using the `api.getIndentGuideProps()` function.
@@ -227,7 +212,7 @@ element by using the `api.getIndentGuideProps()` function.
 
 </Example>
 
-### Listening for selection
+### Item selection
 
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
@@ -245,7 +230,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Listening for expanding and collapsing
+### Expanded changes
 
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
@@ -263,7 +248,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Listening for focus and checked changes
+### Focus and checked changes
 
 Use `onFocusChange` and `onCheckedChange` when you need focus/checkbox state.
 
@@ -284,7 +269,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Programmatic tree control
+### Programmatic control
 
 Use the connected API for imperative interactions.
 
@@ -301,7 +286,7 @@ api.toggleChecked("node_modules", true)
 
 </Example>
 
-### Controlling branch click behavior
+### Branch click behavior
 
 Set `expandOnClick` to control whether clicking a branch toggles expansion.
 
@@ -316,7 +301,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Controlling typeahead
+### Typeahead
 
 Set `typeahead` to disable keyboard typeahead matching.
 
@@ -331,7 +316,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Lazy Loading
+### Lazy loading
 
 > **Added in v1.15.0**
 
@@ -389,7 +374,7 @@ function TreeAsync() {
 
 </Example>
 
-### Renaming Nodes
+### Rename nodes
 
 The tree view supports renaming node labels inline, perfect for file explorers,
 content management systems, and other applications where users need to edit item
@@ -408,7 +393,7 @@ To enable renaming:
 
 </Example>
 
-### Controlling which nodes can be renamed
+### Renamable nodes
 
 Use the `canRename` callback to control which nodes are renameable based on node
 type or custom logic.
@@ -427,7 +412,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Validating rename input
+### Rename validation
 
 Use the `onBeforeRename` callback to validate the new name before accepting the
 change. Return `false` to reject the rename.
@@ -453,7 +438,7 @@ const service = useMachine(tree.machine, {
 
 </Example>
 
-### Tracking rename events
+### Rename events
 
 Use the `onRenameStart` callback to track when users start renaming, useful for
 analytics or showing contextual hints.
@@ -482,35 +467,9 @@ const service = useMachine(tree.machine, {
 - IME composition events are properly handled
 - `data-renaming` attribute added for styling
 
-## Styling guide
-
-### Checked state
-
-When using checkbox selection (`onCheckedChange`), node elements expose
-`data-checked` and `data-indeterminate` attributes, and node checkbox elements
-expose `data-state="checked" | "unchecked" | "indeterminate"` for styling.
-
-```css
-[data-tree-view-node][data-checked] {
-  /* styles for fully checked items */
-}
-
-[data-tree-view-node][data-indeterminate] {
-  /* styles for partially checked items (some children selected) */
-}
-
-[data-tree-view-node-checkbox][data-state="checked"] {
-  /* styles for fully checked branches */
-}
-
-[data-tree-view-node-checkbox][data-state="indeterminate"] {
-  /* styles for partially checked branches */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The tree view machine exposes the following context properties:
 
@@ -522,11 +481,18 @@ The tree view `api` exposes the following methods:
 
 <ApiTable name="tree-view" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-tree-view-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+With checkbox selection, nodes get `data-checked`, or `data-indeterminate` when
+only some children are checked. Node checkboxes get `data-state` set to
+`checked`, `unchecked`, or `indeterminate`.
 
 <DataAttrTable name="tree-view" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="tree-view" />
 
@@ -535,6 +501,6 @@ The tree view `api` exposes the following methods:
 Adheres to the
 [Tree View WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treeview).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="tree-view" />

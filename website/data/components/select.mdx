@@ -1,10 +1,12 @@
 ---
 title: Select
-description: Using the select machine in your project.
+description:
+  An accessible select with a custom styled listbox, keyboard navigation,
+  typeahead, and single or multiple selection.
 package: "@zag-js/select"
 ---
 
-A select component lets you pick a value from predefined options.
+A select component lets you pick a value from predefined options
 
 <Resources pkg="@zag-js/select" />
 
@@ -25,33 +27,16 @@ Install the select package:
 
 ## Anatomy
 
-Check the select anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="select" />
 
 ## Usage
 
-Import the select package:
-
-```tsx
-import * as select from "@zag-js/select"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-- `collection` - Creates a [collection interface](/overview/collection) from an
-  array of items.
-
-Then use the framework integration helpers:
+Use `select.collection` to create a
+[list collection](/utilities/list-collection) from your items.
 
 <CodeSnippet id="select/usage.mdx" />
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the initial value of the select.
 
@@ -79,7 +64,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Selecting multiple values
+### Multiple selection
 
 Set `multiple` to `true` to allow selecting multiple values.
 
@@ -95,7 +80,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Controlled select value
+### Controlled value
 
 Use `value` and `onValueChange` for controlled selection.
 
@@ -114,7 +99,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Using a custom object format
+### Custom object format
 
 By default, the select collection expects an array of items with `label` and
 `value` properties. To use a custom object format, pass the `itemToString` and
@@ -165,7 +150,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Usage within a form
+### Form usage
 
 To use select in a form, set `name` and render `api.getHiddenSelectProps()`.
 
@@ -193,7 +178,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Disabling an item
+### Disabled items
 
 To disable a select item, use `isItemDisabled` in the collection.
 
@@ -232,7 +217,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Programmatic selection control
+### Programmatic control
 
 Use the API for imperative updates.
 
@@ -246,7 +231,7 @@ api.clearValue() // or api.clearValue("ng")
 
 </Example>
 
-### Controlling open state
+### Controlled open
 
 Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for
 uncontrolled initial state.
@@ -275,7 +260,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-### Controlling highlighted item
+### Controlled highlight
 
 Use `highlightedValue` and `onHighlightChange` to manage item highlight.
 
@@ -295,7 +280,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Positioning the popup
+### Positioning
 
 Use `positioning` to control popup placement and behavior.
 
@@ -311,7 +296,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Looping the keyboard navigation
+### Loop navigation
 
 By default, arrow key navigation stops at the first and last options. Set
 `loopFocus: true` to loop back around.
@@ -328,7 +313,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Allowing deselection in single-select mode
+### Deselection
 
 Set `deselectable` to allow clicking the selected item again to clear the value.
 
@@ -344,7 +329,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Listening for highlight changes
+### Highlight changes
 
 Use `onHighlightChange` to listen for highlighted item changes.
 
@@ -363,7 +348,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Listening for selection changes
+### Selection changes
 
 Use `onValueChange` to listen for selected item changes.
 
@@ -382,7 +367,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Listening for item selection
+### Item selection
 
 Use `onSelect` when you need the selected item value immediately.
 
@@ -401,7 +386,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Listening for open and close events
+### Open state changes
 
 Use `onOpenChange` to listen for open and close events.
 
@@ -420,7 +405,7 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-### Grouping items
+### Item groups
 
 The select relies on the collection, so rendered items must match collection
 items.
@@ -459,7 +444,7 @@ Then, use the `collection.group()` method to render the grouped items inside
 
 </Example>
 
-### Usage with large data
+### Large datasets
 
 For large lists, combine select with a virtualization library like
 `react-window` or `@tanstack/react-virtual`.
@@ -542,7 +527,7 @@ function Demo() {
 
 </Example>
 
-### Wrapping items in a list
+### List wrapper
 
 By default, `getContentProps()` renders the `listbox` role. Still wrap the items
 in `getListProps()`: when the select opens, focus moves to the list, so without
@@ -578,16 +563,16 @@ const service = useMachine(select.machine, {
 </Example>
 
 For a select with a search input, use a
-[combobox](/components/combobox#wrapping-items-in-a-list) with `popupType` set
-to `"dialog"` instead. The select content handles keys like `Space` itself, so a
-plain input inside it can't take every keystroke.
+[combobox](/components/combobox#list-wrapper) with `popupType` set to `"dialog"`
+instead. The select content handles keys like `Space` itself, so a plain input
+inside it can't take every keystroke.
 
-### Usage within dialog
+### Inside a dialog
 
 When using select in a dialog, avoid rendering it in a `Portal` or `Teleport`
 outside the dialog focus scope.
 
-### Composing with other widgets
+### Composition
 
 The popup is split into two layers:
 
@@ -629,7 +614,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-### Redirecting initial focus
+### Initial focus
 
 By default, focus moves to the `list` element when the popup opens. To redirect
 focus to a different element (such as a search input or composed widget), pass
@@ -650,100 +635,9 @@ const service = useMachine(select.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open and closed state
-
-When the select is open, the trigger and content is given a `data-state`
-attribute.
-
-```css
-[data-select-trigger][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-select-content][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-select-list] {
-  /* the listbox container — carries role=listbox */
-}
-```
-
-### Selected state
-
-Items are given a `data-state` attribute, indicating whether they are selected.
-
-```css
-[data-select-item][data-state="checked|unchecked"] {
-  /* styles for selected or unselected state */
-}
-```
-
-### Highlighted state
-
-When an item is highlighted, via keyboard navigation or pointer, it is given a
-`data-highlighted` attribute.
-
-```css
-[data-select-item][data-highlighted] {
-  /* styles for highlighted state */
-}
-```
-
-### Invalid state
-
-When the select is invalid, the label and trigger is given a `data-invalid`
-attribute.
-
-```css
-[data-select-label][data-invalid] {
-  /* styles for invalid state */
-}
-
-[data-select-trigger][data-invalid] {
-  /* styles for invalid state */
-}
-```
-
-### Disabled state
-
-When the select is disabled, the trigger and label is given a `data-disabled`
-attribute.
-
-```css
-[data-select-trigger][data-disabled] {
-  /* styles for disabled select state */
-}
-
-[data-select-label][data-disabled] {
-  /* styles for disabled label state */
-}
-
-[data-select-item][data-disabled] {
-  /* styles for disabled option state */
-}
-```
-
-> Optionally, when an item is disabled, it is given a `data-disabled` attribute.
-
-### Empty state
-
-When no option is selected, the trigger is given a `data-placeholder-shown`
-attribute.
-
-```css
-[data-select-trigger][data-placeholder-shown] {
-  /* styles for empty select state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The select machine exposes the following context properties:
 
@@ -755,11 +649,14 @@ The select `api` exposes the following methods:
 
 <ApiTable name="select" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-select-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="select" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="select" />
 
@@ -768,6 +665,6 @@ The select `api` exposes the following methods:
 Adheres to the
 [ListBox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="select" />

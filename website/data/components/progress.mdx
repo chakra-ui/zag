@@ -1,11 +1,13 @@
 ---
 title: Progress
-description: Using the progress machine in your project.
+description:
+  A progress indicator in linear or circular form that shows how far a task has
+  gone, with an indeterminate state.
 package: "@zag-js/progress"
 ---
 
-Progress shows how far along a task is, such as downloading a file or uploading
-an image. The same machine renders a linear bar or a circle.
+Progress shows how far along a task is, like a file upload, as a linear bar or a
+circle
 
 <Resources pkg="@zag-js/progress" />
 
@@ -25,11 +27,6 @@ Install the progress package:
 
 ## Anatomy
 
-Check the progress anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 The linear bar:
 
 <Anatomy id="linear-progress" />
@@ -46,17 +43,10 @@ Import the progress package:
 import * as progress from "@zag-js/progress"
 ```
 
-The progress package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
 Then render the [linear](#linear) or [circular](#circular) parts with the
 framework integration helpers.
 
-### Setting the value
+### Initial value
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state.
 
@@ -77,7 +67,7 @@ progress bar.
 api.setValue(50)
 ```
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react to progress updates.
 
@@ -94,7 +84,7 @@ const service = useMachine(progress.machine, {
 
 </Example>
 
-### Setting the minimum and maximum values
+### Min and max
 
 By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
@@ -129,7 +119,7 @@ const service = useMachine(progress.machine, {
 
 </Example>
 
-### Customizing value text
+### Value text
 
 Progress bars can only be interpreted by sighted users. To include a text
 description to support assistive technologies like screen readers, use the
@@ -154,7 +144,7 @@ Then you need to render the `valueText` part in your component.
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
-### Localizing percentage formatting
+### Percent formatting
 
 Use `locale` and `formatOptions` to customize number formatting.
 
@@ -201,7 +191,7 @@ A ring that fills clockwise.
 
 <CodeSnippet id="progress/circular.mdx" />
 
-### Setting the size of the circle
+### Circle size
 
 Use the `--size` CSS variable to set the size of the circle.
 
@@ -215,7 +205,7 @@ Use the `--size` CSS variable to set the size of the circle.
 
 </Example>
 
-### Setting the thickness of the circle
+### Circle thickness
 
 Use the `--thickness` CSS variable to set the thickness of the ring.
 
@@ -229,53 +219,9 @@ Use the `--thickness` CSS variable to set the thickness of the ring.
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-progress-root] {
-  /* Styles for the root part */
-}
-
-/* linear */
-[data-progress-track] {
-  /* Styles for the track part */
-}
-
-[data-progress-range] {
-  /* Styles for the range part */
-}
-
-/* circular */
-[data-progress-circle-track] {
-  /* Styles for the circle track part */
-}
-
-[data-progress-circle-range] {
-  /* Styles for the circle range part */
-}
-```
-
-### Indeterminate state
-
-To style the indeterminate state, you can use the `[data-state=indeterminate]`
-selector.
-
-```css
-[data-progress-root][data-state="indeterminate"] {
-  /* Styles for the root indeterminate state */
-}
-
-[data-progress-range][data-state="indeterminate"],
-[data-progress-circle-range][data-state="indeterminate"] {
-  /* Styles for the range indeterminate state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The progress machine exposes the following context properties:
 
@@ -287,10 +233,13 @@ The progress `api` exposes the following methods:
 
 <ApiTable name="progress" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-progress-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="progress" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="progress" />

@@ -1,0 +1,622 @@
+{
+  "id": "slider",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focus",
+      "label": "focus",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "DECREMENT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INCREMENT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": "hasIndex"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_VALUE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "POINTER_CANCEL",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "focus",
+      "event": "POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "ARROW_DEC",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "ARROW_INC",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "idle",
+      "event": "BLUR",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "END",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": null,
+      "event": "HOME",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "dragging",
+      "event": "POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "focus",
+      "to": "dragging",
+      "event": "THUMB_POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focus",
+      "event": "FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "THUMB_POINTER_DOWN",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1026,
+      "height": 276,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 105,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 420,
+          "y": 48,
+          "w": 86,
+          "h": 44
+        },
+        "dragging": {
+          "x": 885,
+          "y": 89,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "POINTER_CANCEL"
+          ],
+          "lines": [
+            "POINTER_CANCEL"
+          ],
+          "points": [
+            [
+              885,
+              115
+            ],
+            [
+              801,
+              115
+            ],
+            [
+              801,
+              179
+            ],
+            [
+              162,
+              179
+            ],
+            [
+              162,
+              131
+            ],
+            [
+              126,
+              131
+            ]
+          ],
+          "label": {
+            "x": 409,
+            "y": 148,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "dragging",
+          "to": "focus",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              885,
+              98
+            ],
+            [
+              801,
+              98
+            ],
+            [
+              801,
+              63
+            ],
+            [
+              506,
+              63
+            ]
+          ],
+          "label": {
+            "x": 667,
+            "y": 32,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              420,
+              63
+            ],
+            [
+              152,
+              63
+            ],
+            [
+              152,
+              114
+            ],
+            [
+              126,
+              114
+            ]
+          ],
+          "label": {
+            "x": 240,
+            "y": 32,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              506,
+              77
+            ],
+            [
+              556,
+              77
+            ],
+            [
+              556,
+              107
+            ],
+            [
+              885,
+              107
+            ]
+          ],
+          "label": {
+            "x": 640,
+            "y": 114,
+            "w": 135,
+            "h": 40
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "FOCUS"
+          ],
+          "lines": [
+            "FOCUS"
+          ],
+          "points": [
+            [
+              126,
+              123
+            ],
+            [
+              311,
+              123
+            ],
+            [
+              311,
+              77
+            ],
+            [
+              420,
+              77
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 130,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              126,
+              140
+            ],
+            [
+              152,
+              140
+            ],
+            [
+              152,
+              196
+            ],
+            [
+              811,
+              196
+            ],
+            [
+              811,
+              124
+            ],
+            [
+              885,
+              124
+            ]
+          ],
+          "label": {
+            "x": 395,
+            "y": 203,
+            "w": 135,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 554,
+      "height": 700,
+      "states": {
+        "idle": {
+          "x": 133,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focus": {
+          "x": 107,
+          "y": 320,
+          "w": 86,
+          "h": 44
+        },
+        "dragging": {
+          "x": 125,
+          "y": 624,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "POINTER_CANCEL"
+          ],
+          "lines": [
+            "POINTER_CANCEL"
+          ],
+          "points": [
+            [
+              190,
+              624
+            ],
+            [
+              190,
+              540
+            ],
+            [
+              363,
+              540
+            ],
+            [
+              363,
+              112
+            ],
+            [
+              180,
+              112
+            ],
+            [
+              180,
+              76
+            ]
+          ],
+          "label": {
+            "x": 249,
+            "y": 330,
+            "w": 108,
+            "h": 24
+          }
+        },
+        {
+          "from": "dragging",
+          "to": "focus",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              147,
+              624
+            ],
+            [
+              147,
+              540
+            ],
+            [
+              136,
+              540
+            ],
+            [
+              136,
+              364
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 482,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "idle",
+          "events": [
+            "BLUR"
+          ],
+          "lines": [
+            "BLUR"
+          ],
+          "points": [
+            [
+              136,
+              320
+            ],
+            [
+              136,
+              102
+            ],
+            [
+              149,
+              102
+            ],
+            [
+              149,
+              76
+            ]
+          ],
+          "label": {
+            "x": 88,
+            "y": 186,
+            "w": 42,
+            "h": 24
+          }
+        },
+        {
+          "from": "focus",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              164,
+              364
+            ],
+            [
+              164,
+              540
+            ],
+            [
+              169,
+              540
+            ],
+            [
+              169,
+              624
+            ]
+          ],
+          "label": {
+            "x": 171,
+            "y": 474,
+            "w": 135,
+            "h": 40
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focus",
+          "events": [
+            "FOCUS"
+          ],
+          "lines": [
+            "FOCUS"
+          ],
+          "points": [
+            [
+              164,
+              76
+            ],
+            [
+              164,
+              320
+            ]
+          ],
+          "label": {
+            "x": 171,
+            "y": 186,
+            "w": 49,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN",
+            "THUMB_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              195,
+              76
+            ],
+            [
+              195,
+              102
+            ],
+            [
+              380,
+              102
+            ],
+            [
+              380,
+              550
+            ],
+            [
+              212,
+              550
+            ],
+            [
+              212,
+              624
+            ]
+          ],
+          "label": {
+            "x": 387,
+            "y": 322,
+            "w": 135,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

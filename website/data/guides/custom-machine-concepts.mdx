@@ -1,0 +1,694 @@
+---
+title: Core concepts
+description: The building blocks of a Zag machine.
+---
+
+This page covers each part of a machine config written with `createMachine`, and
+the [example](/guides/custom-machine-example) puts them together
+
+## Machine shape
+
+A machine is a plain config object. Every key except `initialState` and `states`
+is optional.
+
+```ts
+import { createMachine } from "@zag-js/core"
+
+export const machine = createMachine<CounterSchema>({
+  props({ props }) {}, // fill in defaults
+  context({ prop, bindable }) {}, // reactive state
+  refs() {}, // non-reactive values
+  computed: {}, // derived values
+  watch({ track, action }) {}, // react to prop and context changes
+  initialState({ prop }) {}, // the first state
+  entry: [], // actions run when the machine starts
+  exit: [], // actions run when the machine stops
+  effects: [], // effects that live as long as the machine
+  on: {}, // events handled in every state
+  states: {}, // finite states and their transitions
+  implementations: {
+    actions: {},
+    guards: {},
+    effects: {},
+  },
+})
+```
+
+`CounterSchema` describes the types of every key. See
+[TypeScript](/guides/custom-machine-typescript) for how to write it.
+
+`states`, `on`, `entry`, `exit` and `effects` refer to actions, guards and
+effects by name. The functions live in `implementations`. This keeps the chart
+readable and lets you reuse one implementation across states.
+
+## States and transitions
+
+A machine is always in exactly one state. `initialState` picks the first one,
+and each state lists the events it responds to under `on`.
+
+```ts
+createMachine<ToggleSchema>({
+  initialState({ prop }) {
+    return prop("defaultPressed") ? "active" : "inactive"
+  },
+  states: {
+    inactive: {
+      on: {
+        TOGGLE: { target: "active" },
+      },
+    },
+    active: {
+      on: {
+        TOGGLE: { target: "inactive" },
+      },
+    },
+  },
+})
+```
+
+A transition has three optional fields:
+
+- `target`: the state to move to. Leave it out to stay in the current state.
+- `actions`: action names to run during the transition.
+- `guard`: a guard name (or function) that must return `true` for the transition
+  to run.
+
+When an event has several possible outcomes, pass an array. The first transition
+whose guard passes wins. A transition without a guard always passes, so put it
+last.
+
+```ts
+on: {
+  OPEN: [
+    { guard: "isOpenControlled", actions: ["invokeOnOpen"] },
+    { target: "open", actions: ["invokeOnOpen"] },
+  ],
+}
+```
+
+If no state handles an event, the machine checks the top-level `on`. Use it for
+events that behave the same in every state, like imperative setters.
+
+```ts
+on: {
+  "VALUE.SET": { actions: ["setValue"] },
+}
+```
+
+An event no state or top-level handler matches is dropped.
+
+### Re-entering states
+
+A transition that targets the state you are already in runs its actions but does
+not run `exit`, `entry` or restart effects. Set `reenter: true` when you want
+the full exit and enter cycle.
+
+```ts
+on: {
+  RESTART: { target: "running", reenter: true },
+}
+```
+
+## Events
+
+Send events with `send`. An event is an object with a `type` and any extra data
+you need.
+
+```ts
+send({ type: "VALUE.SET", value: 5 })
+```
+
+Actions, guards and effects read the event that triggered them from `event`.
+
+```ts
+actions: {
+  setValue({ context, event }) {
+    context.set("value", event.value)
+  },
+}
+```
+
+`event.previous()` returns the event before it. Use it when the meaning of an
+event depends on what came first.
+
+Name events in `SCREAMING_SNAKE_CASE`. Use a dot to group related events, like
+`TRIGGER.CLICK`, `INPUT.FOCUS` or `VALUE.SET`.
+
+### API setters
+
+In the React, Solid, Preact and Vanilla adapters, `send` queues the transition
+in a microtask. Code that runs right after `send` still sees the old state. So
+an api method should not read state to decide whether to send.
+
+```ts
+// wrong: `open` has not seen the OPEN queued a line earlier
+setOpen(nextOpen) {
+  if (state.matches("open") === nextOpen) return
+  send({ type: nextOpen ? "OPEN" : "CLOSE" })
+}
+
+// right: always send, and let the newest call win
+setOpen(nextOpen) {
+  send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+}
+```
+
+`replaces` names a slot that holds one queued event. A later event with the same
+key drops the earlier one before it runs. Only tag events sent from the public
+api. Internal events, like an Escape press, should stay untagged.
+
+## Context and bindables
+
+Context holds reactive state that changes over time. Each key is a `bindable`,
+which handles both controlled and uncontrolled values.
+
+```ts
+context({ prop, bindable }) {
+  return {
+    value: bindable<number>(() => ({
+      defaultValue: prop("defaultValue"),
+      value: prop("value"),
+      onChange(value, prev) {
+        prop("onValueChange")?.({ value })
+      },
+    })),
+    focusedIndex: bindable<number>(() => ({
+      defaultValue: -1,
+    })),
+  }
+}
+```
+
+When `value` is `undefined`, the bindable is uncontrolled and owns its state,
+starting from `defaultValue`. When `value` is set, the bindable is controlled.
+`context.set` then only calls `onChange`, and the new value shows up once the
+parent passes it back.
+
+Bindable options:
+
+- `defaultValue`: the starting value when uncontrolled.
+- `value`: the controlled value.
+- `onChange(value, prev)`: runs when the value changes.
+- `isEqual(a, b)`: decides whether a new value counts as a change. Defaults to
+  `Object.is`.
+- `hash(value)`: turns the value into a string for `context.hash`. Defaults to
+  `String(value)`.
+- `sync`: apply the update synchronously in adapters that batch updates.
+
+Read and write context from any action, guard, effect or computed value.
+
+```ts
+actions: {
+  increment({ context, prop }) {
+    context.set("value", (value) => value + prop("step"))
+  },
+  reset({ context }) {
+    context.set("value", context.initial("value"))
+  },
+}
+```
+
+- `context.get(key)` returns the current value.
+- `context.set(key, valueOrFn)` sets it. Pass a function to update from the
+  previous value.
+- `context.initial(key)` returns the value the bindable started with.
+- `context.hash(key)` returns the hashed value. Use it to track arrays and
+  objects.
+
+For arrays and objects, pass `isEqual` and `hash` so updates with the same
+content don't count as changes.
+
+```ts
+value: bindable<number[]>(() => ({
+  defaultValue: prop("defaultValue"),
+  value: prop("value"),
+  isEqual: (a, b) => a.length === b?.length && a.every((v, i) => v === b[i]),
+  hash: (value) => value.join(","),
+})),
+```
+
+### Composing bindables
+
+A bindable is a plain object, so you can wrap one to add behavior. This helper
+resets the value after a delay.
+
+```ts
+import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
+
+function withAutoreset<T>(
+  bindable: BindableFn,
+  props: () => BindableParams<T> & { resetAfter: number },
+): Bindable<T> {
+  const value = bindable(props)
+  const timer = bindable.ref<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
+
+  // clear the pending timer when the machine stops
+  bindable.cleanup(() => clearTimeout(timer.get()))
+
+  return {
+    ...value,
+    set(valueOrFn) {
+      value.set(valueOrFn)
+      clearTimeout(timer.get())
+      timer.set(
+        setTimeout(() => value.set(value.initial as T), props().resetAfter),
+      )
+    },
+  }
+}
+```
+
+Use it like any other bindable.
+
+```ts
+context({ bindable }) {
+  return {
+    status: withAutoreset<string>(bindable, () => ({
+      defaultValue: "idle",
+      resetAfter: 2000,
+    })),
+  }
+}
+```
+
+`context.set("status", "copied")` now returns to `"idle"` after two seconds.
+
+## Props and defaults
+
+Props are the options the user passes to `useMachine`. The `props` function
+fills in defaults. Return the defaults first and spread `props` last, so the
+user's values win.
+
+```ts
+props({ props }) {
+  return {
+    min: 0,
+    max: 100,
+    step: 1,
+    defaultValue: 0,
+    ...props,
+  }
+}
+```
+
+When one default depends on another prop, compute it before the spread.
+
+```ts
+props({ props }) {
+  const modal = props.modal ?? true
+  return {
+    closeOnEscape: true,
+    trapFocus: modal,
+    preventScroll: modal,
+    ...props,
+    modal,
+  }
+}
+```
+
+Read props with `prop(key)` in any action, guard, effect, computed value or
+`connect`. Props are not state. They change when the user re-renders with new
+values, and the machine reads the latest value every time.
+
+```ts
+guards: {
+  isOpenControlled: ({ prop }) => prop("open") !== undefined,
+}
+```
+
+## Computed values
+
+Computed values derive from props, context, refs and other computed values. Use
+them for anything you'd otherwise store in context and keep in sync by hand.
+
+```ts
+computed: {
+  canIncrement: ({ context, prop }) => context.get("value") < prop("max"),
+  canDecrement: ({ context, prop }) => context.get("value") > prop("min"),
+  isAtLimit: ({ computed }) => !computed("canIncrement") || !computed("canDecrement"),
+}
+```
+
+Read them with `computed(key)`. Computed values run when you read them. For
+expensive work, wrap the function in `memo` so it only reruns when its
+dependencies change.
+
+```ts
+import { createMachine, memo } from "@zag-js/core"
+
+computed: {
+  valuePercent: memo(
+    ({ context, prop }) => [context.get("value"), prop("min"), prop("max")],
+    ([value, min, max]) => ((value - min) / (max - min)) * 100,
+  ),
+}
+```
+
+## Watch and track
+
+`watch` runs actions when a prop or context value changes. Call `track` with a
+list of getters and a callback.
+
+```ts
+watch({ track, action, context, prop }) {
+  track([() => prop("open")], () => {
+    action(["toggleVisibility"])
+  })
+
+  track([() => context.hash("value")], () => {
+    action(["syncInputElement", "dispatchChangeEvent"])
+  })
+}
+```
+
+- Getters must return primitives: strings, numbers, booleans, `null` or
+  `undefined`. Use `context.hash(key)` for arrays and objects.
+- The callback runs on change, not on the first render.
+- `action([...])` runs actions by name, so watchers reuse your implementations.
+
+The most common use is syncing a controlled prop. When `open` changes from the
+outside, the machine still has to move to the matching state.
+
+```ts
+watch({ track, action, prop }) {
+  track([() => prop("open")], () => {
+    action(["toggleVisibility"])
+  })
+},
+
+implementations: {
+  actions: {
+    toggleVisibility({ prop, send, event }) {
+      send({
+        type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
+        previousEvent: event,
+      })
+    },
+  },
+}
+```
+
+## Refs
+
+Refs hold values that should not trigger updates: timers, observers, class
+instances, cached measurements.
+
+```ts
+import { AnimationFrame } from "@zag-js/dom-query"
+
+refs() {
+  return {
+    focusFrame: AnimationFrame.create(),
+    pointerStart: null,
+  }
+}
+```
+
+Read and write them with `refs.get(key)` and `refs.set(key, value)`. Watchers
+and effect dependencies don't see ref changes. If the UI depends on a value, put
+it in context instead.
+
+## Scope
+
+`scope` gives actions, guards, effects and `connect` access to the DOM without
+touching globals. It respects the user's `getRootNode`, so machines work in
+iframes and shadow roots.
+
+- `scope.id`: the machine instance id from the `id` prop.
+- `scope.ids`: custom part ids the user passed.
+- `scope.query(selector)` and `scope.queryAll(selector)`: query the root node.
+- `scope.selector(part)`: a selector for an anatomy part in this instance.
+- `scope.getById(id)`: find an element by id.
+- `scope.getDoc()`, `scope.getWin()`: the document and window.
+- `scope.getActiveElement()`, `scope.isActiveElement(el)`: focus checks.
+
+Keep lookups in a `dom.ts` file. Use the anatomy part to find elements, and
+build ids only for parts that ARIA attributes point to.
+
+```ts
+import type { Scope } from "@zag-js/core"
+import { parts } from "./dialog.anatomy"
+
+export const getTitleId = (scope: Scope) =>
+  scope.ids?.title ?? `${scope.id}:title`
+
+export const getContentEl = (scope: Scope) =>
+  scope.query(scope.selector(parts.content))
+```
+
+`connect` spreads `parts.content.attrs(scope.id)` on the element, which renders
+`data-dialog-content="<id>"`. `scope.selector(parts.content)` builds the
+matching selector, so two dialogs on a page never find each other's content.
+
+## Actions
+
+Actions are synchronous functions that update context, call user callbacks or
+touch the DOM. They run during transitions, on `entry` and `exit`, and from
+`watch`.
+
+```ts
+actions: {
+  increment({ context, prop }) {
+    context.set("value", (value) => value + prop("step"))
+  },
+  invokeOnOpen({ prop }) {
+    prop("onOpenChange")?.({ open: true })
+  },
+  focusContent({ scope }) {
+    dom.getContentEl(scope)?.focus()
+  },
+}
+```
+
+Every action receives the same params: `context`, `prop`, `refs`, `computed`,
+`scope`, `event`, `state`, `send`, `action`, `guard` and `choose`.
+
+### Deferred work
+
+Work an action schedules with `requestAnimationFrame` or `setTimeout` can run
+after the state is gone. Keep it in a ref and cancel it on exit. State `exit`
+actions don't run when the component unmounts, so cancel in the top-level `exit`
+too.
+
+```ts
+refs() {
+  return { focusFrame: AnimationFrame.create() }
+},
+
+exit: ["cancelFocus"],
+
+states: {
+  open: {
+    entry: ["focusContent"],
+    exit: ["cancelFocus"],
+  },
+},
+
+implementations: {
+  actions: {
+    focusContent({ scope, refs }) {
+      refs.get("focusFrame").request(() => {
+        dom.getContentEl(scope)?.focus({ preventScroll: true })
+      })
+    },
+    cancelFocus({ refs }) {
+      refs.get("focusFrame").cancel()
+    },
+  },
+}
+```
+
+## Guards
+
+Guards are functions that return a boolean. A transition with a guard runs only
+when the guard returns `true`.
+
+```ts
+guards: {
+  canIncrement: ({ computed }) => computed("canIncrement"),
+  isOpenControlled: ({ prop }) => prop("open") !== undefined,
+}
+```
+
+Combine guards with `and`, `or` and `not` from `createGuards`.
+
+```ts
+import { createGuards, createMachine } from "@zag-js/core"
+
+const { and, not } = createGuards<DialogSchema>()
+
+on: {
+  CLOSE: {
+    guard: and("isOpen", not("isOpenControlled")),
+    target: "closed",
+  },
+}
+```
+
+### Choosing actions
+
+`entry`, `exit` and transition `actions` also accept a function. Use `choose` to
+pick actions with guards, without a transition.
+
+```ts
+import { setup } from "@zag-js/core"
+
+const { createMachine, choose } = setup<ComboboxSchema>()
+
+export const machine = createMachine({
+  entry: choose([{ guard: "autoFocus", actions: ["setInitialFocus"] }]),
+  // ...
+})
+```
+
+## Effects
+
+Effects are long-running work tied to a state: event listeners, observers,
+intervals, focus traps. They start when the state is entered and stop when it
+exits. Return a cleanup function.
+
+```ts
+import { addDomEvent } from "@zag-js/dom-query"
+
+states: {
+  open: {
+    effects: ["trackEscapeKey"],
+  },
+},
+
+implementations: {
+  effects: {
+    trackEscapeKey({ scope, send }) {
+      return addDomEvent(scope.getDoc(), "keydown", (event) => {
+        if (event.key === "Escape") send({ type: "CLOSE" })
+      })
+    },
+  },
+}
+```
+
+Effects listed at the top level run for the life of the machine.
+
+### Restart effects
+
+When an effect depends on a prop, wrap the re-runnable part in `watchEffect`. It
+restarts when a dependency changes, without leaving the state.
+
+```ts
+import { preventBodyScroll } from "@zag-js/remove-scroll"
+
+effects: {
+  preventScroll({ scope, prop, watchEffect }) {
+    return watchEffect([() => prop("preventScroll")], () => {
+      if (!prop("preventScroll")) return
+      return preventBodyScroll(scope.getDoc())
+    })
+  },
+}
+```
+
+The cleanup receives a reason, `"restart"` or `"exit"`, if you need to tell them
+apart.
+
+## Entry and exit
+
+`entry` and `exit` run actions when a state is entered or left. The top-level
+`entry` and `exit` run when the machine starts and stops.
+
+```ts
+entry: ["syncInputElement"],
+exit: ["cancelFocus"],
+
+states: {
+  open: {
+    entry: ["focusContent"],
+    exit: ["restoreFocus"],
+  },
+}
+```
+
+When a transition changes state, things run in this order:
+
+1. Effects of the states being left stop.
+2. `exit` actions of the states being left.
+3. The transition's `actions`.
+4. Effects of the states being entered start.
+5. `entry` actions of the states being entered.
+
+## Tags
+
+Tags label states so `connect` can ask a question without listing state names.
+
+```ts
+states: {
+  open: { tags: ["open"] },
+  closing: { tags: ["open"] },
+  closed: { tags: ["closed"] },
+}
+```
+
+```ts
+const open = state.hasTag("open")
+```
+
+Add a `closing` state later and `connect` keeps working.
+
+## Nested states
+
+A state can have child states. Give it `initial` and `states`. Targeting the
+parent enters its initial child.
+
+```ts
+states: {
+  closed: {
+    on: { OPEN: { target: "open" } },
+  },
+  open: {
+    initial: "idle",
+    on: { CLOSE: { target: "closed" } },
+    states: {
+      idle: {
+        on: { SUBMIT: { target: "submitting" } },
+      },
+      submitting: {
+        on: {
+          DONE: { target: "closed" },
+          ERROR: { target: "idle" },
+        },
+      },
+    },
+  },
+}
+```
+
+- State values are dot paths: `"open.idle"`, `"open.submitting"`.
+- A bare target resolves to a sibling, then up through the parents. A target
+  that starts with a dot, like `".idle"`, resolves to a child.
+- Give a state an `id` and target it from anywhere with `"#id"`.
+- Events bubble: a child that doesn't handle `CLOSE` falls back to its parent.
+- Tags, `entry`, `exit` and `effects` on the parent apply while any child is
+  active.
+- `state.matches("open")` is true in any child of `open`.
+
+Reach for nested states only when a group of states shares transitions. Most
+machines are flat.
+
+## Debugging
+
+Set `debug: true` on the machine to log transitions, actions and lifecycle
+events to the console.
+
+```ts
+export const machine = createMachine<CounterSchema>({
+  debug: true,
+  // ...
+})
+```
+
+## Next
+
+- [TypeScript](/guides/custom-machine-typescript): type the schema, `connect`
+  and the public api.
+- [Counter example](/guides/custom-machine-example): build a counter end to end.

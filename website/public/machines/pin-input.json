@@ -1,0 +1,298 @@
+{
+  "id": "pin-input",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": "hasIndex"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.ADVANCE",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.ARROW_RIGHT",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.BACKSPACE",
+      "guard": "hasValue"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.BACKSPACE",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "INPUT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.DELETE",
+      "guard": "hasValue"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.END",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.HOME",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.PASTE",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "VALUE.INVALID",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "INPUT.FOCUS",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 568,
+      "height": 144,
+      "states": {
+        "idle": {
+          "x": 458,
+          "y": 48,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 48,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "INPUT.BLUR"
+          ],
+          "lines": [
+            "INPUT.BLUR"
+          ],
+          "points": [
+            [
+              149,
+              63
+            ],
+            [
+              458,
+              63
+            ]
+          ],
+          "label": {
+            "x": 263,
+            "y": 32,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "INPUT.FOCUS"
+          ],
+          "lines": [
+            "INPUT.FOCUS"
+          ],
+          "points": [
+            [
+              458,
+              77
+            ],
+            [
+              374,
+              77
+            ],
+            [
+              374,
+              80
+            ],
+            [
+              175,
+              80
+            ],
+            [
+              175,
+              77
+            ],
+            [
+              149,
+              77
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 87,
+            "w": 89,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 290,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 110,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 102,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "INPUT.BLUR"
+          ],
+          "lines": [
+            "INPUT.BLUR"
+          ],
+          "points": [
+            [
+              136,
+              76
+            ],
+            [
+              136,
+              320
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "INPUT.FOCUS"
+          ],
+          "lines": [
+            "INPUT.FOCUS"
+          ],
+          "points": [
+            [
+              162,
+              320
+            ],
+            [
+              162,
+              102
+            ],
+            [
+              169,
+              102
+            ],
+            [
+              169,
+              76
+            ]
+          ],
+          "label": {
+            "x": 169,
+            "y": 186,
+            "w": 89,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "id": "image-cropper",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "panning",
+      "label": "panning",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "ADJUST_ASPECT_RATIO",
+      "guard": "hasViewportRect"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PINCH_END",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PINCH_MOVE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PINCH_START",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "RESET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "RESIZE_CROP",
+      "guard": "canResizeCrop"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_CROP",
+      "guard": "canResizeCrop"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_FLIP",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_ROTATION",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "SET_ZOOM",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VIEWPORT_RESIZE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "NUDGE_MOVE_CROP",
+      "guard": "hasViewportRect"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "NUDGE_PAN",
+      "guard": "hasViewportRect"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "NUDGE_RESIZE_CROP",
+      "guard": "hasViewportRect"
+    },
+    {
+      "from": "idle",
+      "to": "panning",
+      "event": "PAN_POINTER_DOWN",
+      "guard": "canPan"
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "POINTER_DOWN",
+      "guard": "canDragSelection"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "SET_DEFAULT_CROP",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "SET_NATURAL_SIZE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ZOOM",
+      "guard": "hasViewportRect"
+    },
+    {
+      "from": "panning",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "panning",
+      "to": "idle",
+      "event": "POINTER_UP",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 609,
+      "height": 241,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 62,
+          "w": 78,
+          "h": 44
+        },
+        "dragging": {
+          "x": 468,
+          "y": 148,
+          "w": 109,
+          "h": 44
+        },
+        "panning": {
+          "x": 468,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              468,
+              163
+            ],
+            [
+              384,
+              163
+            ],
+            [
+              384,
+              159
+            ],
+            [
+              162,
+              159
+            ],
+            [
+              162,
+              88
+            ],
+            [
+              126,
+              88
+            ]
+          ],
+          "label": {
+            "x": 256,
+            "y": 128,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "panning",
+          "events": [
+            "PAN_POINTER_DOWN"
+          ],
+          "lines": [
+            "PAN_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              126,
+              71
+            ],
+            [
+              152,
+              71
+            ],
+            [
+              152,
+              63
+            ],
+            [
+              468,
+              63
+            ]
+          ],
+          "label": {
+            "x": 236,
+            "y": 32,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              126,
+              97
+            ],
+            [
+              152,
+              97
+            ],
+            [
+              152,
+              177
+            ],
+            [
+              468,
+              177
+            ]
+          ],
+          "label": {
+            "x": 250,
+            "y": 184,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "panning",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              468,
+              77
+            ],
+            [
+              384,
+              77
+            ],
+            [
+              384,
+              80
+            ],
+            [
+              126,
+              80
+            ]
+          ],
+          "label": {
+            "x": 256,
+            "y": 87,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 537,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 162,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "dragging": {
+          "x": 330,
+          "y": 320,
+          "w": 109,
+          "h": 44
+        },
+        "panning": {
+          "x": 142,
+          "y": 320,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              366,
+              320
+            ],
+            [
+              366,
+              236
+            ],
+            [
+              386,
+              236
+            ],
+            [
+              386,
+              112
+            ],
+            [
+              209,
+              112
+            ],
+            [
+              209,
+              76
+            ]
+          ],
+          "label": {
+            "x": 298,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "panning",
+          "events": [
+            "PAN_POINTER_DOWN"
+          ],
+          "lines": [
+            "PAN_POINTER_DOWN"
+          ],
+          "points": [
+            [
+              178,
+              76
+            ],
+            [
+              178,
+              102
+            ],
+            [
+              176,
+              102
+            ],
+            [
+              176,
+              320
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              224,
+              76
+            ],
+            [
+              224,
+              102
+            ],
+            [
+              403,
+              102
+            ],
+            [
+              403,
+              320
+            ]
+          ],
+          "label": {
+            "x": 410,
+            "y": 186,
+            "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "panning",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              209,
+              320
+            ],
+            [
+              209,
+              236
+            ],
+            [
+              193,
+              236
+            ],
+            [
+              193,
+              76
+            ]
+          ],
+          "label": {
+            "x": 200,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

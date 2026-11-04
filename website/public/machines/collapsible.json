@@ -1,0 +1,462 @@
+{
+  "id": "collapsible",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "closing",
+      "label": "closing",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "controlled.open",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "open",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed",
+      "to": "open",
+      "event": "open",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "closed",
+      "event": "animation.end",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": null,
+      "event": "close",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closing",
+      "to": "closed",
+      "event": "close",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "closed",
+      "event": "controlled.close",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "controlled.open",
+      "guard": null
+    },
+    {
+      "from": "closing",
+      "to": null,
+      "event": "open",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "open",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "animation.end",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "close",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closing",
+      "event": "close",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closing",
+      "event": "controlled.close",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "size.measure",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1058,
+      "height": 317,
+      "states": {
+        "closed": {
+          "x": 505,
+          "y": 73,
+          "w": 94,
+          "h": 44
+        },
+        "closing": {
+          "x": 48,
+          "y": 84,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 948,
+          "y": 84,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "controlled.open",
+            "open"
+          ],
+          "lines": [
+            "controlled.open",
+            "open"
+          ],
+          "points": [
+            [
+              599,
+              95
+            ],
+            [
+              948,
+              95
+            ]
+          ],
+          "label": {
+            "x": 723,
+            "y": 48,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closing",
+          "to": "closed",
+          "events": [
+            "animation.end",
+            "close",
+            "controlled.close"
+          ],
+          "lines": [
+            "animation.end",
+            "close",
+            "controlled.close"
+          ],
+          "points": [
+            [
+              149,
+              95
+            ],
+            [
+              505,
+              95
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 32,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "closing",
+          "to": "open",
+          "events": [
+            "controlled.open",
+            "open"
+          ],
+          "lines": [
+            "controlled.open",
+            "open"
+          ],
+          "points": [
+            [
+              149,
+              106
+            ],
+            [
+              185,
+              106
+            ],
+            [
+              185,
+              220
+            ],
+            [
+              864,
+              220
+            ],
+            [
+              864,
+              106
+            ],
+            [
+              948,
+              106
+            ]
+          ],
+          "label": {
+            "x": 495,
+            "y": 173,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closing",
+          "events": [
+            "close",
+            "controlled.close"
+          ],
+          "lines": [
+            "close",
+            "controlled.close"
+          ],
+          "points": [
+            [
+              948,
+              117
+            ],
+            [
+              874,
+              117
+            ],
+            [
+              874,
+              237
+            ],
+            [
+              175,
+              237
+            ],
+            [
+              175,
+              117
+            ],
+            [
+              149,
+              117
+            ]
+          ],
+          "label": {
+            "x": 491,
+            "y": 244,
+            "w": 122,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 578,
+      "height": 732,
+      "states": {
+        "closed": {
+          "x": 129,
+          "y": 352,
+          "w": 94,
+          "h": 44
+        },
+        "closing": {
+          "x": 341,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 156,
+          "y": 656,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed",
+          "to": "open",
+          "events": [
+            "controlled.open",
+            "open"
+          ],
+          "lines": [
+            "controlled.open",
+            "open"
+          ],
+          "points": [
+            [
+              176,
+              396
+            ],
+            [
+              176,
+              656
+            ]
+          ],
+          "label": {
+            "x": 55,
+            "y": 506,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "closing",
+          "to": "closed",
+          "events": [
+            "animation.end",
+            "close",
+            "controlled.close"
+          ],
+          "lines": [
+            "animation.end",
+            "close",
+            "controlled.close"
+          ],
+          "points": [
+            [
+              366,
+              76
+            ],
+            [
+              366,
+              102
+            ],
+            [
+              176,
+              102
+            ],
+            [
+              176,
+              352
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 122,
+            "h": 56
+          }
+        },
+        {
+          "from": "closing",
+          "to": "open",
+          "events": [
+            "controlled.open",
+            "open"
+          ],
+          "lines": [
+            "controlled.open",
+            "open"
+          ],
+          "points": [
+            [
+              392,
+              76
+            ],
+            [
+              392,
+              102
+            ],
+            [
+              400,
+              102
+            ],
+            [
+              400,
+              572
+            ],
+            [
+              195,
+              572
+            ],
+            [
+              195,
+              656
+            ]
+          ],
+          "label": {
+            "x": 279,
+            "y": 354,
+            "w": 115,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closing",
+          "events": [
+            "close",
+            "controlled.close"
+          ],
+          "lines": [
+            "close",
+            "controlled.close"
+          ],
+          "points": [
+            [
+              215,
+              656
+            ],
+            [
+              215,
+              582
+            ],
+            [
+              417,
+              582
+            ],
+            [
+              417,
+              76
+            ]
+          ],
+          "label": {
+            "x": 424,
+            "y": 354,
+            "w": 122,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

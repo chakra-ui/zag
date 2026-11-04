@@ -1,7 +1,6 @@
 import apiJson from "@zag-js/docs"
 import { groupProps, type PropMeta } from "lib/prop-groups"
-import { Box } from "styled-system/jsx"
-import { propTable } from "styled-system/recipes"
+import { type PropRow, PropRows } from "./prop-rows"
 
 interface ApiTableProps {
   type: "api" | "context"
@@ -10,54 +9,44 @@ interface ApiTableProps {
 
 type Entry = [string, PropMeta]
 
-export const PropTable = (props: ApiTableProps) => {
+const fullType = (type: string) => type.replace(/ \| undefined$/, "")
+
+// one-line form for the row; the full type shows when the row opens
+function shortType(type: string) {
+  if (type.includes("=>")) return "function"
+  if (type.length <= 32) return type
+  const parts = type.split(" | ")
+  if (parts.length > 2) return `${parts.slice(0, 2).join(" | ")} | …`
+  return `${type.slice(0, 30)}…`
+}
+
+/** Server side: picks the rows so the full api json never reaches the client */
+export function PropTable(props: ApiTableProps) {
   const { name, type = "api" } = props
-  if (!(name in apiJson)) return <Box>No data available for {name}</Box>
+  if (!(name in apiJson)) return <p>No data available for {name}</p>
 
   const entries = Object.entries(apiJson[name][type]) as Entry[]
   const isProps = type === "context"
-  const rows = isProps
+  const ordered = isProps
     ? groupProps(entries).flatMap((group) => group.props)
     : entries
-  const styles = propTable()
+
+  const rows: PropRow[] = ordered.map(([key, item]) => {
+    const type = fullType(item.type)
+    return {
+      name: key,
+      type,
+      shortType: shortType(type),
+      description: item.description,
+      defaultValue: item.defaultValue ?? undefined,
+    }
+  })
 
   return (
-    <div className={styles.root}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.th}>{isProps ? "Prop" : "Property"}</th>
-            {isProps && <th className={styles.th}>Default</th>}
-            <th className={styles.th}>Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(([key, item]) => (
-            <tr key={key}>
-              <td className={styles.td} width="1%">
-                <code className={styles.key}>{key}</code>
-              </td>
-              {isProps && (
-                <td className={styles.td} width="1%">
-                  {item.defaultValue ? (
-                    <code className={styles.default}>{item.defaultValue}</code>
-                  ) : (
-                    <span className={styles.empty} aria-label="no default">
-                      —
-                    </span>
-                  )}
-                </td>
-              )}
-              <td className={styles.td}>
-                <code className={styles.type}>
-                  {item.type.replace(/ \| undefined$/, "")}
-                </code>
-                <p className={styles.description}>{item.description}</p>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <PropRows
+      rows={rows}
+      label={isProps ? "Prop" : "Property"}
+      showDefault={isProps}
+    />
   )
 }

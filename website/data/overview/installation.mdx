@@ -4,7 +4,7 @@ description: Setting up Zag UI machines in your project
 ---
 
 Zag can be used within most JS frameworks like Vue, React, Preact, Svelte and
-Solid.
+Solid
 
 To get Zag running, you'll need to:
 
@@ -29,7 +29,18 @@ yarn add @zag-js/react
 
 > Congrats! You're ready to use tooltip machine in your project.
 
-## Using the machine
+## How components work
+
+Every component follows the same three steps:
+
+- Import the package. It exports `machine` (the state logic) and `connect` (maps
+  state to props and event handlers).
+- Run the machine with your framework's `useMachine`, and pass a unique `id` so
+  generated element ids stay stable across renders and the server.
+- Call `connect` with `normalizeProps` and spread the returned props on your
+  elements.
+
+## Machine usage
 
 Here's an example of the tooltip machine used in a React.js project.
 
@@ -55,7 +66,7 @@ export function Tooltip() {
 }
 ```
 
-### Usage with Vue 3 (JSX)
+### Vue 3 (JSX)
 
 Zag works seamlessly with Vue's JSX approach. Here's how to use the same tooltip
 logic in Vue:
@@ -97,7 +108,7 @@ There are some extra functions that need to be used in order to make it work:
 - `computed` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
-### Usage with Solid.js
+### Solid
 
 We love Solid.js and we've added support for it. Here's how to use the same
 tooltip logic in Solid:
@@ -132,7 +143,7 @@ There are some extra functions that need to be used in order to make it work:
 - `createMemo` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
-### Usage with Svelte
+### Svelte
 
 Here's how to use the same tooltip logic in Svelte:
 
@@ -163,7 +174,7 @@ There are some extra functions that need to be used in order to make it work:
 - `$derived` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
-### Usage with Preact
+### Preact
 
 The Preact adapter requires Preact 11 and works with or without `preact/compat`.
 
@@ -192,7 +203,7 @@ export function Tooltip() {
 `normalizeProps` maps the React-style event props Zag uses to Preact's, e.g.
 `onChange` to `onInput` and `onFocus` to `onfocusin`.
 
-### About prop normalization
+### Prop normalization
 
 There are subtle difference between how JSX attributes are named across
 frameworks like React, Solid, Vue and Svelte. Here are some examples:

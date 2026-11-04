@@ -8,16 +8,17 @@ export const focusRing = {
 
 export const navControl = css({
   w: "9",
+  rounded: "full",
   h: "full",
   flexShrink: "0",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  bg: "bg",
-  color: "text.muted",
+  bg: "transparent",
+  color: "ink.muted",
   cursor: "pointer",
-  transition: "color 120ms, background 120ms",
-  _hover: { color: "text.bold", bg: "bg.muted" },
+  transition: "color 120ms, background 120ms, box-shadow 120ms",
+  _hover: { color: "ink", bg: "surface", boxShadow: "0 0 0 1px {colors.line}" },
   _focusVisible: focusRing,
   "& svg": { boxSize: "4", flexShrink: "0" },
 })
@@ -26,10 +27,5 @@ export const navCluster = css({
   display: "flex",
   alignItems: "stretch",
   h: "9",
-  gap: "1px",
-  bg: "border",
-  borderWidth: "1px",
-  borderColor: "border",
-  rounded: "md",
-  overflow: "hidden",
+  gap: "2px",
 })

@@ -1,10 +1,12 @@
 ---
 title: Collapsible
-description: Using the collapsible machine in your project.
+description:
+  A collapsible panel that expands and collapses its content, with animated
+  height and an accessible trigger.
 package: "@zag-js/collapsible"
 ---
 
-A collapsible is a component which expands and collapses a panel.
+A collapsible is a component which expands and collapses a panel
 
 <Resources pkg="@zag-js/collapsible" />
 
@@ -23,32 +25,15 @@ Install the collapsible package:
 
 ## Anatomy
 
-Check the collapsible anatomy and part names.
-
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
 <Anatomy id="collapsible" />
 
 ## Usage
 
-Import the collapsible package:
-
-```tsx
-import * as collapsible from "@zag-js/collapsible"
-```
-
-The collapsible package exports two key functions:
-
-- `machine` - State logic for the collapsible.
-- `connect` - Maps state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="collapsible/usage.mdx" />
 
-### Setting the initial state
+### Initial state
 
 Set `defaultOpen` to control the initial open state.
 
@@ -62,7 +47,7 @@ const service = useMachine(collapsible.machine, {
 
 </Example>
 
-### Controlled collapsible
+### Controlled open
 
 Use `open` and `onOpenChange` to control the open state externally.
 
@@ -72,7 +57,7 @@ Use `open` and `onOpenChange` to control the open state externally.
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.
 
@@ -89,7 +74,7 @@ const service = useMachine(collapsible.machine, {
 
 </Example>
 
-### Disabling the collapsible
+### Disabled state
 
 Set `disabled` to `true` to disable interaction.
 
@@ -103,7 +88,7 @@ const service = useMachine(collapsible.machine, {
 
 </Example>
 
-### Searching closed content with find-in-page
+### Find-in-page
 
 Set `hiddenUntilFound` to keep the closed content searchable with the browser's
 find-in-page. When a match is found inside it, the collapsible opens and the
@@ -126,7 +111,7 @@ updated, the content is hidden again.
 > boolean, so closed content ships as `hidden=""` and only becomes searchable
 > after hydration.
 
-### Partial collapse (setting minimum dimensions)
+### Partial collapse
 
 Use `collapsedHeight` or `collapsedWidth` to create a "partially collapsed"
 state. When collapsed, the content keeps the specified minimum size instead of
@@ -146,7 +131,7 @@ const service = useMachine(collapsible.machine, {
 This is useful for creating "show more/less" content sections or preview states
 where a portion of the content shows even when collapsed.
 
-### Running code after close animation
+### After close animation
 
 Use `onExitComplete` to run code when the close animation finishes.
 
@@ -162,7 +147,7 @@ const service = useMachine(collapsible.machine, {
 
 </Example>
 
-### Animating the collapsible
+### Animation
 
 Use CSS animations to animate the collapsible when it expands and collapses. The
 `--height` and `--width` custom properties are attached to the content part.
@@ -204,47 +189,7 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open and closed state
-
-When a collapsible opens or closes, `data-state` is set to `open` or `closed` on
-the root, trigger, and content.
-
-```css
-[data-collapsible-root][data-state="open|closed"] {
-  /* styles for the collapsible is open or closed state */
-}
-
-[data-collapsible-trigger][data-state="open|closed"] {
-  /* styles for the collapsible is open or closed state */
-}
-
-[data-collapsible-content][data-state="open|closed"] {
-  /* styles for the collapsible is open or closed state */
-}
-```
-
-### Focused state
-
-When a collapsible's trigger is focused, a `data-focus` attribute is set on the
-root, trigger and content.
-
-```css
-[data-collapsible-root][data-focus] {
-  /* styles for the item's focus state */
-}
-
-[data-collapsible-trigger][data-focus] {
-  /* styles for the content's focus state */
-}
-
-[data-collapsible-content][data-focus] {
-  /* styles for the content's focus state */
-}
-```
+## Styling
 
 ### Collapse animation
 
@@ -301,7 +246,7 @@ searching the content. Exclude `until-found` from the rule:
 
 The collapsible's `api` exposes the following methods and properties:
 
-### Machine Context
+### Machine context
 
 The collapsible machine exposes the following context properties:
 
@@ -313,11 +258,14 @@ The collapsible `api` exposes the following methods:
 
 <ApiTable name="collapsible" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-collapsible-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="collapsible" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="collapsible" />
 
@@ -326,6 +274,6 @@ The collapsible `api` exposes the following methods:
 Adheres to the
 [Disclosure WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="collapsible" />

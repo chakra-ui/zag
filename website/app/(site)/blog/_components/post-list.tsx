@@ -3,7 +3,7 @@
 import type { Post } from "lib/source"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { blogIndex } from "styled-system/recipes"
+import * as styles from "../blog.css"
 
 export type PostSummary = Omit<Post, "toc">
 
@@ -22,7 +22,6 @@ const monthDay = (date: Date) =>
 
 export function PostFilters() {
   const type = useSearchParams().get("type") ?? "all"
-  const styles = blogIndex()
   return (
     <nav aria-label="Filter posts" className={styles.filters}>
       {filters.map((item) => (
@@ -42,7 +41,6 @@ export function PostFilters() {
 
 export function PostList({ posts }: { posts: PostSummary[] }) {
   const type = useSearchParams().get("type") ?? "all"
-  const styles = blogIndex()
   const postType = filters.find((item) => item.value === type)?.type
   const visible = postType
     ? posts.filter((post) => post.type === postType)
@@ -52,47 +50,52 @@ export function PostList({ posts }: { posts: PostSummary[] }) {
   if (visible.length === 0)
     return <p className={styles.empty}>No posts here yet.</p>
 
-  return years.map((year) => (
-    <section key={year} aria-labelledby={`year-${year}`}>
-      <h2 id={`year-${year}`} className={styles.year}>
-        {year}
-      </h2>
-      {visible
-        .filter((post) => post.date.getUTCFullYear() === year)
-        .map((post) => (
-          <Link
-            key={post.slug}
-            href={`/blog/${post.slug}`}
-            className={styles.row}
-          >
-            <time dateTime={post.date.toISOString()} className={styles.date}>
-              {monthDay(post.date)}
-            </time>
-            <span className={styles.rowText}>
-              <span className={styles.rowTitle} data-part="title">
-                {post.title}
-              </span>
-              <span className={styles.rowLead}>{post.description}</span>
-            </span>
-            <span className={styles.rowAside}>
-              <span style={{ display: "flex" }}>
-                {post.authors.map((author) => (
-                  <img
-                    key={author.github}
-                    src={`https://github.com/${author.github}.png?size=48`}
-                    alt={author.name}
-                    width={22}
-                    height={22}
-                    className={styles.avatar}
-                  />
-                ))}
-              </span>
-              <span className={styles.type} data-type={post.type}>
-                {post.type}
-              </span>
-            </span>
-          </Link>
-        ))}
-    </section>
-  ))
+  return (
+    <div className={styles.list}>
+      {years.map((year) => (
+        <section key={year} aria-labelledby={`year-${year}`}>
+          <h2 id={`year-${year}`} className={styles.year}>
+            {year}
+          </h2>
+          {visible
+            .filter((post) => post.date.getUTCFullYear() === year)
+            .map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className={styles.row}
+              >
+                <time
+                  dateTime={post.date.toISOString()}
+                  className={styles.date}
+                >
+                  {monthDay(post.date)}
+                </time>
+                <span className={styles.rowText}>
+                  <span className={styles.rowTitle}>{post.title}</span>
+                  <span className={styles.rowLead}>{post.description}</span>
+                </span>
+                <span className={styles.rowAside}>
+                  <span className={styles.avatars}>
+                    {post.authors.map((author) => (
+                      <img
+                        key={author.github}
+                        src={`https://github.com/${author.github}.png?size=48`}
+                        alt={author.name}
+                        width={22}
+                        height={22}
+                        className={styles.avatar}
+                      />
+                    ))}
+                  </span>
+                  <span className={styles.typePill({ type: post.type })}>
+                    {post.type}
+                  </span>
+                </span>
+              </Link>
+            ))}
+        </section>
+      ))}
+    </div>
+  )
 }

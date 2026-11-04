@@ -46,8 +46,23 @@ const suggestedUrls = tabs
 const getSuggestions = (data: SearchMetaResult) =>
   suggestedUrls.flatMap((url) => data.find((item) => item.url === url) ?? [])
 
+export const getSection = (item: SearchMetaItem) => item.url.split("/")[1] ?? ""
+
+// keeps rank order inside each section, so the list reads in groups and arrows follow it
+function groupBySection(items: SearchMetaResult) {
+  const order = [...new Set(items.map(getSection))]
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort(
+      (a, b) =>
+        order.indexOf(getSection(a.item)) - order.indexOf(getSection(b.item)) ||
+        a.index - b.index,
+    )
+    .map(({ item }) => item)
+}
+
 function rankResults(data: SearchMetaResult, query: string) {
-  return matchSorter(data, query, {
+  const ranked = matchSorter(data, query, {
     // a match on an entry's own title beats a match on its page, section or text
     // no typo matching: on titles it turns "inert" into "keyboard interactions"
     threshold: rankings.CONTAINS,
@@ -57,6 +72,7 @@ function rankResults(data: SearchMetaResult, query: string) {
       Number(b.item.type === "lvl1") - Number(a.item.type === "lvl1") ||
       a.index - b.index,
   }).slice(0, 10)
+  return groupBySection(ranked)
 }
 
 export const prefetchSearchIndex = () => {
@@ -103,6 +119,8 @@ export function useSearch(): UseSearchReturn {
     id: "search-combobox",
     placeholder: "Search the docs",
     inputBehavior: "autohighlight",
+    // results always show inside the dialog, so Escape belongs to the dialog
+    inline: true,
     selectionBehavior: "clear",
     collection,
     navigate({ value }) {

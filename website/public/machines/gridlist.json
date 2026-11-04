@@ -1,0 +1,138 @@
+{
+  "id": "gridlist",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "FOCUSED_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ESCAPE.KEY",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "GRID.BLUR",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "GRID.FOCUS",
+      "guard": "hasFocusedValue"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "GRID.FOCUS",
+      "guard": "hasSelectedValue"
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "GRID.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.DOUBLE_CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "NAVIGATE",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "TYPEAHEAD",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    },
+    "down": {
+      "width": 158,
+      "height": 108,
+      "states": {
+        "idle": {
+          "x": 48,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": []
+    }
+  }
+}

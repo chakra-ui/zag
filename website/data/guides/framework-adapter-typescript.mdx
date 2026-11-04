@@ -1,0 +1,260 @@
+---
+title: TypeScript
+description: Type the runner, normalizer and API.
+---
+
+This page covers the types an adapter uses, from `@zag-js/core` for the runtime
+and `@zag-js/types` for props
+
+## Core types
+
+Every machine is typed by a schema. `MachineSchema` is the constraint, and the
+other core types take the schema as their generic.
+
+```ts
+import type {
+  Bindable,
+  BindableFn,
+  BindableParams,
+  InputProps,
+  Machine,
+  MachineSchema,
+  Params,
+  Service,
+} from "@zag-js/core"
+```
+
+| Type                | What it is                                                     |
+| ------------------- | -------------------------------------------------------------- |
+| `MachineSchema`     | Shape of `props`, `context`, `state`, `event`, `refs` and more |
+| `Machine<T>`        | The machine definition passed to `useMachine`                  |
+| `Service<T>`        | What `useMachine` returns and `connect` reads                  |
+| `InputProps<T>`     | Props as the user passes them                                  |
+| `Params<T>`         | Argument to actions, guards and `watch`                        |
+| `Bindable<T>`       | One reactive value                                             |
+| `BindableParams<T>` | Options a machine passes to `bindable`                         |
+| `BindableFn`        | The `bindable` function, with its `cleanup` and `ref` helpers  |
+
+Each machine package re-exports its own aliases:
+
+```ts
+import * as zagSwitch from "@zag-js/switch"
+
+type SwitchMachine = zagSwitch.Machine // Machine<SwitchSchema>
+type SwitchService = zagSwitch.Service // Service<SwitchSchema>
+type SwitchProps = zagSwitch.Props
+```
+
+## Type useMachine
+
+Keep the schema generic, and infer it from the machine argument:
+
+```ts
+import type { InputProps, Machine, MachineSchema, Service } from "@zag-js/core"
+
+export function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
+  userProps: InputProps<T> = {} as InputProps<T>,
+): Service<T> {
+  // ...
+}
+```
+
+Users then get typed props without naming the schema:
+
+```ts
+const service = useMachine(zagSwitch.machine, {
+  id: "notifications",
+  onCheckedChange(details) {
+    details.checked // boolean
+  },
+})
+```
+
+Use `InputProps<T>`, not `Partial<T["props"]>`. Machines that declare
+`defaultPropKey` mark some props as required, like `id`. `InputProps` keeps them
+required.
+
+If your framework passes props as getters or refs, widen the parameter. Solid
+and Vue do this:
+
+```ts
+// Solid
+userProps: InputProps<T> | Accessor<InputProps<T>>
+
+// Vue
+userProps: MaybeRef<InputProps<T>>
+```
+
+### Type the bindable
+
+Machines receive `bindable` as a `BindableFn`. A function declaration with the
+two helpers attached satisfies it:
+
+```ts
+import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
+
+function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
+  // ...
+}
+
+bindable.cleanup = (fn: VoidFunction) => {
+  // register fn with your unmount hook
+}
+
+bindable.ref = <T>(defaultValue: T) => {
+  let value = defaultValue
+  return {
+    get: () => value,
+    set: (next: T) => {
+      value = next
+    },
+  }
+}
+
+bindable satisfies BindableFn
+```
+
+### Type the service
+
+Build the service object with the `Service<T>` return type. The event getter
+needs a cast, because `T["event"]` can be `undefined` in the schema:
+
+```ts
+const getEvent = (): Service<T>["event"] =>
+  ({
+    ...event,
+    current: () => event,
+    previous: () => previousEvent,
+  }) as Service<T>["event"]
+```
+
+Type `send` from the service too, so `event.replaces` and `event.type` are
+known:
+
+```ts
+const send: Service<T>["send"] = (event) => {
+  // ...
+}
+```
+
+## Prop types
+
+`connect` is generic over the props your framework accepts:
+
+```ts
+// @zag-js/switch
+export function connect<T extends PropTypes>(
+  service: SwitchService,
+  normalize: NormalizeProps<T>,
+): SwitchApi<T>
+```
+
+`PropTypes` from `@zag-js/types` maps each element kind to its prop type:
+
+```ts
+import type { PropTypes } from "@zag-js/types"
+
+// Record<"button" | "label" | "input" | "textarea" | "img" | "output"
+//   | "element" | "select" | "rect" | "style" | "circle" | "svg" | "path", T>
+```
+
+`element` is any HTML element. `style` is the style object type. The rest map to
+intrinsic elements.
+
+### Map framework types
+
+If your framework has JSX types, build `PropTypes` from its intrinsic elements:
+
+```ts
+import type { JSX, CSSProperties, HTMLAttributes } from "react"
+
+type WithoutRef<T> = Omit<T, "ref">
+
+type ElementsWithoutRef = {
+  [K in keyof JSX.IntrinsicElements]: WithoutRef<JSX.IntrinsicElements[K]>
+}
+
+export type PropTypes = ElementsWithoutRef & {
+  element: WithoutRef<HTMLAttributes<HTMLElement>>
+  style: CSSProperties
+}
+```
+
+Each official adapter uses its framework's element map:
+
+| Adapter | Element map                              | `element`                     | `style`                   |
+| ------- | ---------------------------------------- | ----------------------------- | ------------------------- |
+| React   | `JSX.IntrinsicElements` without `ref`    | `HTMLAttributes<HTMLElement>` | `CSSProperties`           |
+| Preact  | `JSX.IntrinsicElements`, signals removed | `HTMLAttributes<HTMLElement>` | `CSSProperties`           |
+| Solid   | `JSX.IntrinsicElements`                  | `JSX.HTMLAttributes<any>`     | `JSX.CSSProperties`       |
+| Vue     | `NativeElements`                         | `HTMLAttributes`              | `CSSProperties`           |
+| Svelte  | `SvelteHTMLElements`                     | `HTMLAttributes<HTMLElement>` | `HTMLAttributes["style"]` |
+
+Remove anything a prop getter never returns. React drops `ref`, so spreading the
+props never overrides a user's ref. Preact drops signal types, since prop
+getters return plain values.
+
+If your framework has no element types, like Lit or plain DOM, use the default
+`PropTypes`. Every getter then returns `Record<string, any>`.
+
+### Create the normalizer
+
+Pass your `PropTypes` to `createNormalizer`. The function itself works on plain
+objects, so its types stay loose:
+
+```ts
+import { createNormalizer } from "@zag-js/types"
+
+export const normalizeProps = createNormalizer<PropTypes>((props) => {
+  const normalized: Record<string, any> = {}
+  for (const key in props) normalized[key] = props[key]
+  return normalized
+})
+```
+
+The result is a `NormalizeProps<PropTypes>`. Its input side is fixed: each
+method takes Zag's canonical props. Its output side is your `PropTypes`.
+
+## Typed API
+
+Passing `normalizeProps` fixes the generic for the whole API. Every getter
+returns your framework's type:
+
+```ts
+const api = zagSwitch.connect(service, normalizeProps)
+
+api.getRootProps() // PropTypes["label"]
+api.getHiddenInputProps() // PropTypes["input"]
+api.getThumbProps() // PropTypes["element"]
+```
+
+To type the API in your own components, pass `PropTypes` to the package's `Api`
+type:
+
+```ts
+import type { PropTypes } from "./normalize-props"
+
+type SwitchApi = zagSwitch.Api<PropTypes>
+```
+
+Export `PropTypes` from your adapter, so users can do this too.
+
+## Merge props
+
+`mergeProps` from `@zag-js/core` returns the intersection of its arguments:
+
+```ts
+import { mergeProps } from "@zag-js/core"
+
+const props = mergeProps(api.getRootProps(), { className: "switch" })
+```
+
+If your framework wraps props in getters or proxies, add overloads that unwrap
+them. Solid's version accepts `MaybeAccessor<T>` for each source.
+
+## Next
+
+- [Lit example](/guides/framework-adapter-example) builds a typed Lit adapter.
+- [Core concepts](/guides/framework-adapter-concepts) explains what each piece
+  does.

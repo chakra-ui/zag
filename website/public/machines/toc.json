@@ -1,0 +1,150 @@
+{
+  "id": "toc",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "navigating",
+      "label": "navigating",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "ACTIVE_IDS.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "navigating",
+      "event": "SCROLL_TO",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "SCROLL",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "VISIBILITY.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "navigating",
+      "to": "idle",
+      "event": "SCROLL.END",
+      "guard": "isTargetReached"
+    },
+    {
+      "from": "navigating",
+      "to": "idle",
+      "event": "SCROLL.END",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 584,
+      "height": 118,
+      "states": {
+        "idle": {
+          "x": 474,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "navigating": {
+          "x": 48,
+          "y": 32,
+          "w": 124,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "navigating",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              172,
+              54
+            ],
+            [
+              474,
+              54
+            ]
+          ],
+          "label": {
+            "x": 282,
+            "y": 61,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 230,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 97,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "navigating": {
+          "x": 74,
+          "y": 32,
+          "w": 124,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "navigating",
+          "to": "idle",
+          "events": [
+            "SCROLL.END"
+          ],
+          "lines": [
+            "SCROLL.END"
+          ],
+          "points": [
+            [
+              136,
+              76
+            ],
+            [
+              136,
+              320
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

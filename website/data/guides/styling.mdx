@@ -3,14 +3,10 @@ title: Styling
 description: Using CSS to style Zag components
 ---
 
-Zag's API is intentionally very low level and unstyled, giving you control over
-how you want to style them. Unlike Chakra UI, it provides no styles or UI, just
-behavior or logic, accessibility and helpful methods.
+Zag ships behavior and accessibility but no styles, so you can style each part
+and state however you like
 
-Each machine provides an idea of the DOM structure and styling guide to show you
-how to style the states and parts.
-
-## Styling a component part
+## Part styling
 
 Every component comprises of multiple parts that can be styled. For example, the
 dialog component has the following parts: content, trigger, title, and backdrop.
@@ -45,7 +41,7 @@ You can style each part using the CSS attribute selector.
 }
 ```
 
-## Styling a state
+## State styling
 
 When a component or its parts can have multiple states, we automatically attach
 `data-*` attributes that represents the specific state. For example, an

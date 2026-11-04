@@ -1,0 +1,514 @@
+{
+  "id": "file-upload",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "dragging",
+      "label": "dragging",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "FILE.DELETE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "FILE.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "FILES.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "FILES.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "REJECTED_FILES.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "DROPZONE.DRAG_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "dragging",
+      "to": "idle",
+      "event": "DROPZONE.DROP",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "idle",
+      "event": "DROPZONE.BLUR",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "DROPZONE.CLICK",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "dragging",
+      "event": "DROPZONE.DRAG_OVER",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "DROPZONE.CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "dragging",
+      "event": "DROPZONE.DRAG_OVER",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "focused",
+      "event": "DROPZONE.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "OPEN",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1114,
+      "height": 228,
+      "states": {
+        "idle": {
+          "x": 506,
+          "y": 64,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 48,
+          "y": 74,
+          "w": 101,
+          "h": 44
+        },
+        "dragging": {
+          "x": 973,
+          "y": 74,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "DROPZONE.DRAG_LEAVE",
+            "DROPZONE.DROP"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_LEAVE",
+            "DROPZONE.DROP"
+          ],
+          "points": [
+            [
+              973,
+              85
+            ],
+            [
+              889,
+              85
+            ],
+            [
+              889,
+              79
+            ],
+            [
+              584,
+              79
+            ]
+          ],
+          "label": {
+            "x": 722,
+            "y": 32,
+            "w": 141,
+            "h": 40
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "DROPZONE.BLUR"
+          ],
+          "lines": [
+            "DROPZONE.BLUR"
+          ],
+          "points": [
+            [
+              149,
+              85
+            ],
+            [
+              175,
+              85
+            ],
+            [
+              175,
+              79
+            ],
+            [
+              506,
+              79
+            ]
+          ],
+          "label": {
+            "x": 262,
+            "y": 48,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "dragging",
+          "events": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "points": [
+            [
+              149,
+              107
+            ],
+            [
+              175,
+              107
+            ],
+            [
+              175,
+              164
+            ],
+            [
+              889,
+              164
+            ],
+            [
+              889,
+              107
+            ],
+            [
+              973,
+              107
+            ]
+          ],
+          "label": {
+            "x": 477,
+            "y": 171,
+            "w": 135,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "points": [
+            [
+              584,
+              93
+            ],
+            [
+              638,
+              93
+            ],
+            [
+              638,
+              96
+            ],
+            [
+              973,
+              96
+            ]
+          ],
+          "label": {
+            "x": 725,
+            "y": 103,
+            "w": 135,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "DROPZONE.FOCUS"
+          ],
+          "lines": [
+            "DROPZONE.FOCUS"
+          ],
+          "points": [
+            [
+              506,
+              93
+            ],
+            [
+              393,
+              93
+            ],
+            [
+              393,
+              96
+            ],
+            [
+              149,
+              96
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 103,
+            "w": 108,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 552,
+      "height": 700,
+      "states": {
+        "idle": {
+          "x": 169,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 170,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        },
+        "dragging": {
+          "x": 168,
+          "y": 624,
+          "w": 109,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "dragging",
+          "to": "idle",
+          "events": [
+            "DROPZONE.DRAG_LEAVE",
+            "DROPZONE.DROP"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_LEAVE",
+            "DROPZONE.DROP"
+          ],
+          "points": [
+            [
+              195,
+              624
+            ],
+            [
+              195,
+              364
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 474,
+            "w": 141,
+            "h": 40
+          }
+        },
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": [
+            "DROPZONE.BLUR"
+          ],
+          "lines": [
+            "DROPZONE.BLUR"
+          ],
+          "points": [
+            [
+              195,
+              76
+            ],
+            [
+              195,
+              320
+            ]
+          ],
+          "label": {
+            "x": 87,
+            "y": 186,
+            "w": 102,
+            "h": 24
+          }
+        },
+        {
+          "from": "focused",
+          "to": "dragging",
+          "events": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "points": [
+            [
+              246,
+              76
+            ],
+            [
+              246,
+              102
+            ],
+            [
+              378,
+              102
+            ],
+            [
+              378,
+              540
+            ],
+            [
+              250,
+              540
+            ],
+            [
+              250,
+              624
+            ]
+          ],
+          "label": {
+            "x": 385,
+            "y": 330,
+            "w": 135,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "dragging",
+          "events": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "lines": [
+            "DROPZONE.DRAG_OVER"
+          ],
+          "points": [
+            [
+              221,
+              364
+            ],
+            [
+              221,
+              390
+            ],
+            [
+              212,
+              390
+            ],
+            [
+              212,
+              540
+            ],
+            [
+              223,
+              540
+            ],
+            [
+              223,
+              624
+            ]
+          ],
+          "label": {
+            "x": 219,
+            "y": 482,
+            "w": 135,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "focused",
+          "events": [
+            "DROPZONE.FOCUS"
+          ],
+          "lines": [
+            "DROPZONE.FOCUS"
+          ],
+          "points": [
+            [
+              221,
+              320
+            ],
+            [
+              221,
+              76
+            ]
+          ],
+          "label": {
+            "x": 228,
+            "y": 186,
+            "w": 108,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

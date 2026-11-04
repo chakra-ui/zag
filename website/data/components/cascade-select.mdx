@@ -1,11 +1,13 @@
 ---
 title: Cascade Select
-description: Using the cascade select machine in your project.
+description:
+  A select for hierarchical data, where users pick a value by drilling through
+  nested levels of options with mouse or keyboard.
 package: "@zag-js/cascade-select"
 ---
 
 A cascade select component allows users to select from hierarchical data through
-multiple linked levels of dropdown menus.
+multiple linked levels of dropdown menus
 
 <Resources pkg="@zag-js/cascade-select" />
 
@@ -31,26 +33,9 @@ Install the cascade select package:
 
 ## Anatomy
 
-Check the cascade select anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="cascade-select" />
 
 ## Usage
-
-Import the cascade select package:
-
-```tsx
-import * as cascadeSelect from "@zag-js/cascade-select"
-```
-
-These are the key exports:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-- `collection` - Creates a tree collection from your hierarchical data.
 
 ### Create the collection
 
@@ -109,17 +94,13 @@ const collection = cascadeSelect.collection<Node>({
 
 ### Create the cascade select
 
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <Example id="CascadeSelectBasic">
 
 <CodeSnippet id="cascade-select/usage.mdx" />
 
 </Example>
 
-### Setting the initial value
+### Initial value
 
 Use the `defaultValue` property to set the initial value of the cascade select.
 
@@ -157,7 +138,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Selecting multiple values
+### Multiple selection
 
 To allow selecting multiple values, set the `multiple` property to `true`.
 
@@ -191,7 +172,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Allowing parent selection
+### Parent selection
 
 By default, only leaf nodes (items without children) can be selected. To allow
 parent (branch) nodes to also be selectable, set `allowParentSelection` to
@@ -226,7 +207,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Looping the keyboard navigation
+### Loop navigation
 
 By default, arrow-key navigation stops at the first and last items. Set
 `loopFocus: true` to loop back around.
@@ -243,7 +224,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Listening for highlight changes
+### Highlight changes
 
 When an item is highlighted with the pointer or keyboard, use the
 `onHighlightChange` to listen for the change and do something with it.
@@ -262,7 +243,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Setting the initial highlighted path
+### Initial highlight
 
 Use `defaultHighlightedValue` to set the initially highlighted path.
 
@@ -278,7 +259,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Controlled highlighted path
+### Controlled highlight
 
 Use `highlightedValue` and `onHighlightChange` to control highlighting
 externally.
@@ -298,7 +279,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Listening for selection changes
+### Selection changes
 
 When an item is selected, use the `onValueChange` property to listen for the
 change and do something with it.
@@ -318,7 +299,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Listening for open and close events
+### Open state changes
 
 Use `onOpenChange` to listen for open and close events.
 
@@ -337,7 +318,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Controlling open state
+### Controlled open
 
 Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for an
 uncontrolled initial state.
@@ -365,7 +346,7 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
-### Positioning submenu panels
+### Submenu positioning
 
 Use `positioning` to configure placement and collision behavior.
 
@@ -384,7 +365,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Custom scroll behavior
+### Scroll behavior
 
 Use `scrollToIndexFn` to customize how each level scrolls highlighted items into
 view.
@@ -404,7 +385,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Customizing the trigger label
+### Trigger label
 
 Use `formatValue` to control how selected paths are rendered in the trigger.
 
@@ -424,7 +405,7 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-### Usage within a form
+### Form usage
 
 To use cascade select in a form, pass `name`. A hidden input is rendered with
 `getHiddenInputProps()`.
@@ -455,7 +436,7 @@ const service = useMachine(cascadeSelect.machine, {
 })
 ```
 
-### Validation and read-only state
+### Validation and read-only
 
 Use `readOnly`, `required`, and `invalid` to control interaction and form state.
 
@@ -473,105 +454,9 @@ const service = useMachine(cascadeSelect.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Open and closed state
-
-When the cascade select is open, the trigger and content is given a `data-state`
-attribute.
-
-```css
-[data-cascade-select-trigger][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-
-[data-cascade-select-content][data-state="open|closed"] {
-  /* styles for open or closed state */
-}
-```
-
-### Selected state
-
-Items are given a `data-state` attribute, indicating whether they are selected.
-
-```css
-[data-cascade-select-item][data-state="checked|unchecked"] {
-  /* styles for selected or unselected state */
-}
-```
-
-### Highlighted state
-
-When an item is highlighted, via keyboard navigation or pointer, it is given a
-`data-highlighted` attribute.
-
-```css
-[data-cascade-select-item][data-highlighted] {
-  /* styles for highlighted state */
-}
-```
-
-### Branch items
-
-When an item has children (is a branch node), its `data-type` attribute is
-`branch`. Leaf items get `leaf`.
-
-```css
-[data-cascade-select-item][data-type="branch"] {
-  /* styles for items with children (branch nodes) */
-}
-```
-
-### Invalid state
-
-When the cascade select is invalid, the label and trigger is given a
-`data-invalid` attribute.
-
-```css
-[data-cascade-select-label][data-invalid] {
-  /* styles for invalid state */
-}
-
-[data-cascade-select-trigger][data-invalid] {
-  /* styles for invalid state */
-}
-```
-
-### Disabled state
-
-When the cascade select is disabled, the trigger and label is given a
-`data-disabled` attribute.
-
-```css
-[data-cascade-select-trigger][data-disabled] {
-  /* styles for disabled state */
-}
-
-[data-cascade-select-label][data-disabled] {
-  /* styles for disabled label state */
-}
-
-[data-cascade-select-item][data-disabled] {
-  /* styles for disabled item state */
-}
-```
-
-### Empty state
-
-When no option is selected, the trigger is given a `data-placeholder-shown`
-attribute.
-
-```css
-[data-cascade-select-trigger][data-placeholder-shown] {
-  /* styles for empty state */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The cascade select machine exposes the following context properties:
 
@@ -583,11 +468,17 @@ The cascade select `api` exposes the following methods:
 
 <ApiTable name="cascade-select" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-cascade-select-<part>` attribute. Combine it with the
+state attributes below to style each state.
+
+Items get `data-type` set to `branch` when they have children, and `leaf`
+otherwise.
 
 <DataAttrTable name="cascade-select" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="cascade-select" />
 
@@ -596,6 +487,6 @@ The cascade select `api` exposes the following methods:
 Adheres to the
 [ListBox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="cascade-select" />

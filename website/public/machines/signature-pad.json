@@ -1,0 +1,214 @@
+{
+  "id": "signature-pad",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "drawing",
+      "label": "drawing",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "CLEAR",
+      "guard": null
+    },
+    {
+      "from": "drawing",
+      "to": null,
+      "event": "POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "drawing",
+      "to": "idle",
+      "event": "POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "drawing",
+      "event": "POINTER_DOWN",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 574,
+      "height": 144,
+      "states": {
+        "idle": {
+          "x": 464,
+          "y": 48,
+          "w": 78,
+          "h": 44
+        },
+        "drawing": {
+          "x": 48,
+          "y": 48,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "drawing",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              149,
+              63
+            ],
+            [
+              464,
+              63
+            ]
+          ],
+          "label": {
+            "x": 266,
+            "y": 32,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "drawing",
+          "events": [
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              464,
+              77
+            ],
+            [
+              380,
+              77
+            ],
+            [
+              380,
+              80
+            ],
+            [
+              175,
+              80
+            ],
+            [
+              175,
+              77
+            ],
+            [
+              149,
+              77
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 87,
+            "w": 95,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 296,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 110,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "drawing": {
+          "x": 102,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "drawing",
+          "to": "idle",
+          "events": [
+            "POINTER_UP"
+          ],
+          "lines": [
+            "POINTER_UP"
+          ],
+          "points": [
+            [
+              136,
+              76
+            ],
+            [
+              136,
+              320
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 82,
+            "h": 24
+          }
+        },
+        {
+          "from": "idle",
+          "to": "drawing",
+          "events": [
+            "POINTER_DOWN"
+          ],
+          "lines": [
+            "POINTER_DOWN"
+          ],
+          "points": [
+            [
+              162,
+              320
+            ],
+            [
+              162,
+              102
+            ],
+            [
+              169,
+              102
+            ],
+            [
+              169,
+              76
+            ]
+          ],
+          "label": {
+            "x": 169,
+            "y": 186,
+            "w": 95,
+            "h": 24
+          }
+        }
+      ]
+    }
+  }
+}

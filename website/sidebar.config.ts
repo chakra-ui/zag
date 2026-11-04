@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons/lib"
-import { LuBlocks, LuBookOpen, LuCompass, LuWrench } from "react-icons/lu"
+import { LuBlocks, LuCode, LuCompass, LuWrench } from "react-icons/lu"
 import siteConfig from "site.config"
 
 /** The URL section a page lives under: `/{section}/...` */
@@ -37,65 +37,35 @@ export const tabs: SidebarTab[] = [
     icon: LuCompass,
     groups: [
       {
-        label: "Get Started",
-        items: docs("overview", [
-          { label: "Introduction", id: "introduction" },
-          { label: "Installation", id: "installation" },
-          { label: "FAQ", id: "faq" },
-        ]),
+        label: "Get started",
+        items: [
+          ...docs("overview", [
+            { label: "Introduction", id: "introduction" },
+            { label: "Installation", id: "installation" },
+          ]),
+          ...docs("guides", [{ label: "Migrating to v2", id: "migration" }]),
+          ...docs("overview", [
+            { label: "FAQ", id: "faq" },
+            {
+              label: "Changelog",
+              id: "changelogs",
+              href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
+            },
+          ]),
+        ],
       },
       {
-        label: "Browse",
-        items: docs("overview", [
-          { label: "All Components", id: "components" },
-          { label: "All Utilities", id: "utilities" },
-        ]),
-      },
-      {
-        label: "Resources",
-        items: docs("overview", [
-          {
-            label: "Changelog",
-            id: "changelogs",
-            href: `${siteConfig.repo.blobUrl}/CHANGELOG.md`,
-          },
-          { label: "LLMs.txt", id: "llms-txt" },
-        ]),
-      },
-    ],
-  },
-  {
-    id: "guides",
-    label: "Guides",
-    icon: LuBookOpen,
-    groups: [
-      {
-        label: "Core",
+        label: "Essentials",
         items: docs("guides", [
           { label: "Styling", id: "styling" },
           { label: "Composition", id: "composition" },
-          { label: "Collection", id: "collection" },
           { label: "Programmatic control", id: "programmatic-control" },
           { label: "TypeScript", id: "typescript", new: true },
         ]),
       },
       {
-        label: "Build something",
-        items: docs("guides", [
-          {
-            label: "Panda design system",
-            id: "design-system-with-panda",
-            new: true,
-          },
-        ]),
-      },
-      {
-        label: "Advanced",
-        items: docs("guides", [
-          { label: "Building machines", id: "building-machines" },
-          { label: "Framework adapters", id: "framework-adapters" },
-          { label: "Migrating to v2", id: "migration" },
-        ]),
+        label: "AI agents",
+        items: docs("overview", [{ label: "LLMs.txt", id: "llms-txt" }]),
       },
     ],
   },
@@ -201,8 +171,29 @@ export const tabs: SidebarTab[] = [
         ]),
       },
       {
+        label: "Collection",
+        items: docs("utilities", [
+          { label: "List Collection", id: "list-collection", new: true },
+          { label: "Grid Collection", id: "grid-collection", new: true },
+          { label: "Tree Collection", id: "tree-collection", new: true },
+          {
+            label: "Page List Collection",
+            id: "page-list-collection",
+            new: true,
+          },
+        ]),
+      },
+      {
+        label: "Text",
+        items: docs("utilities", [
+          { label: "Highlight Word", id: "highlight-word", new: true },
+          { label: "i18n", id: "i18n", new: true },
+        ]),
+      },
+      {
         label: "Interaction",
         items: docs("utilities", [
+          { label: "Dismissable", id: "dismissable", new: true },
           { label: "Drag and Drop", id: "dnd", new: true },
           { label: "Focus Trap", id: "focus-trap" },
           { label: "Hotkeys", id: "hotkeys" },
@@ -215,11 +206,43 @@ export const tabs: SidebarTab[] = [
       },
     ],
   },
+  {
+    id: "guides",
+    label: "Developer",
+    icon: LuCode,
+    groups: [
+      {
+        label: "Design system",
+        items: docs("guides", [
+          { label: "Overview", id: "design-system-overview" },
+          { label: "Creating the hook", id: "design-system-hook" },
+          { label: "Creating components", id: "design-system-components" },
+          { label: "Styling components", id: "design-system-styling" },
+        ]),
+      },
+      {
+        label: "Custom machine",
+        items: docs("guides", [
+          { label: "Core concepts", id: "custom-machine-concepts" },
+          { label: "TypeScript", id: "custom-machine-typescript" },
+          { label: "Counter example", id: "custom-machine-example" },
+        ]),
+      },
+      {
+        label: "New framework",
+        items: docs("guides", [
+          { label: "Core concepts", id: "framework-adapter-concepts" },
+          { label: "TypeScript", id: "framework-adapter-typescript" },
+          { label: "Lit example", id: "framework-adapter-example" },
+        ]),
+      },
+    ],
+  },
 ]
 
 const sectionLabels: Record<Section, string> = {
   overview: "Overview",
-  guides: "Guides",
+  guides: "Developer",
   components: "Components",
   utilities: "Utilities",
 }

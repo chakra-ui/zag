@@ -1,10 +1,12 @@
 ---
 title: Clipboard
-description: Using the clipboard machine in your project.
+description:
+  Copy text to the clipboard with a button, and show a copied status that resets
+  after a timeout.
 package: "@zag-js/clipboard"
 ---
 
-The clipboard machine lets users quickly copy content to the clipboard.
+The clipboard machine lets users quickly copy content to the clipboard
 
 <Resources pkg="@zag-js/clipboard" />
 
@@ -18,33 +20,13 @@ Install the clipboard package:
 
 ## Anatomy
 
-Check the clipboard anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="clipboard" />
 
 ## Usage
 
-Import the clipboard package:
-
-```tsx
-import * as clipboard from "@zag-js/clipboard"
-```
-
-The clipboard package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
-
 <CodeSnippet id="clipboard/usage.mdx" />
 
-### Setting the clipboard value
+### Clipboard value
 
 Set `value` to control what gets copied.
 
@@ -58,7 +40,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Setting an initial value
+### Initial value
 
 Use `defaultValue` for uncontrolled initial value.
 
@@ -72,7 +54,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Listening for value changes
+### Value changes
 
 Use `onValueChange` to react when the clipboard value changes.
 
@@ -88,7 +70,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Listening to copy events
+### Copy events
 
 When the value is copied, `onStatusChange` is fired.
 
@@ -104,7 +86,7 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-### Checking if the value is copied
+### Copied state
 
 Use `api.copied` to check if the value was copied.
 
@@ -120,7 +102,7 @@ if (api.copied) {
 
 </Example>
 
-### Changing the timeout
+### Timeout
 
 By default, the copied feedback resets after `3000ms`. Set `timeout` to change
 this delay.
@@ -135,19 +117,9 @@ const service = useMachine(clipboard.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-```css
-[data-clipboard-root] {
-  /* styles for the root part */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The clipboard machine exposes the following context properties:
 
@@ -159,6 +131,9 @@ The clipboard `api` exposes the following methods:
 
 <ApiTable name="clipboard" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-clipboard-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="clipboard" />

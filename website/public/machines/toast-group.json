@@ -1,0 +1,316 @@
+{
+  "id": "toast-group",
+  "initial": "stack",
+  "states": [
+    {
+      "id": "stack",
+      "label": "stack",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "overlap",
+      "label": "overlap",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "DOC.HOTKEY",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PAUSE_ALL",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "overlap",
+      "event": "REGION.BLUR",
+      "guard": "isOverlapping && isPointerOut"
+    },
+    {
+      "from": "*",
+      "to": "stack",
+      "event": "REGION.BLUR",
+      "guard": "isPointerOut"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "REGION.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "RESUME_ALL",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TOAST.DISMISS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TOAST.PAUSE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TOAST.REMOVE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "TOAST.SWIPE_END",
+      "guard": null
+    },
+    {
+      "from": "overlap",
+      "to": "stack",
+      "event": "REGION.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "overlap",
+      "to": "stack",
+      "event": "REGION.POINTER_ENTER",
+      "guard": null
+    },
+    {
+      "from": "overlap",
+      "to": null,
+      "event": "REGION.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "overlap",
+      "to": "stack",
+      "event": "REGION.STACK",
+      "guard": null
+    },
+    {
+      "from": "stack",
+      "to": null,
+      "event": "REGION.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "stack",
+      "to": "overlap",
+      "event": "REGION.OVERLAP",
+      "guard": null
+    },
+    {
+      "from": "stack",
+      "to": null,
+      "event": "REGION.POINTER_ENTER",
+      "guard": null
+    },
+    {
+      "from": "stack",
+      "to": "overlap",
+      "event": "REGION.POINTER_LEAVE",
+      "guard": "isOverlapping"
+    },
+    {
+      "from": "stack",
+      "to": null,
+      "event": "REGION.POINTER_LEAVE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 635,
+      "height": 192,
+      "states": {
+        "stack": {
+          "x": 517,
+          "y": 80,
+          "w": 86,
+          "h": 44
+        },
+        "overlap": {
+          "x": 48,
+          "y": 80,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "overlap",
+          "to": "stack",
+          "events": [
+            "REGION.FOCUS",
+            "REGION.POINTER_ENTER",
+            "REGION.STACK"
+          ],
+          "lines": [
+            "REGION.FOCUS",
+            "REGION.POINTER_ENTER",
+            "REGION.STACK"
+          ],
+          "points": [
+            [
+              149,
+              95
+            ],
+            [
+              517,
+              95
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 32,
+            "w": 148,
+            "h": 56
+          }
+        },
+        {
+          "from": "stack",
+          "to": "overlap",
+          "events": [
+            "REGION.OVERLAP",
+            "REGION.POINTER_LEAVE"
+          ],
+          "lines": [
+            "REGION.OVERLAP",
+            "REGION.POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              517,
+              109
+            ],
+            [
+              433,
+              109
+            ],
+            [
+              433,
+              112
+            ],
+            [
+              175,
+              112
+            ],
+            [
+              175,
+              109
+            ],
+            [
+              149,
+              109
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 119,
+            "w": 148,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 417,
+      "height": 428,
+      "states": {
+        "stack": {
+          "x": 173,
+          "y": 352,
+          "w": 86,
+          "h": 44
+        },
+        "overlap": {
+          "x": 168,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "overlap",
+          "to": "stack",
+          "events": [
+            "REGION.FOCUS",
+            "REGION.POINTER_ENTER",
+            "REGION.STACK"
+          ],
+          "lines": [
+            "REGION.FOCUS",
+            "REGION.POINTER_ENTER",
+            "REGION.STACK"
+          ],
+          "points": [
+            [
+              202,
+              76
+            ],
+            [
+              202,
+              352
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 148,
+            "h": 56
+          }
+        },
+        {
+          "from": "stack",
+          "to": "overlap",
+          "events": [
+            "REGION.OVERLAP",
+            "REGION.POINTER_LEAVE"
+          ],
+          "lines": [
+            "REGION.OVERLAP",
+            "REGION.POINTER_LEAVE"
+          ],
+          "points": [
+            [
+              230,
+              352
+            ],
+            [
+              230,
+              102
+            ],
+            [
+              235,
+              102
+            ],
+            [
+              235,
+              76
+            ]
+          ],
+          "label": {
+            "x": 237,
+            "y": 194,
+            "w": 148,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

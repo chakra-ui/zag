@@ -41,6 +41,10 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
   `AnimationFrame` in `refs` and cancel it in the state's `exit` and the machine's top-level `exit`. Don't guard the
   callback with `state.hasTag(...)`. See "Cancel Deferred Work When the State Exits or the Machine Stops" in
   `.claude/docs/state-machine-guide.md`.
+- **Regenerate the machine logic JSON**: The docs draw each component's state diagram from
+  `website/public/machines/<machine>.json`, generated from the real machine config. After you add, rename or change any
+  state, transition, event, guard or initial state in `packages/machines/*`, run `pnpm machine-logic` from `website/`
+  and commit the updated JSON with your change. Don't edit those files by hand.
 - **Build before dev server**: `pnpm build` must complete before running any example dev servers or E2E tests, since
   workspace packages use `workspace:*` references and need compiled `dist/` output.
 - **Build is slow**: The full `pnpm build` takes ~2 minutes across all packages. It only needs to run once unless

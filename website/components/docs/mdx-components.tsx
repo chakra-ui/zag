@@ -11,50 +11,42 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
+import { cx } from "styled-system/css"
 import { Box, styled } from "styled-system/jsx"
 import { token } from "styled-system/tokens"
 import { Showcase } from "../../demos"
 import { FRAMEWORKS } from "../../lib/framework-utils"
-import { CodeSnippetTabs } from "./code-snippet-tabs"
-import { CopyButton } from "./copy-button"
+import { CodeSnippetTabs, type SnippetPanel } from "./code-snippet-tabs"
 import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
 import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
-import { GuideMeta, Steps } from "./mdx/steps"
+import { Steps } from "./mdx/steps"
+import { GuideCards } from "./guide-cards"
 import { Explorer } from "./explorer"
 import { Example } from "./example"
 import { explorerDemos } from "../../demos/explorer"
+import { CodeBlock } from "./code-block"
 import { PropTable } from "./prop-table"
+import * as table from "./prop-table.css"
+import * as styles from "./mdx.css"
 import { SectionIndex } from "./section-index"
 
-const SnippetItem = ({ snippet }: { snippet: Snippet }) => {
+function snippetPanel(snippet: Snippet): SnippetPanel {
   const Body = getSnippetBody(snippet.key)
-  const textContent = snippet.body.raw.split("\n").slice(1, -1).join("\n")
-  return (
-    <div className="prose" id="snippet" data-framework={snippet.framework}>
-      {Body ? <Body components={components} /> : null}
-      <CopyButton content={textContent} />
-    </div>
-  )
+  return {
+    code: snippet.body.raw.split("\n").slice(1, -1).join("\n"),
+    node: (
+      <div className="prose" data-framework={snippet.framework}>
+        {Body ? <Body components={components} /> : null}
+      </div>
+    ),
+  }
 }
 
-const Anchor = styled("a", {
-  base: {
-    color: "accent",
-    cursor: "pointer",
-    fontWeight: "medium",
-    textDecoration: "underline",
-    textDecorationColor: "accent/50",
-    textDecorationThickness: "1px",
-    textUnderlineOffset: "3px",
-    transition: "text-decoration-color 120ms",
-    _hover: {
-      textDecorationColor: "currentColor",
-      textDecorationThickness: "2px",
-    },
-  },
-})
+function Anchor({ as: Comp = "a", className, ...props }: any) {
+  return <Comp {...props} className={cx(styles.link, className)} />
+}
 
 const components: Record<string, FC<any>> = {
   LLMsTxtLink(props) {
@@ -68,7 +60,7 @@ const components: Record<string, FC<any>> = {
   Example,
   SectionIndex,
   Steps,
-  GuideMeta,
+  GuideCards,
   Admonition(props) {
     return <div {...props} />
   },
@@ -90,26 +82,50 @@ const components: Record<string, FC<any>> = {
     return <Blockquote {...props} />
   },
   h1(props) {
-    return <styled.h1 textStyle="display.lg" mb="5" maxW="85ch" {...props} />
-  },
-  h2(props) {
-    return <styled.h2 textStyle="display.md" mt="12" mb="3" {...props} />
-  },
-  h3(props) {
-    return <styled.h3 textStyle="display.sm" mt="6" mb="4" {...props} />
-  },
-  h4(props) {
-    return <styled.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
-  },
-  pre(props) {
     return (
-      <styled.pre
-        tabIndex={0}
+      <styled.h1
+        textStyle="display.lg"
+        fontWeight="medium"
+        mb="5"
+        maxW="85ch"
         {...props}
-        className={`prose ${props.className}`}
       />
     )
   },
+  h2(props) {
+    return (
+      <styled.h2
+        textStyle="display.md"
+        fontWeight="medium"
+        mt="12"
+        mb="3"
+        {...props}
+      />
+    )
+  },
+  h3(props) {
+    return (
+      <styled.h3
+        textStyle="display.sm"
+        fontWeight="medium"
+        mt="6"
+        mb="4"
+        {...props}
+      />
+    )
+  },
+  h4(props) {
+    return (
+      <styled.h4
+        textStyle="display.xs"
+        fontWeight="medium"
+        mt="6"
+        mb="2"
+        {...props}
+      />
+    )
+  },
+  pre: CodeBlock,
   li(props) {
     return (
       <styled.li
@@ -138,46 +154,46 @@ const components: Record<string, FC<any>> = {
     items: { headings: string[]; data: Array<[string, string]> }
   }) => {
     const { data, headings } = props.items
-
     return (
-      <styled.table
-        css={{
-          borderCollapse: "collapse",
-          "& th": {
-            bg: "bg.code.inline",
-            fontFamily: "mono",
-            fontSize: "11px",
-            fontWeight: "medium",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "text.muted",
-          },
-          "& th, & td": { borderColor: "border", px: "4", py: "2.5" },
-        }}
-      >
-        <thead>
-          <tr>
-            {headings.map((heading) => (
-              <th key={heading}>{heading}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(([prop, value], idx) => (
-            <tr key={idx}>
-              <td>
-                <Code className="prose">{prop}</Code>
-              </td>
-              <td>
-                <Code fontSize="sm" whiteSpace="pre-wrap">
-                  {value}
-                </Code>
-              </td>
+      <div className={table.root}>
+        <table className={table.table}>
+          <thead>
+            <tr>
+              {headings.map((heading) => (
+                <th key={heading} className={table.th}>
+                  {heading}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </styled.table>
+          </thead>
+          <tbody>
+            {data.map(([prop, value], idx) => (
+              <tr key={idx}>
+                <td className={table.td} width="1%">
+                  <code className={table.key}>{prop}</code>
+                </td>
+                <td className={table.td}>
+                  <code className={table.fullType}>{value}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     )
+  },
+  table(props) {
+    return (
+      <div className={table.root}>
+        <table {...props} className={table.table} />
+      </div>
+    )
+  },
+  th(props) {
+    return <th {...props} className={table.th} />
+  },
+  td(props) {
+    return <td {...props} className={table.td} />
   },
   code(props) {
     if (typeof props.children === "string") {
@@ -191,10 +207,7 @@ const components: Record<string, FC<any>> = {
         const snippet = allSnippets.find(
           (p) => p.id === props.id && p.framework === framework,
         )
-        return [
-          framework,
-          snippet ? <SnippetItem key={framework} snippet={snippet} /> : null,
-        ]
+        return [framework, snippet ? snippetPanel(snippet) : null]
       }),
     )
     return <CodeSnippetTabs id={props.id} panels={panels} />

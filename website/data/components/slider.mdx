@@ -1,12 +1,13 @@
 ---
 title: Slider
-description: Using the slider machine in your project.
+description:
+  An accessible slider for picking a value or a range from a track, with pointer
+  dragging, steps and keyboard support.
 package: "@zag-js/slider"
 ---
 
-A slider allows users to make selections from a range of values. Think of it as
-a custom `<input type='range'/>` with the ability to achieve custom styling and
-accessibility.
+A slider lets users pick a value or range along a track, like a fully stylable
+`<input type="range">`
 
 <Resources pkg="@zag-js/slider" />
 
@@ -30,29 +31,9 @@ Install the slider package:
 
 ## Anatomy
 
-Check the slider anatomy and part names.
-
-> Each part includes a component-scoped data attribute to help identify it in
-> the DOM.
-
 <Anatomy id="slider" />
 
 ## Usage
-
-Import the slider package:
-
-```tsx
-import * as slider from "@zag-js/slider"
-```
-
-The slider package exports two key functions:
-
-- `machine` - State machine logic.
-- `connect` - Maps machine state to JSX props and event handlers.
-
-> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
-
-Then use the framework integration helpers:
 
 <CodeSnippet id="slider/usage.mdx" />
 
@@ -77,7 +58,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Setting the initial value
+### Initial value
 
 Pass the `defaultValue` property to the machine's context to set the initial
 value.
@@ -92,7 +73,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Controlled slider
+### Controlled value
 
 To control the slider's value programmatically, pass the `value` and
 `onValueChange` properties.
@@ -103,7 +84,7 @@ To control the slider's value programmatically, pass the `value` and
 
 </Example>
 
-### Specifying the minimum and maximum
+### Min and max
 
 By default, the minimum is `0` and the maximum is `100`. If that's not what you
 want, you can easily specify different bounds by changing the values of the min
@@ -122,7 +103,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Setting the value's granularity
+### Granularity
 
 By default, the granularity, is `1`, meaning that the value is always an
 integer. You can change the step attribute to control the granularity.
@@ -142,7 +123,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Listening for changes
+### Value changes
 
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
@@ -164,7 +145,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Listening for thumb focus changes
+### Thumb focus changes
 
 Use `onFocusChange` to track which thumb is focused.
 
@@ -181,7 +162,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Changing the start position
+### Start position
 
 By default, the slider's origin is at the `start` position (left in LTR and
 right in RTL). Change it by setting the `origin` property to these values:
@@ -221,7 +202,7 @@ const service = useMachine(slider.machine, {
 })
 ```
 
-### Changing the thumb alignment
+### Thumb alignment
 
 By default, the thumb is aligned to the start of the track. Set the
 `thumbAlignment` context property to `contain` or `center`.
@@ -252,7 +233,7 @@ const service = useMachine(slider.machine, {
 
 Pass `{ width, height }` when the thumb isn't square.
 
-### Thumb collision behavior
+### Thumb collision
 
 For multi-thumb sliders, use `thumbCollisionBehavior` to control what happens
 when thumbs collide.
@@ -268,7 +249,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Disabling a thumb
+### Disabled thumb
 
 Pass `disabled` to `getThumbProps` and `getHiddenInputProps`. The thumb can't be
 focused or moved, and other thumbs stop at it.
@@ -279,7 +260,7 @@ focused or moved, and other thumbs stop at it.
 </div>
 ```
 
-### Usage within forms
+### Form usage
 
 To use slider in forms, set `name` and render `api.getHiddenInputProps()`.
 
@@ -293,7 +274,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### Customizing value text for screen readers
+### Value text
 
 Use `getAriaValueText` to customize `aria-valuetext` per thumb.
 
@@ -309,7 +290,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-### RTL Support
+### RTL support
 
 The slider has built-in support for RTL alignment and interaction. In the RTL
 mode, operations are performed from right to left, meaning, the left arrow key
@@ -330,7 +311,7 @@ const service = useMachine(slider.machine, {
 > While we take care of the interactions in RTL mode, you'll have to ensure you
 > apply the correct CSS styles to flip the layout.
 
-### Using slider marks
+### Slider marks
 
 To show marks or ticks along the slider track, use the exposed
 `api.getMarkerProps()` method to position the slider marks relative to the
@@ -350,7 +331,7 @@ Pass two values to get two thumbs. Everything above applies to each thumb.
 
 <CodeSnippet id="range-slider/usage.mdx" />
 
-#### Setting the initial range
+#### Initial range
 
 <Example id="SliderRangeInitial">
 
@@ -379,7 +360,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-#### Preventing thumb overlap
+#### Thumb overlap
 
 By default, the range slider thumbs are allowed to overlap when their values are
 equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
@@ -395,7 +376,7 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-#### Labeling each thumb
+#### Thumb labels
 
 Each thumb is labeled by the label part by default. Use `getAriaLabel` to give
 each thumb its own accessible name.
@@ -412,130 +393,9 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
-## Styling guide
-
-Each part includes a component-scoped data attribute you can target in CSS.
-
-### Focused State
-
-When the slider thumb is focused, the `data-focus` attribute is added to the
-root, control, thumb and label parts.
-
-```css
-[data-slider-root][data-focus] {
-  /* styles for root focus state */
-}
-
-[data-slider-thumb]:focus {
-  /* styles for thumb focus state */
-}
-
-[data-slider-control][data-focus] {
-  /* styles for control focus state */
-}
-
-[data-slider-track][data-focus] {
-  /* styles for track focus state */
-}
-
-[data-slider-range][data-focus] {
-  /* styles for range focus state */
-}
-```
-
-### Disabled State
-
-When the slider is disabled, the `data-disabled` attribute is added to the root,
-label, control and thumb.
-
-```css
-[data-slider-root][data-disabled] {
-  /* styles for root disabled state */
-}
-
-[data-slider-label][data-disabled] {
-  /* styles for label disabled state */
-}
-
-[data-slider-control][data-disabled] {
-  /* styles for control disabled state */
-}
-
-[data-slider-value-text][data-disabled] {
-  /* styles for output disabled state */
-}
-
-[data-slider-thumb][data-disabled] {
-  /* styles for thumb disabled state */
-}
-
-[data-slider-range][data-disabled] {
-  /* styles for thumb disabled state */
-}
-```
-
-### Invalid State
-
-When the slider is invalid, the `data-invalid` attribute is added to the root,
-track, range, label, and thumb parts.
-
-```css
-[data-slider-root][data-invalid] {
-  /* styles for root invalid state */
-}
-
-[data-slider-label][data-invalid] {
-  /* styles for label invalid state */
-}
-
-[data-slider-control][data-invalid] {
-  /* styles for control invalid state */
-}
-
-[data-slider-value-text][data-invalid] {
-  /* styles for output invalid state */
-}
-
-[data-slider-thumb][data-invalid] {
-  /* styles for thumb invalid state */
-}
-
-[data-slider-range][data-invalid] {
-  /* styles for range invalid state */
-}
-```
-
-### Orientation
-
-```css
-[data-slider-root][data-orientation="(horizontal|vertical)"] {
-  /* styles for horizontal or vertical  */
-}
-
-[data-slider-thumb][data-orientation="(horizontal|vertical)"] {
-  /* styles for horizontal or vertical  */
-}
-
-[data-slider-track][data-orientation="(horizontal|vertical)"] {
-  /* styles for horizontal or vertical  */
-}
-```
-
-### Styling the markers
-
-```css
-[data-slider-marker][data-state="(at|under|over)-value"] {
-  /* styles for the marker's position relative to the value */
-}
-
-[data-slider-marker][data-in-range] {
-  /* styles for markers covered by the filled range, accounting for `origin` */
-}
-```
-
 ## Methods and Properties
 
-### Machine Context
+### Machine context
 
 The slider machine exposes the following context properties:
 
@@ -547,11 +407,14 @@ The slider `api` exposes the following methods:
 
 <ApiTable name="slider" />
 
-### Data Attributes
+### Data attributes
+
+Each part has a `data-slider-<part>` attribute. Combine it with the state
+attributes below to style each state.
 
 <DataAttrTable name="slider" />
 
-### CSS Variables
+### CSS variables
 
 <CssVarTable name="slider" />
 
@@ -560,6 +423,6 @@ The slider `api` exposes the following methods:
 Adheres to the
 [Slider WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider).
 
-### Keyboard Interactions
+### Keyboard interactions
 
 <KeyboardTable name="slider" />

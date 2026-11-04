@@ -1,0 +1,936 @@
+{
+  "id": "date-picker",
+  "initial": "idle",
+  "states": [
+    {
+      "id": "idle",
+      "label": "idle",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "focused",
+      "label": "focused",
+      "parent": null,
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "FOCUS.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.NEXT",
+      "guard": "isYearView"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.NEXT",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.NEXT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.PREV",
+      "guard": "isYearView"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.PREV",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "GOTO.PREV",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.BLUR",
+      "guard": "shouldFixOnBlur"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": "isInputValueEmpty"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "PRESET.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "*",
+      "to": "focused",
+      "event": "PRESET.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VIEW.SET",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "focused",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "idle",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "idle",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isAboveMinView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isRangePicker && hasSelectedRange"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CELL.CLICK",
+      "guard": "isRangePicker && isSelectingEndDate && closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isRangePicker && isSelectingEndDate"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isRangePicker"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isMultiPicker && canSelectDate"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "isMultiPicker"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": "closeOnSelect && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CELL.CLICK",
+      "guard": "closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.POINTER_MOVE",
+      "guard": "isRangePicker && isSelectingEndDate && isDayPointerMoveOutsideVisibleMonth"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CELL.POINTER_MOVE",
+      "guard": "isRangePicker && isSelectingEndDate"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "idle",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CONTROLLED.CLOSE",
+      "guard": "shouldRestoreFocus && isInteractOutsideEvent"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "CONTROLLED.CLOSE",
+      "guard": "shouldRestoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "idle",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INTERACT_OUTSIDE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "INTERACT_OUTSIDE",
+      "guard": "shouldRestoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "idle",
+      "event": "INTERACT_OUTSIDE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_DOWN",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_DOWN",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_LEFT",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_LEFT",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_LEFT",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_RIGHT",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_RIGHT",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_RIGHT",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_UP",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_UP",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.END",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.END",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.END",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isAboveMinView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isRangePicker && hasSelectedRange"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "TABLE.ENTER",
+      "guard": "isRangePicker && isSelectingEndDate && closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isRangePicker && isSelectingEndDate"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isRangePicker"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isMultiPicker && canSelectDate"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "isMultiPicker"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": "closeOnSelect && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "TABLE.ENTER",
+      "guard": "closeOnSelect"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ENTER",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.ESCAPE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "TABLE.ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.HOME",
+      "guard": "isMonthView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.HOME",
+      "guard": "isYearView"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.HOME",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.PAGE_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.PAGE_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.POINTER_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.POINTER_LEAVE",
+      "guard": "isRangePicker"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TABLE.POINTER_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "VIEW.TOGGLE",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 601,
+      "height": 384,
+      "states": {
+        "idle": {
+          "x": 71,
+          "y": 83,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 48,
+          "y": 240,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 491,
+          "y": 94,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              149,
+              255
+            ],
+            [
+              407,
+              255
+            ],
+            [
+              407,
+              120
+            ],
+            [
+              491,
+              120
+            ]
+          ],
+          "label": {
+            "x": 263,
+            "y": 192,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              149,
+              98
+            ],
+            [
+              175,
+              98
+            ],
+            [
+              175,
+              95
+            ],
+            [
+              407,
+              95
+            ],
+            [
+              407,
+              103
+            ],
+            [
+              491,
+              103
+            ]
+          ],
+          "label": {
+            "x": 263,
+            "y": 32,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "CELL.CLICK",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE",
+            "TABLE.ENTER",
+            "TABLE.ESCAPE",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CELL.CLICK",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE",
+            "+3 more"
+          ],
+          "points": [
+            [
+              491,
+              129
+            ],
+            [
+              417,
+              129
+            ],
+            [
+              417,
+              272
+            ],
+            [
+              175,
+              272
+            ],
+            [
+              175,
+              269
+            ],
+            [
+              149,
+              269
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 279,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "idle",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              491,
+              112
+            ],
+            [
+              149,
+              112
+            ]
+          ],
+          "label": {
+            "x": 259,
+            "y": 119,
+            "w": 122,
+            "h": 56
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 630,
+      "height": 444,
+      "states": {
+        "idle": {
+          "x": 143,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 402,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 155,
+          "y": 368,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              436,
+              76
+            ],
+            [
+              436,
+              102
+            ],
+            [
+              452,
+              102
+            ],
+            [
+              452,
+              284
+            ],
+            [
+              202,
+              284
+            ],
+            [
+              202,
+              368
+            ]
+          ],
+          "label": {
+            "x": 331,
+            "y": 194,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "idle",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "points": [
+            [
+              169,
+              76
+            ],
+            [
+              169,
+              284
+            ],
+            [
+              171,
+              284
+            ],
+            [
+              171,
+              368
+            ]
+          ],
+          "label": {
+            "x": 48,
+            "y": 194,
+            "w": 115,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "focused",
+          "events": [
+            "CELL.CLICK",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE",
+            "TABLE.ENTER",
+            "TABLE.ESCAPE",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CELL.CLICK",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE",
+            "+3 more"
+          ],
+          "points": [
+            [
+              217,
+              368
+            ],
+            [
+              217,
+              294
+            ],
+            [
+              469,
+              294
+            ],
+            [
+              469,
+              76
+            ]
+          ],
+          "label": {
+            "x": 476,
+            "y": 186,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "idle",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE"
+          ],
+          "lines": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INTERACT_OUTSIDE"
+          ],
+          "points": [
+            [
+              186,
+              368
+            ],
+            [
+              186,
+              102
+            ],
+            [
+              195,
+              102
+            ],
+            [
+              195,
+              76
+            ]
+          ],
+          "label": {
+            "x": 193,
+            "y": 194,
+            "w": 122,
+            "h": 56
+          }
+        }
+      ]
+    }
+  }
+}

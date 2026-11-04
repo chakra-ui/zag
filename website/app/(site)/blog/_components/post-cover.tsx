@@ -1,5 +1,6 @@
 import type { Post } from "lib/source"
-import { postCover, type PostCoverVariantProps } from "styled-system/recipes"
+import type { RecipeVariantProps } from "styled-system/css"
+import { postCover } from "./post-cover.css"
 
 function ZagMark() {
   return (
@@ -13,7 +14,9 @@ function ZagMark() {
   )
 }
 
-interface PostCoverProps extends PostCoverVariantProps {
+interface PostCoverProps extends NonNullable<
+  RecipeVariantProps<typeof postCover>
+> {
   cover: NonNullable<Post["cover"]>
 }
 
