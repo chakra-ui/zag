@@ -1,13 +1,13 @@
-import type { Scope } from "@zag-js/core"
+import { isActiveElement } from "./node"
 
-interface Selection {
+export interface InputSelection {
   start: number
   end: number
   value: string
 }
 
-export function recordCursor(inputEl: HTMLInputElement | null, scope: Scope): Selection | undefined {
-  if (!inputEl || !scope.isActiveElement(inputEl)) return
+export function recordCursor(inputEl: HTMLInputElement | null): InputSelection | undefined {
+  if (!inputEl || !isActiveElement(inputEl)) return
 
   try {
     const { selectionStart: start, selectionEnd: end, value } = inputEl
@@ -19,8 +19,8 @@ export function recordCursor(inputEl: HTMLInputElement | null, scope: Scope): Se
   }
 }
 
-export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selection | undefined, scope: Scope) {
-  if (!inputEl || !scope.isActiveElement(inputEl)) return
+export function restoreCursor(inputEl: HTMLInputElement | null, selection: InputSelection | undefined) {
+  if (!inputEl || !isActiveElement(inputEl)) return
 
   if (!selection) {
     const len = inputEl.value.length

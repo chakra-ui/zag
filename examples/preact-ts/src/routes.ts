@@ -196,6 +196,10 @@ export const routes: RouteDefinition[] = [
   { path: "/drawer/swipe-area", component: lazy(() => import("./pages/drawer/swipe-area")) },
   { path: "/editable/basic", component: lazy(() => import("./pages/editable/basic")) },
   { path: "/editable/controlled", component: lazy(() => import("./pages/editable/controlled")) },
+  {
+    path: "/editable/controlled-format",
+    component: lazy(() => import("./pages/editable/controlled-format")),
+  },
   { path: "/field/basic", component: lazy(() => import("./pages/field/basic")) },
   { path: "/field/controlled", component: lazy(() => import("./pages/field/controlled")) },
   { path: "/field/custom-messages", component: lazy(() => import("./pages/field/custom-messages")) },

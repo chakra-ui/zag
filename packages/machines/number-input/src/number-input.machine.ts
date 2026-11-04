@@ -5,7 +5,9 @@ import {
   isFirefox,
   isSafari,
   observeAttributes,
+  recordCursor,
   requestPointerLock,
+  restoreCursor,
   setElementValue,
   trackFormControl,
 } from "@zag-js/dom-query"
@@ -21,7 +23,6 @@ import {
   snapValueToStep,
   mergeWithDefault,
 } from "@zag-js/utils"
-import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import { defaultTranslations } from "./number-input.translations"
 import type { HintValue, NumberInputSchema, ValueChangeReason } from "./number-input.types"
@@ -511,13 +512,13 @@ export const machine = createMachine({
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
-        const sel = event.selection ?? recordCursor(inputEl, scope)
+        const sel = event.selection ?? recordCursor(inputEl)
         // a newer sync replaces a pending one
         refs.get("syncFrame").request(() => {
           const unchanged = inputEl?.value === value
           setElementValue(inputEl, value)
           // the caret may have moved since it was recorded; only restore it if the value was rewritten
-          if (!unchanged) restoreCursor(inputEl, sel, scope)
+          if (!unchanged) restoreCursor(inputEl, sel)
         })
       },
       setFormattedValue({ context, computed, action }) {

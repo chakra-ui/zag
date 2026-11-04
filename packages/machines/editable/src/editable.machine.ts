@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { AnimationFrame, contains, setElementValue } from "@zag-js/dom-query"
+import { AnimationFrame, contains } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import * as dom from "./editable.dom"
 import type { EditableSchema } from "./editable.types"
@@ -22,11 +22,12 @@ export const machine = createMachine<EditableSchema>({
 
   entry: ["focusInputIfNeeded"],
 
-  exit: ["cancelFocusFrame"],
+  exit: ["cancelFrames"],
 
   refs() {
     return {
       focusFrame: AnimationFrame.create(),
+      syncFrame: AnimationFrame.create(),
     }
   },
 
@@ -71,7 +72,7 @@ export const machine = createMachine<EditableSchema>({
 
   on: {
     "VALUE.SET": {
-      actions: ["setValue"],
+      actions: ["setValue", "reconcileInputValue"],
     },
   },
 
@@ -172,8 +173,9 @@ export const machine = createMachine<EditableSchema>({
           finalEl?.focus({ preventScroll: true })
         })
       },
-      cancelFocusFrame({ refs }) {
+      cancelFrames({ refs }) {
         refs.get("focusFrame").cancel()
+        refs.get("syncFrame").cancel()
       },
       clearValue({ context }) {
         context.set("value", "")
@@ -215,9 +217,10 @@ export const machine = createMachine<EditableSchema>({
         })
       },
       syncInputValue({ context, scope }) {
-        const inputEl = dom.getInputEl(scope)
-        if (!inputEl) return
-        setElementValue(inputEl, context.get("value"))
+        dom.syncInputValue(scope, context.get("value"))
+      },
+      reconcileInputValue({ context, scope, refs, event }) {
+        refs.get("syncFrame").request(() => dom.syncInputValue(scope, context.get("value"), event.selection))
       },
       setValue({ context, prop, event }) {
         const max = prop("maxLength")

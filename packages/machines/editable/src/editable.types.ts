@@ -170,6 +170,7 @@ export interface EditableSchema {
   }
   refs: {
     focusFrame: AnimationFrame
+    syncFrame: AnimationFrame
   }
   action: string
   effect: string

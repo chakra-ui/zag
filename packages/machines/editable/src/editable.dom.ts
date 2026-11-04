@@ -1,4 +1,5 @@
 import type { Scope } from "@zag-js/core"
+import { type InputSelection, recordCursor, restoreCursor, setElementValue } from "@zag-js/dom-query"
 import { parts } from "./editable.anatomy"
 
 // ID generators — only for parts referenced by ARIA attributes
@@ -18,3 +19,11 @@ export const getPreviewEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.sele
 export const getSubmitTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.submitTrigger))
 export const getCancelTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.cancelTrigger))
 export const getEditTriggerEl = (ctx: Scope) => ctx.query<HTMLButtonElement>(ctx.selector(parts.editTrigger))
+
+export const syncInputValue = (ctx: Scope, value: string, typed?: InputSelection) => {
+  const inputEl = getInputEl(ctx)
+  if (!inputEl) return
+  const selection = typed ?? recordCursor(inputEl)
+  if (inputEl.value !== value) setElementValue(inputEl, value)
+  if (selection && selection.value !== value) restoreCursor(inputEl, selection)
+}

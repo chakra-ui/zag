@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isApple, isComposingEvent, recordCursor } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./editable.anatomy"
@@ -161,6 +161,7 @@ export function connect<T extends PropTypes>(
             type: "VALUE.SET",
             src: "input.change",
             value: event.currentTarget.value,
+            selection: recordCursor(event.currentTarget),
           })
         },
         onKeyDown(event) {

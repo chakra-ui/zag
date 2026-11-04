@@ -1,6 +1,7 @@
 export * from "./caret"
 export * from "./computed-style"
 export * from "./controller"
+export * from "./cursor"
 export * from "./data-url"
 export * from "./event"
 export * from "./focus"
