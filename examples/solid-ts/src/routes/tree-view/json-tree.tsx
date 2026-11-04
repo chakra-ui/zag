@@ -16,8 +16,9 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import styles from "@styles/json-tree-view.module.css"
 import { ChevronRightIcon } from "lucide-solid"
-import { createMemo, createUniqueId, For, Index, Show, type Accessor, type JSX } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { createMemo, createUniqueId, For, Show, type Accessor } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Dynamic } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
@@ -62,7 +63,9 @@ function ValueNode(props: { node: JsonNodeHastElement }): JSX.Element {
       data-type={props.node.properties.nodeType}
       data-kind={props.node.properties.kind}
     >
-      <Index each={props.node.children}>{(child) => <ValueNode node={child()} />}</Index>
+      <For keyed={false} each={props.node.children}>
+        {(child) => <ValueNode node={child()} />}
+      </For>
     </Dynamic>
   )
 }

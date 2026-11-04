@@ -1,6 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Show, type JSX } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/collapsible.css"

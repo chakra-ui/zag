@@ -1,6 +1,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/date-picker.css"
@@ -36,23 +36,23 @@ export default function Page() {
           <div {...api().getContentProps()}>
             <div style={{ "margin-bottom": "20px" }}>
               <select {...api().getMonthSelectProps()}>
-                <Index each={api().getMonths()}>
+                <For keyed={false} each={api().getMonths()}>
                   {(month) => (
                     <option value={month().value} disabled={month().disabled}>
                       {month().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
 
               <select {...api().getYearSelectProps()}>
-                <Index each={api().getYears()}>
+                <For keyed={false} each={api().getYears()}>
                   {(year) => (
                     <option value={year().value} disabled={year().disabled}>
                       {year().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
             </div>
 
@@ -66,29 +66,29 @@ export default function Page() {
               <table {...api().getTableProps({ view: "day" })}>
                 <thead {...api().getTableHeaderProps({ view: "day" })}>
                   <tr {...api().getTableRowProps({ view: "day" })}>
-                    <Index each={api().weekDays}>
+                    <For keyed={false} each={api().weekDays}>
                       {(day) => (
                         <th scope="col" aria-label={day().long}>
                           {day().narrow}
                         </th>
                       )}
-                    </Index>
+                    </For>
                   </tr>
                 </thead>
                 <tbody {...api().getTableBodyProps({ view: "day" })}>
-                  <Index each={api().weeks}>
+                  <For keyed={false} each={api().weeks}>
                     {(week) => (
                       <tr {...api().getTableRowProps({ view: "day" })}>
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(value) => (
                             <td {...api().getDayTableCellProps({ value: value() })}>
                               <div {...api().getDayTableCellTriggerProps({ value: value() })}>{value().day}</div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
             </div>

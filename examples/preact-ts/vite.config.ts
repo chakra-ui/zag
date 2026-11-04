@@ -35,6 +35,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: "@styles", replacement: fileURLToPath(new URL("../styles", import.meta.url)) },
+      { find: /^preact\/jsx-dev-runtime$/, replacement: `${preactDir}/jsx-runtime` },
       { find: /^preact(\/.*)?$/, replacement: `${preactDir}$1` },
       { find: /^react\/jsx-runtime$/, replacement: `${preactDir}/jsx-runtime` },
       { find: /^react\/jsx-dev-runtime$/, replacement: `${preactDir}/jsx-runtime` },

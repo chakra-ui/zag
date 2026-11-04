@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import "@styles/carousel.css"
 
 const images = Array.from({ length: 8 }, (_, index) => `https://picsum.photos/seed/zag-gallery-${index}/800/500`)
@@ -33,13 +33,13 @@ export default function Page() {
               <ChevronLeftIcon />
             </button>
             <div {...main().getItemGroupProps()}>
-              <Index each={images}>
+              <For keyed={false} each={images}>
                 {(src, index) => (
                   <div {...main().getItemProps({ index })} class="carousel-photo">
                     <img src={src()} alt={`Photo ${index + 1}`} />
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
             <button {...main().getNextTriggerProps()}>
               <ChevronRightIcon />
@@ -48,7 +48,7 @@ export default function Page() {
 
           <div {...thumbnails().getRootProps()} class="carousel-thumbnails">
             <div {...thumbnails().getItemGroupProps()}>
-              <Index each={images}>
+              <For keyed={false} each={images}>
                 {(src, index) => (
                   <div
                     {...thumbnails().getItemProps({ index })}
@@ -58,7 +58,7 @@ export default function Page() {
                     <img src={src()} alt="" />
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

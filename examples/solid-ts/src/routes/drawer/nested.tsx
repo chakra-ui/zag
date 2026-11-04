@@ -1,7 +1,7 @@
 import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { Presence } from "../../components/presence"
 import styles from "@styles/drawer-nested.module.css"
 import { XIcon } from "lucide-solid"

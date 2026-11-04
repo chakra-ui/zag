@@ -4,8 +4,18 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import styles from "@styles/tree-view-combobox-filter.module.css"
 import { ChevronDownIcon, ChevronRightIcon, FileIcon, FolderIcon, XIcon } from "lucide-solid"
-import { Accessor, createEffect, createMemo, createSignal, createUniqueId, Index, JSX, on, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import {
+  Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  For,
+  Show,
+  createTrackedEffect,
+} from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
@@ -121,11 +131,11 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
       <Show when={nodeState().isBranch}>
         <div {...props.api().getNodeGroupContentProps(nodeProps())} class={styles.groupContent}>
           <div {...props.api().getIndentGuideProps(nodeProps())} class={styles.indentGuide} />
-          <Index each={props.node.children}>
+          <For keyed={false} each={props.node.children}>
             {(childNode, index) => (
               <TreeNode node={childNode()} indexPath={[...props.indexPath, index]} api={props.api} />
             )}
-          </Index>
+          </For>
         </div>
       </Show>
     </div>
@@ -165,22 +175,20 @@ export default function Page() {
   const comboboxApi = createMemo(() => combobox.connect(comboboxService, normalizeProps))
 
   createEffect(
-    on(
-      () => comboboxApi().open,
-      (open, wasOpen) => {
-        if (!wasOpen || open) return
-        setQuery("")
-        const api = comboboxApi()
-        const selected = api.value[0]
-        const label = selected ? (sourceCollection.stringify(selected) ?? selected) : ""
-        if (api.inputValue !== label) {
-          api.setInputValue(label, "script")
-        }
-      },
-    ),
+    () => comboboxApi().open,
+    (open, wasOpen) => {
+      if (!wasOpen || open) return
+      setQuery("")
+      const api = comboboxApi()
+      const selected = api.value[0]
+      const label = selected ? (sourceCollection.stringify(selected) ?? selected) : ""
+      if (api.inputValue !== label) {
+        api.setInputValue(label, "script")
+      }
+    },
   )
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const api = comboboxApi()
     if (!api.open || query().trim()) return
     const selected = api.value[0]
@@ -278,9 +286,9 @@ export default function Page() {
                     fallback={<div class={styles.empty}>No matches for "{query().trim()}"</div>}
                   >
                     <div {...mergeProps(treeApi().getTreeProps(), { class: styles.tree })}>
-                      <Index each={visibleCollection().rootNode.children}>
+                      <For keyed={false} each={visibleCollection().rootNode.children}>
                         {(node, index) => <TreeNode node={node()} indexPath={[index]} api={treeApi} />}
-                      </Index>
+                      </For>
                     </div>
                   </Show>
                 </div>

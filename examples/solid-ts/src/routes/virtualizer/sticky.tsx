@@ -1,5 +1,5 @@
 import type { GroupMeta } from "@zag-js/virtualizer"
-import { createSignal, Index, Show } from "solid-js"
+import { createSignal, For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
 const ITEMS_PER_GROUP = 50
@@ -90,12 +90,12 @@ export default function Page() {
             setScrollOffset(e.currentTarget.scrollTop)
             virtualizer.handleScroll(e)
           }}
-          tabIndex={0}
+          tabindex={0}
           aria-label="Virtualized list with sticky group headers"
           style={{ height: "400px", overflow: "auto", border: "2px solid #cbd5e1", "border-radius": "8px" }}
         >
           <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-            <Index each={virtualizer.getVirtualItems()}>
+            <For keyed={false} each={virtualizer.getVirtualItems()}>
               {(vi) => {
                 const item = () => items[vi().index]
                 return (
@@ -140,7 +140,7 @@ export default function Page() {
                   </div>
                 )
               }}
-            </Index>
+            </For>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, onCleanup, onMount } from "solid-js"
+import { createMemo, createUniqueId, onSettled } from "solid-js"
 import "@styles/popover.css"
 
 function hasSelectionWithin(el?: Element | null) {
@@ -35,7 +35,7 @@ export default function Page() {
 
   const api = createMemo(() => popover.connect(service, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     const node = divRef
     if (!contentRef || !node) return
 
@@ -57,10 +57,10 @@ export default function Page() {
     doc.addEventListener("mouseup", onMouseUp)
     doc.addEventListener("selectionchange", onSelect)
 
-    onCleanup(() => {
+    return () => {
       doc.removeEventListener("mouseup", onMouseUp)
       doc.removeEventListener("selectionchange", onSelect)
-    })
+    }
   })
 
   return (

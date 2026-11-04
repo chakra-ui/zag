@@ -34,7 +34,7 @@ export default function Page() {
         <div class="angle-slider-presets">
           <For each={PRESETS}>
             {(preset) => (
-              <button aria-pressed={value() === preset} onClick={() => setValue(preset)}>
+              <button aria-pressed={value() === preset ? "true" : "false"} onClick={() => setValue(preset)}>
                 {preset}°
               </button>
             )}

@@ -1,7 +1,7 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as dnd from "@zag-js/dnd"
 import { GripVertical } from "lucide-solid"
-import { createComputed, createMemo, createSignal, createUniqueId, Index, Show, untrack } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Show, createEffect } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -22,10 +22,10 @@ export default function Page() {
   })
 
   // Sync count before render
-  createComputed(() => {
-    const count = items().length
-    untrack(() => virtualizer.updateOptions({ count }))
-  })
+  createEffect(
+    () => items().length,
+    (count) => virtualizer.updateOptions({ count }),
+  )
 
   const service = useMachine(dnd.machine, {
     id: createUniqueId(),
@@ -45,7 +45,7 @@ export default function Page() {
           <h3>Virtualized (500 items)</h3>
           <div ref={ref} onScroll={virtualizer.handleScroll} class={styles.virtualViewport}>
             <div class={styles.virtualSizer} style={{ height: `${virtualizer.getTotalSize()}px` }}>
-              <Index each={virtualizer.getVirtualItems()}>
+              <For keyed={false} each={virtualizer.getVirtualItems()}>
                 {(vi) => {
                   const item = () => items()[vi().index]
                   return (
@@ -79,7 +79,7 @@ export default function Page() {
                     </Show>
                   )
                 }}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

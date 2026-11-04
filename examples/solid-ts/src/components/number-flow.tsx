@@ -1,19 +1,19 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For, Show, splitProps } from "solid-js"
+import { createMemo, createUniqueId, For, Show, omit } from "solid-js"
 
 interface NumberFlowProps extends Omit<numberFlow.Props, "id"> {
   class?: string
 }
 
 export function NumberFlow(props: NumberFlowProps) {
-  const [local, machineProps] = splitProps(props, ["class"])
+  const machineProps = omit(props, "class")
   const id = createUniqueId()
   const service = useMachine(numberFlow.machine, () => ({ id, ...machineProps }))
   const api = createMemo(() => numberFlow.connect(service, normalizeProps))
 
   return (
-    <span {...api().getRootProps()} class={local.class}>
+    <span {...api().getRootProps()} class={props.class}>
       <Key each={api().segments} by={(segment) => segment.key}>
         {(segment) => {
           const digit = createMemo(() => {

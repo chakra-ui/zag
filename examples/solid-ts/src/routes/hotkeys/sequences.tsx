@@ -1,5 +1,6 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createSignal, Index, onCleanup, onMount, Show, type JSX } from "solid-js"
+import { createSignal, For, onCleanup, onSettled, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 const store = createHotkeyStore()
 
@@ -10,7 +11,7 @@ export default function Page() {
     setLogs((prev) => [`${new Date().toLocaleTimeString()}: ${message}`, ...prev.slice(0, 9)])
   }
 
-  onMount(() => {
+  onSettled(() => {
     store.register([
       { id: "go-home", hotkey: "G > H", label: "Go Home", action: () => addLog("G then H: Navigate home") },
       { id: "go-issues", hotkey: "G > I", label: "Go Issues", action: () => addLog("G then I: Navigate to issues") },
@@ -81,7 +82,9 @@ export default function Page() {
         }}
       >
         <div style={{ "margin-bottom": "0.5rem", color: "#888" }}>Event Log:</div>
-        <Index each={logs()}>{(log) => <div style={{ "font-size": "0.8rem" }}>{log()}</div>}</Index>
+        <For keyed={false} each={logs()}>
+          {(log) => <div style={{ "font-size": "0.8rem" }}>{log()}</div>}
+        </For>
         <Show when={logs().length === 0}>
           <div style={{ color: "#666", "font-style": "italic" }}>Press a key sequence...</div>
         </Show>

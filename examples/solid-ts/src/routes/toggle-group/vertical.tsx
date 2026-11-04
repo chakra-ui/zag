@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toggle from "@zag-js/toggle-group"
 import { EraserIcon, HandIcon, MousePointer2Icon, PencilIcon, SquareIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Dynamic } from "@solidjs/web"
 import "@styles/toggle-group.css"
 
 const tools = [

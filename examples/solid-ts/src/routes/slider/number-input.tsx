@@ -1,7 +1,7 @@
 import * as numberInput from "@zag-js/number-input"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/slider.css"
 import "@styles/number-input.css"
 
@@ -79,13 +79,13 @@ export default function Page() {
           <div {...api().getTrackProps()}>
             <div {...api().getRangeProps()} />
           </div>
-          <Index each={api().value}>
+          <For keyed={false} each={api().value}>
             {(_, index) => (
               <div {...api().getThumbProps({ index })}>
                 <input {...api().getHiddenInputProps({ index })} />
               </div>
             )}
-          </Index>
+          </For>
         </div>
         <PriceInput label="Min" value={value()[0]} min={min} max={api().getThumbMax(0)} onChange={setThumb(0)} />
         <PriceInput label="Max" value={value()[1]} min={api().getThumbMin(1)} max={max} onChange={setThumb(1)} />

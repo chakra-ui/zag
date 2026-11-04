@@ -47,7 +47,7 @@ export default function Page() {
       <main class="infinite-scroll">
         <h1>Infinite Scroll — Chat (reversed)</h1>
         <p>Scroll up to load older messages ({list().items.length} loaded)</p>
-        <div class="scroller" tabIndex={0}>
+        <div class="scroller" tabindex={0}>
           <div {...api().getSentinelProps()} />
           <div {...api().getIndicatorProps({ type: "loading" })}>Loading older messages…</div>
           <div {...api().getIndicatorProps({ type: "complete" })}>Beginning of conversation</div>

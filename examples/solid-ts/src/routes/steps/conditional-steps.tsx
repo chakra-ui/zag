@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as steps from "@zag-js/steps"
-import { createMemo, createSignal, createUniqueId, For, Index, Show } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/steps.css"
@@ -38,7 +38,7 @@ export default function Page() {
           </div>
 
           <div {...api().getListProps()}>
-            <Index each={api().items}>
+            <For keyed={false} each={api().items}>
               {(item, index) => {
                 const itemState = () => api().getItemState({ value: item().value })
                 return (
@@ -53,7 +53,7 @@ export default function Page() {
                   </div>
                 )
               }}
-            </Index>
+            </For>
           </div>
 
           <div {...api().getContentProps({ value: "profile" })} class="steps-form">

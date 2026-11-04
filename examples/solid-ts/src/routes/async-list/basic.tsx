@@ -47,7 +47,7 @@ export default function Page() {
             </div>
           </Match>
           <Match when={true}>
-            <ul class="async-list-items async-list-panel" aria-busy={list().isLoading}>
+            <ul class="async-list-items async-list-panel" aria-busy={list().isLoading ? "true" : "false"}>
               <For each={list().items}>
                 {(person) => (
                   <li>

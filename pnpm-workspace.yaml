@@ -19,3 +19,4 @@ minimumReleaseAgeExclude:
   - "@solidjs/signals@2.0.0-rc.19"
   - "@solidjs/web@2.0.0-rc.19"
   - solid-js@2.0.0-rc.19
+  - "@solidjs/router@2.0.0-next.44"

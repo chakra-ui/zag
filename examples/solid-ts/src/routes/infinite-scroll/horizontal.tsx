@@ -47,7 +47,7 @@ export default function Page() {
         <p>
           Loaded {list().items.length} / {TOTAL}
         </p>
-        <div class="scroller horizontal" tabIndex={0}>
+        <div class="scroller horizontal" tabindex={0}>
           <For each={list().items}>{(item) => <div class="card">{item}</div>}</For>
           <div {...api().getSentinelProps()} />
         </div>

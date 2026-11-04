@@ -1,7 +1,7 @@
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { ToastItem } from "~/components/toast-item"
 import { Toolbar } from "~/components/toolbar"

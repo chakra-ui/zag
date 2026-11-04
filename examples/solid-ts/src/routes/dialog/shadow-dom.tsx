@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId, createSignal } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import keyframes from "@styles/keyframes.css?inline"
 import dialogStyles from "@styles/dialog.css?inline"
 import "@styles/dialog.css"
@@ -9,10 +9,9 @@ import "@styles/dialog.css"
 const styles = keyframes + dialogStyles
 
 export default function Page() {
-  let mountRef!: HTMLElement
-  const [shadowRef, setShadowRef] = createSignal<HTMLDivElement | null>(null)
+  const [shadowRoot, setShadowRoot] = createSignal<ShadowRoot | null>(null)
 
-  const getRootNode = () => shadowRef()?.shadowRoot!
+  const getRootNode = () => shadowRoot()!
 
   const service = useMachine(dialog.machine, {
     id: createUniqueId(),
@@ -21,7 +20,7 @@ export default function Page() {
   const api = createMemo(() => dialog.connect(service, normalizeProps))
 
   return (
-    <main ref={mountRef}>
+    <main>
       <div style={{ padding: "20px" }}>
         <h1>Dialog with Shadow DOM Test</h1>
         <p>
@@ -46,60 +45,83 @@ export default function Page() {
           Open Dialog
         </button>
 
-        <Portal ref={setShadowRef} useShadow mount={mountRef}>
-          <style innerHTML={styles} />
-          <Show when={api().open}>
-            <Portal mount={getRootNode()?.getElementById("portal-root")!}>
-              <div {...api().getBackdropProps()} />
-              <div {...api().getPositionerProps()} data-testid="positioner">
-                <div {...api().getContentProps()}>
-                  <h2 {...api().getTitleProps()}>Dialog with Shadow DOM</h2>
-                  <p {...api().getDescriptionProps()}>
-                    This dialog's content is rendered in a shadow DOM. Focus should be trapped within all elements.
-                  </p>
+        <div ref={(el) => setShadowRoot(el.attachShadow({ mode: "open" }))} />
+        <Show when={shadowRoot()}>
+          {(root) => (
+            <Portal mount={root() as unknown as Element}>
+              <style innerHTML={styles} />
+              <Show when={api().open}>
+                <Portal mount={getRootNode()?.getElementById("portal-root")!}>
+                  <div {...api().getBackdropProps()} />
+                  <div {...api().getPositionerProps()} data-testid="positioner">
+                    <div {...api().getContentProps()}>
+                      <h2 {...api().getTitleProps()}>Dialog with Shadow DOM</h2>
+                      <p {...api().getDescriptionProps()}>
+                        This dialog's content is rendered in a shadow DOM. Focus should be trapped within all elements.
+                      </p>
 
-                  <button {...api().getCloseTriggerProps()} data-testid="close">
-                    Close (X)
-                  </button>
+                      <button {...api().getCloseTriggerProps()} data-testid="close">
+                        Close (X)
+                      </button>
 
-                  <div style={{ "margin-top": "16px" }}>
-                    <p>Elements in shadow DOM:</p>
-                    <input
-                      type="text"
-                      placeholder="Shadow input 1"
-                      data-testid="shadow-input-1"
-                      style={{ border: "2px solid blue", padding: "8px", margin: "4px 0", width: "100%" }}
-                    />
-                    <button
-                      data-testid="shadow-button-1"
-                      style={{ border: "2px solid blue", padding: "8px", margin: "4px 0" }}
-                    >
-                      Shadow Button 1
-                    </button>
+                      <div style={{ "margin-top": "16px" }}>
+                        <p>Elements in shadow DOM:</p>
+                        <input
+                          type="text"
+                          placeholder="Shadow input 1"
+                          data-testid="shadow-input-1"
+                          style={{
+                            border: "2px solid blue",
+                            padding: "8px",
+                            margin: "4px 0",
+                            width: "100%",
+                          }}
+                        />
+                        <button
+                          data-testid="shadow-button-1"
+                          style={{
+                            border: "2px solid blue",
+                            padding: "8px",
+                            margin: "4px 0",
+                          }}
+                        >
+                          Shadow Button 1
+                        </button>
 
-                    <input
-                      type="text"
-                      placeholder="Shadow input 2"
-                      data-testid="shadow-input-2"
-                      style={{ border: "2px solid green", padding: "8px", margin: "4px 0", width: "100%" }}
-                    />
-                    <button
-                      data-testid="shadow-button-2"
-                      style={{ border: "2px solid green", padding: "8px", margin: "4px 0" }}
-                    >
-                      Shadow Button 2
-                    </button>
+                        <input
+                          type="text"
+                          placeholder="Shadow input 2"
+                          data-testid="shadow-input-2"
+                          style={{
+                            border: "2px solid green",
+                            padding: "8px",
+                            margin: "4px 0",
+                            width: "100%",
+                          }}
+                        />
+                        <button
+                          data-testid="shadow-button-2"
+                          style={{
+                            border: "2px solid green",
+                            padding: "8px",
+                            margin: "4px 0",
+                          }}
+                        >
+                          Shadow Button 2
+                        </button>
+                      </div>
+
+                      <div style={{ "margin-top": "16px" }}>
+                        <button data-testid="save-button">Save Changes</button>
+                      </div>
+                    </div>
                   </div>
-
-                  <div style={{ "margin-top": "16px" }}>
-                    <button data-testid="save-button">Save Changes</button>
-                  </div>
-                </div>
-              </div>
+                </Portal>
+              </Show>
+              <div id="portal-root" />
             </Portal>
-          </Show>
-          <div id="portal-root" />
-        </Portal>
+          )}
+        </Show>
       </div>
     </main>
   )

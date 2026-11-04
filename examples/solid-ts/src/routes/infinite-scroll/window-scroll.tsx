@@ -43,7 +43,7 @@ export default function Page() {
   return (
     <>
       {/* The app shell makes `main` the scroller, so it needs to be keyboard reachable. */}
-      <main class="infinite-scroll" tabIndex={0}>
+      <main class="infinite-scroll" tabindex={0}>
         <h1>Infinite Scroll — Window scroll</h1>
         <p>
           Loaded {list().items.length} / {TOTAL}

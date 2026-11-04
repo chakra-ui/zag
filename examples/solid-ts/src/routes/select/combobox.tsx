@@ -3,7 +3,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/select.css"
 import "@styles/combobox.css"
 

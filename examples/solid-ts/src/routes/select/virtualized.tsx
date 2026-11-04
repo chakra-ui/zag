@@ -2,8 +2,8 @@ import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon } from "lucide-solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createUniqueId, For } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/select.css"
 
@@ -48,7 +48,7 @@ export default function Page() {
             <div {...api().getContentProps()}>
               <div {...api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
                 <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-                  <Index each={virtualizer.getVirtualItems()}>
+                  <For keyed={false} each={virtualizer.getVirtualItems()}>
                     {(vi) => {
                       const item = () => selectData[vi().index]
                       return (
@@ -58,7 +58,7 @@ export default function Page() {
                         </div>
                       )
                     }}
-                  </Index>
+                  </For>
                 </div>
               </div>
             </div>

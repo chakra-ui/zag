@@ -5,8 +5,8 @@ import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as zagSwitch from "@zag-js/switch"
 import { XIcon } from "lucide-solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "@solidjs/web"
 
 // Mouse-clicking a control inside a focus trap must not set data-focus-visible when focus
 // moves from another control: label activation first focuses the content (tabIndex=-1),
@@ -54,7 +54,7 @@ function RadioGroup(props: { testId: string }) {
   const api = createMemo(() => radio.connect(service, normalizeProps))
   return (
     <div {...api().getRootProps()}>
-      <Index each={["one", "two"]}>
+      <For keyed={false} each={["one", "two"]}>
         {(v) => (
           <label
             {...api().getItemProps({ value: v() })}
@@ -69,7 +69,7 @@ function RadioGroup(props: { testId: string }) {
             <input {...api().getItemHiddenInputProps({ value: v() })} />
           </label>
         )}
-      </Index>
+      </For>
     </div>
   )
 }

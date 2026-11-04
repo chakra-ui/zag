@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
-import { For, Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/carousel.css"
 
 export default function Page() {
@@ -48,9 +48,9 @@ export default function Page() {
 
           <div class="carousel-footer">
             <div {...api().getIndicatorGroupProps()}>
-              <Index each={api().pageSnapPoints}>
+              <For keyed={false} each={api().pageSnapPoints}>
                 {(_, index) => <button {...api().getIndicatorProps({ index })} />}
-              </Index>
+              </For>
             </div>
             <span {...api().getProgressTextProps()}>{api().getProgressText()}</span>
           </div>

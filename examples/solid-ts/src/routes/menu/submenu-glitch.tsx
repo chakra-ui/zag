@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
@@ -23,7 +23,7 @@ export default function Page() {
   const cssService = useMachine(menu.machine, { id: createUniqueId() })
   const css = createMemo(() => menu.connect(cssService, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     root().setChild(jsService)
     js().setParent(rootService)
     root().setChild(loremService)

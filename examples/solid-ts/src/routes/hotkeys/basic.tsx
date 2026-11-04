@@ -1,5 +1,5 @@
 import { createHotkeyStore, formatHotkey } from "@zag-js/hotkeys"
-import { createSignal, For, onCleanup, onMount } from "solid-js"
+import { createSignal, For, onCleanup, onSettled } from "solid-js"
 
 let addLog: (message: string) => void = () => {}
 let theme: "dark" | "light" = "dark"
@@ -190,7 +190,7 @@ const commands = Array.from(store.getState().commands.values())
 export default function Page() {
   const [logs, setLogs] = createSignal<string[]>([])
 
-  onMount(() => {
+  onSettled(() => {
     addLog = (message: string) => {
       setLogs((prev) => [`${new Date().toLocaleTimeString()}: ${message}`, ...prev.slice(0, 9)])
     }

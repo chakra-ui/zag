@@ -1,7 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { createMemo, createSignal, createUniqueId, Index } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import "@styles/file-upload.css"
 
 // Plain form handling: validate on submit, then re-validate as files change
@@ -31,7 +31,7 @@ export default function Page() {
           </div>
 
           <div>
-            <Index each={api().acceptedFiles}>
+            <For keyed={false} each={api().acceptedFiles}>
               {(file) => (
                 <div {...api().getItemProps({ file: file() })}>
                   <div>
@@ -42,7 +42,7 @@ export default function Page() {
                   </button>
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
           <button type="submit">Submit</button>

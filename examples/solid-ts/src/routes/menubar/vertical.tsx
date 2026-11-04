@@ -2,7 +2,7 @@ import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { type Accessor, For, Show, createContext, createMemo, createUniqueId, useContext } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
@@ -84,14 +84,14 @@ export default function Page() {
   return (
     <>
       <main class="menubar">
-        <MenubarContext.Provider value={() => api().getMenuContext()}>
+        <MenubarContext value={() => api().getMenuContext()}>
           <div
             {...api().getRootProps()}
             style={{ display: "inline-flex", "flex-direction": "column", gap: "4px", width: "160px" }}
           >
             <For each={menus}>{(m) => <Menu {...m} />}</For>
           </div>
-        </MenubarContext.Provider>
+        </MenubarContext>
       </main>
       <Toolbar>
         <StateVisualizer state={service} />

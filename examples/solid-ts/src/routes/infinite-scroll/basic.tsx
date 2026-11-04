@@ -46,7 +46,7 @@ export default function Page() {
         <p>
           Loaded {list().items.length} / {TOTAL}
         </p>
-        <div class="scroller" tabIndex={0}>
+        <div class="scroller" tabindex={0}>
           <ul>
             <For each={list().items}>{(item) => <li>{item}</li>}</For>
           </ul>

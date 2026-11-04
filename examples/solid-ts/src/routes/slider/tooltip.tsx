@@ -2,7 +2,7 @@ import * as slider from "@zag-js/slider"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/slider.css"
 import "@styles/tooltip.css"
 

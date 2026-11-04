@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as steps from "@zag-js/steps"
-import { createMemo, createSignal, createUniqueId, Index, onMount, Show } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/steps.css"
@@ -30,7 +30,7 @@ const load = (): Progress => {
 export default function Page() {
   const [progress, setProgress] = createSignal<Progress>({ value: null, completedValues: [] })
 
-  onMount(() => {
+  onSettled(() => {
     setProgress(load())
   })
 
@@ -66,7 +66,7 @@ export default function Page() {
       <main class="steps">
         <div {...api().getRootProps()}>
           <div {...api().getListProps()}>
-            <Index each={api().items}>
+            <For keyed={false} each={api().items}>
               {(item, index) => (
                 <div {...api().getItemProps({ value: item().value })}>
                   <button {...api().getTriggerProps({ value: item().value })}>
@@ -82,18 +82,18 @@ export default function Page() {
                   <div {...api().getSeparatorProps({ value: item().value })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
           <div style={{ flex: 1 }}>
-            <Index each={items}>
+            <For keyed={false} each={items}>
               {(item) => (
                 <div {...api().getContentProps({ value: item().value })}>
                   <h3>{item().title}</h3>
                   <p>{item().description}. Your progress is saved, so you can leave and pick up here later.</p>
                 </div>
               )}
-            </Index>
+            </For>
 
             <div {...api().getContentProps({ value: steps.COMPLETE })}>
               <h3>Your store is live</h3>

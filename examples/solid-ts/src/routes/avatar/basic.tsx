@@ -21,7 +21,7 @@ export default function Page() {
       <main class="avatar">
         <div {...api().getRootProps()}>
           <span {...api().getFallbackProps()}>PA</span>
-          {showImage() && <img alt="" referrerPolicy="no-referrer" src={src()} {...api().getImageProps()} />}
+          {showImage() && <img alt="" referrerpolicy="no-referrer" src={src()} {...api().getImageProps()} />}
         </div>
 
         <div class="controls">

@@ -5,8 +5,9 @@ import {
   type LayerSnapshot,
 } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
-import { type JSX, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createSignal, createTrackedEffect } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 
 interface PopoverProps {
   background: string
@@ -24,7 +25,7 @@ function Popover(props: PopoverProps) {
   // Solid's style prop uses setProperty(), which needs kebab-case (unlike React/Vue/Preact's camelCase assignment)
   const layerStyle = createMemo(() => getDismissableLayerStyle(layer(), { pointerEvents: true }))
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!open()) return
     const cleanups = [
       getPlacement(triggerRef ?? null, contentRef ?? null, { placement: "right" }),
@@ -35,7 +36,7 @@ function Popover(props: PopoverProps) {
         exclude: [triggerRef ?? null],
       }),
     ]
-    onCleanup(() => cleanups.forEach((cleanup) => cleanup()))
+    return () => cleanups.forEach((cleanup) => cleanup())
   })
 
   return (

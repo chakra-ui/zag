@@ -1,4 +1,4 @@
-import { For, Show, createSignal, onMount } from "solid-js"
+import { For, Show, createSignal, onSettled } from "solid-js"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 10_000
@@ -174,7 +174,9 @@ export default function Page() {
   // window virtualizer needs the window rect, so render on the client only
   const [mounted, setMounted] = createSignal(false)
   const [metrics, setMetrics] = createSignal<Metrics | null>(null)
-  onMount(() => setMounted(true))
+  onSettled(() => {
+    setMounted(true)
+  })
 
   return (
     <Show when={mounted()} fallback={<div style={{ padding: "20px", color: "#6b7280" }}>Loading…</div>}>

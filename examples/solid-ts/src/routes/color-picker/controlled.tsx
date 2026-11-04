@@ -1,6 +1,6 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/color-picker.css"
 
 const presets = ["#f47373", "#697689"]
@@ -80,7 +80,7 @@ export default function Page() {
                 <input {...api().getChannelInputProps({ channel: "hex" })} />
 
                 <div {...api().getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
-                  <Index each={presets}>
+                  <For keyed={false} each={presets}>
                     {(preset) => (
                       <button {...api().getSwatchTriggerProps({ value: preset() })}>
                         <div style={{ position: "relative" }}>
@@ -89,7 +89,7 @@ export default function Page() {
                         </div>
                       </button>
                     )}
-                  </Index>
+                  </For>
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { parseDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 
 // an inline month view constrained to march through september
 export default function Page() {
@@ -24,19 +24,19 @@ export default function Page() {
       <div {...api().getContentProps()}>
         <table {...api().getTableProps({ view: "month", columns: 4 })}>
           <tbody {...api().getTableBodyProps()}>
-            <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+            <For keyed={false} each={api().getMonthsGrid({ columns: 4, format: "short" })}>
               {(months) => (
                 <tr {...api().getTableRowProps({ view: "month" })}>
-                  <Index each={months()}>
+                  <For keyed={false} each={months()}>
                     {(month) => (
                       <td {...api().getMonthTableCellProps({ ...month(), columns: 4 })}>
                         <div {...api().getMonthTableCellTriggerProps({ ...month(), columns: 4 })}>{month().label}</div>
                       </td>
                     )}
-                  </Index>
+                  </For>
                 </tr>
               )}
-            </Index>
+            </For>
           </tbody>
         </table>
       </div>

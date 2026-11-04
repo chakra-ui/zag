@@ -1,6 +1,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/date-picker.css"
 
 export default function Page() {
@@ -52,23 +52,23 @@ export default function Page() {
         <div {...api().getContentProps()}>
           <div style={{ "margin-bottom": "20px" }}>
             <select {...api().getMonthSelectProps()}>
-              <Index each={api().getMonths()}>
+              <For keyed={false} each={api().getMonths()}>
                 {(month, i) => (
                   <option value={i + 1} disabled={month().disabled}>
                     {month().label}
                   </option>
                 )}
-              </Index>
+              </For>
             </select>
 
             <select {...api().getYearSelectProps()}>
-              <Index each={api().getYears()}>
+              <For keyed={false} each={api().getYears()}>
                 {(year) => (
                   <option value={year().value} disabled={year().disabled}>
                     {year().label}
                   </option>
                 )}
-              </Index>
+              </For>
             </select>
           </div>
 
@@ -85,49 +85,49 @@ export default function Page() {
               <table {...api().getTableProps({ id: "r1" })}>
                 <thead {...api().getTableHeaderProps()}>
                   <tr {...api().getTableRowProps()}>
-                    <Index each={api().weekDays}>
+                    <For keyed={false} each={api().weekDays}>
                       {(day) => (
                         <th scope="col" aria-label={day().long}>
                           {day().narrow}
                         </th>
                       )}
-                    </Index>
+                    </For>
                   </tr>
                 </thead>
                 <tbody {...api().getTableBodyProps()}>
-                  <Index each={api().weeks}>
+                  <For keyed={false} each={api().weeks}>
                     {(week) => (
                       <tr {...api().getTableRowProps()}>
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(value) => (
                             <td {...api().getDayTableCellProps({ value: value() })}>
                               <div {...api().getDayTableCellTriggerProps({ value: value() })}>{value().day}</div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
 
               <table {...api().getTableProps({ id: "r2" })}>
                 <thead {...api().getTableHeaderProps()}>
                   <tr {...api().getTableRowProps()}>
-                    <Index each={api().weekDays}>
+                    <For keyed={false} each={api().weekDays}>
                       {(day) => (
                         <th scope="col" aria-label={day().long}>
                           {day().narrow}
                         </th>
                       )}
-                    </Index>
+                    </For>
                   </tr>
                 </thead>
                 <tbody {...api().getTableBodyProps()}>
-                  <Index each={offset().weeks}>
+                  <For keyed={false} each={offset().weeks}>
                     {(week) => (
                       <tr {...api().getTableRowProps()}>
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(value) => (
                             <td
                               {...api().getDayTableCellProps({ value: value(), visibleRange: offset().visibleRange })}
@@ -142,10 +142,10 @@ export default function Page() {
                               </div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
             </div>

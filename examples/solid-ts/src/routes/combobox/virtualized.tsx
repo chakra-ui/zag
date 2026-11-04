@@ -3,7 +3,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Index, createComputed, createMemo, createSignal, createUniqueId, on } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId, createEffect } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/combobox.css"
 
@@ -24,11 +24,9 @@ export default function Page() {
   })
 
   // Sync count before render
-  createComputed(
-    on(
-      () => options().length,
-      (count) => virtualizer.updateOptions({ count }),
-    ),
+  createEffect(
+    () => options().length,
+    (count) => virtualizer.updateOptions({ count }),
   )
 
   const collection = createMemo(() =>
@@ -77,7 +75,7 @@ export default function Page() {
         <div data-testid="combobox-content" {...api().getContentProps()}>
           <div {...api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
             <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-              <Index each={virtualizer.getVirtualItems()}>
+              <For keyed={false} each={virtualizer.getVirtualItems()}>
                 {(vi) => {
                   const item = () => options()[vi().index]
                   return (
@@ -96,7 +94,7 @@ export default function Page() {
                     </div>
                   )
                 }}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

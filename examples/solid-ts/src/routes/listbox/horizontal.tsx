@@ -3,7 +3,7 @@ import { Car, CookingPot, Coffee, Dumbbell, PawPrint, Snowflake, Waves, Wifi } f
 import { listboxData, type ListboxOption } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Dynamic } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/listbox.css"
@@ -45,7 +45,7 @@ export default function Page() {
                     <Dynamic
                       component={icons[item.value as keyof typeof icons]}
                       class="listbox-item-icon"
-                      aria-hidden
+                      aria-hidden="true"
                     />
                     <span {...api().getItemIndicatorProps({ item })}>✓</span>
                     <span {...api().getItemTextProps({ item })}>{item.label}</span>

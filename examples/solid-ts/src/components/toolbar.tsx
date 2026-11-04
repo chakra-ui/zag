@@ -1,5 +1,6 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { createSignal, JSX } from "solid-js"
+import { createSignal } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { UseControlsReturn } from "~/hooks/use-controls"
 import { Controls } from "./controls"
 

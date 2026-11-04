@@ -1,13 +1,13 @@
 import { autoresizeTextarea } from "@zag-js/auto-resize"
-import { onCleanup, onMount } from "solid-js"
+import { onSettled } from "solid-js"
 
 export default function Page() {
   let textareaRef: HTMLTextAreaElement | undefined
 
-  onMount(() => {
+  onSettled(() => {
     if (!textareaRef) return
     const cleanup = autoresizeTextarea(textareaRef)
-    onCleanup(() => cleanup?.())
+    return () => cleanup?.()
   })
 
   return (

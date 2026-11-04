@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { Show, createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/tooltip.css"
 
 export default function Page() {

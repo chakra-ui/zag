@@ -1,6 +1,6 @@
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import "@styles/slider.css"
 
 const weights: Record<number, string> = {
@@ -44,13 +44,13 @@ export default function Page() {
           <div {...api().getTrackProps()}>
             <div {...api().getRangeProps()} />
           </div>
-          <Index each={api().value}>
+          <For keyed={false} each={api().value}>
             {(_, index) => (
               <div {...api().getThumbProps({ index })}>
                 <input {...api().getHiddenInputProps({ index })} />
               </div>
             )}
-          </Index>
+          </For>
         </div>
         <div {...api().getMarkerGroupProps()}>
           <For each={stops}>{(value) => <span {...api().getMarkerProps({ value })} />}</For>

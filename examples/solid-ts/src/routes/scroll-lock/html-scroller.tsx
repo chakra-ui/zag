@@ -1,8 +1,8 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Show, createMemo, onCleanup, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Show, createMemo, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/dialog.css"
 
 export default function Page() {
@@ -10,11 +10,11 @@ export default function Page() {
   const api = createMemo(() => dialog.connect(service, normalizeProps))
 
   // Make <html> its own scroll container, like an app shell that scrolls the viewport itself
-  onMount(() => {
+  onSettled(() => {
     document.documentElement.style.overflowY = "auto"
-    onCleanup(() => {
+    return () => {
       document.documentElement.style.removeProperty("overflow-y")
-    })
+    }
   })
 
   return (

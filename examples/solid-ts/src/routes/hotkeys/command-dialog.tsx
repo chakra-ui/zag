@@ -1,8 +1,9 @@
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount, Show, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import "@styles/dialog.css"
 
@@ -71,19 +72,17 @@ export default function Page() {
     ),
   )
 
-  onMount(() => {
+  onSettled(() => {
     openDialog = () => setOpen(true)
     store.init({ target: document })
   })
 
   onCleanup(() => store.destroy())
 
-  createEffect(
-    on(open, (isOpen) => {
-      if (isOpen) requestAnimationFrame(() => inputRef?.focus())
-      else setQuery("")
-    }),
-  )
+  createEffect(open, (isOpen) => {
+    if (isOpen) requestAnimationFrame(() => inputRef?.focus())
+    else setQuery("")
+  })
 
   return (
     <main style={{ padding: "2rem", "max-width": "42rem", margin: "0 auto" }}>

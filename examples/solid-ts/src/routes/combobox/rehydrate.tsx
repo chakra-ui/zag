@@ -2,7 +2,7 @@ import * as asyncList from "@zag-js/async-list"
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Index, Show, createEffect, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId, createTrackedEffect } from "solid-js"
 import "@styles/combobox.css"
 
 interface Item {
@@ -51,7 +51,7 @@ export default function Page() {
   const api = createMemo(() => combobox.connect(service, normalizeProps))
 
   let hydrated = false
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (hydrated) return
     if (api().value.length && api().collection.size) {
       api().syncSelectedItems()
@@ -77,14 +77,14 @@ export default function Page() {
         <div data-testid="combobox-content" {...api().getContentProps()}>
           <Show when={api().collection.items.length > 0}>
             <div {...api().getListProps()}>
-              <Index each={api().collection.items}>
+              <For keyed={false} each={api().collection.items}>
                 {(item) => (
                   <div data-testid={item().name} {...api().getItemProps({ item: item() })}>
                     <span {...api().getItemIndicatorProps({ item: item() })}>✅</span>
                     <span>{item().name}</span>
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
           </Show>
         </div>

@@ -1,7 +1,7 @@
 import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -32,13 +32,13 @@ export default function Page() {
             <div {...api().getTrackProps()}>
               <div {...api().getRangeProps()} />
             </div>
-            <Index each={api().value}>
+            <For keyed={false} each={api().value}>
               {(_, index) => (
                 <div {...api().getThumbProps({ index })}>
                   <input {...api().getHiddenInputProps({ index })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
         </div>
       </main>

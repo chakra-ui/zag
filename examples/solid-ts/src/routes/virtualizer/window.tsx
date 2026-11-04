@@ -1,4 +1,4 @@
-import { Index } from "solid-js"
+import { For } from "solid-js"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 10_000
@@ -32,7 +32,7 @@ export default function Page() {
         }}
       >
         <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <Index each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 data-index={virtualItem().index}
@@ -46,7 +46,7 @@ export default function Page() {
                 {items[virtualItem().index]?.name}
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
     </main>

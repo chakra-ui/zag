@@ -1,8 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toggle from "@zag-js/toggle-group"
 import { LayoutGridIcon, ListIcon } from "lucide-solid"
-import { createMemo, createUniqueId, For, Index } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { createMemo, createUniqueId, For } from "solid-js"
+import { Dynamic } from "@solidjs/web"
 import "@styles/toggle-group.css"
 
 const views = [
@@ -34,7 +34,9 @@ export default function Page() {
         </div>
 
         <div class="toggle-group-items" data-view={api().value[0]}>
-          <Index each={Array.from({ length: 6 })}>{() => <div />}</Index>
+          <For keyed={false} each={Array.from({ length: 6 })}>
+            {() => <div />}
+          </For>
         </div>
       </div>
     </main>

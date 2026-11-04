@@ -4,7 +4,7 @@ import * as select from "@zag-js/select"
 import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
 import { For, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -76,7 +76,7 @@ function FontPicker(props: { api: () => toolbar.Api }) {
       </label>
       <button {...mergeProps(fontApi().getTriggerProps(), props.api().getItemProps({ value: "font" }))}>
         <span>{fontApi().valueAsString || "Font"}</span>
-        <span aria-hidden>▾</span>
+        <span aria-hidden="true">▾</span>
       </button>
       <Portal>
         <div {...fontApi().getPositionerProps()}>

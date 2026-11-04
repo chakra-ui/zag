@@ -1,7 +1,7 @@
 import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import "@styles/carousel.css"
 
 const photos = [
@@ -33,13 +33,13 @@ export default function Page() {
               <ChevronLeftIcon />
             </button>
             <div {...photoApi().getItemGroupProps()}>
-              <Index each={photos}>
+              <For keyed={false} each={photos}>
                 {(photo, index) => (
                   <div {...photoApi().getItemProps({ index })}>
                     <img src={photo().src} width={photo().width} height={photo().height} alt="" />
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
             <button {...photoApi().getNextTriggerProps()}>
               <ChevronRightIcon />

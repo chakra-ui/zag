@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { CircleCheck, CircleX, Info, LoaderCircle, TriangleAlert, XIcon } from "lucide-solid"
 import { Accessor, Component, createMemo, Show } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Dynamic } from "@solidjs/web"
 
 const icons: Record<string, Component> = {
   success: CircleCheck,

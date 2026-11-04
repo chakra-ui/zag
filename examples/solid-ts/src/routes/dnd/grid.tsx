@@ -1,8 +1,8 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as dnd from "@zag-js/dnd"
 import { GripVertical } from "lucide-solid"
-import type { JSX } from "solid-js"
-import { createEffect, createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { createMemo, createSignal, createUniqueId, For, Show, createTrackedEffect } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import styles from "@styles/dnd-grid.module.css"
@@ -56,7 +56,7 @@ export default function Page() {
     return source ? items().find((item) => item.id === source) : undefined
   })
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const { isDragging, dropTarget, dropPlacement, dragValues } = api()
     const currentItems = items()
     const gridEl = gridRef

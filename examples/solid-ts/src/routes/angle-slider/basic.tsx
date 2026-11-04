@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { angleSliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -24,9 +24,9 @@ export default function Page() {
           <div {...api().getControlProps()}>
             <div {...api().getThumbProps()}></div>
             <div {...api().getMarkerGroupProps()}>
-              <Index each={[0, 45, 90, 135, 180, 225, 270, 315]}>
+              <For keyed={false} each={[0, 45, 90, 135, 180, 225, 270, 315]}>
                 {(value) => <div {...api().getMarkerProps({ value: value() })}></div>}
-              </Index>
+              </For>
             </div>
           </div>
           <input {...api().getHiddenInputProps()} />

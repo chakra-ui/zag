@@ -2,7 +2,7 @@ import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeft, ChevronRight } from "lucide-solid"
-import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -48,9 +48,9 @@ export default function Page() {
             </button>
             <span {...api().getHeaderTitleProps()}>{api().visibleRangeText.formatted}</span>
             <div {...api().getViewSelectProps()}>
-              <Index each={["day", "week", "month"] as scheduler.ViewType[]}>
+              <For keyed={false} each={["day", "week", "month"] as scheduler.ViewType[]}>
                 {(v) => <button {...api().getViewItemProps({ view: v() })}>{api().getViewText(v())}</button>}
-              </Index>
+              </For>
             </div>
           </div>
 
@@ -60,25 +60,26 @@ export default function Page() {
               <div class="scheduler-time-grid-wrapper">
                 <div {...api().getColumnHeadersProps()}>
                   <div class="scheduler-gutter-header" />
-                  <Index each={api().visibleDays}>
+                  <For keyed={false} each={api().visibleDays}>
                     {(date) => (
                       <div {...api().getColumnHeaderProps({ date: date() })}>
                         <span class="scheduler-header-day-label">{api().formatWeekDay(date())}</span>
                         <span class="scheduler-header-day-num">{date().day}</span>
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
 
                 <div {...api().getAllDayRowProps()}>
                   <div {...api().getAllDayLabelProps()}>All day</div>
-                  <Index each={api().visibleDays}>
+                  <For keyed={false} each={api().visibleDays}>
                     {(date, index) => (
                       <div
                         {...api().getDayCellProps({ date: date(), allDay: true })}
                         style={{ "z-index": api().visibleDays.length - index }}
                       >
-                        <Index
+                        <For
+                          keyed={false}
                           each={api()
                             .getAllDaySegments()
                             .filter((segment) => segment.column === index)}
@@ -100,22 +101,22 @@ export default function Page() {
                               </Show>
                             </div>
                           )}
-                        </Index>
+                        </For>
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
 
-                <div class="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
+                <div class="scheduler-time-grid-scroll" tabindex={0} role="group" aria-label="Time grid">
                   <div {...api().getGridProps()}>
                     <div {...api().getGridRowProps()}>
                       <div {...api().getTimeGutterProps()}>
-                        <Index each={api().hourRange.hours}>
+                        <For keyed={false} each={api().hourRange.hours}>
                           {(hour) => <div {...api().getHourLabelProps({ hour: hour() })}>{hour().label}</div>}
-                        </Index>
+                        </For>
                       </div>
 
-                      <Index each={api().visibleDays}>
+                      <For keyed={false} each={api().visibleDays}>
                         {(date) => {
                           const dayEvents = createMemo(() =>
                             api()
@@ -125,13 +126,13 @@ export default function Page() {
 
                           return (
                             <div {...api().getDayColumnProps({ date: date() })}>
-                              <Index each={api().hourRange.hours}>
+                              <For keyed={false} each={api().hourRange.hours}>
                                 {(hour) => <div {...api().getHourLineProps({ hour: hour() })} />}
-                              </Index>
+                              </For>
 
                               <div {...api().getCurrentTimeIndicatorProps({ date: date() })} />
 
-                              <Index each={dayEvents()}>
+                              <For keyed={false} each={dayEvents()}>
                                 {(event) => (
                                   <div {...api().getEventProps({ event: event() })}>
                                     <div class="scheduler-event-title">{event().title}</div>
@@ -141,7 +142,7 @@ export default function Page() {
                                     </div>
                                   </div>
                                 )}
-                              </Index>
+                              </For>
 
                               <div {...api().getDragPreviewProps({ date: date() })}>
                                 <div class="scheduler-event-title">{api().dragState?.event.title}</div>
@@ -149,7 +150,7 @@ export default function Page() {
                             </div>
                           )
                         }}
-                      </Index>
+                      </For>
                     </div>
                   </div>
                 </div>
@@ -158,18 +159,18 @@ export default function Page() {
           >
             <div class="scheduler-month-grid">
               <div class="scheduler-month-header">
-                <Index each={api().getWeekDays()}>
+                <For keyed={false} each={api().getWeekDays()}>
                   {(day) => <div class="scheduler-month-weekday">{day().short}</div>}
-                </Index>
+                </For>
               </div>
               <div class="scheduler-month-body">
-                <Index each={api().getMonthGrid(api().date)}>
+                <For keyed={false} each={api().getMonthGrid(api().date)}>
                   {(week) => {
                     // segments are asked for one row at a time, so a bar clips at the week edge
                     const bars = createMemo(() => api().getAllDaySegments(week()))
                     return (
                       <div class="scheduler-month-week">
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(date, dayIndex) => {
                             const timed = createMemo(() =>
                               api()
@@ -183,7 +184,7 @@ export default function Page() {
                                 style={{ "z-index": week().length - dayIndex }}
                               >
                                 <div class="scheduler-month-day-number">{date().day}</div>
-                                <Index each={bars().filter((segment) => segment.column === dayIndex)}>
+                                <For keyed={false} each={bars().filter((segment) => segment.column === dayIndex)}>
                                   {(segment) => (
                                     <div
                                       {...api().getEventProps({
@@ -196,8 +197,8 @@ export default function Page() {
                                       {segment().event.title}
                                     </div>
                                   )}
-                                </Index>
-                                <Index each={timed().slice(0, 2)}>
+                                </For>
+                                <For keyed={false} each={timed().slice(0, 2)}>
                                   {(event) => (
                                     <div
                                       {...api().getEventProps({ event: event(), layout: "list" })}
@@ -206,7 +207,7 @@ export default function Page() {
                                       {event().title}
                                     </div>
                                   )}
-                                </Index>
+                                </For>
                                 <Show when={timed().length > 2}>
                                   <button {...api().getMoreEventsProps({ date: date(), count: timed().length - 2 })}>
                                     +{timed().length - 2} more
@@ -215,11 +216,11 @@ export default function Page() {
                               </div>
                             )
                           }}
-                        </Index>
+                        </For>
                       </div>
                     )
                   }}
-                </Index>
+                </For>
               </div>
             </div>
           </Show>

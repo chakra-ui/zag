@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as steps from "@zag-js/steps"
-import { createMemo, createSignal, createUniqueId, Index } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/steps.css"
@@ -36,7 +36,7 @@ export default function Page() {
       <main class="steps">
         <div {...api().getRootProps()}>
           <div {...api().getListProps()}>
-            <Index each={items}>
+            <For keyed={false} each={items}>
               {(item, index) => (
                 <div {...api().getItemProps({ value: item().value })}>
                   <button {...api().getTriggerProps({ value: item().value })}>
@@ -46,12 +46,12 @@ export default function Page() {
                   <div {...api().getSeparatorProps({ value: item().value })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
-          <Index each={items}>
+          <For keyed={false} each={items}>
             {(item) => <div {...api().getContentProps({ value: item().value })}>{item().title} content</div>}
-          </Index>
+          </For>
 
           <div {...api().getContentProps({ value: steps.COMPLETE })}>All done 🎉</div>
 
@@ -68,9 +68,9 @@ export default function Page() {
           <code>{finished() ? finished()!.join(",") : "-"}</code>
         </p>
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <Index each={items}>
+          <For keyed={false} each={items}>
             {(item) => <button onClick={() => setValue(item().value)}>Go to {item().title}</button>}
-          </Index>
+          </For>
           <button onClick={() => setValue(steps.COMPLETE)}>Show completed</button>
         </div>
       </main>

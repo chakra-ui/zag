@@ -44,7 +44,7 @@ export default function Page() {
   return (
     <main class="field-page">
       <h1>Field — Signals Form</h1>
-      <form onSubmit={onSubmit} noValidate>
+      <form onSubmit={onSubmit} novalidate>
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>
             Username <span {...api().getIndicatorProps({ type: "required" })}>*</span>

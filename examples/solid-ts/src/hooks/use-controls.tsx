@@ -1,5 +1,5 @@
 import { ControlRecord, deepSet, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
-import { Accessor, createMemo, createSignal, mergeProps } from "solid-js"
+import { Accessor, createMemo, createSignal, merge } from "solid-js"
 
 export function useControls<T extends ControlRecord>(config: T) {
   const [state, __setState] = createSignal(getControlDefaults(config) as any)
@@ -20,7 +20,7 @@ export function useControls<T extends ControlRecord>(config: T) {
     config,
     mergeProps: <T extends object>(props: T | Accessor<T>): Accessor<T> => {
       // controls win over the page defaults, like `...controls.context` in the other frameworks
-      return createMemo(() => mergeProps(typeof props === "function" ? props() : props, context()))
+      return createMemo(() => merge(typeof props === "function" ? props() : props, context()))
     },
   }
 }

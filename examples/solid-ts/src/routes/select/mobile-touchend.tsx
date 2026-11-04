@@ -4,7 +4,7 @@ import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/select.css"
 
 const collection = select.collection({

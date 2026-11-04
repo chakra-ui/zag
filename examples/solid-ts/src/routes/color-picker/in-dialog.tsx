@@ -3,7 +3,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
 import { type ParentProps, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/color-picker.css"
 import "@styles/dialog.css"
 

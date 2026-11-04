@@ -1,6 +1,6 @@
 import * as numberFlow from "@zag-js/number-flow"
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId, createTrackedEffect } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/number-flow.css"
@@ -10,10 +10,10 @@ export default function Page() {
   const [continuous, setContinuous] = createSignal(true)
   const [playing, setPlaying] = createSignal(true)
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!playing()) return
     const id = setInterval(() => setValue((v) => v + Math.round(Math.random() * 45 + 5)), 900)
-    onCleanup(() => clearInterval(id))
+    return () => clearInterval(id)
   })
 
   const service = useMachine(numberFlow.machine, {
@@ -69,10 +69,10 @@ export default function Page() {
 
         {/* Continuous spins through every intermediate digit; default takes the short path */}
         <div class="nf-toggle" role="group" aria-label="Roll mode">
-          <button aria-pressed={continuous()} onClick={() => setContinuous(true)}>
+          <button aria-pressed={continuous() ? "true" : "false"} onClick={() => setContinuous(true)}>
             Continuous
           </button>
-          <button aria-pressed={!continuous()} onClick={() => setContinuous(false)}>
+          <button aria-pressed={!continuous() ? "true" : "false"} onClick={() => setContinuous(false)}>
             Default
           </button>
         </div>

@@ -1,8 +1,9 @@
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { createMemo, Show, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import "@styles/popover.css"
 
 interface PopoverProps {

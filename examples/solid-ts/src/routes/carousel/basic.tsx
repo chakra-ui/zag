@@ -2,7 +2,7 @@ import * as carousel from "@zag-js/carousel"
 import { carouselControls, carouselData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "lucide-solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -38,13 +38,13 @@ export default function Page() {
                 <ChevronLeftIcon />
               </button>
               <div {...api().getItemGroupProps()}>
-                <Index each={carouselData}>
+                <For keyed={false} each={carouselData}>
                   {(image, index) => (
                     <div {...api().getItemProps({ index })} class="carousel-photo">
                       <img src={image()} alt="" />
                     </div>
                   )}
-                </Index>
+                </For>
               </div>
               <button {...api().getNextTriggerProps()}>
                 <ChevronRightIcon />
@@ -59,9 +59,9 @@ export default function Page() {
                 <span class="sr-only">{api().isPlaying ? "Stop" : "Play"}</span>
               </button>
               <div {...api().getIndicatorGroupProps()}>
-                <Index each={api().pageSnapPoints}>
+                <For keyed={false} each={api().pageSnapPoints}>
                   {(_, index) => <button {...api().getIndicatorProps({ index })} />}
-                </Index>
+                </For>
               </div>
               <span {...api().getProgressTextProps()}>{api().getProgressText()}</span>
             </div>

@@ -1,7 +1,7 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-solid"
-import { For, createMemo, createSignal, createUniqueId, onCleanup, onMount } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId, onCleanup, onSettled } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/floating-panel.css"
@@ -16,7 +16,7 @@ export default function Page() {
 
   let observer: ResizeObserver | null = null
 
-  onMount(() => {
+  onSettled(() => {
     observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect
       setObservedSize({ width: Math.round(width), height: Math.round(height) })

@@ -1,4 +1,3 @@
-import { A } from "@solidjs/router"
 import { createFilter } from "@zag-js/i18n-utils"
 import { componentRoutesData, getComponentExamples } from "@zag-js/shared"
 import { ArrowRightIcon, SearchIcon } from "lucide-solid"
@@ -20,7 +19,7 @@ export default function Home() {
       <div class="pg-home-inner">
         <div class="pg-hero">
           <span class="pg-eyebrow">
-            <i aria-hidden />
+            <i aria-hidden="true" />
             Solid playground
           </span>
           <h1>Zag components</h1>
@@ -31,7 +30,7 @@ export default function Home() {
         </div>
 
         <label class="pg-filter">
-          <SearchIcon aria-hidden />
+          <SearchIcon aria-hidden="true" />
           <input
             type="search"
             aria-label="Filter components"
@@ -53,15 +52,15 @@ export default function Home() {
             <For each={filtered()}>
               {(item) => (
                 <li>
-                  <A href={item.href} class="pg-card">
+                  <a href={item.href} class="pg-card">
                     <strong>
                       {item.label}
-                      <ArrowRightIcon aria-hidden />
+                      <ArrowRightIcon aria-hidden="true" />
                     </strong>
                     <span>
                       {item.count} {item.count === 1 ? "example" : "examples"}
                     </span>
-                  </A>
+                  </a>
                 </li>
               )}
             </For>

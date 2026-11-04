@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
-import { Accessor, createEffect, createMemo, createUniqueId, Index, Show } from "solid-js"
+import { Accessor, createMemo, createUniqueId, For, Show, createTrackedEffect } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -94,7 +94,7 @@ export default function Page() {
   const api = createMemo(() => tree.connect(service, normalizeProps))
   const visibleNodes = createMemo(() => api().getVisibleNodes())
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     virtualizer.updateOptions({ count: visibleNodes().length })
   })
 
@@ -119,7 +119,7 @@ export default function Page() {
             style={{ height: "400px", overflow: "auto", border: "1px solid #ccc", "border-radius": "4px" }}
           >
             <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-              <Index each={virtualizer.getVirtualItems()}>
+              <For keyed={false} each={virtualizer.getVirtualItems()}>
                 {(vi) => {
                   const entry = () => visibleNodes()[vi().index]
                   return (
@@ -132,7 +132,7 @@ export default function Page() {
                     </Show>
                   )
                 }}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

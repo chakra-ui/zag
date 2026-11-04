@@ -1,5 +1,5 @@
 import { HeartIcon } from "lucide-solid"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 import { NumberFlow } from "~/components/number-flow"
 import "@styles/number-flow.css"
 
@@ -11,9 +11,9 @@ export default function Page() {
   const [liked, setLiked] = createSignal(false)
 
   // Views keep climbing; compact notation keeps the figure short
-  onMount(() => {
+  onSettled(() => {
     const id = setInterval(() => setViews((v) => v + Math.round(Math.random() * 600)), 1200)
-    onCleanup(() => clearInterval(id))
+    return () => clearInterval(id)
   })
 
   return (
@@ -32,7 +32,7 @@ export default function Page() {
         </div>
         <button
           class="nf-like"
-          aria-pressed={liked()}
+          aria-pressed={liked() ? "true" : "false"}
           onClick={() => {
             setLikes((l) => l + (liked() ? -1 : 1))
             setLiked(!liked())

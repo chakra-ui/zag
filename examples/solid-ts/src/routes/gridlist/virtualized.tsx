@@ -1,7 +1,7 @@
 import * as gridlist from "@zag-js/gridlist"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { CheckIcon } from "lucide-solid"
-import { createMemo, createUniqueId, Index, Show } from "solid-js"
+import { createMemo, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
@@ -55,12 +55,12 @@ export default function Page() {
             <div
               ref={ref}
               {...api().getContentProps()}
-              tabIndex={0}
+              tabindex={0}
               onScroll={virtualizer.handleScroll}
               style={{ height: "360px", width: "480px" }}
             >
               <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-                <Index each={virtualizer.getVirtualItems()}>
+                <For keyed={false} each={virtualizer.getVirtualItems()}>
                   {(vi) => {
                     const item = () => items[vi().index]
                     return (
@@ -84,7 +84,7 @@ export default function Page() {
                       </div>
                     )
                   }}
-                </Index>
+                </For>
               </div>
             </div>
           </div>

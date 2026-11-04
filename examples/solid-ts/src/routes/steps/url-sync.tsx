@@ -1,7 +1,7 @@
 import { useSearchParams } from "@solidjs/router"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as steps from "@zag-js/steps"
-import { createMemo, createSignal, createUniqueId, Index, Show } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/steps.css"
@@ -46,7 +46,7 @@ export default function Page() {
       <main class="steps">
         <div {...api().getRootProps()}>
           <div {...api().getListProps()}>
-            <Index each={api().items}>
+            <For keyed={false} each={api().items}>
               {(item, index) => (
                 <div {...api().getItemProps({ value: item().value })}>
                   <button {...api().getTriggerProps({ value: item().value })}>
@@ -56,7 +56,7 @@ export default function Page() {
                   <div {...api().getSeparatorProps({ value: item().value })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
           <div {...api().getContentProps({ value: "contact" })} class="steps-form">

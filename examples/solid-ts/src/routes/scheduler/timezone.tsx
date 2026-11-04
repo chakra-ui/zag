@@ -2,7 +2,7 @@ import { startOfWeek, toCalendarDate } from "@internationalized/date"
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/scheduler.css"
@@ -69,27 +69,27 @@ export default function Page() {
           <div class="scheduler-time-grid-wrapper">
             <div {...api().getColumnHeadersProps()}>
               <div class="scheduler-gutter-header" />
-              <Index each={api().columns}>
+              <For keyed={false} each={api().columns}>
                 {(column) => (
                   <div {...api().getColumnHeaderProps(column())}>
                     <span class="scheduler-header-day-label">{api().formatWeekDay(column().date)}</span>
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
 
-            <div class="scheduler-time-grid-scroll" tabIndex={0} aria-label="Schedule grid">
+            <div class="scheduler-time-grid-scroll" tabindex={0} aria-label="Schedule grid">
               <div {...api().getGridProps()}>
                 <div {...api().getGridRowProps()}>
                   <div {...api().getTimeGutterProps()}>
-                    <Index each={api().hourRange.hours}>
+                    <For keyed={false} each={api().hourRange.hours}>
                       {(hour) => <div {...api().getHourLabelProps({ hour: hour() })}>{hour().label}</div>}
-                    </Index>
+                    </For>
                   </div>
-                  <Index each={api().columns}>
+                  <For keyed={false} each={api().columns}>
                     {(column) => (
                       <div {...api().getDayColumnProps(column())}>
-                        <Index each={api().getEventsForColumn(column())}>
+                        <For keyed={false} each={api().getEventsForColumn(column())}>
                           {(event) => (
                             <div {...api().getEventProps({ event: event() })}>
                               <div class="scheduler-event-title">{event().title}</div>
@@ -98,10 +98,10 @@ export default function Page() {
                               </span>
                             </div>
                           )}
-                        </Index>
+                        </For>
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
               </div>
             </div>

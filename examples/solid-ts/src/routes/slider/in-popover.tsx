@@ -1,8 +1,8 @@
 import * as popover from "@zag-js/popover"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/slider.css"
 import "@styles/popover.css"
 
@@ -24,13 +24,13 @@ function PriceSlider() {
         <div {...api().getTrackProps()}>
           <div {...api().getRangeProps()} />
         </div>
-        <Index each={api().value}>
+        <For keyed={false} each={api().value}>
           {(_, index) => (
             <div {...api().getThumbProps({ index })}>
               <input {...api().getHiddenInputProps({ index })} />
             </div>
           )}
-        </Index>
+        </For>
       </div>
     </div>
   )

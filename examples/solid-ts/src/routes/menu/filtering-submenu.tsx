@@ -2,8 +2,8 @@ import { createFilter } from "@zag-js/i18n-utils"
 import * as menu from "@zag-js/menu"
 import { menuFilterData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { type Accessor, For, Show, createMemo, createSignal, createUniqueId, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { type Accessor, For, Show, createMemo, createSignal, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
@@ -32,7 +32,7 @@ function FolderSubmenu(props: FolderSubmenuProps) {
   const folders = createMemo(() => menuFilterData.folders.filter((item) => contains(item.label, query())))
   const triggerItemProps = createMemo(() => props.parent().getTriggerItemProps(api()))
 
-  onMount(() => {
+  onSettled(() => {
     props.parent().setChild(service)
     api().setParent(props.parentService)
   })

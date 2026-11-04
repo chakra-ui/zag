@@ -1,17 +1,17 @@
 import { trackFocusVisible } from "@zag-js/focus-visible"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 
 function useFocusVisible() {
   const [focusVisible, setFocusVisible] = createSignal(false)
   const [focus, setFocus] = createSignal(false)
 
-  onMount(() => {
+  onSettled(() => {
     const cleanup = trackFocusVisible({
       onChange(details) {
         setFocusVisible(details.isFocusVisible)
       },
     })
-    onCleanup(cleanup)
+    return cleanup
   })
 
   return {

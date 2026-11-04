@@ -2,8 +2,9 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { CheckSquareIcon, ChevronRightIcon, MinusSquareIcon, SquareIcon, XIcon } from "lucide-solid"
-import { createMemo, createSignal, createUniqueId, For, Index, Show, type Accessor, type JSX } from "solid-js"
-import { Dynamic, Portal } from "solid-js/web"
+import { createMemo, createSignal, createUniqueId, For, Show, type Accessor } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Dynamic, Portal } from "@solidjs/web"
 import "@styles/dialog.css"
 import "@styles/tree-view.css"
 
@@ -118,9 +119,9 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
       <Show when={nodeState().isBranch}>
         <div {...api().getNodeGroupContentProps(nodeProps)}>
           <div {...api().getIndentGuideProps(nodeProps)} />
-          <Index each={node.children}>
+          <For keyed={false} each={node.children}>
             {(childNode, index) => <TreeNode node={childNode()} indexPath={[...indexPath, index]} api={api} />}
-          </Index>
+          </For>
         </div>
       </Show>
     </div>

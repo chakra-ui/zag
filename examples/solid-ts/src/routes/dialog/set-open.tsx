@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
 import { Show, createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 
 export default function Page() {
   const [log, setLog] = createSignal<boolean[]>([])

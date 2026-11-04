@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Index, onCleanup, Show } from "solid-js"
+import { createSignal, For, Show, createTrackedEffect } from "solid-js"
 import { NumberFlow } from "~/components/number-flow"
 import "@styles/number-flow.css"
 
@@ -10,10 +10,10 @@ export default function Page() {
   const [seconds, setSeconds] = createSignal(START)
   const [running, setRunning] = createSignal(true)
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!running()) return
     const id = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000)
-    onCleanup(() => clearInterval(id))
+    return () => clearInterval(id)
   })
 
   const units = () => [
@@ -25,7 +25,7 @@ export default function Page() {
   return (
     <main class="number-flow">
       <div class="nf-countdown" role="timer">
-        <Index each={units()}>
+        <For keyed={false} each={units()}>
           {(unit, index) => (
             <div class="hstack gap-1 items-start">
               <Show when={index > 0}>
@@ -38,7 +38,7 @@ export default function Page() {
               </div>
             </div>
           )}
-        </Index>
+        </For>
       </div>
 
       <div class="hstack">

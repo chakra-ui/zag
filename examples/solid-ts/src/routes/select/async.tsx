@@ -2,8 +2,8 @@ import * as select from "@zag-js/select"
 import { selectControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon, XIcon } from "lucide-solid"
-import { createMemo, createSignal, createUniqueId, For, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createSignal, createUniqueId, For, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -19,10 +19,14 @@ export default function Page() {
 
   const [items, setItems] = createSignal<Pokemon[]>([])
 
-  onMount(async () => {
+  async function load() {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon`)
     const json = await res.json()
     setItems(json.results)
+  }
+
+  onSettled(() => {
+    load()
   })
 
   const collection = createMemo(() =>

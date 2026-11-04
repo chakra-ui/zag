@@ -1,6 +1,6 @@
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { HalfStar, Star } from "~/components/rating-icons"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -23,14 +23,14 @@ export default function Page() {
           <label {...api().getLabelProps()}>Average rating</label>
           <div class="hstack">
             <div {...api().getControlProps()}>
-              <Index each={api().items}>
+              <For keyed={false} each={api().items}>
                 {(index) => {
                   const state = createMemo(() => api().getItemState({ index: index() }))
                   return (
                     <span {...api().getItemProps({ index: index() })}>{state().half ? <HalfStar /> : <Star />}</span>
                   )
                 }}
-              </Index>
+              </For>
             </div>
             <span class="rating-summary">
               <strong>{api().value}</strong> · 128 reviews

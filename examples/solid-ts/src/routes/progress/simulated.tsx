@@ -1,6 +1,6 @@
 import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createEffect, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js"
+import { createMemo, createSignal, createUniqueId, createTrackedEffect } from "solid-js"
 import "@styles/progress.css"
 
 export default function Page() {
@@ -13,14 +13,14 @@ export default function Page() {
 
   const api = createMemo(() => progress.connect(service, normalizeProps))
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!running()) return
     const id = setInterval(() => {
       const next = Math.min(100, (service.context.get("value") ?? 0) + Math.ceil(Math.random() * 12))
       api().setValue(next)
       if (next === 100) setRunning(false)
     }, 300)
-    onCleanup(() => clearInterval(id))
+    return () => clearInterval(id)
   })
 
   return (

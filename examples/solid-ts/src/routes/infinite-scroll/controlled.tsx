@@ -35,7 +35,7 @@ export default function Page() {
       <main class="infinite-scroll">
         <h1>Infinite Scroll — Controlled loading</h1>
         <p>{loading() ? "Loading…" : `Loaded ${items().length} / ${TOTAL}`}</p>
-        <div class="scroller" tabIndex={0}>
+        <div class="scroller" tabindex={0}>
           <ul>
             <For each={items()}>{(item) => <li>{item}</li>}</For>
           </ul>

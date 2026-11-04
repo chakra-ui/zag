@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import { XIcon } from "lucide-solid"
 

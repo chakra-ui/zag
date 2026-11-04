@@ -2,8 +2,9 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon, MoreVerticalIcon } from "lucide-solid"
-import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Accessor, createMemo, createUniqueId, For, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import "@styles/tree-view.css"
 import "@styles/menu.css"
@@ -92,11 +93,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
       <Show when={nodeState().isBranch}>
         <div {...treeApi().getNodeGroupContentProps(nodeProps)}>
           <div {...treeApi().getIndentGuideProps(nodeProps)} />
-          <Index each={node.children}>
+          <For keyed={false} each={node.children}>
             {(childNode, index) => (
               <TreeNode node={childNode()} indexPath={[...indexPath, index]} treeApi={treeApi} menuApi={menuApi} />
             )}
-          </Index>
+          </For>
         </div>
       </Show>
     </div>
@@ -124,9 +125,9 @@ export default function Page() {
           <button onClick={() => treeApi().expand()}>Expand All</button>
         </div>
         <div {...treeApi().getTreeProps()}>
-          <Index each={collection.rootNode.children}>
+          <For keyed={false} each={collection.rootNode.children}>
             {(node, index) => <TreeNode node={node()} indexPath={[index]} treeApi={treeApi} menuApi={menuApi} />}
-          </Index>
+          </For>
         </div>
       </div>
 

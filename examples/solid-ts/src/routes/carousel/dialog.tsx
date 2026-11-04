@@ -2,8 +2,8 @@ import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import "@styles/carousel.css"
 import "@styles/dialog.css"
@@ -28,13 +28,13 @@ function Lightbox(props: { page: number; onPageChange: (page: number) => void })
           <ChevronLeftIcon />
         </button>
         <div {...api().getItemGroupProps()}>
-          <Index each={images}>
+          <For keyed={false} each={images}>
             {(src, index) => (
               <div {...api().getItemProps({ index })} class="carousel-photo">
                 <img src={src()} alt={`Product image ${index + 1}`} />
               </div>
             )}
-          </Index>
+          </For>
         </div>
         <button {...api().getNextTriggerProps()}>
           <ChevronRightIcon />

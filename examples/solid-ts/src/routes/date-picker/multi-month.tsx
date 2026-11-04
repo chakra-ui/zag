@@ -1,6 +1,6 @@
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/date-picker.css"
@@ -39,10 +39,10 @@ export default function Page() {
 
               <table {...api().getTableProps({ view: "month", columns: 4 })}>
                 <tbody {...api().getTableBodyProps({ view: "month" })}>
-                  <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+                  <For keyed={false} each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                     {(months) => (
                       <tr {...api().getTableRowProps()}>
-                        <Index each={months()}>
+                        <For keyed={false} each={months()}>
                           {(month) => (
                             <td {...api().getMonthTableCellProps({ ...month(), columns: 4 })}>
                               <div {...api().getMonthTableCellTriggerProps({ ...month(), columns: 4 })}>
@@ -50,10 +50,10 @@ export default function Page() {
                               </div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
             </div>

@@ -2,8 +2,9 @@ import * as datePicker from "@zag-js/date-picker"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Index, Show, createMemo, createUniqueId, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import "@styles/dialog.css"
 import "@styles/date-picker.css"
 
@@ -29,23 +30,23 @@ function DatePicker() {
           <div {...api().getContentProps()}>
             <div style={{ "margin-bottom": "20px" }}>
               <select {...api().getMonthSelectProps()}>
-                <Index each={api().getMonths()}>
+                <For keyed={false} each={api().getMonths()}>
                   {(month) => (
                     <option value={month().value} disabled={month().disabled}>
                       {month().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
 
               <select {...api().getYearSelectProps()}>
-                <Index each={api().getYears()}>
+                <For keyed={false} each={api().getYears()}>
                   {(year) => (
                     <option value={year().value} disabled={year().disabled}>
                       {year().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
             </div>
 
@@ -59,29 +60,29 @@ function DatePicker() {
               <table {...api().getTableProps({ view: "day" })}>
                 <thead {...api().getTableHeaderProps({ view: "day" })}>
                   <tr {...api().getTableRowProps({ view: "day" })}>
-                    <Index each={api().weekDays}>
+                    <For keyed={false} each={api().weekDays}>
                       {(day) => (
                         <th scope="col" aria-label={day().long}>
                           {day().narrow}
                         </th>
                       )}
-                    </Index>
+                    </For>
                   </tr>
                 </thead>
                 <tbody {...api().getTableBodyProps({ view: "day" })}>
-                  <Index each={api().weeks}>
+                  <For keyed={false} each={api().weeks}>
                     {(week) => (
                       <tr {...api().getTableRowProps({ view: "day" })}>
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(value) => (
                             <td {...api().getDayTableCellProps({ value: value() })}>
                               <div {...api().getDayTableCellTriggerProps({ value: value() })}>{value().day}</div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
             </div>
@@ -96,10 +97,10 @@ function DatePicker() {
 
                 <table {...api().getTableProps({ view: "month", columns: 4 })}>
                   <tbody {...api().getTableBodyProps({ view: "month" })}>
-                    <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+                    <For keyed={false} each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                       {(months) => (
                         <tr {...api().getTableRowProps()}>
-                          <Index each={months()}>
+                          <For keyed={false} each={months()}>
                             {(month) => (
                               <td {...api().getMonthTableCellProps({ ...month(), columns: 4 })}>
                                 <div {...api().getMonthTableCellTriggerProps({ ...month(), columns: 4 })}>
@@ -107,10 +108,10 @@ function DatePicker() {
                                 </div>
                               </td>
                             )}
-                          </Index>
+                          </For>
                         </tr>
                       )}
-                    </Index>
+                    </For>
                   </tbody>
                 </table>
               </div>
@@ -126,10 +127,10 @@ function DatePicker() {
 
                 <table {...api().getTableProps({ view: "year", columns: 4 })}>
                   <tbody {...api().getTableBodyProps()}>
-                    <Index each={api().getYearsGrid({ columns: 4 })}>
+                    <For keyed={false} each={api().getYearsGrid({ columns: 4 })}>
                       {(years) => (
                         <tr {...api().getTableRowProps({ view: "year" })}>
-                          <Index each={years()}>
+                          <For keyed={false} each={years()}>
                             {(year) => (
                               <td {...api().getYearTableCellProps({ ...year(), columns: 4 })}>
                                 <div {...api().getYearTableCellTriggerProps({ ...year(), columns: 4 })}>
@@ -137,10 +138,10 @@ function DatePicker() {
                                 </div>
                               </td>
                             )}
-                          </Index>
+                          </For>
                         </tr>
                       )}
-                    </Index>
+                    </For>
                   </tbody>
                 </table>
               </div>

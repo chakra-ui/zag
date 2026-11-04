@@ -1,4 +1,4 @@
-import { For, Index, Show, createEffect, createMemo, createSignal, on, onCleanup } from "solid-js"
+import { For, Show, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
 const DEFAULT_ITEM_COUNT = 5_000
@@ -148,9 +148,9 @@ function BenchmarkControls(props: {
           onChange={(event) => props.onItemCountChange(Number(event.currentTarget.value))}
           style={selectStyle}
         >
-          <Index each={ITEM_COUNT_OPTIONS}>
+          <For keyed={false} each={ITEM_COUNT_OPTIONS}>
             {(value) => <option value={value()}>{value().toLocaleString()}</option>}
-          </Index>
+          </For>
         </select>
       </label>
 
@@ -161,17 +161,19 @@ function BenchmarkControls(props: {
           onChange={(event) => props.onColumnCountChange(Number(event.currentTarget.value))}
           style={selectStyle}
         >
-          <Index each={COLUMN_COUNT_OPTIONS}>{(value) => <option value={value()}>{value()}</option>}</Index>
+          <For keyed={false} each={COLUMN_COUNT_OPTIONS}>
+            {(value) => <option value={value()}>{value()}</option>}
+          </For>
         </select>
       </label>
 
-      <Index each={BENCHMARK_SCROLLS}>
+      <For keyed={false} each={BENCHMARK_SCROLLS}>
         {(scrollCount) => (
           <button onClick={() => props.onRun(scrollCount())} disabled={props.isRunning} style={buttonStyle}>
             Run {scrollCount()}
           </button>
         )}
-      </Index>
+      </For>
 
       <button onClick={props.onClear} style={buttonStyle}>
         Clear metrics
@@ -198,7 +200,7 @@ function Card(props: { item: WaterfallItem; width: number }) {
       <strong style={{ "font-size": "13px" }}>{props.item.title}</strong>
       <p style={{ margin: "4px 0 8px", "font-size": "12px", color: "#64748b" }}>{props.item.subtitle}</p>
       <div style={{ display: "grid", gap: "6px" }}>
-        <Index each={Array.from({ length: props.item.lines })}>
+        <For keyed={false} each={Array.from({ length: props.item.lines })}>
           {(_, lineIndex) => (
             <div
               style={{
@@ -209,7 +211,7 @@ function Card(props: { item: WaterfallItem; width: number }) {
               }}
             />
           )}
-        </Index>
+        </For>
       </div>
     </article>
   )
@@ -264,11 +266,8 @@ function ZagWaterfall(props: {
   })
 
   createEffect(
-    on(
-      () => [props.items.length, props.columnCount] as const,
-      ([count, columnCount]) => virtualizer.updateOptions({ count, columnCount }),
-      { defer: true },
-    ),
+    () => [props.items.length, props.columnCount] as const,
+    skipFirst(([count, columnCount]) => virtualizer.updateOptions({ count, columnCount })),
   )
 
   const getRuntimeStats = (): RuntimeStats => {
@@ -299,7 +298,7 @@ function ZagWaterfall(props: {
           ref(el)
         }}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Zag waterfall performance list"
         style={{
           height: `${VIEWPORT_HEIGHT}px`,
@@ -349,7 +348,7 @@ export default function Page() {
     setRunStatus("Idle")
   }
 
-  createEffect(on([itemCount, columnCount], clearMetrics, { defer: true }))
+  createEffect(() => [itemCount(), columnCount()], skipFirst(clearMetrics))
 
   const runBenchmark = async (scrollCount: number) => {
     if (isRunning() || !runner) return
@@ -394,4 +393,15 @@ export default function Page() {
       </div>
     </main>
   )
+}
+
+function skipFirst<T>(fn: (value: T, prev?: T) => void) {
+  let first = true
+  return (value: T, prev?: T) => {
+    if (first) {
+      first = false
+      return
+    }
+    fn(value, prev)
+  }
 }

@@ -1,8 +1,9 @@
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createSignal, createUniqueId, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -42,7 +43,7 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
   return (
     <>
       <ul {...props.api.getListProps(nodeProps())}>
-        <Index each={children()}>
+        <For keyed={false} each={children()}>
           {(item, index) => {
             const itemProps = () => ({
               indexPath: [...indexPath(), index],
@@ -60,7 +61,7 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
               </li>
             )
           }}
-        </Index>
+        </For>
       </ul>
       {nodeState().highlightedChild && collection.isBranchNode(nodeState().highlightedChild!) && (
         <TreeNode

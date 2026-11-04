@@ -2,8 +2,8 @@ import * as select from "@zag-js/select"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tabs from "@zag-js/tabs"
 import { ChevronsUpDownIcon, GitBranchIcon, TagIcon } from "lucide-solid"
-import { createEffect, createMemo, createSignal, createUniqueId, For, on, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createEffect, createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/select.css"
 import "@styles/tabs.css"
 
@@ -69,15 +69,12 @@ export default function Page() {
   const tabApi = createMemo(() => tabs.connect(tabService, normalizeProps))
 
   createEffect(
-    on(
-      collection,
-      (collection) => {
-        if (!selectApi().open) return
-        selectApi().setHighlightedValue(collection.firstValue)
-        listRef?.focus()
-      },
-      { defer: true },
-    ),
+    collection,
+    skipFirst((collection) => {
+      if (!selectApi().open) return
+      selectApi().setHighlightedValue(collection.firstValue)
+      listRef?.focus()
+    }),
   )
 
   const listProps = () =>
@@ -157,4 +154,15 @@ export default function Page() {
       </div>
     </main>
   )
+}
+
+function skipFirst<T>(fn: (value: T, prev?: T) => void) {
+  let first = true
+  return (value: T, prev?: T) => {
+    if (first) {
+      first = false
+      return
+    }
+    fn(value, prev)
+  }
 }

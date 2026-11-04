@@ -3,7 +3,7 @@ import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeft, ChevronRight } from "lucide-solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -25,14 +25,14 @@ function MiniMonth(props: { api: scheduler.Api; month: number; weekDays: schedul
       <h3 class="scheduler-mini-month-title">{props.api.getMonthName(reference())}</h3>
       <div {...props.api.getMonthGridProps({ date: reference() })}>
         <div {...props.api.getWeekdayHeaderRowProps()} class="scheduler-mini-weekdays">
-          <Index each={props.weekDays}>
+          <For keyed={false} each={props.weekDays}>
             {(day) => <div {...props.api.getWeekdayHeaderCellProps({ day: day() })}>{day().narrow}</div>}
-          </Index>
+          </For>
         </div>
-        <Index each={weeks()}>
+        <For keyed={false} each={weeks()}>
           {(week) => (
             <div {...props.api.getWeekRowProps()} class="scheduler-mini-week">
-              <Index each={week()}>
+              <For keyed={false} each={week()}>
                 {(date) => {
                   const dayEvents = createMemo(() => props.api.getEventsForDay(date()))
                   return (
@@ -41,10 +41,10 @@ function MiniMonth(props: { api: scheduler.Api; month: number; weekDays: schedul
                         {...props.api.getDayCellTriggerProps({ date: date(), referenceDate: reference() })}
                         class="scheduler-mini-day"
                       >
-                        <span aria-hidden>{date().day}</span>
+                        <span aria-hidden="true">{date().day}</span>
                         <Show when={dayEvents().length > 0}>
                           <span
-                            aria-hidden
+                            aria-hidden="true"
                             class="scheduler-mini-dot"
                             style={{ background: dayEvents()[0].color ?? "#3b82f6" }}
                           />
@@ -53,10 +53,10 @@ function MiniMonth(props: { api: scheduler.Api; month: number; weekDays: schedul
                     </div>
                   )
                 }}
-              </Index>
+              </For>
             </div>
           )}
-        </Index>
+        </For>
       </div>
     </section>
   )
@@ -96,9 +96,9 @@ export default function Page() {
           </div>
 
           <div class="scheduler-year-grid">
-            <Index each={api().getMonthNames()}>
+            <For keyed={false} each={api().getMonthNames()}>
               {(_, i) => <MiniMonth api={api()} month={i + 1} weekDays={weekDays()} />}
-            </Index>
+            </For>
           </div>
         </div>
       </main>

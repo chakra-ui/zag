@@ -5,8 +5,8 @@ import { createFuzzySearch } from "@zag-js/fuzzy"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { commandData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createEffect, createMemo, createSignal, createUniqueId, on, onCleanup, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createEffect, createMemo, createSignal, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { Highlight } from "~/components/highlight"
 import "@styles/cmdk.css"
 
@@ -67,14 +67,11 @@ function Command(props: CommandProps) {
 
   // highlight the item we came back from once its page is showing
   createEffect(
-    on(
-      () => props.pages,
-      (pages) => {
-        const { highlightedValue } = pages.restore
-        if (highlightedValue && collection().has(highlightedValue)) api().setHighlightedValue(highlightedValue)
-      },
-      { defer: true },
-    ),
+    () => props.pages,
+    skipFirst((pages) => {
+      const { highlightedValue } = pages.restore
+      if (highlightedValue && collection().has(highlightedValue)) api().setHighlightedValue(highlightedValue)
+    }),
   )
 
   const inputProps = createMemo(() => api().getInputProps())
@@ -158,11 +155,11 @@ export default function Page() {
   })
   const dialogApi = createMemo(() => dialog.connect(service, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     const store = createHotkeyStore()
     store.register({ id: "cmdk", hotkey: "/", action: () => dialogApi().setOpen(true) })
     store.init({ target: document })
-    onCleanup(() => store.destroy())
+    return () => store.destroy()
   })
 
   return (
@@ -199,4 +196,15 @@ export default function Page() {
       </Show>
     </main>
   )
+}
+
+function skipFirst<T>(fn: (value: T, prev?: T) => void) {
+  let first = true
+  return (value: T, prev?: T) => {
+    if (first) {
+      first = false
+      return
+    }
+    fn(value, prev)
+  }
 }

@@ -1,6 +1,6 @@
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { Star } from "~/components/rating-icons"
 import "@styles/rating-group.css"
 
@@ -22,13 +22,13 @@ function SizedRating(props: { label: string; size: string }) {
     <div {...api().getRootProps()} style={{ "--rating-size": props.size }}>
       <label {...api().getLabelProps()}>{props.label}</label>
       <div {...api().getControlProps()}>
-        <Index each={api().items}>
+        <For keyed={false} each={api().items}>
           {(index) => (
             <span {...api().getItemProps({ index: index() })}>
               <Star />
             </span>
           )}
-        </Index>
+        </For>
       </div>
       <input {...api().getHiddenInputProps()} />
     </div>

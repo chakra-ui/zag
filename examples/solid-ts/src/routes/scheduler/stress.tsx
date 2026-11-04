@@ -2,7 +2,7 @@ import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeft, ChevronRight } from "lucide-solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -90,40 +90,42 @@ export default function Page() {
               }}
               style={{ "margin-left": "8px" }}
             >
-              <Index each={[100, 500, 1000, 2500, 5000]}>{(n) => <option value={n()}>{n()} events</option>}</Index>
+              <For keyed={false} each={[100, 500, 1000, 2500, 5000]}>
+                {(n) => <option value={n()}>{n()} events</option>}
+              </For>
             </select>
           </div>
 
           <div class="scheduler-time-grid-wrapper">
             <div {...api().getColumnHeadersProps()}>
               <div class="scheduler-gutter-header" />
-              <Index each={api().visibleDays}>
+              <For keyed={false} each={api().visibleDays}>
                 {(date) => (
                   <div {...api().getColumnHeaderProps({ date: date() })}>
                     <span class="scheduler-header-day-label">{api().formatWeekDay(date())}</span>
                     <span class="scheduler-header-day-num">{date().day}</span>
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
 
-            <div class="scheduler-time-grid-scroll" tabIndex={0} role="group" aria-label="Time grid">
+            <div class="scheduler-time-grid-scroll" tabindex={0} role="group" aria-label="Time grid">
               <div {...api().getGridProps()}>
                 <div {...api().getGridRowProps()}>
                   <div {...api().getTimeGutterProps()}>
-                    <Index each={api().hourRange.hours}>
+                    <For keyed={false} each={api().hourRange.hours}>
                       {(hour) => <div {...api().getHourLabelProps({ hour: hour() })}>{hour().label}</div>}
-                    </Index>
+                    </For>
                   </div>
 
-                  <Index each={api().visibleDays}>
+                  <For keyed={false} each={api().visibleDays}>
                     {(date) => (
                       <div {...api().getDayColumnProps({ date: date() })}>
-                        <Index each={api().hourRange.hours}>
+                        <For keyed={false} each={api().hourRange.hours}>
                           {(hour) => <div {...api().getHourLineProps({ hour: hour() })} />}
-                        </Index>
+                        </For>
                         <div {...api().getCurrentTimeIndicatorProps({ date: date() })} />
-                        <Index each={api().getEventsForDay(date())}>
+                        <For keyed={false} each={api().getEventsForDay(date())}>
                           {(event) => (
                             <div {...api().getEventProps({ event: event() })}>
                               <div class="scheduler-event-title">{event().title}</div>
@@ -132,10 +134,10 @@ export default function Page() {
                               </div>
                             </div>
                           )}
-                        </Index>
+                        </For>
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
               </div>
             </div>

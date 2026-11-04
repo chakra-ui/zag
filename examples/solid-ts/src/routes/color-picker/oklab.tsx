@@ -2,7 +2,7 @@ import * as colorPicker from "@zag-js/color-picker"
 import { colorPickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -103,7 +103,7 @@ export default function Page() {
                   <p data-testid="value-text">{api().valueAsString}</p>
 
                   <div {...api().getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
-                    <Index each={presets}>
+                    <For keyed={false} each={presets}>
                       {(preset) => (
                         <button {...api().getSwatchTriggerProps({ value: preset() })}>
                           <div style={{ position: "relative" }}>
@@ -112,7 +112,7 @@ export default function Page() {
                           </div>
                         </button>
                       )}
-                    </Index>
+                    </For>
                   </div>
                 </div>
               </div>

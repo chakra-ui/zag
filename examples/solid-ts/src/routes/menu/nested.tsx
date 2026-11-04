@@ -1,8 +1,8 @@
 import * as menu from "@zag-js/menu"
 import { menuData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, createMemo, createUniqueId, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, createMemo, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
@@ -17,12 +17,12 @@ export default function Page() {
   const sub2Service = useMachine(menu.machine, { id: createUniqueId() })
   const sub2 = createMemo(() => menu.connect(sub2Service, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     root().setChild(subService)
     sub().setParent(service)
   })
 
-  onMount(() => {
+  onSettled(() => {
     sub().setChild(sub2Service)
     sub2().setParent(subService)
   })

@@ -1,4 +1,4 @@
-import { createMemo, createSignal, onMount, type Accessor } from "solid-js"
+import { createMemo, createSignal, onSettled, type Accessor } from "solid-js"
 
 const getStorage = () => (typeof window !== "undefined" ? window.localStorage : null)
 
@@ -12,7 +12,7 @@ export function usePersistentMapState<T>(props: UsePersistentMapStateProps<T>) {
   const [map, setMap] = createSignal<Record<string, T>>({})
   const [hydrated, setHydrated] = createSignal(false)
 
-  onMount(() => {
+  onSettled(() => {
     try {
       const raw = getStorage()?.getItem(props.storageKey)
       if (raw != null) setMap(JSON.parse(raw))

@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import "@styles/menu.css"
 
 const Menu = () => {
@@ -46,7 +46,7 @@ const HorizontalScrollBox = () => {
           "background-color": "#f0f0f0",
         }}
       >
-        <Index each={[...Array(6).keys()]}>
+        <For keyed={false} each={[...Array(6).keys()]}>
           {(x) => (
             <div
               style={{
@@ -59,7 +59,7 @@ const HorizontalScrollBox = () => {
               Item {x()}
             </div>
           )}
-        </Index>
+        </For>
         <div>
           <Menu />
         </div>
@@ -83,7 +83,9 @@ const VerticalScrollBox = () => {
           border: "1px solid black",
         }}
       >
-        <Index each={[...Array(12).keys()]}>{() => <Menu />}</Index>
+        <For keyed={false} each={[...Array(12).keys()]}>
+          {() => <Menu />}
+        </For>
       </div>
     </div>
   )

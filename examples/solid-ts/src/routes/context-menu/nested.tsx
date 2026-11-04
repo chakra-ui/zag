@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Portal } from "solid-js/web"
-import { createMemo, createUniqueId, onMount } from "solid-js"
+import { Portal } from "@solidjs/web"
+import { createMemo, createUniqueId, onSettled } from "solid-js"
 import "@styles/menu.css"
 
 export default function Page() {
@@ -11,7 +11,7 @@ export default function Page() {
   const subService = useMachine(menu.machine, { id: createUniqueId() })
   const sub = createMemo(() => menu.connect(subService, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     root().setChild(subService)
     sub().setParent(service)
   })

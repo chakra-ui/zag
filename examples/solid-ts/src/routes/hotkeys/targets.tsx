@@ -1,5 +1,5 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 
 const store = createHotkeyStore()
 
@@ -22,7 +22,7 @@ export default function HotkeyTargetsPage() {
   const [pressedKeys, setPressedKeys] = createSignal("")
   const [shiftSeen, setShiftSeen] = createSignal(false)
 
-  onMount(() => {
+  onSettled(() => {
     const host = hostRef!
     if (!host.shadowRoot) {
       const shadow = host.attachShadow({ mode: "open" })
@@ -65,10 +65,10 @@ export default function HotkeyTargetsPage() {
 
     store.init({ target: document })
 
-    onCleanup(() => {
+    return () => {
       unsub()
       store.destroy()
-    })
+    }
   })
 
   return (
@@ -77,7 +77,7 @@ export default function HotkeyTargetsPage() {
 
       <button data-testid="outside">outside button</button>
 
-      <div ref={gridRef} tabIndex={0} data-testid="grid" style={{ ...boxStyle, "margin-top": "1rem" }}>
+      <div ref={gridRef} tabindex={0} data-testid="grid" style={{ ...boxStyle, "margin-top": "1rem" }}>
         grid — focus me, then press <code>ctrl+k</code> or <code>ArrowDown</code>
       </div>
 

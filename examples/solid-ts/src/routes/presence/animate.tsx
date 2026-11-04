@@ -1,6 +1,7 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, Show, type JSX } from "solid-js"
+import { createMemo, createSignal, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import "@styles/presence.css"
 
 interface PresenceChildProps {

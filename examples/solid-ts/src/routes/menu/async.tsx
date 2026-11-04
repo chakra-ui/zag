@@ -2,7 +2,7 @@ import * as asyncList from "@zag-js/async-list"
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { LoadMore } from "../../components/load-more"
 import "@styles/menu.css"
 

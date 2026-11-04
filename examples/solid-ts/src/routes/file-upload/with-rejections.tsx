@@ -1,7 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -28,7 +28,7 @@ export default function Page() {
 
           <ul {...api().getItemGroupProps()}>
             <li>Accepted files</li>
-            <Index each={api().acceptedFiles}>
+            <For keyed={false} each={api().acceptedFiles}>
               {(file) => (
                 <li class="file" {...api().getItemProps({ file: file() })}>
                   <div>
@@ -39,17 +39,19 @@ export default function Page() {
                   <button {...api().getItemDeleteTriggerProps({ file: file() })}>X</button>
                 </li>
               )}
-            </Index>
+            </For>
           </ul>
 
           <ul {...api().getItemGroupProps({ type: "rejected" })}>
             <li>Rejected files</li>
-            <Index each={api().rejectedFiles}>
+            <For keyed={false} each={api().rejectedFiles}>
               {(item) => (
                 <li class="file" {...api().getItemProps({ file: item().file, type: "rejected" })}>
                   <div>
                     <b>{item().file.name}</b>
-                    <Index each={item().errors}>{(error) => <span>{error()}</span>}</Index>
+                    <For keyed={false} each={item().errors}>
+                      {(error) => <span>{error()}</span>}
+                    </For>
                   </div>
                   <div {...api().getItemSizeTextProps({ file: item().file, type: "rejected" })}>
                     {api().getFileSize(item().file)}
@@ -58,7 +60,7 @@ export default function Page() {
                   <button {...api().getItemDeleteTriggerProps({ file: item().file, type: "rejected" })}>X</button>
                 </li>
               )}
-            </Index>
+            </For>
           </ul>
         </div>
       </main>

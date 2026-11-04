@@ -2,7 +2,7 @@ import { getLocalTimeZone } from "@internationalized/date"
 import * as dateInput from "@zag-js/date-input"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/date-picker.css"
@@ -45,11 +45,11 @@ export default function Page() {
             <label {...dateInputApi().getLabelProps()}>Date</label>
             <div {...dateInputApi().getControlProps()}>
               <div {...dateInputApi().getSegmentGroupProps()}>
-                <Index each={dateInputApi().getSegments()}>
+                <For keyed={false} each={dateInputApi().getSegments()}>
                   {(segment) => (
                     <span {...dateInputApi().getSegmentProps({ segment: segment() })}>{segment().text}</span>
                   )}
-                </Index>
+                </For>
               </div>
             </div>
           </div>
@@ -62,23 +62,23 @@ export default function Page() {
           <div {...datePickerApi().getContentProps()}>
             <div style={{ "margin-bottom": "20px" }}>
               <select {...datePickerApi().getMonthSelectProps()}>
-                <Index each={datePickerApi().getMonths()}>
+                <For keyed={false} each={datePickerApi().getMonths()}>
                   {(month) => (
                     <option value={month().value} disabled={month().disabled}>
                       {month().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
 
               <select {...datePickerApi().getYearSelectProps()}>
-                <Index each={datePickerApi().getYears()}>
+                <For keyed={false} each={datePickerApi().getYears()}>
                   {(year) => (
                     <option value={year().value} disabled={year().disabled}>
                       {year().label}
                     </option>
                   )}
-                </Index>
+                </For>
               </select>
             </div>
 
@@ -92,20 +92,20 @@ export default function Page() {
               <table {...datePickerApi().getTableProps({ view: "day" })}>
                 <thead {...datePickerApi().getTableHeaderProps({ view: "day" })}>
                   <tr {...datePickerApi().getTableRowProps({ view: "day" })}>
-                    <Index each={datePickerApi().weekDays}>
+                    <For keyed={false} each={datePickerApi().weekDays}>
                       {(day) => (
                         <th scope="col" aria-label={day().long}>
                           {day().narrow}
                         </th>
                       )}
-                    </Index>
+                    </For>
                   </tr>
                 </thead>
                 <tbody {...datePickerApi().getTableBodyProps({ view: "day" })}>
-                  <Index each={datePickerApi().weeks}>
+                  <For keyed={false} each={datePickerApi().weeks}>
                     {(week) => (
                       <tr {...datePickerApi().getTableRowProps({ view: "day" })}>
-                        <Index each={week()}>
+                        <For keyed={false} each={week()}>
                           {(value) => (
                             <td {...datePickerApi().getDayTableCellProps({ value: value() })}>
                               <div {...datePickerApi().getDayTableCellTriggerProps({ value: value() })}>
@@ -113,10 +113,10 @@ export default function Page() {
                               </div>
                             </td>
                           )}
-                        </Index>
+                        </For>
                       </tr>
                     )}
-                  </Index>
+                  </For>
                 </tbody>
               </table>
             </div>

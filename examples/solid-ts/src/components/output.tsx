@@ -1,4 +1,5 @@
-import { splitProps, type JSX } from "solid-js"
+import { omit } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 // Short values stay on one line
 function format(value: unknown) {
@@ -9,11 +10,11 @@ function format(value: unknown) {
 
 /** Labeled readout of example state; non-string values render as JSON */
 export function Output(props: { label: string; value: unknown } & JSX.HTMLAttributes<HTMLPreElement>) {
-  const [local, rest] = splitProps(props, ["label", "value"])
+  const rest = omit(props, "label", "value")
   return (
     <div class="output">
-      <span class="output-label">{local.label}</span>
-      <pre {...rest}>{format(local.value)}</pre>
+      <span class="output-label">{props.label}</span>
+      <pre {...rest}>{format(props.value)}</pre>
     </div>
   )
 }

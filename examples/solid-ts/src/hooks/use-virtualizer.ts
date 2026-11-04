@@ -9,7 +9,7 @@ import {
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { createEffect, onCleanup, onMount, untrack, type Accessor } from "solid-js"
+import { onCleanup, onSettled, untrack, type Accessor, createTrackedEffect } from "solid-js"
 
 interface VirtualizerLike<O> {
   subscribe: (listener: () => void) => () => void
@@ -40,7 +40,7 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
   // Syncs changed options whenever the accessor re-runs
-  createEffect(() => {
+  createTrackedEffect(() => {
     const next = read()
     const changed: Partial<O> = {}
     let dirty = false
@@ -58,7 +58,7 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   let scrollElement: HTMLElement | null = null
   let mounted = false
 
-  onMount(() => {
+  onSettled(() => {
     mounted = true
     if (scrollElement) inner.init(scrollElement)
   })

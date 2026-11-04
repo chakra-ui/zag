@@ -3,7 +3,7 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { XIcon } from "lucide-solid"
 import { Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/tooltip.css"
 import "@styles/dialog.css"
 

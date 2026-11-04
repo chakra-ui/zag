@@ -1,8 +1,8 @@
 import { Key, normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { XIcon } from "lucide-solid"
-import { type Accessor, createMemo, createSignal, createUniqueId, onMount, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { type Accessor, createMemo, createSignal, createUniqueId, onSettled, Show } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/toast.css"
 
 interface ConditionalToastProps {
@@ -46,7 +46,9 @@ export default function ConditionalContent() {
   const service = useMachine(toast.group.machine, { id: createUniqueId(), store })
   const api = createMemo(() => toast.group.connect(service, normalizeProps))
 
-  onMount(() => setReady(true))
+  onSettled(() => {
+    setReady(true)
+  })
 
   return (
     <main>

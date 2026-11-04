@@ -37,7 +37,7 @@ export default function Page() {
         <Presence class={styles.popup} {...api().getContentProps({ draggable: false })}>
           <nav class={styles.panel}>
             <div class={styles.panelHeader}>
-              <div aria-hidden class={styles.headerSpacer} />
+              <div aria-hidden="true" class={styles.headerSpacer} />
               <div class={styles.handle} {...api().getGrabberProps()}>
                 <div class={styles.handleIndicator} {...api().getGrabberIndicatorProps()} />
               </div>

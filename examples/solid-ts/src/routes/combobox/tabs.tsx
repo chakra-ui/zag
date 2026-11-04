@@ -2,7 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tabs from "@zag-js/tabs"
-import { For, Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/combobox.css"
 import "@styles/tabs.css"
 
@@ -159,13 +159,13 @@ export default function Page() {
                 <div {...tabApi().getContentProps({ value: category })}>
                   <Show when={selectedTab() === category}>
                     <div {...comboboxApi().getListProps()}>
-                      <Index each={items()}>
+                      <For keyed={false} each={items()}>
                         {(item) => (
                           <div {...comboboxApi().getItemProps({ item: item(), persistFocus: true })}>
                             {item().label}
                           </div>
                         )}
-                      </Index>
+                      </For>
                     </div>
                   </Show>
                 </div>

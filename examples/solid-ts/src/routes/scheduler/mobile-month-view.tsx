@@ -3,7 +3,7 @@ import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeft, ChevronRight } from "lucide-solid"
-import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -45,12 +45,14 @@ export default function Page() {
 
           <div class="scheduler-mobile-month">
             <div class="scheduler-mobile-weekdays">
-              <Index each={api().getWeekDays()}>{(day) => <div>{day().short}</div>}</Index>
+              <For keyed={false} each={api().getWeekDays()}>
+                {(day) => <div>{day().short}</div>}
+              </For>
             </div>
-            <Index each={weeks()}>
+            <For keyed={false} each={weeks()}>
               {(week) => (
                 <div class="scheduler-mobile-week">
-                  <Index each={week()}>
+                  <For keyed={false} each={week()}>
                     {(date) => {
                       const isSelected = () => date().compare(selectedDate()) === 0
                       const dayEvents = createMemo(() => api().getEventsForDay(date()))
@@ -65,19 +67,19 @@ export default function Page() {
                         >
                           <span class="scheduler-mobile-day-num">{date().day}</span>
                           <span class="scheduler-mobile-dots">
-                            <Index each={dayEvents().slice(0, 3)}>
+                            <For keyed={false} each={dayEvents().slice(0, 3)}>
                               {(e) => (
                                 <span class="scheduler-mobile-dot" style={{ background: e().color ?? "#3b82f6" }} />
                               )}
-                            </Index>
+                            </For>
                           </span>
                         </button>
                       )
                     }}
-                  </Index>
+                  </For>
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
           <div class="scheduler-mobile-agenda">
@@ -88,14 +90,14 @@ export default function Page() {
               when={selectedDayEvents().length > 0}
               fallback={<div class="scheduler-mobile-agenda-empty">No events</div>}
             >
-              <Index each={selectedDayEvents()}>
+              <For keyed={false} each={selectedDayEvents()}>
                 {(event) => (
                   <div {...api().getEventProps({ event: event(), layout: "list" })}>
                     <div class="scheduler-mobile-agenda-time">{api().formatTimeRange(event().start, event().end)}</div>
                     <div class="scheduler-event-title">{event().title}</div>
                   </div>
                 )}
-              </Index>
+              </For>
             </Show>
           </div>
         </div>

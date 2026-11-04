@@ -3,8 +3,8 @@ import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createEffect, createMemo, createSignal, createUniqueId, on } from "solid-js"
-import type { JSX } from "solid-js"
+import { For, createEffect, createMemo, createSignal, createUniqueId } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/combobox.css"
@@ -26,11 +26,9 @@ export default function Page() {
 
   let ref: HTMLTextAreaElement | undefined
 
-  createEffect(
-    on(searchValue, (searchValue) => {
-      setOptions(comboboxData.filter((item) => contains(item.label, searchValue)))
-    }),
-  )
+  createEffect(searchValue, (searchValue) => {
+    setOptions(comboboxData.filter((item) => contains(item.label, searchValue)))
+  })
 
   const id = createUniqueId()
 
@@ -111,9 +109,9 @@ export default function Page() {
         <div {...api().getPositionerProps()}>
           <div {...api().getContentProps()}>
             <div {...api().getListProps()}>
-              <Index each={options()}>
+              <For keyed={false} each={options()}>
                 {(item) => <div {...api().getItemProps({ item: item() })}>{item().label}</div>}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

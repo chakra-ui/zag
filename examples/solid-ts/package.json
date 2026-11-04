@@ -3,16 +3,14 @@
   "type": "module",
   "private": "true",
   "scripts": {
-    "dev": "vinxi dev",
-    "build": "vinxi build",
-    "start": "vinxi start",
-    "version": "vinxi version"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
-    "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.16.1",
-    "@solidjs/start": "1.3.2",
+    "@solidjs/router": "2.0.0-next.44",
+    "@solidjs/web": "2.0.0-rc.19",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -47,8 +45,8 @@
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-trap": "workspace:*",
-    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
+    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/gridlist": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
     "@zag-js/hotkeys": "workspace:*",
@@ -107,12 +105,13 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "1.7.0",
-    "solid-js": "1.9.17",
-    "vinxi": "0.5.11"
+    "lucide": "1.7.0",
+    "solid-js": "2.0.0-rc.19"
   },
   "devDependencies": {
-    "@types/form-serialize": "0.7.4"
+    "@solidjs/vite-plugin": "3.0.0-next.51",
+    "@types/form-serialize": "0.7.4",
+    "vite": "8.3.5"
   },
   "engines": {
     "node": ">=18"

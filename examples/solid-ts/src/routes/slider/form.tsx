@@ -1,6 +1,6 @@
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Output } from "~/components/output"
 import "@styles/slider.css"
 
@@ -46,13 +46,13 @@ export default function Page() {
             <div {...api().getTrackProps()}>
               <div {...api().getRangeProps()} />
             </div>
-            <Index each={api().value}>
+            <For keyed={false} each={api().value}>
               {(_, index) => (
                 <div {...api().getThumbProps({ index })}>
                   <input {...api().getHiddenInputProps({ index })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
         </div>
         <Show when={invalid()}>

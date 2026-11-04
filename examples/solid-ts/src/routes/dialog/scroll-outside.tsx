@@ -1,7 +1,7 @@
 import * as dialog from "@zag-js/dialog"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { XIcon } from "lucide-solid"
 
 export default function Page() {

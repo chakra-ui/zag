@@ -3,7 +3,7 @@ import * as select from "@zag-js/select"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon, XIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { LoadMore } from "~/components/load-more"
 import "@styles/select.css"
 

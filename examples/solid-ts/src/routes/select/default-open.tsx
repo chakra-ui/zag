@@ -3,8 +3,8 @@ import { selectControls, selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { ChevronsUpDownIcon, XIcon } from "lucide-solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -54,7 +54,9 @@ export default function Page() {
           >
             {/* Hidden select */}
             <select {...api().getHiddenSelectProps()}>
-              <Index each={selectData}>{(option) => <option value={option().value}>{option().label}</option>}</Index>
+              <For keyed={false} each={selectData}>
+                {(option) => <option value={option().value}>{option().label}</option>}
+              </For>
             </select>
           </form>
 
@@ -63,14 +65,14 @@ export default function Page() {
             <div {...api().getPositionerProps()}>
               <div {...api().getContentProps()}>
                 <div {...api().getListProps()}>
-                  <Index each={selectData}>
+                  <For keyed={false} each={selectData}>
                     {(item) => (
                       <div {...api().getItemProps({ item: item() })}>
                         <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
                         <span {...api().getItemIndicatorProps({ item: item() })}>✓</span>
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
               </div>
             </div>

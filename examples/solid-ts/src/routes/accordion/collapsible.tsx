@@ -3,7 +3,8 @@ import { accordionFaqData } from "@zag-js/shared"
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ArrowRight } from "lucide-solid"
-import { For, type JSX, createMemo, createUniqueId, splitProps } from "solid-js"
+import { For, createMemo, createUniqueId, omit } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import "@styles/accordion.css"
 import "@styles/collapsible.css"
 
@@ -14,23 +15,23 @@ interface ItemProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 function Collapsible(props: ItemProps) {
-  const [local, contentProps] = splitProps(props, ["open", "onOpenChange", "children"])
+  const contentProps = omit(props, "open", "onOpenChange", "children")
   const id = createUniqueId()
 
   const service = useMachine(collapsible.machine, () => ({
     id,
-    ids: { content: contentProps.id },
-    open: local.open,
+    ids: { content: contentProps.id as string | undefined },
+    open: props.open,
     // The accordion owns `open`, so route find-in-page reveals back to it
     hiddenUntilFound: true,
-    onOpenChange: (details) => local.onOpenChange(details.open),
+    onOpenChange: (details) => props.onOpenChange(details.open),
   }))
 
   const api = createMemo(() => collapsible.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>
-      <div {...api().getContentProps()}>{local.children}</div>
+      <div {...api().getContentProps()}>{props.children}</div>
     </div>
   )
 }

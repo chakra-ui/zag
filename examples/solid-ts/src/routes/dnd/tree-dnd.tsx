@@ -2,7 +2,8 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import * as dnd from "@zag-js/dnd"
 import { ChevronRightIcon, FileIcon, FolderIcon, GripVertical } from "lucide-solid"
-import { Accessor, createMemo, createSignal, createUniqueId, Index, JSX, Show } from "solid-js"
+import { Accessor, createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import styles from "@styles/dnd-tree.module.css"
@@ -106,11 +107,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
       <Show when={nodeState().isBranch}>
         <div {...treeApi().getNodeGroupContentProps(nodeProps())}>
           <div {...treeApi().getIndentGuideProps(nodeProps())} />
-          <Index each={props.node.children}>
+          <For keyed={false} each={props.node.children}>
             {(childNode, index) => (
               <TreeNode node={childNode()} indexPath={[...props.indexPath, index]} treeApi={treeApi} dndApi={dndApi} />
             )}
-          </Index>
+          </For>
         </div>
       </Show>
     </div>
@@ -179,9 +180,9 @@ export default function Page() {
           <h3 {...treeApi().getLabelProps()}>File Explorer (Drag & Drop)</h3>
           <div {...dndApi().getRootProps()} class={styles.root}>
             <div {...treeApi().getTreeProps()}>
-              <Index each={collection().rootNode.children}>
+              <For keyed={false} each={collection().rootNode.children}>
                 {(node, index) => <TreeNode node={node()} indexPath={[index]} treeApi={treeApi} dndApi={dndApi} />}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

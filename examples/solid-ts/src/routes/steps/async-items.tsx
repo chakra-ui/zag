@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as steps from "@zag-js/steps"
-import { createMemo, createSignal, createUniqueId, Index, onCleanup, onMount, Show } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/steps.css"
@@ -15,9 +15,9 @@ const remoteItems: steps.StepItem[] = [
 export default function Page() {
   const [items, setItems] = createSignal<steps.StepItem[]>([])
 
-  onMount(() => {
+  onSettled(() => {
     const timer = setTimeout(() => setItems(remoteItems), 1500)
-    onCleanup(() => clearTimeout(timer))
+    return () => clearTimeout(timer)
   })
 
   const service = useMachine(steps.machine, {
@@ -38,7 +38,7 @@ export default function Page() {
           </Show>
 
           <div {...api().getListProps()}>
-            <Index each={items()}>
+            <For keyed={false} each={items()}>
               {(item, index) => (
                 <div {...api().getItemProps({ value: item().value })}>
                   <button {...api().getTriggerProps({ value: item().value })}>
@@ -48,12 +48,12 @@ export default function Page() {
                   <div {...api().getSeparatorProps({ value: item().value })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
-          <Index each={items()}>
+          <For keyed={false} each={items()}>
             {(item) => <div {...api().getContentProps({ value: item().value })}>{item().title} content</div>}
-          </Index>
+          </For>
 
           <div {...api().getContentProps({ value: steps.COMPLETE })}>All set 🎉</div>
 

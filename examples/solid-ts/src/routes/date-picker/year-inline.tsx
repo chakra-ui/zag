@@ -1,7 +1,7 @@
 import { parseDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 
 // an inline year view that renders beyond the decade in view, with min 2015 and max 2035
 export default function Page() {
@@ -29,19 +29,19 @@ export default function Page() {
       <div {...api().getContentProps()}>
         <table {...api().getTableProps({ view: "year", columns: 5 })}>
           <tbody {...api().getTableBodyProps()}>
-            <Index each={rows}>
+            <For keyed={false} each={rows}>
               {(row) => (
                 <tr {...api().getTableRowProps({ view: "year" })}>
-                  <Index each={years().slice(row() * 5, row() * 5 + 5)}>
+                  <For keyed={false} each={years().slice(row() * 5, row() * 5 + 5)}>
                     {(year) => (
                       <td {...api().getYearTableCellProps({ ...year(), columns: 5 })}>
                         <div {...api().getYearTableCellTriggerProps({ ...year(), columns: 5 })}>{year().label}</div>
                       </td>
                     )}
-                  </Index>
+                  </For>
                 </tr>
               )}
-            </Index>
+            </For>
           </tbody>
         </table>
       </div>

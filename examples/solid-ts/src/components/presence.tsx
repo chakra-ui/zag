@@ -1,6 +1,7 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { JSX, createMemo, createSignal, mergeProps, onMount, splitProps } from "solid-js"
+import { createMemo, createSignal, merge, onSettled, omit } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 interface PresenceProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
@@ -18,14 +19,8 @@ interface PresenceProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Presence(props: PresenceProps) {
-  const [localProps, restProps] = splitProps(props, [
-    "hidden",
-    "ref",
-    "lazyMount",
-    "skipAnimationOnMount",
-    "unmountOnExit",
-  ])
-  const present = createMemo(() => !localProps.hidden)
+  const restProps = omit(props, "hidden", "ref", "lazyMount", "skipAnimationOnMount", "unmountOnExit")
+  const present = createMemo(() => !props.hidden)
 
   const service = useMachine(
     presence.machine,
@@ -41,7 +36,7 @@ export function Presence(props: PresenceProps) {
 
   let ref: HTMLDivElement | undefined
 
-  onMount(() => {
+  onSettled(() => {
     if (ref) {
       api().setNode(ref)
     }
@@ -49,25 +44,25 @@ export function Presence(props: PresenceProps) {
 
   const mergedRef = (el: HTMLDivElement) => {
     ref = el
-    if (typeof localProps.ref === "function") {
-      localProps.ref(el)
-    } else if (localProps.ref) {
-      localProps.ref = el
+    if (typeof props.ref === "function") {
+      props.ref(el)
+    } else if (props.ref) {
+      props.ref = el
     }
   }
 
   const unmounted = createMemo(() => {
-    if (!api().present && !wasEverPresent() && localProps.lazyMount) return true
-    if (localProps.unmountOnExit && !api().present && wasEverPresent()) return true
+    if (!api().present && !wasEverPresent() && props.lazyMount) return true
+    if (props.unmountOnExit && !api().present && wasEverPresent()) return true
     return false
   })
 
   const mergedProps = createMemo(() =>
-    mergeProps(
+    merge(
       {
         ref: mergedRef,
         "data-scope": "presence",
-        "data-state": api().skip && localProps.skipAnimationOnMount ? undefined : present() ? "open" : "closed",
+        "data-state": api().skip && props.skipAnimationOnMount ? undefined : present() ? "open" : "closed",
         hidden: !api().present,
       },
       restProps,

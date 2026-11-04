@@ -51,7 +51,7 @@ export default function Page() {
           </span>
         </div>
 
-        <div class="async-list-panel async-list-scroller" tabIndex={0} aria-label="People">
+        <div class="async-list-panel async-list-scroller" tabindex={0} aria-label="People">
           <Switch>
             <Match when={list().error}>
               <div role="alert" class="async-list-status" data-type="error">
@@ -68,7 +68,7 @@ export default function Page() {
               <div class="async-list-status">No people found</div>
             </Match>
             <Match when={true}>
-              <ul class="async-list-items" aria-busy={searching()}>
+              <ul class="async-list-items" aria-busy={searching() ? "true" : "false"}>
                 <For each={list().items}>
                   {(person) => (
                     <li>

@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { XIcon } from "lucide-solid"
-import { createMemo, createUniqueId, Index, createSignal, Show } from "solid-js"
+import { createMemo, createUniqueId, For, createSignal, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/tags-input.css"
@@ -32,7 +32,7 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>Lowercase letters only:</label>
           <div {...api().getControlProps()}>
-            <Index each={api().value}>
+            <For keyed={false} each={api().value}>
               {(value, index) => (
                 <span {...api().getItemProps({ index, value: value() })}>
                   <div {...api().getItemPreviewProps({ index, value: value() })}>
@@ -44,7 +44,7 @@ export default function Page() {
                   <input {...api().getItemInputProps({ index, value: value() })} />
                 </span>
               )}
-            </Index>
+            </For>
             <input placeholder="Try: svelte or React (rejected)" {...api().getInputProps()} />
             <button {...api().getClearTriggerProps()}>
               <XIcon />

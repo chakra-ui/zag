@@ -1,6 +1,6 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index, Show } from "solid-js"
+import { createMemo, createUniqueId, For, Show } from "solid-js"
 import "@styles/file-upload.css"
 
 export default function Page() {
@@ -22,7 +22,7 @@ export default function Page() {
           <button>Normal Button</button>
 
           <ul {...api().getItemGroupProps()}>
-            <Index each={api().acceptedFiles}>
+            <For keyed={false} each={api().acceptedFiles}>
               {(file) => (
                 <li class="file" {...api().getItemProps({ file: file() })}>
                   <div>
@@ -33,7 +33,7 @@ export default function Page() {
                   <button {...api().getItemDeleteTriggerProps({ file: file() })}>X</button>
                 </li>
               )}
-            </Index>
+            </For>
           </ul>
         </div>
       </div>

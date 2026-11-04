@@ -1,7 +1,7 @@
 import * as radio from "@zag-js/radio-group"
 import { segmentControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -26,7 +26,7 @@ export default function Page() {
       <main class="segmented-control">
         <div {...api().getRootProps()}>
           <div {...api().getIndicatorProps()} />
-          <Index each={radioData}>
+          <For keyed={false} each={radioData}>
             {(opt) => (
               <label data-testid={`radio-${opt().id}`} {...api().getItemProps({ value: opt().id })}>
                 <span data-testid={`label-${opt().id}`} {...api().getItemTextProps({ value: opt().id })}>
@@ -35,7 +35,7 @@ export default function Page() {
                 <input data-testid={`input-${opt().id}`} {...api().getItemHiddenInputProps({ value: opt().id })} />
               </label>
             )}
-          </Index>
+          </For>
         </div>
         <button onClick={api().clearValue}>reset</button>
       </main>

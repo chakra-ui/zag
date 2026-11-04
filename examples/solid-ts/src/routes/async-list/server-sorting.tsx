@@ -2,7 +2,7 @@ import * as asyncList from "@zag-js/async-list"
 import { useMachine } from "@zag-js/solid"
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, LoaderCircleIcon } from "lucide-solid"
 import { createMemo, For, Show } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Dynamic } from "@solidjs/web"
 import "@styles/async-list.css"
 
 interface Product {
@@ -90,7 +90,7 @@ export default function Page() {
           }
         >
           <div class="async-list-table-scroll">
-            <table class="async-list-table" aria-busy={list().isLoading && !list().isLoadingMore}>
+            <table class="async-list-table" aria-busy={list().isLoading && !list().isLoadingMore ? "true" : "false"}>
               <thead>
                 <tr>
                   <For each={columns}>
@@ -98,7 +98,7 @@ export default function Page() {
                       <th aria-sort={directionOf(column.key) ?? "none"} data-numeric={column.numeric || undefined}>
                         <button class="async-list-sort" onClick={() => toggleSort(column.key)}>
                           {column.label}
-                          <Dynamic component={sortIcon(directionOf(column.key))} aria-hidden />
+                          <Dynamic component={sortIcon(directionOf(column.key))} aria-hidden="true" />
                         </button>
                       </th>
                     )}

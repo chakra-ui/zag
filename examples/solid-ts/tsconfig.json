@@ -6,17 +6,19 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsxImportSource": "@solidjs/web",
     "allowJs": true,
     "strict": true,
     "noEmit": true,
-    "types": ["vinxi/types/client"],
+    "types": ["vite/client"],
     "isolatedModules": true,
     "skipLibCheck": true,
     "paths": {
       "~/*": ["./src/*"],
       "@styles/*": ["../styles/*"],
-      "@zag-js/*": ["../../node_modules/@zag-js/*"]
+      "@zag-js/*": ["../../node_modules/@zag-js/*"],
+      "lucide-solid": ["./src/lib/lucide.tsx"]
     }
-  }
+  },
+  "include": ["src", "vite.config.ts"]
 }

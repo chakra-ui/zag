@@ -3,7 +3,7 @@ import * as menu from "@zag-js/menu"
 import { avatarData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/avatar.css"
 import "@styles/menu.css"
 
@@ -31,7 +31,7 @@ export default function Page() {
         style={triggerStyle}
       >
         <span {...avatarApi().getFallbackProps()}>PA</span>
-        <img alt="" referrerPolicy="no-referrer" src={avatarData.full[0]} {...avatarApi().getImageProps()} />
+        <img alt="" referrerpolicy="no-referrer" src={avatarData.full[0]} {...avatarApi().getImageProps()} />
       </button>
 
       <Show when={menuApi().open}>

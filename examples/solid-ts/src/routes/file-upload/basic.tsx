@@ -1,7 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -24,7 +24,7 @@ export default function Page() {
           <button {...api().getTriggerProps()}>Choose Files...</button>
 
           <ul>
-            <Index each={api().acceptedFiles}>
+            <For keyed={false} each={api().acceptedFiles}>
               {(file) => {
                 return (
                   <li class="file" {...api().getItemProps({ file: file() })}>
@@ -37,7 +37,7 @@ export default function Page() {
                   </li>
                 )
               }}
-            </Index>
+            </For>
           </ul>
         </div>
       </main>

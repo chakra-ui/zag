@@ -1,6 +1,6 @@
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import "@styles/slider.css"
 
 interface OriginSliderProps {
@@ -27,13 +27,13 @@ function OriginSlider(props: OriginSliderProps) {
         <div {...api().getTrackProps()}>
           <div {...api().getRangeProps()} />
         </div>
-        <Index each={api().value}>
+        <For keyed={false} each={api().value}>
           {(_, index) => (
             <div {...api().getThumbProps({ index })}>
               <input {...api().getHiddenInputProps({ index })} />
             </div>
           )}
-        </Index>
+        </For>
       </div>
       <Show when={props.marks}>
         {(marks) => (

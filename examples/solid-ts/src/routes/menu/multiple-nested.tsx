@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createMemo, createUniqueId, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/menu.css"
 
 /**
@@ -59,7 +59,7 @@ export default function Page() {
 
   const submenus = [useSubmenu("platform"), useSubmenu("solutions"), useSubmenu("resources"), useSubmenu("open-source")]
 
-  onMount(() => {
+  onSettled(() => {
     submenus.forEach(({ service, api }) => {
       root().setChild(service)
       api().setParent(rootService)

@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import * as steps from "@zag-js/steps"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -25,7 +25,7 @@ export default function Page() {
       <main class="steps">
         <div {...api().getRootProps()}>
           <div {...api().getListProps()}>
-            <Index each={stepsData}>
+            <For keyed={false} each={stepsData}>
               {(step, index) => (
                 <div {...api().getItemProps({ value: step().value })}>
                   <button {...api().getTriggerProps({ value: step().value })}>
@@ -35,16 +35,16 @@ export default function Page() {
                   <div {...api().getSeparatorProps({ value: step().value })} />
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
-          <Index each={stepsData}>
+          <For keyed={false} each={stepsData}>
             {(step) => (
               <div {...api().getContentProps({ value: step().value })}>
                 {step().title} - {step().description}
               </div>
             )}
-          </Index>
+          </For>
 
           <div {...api().getContentProps({ value: steps.COMPLETE })}>
             Steps Complete - Thank you for filling out the form!

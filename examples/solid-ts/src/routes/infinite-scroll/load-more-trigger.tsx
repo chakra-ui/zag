@@ -53,7 +53,7 @@ export default function Page() {
           <input type="checkbox" checked={disabled()} onChange={(e) => setDisabled(e.currentTarget.checked)} />
           Disable auto-loading
         </label>
-        <div class="scroller" tabIndex={0}>
+        <div class="scroller" tabindex={0}>
           <ul>
             <For each={list().items}>{(item) => <li>{item}</li>}</For>
           </ul>

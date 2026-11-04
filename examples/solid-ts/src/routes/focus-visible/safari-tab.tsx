@@ -1,12 +1,12 @@
 import { getInteractionModality, trackFocusVisible, type Modality } from "@zag-js/focus-visible"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 
 export default function Page() {
   const [modality, setModality] = createSignal<Modality | null>(null)
   const [focusVisible, setFocusVisible] = createSignal(false)
   const [focused, setFocused] = createSignal(false)
 
-  onMount(() => {
+  onSettled(() => {
     setModality(getInteractionModality())
     const cleanup = trackFocusVisible({
       onChange(details) {
@@ -14,7 +14,7 @@ export default function Page() {
         setModality(details.modality)
       },
     })
-    onCleanup(cleanup)
+    return cleanup
   })
 
   const showRing = () => focusVisible() && focused()

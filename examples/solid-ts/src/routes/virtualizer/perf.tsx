@@ -1,4 +1,4 @@
-import { createSignal, Index, Show } from "solid-js"
+import { createSignal, For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
 const ITEM_COUNT = 100_000
@@ -42,7 +42,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
           ref(el)
         }}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Zag virtualizer performance list"
         style={{
           height: "400px",
@@ -52,7 +52,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
         }}
       >
         <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <Index each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer.getVirtualItems()}>
             {(vi) => (
               <div
                 style={{
@@ -65,7 +65,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
                 {items[vi().index].label}
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
       <p style={{ "font-size": "13px", color: "#64748b", "margin-top": "8px" }}>

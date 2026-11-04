@@ -1,8 +1,8 @@
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId, Index, onMount, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "~/lib/emoji-loader"
 import "@styles/emoji-picker.css"
@@ -57,7 +57,7 @@ export default function Page() {
   const [query, setQuery] = createSignal("")
   const [selected, setSelected] = createSignal<string | null>(null)
 
-  onMount(() => {
+  onSettled(() => {
     loader.load().then(setData, (error) => console.error("Failed to load emojis", error))
   })
 
@@ -145,7 +145,7 @@ export default function Page() {
                     <div
                       class="emoji-category"
                       data-sticky
-                      aria-hidden
+                      aria-hidden="true"
                       style={{ transform: `translateY(${header().translateY}px)` }}
                     >
                       {header().group.id}
@@ -155,8 +155,8 @@ export default function Page() {
 
                 <div {...api().getListProps()} ref={scrollRef} onScroll={virtualizer.handleScroll}>
                   <div style={{ position: "relative", height: `${virtualizer.getTotalSize()}px` }}>
-                    {/* Index, not For: the virtualizer reuses its item objects */}
-                    <Index each={virtualizer.getVirtualItems()}>
+                    {/* unkeyed: the virtualizer reuses its item objects */}
+                    <For keyed={false} each={virtualizer.getVirtualItems()}>
                       {(virtualRow) => {
                         const row = () => layout().rows[virtualRow().index]
                         const style = () => virtualizer.getItemStyle(virtualRow())
@@ -170,25 +170,29 @@ export default function Page() {
                             }
                           >
                             <div class="emoji-row" style={style()}>
-                              <Index
+                              <For
+                                keyed={false}
                                 each={layout().items.slice(
                                   (row() as Extract<Row, { type: "emojis" }>).start,
                                   (row() as Extract<Row, { type: "emojis" }>).start + COLUMN_COUNT,
                                 )}
                               >
                                 {(item) => (
-                                  <Show when={!item().placeholder} fallback={<div class="emoji-item" aria-hidden />}>
+                                  <Show
+                                    when={!item().placeholder}
+                                    fallback={<div class="emoji-item" aria-hidden="true" />}
+                                  >
                                     <div {...api().getItemProps({ item: item() })} class="emoji-item">
                                       <span {...api().getItemTextProps({ item: item() })}>{item().value}</span>
                                     </div>
                                   </Show>
                                 )}
-                              </Index>
+                              </For>
                             </div>
                           </Show>
                         )
                       }}
-                    </Index>
+                    </For>
                   </div>
                 </div>
 
@@ -201,7 +205,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div class="emoji-footer" aria-hidden>
+            <div class="emoji-footer" aria-hidden="true">
               <Show when={active()} fallback={<span class="emoji-footer-label">Select an emoji…</span>}>
                 {(item) => (
                   <>

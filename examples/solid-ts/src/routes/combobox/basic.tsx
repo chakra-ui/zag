@@ -3,7 +3,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -84,13 +84,13 @@ export default function Page() {
               <div {...api().getEmptyProps()}>{options().length === 0 && "No results found"}</div>
               <Show when={options().length > 0}>
                 <div {...api().getListProps()}>
-                  <Index each={options()}>
+                  <For keyed={false} each={options()}>
                     {(item) => (
                       <div class="combobox__option" {...api().getItemProps({ item: item() })}>
                         {item().label}
                       </div>
                     )}
-                  </Index>
+                  </For>
                 </div>
               </Show>
             </div>

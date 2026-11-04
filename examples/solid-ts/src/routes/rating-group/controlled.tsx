@@ -1,6 +1,6 @@
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId, Index } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
 import { Star } from "~/components/rating-icons"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -27,13 +27,13 @@ export default function Page() {
           <div {...api().getRootProps()}>
             <label {...api().getLabelProps()}>Rate this example</label>
             <div {...api().getControlProps()}>
-              <Index each={api().items}>
+              <For keyed={false} each={api().items}>
                 {(index) => (
                   <span {...api().getItemProps({ index: index() })}>
                     <Star />
                   </span>
                 )}
-              </Index>
+              </For>
             </div>
             <input {...api().getHiddenInputProps()} />
           </div>

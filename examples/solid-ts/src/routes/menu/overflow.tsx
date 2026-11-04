@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { For, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/menu.css"
 
 const items = [

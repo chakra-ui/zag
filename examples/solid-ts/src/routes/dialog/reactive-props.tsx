@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
 import { Show, createMemo, createSignal, createUniqueId, onCleanup } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/dialog.css"
 
 // A remount resets this to 0, so a steady count proves the dialog was never torn down.

@@ -1,4 +1,4 @@
-import { Index } from "solid-js"
+import { For } from "solid-js"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 1_000
@@ -36,7 +36,7 @@ export default function Page() {
       <div
         ref={ref}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Virtualized waterfall"
         style={{
           ...virtualizer.getContainerStyle(),
@@ -48,7 +48,7 @@ export default function Page() {
         }}
       >
         <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <Index each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 data-index={virtualItem().index}
@@ -69,7 +69,7 @@ export default function Page() {
                 </p>
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
     </main>

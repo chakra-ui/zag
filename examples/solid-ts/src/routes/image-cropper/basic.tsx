@@ -104,7 +104,7 @@ export default function Page() {
       <main class="image-cropper">
         <div {...api().getRootProps()}>
           <div {...api().getViewportProps()}>
-            <img src="https://picsum.photos/seed/a/500/300" crossOrigin="anonymous" {...api().getImageProps()} />
+            <img src="https://picsum.photos/seed/a/500/300" crossorigin="anonymous" {...api().getImageProps()} />
             <div {...api().getSelectionProps()}>
               <For each={imageCropper.placements}>
                 {(placement) => (

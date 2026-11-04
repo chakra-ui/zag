@@ -1,5 +1,5 @@
 import { type ParentProps } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Dynamic } from "@solidjs/web"
 import { useInfiniteScroll } from "~/hooks/use-infinite-scroll"
 
 export interface LoadMoreProps {

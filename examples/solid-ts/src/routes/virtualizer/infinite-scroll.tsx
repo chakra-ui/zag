@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/solid"
-import { createMemo, createSignal, Index, Show } from "solid-js"
+import { createMemo, createSignal, For, Show } from "solid-js"
 import { useInfiniteScroll } from "~/hooks/use-infinite-scroll"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
@@ -51,7 +51,7 @@ export default function Page() {
           ref(el)
         }}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Virtualized infinite list"
         style={{
           height: "420px",
@@ -64,7 +64,7 @@ export default function Page() {
         }}
       >
         <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <Index each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <Show when={items()[virtualItem().index]}>
                 {(item) => (
@@ -88,7 +88,7 @@ export default function Page() {
                 )}
               </Show>
             )}
-          </Index>
+          </For>
         </div>
 
         <div {...mergeProps(api().getSentinelProps(), { style: { height: "1px" } })} />

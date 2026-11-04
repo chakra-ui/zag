@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/combobox.css"
 
 interface Item {
@@ -106,7 +106,7 @@ export default function Page() {
             }}
           >
             <div {...api().getListProps()}>
-              <Index each={options()}>
+              <For keyed={false} each={options()}>
                 {(item) => (
                   <div
                     data-testid={item().value}
@@ -119,7 +119,7 @@ export default function Page() {
                     {item().label}
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
           </div>
         </div>

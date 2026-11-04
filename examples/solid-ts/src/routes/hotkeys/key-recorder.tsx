@@ -5,7 +5,8 @@ import {
   type HotkeyRecorder,
   type RecordedHotkey,
 } from "@zag-js/hotkeys"
-import { createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js"
+import { createSignal, For, onCleanup, onSettled, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 interface ShortcutBinding {
   id: string
@@ -34,7 +35,7 @@ export default function Page() {
 
   let recorder: HotkeyRecorder | undefined
 
-  onMount(() => {
+  onSettled(() => {
     recorder = createHotkeyRecorder({ target: document })
     // Callbacks read signals at call time, so they never go stale
     recorder.setOptions({

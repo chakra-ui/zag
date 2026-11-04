@@ -1,8 +1,8 @@
 import * as dialog from "@zag-js/dialog"
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createEffect, createMemo, createSignal, createUniqueId, onCleanup, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { createMemo, createSignal, createUniqueId, Show, createTrackedEffect } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import "@styles/popover.css"
 import "@styles/dialog.css"
@@ -10,10 +10,10 @@ import "@styles/dialog.css"
 function ToggleTip() {
   const [open, setOpen] = createSignal(false)
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!open()) return
     const timer = setTimeout(() => setOpen(false), 2000)
-    onCleanup(() => clearTimeout(timer))
+    return () => clearTimeout(timer)
   })
 
   const id = createUniqueId()

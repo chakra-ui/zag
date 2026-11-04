@@ -1,4 +1,4 @@
-import { A, useLocation } from "@solidjs/router"
+import { useLocation } from "@solidjs/router"
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { getComponentExamples } from "@zag-js/shared"
@@ -13,17 +13,8 @@ import {
   SearchIcon,
   SquareDashedIcon,
 } from "lucide-solid"
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-  type JSX,
-} from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, onSettled, Show, createTrackedEffect } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { CommandPalette, type PaletteMode } from "./command-palette"
 import { readPref, writePref } from "./prefs"
 
@@ -52,7 +43,7 @@ export function Shell(props: { children: JSX.Element }) {
   const [hasInspector, setHasInspector] = createSignal(false)
   const [mode, setMode] = createSignal<PaletteMode>({ type: "all" })
 
-  onMount(() => {
+  onSettled(() => {
     const storedLayout = readPref("layout")
     if (storedLayout) setLayoutState(storedLayout)
     const storedDock = readPref("dock")
@@ -98,14 +89,14 @@ export function Shell(props: { children: JSX.Element }) {
 
   // Not every example renders an inspector, so read it from the page once it mounts
   let body: HTMLDivElement | undefined
-  createEffect(() => {
+  createTrackedEffect(() => {
     location.pathname
     if (!body) return
     const check = () => setHasInspector(!!body!.querySelector(":scope > .toolbar"))
     check()
     const observer = new MutationObserver(check)
     observer.observe(body, { childList: true })
-    onCleanup(() => observer.disconnect())
+    return () => observer.disconnect()
   })
 
   const service = useMachine(dialog.machine, { id: createUniqueId() })
@@ -116,7 +107,7 @@ export function Shell(props: { children: JSX.Element }) {
     api().setOpen(true)
   }
 
-  onMount(() => {
+  onSettled(() => {
     const store = createHotkeyStore()
     store.register({
       id: "playground-search",
@@ -140,7 +131,7 @@ export function Shell(props: { children: JSX.Element }) {
       options: { preventDefault: true },
     })
     store.init({ target: document })
-    onCleanup(() => store.destroy())
+    return () => store.destroy()
   })
 
   return (
@@ -169,16 +160,16 @@ export function Shell(props: { children: JSX.Element }) {
           <Show when={hasInspector()}>
             <button
               type="button"
-              aria-pressed={inspectorShown()}
+              aria-pressed={inspectorShown() ? "true" : "false"}
               title="Toggle inspector (⌘.)"
               onClick={toggleInspector}
             >
-              {dock() === "bottom" ? <PanelBottomIcon aria-hidden /> : <PanelRightIcon aria-hidden />}
+              {dock() === "bottom" ? <PanelBottomIcon aria-hidden="true" /> : <PanelRightIcon aria-hidden="true" />}
               Inspector
             </button>
           </Show>
           <button type="button" title="Exit full screen (⌘⇧F)" onClick={exitFullscreen}>
-            <Minimize2Icon aria-hidden />
+            <Minimize2Icon aria-hidden="true" />
             Exit full screen
             <kbd class="pg-kbd">⌘⇧F</kbd>
           </button>
@@ -213,11 +204,11 @@ function Topbar(props: TopbarProps) {
   return (
     <header class="pg-topbar">
       <div class="pg-topbar-start">
-        <A href="/" class="pg-brand" aria-label="All components">
+        <a href="/" class="pg-brand" aria-label="All components">
           <ZagLogo />
-        </A>
+        </a>
 
-        <span class="pg-slash" aria-hidden />
+        <span class="pg-slash" aria-hidden="true" />
 
         <button
           type="button"
@@ -227,13 +218,13 @@ function Topbar(props: TopbarProps) {
           onClick={() => props.onOpenPalette({ type: "components" })}
         >
           <span data-placeholder={componentLabel() ? undefined : ""}>{componentLabel() ?? "Select component"}</span>
-          <ChevronsUpDownIcon aria-hidden />
+          <ChevronsUpDownIcon aria-hidden="true" />
         </button>
 
         <Show when={props.component}>
           {(component) => (
             <>
-              <span class="pg-slash" aria-hidden />
+              <span class="pg-slash" aria-hidden="true" />
               <button
                 type="button"
                 class="pg-crumb"
@@ -242,7 +233,7 @@ function Topbar(props: TopbarProps) {
                 onClick={() => props.onOpenPalette({ type: "examples", component: component() })}
               >
                 <span data-placeholder={exampleLabel() ? undefined : ""}>{exampleLabel() ?? "Select example"}</span>
-                <ChevronsUpDownIcon aria-hidden />
+                <ChevronsUpDownIcon aria-hidden="true" />
               </button>
             </>
           )}
@@ -251,7 +242,7 @@ function Topbar(props: TopbarProps) {
 
       <div class="pg-topbar-center">
         <button type="button" class="pg-search-trigger" onClick={() => props.onOpenPalette({ type: "all" })}>
-          <SearchIcon aria-hidden />
+          <SearchIcon aria-hidden="true" />
           <span>Search examples…</span>
           <kbd class="pg-kbd">⌘K</kbd>
         </button>
@@ -265,12 +256,12 @@ function Topbar(props: TopbarProps) {
                 <button
                   type="button"
                   class="pg-segmented-item"
-                  aria-pressed={props.layout === item.value}
+                  aria-pressed={props.layout === item.value ? "true" : "false"}
                   aria-label={`${item.label} layout`}
                   title={`${item.label} layout`}
                   onClick={() => props.onLayoutChange(item.value)}
                 >
-                  <item.icon aria-hidden />
+                  <item.icon aria-hidden="true" />
                 </button>
               )}
             </For>
@@ -284,14 +275,14 @@ function Topbar(props: TopbarProps) {
             title="Full screen (⌘⇧F)"
             onClick={props.onFullscreen}
           >
-            <Maximize2Icon aria-hidden />
+            <Maximize2Icon aria-hidden="true" />
           </button>
 
           <div
             class="pg-segmented"
             role="group"
             aria-label="Inspector"
-            aria-disabled={!props.hasInspector || undefined}
+            aria-disabled={!props.hasInspector ? "true" : undefined}
             title={props.hasInspector ? undefined : "This example has no inspector"}
           >
             <For each={docks}>
@@ -300,12 +291,14 @@ function Topbar(props: TopbarProps) {
                   type="button"
                   class="pg-segmented-item"
                   disabled={!props.hasInspector}
-                  aria-pressed={props.hasInspector && props.inspectorShown && props.dock === item.value}
+                  aria-pressed={
+                    props.hasInspector && props.inspectorShown && props.dock === item.value ? "true" : "false"
+                  }
                   aria-label={`Inspector ${item.label.toLowerCase()}`}
                   title={`Inspector ${item.label.toLowerCase()} (⌘. to toggle)`}
                   onClick={() => props.onSelectDock(item.value)}
                 >
-                  <item.icon aria-hidden />
+                  <item.icon aria-hidden="true" />
                 </button>
               )}
             </For>
@@ -318,7 +311,7 @@ function Topbar(props: TopbarProps) {
 
 function ZagLogo() {
   return (
-    <svg viewBox="0 0 377 133" fill="none" aria-hidden>
+    <svg viewBox="0 0 377 133" fill="none" aria-hidden="true">
       <path d="M243.68 67.7895L310.68 13.0287L265.18 112L369.68 7" stroke="var(--green-brand)" stroke-width="19" />
       <path
         d="M23.748 85.8405H62.052V102H1.67V86.705L39.043 46.7385L39.5085 47.47H0L9.18001 31.377H61.254V46.672L24.2135 86.5055L23.748 85.8405Z"

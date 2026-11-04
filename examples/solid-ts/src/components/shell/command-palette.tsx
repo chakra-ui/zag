@@ -6,18 +6,18 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { useNavigate } from "@solidjs/router"
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-solid"
 import {
-  createEffect,
   createMemo,
   createSignal,
   createUniqueId,
-  Index,
+  For,
   Match,
   Show,
   Switch,
   untrack,
   type Accessor,
+  createTrackedEffect,
 } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
 const { contains } = createFilter({ sensitivity: "base" })
@@ -153,7 +153,7 @@ export function CommandPalette(props: CommandPaletteProps) {
 
           <div {...comboboxApi().getRootProps()} class="pg-palette-root">
             <div {...comboboxApi().getControlProps()} class="pg-palette-control">
-              <SearchIcon aria-hidden />
+              <SearchIcon aria-hidden="true" />
               <input
                 {...mergeProps(comboboxApi().getInputProps(), {
                   placeholder: placeholders[props.mode.type],
@@ -177,7 +177,7 @@ export function CommandPalette(props: CommandPaletteProps) {
             </div>
           </div>
 
-          <div class="pg-palette-footer" aria-hidden>
+          <div class="pg-palette-footer" aria-hidden="true">
             <span>
               <kbd class="pg-kbd">
                 <ArrowUpIcon size={11} />
@@ -225,7 +225,7 @@ function PaletteList(props: PaletteListProps) {
   })
 
   // untrack: the proxy would subscribe this effect to the virtualizer it updates
-  createEffect(() => {
+  createTrackedEffect(() => {
     const { rows } = data()
     untrack(() => virtualizer.updateOptions({ count: rows.length, estimatedSize }))
   })
@@ -242,8 +242,8 @@ function PaletteList(props: PaletteListProps) {
   return (
     <div {...props.api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll} class="pg-palette-list">
       <div style={{ position: "relative", width: "100%", height: `${virtualizer.getTotalSize()}px` }}>
-        {/* Index, not For: the virtualizer reuses its item objects */}
-        <Index each={virtualizer.getVirtualItems()}>
+        {/* unkeyed: the virtualizer reuses its item objects */}
+        <For keyed={false} each={virtualizer.getVirtualItems()}>
           {(virtualItem) => {
             const row = () => data().rows[virtualItem().index]
             const style = () => virtualizer.getItemStyle(virtualItem())
@@ -268,7 +268,7 @@ function PaletteList(props: PaletteListProps) {
                         <span class="pg-palette-item-meta">{item().meta}</span>
                       </Show>
                       <Show when={item().value === props.currentValue}>
-                        <CheckIcon class="pg-palette-item-check" aria-hidden />
+                        <CheckIcon class="pg-palette-item-check" aria-hidden="true" />
                       </Show>
                     </div>
                   )}
@@ -276,7 +276,7 @@ function PaletteList(props: PaletteListProps) {
               </Switch>
             )
           }}
-        </Index>
+        </For>
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 import { autoresizeTextarea } from "@zag-js/auto-resize"
 import * as field from "@zag-js/field"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, onCleanup, onMount } from "solid-js"
+import { createMemo, createUniqueId, onSettled } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/field.css"
@@ -21,9 +21,9 @@ export default function Page() {
 
   const api = createMemo(() => field.connect(service, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     const cleanup = autoresizeTextarea(textareaRef ?? null)
-    onCleanup(() => cleanup?.())
+    return () => cleanup?.()
   })
 
   return (

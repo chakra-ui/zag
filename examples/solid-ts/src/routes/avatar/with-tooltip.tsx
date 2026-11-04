@@ -3,7 +3,7 @@ import { avatarData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
 import { createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import { Presence } from "~/components/presence"
 import "@styles/avatar.css"
 import "@styles/tooltip.css"
@@ -32,7 +32,7 @@ export default function Page() {
         style={triggerStyle}
       >
         <span {...avatarApi().getFallbackProps()}>PA</span>
-        <img alt="" referrerPolicy="no-referrer" src={avatarData.full[0]} {...avatarApi().getImageProps()} />
+        <img alt="" referrerpolicy="no-referrer" src={avatarData.full[0]} {...avatarApi().getImageProps()} />
       </button>
 
       <Portal>

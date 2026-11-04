@@ -1,7 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, CheckSquareIcon, SquareIcon, MinusSquareIcon } from "lucide-solid"
-import { Accessor, createMemo, createUniqueId, Index, JSX, Show } from "solid-js"
+import { Accessor, createMemo, createUniqueId, For, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import "@styles/tree-view.css"
 
 interface Node {
@@ -76,9 +77,9 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
       <Show when={nodeState().isBranch}>
         <div {...api().getNodeGroupContentProps(nodeProps)}>
           <div {...api().getIndentGuideProps(nodeProps)} />
-          <Index each={node.children}>
+          <For keyed={false} each={node.children}>
             {(childNode, index) => <TreeNode node={childNode()} indexPath={[...indexPath, index]} api={api} />}
-          </Index>
+          </For>
         </div>
       </Show>
     </div>
@@ -99,9 +100,9 @@ export default function Page() {
       <div {...api().getRootProps()}>
         <h3 {...api().getLabelProps()}>My Documents</h3>
         <div {...api().getTreeProps()}>
-          <Index each={collection.rootNode.children}>
+          <For keyed={false} each={collection.rootNode.children}>
             {(node, index) => <TreeNode node={node()} indexPath={[index]} api={api} />}
-          </Index>
+          </For>
         </div>
       </div>
       <pre>{JSON.stringify(api().checkedValue, null, 2)}</pre>

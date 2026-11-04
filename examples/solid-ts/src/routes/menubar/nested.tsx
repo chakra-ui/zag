@@ -1,8 +1,8 @@
 import * as menu from "@zag-js/menu"
 import * as menubar from "@zag-js/menubar"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { type Accessor, createContext, For, createMemo, createUniqueId, onMount, useContext } from "solid-js"
-import { Portal } from "solid-js/web"
+import { type Accessor, createContext, For, createMemo, createUniqueId, onSettled, useContext } from "solid-js"
+import { Portal } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/menu.css"
@@ -52,7 +52,7 @@ function EditMenu() {
   const subService = useMachine(menu.machine, { id: "find" })
   const sub = createMemo(() => menu.connect(subService, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     api().setChild(subService)
     sub().setParent(service)
   })
@@ -107,7 +107,7 @@ export default function Page() {
   return (
     <>
       <main class="menubar">
-        <MenubarContext.Provider value={() => api().getMenuContext()}>
+        <MenubarContext value={() => api().getMenuContext()}>
           <div {...api().getRootProps()} style={{ display: "inline-flex", gap: "4px" }}>
             <SimpleMenu
               id="file"
@@ -128,7 +128,7 @@ export default function Page() {
               ]}
             />
           </div>
-        </MenubarContext.Provider>
+        </MenubarContext>
       </main>
       <Toolbar>
         <StateVisualizer state={service} />

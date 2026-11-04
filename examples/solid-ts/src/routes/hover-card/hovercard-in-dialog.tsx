@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import * as hoverCard from "@zag-js/hover-card"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { Show, createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/hover-card.css"
 import "@styles/dialog.css"
 

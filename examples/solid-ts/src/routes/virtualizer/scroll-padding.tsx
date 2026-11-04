@@ -1,4 +1,4 @@
-import { createSignal, Index } from "solid-js"
+import { createSignal, For } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
 const ITEM_COUNT = 1000
@@ -79,7 +79,7 @@ export default function Page() {
       <div
         ref={ref}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Virtualized list with scroll padding"
         style={{
           height: "400px",
@@ -93,7 +93,7 @@ export default function Page() {
         }}
       >
         <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <Index each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer.getVirtualItems()}>
             {(virtualItem) => (
               <div
                 style={{
@@ -113,7 +113,7 @@ export default function Page() {
                 <span style={{ color: "#64748b", "font-size": "12px" }}>y: {virtualItem().start}px</span>
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
 

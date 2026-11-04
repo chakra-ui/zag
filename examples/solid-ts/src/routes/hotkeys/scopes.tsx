@@ -1,5 +1,6 @@
 import { createHotkeyStore } from "@zag-js/hotkeys"
-import { createSignal, Index, onCleanup, onMount, Show, type JSX } from "solid-js"
+import { createSignal, For, onCleanup, onSettled, Show } from "solid-js"
+import type { JSX } from "@solidjs/web"
 
 const store = createHotkeyStore({
   activeScopes: ["editor"],
@@ -20,7 +21,7 @@ export default function Page() {
     }
   }
 
-  onMount(() => {
+  onSettled(() => {
     store.register([
       // Same hotkey, different scopes
       {
@@ -146,11 +147,13 @@ function Panel(props: { active: boolean; label: string; hints: string[]; logs: s
       }}
     >
       <div style={{ "margin-bottom": "8px", color: props.active ? "#888" : "#bbb" }}>
-        <Index each={props.hints}>{(h) => <div>{h()}</div>}</Index>
+        <For keyed={false} each={props.hints}>
+          {(h) => <div>{h()}</div>}
+        </For>
       </div>
-      <Index each={props.logs}>
+      <For keyed={false} each={props.logs}>
         {(log) => <div style={{ color: props.active ? "#00ff00" : "#aaa" }}>{log()}</div>}
-      </Index>
+      </For>
       <Show when={props.logs.length === 0}>
         <div style={{ "font-style": "italic", color: "#666" }}>No events yet...</div>
       </Show>

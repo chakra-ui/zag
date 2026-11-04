@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { Presence } from "./presence"
 
 export const Swap = (props: { children: JSX.Element; open: boolean; fallback?: JSX.Element }) => {

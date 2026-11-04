@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
 import { XIcon } from "lucide-solid"
 import { For, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/tour.css"
 
 export default function Page() {

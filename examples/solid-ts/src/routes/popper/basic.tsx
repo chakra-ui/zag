@@ -1,12 +1,12 @@
 import { getPlacement, getPlacementStyles } from "@zag-js/popper"
-import { createSignal, onCleanup, onMount } from "solid-js"
+import { createSignal, onSettled } from "solid-js"
 
 export default function Page() {
   let referenceRef: HTMLButtonElement | undefined
   let floatingRef: HTMLDivElement | undefined
   const [positioned, setPositioned] = createSignal({})
 
-  onMount(() => {
+  onSettled(() => {
     if (!referenceRef || !floatingRef) return
     const cleanup = getPlacement(referenceRef, floatingRef, {
       placement: "right-start",
@@ -14,7 +14,7 @@ export default function Page() {
         setPositioned(data)
       },
     })
-    onCleanup(() => cleanup?.())
+    return () => cleanup?.()
   })
 
   const styles = () => getPlacementStyles(positioned())

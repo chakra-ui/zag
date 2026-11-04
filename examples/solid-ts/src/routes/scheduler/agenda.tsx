@@ -2,7 +2,7 @@ import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerControls, schedulerEvents } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronLeft, ChevronRight } from "lucide-solid"
-import { For, Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -55,7 +55,7 @@ export default function Page() {
                     <div {...api().getAgendaGroupTitleProps({ date: group.date })}>
                       {api().formatLongDate(group.date)}
                     </div>
-                    <Index each={group.events}>
+                    <For keyed={false} each={group.events}>
                       {(event) => (
                         <div {...api().getEventProps({ event: event(), layout: "list" })}>
                           <div class="scheduler-mobile-agenda-time">
@@ -64,7 +64,7 @@ export default function Page() {
                           <div class="scheduler-event-title">{event().title}</div>
                         </div>
                       )}
-                    </Index>
+                    </For>
                   </div>
                 )}
               </For>

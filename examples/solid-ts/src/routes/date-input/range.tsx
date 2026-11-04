@@ -1,7 +1,7 @@
 import * as dateInput from "@zag-js/date-input"
 import { dateInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -27,21 +27,21 @@ export default function Page() {
 
           <div {...api().getControlProps()}>
             <div {...api().getSegmentGroupProps({ index: 0 })}>
-              <Index each={api().getSegments({ index: 0 })}>
+              <For keyed={false} each={api().getSegments({ index: 0 })}>
                 {(segment) => (
                   <span {...api().getSegmentProps({ segment: segment(), index: 0 })}>{segment().text}</span>
                 )}
-              </Index>
+              </For>
             </div>
 
             <span> &ndash; </span>
 
             <div {...api().getSegmentGroupProps({ index: 1 })}>
-              <Index each={api().getSegments({ index: 1 })}>
+              <For keyed={false} each={api().getSegments({ index: 1 })}>
                 {(segment) => (
                   <span {...api().getSegmentProps({ segment: segment(), index: 1 })}>{segment().text}</span>
                 )}
-              </Index>
+              </For>
             </div>
           </div>
 
@@ -52,13 +52,13 @@ export default function Page() {
         <output class="date-output">
           <div>Selected: {api().valueAsString.join(" - ") || "-"}</div>
           <div>Placeholder: {api().placeholderValue.toString()}</div>
-          <Index each={api().displayValues ?? []}>
+          <For keyed={false} each={api().displayValues ?? []}>
             {(date, index) => (
               <div>
                 Editing input {index + 1}: {date().toString() ?? "-"}
               </div>
             )}
-          </Index>
+          </For>
         </output>
       </main>
 

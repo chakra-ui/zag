@@ -1,6 +1,6 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/listbox.css"
 
@@ -47,7 +47,7 @@ export default function Page() {
                   position: "relative",
                 }}
               >
-                <Index each={virtualizer.getVirtualItems()}>
+                <For keyed={false} each={virtualizer.getVirtualItems()}>
                   {(virtualItem) => {
                     const item = () => items[virtualItem().index]
                     return (
@@ -66,7 +66,7 @@ export default function Page() {
                       </div>
                     )
                   }}
-                </Index>
+                </For>
               </div>
             </div>
           </div>

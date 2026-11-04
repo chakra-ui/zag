@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import "@styles/angle-slider.css"
 
 const STEP = 45
@@ -29,7 +29,9 @@ export default function Page() {
           </div>
           <div {...api().getThumbProps()} />
           <div {...api().getMarkerGroupProps()}>
-            <Index each={MARKERS}>{(value) => <div {...api().getMarkerProps({ value: value() })} />}</Index>
+            <For keyed={false} each={MARKERS}>
+              {(value) => <div {...api().getMarkerProps({ value: value() })} />}
+            </For>
           </div>
         </div>
         <input {...api().getHiddenInputProps()} />

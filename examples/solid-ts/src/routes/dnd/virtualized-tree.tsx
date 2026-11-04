@@ -5,15 +5,15 @@ import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
 import {
   type Accessor,
-  type JSX,
-  createEffect,
   createMemo,
   createSignal,
   createUniqueId,
-  Index,
+  For,
   Show,
   untrack,
+  createTrackedEffect,
 } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
@@ -268,7 +268,7 @@ export default function Page() {
   const api = createMemo(() => tree.connect(treeService, normalizeProps))
   const visibleNodes = createMemo(() => api().getVisibleNodes())
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const count = visibleNodes().length
     untrack(() => virtualizer.updateOptions({ count }))
   })
@@ -335,7 +335,7 @@ export default function Page() {
                 style: { height: `${virtualizer.getTotalSize()}px` },
               })}
             >
-              <Index each={virtualizer.getVirtualItems()}>
+              <For keyed={false} each={virtualizer.getVirtualItems()}>
                 {(virtualItem) => {
                   const item = () => visibleNodes()[virtualItem().index]
                   return (
@@ -357,7 +357,7 @@ export default function Page() {
                     </Show>
                   )
                 }}
-              </Index>
+              </For>
             </div>
           </div>
 

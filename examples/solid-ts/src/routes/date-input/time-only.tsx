@@ -1,7 +1,7 @@
 import { DateFormatter } from "@internationalized/date"
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/date-input.css"
@@ -31,9 +31,9 @@ export default function Page() {
 
           <div {...api().getControlProps()}>
             <div {...api().getSegmentGroupProps()}>
-              <Index each={api().getSegments()}>
+              <For keyed={false} each={api().getSegments()}>
                 {(segment) => <span {...api().getSegmentProps({ segment: segment() })}>{segment().text}</span>}
-              </Index>
+              </For>
             </div>
           </div>
 

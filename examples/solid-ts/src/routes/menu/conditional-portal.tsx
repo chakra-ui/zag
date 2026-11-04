@@ -1,7 +1,8 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Show, createMemo, createSignal, createUniqueId, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 
 // content stays mounted while closed and is re-mounted into a portal when open,
 // so a doomed node exists at layer-effect time

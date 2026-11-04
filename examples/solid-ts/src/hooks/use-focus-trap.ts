@@ -1,5 +1,5 @@
 import { trapFocus, type TrapFocusOptions } from "@zag-js/focus-trap"
-import { createEffect, onCleanup, type Accessor } from "solid-js"
+import { type Accessor, createTrackedEffect } from "solid-js"
 
 export function useFocusTrap(
   el: Accessor<HTMLElement | undefined | null>,
@@ -7,13 +7,13 @@ export function useFocusTrap(
 ) {
   const { enabled = true, ...trapOptions } = options
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!enabled) return
     const node = el()
     if (!node) return
 
     const cleanup = trapFocus(node, trapOptions)
 
-    onCleanup(cleanup)
+    return cleanup
   })
 }

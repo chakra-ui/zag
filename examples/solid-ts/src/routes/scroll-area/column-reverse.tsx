@@ -1,6 +1,6 @@
 import * as scrollArea from "@zag-js/scroll-area"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/scroll-area.css"
@@ -24,7 +24,9 @@ export default function Page() {
                 style: { display: "flex", "flex-direction": "column-reverse" },
               })}
             >
-              <Index each={items}>{(index) => <div>Item {index()}</div>}</Index>
+              <For keyed={false} each={items}>
+                {(index) => <div>Item {index()}</div>}
+              </For>
             </div>
           </div>
           <Show when={api().hasOverflowY}>

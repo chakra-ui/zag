@@ -1,4 +1,4 @@
-import { Index } from "solid-js"
+import { For } from "solid-js"
 import { useGridVirtualizer } from "../../hooks/use-virtualizer"
 
 const ROW_COUNT = 1_000
@@ -31,7 +31,7 @@ export default function Page() {
         ref={ref}
         onScroll={virtualizer.handleScroll}
         {...virtualizer.getContainerAriaAttrs()}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Virtualized grid"
         style={{
           ...virtualizer.getContainerStyle(),
@@ -49,10 +49,10 @@ export default function Page() {
             position: "relative",
           }}
         >
-          <Index each={virtualizer.getVirtualRows()}>
+          <For keyed={false} each={virtualizer.getVirtualRows()}>
             {(virtualRow) => (
               <div style={virtualizer.getRowStyle(virtualRow())}>
-                <Index each={virtualRow().columns}>
+                <For keyed={false} each={virtualRow().columns}>
                   {(column) => (
                     <div
                       style={{
@@ -73,10 +73,10 @@ export default function Page() {
                       {getCellValue(virtualRow().row, column().column)}
                     </div>
                   )}
-                </Index>
+                </For>
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
     </main>

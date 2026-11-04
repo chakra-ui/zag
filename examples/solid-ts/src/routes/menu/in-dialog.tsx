@@ -3,8 +3,8 @@ import * as menu from "@zag-js/menu"
 import { menuData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { For, Show, createMemo, createUniqueId, onMount } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId, onSettled } from "solid-js"
+import { Portal } from "@solidjs/web"
 import "@styles/menu.css"
 import "@styles/dialog.css"
 
@@ -18,12 +18,12 @@ function NestedMenu() {
   const sub2Service = useMachine(menu.machine, { id: createUniqueId() })
   const sub2 = createMemo(() => menu.connect(sub2Service, normalizeProps))
 
-  onMount(() => {
+  onSettled(() => {
     root().setChild(subService)
     sub().setParent(service)
   })
 
-  onMount(() => {
+  onSettled(() => {
     sub().setChild(sub2Service)
     sub2().setParent(subService)
   })

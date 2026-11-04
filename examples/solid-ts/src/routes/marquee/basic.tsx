@@ -1,6 +1,6 @@
 import * as marquee from "@zag-js/marquee"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For, Index } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { marqueeControls, marqueeData } from "@zag-js/shared"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
@@ -27,7 +27,7 @@ export default function Page() {
           <div {...api().getEdgeProps({ side: "start" })} />
 
           <div {...api().getViewportProps()}>
-            <Index each={Array.from({ length: api().contentCount })}>
+            <For keyed={false} each={Array.from({ length: api().contentCount })}>
               {(_, index) => (
                 <div {...api().getContentProps({ index })}>
                   <For each={marqueeData}>
@@ -40,7 +40,7 @@ export default function Page() {
                   </For>
                 </div>
               )}
-            </Index>
+            </For>
           </div>
 
           <div {...api().getEdgeProps({ side: "end" })} />

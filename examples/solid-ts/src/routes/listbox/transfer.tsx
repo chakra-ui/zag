@@ -1,6 +1,7 @@
 import * as listbox from "@zag-js/listbox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId, For, Show, splitProps, type JSX } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Show, omit } from "solid-js"
+import type { JSX } from "@solidjs/web"
 import "@styles/listbox.css"
 
 interface Item {
@@ -11,7 +12,7 @@ interface Item {
 type ListBoxProps = { label?: JSX.Element } & Omit<listbox.Props<Item>, "id">
 
 function ListBox(props: ListBoxProps) {
-  const [local, rest] = splitProps(props, ["label"])
+  const rest = omit(props, "label")
   const id = createUniqueId()
 
   const service = useMachine(listbox.machine as listbox.Machine<Item>, (): listbox.Props<Item> => ({
@@ -24,8 +25,8 @@ function ListBox(props: ListBoxProps) {
 
   return (
     <div {...mergeProps(api().getRootProps(), { style: { flex: "1" } })}>
-      <Show when={local.label}>
-        <label {...api().getLabelProps()}>{local.label}</label>
+      <Show when={props.label}>
+        <label {...api().getLabelProps()}>{props.label}</label>
       </Show>
       <div {...mergeProps(api().getContentProps(), { style: { width: "100%", height: "100%" } })}>
         <ul {...mergeProps(api().getListProps(), { style: { width: "100%", height: "100%" } })}>

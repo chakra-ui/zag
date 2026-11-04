@@ -126,7 +126,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
           ref(el)
         }}
         onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        tabindex={0}
         aria-label="Zag known-size performance list"
         style={{ height: "400px", overflow: "auto", border: "2px solid #3b82f6", "border-radius": "8px" }}
       >

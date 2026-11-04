@@ -3,7 +3,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/combobox.css"
 
 interface Item {
@@ -64,14 +64,14 @@ export default function Page() {
           <div data-testid="combobox-content" {...api().getContentProps()}>
             <Show when={options().length > 0}>
               <div {...api().getListProps()}>
-                <Index each={options()}>
+                <For keyed={false} each={options()}>
                   {(item) => (
                     <div data-testid={item().code} {...api().getItemProps({ item: item() })}>
                       <span {...api().getItemIndicatorProps({ item: item() })}>✅</span>
                       <span>{item().label}</span>
                     </div>
                   )}
-                </Index>
+                </For>
               </div>
             </Show>
           </div>

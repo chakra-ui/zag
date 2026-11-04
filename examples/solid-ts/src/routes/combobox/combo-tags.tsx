@@ -4,7 +4,7 @@ import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
-import { For, Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/combobox.css"
 import "@styles/tags-input.css"
 
@@ -136,13 +136,13 @@ export default function Page() {
         <div data-testid="combobox-content" {...comboboxApi().getContentProps()}>
           <Show when={options().length > 0}>
             <div {...comboboxApi().getListProps()} ref={contentRef}>
-              <Index each={options()}>
+              <For keyed={false} each={options()}>
                 {(item) => (
                   <div data-testid={item().code} {...comboboxApi().getItemProps({ item: item() })}>
                     {item().label}
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
           </Show>
         </div>

@@ -10,8 +10,9 @@ import {
 } from "@zag-js/json-tree-utils"
 import { jsonTreeData } from "@zag-js/shared"
 import { Key } from "@zag-js/solid"
-import { Index, JSX } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { For } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Dynamic } from "@solidjs/web"
 
 interface KeyNodeProps {
   node: JsonNode
@@ -47,7 +48,9 @@ function ValueNode(props: ValueNodeProps): JSX.Element {
       data-type={props.node.properties.nodeType}
       data-kind={props.node.properties.kind}
     >
-      <Index each={props.node.children}>{(child) => <ValueNode node={child()} />}</Index>
+      <For keyed={false} each={props.node.children}>
+        {(child) => <ValueNode node={child()} />}
+      </For>
     </Dynamic>
   )
 }

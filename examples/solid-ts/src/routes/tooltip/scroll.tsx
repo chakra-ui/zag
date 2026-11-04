@@ -1,7 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tooltip from "@zag-js/tooltip"
-import { Index, Show, createMemo, createUniqueId, type JSX } from "solid-js"
-import { Portal } from "solid-js/web"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
+import type { JSX } from "@solidjs/web"
+import { Portal } from "@solidjs/web"
 import "@styles/tooltip.css"
 
 interface TooltipProps {
@@ -58,13 +59,13 @@ export default function Page() {
             "margin-top": "20px",
           }}
         >
-          <Index each={items}>
+          <For keyed={false} each={items}>
             {(idx) => (
               <div style={{ padding: "10px", "border-bottom": "1px solid #eee" }}>
                 <Tooltip closeOnPointerDown={true}>item {idx()}</Tooltip>
               </div>
             )}
-          </Index>
+          </For>
         </div>
       </div>
     </main>

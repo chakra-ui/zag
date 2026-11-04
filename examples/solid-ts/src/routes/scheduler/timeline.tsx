@@ -1,7 +1,7 @@
 import * as scheduler from "@zag-js/scheduler"
 import { schedulerAnchor, schedulerResourceEvents, schedulerResources } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/scheduler.css"
@@ -33,28 +33,28 @@ export default function Page() {
             <div {...api().getTimelineHeaderProps()}>
               <div class="scheduler-timeline-corner" />
               <div class="scheduler-timeline-axis">
-                <Index each={timeline().slots}>
+                <For keyed={false} each={timeline().slots}>
                   {(slot) => <div {...api().getTimelineSlotProps({ slot: slot() })}>{slot().label}</div>}
-                </Index>
+                </For>
               </div>
             </div>
 
-            <Index each={timeline().rows}>
+            <For keyed={false} each={timeline().rows}>
               {(row) => (
                 <div {...api().getTimelineRowProps({ row: row() })}>
                   <div {...api().getTimelineRowHeaderProps({ row: row() })}>{row().title}</div>
                   <div {...api().getTimelineTrackProps({ row: row() })}>
-                    <Index each={api().getEventsForRow(row())}>
+                    <For keyed={false} each={api().getEventsForRow(row())}>
                       {(event) => (
                         <div {...api().getEventProps({ event: event(), layout: "timeline" })}>
                           <span class="scheduler-event-title">{event().title}</span>
                         </div>
                       )}
-                    </Index>
+                    </For>
                   </div>
                 </div>
               )}
-            </Index>
+            </For>
           </div>
         </div>
       </main>

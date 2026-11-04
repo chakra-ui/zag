@@ -2,7 +2,7 @@ import * as select from "@zag-js/select"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon } from "lucide-solid"
 import { For, createMemo, createSignal, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 import "@styles/select.css"
 
 interface Item {
