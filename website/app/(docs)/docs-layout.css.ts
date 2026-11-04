@@ -69,7 +69,7 @@ export const title = css({
   flex: "1",
   fontSize: "32px",
   lineHeight: "1.15",
-  fontWeight: "medium",
+  fontWeight: "semibold",
   letterSpacing: "-0.035em",
   color: "ink",
 })

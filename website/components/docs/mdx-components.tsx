@@ -82,16 +82,48 @@ const components: Record<string, FC<any>> = {
     return <Blockquote {...props} />
   },
   h1(props) {
-    return <styled.h1 textStyle="display.lg" mb="5" maxW="85ch" {...props} />
+    return (
+      <styled.h1
+        textStyle="display.lg"
+        fontWeight="medium"
+        mb="5"
+        maxW="85ch"
+        {...props}
+      />
+    )
   },
   h2(props) {
-    return <styled.h2 textStyle="display.md" mt="12" mb="3" {...props} />
+    return (
+      <styled.h2
+        textStyle="display.md"
+        fontWeight="medium"
+        mt="12"
+        mb="3"
+        {...props}
+      />
+    )
   },
   h3(props) {
-    return <styled.h3 textStyle="display.sm" mt="6" mb="4" {...props} />
+    return (
+      <styled.h3
+        textStyle="display.sm"
+        fontWeight="medium"
+        mt="6"
+        mb="4"
+        {...props}
+      />
+    )
   },
   h4(props) {
-    return <styled.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
+    return (
+      <styled.h4
+        textStyle="display.xs"
+        fontWeight="medium"
+        mt="6"
+        mb="2"
+        {...props}
+      />
+    )
   },
   pre: CodeBlock,
   li(props) {
