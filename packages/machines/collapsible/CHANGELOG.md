@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3569](https://github.com/chakra-ui/zag/pull/3569)
+  [`c023993`](https://github.com/chakra-ui/zag/commit/c0239937d08e8f8a733ed3f793c3efc1cf8e00b2) Thanks
+  [@rjsgud49](https://github.com/rjsgud49)! - - Fix the trigger staying focusable and not announced as disabled when the
+  collapsible is disabled.
+- Updated dependencies [[`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+  - @zag-js/dom-query@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes
