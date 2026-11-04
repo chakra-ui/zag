@@ -1,5 +1,36 @@
 # @zag-js/menu
 
+## 1.48.0
+
+### Minor Changes
+
+- [#3579](https://github.com/chakra-ui/zag/pull/3579)
+  [`242d12a`](https://github.com/chakra-ui/zag/commit/242d12a6c08debf6b2bba669752d7d2a98f13f28) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `initialFocusEl` and `finalFocusEl` props to control which
+  element receives focus when the menu opens and closes.
+
+### Patch Changes
+
+- [#3574](https://github.com/chakra-ui/zag/pull/3574)
+  [`05ec7e2`](https://github.com/chakra-ui/zag/commit/05ec7e2329ccfcf4583c96e6daec05e79b37371b) Thanks
+  [@lord-0011](https://github.com/lord-0011)! - - Fix the page scrolling when the highlighted item is scrolled into
+  view.
+
+- [#3571](https://github.com/chakra-ui/zag/pull/3571)
+  [`8701de7`](https://github.com/chakra-ui/zag/commit/8701de7f6f17ce74719dd15555d107052cd0610b) Thanks
+  [@minwookshin](https://github.com/minwookshin)! - - Fix focus not returning to the previously focused element when a
+  context menu closes.
+- Updated dependencies [[`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/dismissable@1.48.0
+  - @zag-js/popper@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/focus-visible@1.48.0
+  - @zag-js/rect-utils@1.48.0
+
 ## 1.47.0
 
 ### Minor Changes
