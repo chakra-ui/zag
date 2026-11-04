@@ -323,6 +323,10 @@ interface PrivateContext {
    */
   inputValue: string
   /**
+   * The index of the input that `inputValue` belongs to.
+   */
+  inputValueIndex: number
+  /**
    * The start date of the current visible duration.
    */
   startValue: DateValue
