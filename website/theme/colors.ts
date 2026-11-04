@@ -76,7 +76,7 @@ export const siteColors = {
   surface: mode("#ffffff", "#151918"),
   ink: {
     DEFAULT: mode("#1a1d1b", "#e6eae7"),
-    muted: mode("#69716c", "#8e9792"),
+    muted: mode("#555c58", "#9aa39e"),
   },
   line: {
     DEFAULT: mode("#e3e7e4", "#232927"),

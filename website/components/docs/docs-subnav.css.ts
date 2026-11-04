@@ -27,6 +27,7 @@ export const tab = css({
   gap: "2",
   outline: "none",
   fontSize: "14px",
+  fontWeight: "medium",
   color: "ink.muted",
   transition: "color 120ms",
   "& > span": {

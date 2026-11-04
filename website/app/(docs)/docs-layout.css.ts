@@ -39,7 +39,7 @@ export const main = css({
   mx: "auto",
   pt: "10",
   pb: "24",
-  "& > p:first-of-type": { textStyle: "lead", color: "ink.muted", mt: "0" },
+  "& > p:first-of-type": { textStyle: "lead", color: "ink", mt: "0" },
 })
 
 export const header = css({

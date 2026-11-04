@@ -37,11 +37,16 @@ export const link = css({
   px: "2.5",
   rounded: "lg",
   fontSize: "14px",
-  color: "ink.muted",
+  color: "ink/80",
   transition: "color 120ms, background 120ms",
   _hover: { color: "ink", bg: "ink/4" },
   _focusVisible: focusRing,
-  _currentPage: { color: "ink", bg: "ink/6", fontWeight: "medium" },
+  _currentPage: {
+    color: "ink",
+    bg: { base: "primary/10", _dark: "primary/12" },
+    fontWeight: "medium",
+    _hover: { bg: { base: "primary/14", _dark: "primary/16" } },
+  },
 })
 
 export const badge = css({

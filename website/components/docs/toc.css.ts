@@ -38,9 +38,10 @@ export const link = css({
 export const indicator = css({
   top: "var(--top)",
   left: "var(--left)",
-  w: "1px",
+  w: "2px",
   h: "var(--height)",
-  bg: "ink",
+  rounded: "full",
+  bg: "primary/60",
   transition: "top 200ms ease, height 200ms ease",
   _motionReduce: { transition: "none" },
 })

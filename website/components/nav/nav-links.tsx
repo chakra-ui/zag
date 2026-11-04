@@ -20,6 +20,7 @@ export function NavLinks() {
             alignItems: "center",
             h: "full",
             fontSize: "14px",
+            fontWeight: "medium",
             color: "ink.muted",
             transition: "color 120ms",
             _hover: { color: "ink" },

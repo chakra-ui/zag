@@ -1,11 +1,5 @@
 import { apgPatterns } from "lib/apg"
-import {
-  LuAccessibility,
-  LuArrowUpRight,
-  LuCode,
-  LuPackage,
-} from "react-icons/lu"
-import { cx } from "styled-system/css"
+import { LuAccessibility, LuArrowUpRight, LuCode } from "react-icons/lu"
 import { MachineDiagram } from "../machine-diagram"
 import * as styles from "./resource-link.css"
 
@@ -27,15 +21,6 @@ export function ResourceLinkGroup(props: {
 
   return (
     <div className={styles.root}>
-      <a
-        href={item.npmUrl}
-        target="_blank"
-        rel="noreferrer"
-        className={styles.action}
-      >
-        <LuPackage aria-hidden />
-        <span className={styles.mono}>{pkg}</span>
-      </a>
       {item.logicUrl && (
         <MachineDiagram
           url={item.logicUrl}
@@ -57,10 +42,12 @@ export function ResourceLinkGroup(props: {
           href={pattern.url}
           target="_blank"
           rel="noreferrer"
-          className={cx(styles.action, styles.accent)}
+          className={styles.action}
+          aria-label={`WAI-ARIA ${pattern.label} pattern`}
+          title={`WAI-ARIA ${pattern.label} pattern`}
         >
           <LuAccessibility aria-hidden />
-          WAI-ARIA {pattern.label}
+          WAI-ARIA
           <Arrow />
         </a>
       )}

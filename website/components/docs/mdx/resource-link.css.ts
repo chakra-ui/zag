@@ -32,20 +32,4 @@ export const action = css({
   "& > svg:first-child": { boxSize: "3.5" },
 })
 
-export const accent = css({
-  bg: "primary.soft",
-  color: "primary",
-  _hover: {
-    bg: "primary.soft",
-    boxShadow: "inset 0 0 0 1px {colors.primary/40}",
-  },
-  "& svg": { color: "primary" },
-})
-
-export const mono = css({
-  fontFamily: "mono",
-  fontSize: "12.5px",
-  fontWeight: "normal",
-})
-
 export const arrow = css({ boxSize: "3", opacity: "0.7" })
