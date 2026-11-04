@@ -20,6 +20,9 @@ export interface Layer {
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
   styleTargets?: LayerStyleTarget[] | undefined
+  /** Elements the layer opened from. When set, it nests only in a layer containing one */
+  origins?: Array<Element | null | undefined> | undefined
+  parent?: HTMLElement | undefined
 }
 
 const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
@@ -52,7 +55,12 @@ export const layerStack = {
     return layer?.node === node
   },
   getNestedLayers(node: HTMLElement) {
-    return Array.from(this.layers).slice(this.indexOf(node) + 1)
+    const nested = new Set([node])
+    return this.layers.slice(this.indexOf(node) + 1).filter((layer) => {
+      if (!layer.parent || !nested.has(layer.parent)) return false
+      nested.add(layer.node)
+      return true
+    })
   },
   getLayersByType(type: LayerType) {
     return this.layers.filter((layer) => layer.type === type)
@@ -93,10 +101,18 @@ export const layerStack = {
     // the same layer twice before `remove` runs; duplicates break nested-layer metadata.
     const existingIndex = this.indexOf(layer.node)
     if (existingIndex !== -1) {
+      layer.parent = this.layers[existingIndex].parent
       this.layers.splice(existingIndex, 1)
+    } else {
+      layer.parent = this.getParentNode(layer)
     }
     this.layers.push(layer)
     this.syncLayers()
+  },
+  getParentNode(layer: Layer) {
+    const origins = layer.origins?.filter((origin) => origin?.isConnected)
+    if (!origins?.length) return this.layers[this.count() - 1]?.node
+    return [...this.layers].reverse().find(({ node }) => origins.some((origin) => contains(node, origin)))?.node
   },
   addBranch(node: HTMLElement) {
     this.branches.push(node)

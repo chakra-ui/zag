@@ -176,6 +176,27 @@ describe("layerStack", () => {
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
     })
+
+    test("does not dismiss a sibling layer whose trigger is outside the removed layer", () => {
+      const a = document.createElement("div")
+      const nestedTrigger = document.createElement("button")
+      a.append(nestedTrigger)
+      const b = document.createElement("div")
+      const bTrigger = document.createElement("button")
+      const nested = document.createElement("div")
+      document.body.append(a, bTrigger, b, nested)
+
+      const bDismiss = vi.fn()
+      const nestedDismiss = vi.fn()
+      layerStack.add(createLayer(a))
+      layerStack.add({ ...createLayer(b, { dismiss: bDismiss }), origins: [b, bTrigger] })
+      layerStack.add({ ...createLayer(nested, { dismiss: nestedDismiss }), origins: [nested, nestedTrigger] })
+
+      layerStack.remove(a)
+
+      expect(bDismiss).not.toHaveBeenCalled()
+      expect(nestedDismiss).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe("dismiss", () => {
