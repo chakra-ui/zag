@@ -3,10 +3,8 @@ title: Creating components
 description: Build compound components from a Zag hook.
 ---
 
-A hook is flexible, but callers still wire every part by hand. Compound
-components do that wiring once. You'll turn `useSlider` from the
-[previous page](/guides/design-system-hook) into `Slider.Root`, `Slider.Thumb`
-and the rest, each one rendering a single element.
+Turn the `useSlider` hook from the [previous page](/guides/design-system-hook)
+into compound components like `Slider.Root` and `Slider.Thumb`
 
 ```tsx
 <Slider.Root defaultValue={[40]}>

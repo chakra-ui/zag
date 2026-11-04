@@ -67,7 +67,7 @@ export const titleRow = css({
 
 export const title = css({
   flex: "1",
-  fontSize: "36px",
+  fontSize: "32px",
   lineHeight: "1.15",
   fontWeight: "medium",
   letterSpacing: "-0.035em",

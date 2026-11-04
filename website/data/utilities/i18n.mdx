@@ -5,9 +5,8 @@ description:
 package: "@zag-js/i18n-utils"
 ---
 
-Small wrappers around the `Intl` APIs. Each formatter is cached by locale and
-options, so calling it in a render loop doesn't create a new `Intl` object each
-time. The file upload machine uses `formatBytes` to format file sizes.
+Small cached wrappers around the `Intl` APIs, so formatting in a render loop
+doesn't create a new `Intl` object each time
 
 <Resources pkg="@zag-js/i18n-utils" />
 
