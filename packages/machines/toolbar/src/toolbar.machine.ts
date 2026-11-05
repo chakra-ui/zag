@@ -128,28 +128,28 @@ export const machine = createMachine<ToolbarSchema>({
         const before = scope.getActiveElement()
         refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
-          dom.getNextEl(scope, prop("loopFocus"))?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getNextEl(scope, prop("loopFocus")))
         })
       },
       focusPrevItem({ scope, prop, refs }) {
         const before = scope.getActiveElement()
         refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
-          dom.getPrevEl(scope, prop("loopFocus"))?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getPrevEl(scope, prop("loopFocus")))
         })
       },
       focusFirstItem({ scope, refs }) {
         const before = scope.getActiveElement()
         refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
-          dom.getFirstEl(scope)?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getFirstEl(scope))
         })
       },
       focusLastItem({ scope, refs }) {
         const before = scope.getActiveElement()
         refs.get("focusFrame").request(() => {
           if (scope.getActiveElement() !== before) return
-          dom.getLastEl(scope)?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getLastEl(scope))
         })
       },
       cancelFocusFrame({ refs }) {

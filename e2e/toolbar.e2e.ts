@@ -91,6 +91,41 @@ test.describe("toolbar", () => {
     await expect(page.getByText("Activated:")).toHaveText("Activated: (none)")
   })
 
+  test("[disabled] a disabled toolbar can still be reached and navigated with the keyboard", async () => {
+    await I.goto("/toolbar/basic")
+    await I.controls.bool("disabled")
+
+    await I.focusRoot()
+    await I.seeItemIsFocused("Cut")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("Copy")
+  })
+
+  test("[pointer] clicking an empty part of the toolbar leaves focus where it was", async () => {
+    await I.goto("/toolbar/basic")
+    await I.item("Cut").click()
+    await I.seeItemIsFocused("Cut")
+
+    await I.clickEmptyArea()
+    await I.seeRootIsNotFocused()
+    await I.seeItemIsFocused("Cut")
+  })
+
+  test("[overflow] moving focus scrolls the item into view", async () => {
+    await I.goto("/toolbar/basic")
+    await I.makeToolbarOverflow()
+    await I.focusRoot()
+
+    await I.pressKey("End")
+    await I.seeLinkIsFocused("Edited 51m ago")
+    await I.seeLinkIsScrolledIntoView("Edited 51m ago")
+
+    await I.pressKey("Home")
+    await I.seeItemIsFocused("Align left")
+    await I.seeItemIsScrolledIntoView("Align left")
+  })
+
   test("[rtl] ArrowLeft moves forward and ArrowRight moves backward", async () => {
     await I.goto("/toolbar/rtl")
     await I.focusRoot()

@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test"
+import { expect, type Locator, type Page } from "@playwright/test"
 import { Model } from "./model"
 import { a11y, part } from "../_utils"
 
@@ -47,6 +47,43 @@ export class ToolbarModel extends Model {
 
   seeItemIsEnabled(name: string) {
     return expect(this.item(name)).toBeEnabled()
+  }
+
+  seeRootIsNotFocused() {
+    return expect(this.root).not.toBeFocused()
+  }
+
+  /** Click the toolbar's own padding, away from any item */
+  async clickEmptyArea() {
+    const box = await this.root.boundingBox()
+    if (!box) throw new Error("toolbar is not rendered")
+    await this.page.mouse.click(box.x + box.width - 2, box.y + box.height / 2)
+  }
+
+  /** Squeeze the toolbar so its items overflow and it scrolls horizontally */
+  async makeToolbarOverflow() {
+    await this.root.evaluate((el) => {
+      el.style.width = "160px"
+      el.style.overflowX = "auto"
+      el.style.flexWrap = "nowrap"
+    })
+  }
+
+  seeLinkIsScrolledIntoView(name: string) {
+    return this.seeIsInsideToolbar(this.link(name))
+  }
+
+  seeItemIsScrolledIntoView(name: string) {
+    return this.seeIsInsideToolbar(this.item(name))
+  }
+
+  private async seeIsInsideToolbar(locator: Locator) {
+    const isInside = await locator.evaluate((el) => {
+      const item = el.getBoundingClientRect()
+      const root = el.closest("[role=toolbar]")!.getBoundingClientRect()
+      return item.left >= root.left && item.right <= root.right
+    })
+    expect(isInside).toBe(true)
   }
 
   checkAccessibility() {

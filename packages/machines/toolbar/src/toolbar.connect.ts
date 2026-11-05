@@ -71,12 +71,16 @@ export function connect<T extends PropTypes>(service: ToolbarService, normalize:
         "data-disabled": dataAttr(rootDisabled),
         tabIndex: context.get("hasInteracted") ? -1 : 0,
         style: { outline: "none" },
-        onMouseDown() {
-          if (rootDisabled) return
+        onMouseDown(event) {
+          const root = event.currentTarget
+          const target = getEventTarget<HTMLElement>(event)
+          if (contains(root, target) && dom.getFocusTarget(root, target) === root) {
+            event.preventDefault()
+            return
+          }
           send({ type: "ROOT.MOUSE_DOWN" })
         },
         onFocus(event) {
-          if (rootDisabled) return
           const target = getEventTarget<HTMLElement>(event)
           if (event.currentTarget !== target) {
             if (contains(event.currentTarget, target)) send({ type: "DESCENDANT.FOCUS" })
@@ -88,11 +92,9 @@ export function connect<T extends PropTypes>(service: ToolbarService, normalize:
         onBlur(event) {
           const relatedTarget = event.relatedTarget as HTMLElement | null
           if (contains(event.currentTarget, relatedTarget)) return
-          if (rootDisabled) return
           send({ type: "ROOT.BLUR" })
         },
         onKeyDown(event) {
-          if (rootDisabled) return
           if (event.defaultPrevented) return
           const target = getEventTarget<HTMLElement>(event)
           if (!contains(event.currentTarget, target)) return
