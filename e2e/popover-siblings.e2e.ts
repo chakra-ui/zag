@@ -1,11 +1,14 @@
 import { expect, test, type Locator, type Page } from "./_test"
 
-type Env = "document" | "shadow" | "iframe" | "mixed-shadow"
+type Env = "document" | "shadow" | "iframe" | "mixed-shadow" | "mixed-iframe"
 
 function setup(page: Page, env: Env, touch: boolean) {
   const root = env === "iframe" ? page.locator("iframe").first().contentFrame() : page
 
-  const trigger = (name: string) => root.getByTestId(`${name}-trigger`)
+  const scopeOf = (name: string) =>
+    env === "mixed-iframe" && name === "deep" ? page.locator("[data-testid=wrap-content] iframe").contentFrame() : root
+
+  const trigger = (name: string) => scopeOf(name).getByTestId(`${name}-trigger`)
 
   const press = async (loc: Locator, options: { position?: { x: number; y: number }; force?: boolean } = {}) => {
     const { position = { x: 4, y: 4 }, force } = options
@@ -31,9 +34,13 @@ function setup(page: Page, env: Env, touch: boolean) {
     open,
     expectStates,
     press: (name: string) => press(trigger(name)),
-    pressContent: (name: string) => press(root.getByTestId(`${name}-content`)),
-    // Unstyled content can overlap the blank area, so skip the hit-target check
-    pressOutside: () => press(root.getByTestId("blank"), { position: { x: 4, y: 180 }, force: true }),
+    pressContent: (name: string) => press(scopeOf(name).getByTestId(`${name}-content`)),
+    // Bottom edge, below open content. Unstyled content can still overlap, so skip the hit-target check
+    pressOutside: async () => {
+      const blank = root.getByTestId("blank")
+      const box = await blank.boundingBox()
+      await press(blank, { position: { x: 4, y: box!.height - 4 }, force: true })
+    },
   }
 }
 
@@ -93,6 +100,19 @@ test.describe("popover siblings", () => {
         await t.open("outer")
         await t.press("inner")
         await t.expectStates({ outer: "closed", inner: "open" })
+      })
+
+      test("a popover inside an iframe in a popover nests in it", async ({ page }) => {
+        await goto(page, "env=mixed-iframe")
+        const t = setup(page, "mixed-iframe", touch)
+        await t.open("wrap", "deep")
+        await t.expectStates({ wrap: "open", deep: "open" })
+
+        await t.pressContent("deep")
+        await t.expectStates({ wrap: "open", deep: "open" })
+
+        await t.pressOutside()
+        await t.expectStates({ wrap: "closed" })
       })
     })
   }
