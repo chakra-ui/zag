@@ -1,5 +1,11 @@
 import { setup } from "@zag-js/core"
-import { AnimationFrame, getFocusables, isAnchorElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  getFocusables,
+  isAnchorElement,
+  observeChildren,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
@@ -46,6 +52,9 @@ export const machine = createMachine({
       indicatorInstant: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      tabStopValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
@@ -61,7 +70,7 @@ export const machine = createMachine({
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorRect", "syncTabIndex"])
+      action(["syncIndicatorRect", "syncTabIndex", "syncTabStopValue"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["snapIndicator", "syncIndicatorRect"])
@@ -81,6 +90,9 @@ export const machine = createMachine({
     SYNC_TAB_INDEX: {
       actions: ["syncTabIndex"],
     },
+    "TRIGGERS.CHANGE": {
+      actions: ["syncTabStopValue"],
+    },
     INDICATOR_RESIZE: [
       // A running selection transition retargets to the new rect instead of snapping
       { guard: "isIndicatorTransitioning", actions: ["setResizedIndicatorRect"] },
@@ -88,7 +100,9 @@ export const machine = createMachine({
     ],
   },
 
-  entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
+  effects: ["trackTriggers"],
+
+  entry: ["syncIndicatorRect", "syncTabIndex", "syncTabStopValue", "syncSsr"],
 
   exit: ["cleanupObserver", "cancelFocusFrame", "cancelIndicatorFrame", "cancelSelectFrame", "cancelTabIndexFrame"],
 
@@ -101,7 +115,7 @@ export const machine = createMachine({
         },
         TAB_CLICK: {
           target: "focused",
-          actions: ["setFocusedValue", "setValue", "requestNavigation"],
+          actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
         },
       },
     },
@@ -109,7 +123,7 @@ export const machine = createMachine({
       exit: ["cancelFocusFrame"],
       on: {
         TAB_CLICK: {
-          actions: ["setFocusedValue", "setValue", "requestNavigation"],
+          actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
         },
         ARROW_PREV: [
           {
@@ -167,14 +181,11 @@ export const machine = createMachine({
     actions: {
       selectFocusedTab({ context, prop, event, scope, refs }) {
         refs.get("selectFrame").request(() => {
-          const focusedValue = context.get("focusedValue")
-          if (!focusedValue) return
-          const nullable = prop("deselectable") && context.get("value") === focusedValue
-          const value = nullable ? null : focusedValue
-          if (context.get("value") === value) return
+          const value = context.get("focusedValue")
+          if (!value || context.get("value") === value) return
 
           if (event.src === "keyboard") {
-            const triggerEl = dom.getTriggerEl(scope, focusedValue)
+            const triggerEl = dom.getTriggerEl(scope, value)
             if (isAnchorElement(triggerEl) && prop("navigate") !== null) {
               triggerEl.click()
               return
@@ -193,9 +204,17 @@ export const machine = createMachine({
       clearFocusedValue({ context }) {
         context.set("focusedValue", null)
       },
-      setValue({ context, event, prop }) {
-        const nullable = prop("deselectable") && context.get("value") === context.get("focusedValue")
-        context.set("value", nullable ? null : event.value)
+      setValue({ context, event }) {
+        context.set("value", event.value)
+      },
+      toggleValue({ context, event, prop }) {
+        const deselect = prop("deselectable") && context.get("value") === event.value
+        context.set("value", deselect ? null : event.value)
+      },
+      syncTabStopValue({ context, scope }) {
+        const selectedEl = dom.getTriggerEl(scope, context.get("value"))
+        const reachable = selectedEl != null && !selectedEl.hasAttribute("disabled")
+        context.set("tabStopValue", reachable ? null : (dom.getFirstTriggerEl(scope)?.dataset.value ?? null))
       },
       clearValue({ context }) {
         context.set("value", null)
@@ -349,6 +368,18 @@ export const machine = createMachine({
         if (!isAnchorElement(node)) return
 
         navigate({ value: event.value, node, href: node.href })
+      },
+    },
+
+    effects: {
+      trackTriggers({ scope, send }) {
+        return observeChildren(() => dom.getListEl(scope), {
+          attributes: true,
+          attributeFilter: ["disabled"],
+          callback() {
+            send({ type: "TRIGGERS.CHANGE" })
+          },
+        })
       },
     },
   },

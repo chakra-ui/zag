@@ -15,8 +15,8 @@ export class TabsModel extends Model {
     return a11y(this.page)
   }
 
-  goto() {
-    return this.page.goto("/tabs/basic")
+  goto(url = "/tabs/basic") {
+    return this.page.goto(url)
   }
 
   private getTabTrigger = (id: string) => {
@@ -45,6 +45,22 @@ export class TabsModel extends Model {
 
   dontSeeTabContent = async (id: string) => {
     await expect(this.getTabContent(id)).not.toBeVisible()
+  }
+
+  /** Keyboard selection lands a frame after the key press */
+  waitForKeyboardSelection = async () => {
+    await this.page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    )
+  }
+
+  /** The tab that Tab lands on when entering the tablist */
+  seeTabIsTabStop = async (id: string) => {
+    await expect(this.getTabTrigger(id)).toHaveAttribute("tabindex", "0")
+  }
+
+  disableSelectedTab = async () => {
+    await this.page.locator(testid("disable-selected")).check()
   }
 
   seeTabIsFocused = async (id: string) => {

@@ -47,6 +47,32 @@ test.describe("tabs", () => {
     await I.seeTabContent("agnes")
   })
 
+  test("[deselectable] the tablist stays reachable after the selection is cleared", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTab("nils")
+    await I.dontSeeTabContent("nils")
+    await I.seeTabIsTabStop("nils")
+  })
+
+  test("[deselectable] Home on the selected first tab keeps it selected", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.focusTab("nils")
+    await I.pressKey("Home")
+    await I.waitForKeyboardSelection()
+    await I.seeTabContent("nils")
+  })
+
+  test("[deselectable] End on the selected last tab keeps it selected", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTab("joke")
+    await I.pressKey("End")
+    await I.waitForKeyboardSelection()
+    await I.seeTabContent("joke")
+  })
+
   test("automatic: should select the correct tab on click", async () => {
     await I.clickTab("nils")
     await I.seeTabContent("nils")
@@ -156,5 +182,19 @@ test.describe("tabs [focus frame]", () => {
     await page.clock.runFor(32)
 
     await expect(page.locator("[data-tabs-trigger]:focus")).toHaveCount(0)
+  })
+})
+
+test.describe("tabs / disabled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TabsModel(page)
+    await I.goto("/tabs/disabled")
+  })
+
+  test("disabling the selected tab moves the tab stop to the first enabled tab", async () => {
+    await I.seeTabIsTabStop("nils")
+
+    await I.disableSelectedTab()
+    await I.seeTabIsTabStop("agnes")
   })
 })

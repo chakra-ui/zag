@@ -24,6 +24,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const isVertical = prop("orientation") === "vertical"
   const isHorizontal = prop("orientation") === "horizontal"
   const virtualFocus = prop("virtualFocus")
+  const tabStopValue = context.get("tabStopValue") ?? context.get("value")
 
   // Server render, or the indicator hasn't been measured yet (e.g. inside a hidden panel)
   const indicatorRect = context.get("indicatorRect")
@@ -169,7 +170,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
         "data-indicator-pending": dataAttr(indicatorPending),
         id: dom.getTriggerId(scope, value),
-        tabIndex: triggerState.selected && !virtualFocus ? 0 : -1,
+        tabIndex: !virtualFocus && tabStopValue === value ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },

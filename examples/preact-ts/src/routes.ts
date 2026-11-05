@@ -440,6 +440,7 @@ export const routes: RouteDefinition[] = [
   { path: "/swap/basic", component: lazy(() => import("./pages/swap/basic")) },
   { path: "/switch/basic", component: lazy(() => import("./pages/switch/basic")) },
   { path: "/tabs/basic", component: lazy(() => import("./pages/tabs/basic")) },
+  { path: "/tabs/disabled", component: lazy(() => import("./pages/tabs/disabled")) },
   { path: "/tabs/with-link", component: lazy(() => import("./pages/tabs/with-link")) },
   { path: "/tags-input/allow-duplicates", component: lazy(() => import("./pages/tags-input/allow-duplicates")) },
   { path: "/tags-input/basic", component: lazy(() => import("./pages/tags-input/basic")) },
