@@ -2,6 +2,7 @@
 import * as numberInput from "@zag-js/number-input"
 import * as toolbar from "@zag-js/toolbar"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { MinusIcon, PlusIcon } from "lucide-vue-next"
 import "@styles/toolbar.css"
 
 const service = useMachine(toolbar.machine, { id: useId(), orientation: "vertical" })
@@ -30,15 +31,15 @@ const numberApi = computed(() => numberInput.connect(numberService, normalizePro
       <button v-bind="api.getItemProps({ value: 'copy' })">Copy</button>
       <div v-bind="api.getSeparatorProps()" />
       <div v-bind="numberApi.getControlProps()">
-        <button v-bind="numberApi.getDecrementTriggerProps()" aria-label="Zoom out">−</button>
+        <button v-bind="numberApi.getDecrementTriggerProps()" aria-label="Zoom out"><MinusIcon /></button>
         <input
           class="toolbar-number-input"
           v-bind="mergeProps(numberApi.getInputProps(), api.getInputProps({ value: 'zoom' }))"
         />
-        <button v-bind="numberApi.getIncrementTriggerProps()" aria-label="Zoom in">+</button>
+        <button v-bind="numberApi.getIncrementTriggerProps()" aria-label="Zoom in"><PlusIcon /></button>
       </div>
     </div>
-    <p>
+    <p class="toolbar-note">
       A vertical toolbar contests ArrowUp/ArrowDown with the number-input's own spin behavior. Focus the zoom field and
       press ArrowUp/ArrowDown — it should always change the value, never move roving focus away. ArrowUp/ArrowDown still
       move between Cut/Copy/the field when focus is elsewhere.

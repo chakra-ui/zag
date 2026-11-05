@@ -20,7 +20,7 @@ const api = computed(() => toolbar.connect(service, normalizeProps))
       <input v-model="showComment" type="checkbox" />
       Show Comment button
     </label>
-    <p>
+    <p class="toolbar-note">
       Focus "Comment" (the last item), then uncheck the box above to remove it while it's still focused. Tab away and
       back — the toolbar should still have a working tab stop, not become entirely unreachable.
     </p>

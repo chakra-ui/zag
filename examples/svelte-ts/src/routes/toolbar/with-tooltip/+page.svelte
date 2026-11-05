@@ -4,6 +4,7 @@
   import IconButton from "#lib/components/toolbar-icon-button.svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toolbar from "@zag-js/toolbar"
+  import { Bold, Italic, Underline } from "lucide-svelte"
   import "@styles/toolbar.css"
   import "@styles/tooltip.css"
 
@@ -15,16 +16,18 @@
 <main class="toolbar">
   <div {...api.getRootProps()}>
     <IconButton {api} value="bold" label="Bold">
-      <strong>B</strong>
+      <Bold />
     </IconButton>
     <IconButton {api} value="italic" label="Italic">
-      <em>I</em>
+      <Italic />
     </IconButton>
     <IconButton {api} value="underline" label="Underline">
-      <u>U</u>
+      <Underline />
     </IconButton>
   </div>
-  <p>Hover or focus an icon button to see its tooltip. Arrow keys still move roving focus normally.</p>
+  <p class="toolbar-note">
+    Hover or focus an icon button to see its tooltip. Arrow keys still move roving focus normally.
+  </p>
 </main>
 
 <ControlsPanel>

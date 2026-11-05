@@ -18,11 +18,7 @@ const tooltipApi = computed(() => tooltip.connect(service, normalizeProps))
 </script>
 
 <template>
-  <button
-    class="toolbar-icon-only"
-    v-bind="mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))"
-    :aria-label="label"
-  >
+  <button v-bind="mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))" :aria-label="label">
     <slot />
   </button>
   <Teleport v-if="tooltipApi.open" to="#teleports">

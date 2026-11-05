@@ -4,6 +4,17 @@ import * as select from "@zag-js/select"
 import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import {
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
+  BoldIcon,
+  ChevronDownIcon,
+  ItalicIcon,
+  MinusIcon,
+  PlusIcon,
+  UnderlineIcon,
+} from "lucide-vue-next"
 import "@styles/toolbar.css"
 import "@styles/toggle-group.css"
 import "@styles/select.css"
@@ -98,7 +109,7 @@ const alignApi = computed(() => toggleGroup.connect(alignService, normalizeProps
       <div v-bind="api.getRootProps()">
         <button v-bind="mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: 'font' }))">
           <span>{{ fontApi.valueAsString }}</span>
-          <span aria-hidden>▾</span>
+          <ChevronDownIcon aria-hidden="true" />
         </button>
         <Teleport to="#teleports">
           <div v-bind="fontApi.getPositionerProps()">
@@ -115,28 +126,34 @@ const alignApi = computed(() => toggleGroup.connect(alignService, normalizeProps
         <div v-bind="api.getSeparatorProps()" />
 
         <div v-bind="sizeApi.getControlProps()">
-          <button v-bind="sizeApi.getDecrementTriggerProps()" aria-label="Decrease font size">−</button>
+          <button v-bind="sizeApi.getDecrementTriggerProps()" aria-label="Decrease font size"><MinusIcon /></button>
           <input
             class="toolbar-number-input"
             v-bind="mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: 'font-size' }))"
           />
-          <button v-bind="sizeApi.getIncrementTriggerProps()" aria-label="Increase font size">+</button>
+          <button v-bind="sizeApi.getIncrementTriggerProps()" aria-label="Increase font size"><PlusIcon /></button>
         </div>
 
         <div v-bind="api.getSeparatorProps()" />
 
         <div v-bind="formatApi.getRootProps()">
-          <button v-bind="formatApi.getItemProps({ value: 'bold' })" aria-label="Bold"><strong>B</strong></button>
-          <button v-bind="formatApi.getItemProps({ value: 'italic' })" aria-label="Italic"><em>I</em></button>
-          <button v-bind="formatApi.getItemProps({ value: 'underline' })" aria-label="Underline"><u>U</u></button>
+          <button v-bind="formatApi.getItemProps({ value: 'bold' })" aria-label="Bold"><BoldIcon /></button>
+          <button v-bind="formatApi.getItemProps({ value: 'italic' })" aria-label="Italic"><ItalicIcon /></button>
+          <button v-bind="formatApi.getItemProps({ value: 'underline' })" aria-label="Underline">
+            <UnderlineIcon />
+          </button>
         </div>
 
         <div v-bind="api.getSeparatorProps()" />
 
         <div v-bind="alignApi.getRootProps()">
-          <button v-bind="alignApi.getItemProps({ value: 'left' })" aria-label="Align left">⯇</button>
-          <button v-bind="alignApi.getItemProps({ value: 'center' })" aria-label="Align center">≡</button>
-          <button v-bind="alignApi.getItemProps({ value: 'right' })" aria-label="Align right">⯈</button>
+          <button v-bind="alignApi.getItemProps({ value: 'left' })" aria-label="Align left"><AlignLeftIcon /></button>
+          <button v-bind="alignApi.getItemProps({ value: 'center' })" aria-label="Align center">
+            <AlignCenterIcon />
+          </button>
+          <button v-bind="alignApi.getItemProps({ value: 'right' })" aria-label="Align right">
+            <AlignRightIcon />
+          </button>
         </div>
       </div>
 

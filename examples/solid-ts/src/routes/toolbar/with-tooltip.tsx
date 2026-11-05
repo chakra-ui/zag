@@ -4,6 +4,7 @@ import * as tooltip from "@zag-js/tooltip"
 import { Show, createMemo, createUniqueId } from "solid-js"
 import type { JSX } from "@solidjs/web"
 import { Portal } from "@solidjs/web"
+import { BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import "@styles/toolbar.css"
@@ -21,7 +22,6 @@ function IconButton(props: { api: () => toolbar.Api; value: string; label: strin
   return (
     <>
       <button
-        class="toolbar-icon-only"
         {...mergeProps(tooltipApi().getTriggerProps(), props.api().getItemProps({ value: props.value }))}
         aria-label={props.label}
       >
@@ -47,13 +47,13 @@ export default function Page() {
       <main class="toolbar">
         <div {...api().getRootProps()}>
           <IconButton api={api} value="bold" label="Bold">
-            <strong>B</strong>
+            <BoldIcon />
           </IconButton>
           <IconButton api={api} value="italic" label="Italic">
-            <em>I</em>
+            <ItalicIcon />
           </IconButton>
           <IconButton api={api} value="underline" label="Underline">
-            <u>U</u>
+            <UnderlineIcon />
           </IconButton>
         </div>
       </main>

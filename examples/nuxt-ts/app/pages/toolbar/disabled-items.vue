@@ -20,17 +20,21 @@ function activate(label: string) {
         v-bind="api.getItemProps({ value: 'copy', disabled: true, focusableWhenDisabled: false })"
         @click="activate('Copy')"
       >
-        Copy (disabled, skipped by arrow keys)
+        Copy
       </button>
       <button
         v-bind="api.getItemProps({ value: 'paste', disabled: true })"
         @click="() => !api.getItemState({ value: 'paste', disabled: true }).disabled && activate('Paste')"
       >
-        Paste (disabled, still reachable)
+        Paste
       </button>
       <button v-bind="api.getItemProps({ value: 'select-all' })" @click="activate('Select All')">Select All</button>
     </div>
-    <p>Activated: {{ log.join(", ") || "(none)" }}</p>
+    <p class="toolbar-note">Activated: {{ log.join(", ") || "(none)" }}</p>
+    <p class="toolbar-note">
+      Copy is disabled and skipped by the arrow keys. Paste is disabled but stays reachable, so it can still be
+      discovered.
+    </p>
   </main>
 
   <Toolbar>

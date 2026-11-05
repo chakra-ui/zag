@@ -5,6 +5,7 @@
   import * as menu from "@zag-js/menu"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toolbar from "@zag-js/toolbar"
+  import { ChevronDown } from "lucide-svelte"
   import "@styles/toolbar.css"
   import "@styles/menu.css"
 
@@ -29,7 +30,10 @@
     <div {...api.getSeparatorProps()}></div>
 
     <button {...mergeProps(menuApi.getTriggerProps(), api.getItemProps({ value: "more" }))}>
-      More actions <span {...menuApi.getIndicatorProps()}>▾</span>
+      More actions
+      <span {...menuApi.getIndicatorProps()}>
+        <ChevronDown />
+      </span>
     </button>
     {#if menuApi.open}
       <Portal>
@@ -43,7 +47,7 @@
       </Portal>
     {/if}
   </div>
-  <p>
+  <p class="toolbar-note">
     Open the menu and use arrow keys — they navigate menu items, not the toolbar. Closing the menu returns roving focus
     to the toolbar.
   </p>

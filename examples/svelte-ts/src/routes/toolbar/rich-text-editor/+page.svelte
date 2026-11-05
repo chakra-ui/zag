@@ -7,6 +7,7 @@
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggleGroup from "@zag-js/toggle-group"
   import * as toolbar from "@zag-js/toolbar"
+  import { AlignCenter, AlignLeft, AlignRight, Bold, ChevronDown, Italic, Minus, Plus, Underline } from "lucide-svelte"
   import "@styles/toolbar.css"
   import "@styles/toggle-group.css"
   import "@styles/select.css"
@@ -85,7 +86,7 @@
     <div {...api.getRootProps()}>
       <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
         <span>{fontApi.valueAsString}</span>
-        <span aria-hidden="true">▾</span>
+        <ChevronDown aria-hidden="true" />
       </button>
       <Portal>
         <div {...fontApi.getPositionerProps()}>
@@ -104,28 +105,28 @@
       <div {...api.getSeparatorProps()}></div>
 
       <div {...sizeApi.getControlProps()}>
-        <button {...sizeApi.getDecrementTriggerProps()} aria-label="Decrease font size">−</button>
+        <button {...sizeApi.getDecrementTriggerProps()} aria-label="Decrease font size"><Minus /></button>
         <input
           class="toolbar-number-input"
           {...mergeProps(sizeApi.getInputProps(), api.getInputProps({ value: "font-size" }))}
         />
-        <button {...sizeApi.getIncrementTriggerProps()} aria-label="Increase font size">+</button>
+        <button {...sizeApi.getIncrementTriggerProps()} aria-label="Increase font size"><Plus /></button>
       </div>
 
       <div {...api.getSeparatorProps()}></div>
 
       <div {...formatApi.getRootProps()}>
-        <button {...formatApi.getItemProps({ value: "bold" })} aria-label="Bold"><strong>B</strong></button>
-        <button {...formatApi.getItemProps({ value: "italic" })} aria-label="Italic"><em>I</em></button>
-        <button {...formatApi.getItemProps({ value: "underline" })} aria-label="Underline"><u>U</u></button>
+        <button {...formatApi.getItemProps({ value: "bold" })} aria-label="Bold"><Bold /></button>
+        <button {...formatApi.getItemProps({ value: "italic" })} aria-label="Italic"><Italic /></button>
+        <button {...formatApi.getItemProps({ value: "underline" })} aria-label="Underline"><Underline /></button>
       </div>
 
       <div {...api.getSeparatorProps()}></div>
 
       <div {...alignApi.getRootProps()}>
-        <button {...alignApi.getItemProps({ value: "left" })} aria-label="Align left">⯇</button>
-        <button {...alignApi.getItemProps({ value: "center" })} aria-label="Align center">≡</button>
-        <button {...alignApi.getItemProps({ value: "right" })} aria-label="Align right">⯈</button>
+        <button {...alignApi.getItemProps({ value: "left" })} aria-label="Align left"><AlignLeft /></button>
+        <button {...alignApi.getItemProps({ value: "center" })} aria-label="Align center"><AlignCenter /></button>
+        <button {...alignApi.getItemProps({ value: "right" })} aria-label="Align right"><AlignRight /></button>
       </div>
     </div>
 

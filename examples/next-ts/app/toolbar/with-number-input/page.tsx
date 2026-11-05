@@ -3,6 +3,7 @@
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as numberInput from "@zag-js/number-input"
 import * as toolbar from "@zag-js/toolbar"
+import { MinusIcon, PlusIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "@/components/toolbar"
@@ -26,14 +27,14 @@ function ZoomInput(props: { api: toolbar.Api }) {
   return (
     <div {...numberApi.getControlProps()}>
       <button {...numberApi.getDecrementTriggerProps()} aria-label="Zoom out">
-        −
+        <MinusIcon />
       </button>
       <input
         className="toolbar-number-input"
         {...mergeProps(numberApi.getInputProps(), api.getInputProps({ value: "zoom" }))}
       />
       <button {...numberApi.getIncrementTriggerProps()} aria-label="Zoom in">
-        +
+        <PlusIcon />
       </button>
     </div>
   )
@@ -54,7 +55,7 @@ export default function Page() {
 
           <ZoomInput api={api} />
         </div>
-        <p>
+        <p className="toolbar-note">
           A vertical toolbar contests ArrowUp/ArrowDown with the number-input&apos;s own spin behavior. Focus the zoom
           field and press ArrowUp/ArrowDown — it should always change the value, never move roving focus away.
           ArrowUp/ArrowDown still move between Cut/Copy/the field when focus is elsewhere.

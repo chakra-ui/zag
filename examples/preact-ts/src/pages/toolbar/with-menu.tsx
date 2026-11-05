@@ -1,6 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as toolbar from "@zag-js/toolbar"
+import { ChevronDownIcon } from "lucide-preact"
 import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
@@ -21,7 +22,10 @@ function MoreActionsMenu(props: { api: toolbar.Api }) {
   return (
     <>
       <button {...mergeProps(menuApi.getTriggerProps(), api.getItemProps({ value: "more" }))}>
-        More actions <span {...menuApi.getIndicatorProps()}>▾</span>
+        More actions
+        <span {...menuApi.getIndicatorProps()}>
+          <ChevronDownIcon />
+        </span>
       </button>
       {menuApi.open && (
         <Portal>
@@ -54,7 +58,7 @@ export default function Page() {
 
           <MoreActionsMenu api={api} />
         </div>
-        <p>
+        <p className="toolbar-note">
           Open the menu and use arrow keys — they navigate menu items, not the toolbar. Closing the menu returns roving
           focus to the toolbar.
         </p>

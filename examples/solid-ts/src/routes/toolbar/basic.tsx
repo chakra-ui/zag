@@ -5,6 +5,7 @@ import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
 import { For, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "@solidjs/web"
+import { AlignLeftIcon, AlignRightIcon, ChevronDownIcon } from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -36,10 +37,10 @@ function AlignmentGroup(props: { api: () => toolbar.Api }) {
   return (
     <div {...api().getRootProps()}>
       <button {...api().getItemProps({ value: "left" })} aria-label="Align left">
-        ⯇
+        <AlignLeftIcon />
       </button>
       <button {...api().getItemProps({ value: "right" })} aria-label="Align right">
-        ⯈
+        <AlignRightIcon />
       </button>
     </div>
   )
@@ -76,7 +77,7 @@ function FontPicker(props: { api: () => toolbar.Api }) {
       </label>
       <button {...mergeProps(fontApi().getTriggerProps(), props.api().getItemProps({ value: "font" }))}>
         <span>{fontApi().valueAsString || "Font"}</span>
-        <span aria-hidden="true">▾</span>
+        <ChevronDownIcon aria-hidden="true" />
       </button>
       <Portal>
         <div {...fontApi().getPositionerProps()}>

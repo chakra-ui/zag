@@ -19,7 +19,7 @@ function TrackChangesToggle(props: { api: toolbar.Api }) {
   const checkboxApi = checkbox.connect(service, normalizeProps)
 
   return (
-    <label {...checkboxApi.getRootProps()} className="toolbar-item">
+    <label {...checkboxApi.getRootProps()} className="toolbar-checkbox">
       <div {...checkboxApi.getControlProps()} />
       <input
         {...mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: "track-changes" }))}

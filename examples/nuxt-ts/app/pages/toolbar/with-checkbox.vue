@@ -26,7 +26,7 @@ const checkboxApi = computed(() => checkbox.connect(checkboxService, normalizePr
       <button v-bind="api.getItemProps({ value: 'cut' })">Cut</button>
       <button v-bind="api.getItemProps({ value: 'copy' })">Copy</button>
       <div v-bind="api.getSeparatorProps()" />
-      <label v-bind="checkboxApi.getRootProps()" class="toolbar-item">
+      <label v-bind="checkboxApi.getRootProps()" class="toolbar-checkbox">
         <div v-bind="checkboxApi.getControlProps()" />
         <input
           v-bind="mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: 'track-changes' }))"

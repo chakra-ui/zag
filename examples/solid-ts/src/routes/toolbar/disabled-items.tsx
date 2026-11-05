@@ -26,7 +26,7 @@ export default function Page() {
             {...api().getItemProps({ value: "copy", disabled: true, focusableWhenDisabled: false })}
             onClick={() => onActivate("Copy")}
           >
-            Copy (disabled, skipped by arrow keys)
+            Copy
           </button>
 
           <button
@@ -36,14 +36,18 @@ export default function Page() {
               onActivate("Paste")
             }}
           >
-            Paste (disabled, still reachable)
+            Paste
           </button>
 
           <button {...api().getItemProps({ value: "select-all" })} onClick={() => onActivate("Select All")}>
             Select All
           </button>
         </div>
-        <p>Activated: {log().join(", ") || "(none)"}</p>
+        <p class="toolbar-note">Activated: {log().join(", ") || "(none)"}</p>
+        <p class="toolbar-note">
+          Copy is disabled and skipped by the arrow keys. Paste is disabled but stays reachable, so it can still be
+          discovered.
+        </p>
       </main>
 
       <ControlsPanel viz>

@@ -3,6 +3,7 @@ import * as menu from "@zag-js/menu"
 import * as toolbar from "@zag-js/toolbar"
 import { Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "@solidjs/web"
+import { ChevronDownIcon } from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import "@styles/toolbar.css"
@@ -22,7 +23,10 @@ function MoreActionsMenu(props: { api: () => toolbar.Api }) {
   return (
     <>
       <button {...mergeProps(menuApi().getTriggerProps(), props.api().getItemProps({ value: "more" }))}>
-        More actions <span {...menuApi().getIndicatorProps()}>▾</span>
+        More actions
+        <span {...menuApi().getIndicatorProps()}>
+          <ChevronDownIcon />
+        </span>
       </button>
       <Show when={menuApi().open}>
         <Portal>
@@ -55,7 +59,7 @@ export default function Page() {
 
           <MoreActionsMenu api={api} />
         </div>
-        <p>
+        <p class="toolbar-note">
           Open the menu and use arrow keys — they navigate menu items, not the toolbar. Closing the menu returns roving
           focus to the toolbar.
         </p>

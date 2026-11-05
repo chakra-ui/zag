@@ -3,6 +3,7 @@
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import * as toolbar from "@zag-js/toolbar"
+import { BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "@/components/toolbar"
@@ -22,11 +23,7 @@ function IconButton(props: { api: toolbar.Api; value: string; label: string; chi
 
   return (
     <>
-      <button
-        className="toolbar-icon-only"
-        {...mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))}
-        aria-label={label}
-      >
+      <button {...mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))} aria-label={label}>
         {children}
       </button>
       {tooltipApi.open && (
@@ -49,16 +46,18 @@ export default function Page() {
       <main className="toolbar">
         <div {...api.getRootProps()}>
           <IconButton api={api} value="bold" label="Bold">
-            <strong>B</strong>
+            <BoldIcon />
           </IconButton>
           <IconButton api={api} value="italic" label="Italic">
-            <em>I</em>
+            <ItalicIcon />
           </IconButton>
           <IconButton api={api} value="underline" label="Underline">
-            <u>U</u>
+            <UnderlineIcon />
           </IconButton>
         </div>
-        <p>Hover or focus an icon button to see its tooltip. Arrow keys still move roving focus normally.</p>
+        <p className="toolbar-note">
+          Hover or focus an icon button to see its tooltip. Arrow keys still move roving focus normally.
+        </p>
       </main>
 
       <ControlsPanel>

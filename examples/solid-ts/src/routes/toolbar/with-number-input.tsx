@@ -2,6 +2,7 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as numberInput from "@zag-js/number-input"
 import * as toolbar from "@zag-js/toolbar"
 import { createMemo, createUniqueId } from "solid-js"
+import { MinusIcon, PlusIcon } from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import "@styles/toolbar.css"
@@ -22,14 +23,14 @@ function ZoomInput(props: { api: () => toolbar.Api }) {
   return (
     <div {...numberApi().getControlProps()}>
       <button {...numberApi().getDecrementTriggerProps()} aria-label="Zoom out">
-        -
+        <MinusIcon />
       </button>
       <input
         class="toolbar-number-input"
         {...mergeProps(numberApi().getInputProps(), props.api().getInputProps({ value: "zoom" }))}
       />
       <button {...numberApi().getIncrementTriggerProps()} aria-label="Zoom in">
-        +
+        <PlusIcon />
       </button>
     </div>
   )

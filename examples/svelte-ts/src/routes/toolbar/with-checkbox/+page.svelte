@@ -26,7 +26,7 @@
 
     <div {...api.getSeparatorProps()}></div>
 
-    <label {...checkboxApi.getRootProps()} class="toolbar-item">
+    <label {...checkboxApi.getRootProps()} class="toolbar-checkbox">
       <div {...checkboxApi.getControlProps()}></div>
       <input
         {...mergeProps(checkboxApi.getHiddenInputProps(), api.getItemProps({ value: "track-changes" }))}

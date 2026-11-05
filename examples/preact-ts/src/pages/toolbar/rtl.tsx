@@ -29,7 +29,7 @@ export default function Page() {
           <button {...api.getItemProps({ value: "select-all" })}>Select All</button>
         </div>
 
-        <p>
+        <p className="toolbar-note">
           With <code>dir="rtl"</code>, ArrowLeft moves forward (toward the visual start) and ArrowRight moves backward —
           matching reading direction.
         </p>

@@ -3,6 +3,7 @@ import * as select from "@zag-js/select"
 import { toolbarControls, toolbarData } from "@zag-js/shared"
 import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
+import { AlignLeftIcon, AlignRightIcon, ChevronDownIcon } from "lucide-preact"
 import { useId } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar as ControlsPanel } from "../../components/toolbar"
@@ -35,10 +36,10 @@ function AlignmentGroup(props: { api: toolbar.Api }) {
   return (
     <div {...api.getRootProps()}>
       <button {...api.getItemProps({ value: "left" })} aria-label="Align left">
-        ⯇
+        <AlignLeftIcon />
       </button>
       <button {...api.getItemProps({ value: "right" })} aria-label="Align right">
-        ⯈
+        <AlignRightIcon />
       </button>
     </div>
   )
@@ -78,7 +79,7 @@ function FontPicker(props: { api: toolbar.Api }) {
       </label>
       <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
         <span>{fontApi.valueAsString || "Font"}</span>
-        <span aria-hidden>▾</span>
+        <ChevronDownIcon aria-hidden />
       </button>
       <Portal>
         <div {...fontApi.getPositionerProps()}>

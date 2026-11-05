@@ -31,7 +31,7 @@ const api = computed(() => toolbar.connect(service, normalizeProps))
       <button v-bind="api.getItemProps({ value: 'select-all' })">Select All</button>
     </div>
 
-    <p>
+    <p class="toolbar-note">
       With <code>dir="rtl"</code>, ArrowLeft moves forward (toward the visual start) and ArrowRight moves backward —
       matching reading direction.
     </p>

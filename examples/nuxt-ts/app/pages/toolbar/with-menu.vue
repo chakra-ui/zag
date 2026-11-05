@@ -2,6 +2,7 @@
 import * as menu from "@zag-js/menu"
 import * as toolbar from "@zag-js/toolbar"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronDownIcon } from "lucide-vue-next"
 import "@styles/toolbar.css"
 import "@styles/menu.css"
 
@@ -28,7 +29,10 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
       <button v-bind="api.getItemProps({ value: 'paste' })">Paste</button>
       <div v-bind="api.getSeparatorProps()" />
       <button v-bind="mergeProps(menuApi.getTriggerProps(), api.getItemProps({ value: 'more' }))">
-        More actions <span v-bind="menuApi.getIndicatorProps()">▾</span>
+        More actions
+        <span v-bind="menuApi.getIndicatorProps()">
+          <ChevronDownIcon />
+        </span>
       </button>
       <Teleport to="#teleports">
         <div v-if="menuApi.open" v-bind="menuApi.getPositionerProps()">
@@ -40,7 +44,7 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
         </div>
       </Teleport>
     </div>
-    <p>
+    <p class="toolbar-note">
       Open the menu and use arrow keys — they navigate menu items, not the toolbar. Closing the menu returns roving
       focus to the toolbar.
     </p>

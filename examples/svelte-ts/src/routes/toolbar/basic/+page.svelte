@@ -8,6 +8,7 @@
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggleGroup from "@zag-js/toggle-group"
   import * as toolbar from "@zag-js/toolbar"
+  import { AlignLeft, AlignRight, ChevronDown } from "lucide-svelte"
   import "@styles/toolbar.css"
   import "@styles/toggle-group.css"
   import "@styles/select.css"
@@ -50,8 +51,8 @@
 <main class="toolbar">
   <div {...api.getRootProps()}>
     <div {...alignmentApi.getRootProps()}>
-      <button {...alignmentApi.getItemProps({ value: "left" })} aria-label="Align left">⯇</button>
-      <button {...alignmentApi.getItemProps({ value: "right" })} aria-label="Align right">⯈</button>
+      <button {...alignmentApi.getItemProps({ value: "left" })} aria-label="Align left"><AlignLeft /></button>
+      <button {...alignmentApi.getItemProps({ value: "right" })} aria-label="Align right"><AlignRight /></button>
     </div>
 
     <div {...api.getSeparatorProps()}></div>
@@ -69,7 +70,7 @@
     <label {...fontApi.getLabelProps()} class="sr-only">Font</label>
     <button {...mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: "font" }))}>
       <span>{fontApi.valueAsString || "Font"}</span>
-      <span aria-hidden="true">▾</span>
+      <ChevronDown aria-hidden="true" />
     </button>
     <Portal>
       <div {...fontApi.getPositionerProps()}>

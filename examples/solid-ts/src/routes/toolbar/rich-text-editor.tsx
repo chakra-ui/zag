@@ -5,6 +5,17 @@ import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
 import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "@solidjs/web"
+import {
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
+  BoldIcon,
+  ChevronDownIcon,
+  ItalicIcon,
+  MinusIcon,
+  PlusIcon,
+  UnderlineIcon,
+} from "lucide-solid"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar as ControlsPanel } from "~/components/toolbar"
 import "@styles/toolbar.css"
@@ -42,7 +53,7 @@ function FontPicker(props: { api: () => toolbar.Api; onChange: (value: string) =
     <>
       <button {...mergeProps(fontApi().getTriggerProps(), props.api().getItemProps({ value: "font" }))}>
         <span>{fontApi().valueAsString}</span>
-        <span aria-hidden="true">▾</span>
+        <ChevronDownIcon aria-hidden="true" />
       </button>
       <Portal>
         <div {...fontApi().getPositionerProps()}>
@@ -83,14 +94,14 @@ function FontSizeInput(props: { api: () => toolbar.Api; onChange: (value: string
   return (
     <div {...numberApi().getControlProps()}>
       <button {...numberApi().getDecrementTriggerProps()} aria-label="Decrease font size">
-        −
+        <MinusIcon />
       </button>
       <input
         class="toolbar-number-input"
         {...mergeProps(numberApi().getInputProps(), props.api().getInputProps({ value: "font-size" }))}
       />
       <button {...numberApi().getIncrementTriggerProps()} aria-label="Increase font size">
-        +
+        <PlusIcon />
       </button>
     </div>
   )
@@ -113,13 +124,13 @@ function FormatToggles(props: { api: () => toolbar.Api; onChange: (value: string
   return (
     <div {...api().getRootProps()}>
       <button {...api().getItemProps({ value: "bold" })} aria-label="Bold">
-        <strong>B</strong>
+        <BoldIcon />
       </button>
       <button {...api().getItemProps({ value: "italic" })} aria-label="Italic">
-        <em>I</em>
+        <ItalicIcon />
       </button>
       <button {...api().getItemProps({ value: "underline" })} aria-label="Underline">
-        <u>U</u>
+        <UnderlineIcon />
       </button>
     </div>
   )
@@ -141,13 +152,13 @@ function AlignmentToggles(props: { api: () => toolbar.Api; onChange: (value: str
   return (
     <div {...api().getRootProps()}>
       <button {...api().getItemProps({ value: "left" })} aria-label="Align left">
-        ⯇
+        <AlignLeftIcon />
       </button>
       <button {...api().getItemProps({ value: "center" })} aria-label="Align center">
-        ≡
+        <AlignCenterIcon />
       </button>
       <button {...api().getItemProps({ value: "right" })} aria-label="Align right">
-        ⯈
+        <AlignRightIcon />
       </button>
     </div>
   )

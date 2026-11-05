@@ -23,11 +23,7 @@
   const tooltipApi = $derived(tooltip.connect(service, normalizeProps))
 </script>
 
-<button
-  class="toolbar-icon-only"
-  {...mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))}
-  aria-label={label}
->
+<button {...mergeProps(tooltipApi.getTriggerProps(), api.getItemProps({ value }))} aria-label={label}>
   {@render children()}
 </button>
 {#if tooltipApi.open}

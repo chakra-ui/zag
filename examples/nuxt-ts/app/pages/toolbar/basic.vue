@@ -4,6 +4,7 @@ import { toolbarControls, toolbarData } from "@zag-js/shared"
 import * as toggleGroup from "@zag-js/toggle-group"
 import * as toolbar from "@zag-js/toolbar"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
+import { AlignLeftIcon, AlignRightIcon, ChevronDownIcon } from "lucide-vue-next"
 import "@styles/toolbar.css"
 import "@styles/toggle-group.css"
 import "@styles/select.css"
@@ -59,8 +60,10 @@ const fontApi = computed(() => select.connect(fontService, normalizeProps))
   <main class="toolbar">
     <div v-bind="api.getRootProps()">
       <div v-bind="alignmentApi.getRootProps()">
-        <button v-bind="alignmentApi.getItemProps({ value: 'left' })" aria-label="Align left">⯇</button>
-        <button v-bind="alignmentApi.getItemProps({ value: 'right' })" aria-label="Align right">⯈</button>
+        <button v-bind="alignmentApi.getItemProps({ value: 'left' })" aria-label="Align left"><AlignLeftIcon /></button>
+        <button v-bind="alignmentApi.getItemProps({ value: 'right' })" aria-label="Align right">
+          <AlignRightIcon />
+        </button>
       </div>
 
       <div v-bind="api.getSeparatorProps()" />
@@ -77,7 +80,7 @@ const fontApi = computed(() => select.connect(fontService, normalizeProps))
       <label v-bind="fontApi.getLabelProps()" class="sr-only">Font</label>
       <button v-bind="mergeProps(fontApi.getTriggerProps(), api.getItemProps({ value: 'font' }))">
         <span>{{ fontApi.valueAsString || "Font" }}</span>
-        <span aria-hidden>▾</span>
+        <ChevronDownIcon aria-hidden="true" />
       </button>
       <Teleport to="#teleports">
         <div v-bind="fontApi.getPositionerProps()">
