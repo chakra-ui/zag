@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { isFocusable, nextById, prevById, scrollToNearest } from "@zag-js/dom-query"
+import { nextById, prevById, scrollToNearest } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import { parts } from "./toolbar.anatomy"
 
@@ -40,13 +40,4 @@ export const focusItem = (ctx: Scope, el: HTMLElement | null | undefined) => {
   if (!el) return
   el.focus({ preventScroll: true })
   scrollToNearest(el, { rootEl: getRootEl(ctx) })
-}
-
-export const getFocusTarget = (root: HTMLElement, target: HTMLElement | null) => {
-  let el = target
-  while (el) {
-    if (el === root || isFocusable(el)) return el
-    el = (el as HTMLElement).parentElement
-  }
-  return null
 }

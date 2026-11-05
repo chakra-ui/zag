@@ -1,4 +1,4 @@
-import { contains, dataAttr, getEventKey, getEventTarget, isSafari } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventKey, getEventTarget, getFocusTarget, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import * as dom from "./toggle-group.dom"
@@ -52,13 +52,19 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         role: "group",
         // Omit when nested in a toolbar so it doesn't add its own extra tab stop.
-        tabIndex: isWithinToolbar ? undefined : context.get("hasInteracted") ? -1 : 0,
+        tabIndex: isWithinToolbar || disabled ? undefined : context.get("hasInteracted") ? -1 : 0,
         "data-disabled": dataAttr(rootState.disabled),
         "data-multiple": dataAttr(rootState.multiple),
         "data-orientation": rootState.orientation,
         style: { outline: "none" },
-        onMouseDown() {
+        onMouseDown(event) {
           if (disabled) return
+          const root = event.currentTarget
+          const target = getEventTarget<HTMLElement>(event)
+          if (contains(root, target) && getFocusTarget(root, target) === root) {
+            event.preventDefault()
+            return
+          }
           send({ type: "ROOT.MOUSE_DOWN" })
         },
         onFocus(event) {

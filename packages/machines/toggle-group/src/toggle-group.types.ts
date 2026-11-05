@@ -61,8 +61,7 @@ export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
    */
   multiple?: boolean | undefined
   /**
-   * Whether the toggle group allows empty selection.
-   * **Note:** This is ignored if `multiple` is `true`.
+   * Whether the last pressed item can be unpressed, leaving the selection empty.
    *
    * @default true
    */

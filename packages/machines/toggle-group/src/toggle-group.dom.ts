@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { nextById, prevById } from "@zag-js/dom-query"
+import { nextById, prevById, scrollToNearest } from "@zag-js/dom-query"
 import { first, last } from "@zag-js/utils"
 import { parts } from "./toggle-group.anatomy"
 
@@ -17,3 +17,9 @@ export const getLastEl = (ctx: Scope) => last(getElements(ctx))
 export const hasFocusableItem = (ctx: Scope) => getElements(ctx).some((el) => el.tabIndex === 0)
 export const getNextEl = (ctx: Scope, id: string, loopFocus: boolean) => nextById(getElements(ctx), id, loopFocus)
 export const getPrevEl = (ctx: Scope, id: string, loopFocus: boolean) => prevById(getElements(ctx), id, loopFocus)
+
+export const focusItem = (ctx: Scope, el: HTMLElement | null | undefined) => {
+  if (!el) return
+  el.focus({ preventScroll: true })
+  scrollToNearest(el, { rootEl: getRootEl(ctx) })
+}

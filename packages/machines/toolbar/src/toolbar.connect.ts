@@ -4,6 +4,7 @@ import {
   dataAttr,
   getEventKey,
   getEventTarget,
+  getFocusTarget,
   isCaretAtEnd,
   isCaretAtStart,
 } from "@zag-js/dom-query"
@@ -74,7 +75,7 @@ export function connect<T extends PropTypes>(service: ToolbarService, normalize:
         onMouseDown(event) {
           const root = event.currentTarget
           const target = getEventTarget<HTMLElement>(event)
-          if (contains(root, target) && dom.getFocusTarget(root, target) === root) {
+          if (contains(root, target) && getFocusTarget(root, target) === root) {
             event.preventDefault()
             return
           }

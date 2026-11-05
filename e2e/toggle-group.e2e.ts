@@ -53,6 +53,60 @@ test.describe("toggle-group", () => {
     await I.seeItemIsPressed(["bold", "italic"])
   })
 
+  test("[single] should keep the last item pressed when not deselectable", async () => {
+    await I.controls.bool("deselectable", false)
+
+    await I.clickItem("bold")
+    await I.clickItem("bold")
+    await I.seeItemIsPressed(["bold"])
+  })
+
+  test("[multiple] should keep the last item pressed when not deselectable", async () => {
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("deselectable", false)
+
+    await I.clickItem("bold")
+    await I.clickItem("bold")
+    await I.seeItemIsPressed(["bold"])
+
+    await I.clickItem("italic")
+    await I.clickItem("bold")
+    await I.seeItemIsNotPressed(["bold"])
+    await I.seeItemIsPressed(["italic"])
+  })
+
+  test("[disabled] a disabled group is skipped by Tab", async () => {
+    await I.controls.bool("disabled", true)
+
+    await I.clickOutsideButton()
+    await I.pressKey("Tab")
+    await I.seeRootIsNotFocused()
+    await I.seeItemIsNotFocused("bold")
+  })
+
+  test("[pointer] clicking the gap between items leaves focus where it was", async () => {
+    await I.clickItem("bold")
+    await I.seeItemIsFocused("bold")
+
+    await I.clickGapBetween("bold", "italic")
+    await I.seeRootIsNotFocused()
+    await I.seeItemIsFocused("bold")
+  })
+
+  test("[overflow] moving focus scrolls the item into view", async () => {
+    await I.makeGroupOverflow()
+    await I.clickOutsideButton()
+    await I.pressKey("Tab")
+
+    await I.pressKey("End")
+    await I.seeItemIsFocused("underline")
+    await I.seeItemIsScrolledIntoView("underline")
+
+    await I.pressKey("Home")
+    await I.seeItemIsFocused("bold")
+    await I.seeItemIsScrolledIntoView("bold")
+  })
+
   test("[keyboard] when no toggle is selected, focus first toggle", async () => {
     // focus on outside button
     await I.clickOutsideButton()

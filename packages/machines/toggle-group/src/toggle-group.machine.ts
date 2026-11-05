@@ -160,6 +160,7 @@ export const machine = createMachine<ToggleGroupSchema>({
           next = event.value
         } else if (prop("multiple")) {
           next = addOrRemove(next, event.value)
+          if (!next.length && !prop("deselectable")) return
         } else {
           const isSelected = isEqual(next, [event.value])
           next = isSelected && prop("deselectable") ? [] : [event.value]
@@ -171,7 +172,7 @@ export const machine = createMachine<ToggleGroupSchema>({
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const id = dom.getItemId(scope, focusedValue)
-          dom.getNextEl(scope, id, computed("currentLoopFocus"))?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getNextEl(scope, id, computed("currentLoopFocus")))
         })
       },
       focusPrevToggle({ context, scope, computed, refs }) {
@@ -179,17 +180,17 @@ export const machine = createMachine<ToggleGroupSchema>({
           const focusedValue = context.get("focusedValue")
           if (!focusedValue) return
           const id = dom.getItemId(scope, focusedValue)
-          dom.getPrevEl(scope, id, computed("currentLoopFocus"))?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getPrevEl(scope, id, computed("currentLoopFocus")))
         })
       },
       focusFirstToggle({ scope, refs }) {
         refs.get("focusFrame").request(() => {
-          dom.getFirstEl(scope)?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getFirstEl(scope))
         })
       },
       focusLastToggle({ scope, refs }) {
         refs.get("focusFrame").request(() => {
-          dom.getLastEl(scope)?.focus({ preventScroll: true })
+          dom.focusItem(scope, dom.getLastEl(scope))
         })
       },
       cancelFocusFrame({ refs }) {

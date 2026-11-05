@@ -174,6 +174,16 @@ export function isFocusable(element: HTMLElement | EventTarget | null): element 
   return element.matches(focusableSelector) && isElementVisible(element)
 }
 
+/** The element a pointer press on `target` would focus, stopping at `root` */
+export function getFocusTarget(root: HTMLElement, target: HTMLElement | null): HTMLElement | null {
+  let el = target
+  while (el) {
+    if (el === root || isFocusable(el)) return el
+    el = (el as HTMLElement).parentElement
+  }
+  return null
+}
+
 export function getFirstFocusable(container: HTMLElement | null, options: TabbableOptions = {}): HTMLElement | null {
   const [first] = getFocusables(container, options)
   return first || null

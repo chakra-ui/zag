@@ -62,6 +62,35 @@ export class ToggleGroupModel extends Model {
     ])
   }
 
+  seeRootIsNotFocused() {
+    return expect(this.root).not.toBeFocused()
+  }
+
+  /** Click the gap between two items, which belongs to the root */
+  async clickGapBetween(a: Item, b: Item) {
+    const first = await this.getItem(a).boundingBox()
+    const second = await this.getItem(b).boundingBox()
+    if (!first || !second) throw new Error("items are not rendered")
+    await this.page.mouse.click((first.x + first.width + second.x) / 2, first.y + first.height / 2)
+  }
+
+  /** Squeeze the group so its items overflow and it scrolls horizontally */
+  async makeGroupOverflow() {
+    await this.root.evaluate((el) => {
+      el.style.width = "48px"
+      el.style.overflowX = "auto"
+    })
+  }
+
+  async seeItemIsScrolledIntoView(item: Item) {
+    const isInside = await this.getItem(item).evaluate((el) => {
+      const rect = el.getBoundingClientRect()
+      const root = el.closest("[data-toggle-group-root]")!.getBoundingClientRect()
+      return rect.left >= root.left - 1 && rect.right <= root.right + 1
+    })
+    expect(isInside).toBe(true)
+  }
+
   async seeItemIsPressed(items: Item[]) {
     await Promise.all(items.map((item) => this.__pressed(item)))
   }

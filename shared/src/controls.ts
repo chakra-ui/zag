@@ -375,6 +375,7 @@ export const toggleGroupControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
+  deselectable: { type: "boolean", defaultValue: true },
   rovingFocus: { type: "boolean", defaultValue: true },
 })
 
