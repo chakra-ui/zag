@@ -91,8 +91,27 @@ const SEGMENT_LABELS: Record<string, string> = {
   timeZoneName: "Time zone",
 }
 
-export function getSegmentLabel(type: string): string {
-  return SEGMENT_LABELS[type] ?? type
+const segmentLabelCache = new Map<string, Intl.DisplayNames | null>()
+
+function getFieldDisplayNames(locale: string): Intl.DisplayNames | null {
+  let displayNames = segmentLabelCache.get(locale)
+  if (displayNames === undefined) {
+    try {
+      displayNames = new Intl.DisplayNames(locale, { type: "dateTimeField" })
+    } catch {
+      displayNames = null
+    }
+    segmentLabelCache.set(locale, displayNames)
+  }
+  return displayNames
+}
+
+export function getSegmentLabel(type: string, locale?: string): string {
+  const fallback = SEGMENT_LABELS[type] ?? type
+  if (!locale || !(type in SEGMENT_LABELS)) return fallback
+  const label = getFieldDisplayNames(locale)?.of(type)
+  if (!label) return fallback
+  return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1)
 }
 
 export const TYPE_MAPPING = {
