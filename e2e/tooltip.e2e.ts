@@ -1,5 +1,5 @@
 import { test } from "./_test"
-import { TooltipModel } from "./models/tooltip.model"
+import { CLOSE_DELAY, OPEN_DELAY, SKIP_DELAY_WINDOW, TooltipModel } from "./models/tooltip.model"
 
 let I: TooltipModel
 
@@ -57,6 +57,54 @@ test.describe("tooltip", () => {
     await I.pointerdownTrigger("tip-1")
     await I.waitOutCloseDelay()
     await I.dontSeeContent("tip-1")
+  })
+
+  test("should not open after a click during the open delay", async () => {
+    await I.hoverTrigger("tip-1", { wait: false })
+    await I.clickTrigger("tip-1")
+
+    await I.moveWithinTrigger("tip-1")
+    await I.advance(OPEN_DELAY * 2)
+    await I.dontSeeContent("tip-1")
+
+    await I.hoverOutside()
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+  })
+
+  test("should not open after a pointerdown during the open delay", async () => {
+    await I.hoverTrigger("tip-1", { wait: false })
+    await I.pointerdownTrigger("tip-1")
+
+    await I.moveWithinTrigger("tip-1")
+    await I.advance(OPEN_DELAY * 2)
+    await I.dontSeeContent("tip-1")
+  })
+
+  test("should skip the open delay shortly after another tooltip closes", async () => {
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+
+    await I.hoverOutside()
+    await I.advance(CLOSE_DELAY)
+    await I.advance(CLOSE_DELAY)
+
+    await I.hoverTrigger("tip-2", { wait: false })
+    await I.seeContentWithoutDelay("tip-2")
+  })
+
+  test("should wait for the open delay once the skip window has passed", async () => {
+    await I.hoverTrigger("tip-1")
+    await I.seeContent("tip-1")
+
+    await I.hoverOutside()
+    await I.advance(CLOSE_DELAY + SKIP_DELAY_WINDOW * 2)
+
+    await I.hoverTrigger("tip-2", { wait: false })
+    await I.dontSeeContent("tip-2")
+
+    await I.advance(OPEN_DELAY)
+    await I.seeContent("tip-2")
   })
 
   test("closes on esc press", async () => {

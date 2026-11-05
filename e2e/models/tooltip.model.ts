@@ -5,6 +5,7 @@ import { Model } from "./model"
 // machine defaults
 export const OPEN_DELAY = 400
 export const CLOSE_DELAY = 150
+export const SKIP_DELAY_WINDOW = 400
 /** Enough to flush the safe area tracker's coalescing animation frame. */
 const FRAME = 32
 /** The example's exit keyframes, which keep the node visible until they finish. */
@@ -71,6 +72,11 @@ export class TooltipModel extends Model {
     await expect(this.getContent(id)).toBeVisible()
   }
 
+  /** The mocked clock still runs in real time, so a plain `seeContent` would wait out the delay. */
+  seeContentWithoutDelay = async (id: string) => {
+    await expect(this.getContent(id)).toBeVisible({ timeout: OPEN_DELAY / 2 })
+  }
+
   dontSeeContent = async (id: string) => {
     await expect(this.getContent(id)).not.toBeVisible()
   }
@@ -82,6 +88,16 @@ export class TooltipModel extends Model {
   focusTrigger = async (id: string) => {
     await this.getTrigger(id).focus()
     await this.advance(OPEN_DELAY)
+  }
+
+  clickTrigger = async (id: string) => {
+    await this.getTrigger(id).click()
+    await this.advance(FRAME)
+  }
+
+  moveWithinTrigger = async (id: string) => {
+    await this.getTrigger(id).hover({ position: { x: 4, y: 4 } })
+    await this.advance(FRAME)
   }
 
   pointerdownTrigger = async (id: string) => {

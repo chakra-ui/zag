@@ -111,9 +111,7 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
-          if (id === store.get("id")) {
-            send({ type: "CLOSE", src: "trigger.pointerdown", value, triggerId })
-          }
+          send({ type: "CLOSE", src: "trigger.pointerdown", value, triggerId })
         },
         onPointerMove(event) {
           if (event.defaultPrevented) return

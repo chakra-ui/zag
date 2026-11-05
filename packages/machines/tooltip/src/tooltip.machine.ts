@@ -5,7 +5,7 @@ import { getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import { ensureProps } from "@zag-js/utils"
 import * as dom from "./tooltip.dom"
-import { store } from "./tooltip.store"
+import { isWarm, store } from "./tooltip.store"
 import type { Placement, TooltipSchema } from "./tooltip.types"
 
 const { and, not } = createGuards<TooltipSchema>()
@@ -100,9 +100,9 @@ export const machine = createMachine<TooltipSchema>({
         },
         POINTER_MOVE: [
           {
-            guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
+            guard: and(not("isWarm"), not("hasPointerMoveOpened")),
             target: "opening",
-            actions: ["setTriggerValue"],
+            actions: ["setTriggerValue", "setPointerMoveOpened"],
           },
           {
             guard: not("hasPointerMoveOpened"),
@@ -289,7 +289,7 @@ export const machine = createMachine<TooltipSchema>({
 
   implementations: {
     guards: {
-      noVisibleTooltip: () => store.get("id") === null,
+      isWarm: () => isWarm(),
       isVisible: ({ prop }) => prop("id") === store.get("id"),
       isInteractive: ({ prop }) => !!prop("interactive"),
       hasPointerMoveOpened: ({ context }) => !!context.get("hasPointerMoveOpened"),
@@ -300,13 +300,14 @@ export const machine = createMachine<TooltipSchema>({
     actions: {
       setGlobalId: ({ prop, event }) => {
         const prevId = store.get("id")
-        const isInstant = event.src === "trigger.focus" || (prevId !== null && prevId !== prop("id"))
-        store.update({ id: prop("id"), prevId: isInstant && prevId !== null ? prevId : null, instant: isInstant })
+        const switching = prevId !== null && prevId !== prop("id")
+        const isInstant = event.src === "trigger.focus" || switching || isWarm()
+        store.update({ id: prop("id"), prevId: switching ? prevId : null, instant: isInstant })
       },
 
       clearGlobalId: ({ prop }) => {
         if (prop("id") === store.get("id")) {
-          store.update({ id: null, prevId: null, instant: false })
+          store.update({ id: null, prevId: null, instant: false, closedAt: Date.now() })
         }
       },
 
@@ -475,7 +476,7 @@ export const machine = createMachine<TooltipSchema>({
         }
       },
 
-      trackEscapeKey: ({ send, prop }) => {
+      trackEscapeKey: ({ send, prop, scope }) => {
         if (!prop("closeOnEscape")) return
 
         const onKeyDown = (event: KeyboardEvent) => {
@@ -485,7 +486,7 @@ export const machine = createMachine<TooltipSchema>({
           send({ type: "CLOSE", src: "keydown.escape" })
         }
 
-        return addDomEvent(document, "keydown", onKeyDown, true)
+        return addDomEvent(scope.getDoc(), "keydown", onKeyDown, true)
       },
 
       waitForOpenDelay: ({ send, prop, event }) => {
