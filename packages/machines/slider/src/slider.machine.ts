@@ -23,6 +23,7 @@ import {
   getClosestIndex,
   getRangeAtIndex,
   normalizeValues,
+  resolveStackedThumb,
   resolveThumbCollision,
   selectMovableThumb,
   stepThumb,
@@ -315,13 +316,23 @@ export const machine = createMachine<SliderSchema>({
       },
       setPointerValue(params) {
         queueMicrotask(() => {
-          const { context, event, prop, refs } = params
+          const { context, event, prop, refs, scope } = params
           const pointValue = dom.getPointValue(params, event.point)
           if (pointValue == null) return
 
-          const focusedIndex = context.get("focusedIndex")
+          let focusedIndex = context.get("focusedIndex")
           if (focusedIndex < 0) return
           const startValues = refs.get("startValue")
+          const disabledIndices = dom.getDisabledThumbIndices(scope)
+
+          if (prop("thumbCollisionBehavior") === "none") {
+            const index = resolveStackedThumb(context.get("value"), focusedIndex, pointValue, disabledIndices)
+            if (index !== focusedIndex) {
+              focusedIndex = index
+              context.set("focusedIndex", index)
+              dom.getThumbEl(scope, index)?.focus({ preventScroll: true })
+            }
+          }
 
           const result = resolveThumbCollision(
             prop("thumbCollisionBehavior"),
@@ -333,7 +344,7 @@ export const machine = createMachine<SliderSchema>({
             prop("step"),
             prop("minStepsBetweenThumbs"),
             startValues?.[focusedIndex],
-            dom.getDisabledThumbIndices(params.scope),
+            disabledIndices,
           )
 
           if (result.swapped) {

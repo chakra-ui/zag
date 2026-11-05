@@ -27,6 +27,11 @@ test.describe("slider", () => {
     await expect(I.page.locator("input[hidden]").first()).toHaveJSProperty("disabled", false)
   })
 
+  test("should mark the thumb read-only", async () => {
+    await I.controls.bool("readOnly")
+    await expect(I.getThumb(0)).toHaveAttribute("aria-readonly", "true")
+  })
+
   test("[keyboard] should work with arrow left/right keys", async () => {
     await I.focusThumb()
 
@@ -210,5 +215,50 @@ test.describe("slider / disabled thumb", () => {
     await I.mousemoveTo({ x: 0.9 })
     await I.mouseup()
     await I.seeValueText("50 – 50 – 80")
+  })
+})
+
+test.describe("slider / stacked thumbs", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SliderModel(page)
+    await I.goto("/slider/range")
+  })
+
+  // End moves the lower thumb up to the upper one, so both sit at 60
+  const stackAtUpper = async () => {
+    await I.focusThumb(0)
+    await I.pressKey("End")
+    await I.seeThumbValue(0, 60)
+    await I.seeThumbValue(1, 60)
+  }
+
+  test("[pointer] clicking below the stack moves the lower thumb", async () => {
+    await stackAtUpper()
+
+    await I.mousedownAt({ x: 0.3 })
+    await I.page.mouse.up()
+
+    await I.seeThumbValue(1, 60)
+    expect(await I.getThumbValue(0)).toBeLessThan(60)
+  })
+
+  test("[pointer] clicking above the stack moves the upper thumb", async () => {
+    await stackAtUpper()
+
+    await I.mousedownAt({ x: 0.9 })
+    await I.page.mouse.up()
+
+    await I.seeThumbValue(0, 60)
+    expect(await I.getThumbValue(1)).toBeGreaterThan(60)
+  })
+
+  test("[pointer] dragging down out of the stack moves the lower thumb", async () => {
+    await stackAtUpper()
+
+    await I.dragThumbTo(1, { x: 0.3 })
+
+    await I.seeThumbValue(1, 60)
+    expect(await I.getThumbValue(0)).toBeLessThan(60)
+    await I.seeThumbIsFocused(0)
   })
 })

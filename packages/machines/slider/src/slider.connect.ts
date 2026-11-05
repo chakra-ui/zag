@@ -210,6 +210,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         draggable: false,
         "aria-disabled": ariaAttr(thumbState.disabled),
         "aria-invalid": ariaAttr(invalid),
+        "aria-readonly": ariaAttr(prop("readOnly")),
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy,
         "aria-orientation": prop("orientation"),

@@ -117,6 +117,23 @@ export class SliderModel extends Model {
     await this.page.mouse.move(point.x, point.y)
   }
 
+  async seeThumbValue(index: number, value: number) {
+    await expect(this.getThumb(index)).toHaveAttribute("aria-valuenow", String(value))
+  }
+
+  async getThumbValue(index: number) {
+    return Number(await this.getThumb(index).getAttribute("aria-valuenow"))
+  }
+
+  /** Drag from the center of a thumb to a point on the track */
+  async dragThumbTo(index: number, percent: { x?: number; y?: number }) {
+    const box = await rect(this.getThumb(index))
+    await this.page.mouse.move(box.midX, box.midY)
+    await this.page.mouse.down()
+    await this.mousemoveTo(percent)
+    await this.page.mouse.up()
+  }
+
   seeThumbIsFocused(index = 0) {
     return expect(this.getThumb(index)).toBeFocused()
   }

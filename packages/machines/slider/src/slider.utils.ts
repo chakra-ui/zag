@@ -214,6 +214,21 @@ export function getClosestIndex(
   return closestIndex === -1 ? -1 : selectMovableThumb(params, closestIndex, disabled)
 }
 
+/** Hand a press on stacked thumbs to the one that can move toward the pointer */
+export function resolveStackedThumb(
+  values: number[],
+  index: number,
+  pointValue: number,
+  disabled: ReadonlySet<number> = NO_DISABLED,
+) {
+  const value = values[index]
+  const dir = pointValue < value ? -1 : pointValue > value ? 1 : 0
+  if (dir === 0) return index
+  let next = index
+  while (values[next + dir] === value && !disabled.has(next + dir)) next += dir
+  return next
+}
+
 export function selectMovableThumb(
   params: Pick<Ctx, "context" | "prop">,
   index: number,
