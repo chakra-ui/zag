@@ -1,5 +1,23 @@
 # @zag-js/image-cropper
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`8f659ca`](https://github.com/chakra-ui/zag/commit/8f659ca7e15aae533d00807aece809589da569a9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Type `getImageProps` as image attributes.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/rect-utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

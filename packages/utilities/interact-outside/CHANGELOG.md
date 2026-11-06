@@ -1,5 +1,23 @@
 # @zag-js/interact-outside
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3570](https://github.com/chakra-ui/zag/pull/3570)
+  [`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - - Fix the page freezing when many overlays are open at once.
+  - Fix closing one overlay also closing unrelated overlays opened after it.
+  - Fix Escape closing the outer layer first when nested layers open together on mount.
+  - Fix unmounting nested layers firing `onOpenChange` for children that unmount too.
+  - Cancel the pending outside-click check when the layer unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.47.0
