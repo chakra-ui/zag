@@ -176,6 +176,61 @@ describe("layerStack", () => {
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
     })
+
+    test("does not dismiss a sibling layer whose trigger is outside the removed layer", () => {
+      const a = document.createElement("div")
+      const nestedTrigger = document.createElement("button")
+      a.append(nestedTrigger)
+      const b = document.createElement("div")
+      const bTrigger = document.createElement("button")
+      const nested = document.createElement("div")
+      document.body.append(a, bTrigger, b, nested)
+
+      const bDismiss = vi.fn()
+      const nestedDismiss = vi.fn()
+      layerStack.add(createLayer(a))
+      layerStack.add({ ...createLayer(b, { dismiss: bDismiss }), origins: [b, bTrigger] })
+      layerStack.add({ ...createLayer(nested, { dismiss: nestedDismiss }), origins: [nested, nestedTrigger] })
+
+      layerStack.remove(a)
+
+      expect(bDismiss).not.toHaveBeenCalled()
+      expect(nestedDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("keeps a nested layer that stays open nested in the removed layer's parent", () => {
+      const a = document.createElement("div")
+      const b = document.createElement("div")
+      const c = document.createElement("div")
+      const bTrigger = document.createElement("button")
+      const cTrigger = document.createElement("button")
+      a.append(bTrigger)
+      b.append(cTrigger)
+      document.body.append(a, b, c)
+
+      layerStack.add(createLayer(a))
+      layerStack.add({ ...createLayer(b), origins: [b, bTrigger] })
+      layerStack.add({ ...createLayer(c, { requestDismiss: (e) => e.preventDefault() }), origins: [c, cTrigger] })
+
+      layerStack.remove(b)
+
+      expect(layerStack.isInNestedLayer(a, c)).toBe(true)
+    })
+
+    test("does not count sibling layers as nested", () => {
+      const a = document.createElement("div")
+      const b = document.createElement("div")
+      const aTrigger = document.createElement("button")
+      const bTrigger = document.createElement("button")
+      document.body.append(aTrigger, bTrigger, a, b)
+
+      layerStack.add({ ...createLayer(a), origins: [a, aTrigger] })
+      layerStack.add({ ...createLayer(b), origins: [b, bTrigger] })
+
+      expect(a.hasAttribute("data-has-nested")).toBe(false)
+      expect(a.style.getPropertyValue("--nested-layer-count")).toBe("0")
+      expect(b.hasAttribute("data-nested")).toBe(false)
+    })
   })
 
   describe("dismiss", () => {
