@@ -38,8 +38,7 @@
     border-color: var(--z-border-emphasis);
   }
 
-  &:focus-visible,
-  &[data-state="open"] {
+  &:focus-visible {
     outline: none;
     border-color: var(--z-accent);
     box-shadow: 0 0 0 3px var(--z-ring);
