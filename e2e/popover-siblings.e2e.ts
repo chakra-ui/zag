@@ -1,4 +1,5 @@
-import { expect, test, type Locator, type Page } from "./_test"
+import type { Locator } from "@playwright/test"
+import { expect, test, type Page } from "./_test"
 
 type Env = "document" | "shadow" | "iframe" | "mixed-shadow" | "mixed-iframe"
 
@@ -11,7 +12,7 @@ function setup(page: Page, env: Env, touch: boolean) {
   const trigger = (name: string) => scopeOf(name).getByTestId(`${name}-trigger`)
 
   const press = async (loc: Locator, options: { position?: { x: number; y: number }; force?: boolean } = {}) => {
-    const { position = { x: 4, y: 4 }, force } = options
+    const { position = { x: 4, y: 4 }, force = false } = options
     if (touch) await loc.tap({ position, force })
     else await loc.click({ position, force })
   }

@@ -66,17 +66,16 @@ export const layerStack = {
     return this.layers.filter((layer) => layer.type === type)
   },
   getNestedLayersByType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index === -1) return []
-    return this.layers.slice(index + 1).filter((layer) => layer.type === type)
+    if (this.indexOf(node) === -1) return []
+    return this.getNestedLayers(node).filter((layer) => layer.type === type)
   },
   getParentLayerOfType(node: HTMLElement, type: LayerType) {
-    const index = this.indexOf(node)
-    if (index <= 0) return undefined
-    return this.layers
-      .slice(0, index)
-      .reverse()
-      .find((layer) => layer.type === type)
+    let parent = this.layers[this.indexOf(node)]?.parent
+    while (parent) {
+      const layer = this.layers[this.indexOf(parent)]
+      if (layer?.type === type) return layer
+      parent = layer?.parent
+    }
   },
   countNestedLayersOfType(node: HTMLElement, type: LayerType) {
     return this.getNestedLayersByType(node, type).length
@@ -143,6 +142,11 @@ export const layerStack = {
       const _layers = this.getNestedLayers(node)
       _layers.forEach((layer) => layerStack.dismiss(layer.node, node))
     }
+
+    // Nested layers that stayed open move up to this layer's parent
+    this.layers.forEach((child) => {
+      if (child.parent === node) child.parent = layer.parent
+    })
 
     // remove this layer
     this.layers.splice(index, 1)
