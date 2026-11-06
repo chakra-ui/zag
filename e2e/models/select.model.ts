@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, isInViewport, pointer } from "../_utils"
+import { a11y, getFocusPosition, isInViewport, pointer } from "../_utils"
 import { Model } from "./model"
 
 export class SelectModel extends Model {
@@ -16,11 +16,11 @@ export class SelectModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator("[data-select-trigger]")
+    return this.page.locator("[data-select-trigger]").first()
   }
 
   private get content() {
-    return this.page.locator("[data-select-content]")
+    return this.page.locator("[data-select-content]").first()
   }
 
   private get list() {
@@ -81,6 +81,50 @@ export class SelectModel extends Model {
 
   hoverOut = async () => {
     await this.page.mouse.move(0, 0)
+  }
+
+  pressTrigger = async () => {
+    const box = await this.trigger.boundingBox()
+    if (!box) throw new Error("Trigger not found")
+    await this.page.mouse.move(box.x + 16, box.y + box.height / 2)
+    await this.page.mouse.down()
+  }
+
+  dragToItem = async (text: string) => {
+    const box = await this.getItem(text).boundingBox()
+    if (!box) throw new Error(`Item ${text} not found`)
+    await this.page.mouse.move(box.x + 16, box.y + box.height / 2, { steps: 8 })
+  }
+
+  nudgeMouse = async (dx: number, dy: number) => {
+    const box = await this.trigger.boundingBox()
+    if (!box) throw new Error("Trigger not found")
+    await this.page.mouse.move(box.x + 16 + dx, box.y + box.height / 2 + dy, { steps: 4 })
+  }
+
+  holdFor = async (ms: number) => {
+    await this.page.waitForTimeout(ms)
+  }
+
+  releaseMouse = async () => {
+    await this.page.mouse.up()
+  }
+
+  renderContentAfterTrigger = async () => {
+    await this.page.evaluate(() => {
+      const trigger = document.querySelector("[data-select-trigger]")
+      const positioner = document.querySelector("[data-select-positioner]")
+      if (!trigger || !positioner) throw new Error("Trigger or positioner not found")
+      trigger.insertAdjacentElement("afterend", positioner)
+    })
+  }
+
+  seeFocusAfterTrigger = async () => {
+    await expect.poll(() => getFocusPosition(this.trigger, { skip: "[data-select-positioner]" })).toBe("after")
+  }
+
+  seeFocusBeforeTrigger = async () => {
+    await expect.poll(() => getFocusPosition(this.trigger, { skip: "[data-select-positioner]" })).toBe("before")
   }
 
   seeTriggerIsFocused = async () => {

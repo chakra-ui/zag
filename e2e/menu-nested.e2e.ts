@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "./_test"
-import { clickOutside, rect, testid } from "./_utils"
+import { clickOutside, getFocusPosition, rect, testid } from "./_utils"
 import { MenuModel } from "./models/menu.model"
 
 const menu_1 = {
@@ -183,6 +183,26 @@ test.describe("nested menu / select item", async () => {
     await page.hover("body", { position: { x: 10, y: 10 } })
     await clickOutside(page)
     await expectAllMenusToBeClosed(page)
+  })
+})
+
+test.describe("nested menu / tab", async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/menu/nested")
+  })
+
+  test("tab from a submenu closes every menu and moves past the root trigger", async ({ page }) => {
+    await navigateToSubmenuTrigger(page)
+    await page.keyboard.press("Enter", { delay: 10 })
+    await expect(page.locator(menu_2.menu)).toBeFocused()
+
+    await page.keyboard.press("Tab")
+
+    await expect(page.locator(menu_1.menu)).toBeHidden()
+    await expect(page.locator(menu_2.menu)).toBeHidden()
+    await expect
+      .poll(() => getFocusPosition(page.locator(menu_1.trigger), { skip: "[data-menu-positioner]" }))
+      .toBe("after")
   })
 })
 

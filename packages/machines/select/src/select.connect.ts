@@ -250,7 +250,22 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-align-with-trigger": dataAttr(aligned),
         "data-side": currentPlacementSide,
         "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
+        onPointerDown(event) {
+          refs.set("triggerPointerType", event.pointerType)
+          if (!interactive || event.defaultPrevented) return
+          if (event.pointerType !== "mouse" || event.button !== 0 || event.ctrlKey) return
+          refs.set("openMethod", "mouse")
+          send({
+            type: "TRIGGER.POINTER_DOWN",
+            point: { x: event.clientX, y: event.clientY },
+            time: getNativeEvent(event).timeStamp,
+          })
+        },
         onClick(event) {
+          // Already toggled on pointerdown
+          const pressed = refs.get("triggerPointerType") === "mouse"
+          refs.set("triggerPointerType", null)
+          if (pressed) return
           if (!interactive) return
           if (event.defaultPrevented) return
           const pointerType = (getNativeEvent(event) as PointerEvent)?.pointerType
@@ -264,6 +279,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           send({ type: "TRIGGER.BLUR" })
         },
         onKeyDown(event) {
+          refs.set("triggerPointerType", null)
           if (event.defaultPrevented) return
           if (!interactive) return
 
@@ -533,15 +549,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (event.defaultPrevented) return
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
-          // select should not be navigated using tab key so we prevent it
-          // but, we want to allow tabbing within the content when composing
-          // with widgets like tabs or trees
           if (event.key === "Tab") {
-            const valid = isValidTabEvent(event)
-            if (!valid) {
-              event.preventDefault()
-              return
-            }
+            if (isValidTabEvent(event)) return
+            event.preventDefault()
+            send({ type: "CONTENT.TAB", shiftKey: event.shiftKey, restoreFocus: false })
+            return
           }
 
           const target = getEventTarget<Element>(event)

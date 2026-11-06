@@ -76,6 +76,31 @@ test.describe("menu", () => {
   })
 })
 
+test.describe("menu / tab", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto()
+  })
+
+  test("tab closes the menu and moves to the element after the trigger", async () => {
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.pressKey("Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeFocusAfterTrigger()
+  })
+
+  test("shift+tab closes the menu and moves to the element before the trigger", async () => {
+    await I.clickTrigger()
+    await I.seeDropdownIsFocused()
+    await I.pressKey("Shift+Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeFocusBeforeTrigger()
+  })
+})
+
 test.describe("menu / overflow", () => {
   test.beforeEach(async ({ page }) => {
     I = new MenuModel(page)

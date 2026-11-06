@@ -15,6 +15,18 @@ export async function a11y(page: Page, selector = "main", disableRules: string[]
 
 export const testid = (part: string) => `[data-testid=${esc(part)}]`
 
+export const getFocusPosition = (el: Locator, options: { skip?: string } = {}) => {
+  return el.evaluate((node, skip) => {
+    const active = node.ownerDocument.activeElement
+    if (!active || active === node.ownerDocument.body) return "none"
+    if (active === node) return "same"
+    if (skip && active.closest(skip)) return "inside"
+    const position = node.compareDocumentPosition(active)
+    if (position & Node.DOCUMENT_POSITION_CONTAINED_BY) return "inside"
+    return position & Node.DOCUMENT_POSITION_FOLLOWING ? "after" : "before"
+  }, options.skip)
+}
+
 export const controls = (page: Page) => {
   return {
     num: async (id: string, value: string) => {

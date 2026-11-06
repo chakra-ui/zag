@@ -317,3 +317,124 @@ test.describe("select / scroll under resting cursor", () => {
     await I.seeItemIsHighlighted("Zambia (ZM)")
   })
 })
+
+test.describe("select / tab", () => {
+  test("tab closes the list and moves to the element after the trigger", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeFocusAfterTrigger()
+    await I.seeTriggerHasText("Select option")
+  })
+
+  test("shift+tab closes the list and moves to the element before the trigger", async () => {
+    await I.clickTrigger()
+    await I.pressKey("Shift+Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeFocusBeforeTrigger()
+  })
+
+  test("tab skips the list when it renders right after the trigger", async () => {
+    await I.renderContentAfterTrigger()
+    await I.clickTrigger()
+    await I.pressKey("Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeFocusAfterTrigger()
+  })
+})
+
+test.describe("select / tab in a dialog", () => {
+  test("shift+tab keeps focus inside the dialog", async ({ page }) => {
+    await I.goto("/select/in-dialog")
+    await page.click("[data-dialog-trigger]")
+
+    await I.clickTrigger()
+    await I.pressKey("Shift+Tab")
+
+    await I.dontSeeDropdown()
+    await I.seeTriggerIsFocused()
+  })
+})
+
+test.describe("select / press and release", () => {
+  test("press the trigger, drag to an item and release to select it", async () => {
+    await I.pressTrigger()
+    await I.seeDropdown()
+
+    await I.dragToItem("Angola")
+    await I.seeItemIsHighlighted("Angola")
+    await I.releaseMouse()
+
+    await I.dontSeeDropdown()
+    await I.seeTriggerHasText("Angola")
+  })
+
+  test("a quick click opens the list without selecting", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await I.seeTriggerHasText("Select option")
+  })
+
+  test("releasing outside the list keeps it open", async () => {
+    await I.pressTrigger()
+    await I.holdFor(500)
+    await I.releaseMouse()
+
+    await I.seeDropdown()
+    await I.seeTriggerHasText("Select option")
+  })
+
+  test("in multiple mode, a drag selects the item once and keeps the list open", async () => {
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("closeOnSelect", false)
+
+    await I.pressTrigger()
+    await I.dragToItem("Angola")
+    await I.releaseMouse()
+
+    await I.seeDropdown()
+    await I.seeItemIsChecked("Angola")
+  })
+})
+
+test.describe("select / press and release over the aligned item", () => {
+  test.beforeEach(async () => {
+    await I.goto("/select/align-item-with-trigger")
+  })
+
+  test("a quick press does not select the item that opened under the pointer", async () => {
+    await I.pressTrigger()
+    await I.releaseMouse()
+
+    await I.seeDropdown()
+  })
+
+  test("a quick press that jiggles on the item under the pointer does not select it", async () => {
+    await I.pressTrigger()
+    await I.nudgeMouse(10, 6)
+    await I.releaseMouse()
+
+    await I.seeDropdown()
+  })
+
+  test("a quick drag to a neighbouring item selects it", async () => {
+    await I.pressTrigger()
+    await I.dragToItem("Plum")
+    await I.releaseMouse()
+
+    await I.dontSeeDropdown()
+    await I.seeTriggerHasText("Plum")
+  })
+
+  test("holding still before releasing selects the item under the pointer", async () => {
+    await I.pressTrigger()
+    await I.holdFor(500)
+    await I.releaseMouse()
+
+    await I.dontSeeDropdown()
+  })
+})

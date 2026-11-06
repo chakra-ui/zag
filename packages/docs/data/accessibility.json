@@ -128,6 +128,10 @@
       {
         "keys": ["Esc"],
         "description": "Closes the menu and moves focus to the trigger"
+      },
+      {
+        "keys": ["Tab"],
+        "description": "Closes the menu and moves focus to the next element after the trigger (Shift+Tab: the one before it)."
       }
     ]
   },
@@ -264,6 +268,10 @@
       {
         "keys": ["Esc"],
         "description": "<span>Closes the select and moves focus to trigger.</span>"
+      },
+      {
+        "keys": ["Tab"],
+        "description": "Closes the select and moves focus to the next element after the trigger (Shift+Tab: the one before it)."
       },
       {
         "keys": ["A-Z", "a-z"],

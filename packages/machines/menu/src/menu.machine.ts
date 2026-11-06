@@ -5,10 +5,10 @@ import {
   AnimationFrame,
   clickIfLink,
   contains,
+  getAdjacentTabbable,
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
-  getNextTabbable,
   getModifierKeys,
   getWindow,
   isAnchorElement,
@@ -573,8 +573,8 @@ export const machine = createMachine<MenuSchema>({
         "ITEMS.CHANGE": {
           actions: ["syncInputHighlight"],
         },
-        "INPUT.TAB": {
-          actions: ["closeTreeAndTabForward"],
+        TAB: {
+          actions: ["closeTreeAndTab"],
         },
         ITEM_CLICK: [
           // == grouped ==
@@ -1048,17 +1048,25 @@ export const machine = createMachine<MenuSchema>({
           if (current != null && !isRendered) context.set("highlightedValue", null)
         })
       },
-      // Tab from a filter input closes the whole menu and moves focus past its trigger
-      closeTreeAndTabForward({ refs, send, scope }) {
+      closeTreeAndTab({ refs, send, scope, context, event }) {
+        const positioners = [dom.getPositionerEl(scope)]
         let root = refs.get("parent")
-        while (root?.refs.get("parent")) root = root.refs.get("parent")
-        if (root) root.send({ type: "CLOSE" })
-        else send({ type: "CLOSE" })
-        const doc = scope.getDoc()
-        raf(() => {
-          const current = scope.getActiveElement() as HTMLElement | null
-          getNextTabbable(doc.body, { current })?.focus()
-        })
+        while (root) {
+          positioners.push(dom.getPositionerEl(root.scope))
+          const parent = root.refs.get("parent")
+          if (!parent) break
+          root = parent
+        }
+
+        const rootScope = root?.scope ?? scope
+        const triggerValue = (root?.context ?? context).get("triggerValue")
+        const triggerEl = dom.getActiveTriggerEl(rootScope, triggerValue)
+        const nextEl = getAdjacentTabbable(triggerEl, { exclude: positioners, backward: event.shiftKey })
+
+        const closeEvent = { type: "CLOSE", restoreFocus: nextEl ? false : undefined }
+        if (root) root.send(closeEvent)
+        else send(closeEvent)
+        nextEl?.focus({ preventScroll: true })
       },
       focusMenu({ scope, event, refs }) {
         const source = getFocusSource(event)
@@ -1137,7 +1145,8 @@ export const machine = createMachine<MenuSchema>({
         prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
       focusTrigger({ scope, context, event }) {
-        if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        if (context.get("isSubmenu") || context.get("anchorPoint") || restoreFocus === false) return
         queueMicrotask(() => {
           const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           triggerEl?.focus({ preventScroll: true })

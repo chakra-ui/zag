@@ -248,6 +248,8 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     alignedToTrigger: boolean
     initialFocusFrame: AnimationFrame
     triggerFocusFrame: AnimationFrame
+    pressOrigin: { x: number; y: number; time: number } | null
+    triggerPointerType: string | null
   }
   action: string
   guard: string

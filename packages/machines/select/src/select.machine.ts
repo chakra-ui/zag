@@ -2,8 +2,11 @@ import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } fro
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
+  addDomEvent,
   AnimationFrame,
+  getAdjacentTabbable,
   getByTypeahead,
+  getEventTarget,
   getInitialFocus,
   isApple,
   isScrollable,
@@ -26,6 +29,10 @@ import type { CollectionItem, SelectSchema } from "./select.types"
 const { and, not, or } = createGuards<SelectSchema>()
 
 const MAX_SCROLL_ATTEMPTS = 10
+
+// An item can open under the pointer, so only a deliberate drag or hold selects on release
+const RELEASE_DELAY = 400
+const RELEASE_DISTANCE = 8
 
 export const machine = createMachine<SelectSchema>({
   props({ props }) {
@@ -137,6 +144,8 @@ export const machine = createMachine<SelectSchema>({
       alignedToTrigger: false,
       initialFocusFrame: AnimationFrame.create(),
       triggerFocusFrame: AnimationFrame.create(),
+      pressOrigin: null,
+      triggerPointerType: null,
     }
   },
 
@@ -229,6 +238,16 @@ export const machine = createMachine<SelectSchema>({
             actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
           },
         ],
+        "TRIGGER.POINTER_DOWN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["setPressOrigin", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setPressOrigin", "invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
+          },
+        ],
         "TRIGGER.FOCUS": {
           target: "focused",
         },
@@ -290,6 +309,16 @@ export const machine = createMachine<SelectSchema>({
           {
             target: "open",
             actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
+          },
+        ],
+        "TRIGGER.POINTER_DOWN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["setPressOrigin", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setPressOrigin", "setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
           },
         ],
         "TRIGGER.ENTER": [
@@ -359,7 +388,14 @@ export const machine = createMachine<SelectSchema>({
 
     open: {
       tags: ["open"],
-      exit: ["scrollToTop", "cleanupScrollArrows", "clearPlacementState", "clearInputFocused", "cancelInitialFocus"],
+      exit: [
+        "scrollToTop",
+        "cleanupScrollArrows",
+        "clearPlacementState",
+        "clearInputFocused",
+        "cancelInitialFocus",
+        "clearPressOrigin",
+      ],
       effects: [
         "trackDismissableElement",
         "trackFocusVisible",
@@ -367,6 +403,7 @@ export const machine = createMachine<SelectSchema>({
         "scrollToHighlightedItem",
         "trackScrollArrowVisibility",
         "trackLiveRegion",
+        "trackPressRelease",
       ],
       on: {
         "CONTROLLED.CLOSE": [
@@ -403,6 +440,35 @@ export const machine = createMachine<SelectSchema>({
           {
             target: "focused",
             actions: ["invokeOnClose", "clearHighlightedItem"],
+          },
+        ],
+        "TRIGGER.POINTER_DOWN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "focused",
+            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
+          },
+        ],
+        "PRESS.RELEASE": [
+          {
+            guard: and("hasReleasedItem", "isDeliberateRelease"),
+            actions: ["clearPressOrigin", "clickReleasedItem"],
+          },
+          {
+            actions: ["clearPressOrigin"],
+          },
+        ],
+        "CONTENT.TAB": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose", "focusAdjacentTabbable"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose", "clearHighlightedItem", "focusAdjacentTabbable"],
           },
         ],
         "ITEM.CLICK": [
@@ -485,7 +551,17 @@ export const machine = createMachine<SelectSchema>({
       restoreFocus: ({ event }) => restoreFocusFn(event),
       // guard assertions (for controlled mode)
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
-      isTriggerClickEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.CLICK",
+      isTriggerClickEvent: ({ event }) =>
+        event.previousEvent?.type === "TRIGGER.CLICK" || event.previousEvent?.type === "TRIGGER.POINTER_DOWN",
+      hasReleasedItem: ({ event }) => event.value != null,
+      isDeliberateRelease: ({ refs, event, context }) => {
+        const origin = refs.get("pressOrigin")
+        if (!origin) return false
+        if (event.time - origin.time >= RELEASE_DELAY) return true
+        // The selected item is the one that opens under the pointer
+        if (context.get("value").includes(event.value)) return false
+        return Math.hypot(event.point.x - origin.x, event.point.y - origin.y) >= RELEASE_DISTANCE
+      },
       isTriggerEnterEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ENTER",
       isTriggerArrowUpEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_UP",
       isTriggerArrowDownEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_DOWN",
@@ -593,6 +669,35 @@ export const machine = createMachine<SelectSchema>({
           listEl?.removeEventListener("scroll", exec)
           win.removeEventListener("resize", exec)
         }
+      },
+
+      trackPressRelease({ refs, scope, send }) {
+        if (!refs.get("pressOrigin")) return
+        const doc = scope.getDoc()
+
+        const onPointerUp = (event: PointerEvent) => {
+          cleanup()
+          const itemEl = dom.getEnabledItemElFromTarget(scope, getEventTarget(event))
+          send({
+            type: "PRESS.RELEASE",
+            value: itemEl?.dataset.value ?? null,
+            point: { x: event.clientX, y: event.clientY },
+            time: event.timeStamp,
+          })
+        }
+
+        const onPressEnd = () => {
+          cleanup()
+          refs.set("pressOrigin", null)
+        }
+
+        const cleanups = [
+          addDomEvent(doc, "pointerup", onPointerUp, true),
+          addDomEvent(doc, "pointerdown", onPressEnd, true),
+          addDomEvent(doc, "pointercancel", onPressEnd, true),
+        ]
+        const cleanup = () => cleanups.forEach((fn) => fn())
+        return cleanup
       },
 
       trackLiveRegion({ refs, scope }) {
@@ -725,6 +830,25 @@ export const machine = createMachine<SelectSchema>({
           const element = dom.getTriggerEl(scope)
           element?.focus(focusOptions)
         })
+      },
+
+      setPressOrigin({ refs, event }) {
+        refs.set("pressOrigin", event.point ? { ...event.point, time: event.time } : null)
+      },
+
+      clearPressOrigin({ refs }) {
+        refs.set("pressOrigin", null)
+      },
+
+      clickReleasedItem({ send, event }) {
+        send({ type: "ITEM.CLICK", src: "pointerup", value: event.value })
+      },
+
+      focusAdjacentTabbable({ scope, event }) {
+        const triggerEl = dom.getTriggerEl(scope)
+        const exclude = dom.getPositionerEl(scope)
+        const nextEl = getAdjacentTabbable(triggerEl, { exclude, backward: event.shiftKey }) ?? triggerEl
+        nextEl?.focus({ preventScroll: true })
       },
 
       cancelInitialFocus({ refs }) {

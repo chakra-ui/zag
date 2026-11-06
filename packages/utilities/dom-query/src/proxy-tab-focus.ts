@@ -1,7 +1,7 @@
 import { addDomEvent } from "./event"
-import { contains, isActiveElement } from "./node"
+import { isActiveElement } from "./node"
 import { raf } from "./raf"
-import { getTabbableEdges, getTabbables, type GetShadowRootOption } from "./tabbable"
+import { getAdjacentTabbable, getTabbableEdges, type GetShadowRootOption } from "./tabbable"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
 
 export interface ProxyTabFocusOptions<T = MaybeElement> {
@@ -15,24 +15,6 @@ export interface ProxyTabFocusOptions<T = MaybeElement> {
 function resolveElement(value: MaybeElementOrFn | undefined): MaybeElement {
   if (value == null) return null
   return typeof value === "function" ? value() : value
-}
-
-/** Next tabbable after `trigger`, skipping anything inside `container` (portalled content). */
-function getNextTabbableAfterTrigger(
-  container: HTMLElement,
-  trigger: MaybeElement,
-  getShadowRoot: GetShadowRootOption,
-) {
-  if (!trigger) return null
-  const tabbables = getTabbables(container.ownerDocument.body, { getShadowRoot })
-  const triggerIndex = tabbables.indexOf(trigger)
-  if (triggerIndex === -1) return null
-
-  for (let i = triggerIndex + 1; i < tabbables.length; i++) {
-    const el = tabbables[i]
-    if (!contains(container, el)) return el
-  }
-  return null
 }
 
 function proxyTabFocusImpl(container: MaybeElementOrFn, options: ProxyTabFocusOptions<MaybeElementOrFn> = {}) {
@@ -64,10 +46,10 @@ function proxyTabFocusImpl(container: MaybeElementOrFn, options: ProxyTabFocusOp
       elementToFocus = firstTabbable
     } else if (!event.shiftKey && (isActiveElement(lastTabbable) || noTabbableElements)) {
       // Tab from last item → next after trigger (outside content)
-      elementToFocus = getNextTabbableAfterTrigger(content, trigger, getShadowRoot)
+      elementToFocus = getAdjacentTabbable(trigger ?? null, { exclude: content, getShadowRoot })
     } else if (event.shiftKey) {
       // Shift+Tab from next-after-trigger → last item
-      const nextTabbableAfterTrigger = getNextTabbableAfterTrigger(content, trigger, getShadowRoot)
+      const nextTabbableAfterTrigger = getAdjacentTabbable(trigger ?? null, { exclude: content, getShadowRoot })
       if (isActiveElement(nextTabbableAfterTrigger)) {
         onFocusEnter?.()
         elementToFocus = lastTabbable

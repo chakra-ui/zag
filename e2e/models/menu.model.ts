@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, isInViewport } from "../_utils"
+import { a11y, getFocusPosition, isInViewport } from "../_utils"
 import { Model } from "./model"
 
 export class MenuModel extends Model {
@@ -45,6 +45,14 @@ export class MenuModel extends Model {
 
   clickTrigger = async () => {
     await this.trigger.click()
+  }
+
+  seeFocusAfterTrigger = async () => {
+    await expect.poll(() => getFocusPosition(this.trigger.first(), { skip: "[data-menu-positioner]" })).toBe("after")
+  }
+
+  seeFocusBeforeTrigger = async () => {
+    await expect.poll(() => getFocusPosition(this.trigger.first(), { skip: "[data-menu-positioner]" })).toBe("before")
   }
 
   seeTriggerIsFocused = async () => {

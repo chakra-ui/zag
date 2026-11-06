@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getComputedStyle } from "@zag-js/dom-query"
+import { contains, getComputedStyle } from "@zag-js/dom-query"
 import { parts } from "./select.anatomy"
 
 // ID generators — kept for ARIA attributes in connect
@@ -164,6 +164,11 @@ export function computeScrollArrowVisibility(scroller: HTMLElement | null): Scro
 }
 export const getItemEls = (ctx: Scope) => {
   return Array.from(ctx.queryAll(ctx.selector(parts.item))) as HTMLElement[]
+}
+export const getEnabledItemElFromTarget = (ctx: Scope, target: EventTarget | null) => {
+  const el = (target as Element | null)?.closest?.<HTMLElement>(ctx.selector(parts.item))
+  if (!el || el.hasAttribute("data-disabled") || !contains(getContentEl(ctx), el)) return null
+  return el
 }
 export const getItemEl = (ctx: Scope, id: string | number | null) => {
   if (id == null) return null

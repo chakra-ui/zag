@@ -478,11 +478,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           if (!sameMenu) return
 
           if (event.key === "Tab") {
-            const valid = isValidTabEvent(event)
-            if (!valid) {
-              event.preventDefault()
-              return
-            }
+            if (isValidTabEvent(event)) return
+            event.preventDefault()
+            send({ type: "TAB", shiftKey: event.shiftKey })
+            return
           }
 
           const keyMap: EventKeyMap = {
@@ -643,7 +642,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               if (event.shiftKey) {
                 send({ type: isSubmenu ? "ARROW_LEFT" : "CLOSE" })
               } else {
-                send({ type: "INPUT.TAB" })
+                send({ type: "TAB" })
               }
               return true
             },

@@ -278,6 +278,31 @@ export function getNextTabbable(container: HTMLElement | null, options: NextTabb
   return tabbables[index + 1] || null
 }
 
+export interface AdjacentTabbableOptions {
+  exclude?: HTMLElement | null | undefined | Array<HTMLElement | null | undefined>
+  backward?: boolean | undefined
+  getShadowRoot?: GetShadowRootOption
+}
+
+/** The tabbable before or after `el`, skipping anything inside `exclude` */
+export function getAdjacentTabbable(el: HTMLElement | null, options: AdjacentTabbableOptions = {}): HTMLElement | null {
+  if (!el) return null
+  const { exclude, backward, getShadowRoot } = options
+  const tabbables = getTabbables(el.ownerDocument.body, { getShadowRoot })
+  const index = tabbables.indexOf(el)
+  if (index === -1) return null
+  const excluded = Array.isArray(exclude) ? exclude : [exclude]
+  const step = backward ? -1 : 1
+  for (let i = index + step; i >= 0 && i < tabbables.length; i += step) {
+    const el = tabbables[i]
+    if (excluded.some((node) => contains(node, el))) continue
+    // Outside an open modal
+    if (el.closest("[aria-hidden=true]")) continue
+    return el
+  }
+  return null
+}
+
 export function getTabIndex(node: HTMLElement | SVGElement) {
   if (node.tabIndex < 0) {
     if ((NATURALLY_TABBABLE_REGEX.test(node.localName) || isEditableElement(node)) && !hasTabIndex(node)) {
