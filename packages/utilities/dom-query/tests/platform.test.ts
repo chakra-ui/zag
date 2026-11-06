@@ -42,6 +42,7 @@ describe("isLinux", () => {
       maxTouchPoints: 5,
     })
     expect(isLinux()).toBe(false)
+    expect(isAndroid()).toBe(true)
   })
 
   it("should exclude android", () => {
