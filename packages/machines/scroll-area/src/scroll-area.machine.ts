@@ -1,14 +1,15 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, setStyleProperty, Timeout, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, contains, getEventTarget, setStyleProperty, Timeout, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
-import { callAll, clampValue, ensureProps, isEqual } from "@zag-js/utils"
+import { clampValue, ensureProps, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
 import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scroll-area.types"
 import { getScrollOffset } from "./utils/scroll-offset"
 import { getScrollSides } from "./utils/scroll-sides"
+import { markUserScroll, resetUserScroll } from "./utils/user-scroll"
 
-const MIN_THUMB_SIZE = 20
-const SCROLL_TIMEOUT = 1000
+const MIN_THUMB_SIZE = 16
+const SCROLL_TIMEOUT = 500
 
 export const machine = createMachine<ScrollAreaSchema>({
   props({ props }) {
@@ -22,7 +23,6 @@ export const machine = createMachine<ScrollAreaSchema>({
       scrollingY: bindable<boolean>(() => ({ defaultValue: false })),
       hovering: bindable<boolean>(() => ({ defaultValue: false })),
       dragging: bindable<boolean>(() => ({ defaultValue: false })),
-      touchModality: bindable<boolean>(() => ({ defaultValue: false })),
       atSides: bindable<ScrollRecord<boolean>>(() => ({
         defaultValue: { top: true, right: false, bottom: false, left: true },
       })),
@@ -34,9 +34,9 @@ export const machine = createMachine<ScrollAreaSchema>({
       })),
       hiddenState: bindable<ScrollbarHiddenState>(() => ({
         defaultValue: {
-          scrollbarYHidden: false,
-          scrollbarXHidden: false,
-          cornerHidden: false,
+          scrollbarYHidden: true,
+          scrollbarXHidden: true,
+          cornerHidden: true,
         },
         hash(a) {
           return `Y:${a.scrollbarYHidden} X:${a.scrollbarXHidden} C:${a.cornerHidden}`
@@ -57,6 +57,8 @@ export const machine = createMachine<ScrollAreaSchema>({
       startScrollTop: 0,
       startScrollLeft: 0,
       programmaticScroll: true,
+      touchModality: false,
+      scrollSnapType: "",
     }
   },
 
@@ -72,7 +74,7 @@ export const machine = createMachine<ScrollAreaSchema>({
 
   effects: ["trackContentResize", "trackViewportVisibility", "trackWheelEvent"],
 
-  entry: ["checkHovering"],
+  entry: ["checkHovering", "setThumbSize"],
 
   exit: ["clearTimeouts"],
 
@@ -82,6 +84,9 @@ export const machine = createMachine<ScrollAreaSchema>({
     },
     "viewport.scroll": {
       actions: ["setThumbSize", "setScrolling", "setProgrammaticScroll"],
+    },
+    "user.scroll": {
+      actions: ["setUserScroll"],
     },
     "root.pointerenter": {
       actions: ["setTouchModality", "setHovering"],
@@ -99,11 +104,11 @@ export const machine = createMachine<ScrollAreaSchema>({
       on: {
         "scrollbar.pointerdown": {
           target: "dragging",
-          actions: ["scrollToPointer", "startDragging"],
+          actions: ["setUserScroll", "scrollToPointer", "startDragging"],
         },
         "thumb.pointerdown": {
           target: "dragging",
-          actions: ["startDragging"],
+          actions: ["setUserScroll", "startDragging"],
         },
       },
     },
@@ -128,20 +133,21 @@ export const machine = createMachine<ScrollAreaSchema>({
 
   implementations: {
     actions: {
-      setTouchModality({ context, event }) {
-        context.set("touchModality", event.pointerType === "touch")
+      setTouchModality({ refs, event }) {
+        refs.set("touchModality", event.pointerType === "touch")
       },
-      setHovering({ context }) {
+      setHovering({ context, event }) {
+        if (event.pointerType === "touch") return
         context.set("hovering", true)
+      },
+      setUserScroll({ refs }) {
+        markUserScroll(refs)
       },
       clearHovering({ context }) {
         context.set("hovering", false)
       },
       setProgrammaticScroll({ refs }) {
-        const scrollEndTimeout = refs.get("scrollEndTimeout")
-        scrollEndTimeout.start(100, () => {
-          refs.set("programmaticScroll", true)
-        })
+        resetUserScroll(refs)
       },
       clearScrolling({ context, event }) {
         context.set(event.orientation === "vertical" ? "scrollingY" : "scrollingX", false)
@@ -307,6 +313,8 @@ export const machine = createMachine<ScrollAreaSchema>({
           return next
         })
 
+        if (refs.get("programmaticScroll") && !refs.get("touchModality")) return
+
         if (offsetY !== 0) {
           context.set("scrollingY", true)
           refs.get("scrollYTimeout").start(SCROLL_TIMEOUT, () => {
@@ -345,7 +353,7 @@ export const machine = createMachine<ScrollAreaSchema>({
           const viewportHeight = viewportEl.clientHeight
 
           const maxThumbOffsetY = scrollbarYRef.offsetHeight - thumbHeight - scrollbarYOffset - thumbYOffset
-          const scrollRatioY = clickY / maxThumbOffsetY
+          const scrollRatioY = maxThumbOffsetY > 0 ? clickY / maxThumbOffsetY : 0
           const newScrollTop = scrollRatioY * (scrollableContentHeight - viewportHeight)
 
           viewportEl.scrollTop = newScrollTop
@@ -362,7 +370,7 @@ export const machine = createMachine<ScrollAreaSchema>({
           const viewportWidth = viewportEl.clientWidth
 
           const maxThumbOffsetX = scrollbarXRef.offsetWidth - thumbWidth - scrollbarXOffset - thumbXOffset
-          const scrollRatioX = clickX / maxThumbOffsetX
+          const scrollRatioX = maxThumbOffsetX > 0 ? clickX / maxThumbOffsetX : 0
 
           let newScrollLeft: number
           if (prop("dir") === "rtl") {
@@ -390,6 +398,9 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         refs.set("startScrollTop", viewportEl.scrollTop)
         refs.set("startScrollLeft", viewportEl.scrollLeft)
+
+        refs.set("scrollSnapType", viewportEl.style.scrollSnapType)
+        viewportEl.style.scrollSnapType = "none"
       },
 
       setDraggingScroll({ event, refs, scope, context }) {
@@ -422,7 +433,7 @@ export const machine = createMachine<ScrollAreaSchema>({
           const thumbYOffset = getScrollOffset(thumbYEl, "margin", "y")
           const thumbHeight = thumbYEl.offsetHeight
           const maxThumbOffsetY = scrollbarYEl.offsetHeight - thumbHeight - scrollbarYOffset - thumbYOffset
-          const scrollRatioY = deltaY / maxThumbOffsetY
+          const scrollRatioY = maxThumbOffsetY > 0 ? deltaY / maxThumbOffsetY : 0
           viewportEl.scrollTop = startScrollTop + scrollRatioY * (scrollableContentHeight - viewportHeight)
           context.set("scrollingY", true)
           refs.get("scrollYTimeout").start(SCROLL_TIMEOUT, () => {
@@ -436,7 +447,7 @@ export const machine = createMachine<ScrollAreaSchema>({
           const thumbXOffset = getScrollOffset(thumbXEl, "margin", "x")
           const thumbWidth = thumbXEl.offsetWidth
           const maxThumbOffsetX = scrollbarXEl.offsetWidth - thumbWidth - scrollbarXOffset - thumbXOffset
-          const scrollRatioX = deltaX / maxThumbOffsetX
+          const scrollRatioX = maxThumbOffsetX > 0 ? deltaX / maxThumbOffsetX : 0
           viewportEl.scrollLeft = startScrollLeft + scrollRatioX * (scrollableContentWidth - viewportWidth)
           context.set("scrollingX", true)
           refs.get("scrollXTimeout").start(SCROLL_TIMEOUT, () => {
@@ -445,8 +456,10 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      stopDragging({ refs }) {
+      stopDragging({ refs, scope }) {
         refs.set("orientation", null)
+        const viewportEl = dom.getViewportEl(scope)
+        if (viewportEl) viewportEl.style.scrollSnapType = refs.get("scrollSnapType")
       },
 
       clearTimeouts({ refs }) {
@@ -500,20 +513,21 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      trackWheelEvent({ scope }) {
-        const scrollbarYEl = dom.getScrollbarYEl(scope)
-        const scrollbarXEl = dom.getScrollbarXEl(scope)
-        if (!scrollbarYEl && !scrollbarXEl) return
+      trackWheelEvent({ scope, refs }) {
+        const rootEl = dom.getRootEl(scope)
+        if (!rootEl) return
 
         const onWheel = (event: WheelEvent) => {
           const viewportEl = dom.getViewportEl(scope)
           if (!viewportEl || event.ctrlKey) return
 
-          const orientation = (event.currentTarget as HTMLElement).dataset.orientation as "vertical" | "horizontal"
+          const target = getEventTarget<Element>(event)
+          const scrollbarYEl = dom.getScrollbarYEl(scope)
+          const scrollbarXEl = dom.getScrollbarXEl(scope)
 
           // Only preventDefault when the inner viewport will actually scroll.
           // If at boundaries, allow the event to bubble for nested scroll chaining.
-          if (orientation === "vertical") {
+          if (contains(scrollbarYEl, target)) {
             const canScrollY = viewportEl.scrollHeight > viewportEl.clientHeight
             const atTop = viewportEl.scrollTop === 0 && event.deltaY < 0
             const atBottom =
@@ -521,8 +535,9 @@ export const machine = createMachine<ScrollAreaSchema>({
             const shouldScroll = canScrollY && event.deltaY !== 0 && !(atTop || atBottom)
             if (!shouldScroll) return
             event.preventDefault()
+            markUserScroll(refs)
             viewportEl.scrollTop += event.deltaY
-          } else if (orientation === "horizontal") {
+          } else if (contains(scrollbarXEl, target)) {
             const canScrollX = viewportEl.scrollWidth > viewportEl.clientWidth
             const atLeft = viewportEl.scrollLeft === 0 && event.deltaX < 0
             const atRight =
@@ -530,14 +545,12 @@ export const machine = createMachine<ScrollAreaSchema>({
             const shouldScroll = canScrollX && event.deltaX !== 0 && !(atLeft || atRight)
             if (!shouldScroll) return
             event.preventDefault()
+            markUserScroll(refs)
             viewportEl.scrollLeft += event.deltaX
           }
         }
 
-        return callAll(
-          scrollbarYEl && addDomEvent(scrollbarYEl, "wheel", onWheel, { passive: false }),
-          scrollbarXEl && addDomEvent(scrollbarXEl, "wheel", onWheel, { passive: false }),
-        )
+        return addDomEvent(rootEl, "wheel", onWheel, { passive: false })
       },
 
       trackPointerMove({ scope, send, refs }) {

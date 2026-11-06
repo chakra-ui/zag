@@ -94,6 +94,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
       { slug: "column-reverse", title: "Column Reverse" },
+      { slug: "dynamic", title: "Dynamic" },
     ],
   },
   {

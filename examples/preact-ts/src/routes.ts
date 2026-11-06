@@ -378,6 +378,7 @@ export const routes: RouteDefinition[] = [
   { path: "/scroll-area/basic", component: lazy(() => import("./pages/scroll-area/basic")) },
   { path: "/scroll-area/column-reverse", component: lazy(() => import("./pages/scroll-area/column-reverse")) },
   { path: "/scroll-area/nested", component: lazy(() => import("./pages/scroll-area/nested")) },
+  { path: "/scroll-area/dynamic", component: lazy(() => import("./pages/scroll-area/dynamic")) },
   { path: "/scroll-lock/html-scroller", component: lazy(() => import("./pages/scroll-lock/html-scroller")) },
   { path: "/segment-control/basic", component: lazy(() => import("./pages/segment-control/basic")) },
   { path: "/select/align-item-with-trigger", component: lazy(() => import("./pages/select/align-item-with-trigger")) },

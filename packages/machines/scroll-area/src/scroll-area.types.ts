@@ -43,7 +43,6 @@ export interface ScrollAreaContext {
   scrollingY: boolean
   hiddenState: ScrollbarHiddenState
   hovering: boolean
-  touchModality: boolean
   atSides: ScrollRecord<boolean>
 }
 
@@ -63,6 +62,8 @@ export interface ScrollAreaRefs {
   startScrollLeft: number
 
   programmaticScroll: boolean
+  touchModality: boolean
+  scrollSnapType: string
 }
 
 export interface ScrollAreaSchema {

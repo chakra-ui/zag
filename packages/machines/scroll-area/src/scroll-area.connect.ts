@@ -104,14 +104,13 @@ export function connect<T extends PropTypes>(
       }
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
-        role: "presentation",
         "data-at-top": dataAttr(atSides.top),
         "data-at-bottom": dataAttr(atSides.bottom),
         "data-at-left": dataAttr(atSides.left),
         "data-at-right": dataAttr(atSides.right),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
-        tabIndex: hiddenState.scrollbarXHidden || hiddenState.scrollbarYHidden ? undefined : 0,
+        tabIndex: hiddenState.scrollbarXHidden && hiddenState.scrollbarYHidden ? undefined : 0,
         style: {
           overflow: "auto",
         },
@@ -143,6 +142,7 @@ export function connect<T extends PropTypes>(
       const scrollbarState = getScrollbarState(props)
       return normalize.element({
         ...parts.scrollbar.attrs(scope.id),
+        "aria-hidden": true,
         "data-orientation": orientation,
         "data-scrolling": dataAttr(scrollbarState.scrolling),
         "data-hover": dataAttr(scrollbarState.hovering),
@@ -151,6 +151,9 @@ export function connect<T extends PropTypes>(
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
           send({ type: "scrollbar.pointerup", orientation })
+        },
+        onMouseDown(event) {
+          event.preventDefault()
         },
         onPointerDown(event) {
           if (event.button !== 0) {
@@ -211,6 +214,7 @@ export function connect<T extends PropTypes>(
       const cornerState = getCornerState()
       return normalize.element({
         ...parts.corner.attrs(scope.id),
+        "aria-hidden": true,
         "data-hover": dataAttr(cornerState.hovering),
         "data-state": cornerState.hidden ? "hidden" : "visible",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
