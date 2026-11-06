@@ -175,6 +175,11 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   })
 }
 
+/** Whether `target` is inside a layer opened from within `node`, such as a menu opened from a popover */
+export function isInNestedLayer(node: HTMLElement | null | undefined, target: EventTarget | null) {
+  return !!node && layerStack.isInNestedLayer(node, target)
+}
+
 export function trackDismissableBranch(
   nodeOrFn: NodeOrFn,
   options: Pick<DismissableElementOptions, "defer" | "getRootNode"> = {},

@@ -249,11 +249,103 @@ test.describe("hover card", () => {
       await I.waitOutCloseDelay()
       await I.seeContent()
 
-      // once it has actually been hovered, leaving closes it as usual
       await I.moveOntoContent()
       await I.moveClearOfCard(40)
       await I.waitOutCloseDelay()
+      await I.seeContent()
+
+      await I.hoverTrigger({ wait: false })
+      await I.moveClearOfCard(40)
+      await I.waitOutCloseDelay()
       await I.dontSeeContent()
+    })
+
+    test("should keep a card opened elsewhere open when the pointer passes over it", async () => {
+      await I.goto("/hover-card/controlled")
+      await I.clickOpenButton()
+      await I.seeContent()
+
+      await I.jumpOntoContent()
+      await I.moveClearOfCard(40)
+      await I.waitOutCloseDelay()
+      await I.seeContent()
+    })
+  })
+
+  test.describe("window focus", () => {
+    test("should not reopen when focus returns to the trigger with the window", async () => {
+      await I.focusTrigger()
+      await I.seeContent()
+
+      await I.switchTabAndBack()
+      await I.dontSeeContent()
+    })
+  })
+
+  test.describe("nested popups", () => {
+    test.beforeEach(async () => {
+      await I.goto("/hover-card/nested")
+      await I.hoverTestId("parent-trigger")
+      await I.advance(OPEN_DELAY)
+      await I.hoverTestId("parent-content")
+    })
+
+    test("should keep the card open while the pointer is in a card opened from it", async () => {
+      await I.hoverTestId("child-trigger")
+      await I.advance(OPEN_DELAY)
+      await I.hoverTestId("child-content", { end: true })
+      await I.waitOutCloseDelay()
+      await I.seeTestId("parent-content")
+      await I.seeTestId("child-content")
+
+      await I.moveAway()
+      await I.waitOutCloseDelay()
+      await I.dontSeeTestId("parent-content")
+      await I.dontSeeTestId("child-content")
+    })
+
+    test("should keep the card open once a menu is opened from it", async () => {
+      await I.pressTestId("menu-trigger")
+      await I.seeTestId("menu-content")
+
+      await I.moveAway()
+      await I.waitOutCloseDelay()
+      await I.seeTestId("parent-content")
+      await I.seeTestId("menu-content")
+
+      await I.pressKey("Escape")
+      await I.dontSeeTestId("menu-content")
+      await I.seeTestId("parent-content")
+    })
+  })
+
+  test("should close when the trigger is removed", async () => {
+    await I.goto("/hover-card/controlled")
+    await I.clickOpenButton()
+    await I.seeContent()
+
+    await I.removeTrigger()
+    await I.dontSeeContent()
+  })
+
+  test.describe("instant", () => {
+    test.beforeEach(async () => {
+      await I.goto("/hover-card/multiple-trigger")
+    })
+
+    test("should skip the animation when focus opens it or escape closes it", async () => {
+      await I.trigger.first().focus()
+      await I.advance(OPEN_DELAY)
+      await I.seeInstant("focus")
+
+      await I.pressKey("Escape")
+      await I.seeInstant("dismiss")
+    })
+
+    test("should animate when the pointer opens it", async () => {
+      await I.trigger.first().hover()
+      await I.advance(OPEN_DELAY)
+      await I.seeInstant(null)
     })
   })
 })

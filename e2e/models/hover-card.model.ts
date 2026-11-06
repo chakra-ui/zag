@@ -162,6 +162,8 @@ export class HoverCardModel extends Model {
   }
 
   pressOutside = async () => {
+    await this.seeContent()
+    await this.advance(FRAME)
     await this.page.mouse.move(400, 30)
     await this.page.mouse.down()
     await this.page.mouse.up()
@@ -209,8 +211,10 @@ export class HoverCardModel extends Model {
       )
   }
 
+  /** By keyboard: a click leaves the pointer where the card was, which is over the first trigger once it moves. */
   switchTrigger = async () => {
-    await this.page.locator(testid("switch-trigger")).click()
+    await this.page.locator(testid("switch-trigger")).press("Enter")
+    await expect(this.page.locator(testid("wrapped-trigger-2"))).toHaveAttribute("data-current")
     await this.advance(FRAME)
   }
 
@@ -227,5 +231,70 @@ export class HoverCardModel extends Model {
     expect(box.y).toBeGreaterThanOrEqual(line.y + line.height)
     expect(box.y).toBeLessThan(line.y + line.height + 40)
     expect(Math.abs(box.x + box.width / 2 - (line.x + line.width / 2))).toBeLessThan(40)
+  }
+
+  clickOpenButton = async () => {
+    await this.page.getByRole("button", { name: "Open", exact: true }).click()
+    await this.advance(FRAME)
+  }
+
+  jumpOntoContent = async () => {
+    const { content } = await this.boxes()
+    await this.page.mouse.move(content.x + content.width / 2, content.y + 10)
+    await this.advance(FRAME)
+  }
+
+  moveAway = async () => {
+    await this.page.mouse.move(5, 600, { steps: 10 })
+    await this.advance(FRAME)
+  }
+
+  switchTabAndBack = async () => {
+    await this.trigger.evaluate((el) => {
+      el.blur()
+      window.dispatchEvent(new FocusEvent("blur"))
+      window.dispatchEvent(new FocusEvent("focus"))
+    })
+    const cdp = await this.page.context().newCDPSession(this.page)
+    const { root } = await cdp.send("DOM.getDocument")
+    const { nodeId } = await cdp.send("DOM.querySelector", {
+      nodeId: root.nodeId,
+      selector: part("hover-card", "trigger"),
+    })
+    await cdp.send("DOM.focus", { nodeId })
+    await this.advance(OPEN_DELAY)
+  }
+
+  hoverTestId = async (id: string, opts: { end?: boolean } = {}) => {
+    const box = await this.page.locator(testid(id)).boundingBox()
+    if (!box) throw new Error(`${id} is not visible`)
+    const x = opts.end ? box.x + box.width - 10 : box.x + box.width / 2
+    await this.page.mouse.move(x, box.y + box.height / 2, { steps: 10 })
+    await this.advance(FRAME)
+  }
+
+  pressTestId = async (id: string) => {
+    await this.hoverTestId(id)
+    await this.page.mouse.down()
+    await this.page.mouse.up()
+    await this.advance(FRAME)
+  }
+
+  seeTestId = async (id: string) => {
+    await expect(this.page.locator(testid(id))).toBeVisible()
+  }
+
+  dontSeeTestId = async (id: string) => {
+    await expect(this.page.locator(testid(id))).not.toBeVisible()
+  }
+
+  removeTrigger = async () => {
+    await this.trigger.first().evaluate((el) => el.remove())
+    await this.advance(FRAME)
+  }
+
+  seeInstant = async (value: string | null) => {
+    if (value == null) await expect(this.content).not.toHaveAttribute("data-instant")
+    else await expect(this.content).toHaveAttribute("data-instant", value)
   }
 }

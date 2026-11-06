@@ -90,6 +90,7 @@ export let listenerMap = new Map<Window, GlobalListenerData>()
 let hasEventBeforeFocus = false
 let pendingLabelControl: HTMLElement | null = null
 let hasBlurredWindowRecently = false
+let focusRestoredByWindow = false
 let lastPointerPosition: { x: number; y: number } | null = null
 
 /** Skip the next focus event, so preventFocus() doesn't show focus rings */
@@ -176,6 +177,7 @@ function handleFocusEvent(e: FocusEvent) {
     triggerChangeHandlers("virtual", e)
   }
 
+  focusRestoredByWindow = hasBlurredWindowRecently && !hasEventBeforeFocus
   hasEventBeforeFocus = false
   pendingLabelControl = null
   hasBlurredWindowRecently = false
@@ -352,6 +354,11 @@ export function trackInteractionModality(props: InteractionModalityProps): VoidF
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+/** Whether the latest focus was the browser restoring it as the window regained focus */
+export function isFocusRestoredByWindow(): boolean {
+  return focusRestoredByWindow
+}
 
 export function isFocusVisible(): boolean {
   // Only keyboard and virtual (e.g. screen reader) modalities show focus

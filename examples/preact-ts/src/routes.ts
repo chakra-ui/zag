@@ -241,6 +241,7 @@ export const routes: RouteDefinition[] = [
   { path: "/hover-card/hovercard-in-dialog", component: lazy(() => import("./pages/hover-card/hovercard-in-dialog")) },
   { path: "/hover-card/inline", component: lazy(() => import("./pages/hover-card/inline")) },
   { path: "/hover-card/multiple-trigger", component: lazy(() => import("./pages/hover-card/multiple-trigger")) },
+  { path: "/hover-card/nested", component: lazy(() => import("./pages/hover-card/nested")) },
   { path: "/image-cropper/basic", component: lazy(() => import("./pages/image-cropper/basic")) },
   { path: "/image-cropper/circle", component: lazy(() => import("./pages/image-cropper/circle")) },
   { path: "/image-cropper/fixed", component: lazy(() => import("./pages/image-cropper/fixed")) },

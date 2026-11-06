@@ -520,6 +520,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "hovercard-in-dialog", title: "With Dialog" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "inline", title: "Inline" },
+      { slug: "nested", title: "Nested" },
     ],
   },
   {

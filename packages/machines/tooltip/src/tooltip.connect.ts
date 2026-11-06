@@ -1,6 +1,6 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr, isLeftClick } from "@zag-js/dom-query"
-import { isFocusVisible } from "@zag-js/focus-visible"
+import { isFocusRestoredByWindow, isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
@@ -90,7 +90,7 @@ export function connect<P extends PropTypes>(
         onFocus(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          if (!isFocusVisible()) return
+          if (!isFocusVisible() || isFocusRestoredByWindow()) return
           const shouldSwitch = open && value != null && !current
           send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "OPEN", src: "trigger.focus", value, triggerId })
         },

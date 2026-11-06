@@ -1,6 +1,6 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
-import { dataAttr } from "@zag-js/dom-query"
-import { isFocusVisible } from "@zag-js/focus-visible"
+import { dataAttr, getEventTarget } from "@zag-js/dom-query"
+import { isFocusRestoredByWindow, isFocusVisible } from "@zag-js/focus-visible"
 import { getInlineRectCoords, getLineRects, getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
@@ -59,6 +59,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
       side: currentPlacementSide,
+      instant: context.get("instant"),
     }
   }
 
@@ -136,7 +137,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (prop("disabled")) return
           // Only keyboard/virtual focus opens. Focus arriving after a pointer interaction, such as
           // a dialog restoring it, carries no intent to preview.
-          if (!isFocusVisible()) return
+          if (!isFocusVisible() || isFocusRestoredByWindow()) return
           // Focus has no line to prefer.
           refs.set("inlineCoords", undefined)
           const shouldSwitch = open && value != null && !current
@@ -178,12 +179,16 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         "data-state": contentState.open ? "open" : "closed",
         "data-placement": contentState.placement,
         "data-side": contentState.side,
+        "data-instant": contentState.instant ?? undefined,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
-          send({ type: "POINTER_ENTER", src: "trigger-hover" })
+          send({ type: "CONTENT.POINTER_ENTER" })
+        },
+        onPointerDown(event) {
+          if (getEventTarget<Element>(event)?.closest("[aria-haspopup]")) send({ type: "CONTENT.INTERACT" })
         },
       })
     },

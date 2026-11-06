@@ -1,10 +1,11 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { isInNestedLayer, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { isShadowRoot, observeChildren } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
-import type { HoverCardSchema, OpenChangeReason, Placement } from "./hover-card.types"
+import type { HoverCardSchema, InstantType, OpenChangeReason, Placement } from "./hover-card.types"
 
 const { not, and } = createGuards<HoverCardSchema>()
 
@@ -33,6 +34,7 @@ export const machine = createMachine<HoverCardSchema>({
     return {
       inlineCoords: undefined,
       inlineLines: undefined,
+      isInteractionInside: false,
     }
   },
 
@@ -50,6 +52,9 @@ export const machine = createMachine<HoverCardSchema>({
       })),
       isPointer: bindable<boolean>(() => ({
         defaultValue: false,
+      })),
+      instant: bindable<InstantType>(() => ({
+        defaultValue: null,
       })),
       triggerValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultTriggerValue") ?? null,
@@ -88,7 +93,7 @@ export const machine = createMachine<HoverCardSchema>({
   states: {
     closed: {
       tags: ["closed"],
-      entry: ["clearIsPointer"],
+      entry: ["clearIsPointer", "clearInteractionInside"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
@@ -170,7 +175,7 @@ export const machine = createMachine<HoverCardSchema>({
     open: {
       tags: ["open"],
       initial: "idle",
-      effects: ["trackDismissableElement", "trackPositioning", "trackSafeArea"],
+      effects: ["trackDismissableElement", "trackPositioning", "trackSafeArea", "trackTriggerRemoval"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -178,6 +183,7 @@ export const machine = createMachine<HoverCardSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
+            target: "open.idle",
             actions: ["invokeOnClose"],
           },
           {
@@ -188,6 +194,7 @@ export const machine = createMachine<HoverCardSchema>({
         TRIGGER_BLUR: [
           {
             guard: and("isOpenControlled", not("isPointer")),
+            target: "open.idle",
             actions: ["invokeOnClose"],
           },
           {
@@ -206,7 +213,11 @@ export const machine = createMachine<HoverCardSchema>({
             POINTER_ENTER: {
               actions: ["setIsPointer"],
             },
+            "CONTENT.INTERACT": {
+              actions: ["setInteractionInside"],
+            },
             "SAFE_AREA.EXIT": {
+              guard: and("isPointer", not("isInteractionInside")),
               target: "closing",
             },
           },
@@ -236,6 +247,13 @@ export const machine = createMachine<HoverCardSchema>({
               // no need to invokeOnOpen here because it's still open (but about to close)
               actions: ["setIsPointer"],
             },
+            "CONTENT.POINTER_ENTER": {
+              target: "idle",
+            },
+            "CONTENT.INTERACT": {
+              target: "idle",
+              actions: ["setInteractionInside"],
+            },
             TRIGGER_FOCUS: {
               target: "idle",
               actions: ["setTriggerValue"],
@@ -253,6 +271,7 @@ export const machine = createMachine<HoverCardSchema>({
   implementations: {
     guards: {
       isPointer: ({ context }) => !!context.get("isPointer"),
+      isInteractionInside: ({ refs }) => refs.get("isInteractionInside"),
       isOpenControlled: ({ prop }) => prop("open") != null,
     },
 
@@ -283,12 +302,25 @@ export const machine = createMachine<HoverCardSchema>({
           getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
           getContentEl: () => dom.getContentEl(scope),
           openedByPointer: () => context.get("isPointer"),
+          isTargetInside: (target) => isInNestedLayer(dom.getContentEl(scope), target),
           defer: true,
           onLeave() {
             send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
           },
           onEnter() {
             send({ type: "SAFE_AREA.ENTER" })
+          },
+        })
+      },
+
+      trackTriggerRemoval({ send, scope, context }) {
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const root = scope.getRootNode()
+        const node = (isShadowRoot(root) ? root : scope.getDoc().body) as HTMLElement
+        return observeChildren(() => (getTriggerEl() ? node : null), {
+          defer: true,
+          callback() {
+            if (!getTriggerEl()) send({ type: "CLOSE" })
           },
         })
       },
@@ -341,17 +373,27 @@ export const machine = createMachine<HoverCardSchema>({
     },
 
     actions: {
-      invokeOnClose({ prop, event }) {
-        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
+      invokeOnClose({ prop, event, context }) {
+        const reason = getOpenChangeReason(event)
+        if (reason === "escape-key") context.set("instant", "dismiss")
+        prop("onOpenChange")?.({ open: false, reason })
       },
-      invokeOnOpen({ prop, event }) {
-        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
+      invokeOnOpen({ prop, event, context }) {
+        const reason = getOpenChangeReason(event)
+        context.set("instant", reason === "trigger-focus" ? "focus" : null)
+        prop("onOpenChange")?.({ open: true, reason })
       },
       setIsPointer({ context }) {
         context.set("isPointer", true)
       },
       clearIsPointer({ context }) {
         context.set("isPointer", false)
+      },
+      setInteractionInside({ refs }) {
+        refs.set("isInteractionInside", true)
+      },
+      clearInteractionInside({ refs }) {
+        refs.set("isInteractionInside", false)
       },
       reposition({ context, prop, refs, scope, event }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)

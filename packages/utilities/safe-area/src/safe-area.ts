@@ -24,6 +24,8 @@ export interface SafeAreaOptions {
    * is often set by the very transition that starts tracking.
    */
   openedByPointer?: (() => boolean) | undefined
+  /** Treats the pointer over these as over the content, such as popups opened from it */
+  isTargetInside?: ((target: EventTarget | null) => boolean) | undefined
   onEnter?: VoidFunction | undefined
   onLeave?: VoidFunction | undefined
   defer?: boolean | undefined
@@ -37,7 +39,17 @@ export interface SafeAreaOptions {
  * "close normally", never "stay open forever".
  */
 export function trackSafeArea(options: SafeAreaOptions): VoidFunction {
-  const { getTriggerEl, getContentEl, padding = 8, travelTimeout, openedByPointer, onEnter, onLeave, defer } = options
+  const {
+    getTriggerEl,
+    getContentEl,
+    padding = 8,
+    travelTimeout,
+    openedByPointer,
+    isTargetInside,
+    onEnter,
+    onLeave,
+    defer,
+  } = options
 
   const cleanups: (VoidFunction | undefined)[] = []
 
@@ -53,6 +65,7 @@ export function trackSafeArea(options: SafeAreaOptions): VoidFunction {
     let exitPoint: Point | null = null
     let travelTimer: ReturnType<typeof setTimeout> | undefined
     let pendingPoint: Point | null = null
+    let pendingTarget: EventTarget | null = null
 
     const clearTravelTimer = () => {
       if (travelTimer == null) return
@@ -83,14 +96,14 @@ export function trackSafeArea(options: SafeAreaOptions): VoidFunction {
       return isMeasuredRect(rect) ? rect : null
     }
 
-    const resolve = (point: Point): SafeAreaState => {
+    const resolve = (point: Point, target: EventTarget | null): SafeAreaState => {
       const triggerRect = rectOf(getTriggerEl())
       const contentRect = rectOf(getContentEl())
 
       if (!triggerRect || !contentRect) return "departed"
 
       if (isPointInRect(triggerRect, point, padding)) return "anchored"
-      if (isPointInRect(contentRect, point, padding)) return "settled"
+      if (isPointInRect(contentRect, point, padding) || isTargetInside?.(target)) return "settled"
 
       if (!exitPoint) return "departed"
       const polygon: Polygon = getSafeAreaPolygon({ exitPoint, contentRect, padding })
@@ -101,12 +114,13 @@ export function trackSafeArea(options: SafeAreaOptions): VoidFunction {
       if (event.pointerType === "touch") return
       // One geometry read per frame; latest position wins.
       pendingPoint = [event.clientX, event.clientY]
+      pendingTarget = event.target
       frame.request(() => {
         const point = pendingPoint
         if (!point) return
         // Record the exit point only once confirmed inside: a corridor built around a point
         // already outside would always contain the pointer.
-        const next = resolve(point)
+        const next = resolve(point, pendingTarget)
         const inside = next === "anchored" || next === "settled"
         if (inside) exitPoint = point
         if (state === "unengaged" && !inside) return

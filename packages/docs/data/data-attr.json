@@ -1092,6 +1092,7 @@
       "data-state": "\"open\" | \"closed\"",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
+      "data-instant": "",
       "data-nested": "popover",
       "data-has-nested": "popover"
     }

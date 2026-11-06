@@ -213,6 +213,18 @@ You can use CSS variables to style the arrow.
 }
 ```
 
+### Skipping the animation
+
+The content gets `data-instant="focus"` when keyboard focus opens it and
+`data-instant="dismiss"` when Escape closes it. Turn the animation off for those
+so keyboard users don't wait on it.
+
+```css
+[data-hover-card-content][data-instant] {
+  animation: none;
+}
+```
+
 ## Methods and Properties
 
 ### Machine context

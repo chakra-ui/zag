@@ -19,6 +19,8 @@ export type OpenChangeReason =
   | "escape-key" // User pressed escape
   | "script" // Programmatically changed
 
+export type InstantType = "focus" | "dismiss" | null
+
 export interface OpenChangeDetails {
   open: boolean
   reason?: OpenChangeReason | undefined
@@ -113,6 +115,10 @@ interface PrivateContext {
    */
   isPointer: boolean
   /**
+   * Why the card should skip its animation: opened by focus, or dismissed with Escape
+   */
+  instant: InstantType
+  /**
    * Whether the hover card is open
    */
   open: boolean
@@ -131,6 +137,10 @@ export interface PrivateRefs {
    * The trigger's line rects, cached for the duration of a hover.
    */
   inlineLines: { element: Element; lines: RectLike[] } | undefined
+  /**
+   * Whether the user pressed a popup trigger inside the card, so hovering away no longer closes it
+   */
+  isInteractionInside: boolean
 }
 
 export interface HoverCardSchema {
@@ -208,6 +218,10 @@ export interface ContentState {
    * The side of the trigger the content is placed on
    */
   side: PlacementSide | undefined
+  /**
+   * Why the content should skip its animation, if it should
+   */
+  instant: InstantType
 }
 
 /* -----------------------------------------------------------------------------
