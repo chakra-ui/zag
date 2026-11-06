@@ -44,7 +44,6 @@ export const machine = createMachine({
       pasteFrame: AnimationFrame.create(),
       pasteFocusFrame: AnimationFrame.create(),
       selectFrame: AnimationFrame.create(),
-      blurFrame: AnimationFrame.create(),
     }
   },
 
@@ -69,13 +68,13 @@ export const machine = createMachine({
 
   watch({ action, track, context, computed }) {
     track([() => context.get("focusedIndex")], () => {
-      action(["focusInput", "selectInputIfNeeded"])
+      action(["focusInput", "selectInput"])
     })
     track([() => context.get("value").join(",")], () => {
-      action(["syncInputElements", "dispatchInputEvent"])
+      action(["syncInputElements", "dispatchInputEvent", "clampFocusedIndex"])
     })
     track([() => computed("isValueComplete")], () => {
-      action(["invokeOnComplete", "blurFocusedInputIfNeeded", "autoSubmitIfNeeded"])
+      action(["invokeOnComplete", "autoSubmitIfNeeded"])
     })
   },
 
@@ -89,6 +88,9 @@ export const machine = createMachine({
     ],
     "VALUE.CLEAR": {
       actions: ["clearValue", "setFocusIndexToFirst"],
+    },
+    "VALUE.COMPLETE": {
+      actions: ["invokeOnComplete", "autoSubmitIfNeeded"],
     },
   },
 
@@ -112,7 +114,7 @@ export const machine = createMachine({
         },
 
         "INPUT.PASTE": {
-          actions: ["setPastedValue", "setLastValueFocusIndex"],
+          actions: ["setPastedValue", "setPastedFocusIndex"],
         },
         "INPUT.FOCUS": {
           actions: ["setFocusedIndex", "focusInput"],
@@ -124,6 +126,9 @@ export const machine = createMachine({
         "INPUT.DELETE": {
           guard: "hasValue",
           actions: ["clearFocusedValue"],
+        },
+        "INPUT.DELETE_TO_START": {
+          actions: ["clearValueToFocusedIndex", "setFocusIndexToFirst"],
         },
         "INPUT.ARROW_LEFT": {
           actions: ["setPrevFocusedIndex"],
@@ -183,11 +188,12 @@ export const machine = createMachine({
           dom.getInputElAtIndex(scope, focusedIndex)?.focus({ preventScroll: true })
         })
       },
-      selectInputIfNeeded({ context, prop, refs, scope }) {
+      selectInput({ context, refs, scope }) {
         const focusedIndex = context.get("focusedIndex")
-        if (!prop("selectOnFocus") || focusedIndex === -1) return
+        if (focusedIndex === -1) return
         refs.get("selectFrame").request(() => {
-          dom.getInputElAtIndex(scope, focusedIndex)?.select()
+          const inputEl = dom.getInputElAtIndex(scope, focusedIndex)
+          if (scope.isActiveElement(inputEl)) inputEl?.select()
         })
       },
       invokeOnComplete({ computed, prop }) {
@@ -238,25 +244,22 @@ export const machine = createMachine({
           dom.setInputValue(inputEl, value[index])
         })
       },
-      setPastedValue({ context, event, computed, flush, refs }) {
-        const focusedIndex = context.get("focusedIndex")
+      setPastedValue({ context, event, computed, flush, refs, send }) {
+        const startIndex = getPasteStartIndex(
+          event.value,
+          context.get("focusedIndex"),
+          computed("filledValueLength"),
+          computed("valueLength"),
+        )
         refs.get("pasteFrame").request(() => {
-          const valueAsString = computed("valueAsString")
-          const valueLength = computed("valueLength")
-          const filledValueLength = computed("filledValueLength")
-
-          const startIndex = Math.min(focusedIndex, filledValueLength)
-
-          // keep value left of cursor
-          // replace value from cursor to end with pasted text
-          const left = startIndex > 0 ? valueAsString.substring(0, focusedIndex) : ""
-          const right = event.value.substring(0, valueLength - startIndex)
-
-          const value = fill(`${left}${right}`.split(""), valueLength)
-
+          const value = [...computed("_value")]
+          const chars = Array.from<string>(event.value).slice(0, value.length - startIndex)
+          value.splice(startIndex, chars.length, ...chars)
+          const wasComplete = computed("isValueComplete")
           flush(() => {
             context.set("value", value)
           })
+          if (wasComplete && computed("isValueComplete")) send({ type: "VALUE.COMPLETE" })
         })
       },
       setValueAtIndex({ context, event, computed }) {
@@ -290,12 +293,29 @@ export const machine = createMachine({
         const maxIndex = Math.min(computed("filledValueLength"), computed("valueLength") - 1)
         context.set("focusedIndex", Math.min(nextIndex, maxIndex))
       },
+      clearValueToFocusedIndex({ context, computed }) {
+        const value = computed("_value")
+        const focusedIndex = context.get("focusedIndex")
+        const end = value[focusedIndex] ? focusedIndex + 1 : focusedIndex
+        context.set("value", fill(value.slice(end), value.length))
+      },
+      clampFocusedIndex({ context, computed }) {
+        const maxIndex = Math.min(computed("filledValueLength"), computed("valueLength") - 1)
+        if (context.get("focusedIndex") > maxIndex) context.set("focusedIndex", maxIndex)
+      },
       setPrevFocusedIndex({ context }) {
         context.set("focusedIndex", Math.max(context.get("focusedIndex") - 1, 0))
       },
-      setLastValueFocusIndex({ context, computed, refs }) {
+      setPastedFocusIndex({ context, computed, event, refs }) {
+        const startIndex = getPasteStartIndex(
+          event.value,
+          context.get("focusedIndex"),
+          computed("filledValueLength"),
+          computed("valueLength"),
+        )
+        const nextIndex = Math.min(startIndex + Array.from<string>(event.value).length, computed("valueLength") - 1)
         refs.get("pasteFocusFrame").request(() => {
-          context.set("focusedIndex", Math.min(computed("filledValueLength"), computed("valueLength") - 1))
+          context.set("focusedIndex", nextIndex)
         })
       },
       cancelPasteFocus({ refs }) {
@@ -305,13 +325,6 @@ export const machine = createMachine({
         refs.get("pasteFrame").cancel()
         refs.get("pasteFocusFrame").cancel()
         refs.get("selectFrame").cancel()
-        refs.get("blurFrame").cancel()
-      },
-      blurFocusedInputIfNeeded({ context, computed, prop, refs, scope }) {
-        if (!prop("blurOnComplete") || !computed("isValueComplete")) return
-        refs.get("blurFrame").request(() => {
-          dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
-        })
       },
       requestFormSubmit({ scope }) {
         // Submit regardless of completeness so native validation can report it
@@ -337,6 +350,11 @@ function getNextValue(current: string, next: string) {
   const chars = nextValue.split("")
   nextValue = chars[chars.length - 1]
   return nextValue ?? ""
+}
+
+function getPasteStartIndex(value: string, focusedIndex: number, filledLength: number, length: number) {
+  if (Array.from(value).length >= length) return 0
+  return Math.min(focusedIndex, filledLength)
 }
 
 function fill(value: string[], count: number | undefined) {

@@ -18,7 +18,10 @@ export default function Page() {
     id: useId(),
     count: 3,
     autoSubmit: true,
-    sanitizeValue: (value) => value.replace(/-/g, ""),
+    normalizeValue: (value) => value.toUpperCase(),
+    onValueInvalid(details) {
+      console.log("invalid:", details.value)
+    },
     ...controls.context,
   })
 

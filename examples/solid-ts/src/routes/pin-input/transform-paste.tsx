@@ -18,7 +18,10 @@ export default function Page() {
       name: "test",
       count: 3,
       autoSubmit: true,
-      sanitizeValue: (value: string) => value.replace(/-/g, ""),
+      normalizeValue: (value: string) => value.toUpperCase(),
+      onValueInvalid(details: pinInput.ValueInvalidDetails) {
+        console.log("invalid:", details.value)
+      },
     }),
   )
 

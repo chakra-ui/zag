@@ -20,11 +20,6 @@ test.describe("pin input", () => {
     await I.seeInputIsFocused(3)
   })
 
-  test("on type: should not allow multiple keys at once", async () => {
-    await I.fillInput(1, "12")
-    await I.seeInputHasValue(1, "2")
-  })
-
   test("on backspace (empty): should delete prev char and move back", async () => {
     await I.fillInput(1, "1")
     await I.fillInput(2, "2")
@@ -384,31 +379,6 @@ test.describe("pin input", () => {
     await I.seeInputIsFocused(2)
   })
 
-  // --- Blur on complete ---
-
-  test("blurOnComplete: should blur after entering last value", async () => {
-    await I.controls.bool("blurOnComplete")
-    await I.fillInput(1, "1")
-    await I.fillInput(2, "2")
-    await I.fillInput(3, "3")
-    await I.seeInputIsNotFocused(3)
-  })
-
-  test("blurOnComplete: backspace on last input should not blur", async () => {
-    await I.controls.bool("blurOnComplete")
-    await I.fillInput(1, "1")
-    await I.fillInput(2, "2")
-    await I.fillInput(3, "3")
-    // blurred after complete
-    await I.seeInputIsNotFocused(3)
-
-    // click back into the last input and backspace
-    await I.clickInput(3)
-    await I.pressKey("Backspace")
-    // should stay focused on input 2, not blur
-    await I.seeInputIsFocused(2)
-  })
-
   // --- RTL ---
 
   test("rtl: arrow keys should be reversed", async () => {
@@ -496,6 +466,27 @@ test.describe("pin input / controlled", () => {
     await I.seeValues("", "", "")
   })
 
+  test("clearing the value externally moves focus back to the first slot", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2")
+    await I.seeInputIsFocused(3)
+
+    await I.clickButtonKeepingFocus("reset-value")
+    await I.seeInputIsFocused(1)
+
+    await I.fillAll("9")
+    await I.seeValues("9", "", "")
+  })
+
+  test("clearing the value from outside the field leaves focus where it is", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2")
+    await I.clickButton("reset-value")
+
+    await I.seeValues("", "", "")
+    await I.seeButtonIsFocused("reset-value")
+  })
+
   test("should allow typing after external set", async () => {
     await I.clickButton("set-value")
     await I.seeValues("1", "2", "3")
@@ -538,6 +529,61 @@ test.describe("pin input / transform paste", () => {
 
     await I.seeValues("1", "2", "3")
   })
+
+  test("normalize value: typed letters are uppercased", async () => {
+    await I.controls.select("type", "alphanumeric")
+    await I.focusInput(1)
+    await I.fillAll("a", "b")
+
+    await I.seeValues("A", "B", "")
+  })
+
+  test("normalize value: pasted letters are uppercased", async ({ context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    await I.controls.select("type", "alphanumeric")
+    await I.focusInput(1)
+    await I.paste("ab1")
+
+    await I.seeValues("A", "B", "1")
+  })
+
+  test("pasting characters that don't match the type reports them", async ({ context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    await I.focusInput(1)
+    await I.paste("1-2")
+
+    await I.seeValues("1", "2", "")
+    await I.seeInConsole("invalid: 1-2")
+  })
+
+  test("typing a character that doesn't match the type reports it", async () => {
+    await I.focusInput(1)
+    await I.pressKey("a")
+
+    await I.seeValues("", "", "")
+    await I.seeInConsole("invalid: a")
+  })
+
+  test("a blocked auto-submit leaves focus on the invalid field", async () => {
+    await I.addRequiredFieldBeforeInputs()
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+
+    await I.seeRequiredFieldIsFocused()
+  })
+
+  test("pasting a new code over a complete one submits again", async ({ context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    await I.trackFormEvents()
+    await I.focusInput(1)
+    await I.paste("123")
+    await I.seeFormEvents({ submits: 1, invalid: false })
+
+    await I.clickInput(1)
+    await I.paste("456")
+    await I.seeValues("4", "5", "6")
+    await I.seeFormEvents({ submits: 2, invalid: false })
+  })
 })
 
 test.describe("pin input [paste focus]", () => {
@@ -560,5 +606,211 @@ test.describe("pin input [paste focus]", () => {
     await I.seeValues("1", "2", "3")
     await I.seeInputIsNotFocused(1)
     await I.seeInputIsNotFocused(3)
+  })
+})
+
+test.describe("pin input / paste", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("pasting a code with spaces fills the digits", async () => {
+    await I.focusInput(1)
+    await I.paste("1 2 3")
+
+    await I.seeValues("1", "2", "3")
+  })
+
+  test("pasting a code with a dash drops the dash", async () => {
+    await I.focusInput(1)
+    await I.paste("1-2")
+
+    await I.seeValues("1", "2", "")
+    await I.seeInputIsFocused(3)
+  })
+
+  test("pasting into a filled slot keeps the characters after it", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.clickInput(1)
+    await I.paste("9")
+
+    await I.seeValues("9", "2", "3")
+    await I.seeInputIsFocused(2)
+  })
+})
+
+test.describe("pin input / read-only", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("backspace, delete and paste don't change the value", async ({ context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.controls.bool("readOnly", true)
+
+    await I.clickInput(3)
+    await I.pressKey("Backspace")
+    await I.clickInput(1)
+    await I.pressKey("Delete")
+    await I.paste("999")
+
+    await I.seeValues("1", "2", "3")
+  })
+
+  test("arrow keys still move between slots", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.controls.bool("readOnly", true)
+
+    await I.clickInput(1)
+    await I.pressKey("ArrowRight")
+    await I.seeInputIsFocused(2)
+  })
+})
+
+test.describe("pin input / ime", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("a composition fills one slot when it ends", async () => {
+    await I.focusInput(1)
+    await I.typeWithIme("１", "1")
+
+    await I.seeValues("1", "", "")
+    await I.seeInputIsFocused(2)
+  })
+
+  test("a full-width digit from an IME is rejected", async () => {
+    await I.focusInput(1)
+    await I.typeWithIme("２", "２")
+
+    await I.seeValues("", "", "")
+    await I.seeInputIsFocused(1)
+  })
+})
+
+test.describe("pin input / delete to start", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("cmd/ctrl + backspace at the end clears the field", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.pressKey("ControlOrMeta+Backspace")
+
+    await I.seeValues("", "", "")
+    await I.seeInputIsFocused(1)
+  })
+
+  test("cmd/ctrl + backspace in the middle keeps the characters after the cursor", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.clickInput(2)
+    await I.pressKey("ControlOrMeta+Backspace")
+
+    await I.seeValues("3", "", "")
+    await I.seeInputIsFocused(1)
+  })
+
+  test("cmd/ctrl + backspace doesn't change a read-only value", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.controls.bool("readOnly", true)
+    await I.clickInput(3)
+    await I.pressKey("ControlOrMeta+Backspace")
+
+    await I.seeValues("1", "2", "3")
+  })
+})
+
+test.describe("pin input / multi-character input", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("inserting several characters into the first slot fills the next slots", async () => {
+    await I.insertText(1, "12")
+
+    await I.seeValues("1", "2", "")
+    await I.seeInputIsFocused(3)
+  })
+
+  test("inserting several characters into a later slot replaces from there", async () => {
+    await I.focusInput(1)
+    await I.fillAll("1", "2", "3")
+    await I.insertText(2, "45")
+
+    await I.seeValues("1", "4", "5")
+  })
+
+  test("a full code inserted into a later slot fills from the first slot", async () => {
+    await I.focusInput(1)
+    await I.fillAll("9")
+    await I.insertText(2, "456")
+
+    await I.seeValues("4", "5", "6")
+    await I.seeComplete()
+  })
+})
+
+test.describe("pin input / otp", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+    await I.controls.bool("otp", true)
+  })
+
+  test("only the first slot offers one-time-code autofill", async () => {
+    await I.seeInputHasAttribute(1, "autocomplete", "one-time-code")
+    await I.seeInputHasAttribute(2, "autocomplete", "off")
+    await I.seeInputHasAttribute(3, "autocomplete", "off")
+  })
+
+  test("an autofilled code fills every slot", async () => {
+    await I.insertText(1, "123")
+
+    await I.seeValues("1", "2", "3")
+    await I.seeComplete()
+  })
+})
+
+test.describe("pin input / disabled", () => {
+  test("disables every slot", async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+    await I.controls.bool("disabled", true)
+
+    await I.seeInputsAreDisabled()
+  })
+})
+
+test.describe("pin input / android", () => {
+  test.use({ userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/130.0.0.0 Mobile" })
+
+  test.beforeEach(async ({ page }) => {
+    I = new PinInputModel(page)
+    await I.goto()
+  })
+
+  test("a keyboard that composes every character still fills each slot", async () => {
+    await I.focusInput(1)
+    await I.composeAndroid(1, "1")
+
+    await I.seeValues("1", "", "")
+    await I.seeInputIsFocused(2)
+
+    await I.endComposition(1, "1")
+    await I.seeValues("1", "", "")
   })
 })

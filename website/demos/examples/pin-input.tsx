@@ -65,16 +65,6 @@ export function PinInputPlaceholder() {
   return <PinInput api={api} />
 }
 
-export function PinInputBlurOnComplete() {
-  const api = usePinInput({ blurOnComplete: true })
-  return (
-    <Stack>
-      <PinInput api={api} />
-      <Log label="focus leaves after" value="the last digit" />
-    </Stack>
-  )
-}
-
 export function PinInputAutoSubmit() {
   const [submitted, setSubmitted] = useState("—")
   const api = usePinInput({ autoSubmit: true, name: "code" })
@@ -139,17 +129,18 @@ export function PinInputValueChange() {
   )
 }
 
-export function PinInputSanitize() {
+export function PinInputNormalize() {
   const [value, setValue] = useState("—")
   const api = usePinInput({
     count: 6,
-    sanitizeValue: (value) => value.replace(/[-\s]/g, ""),
+    type: "alphanumeric",
+    normalizeValue: (value) => value.toUpperCase(),
     onValueChange: (details) => setValue(show(details.valueAsString)),
   })
   return (
     <Stack>
       <PinInput api={api} />
-      <Log label="try pasting" value="123-456" />
+      <Log label="try typing or pasting" value="ab-12c" />
       <Log label="value" value={value} />
     </Stack>
   )

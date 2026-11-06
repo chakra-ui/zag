@@ -5,6 +5,7 @@ import {
   getBeforeInputValue,
   getEventKey,
   getNativeEvent,
+  isAndroid,
   isComposingEvent,
   isModifierKey,
   isOwnedBy,
@@ -23,7 +24,7 @@ import type {
   PinInputSchema,
   RootState,
 } from "./pin-input.types"
-import { getPattern, isValidValue } from "./pin-input.utils"
+import { filterValue, getPattern, isValidValue } from "./pin-input.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
   inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -193,35 +194,24 @@ export function connect<T extends PropTypes>(
         readOnly: inputState.readOnly,
         required,
         autoCapitalize: "none",
-        autoComplete: prop("otp") ? "one-time-code" : "off",
+        autoComplete: prop("otp") && index === 0 ? "one-time-code" : "off",
         placeholder: inputState.focused ? "" : prop("placeholder"),
         onPaste(event) {
-          let pastedValue = event.clipboardData?.getData("text/plain")
-          if (!pastedValue) return
-
-          const transformer = prop("sanitizeValue")
-          if (transformer) pastedValue = transformer(pastedValue)
-
-          const isValid = isValidValue(pastedValue, prop("type"), prop("pattern"))
-          if (!isValid) {
-            send({ type: "VALUE.INVALID", value: pastedValue })
-            event.preventDefault()
-            return
-          }
-
-          // Send paste event with full clipboard data
           event.preventDefault()
-          send({ type: "INPUT.PASTE", value: pastedValue })
+          if (readOnly) return
+          const pastedValue = event.clipboardData?.getData("text/plain")
+          if (pastedValue) pasteValue(service, pastedValue)
         },
         onBeforeInput(event) {
           try {
             const evt = getNativeEvent(event)
-            if (evt.inputType?.startsWith("delete")) return
+            if (evt.inputType?.startsWith("delete") || (evt.isComposing && !isAndroid())) return
 
-            const value = getBeforeInputValue(event)
+            const rawValue = getBeforeInputValue(event)
+            const value = normalizeText(service, rawValue)
             const isValid = isValidValue(value, prop("type"), prop("pattern"))
             if (!isValid) {
-              send({ type: "VALUE.INVALID", value })
+              send({ type: "VALUE.INVALID", value: rawValue })
               event.preventDefault()
             }
 
@@ -238,16 +228,18 @@ export function connect<T extends PropTypes>(
           const evt = getNativeEvent(event)
           const { value } = event.currentTarget
 
+          if (evt.isComposing && !isAndroid()) return
+
           // Skip if this was a paste - already handled by onPaste
           if (evt.inputType === "insertFromPaste") {
             event.currentTarget.value = value[0] || ""
             return
           }
 
-          if (value.length > 2) {
-            send({ type: "INPUT.PASTE", value })
-            event.currentTarget.value = value[0]
-            event.preventDefault()
+          const slotValue = computed("_value")[index] || ""
+          if (isMultiCharInsert(value, slotValue)) {
+            event.currentTarget.value = slotValue
+            pasteValue(service, value)
             return
           }
 
@@ -259,8 +251,21 @@ export function connect<T extends PropTypes>(
             send({ type: "INPUT.DELETE" })
             return
           }
-          if (value === computed("focusedValue")) return
+          const nextValue = normalizeText(service, value)
+          if (nextValue === slotValue) return
 
+          send({ type: "INPUT.CHANGE", value: nextValue, index })
+        },
+        onCompositionEnd(event) {
+          const slotValue = computed("_value")[index] || ""
+          const data = event.data && normalizeText(service, event.data)
+          const value = normalizeText(service, event.currentTarget.value)
+          if (!data || value === slotValue) return
+          if (!isValidValue(data, prop("type"), prop("pattern"))) {
+            event.currentTarget.value = slotValue
+            send({ type: "VALUE.INVALID", value: event.data })
+            return
+          }
           send({ type: "INPUT.CHANGE", value, index })
         },
         onKeyDown(event) {
@@ -277,6 +282,12 @@ export function connect<T extends PropTypes>(
             return
           }
 
+          if (key === "Backspace" && (event.metaKey || event.ctrlKey || event.altKey)) {
+            event.preventDefault()
+            if (!readOnly) send({ type: "INPUT.DELETE_TO_START" })
+            return
+          }
+
           if (isModifierKey(event)) return
 
           // Same key already in slot: advance focus without changing value
@@ -288,10 +299,10 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap = {
             Backspace() {
-              send({ type: "INPUT.BACKSPACE" })
+              if (!readOnly) send({ type: "INPUT.BACKSPACE" })
             },
             Delete() {
-              send({ type: "INPUT.DELETE" })
+              if (!readOnly) send({ type: "INPUT.DELETE" })
             },
             ArrowLeft() {
               send({ type: "INPUT.ARROW_LEFT" })
@@ -334,4 +345,22 @@ export function connect<T extends PropTypes>(
       })
     },
   }
+}
+
+function normalizeText(service: Service<PinInputSchema>, text: string) {
+  const normalizeValue = service.prop("normalizeValue")
+  return normalizeValue ? normalizeValue(text) : text
+}
+
+function pasteValue(service: Service<PinInputSchema>, text: string) {
+  const { prop, send } = service
+  const { value, rejected } = filterValue(normalizeText(service, text), prop("type"), prop("pattern"))
+  if (rejected) send({ type: "VALUE.INVALID", value: text })
+  if (value) send({ type: "INPUT.PASTE", value })
+}
+
+function isMultiCharInsert(value: string, slotValue: string) {
+  const chars = Array.from(value)
+  if (chars.length < 2) return false
+  return chars.length > 2 || !slotValue || !chars.includes(slotValue)
 }

@@ -5351,17 +5351,9 @@
         "type": "boolean | undefined",
         "description": "Whether to auto-submit the owning form when all inputs are filled."
       },
-      "blurOnComplete": {
-        "type": "boolean | undefined",
-        "description": "Whether to blur the input when the value is complete"
-      },
-      "selectOnFocus": {
-        "type": "boolean | undefined",
-        "description": "Whether to select input value when input is focused"
-      },
-      "sanitizeValue": {
+      "normalizeValue": {
         "type": "((value: string) => string) | undefined",
-        "description": "Function to sanitize pasted values before validation.\nUseful for stripping dashes, spaces, or other formatting."
+        "description": "Function to normalize typed or pasted text, such as uppercasing it."
       },
       "translations": {
         "type": "IntlTranslations | undefined",
@@ -8009,7 +8001,7 @@
       },
       "deselectable": {
         "type": "boolean | undefined",
-        "description": "Whether the toggle group allows empty selection.\n**Note:** This is ignored if `multiple` is `true`.",
+        "description": "Whether the last pressed item can be unpressed, leaving the selection empty.",
         "defaultValue": "true"
       },
       "dir": {

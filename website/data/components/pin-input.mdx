@@ -94,22 +94,6 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Blur on complete
-
-By default, the last input maintains focus when filled and `onValueComplete` is
-invoked. To blur the last input when the user completes the input, set the
-`blurOnComplete: true` in the machine's context.
-
-<Example id="PinInputBlurOnComplete">
-
-```tsx {2}
-const service = useMachine(pinInput.machine, {
-  blurOnComplete: true,
-})
-```
-
-</Example>
-
 ### Submit on complete
 
 Set `autoSubmit` to automatically submit the owning form when all inputs are
@@ -158,10 +142,9 @@ const service = useMachine(pinInput.machine, {
 
 ### OTP mode
 
-To trigger smartphone OTP auto-suggestion, it is recommended to set the
-`autocomplete` attribute to "one-time-code". The pin-input machine provides
-support for this automatically when you set the `otp` context property to
-`true`.
+Set `otp` to let phones suggest the code from an SMS. The first input gets
+`autocomplete="one-time-code"`, and an autofilled or pasted full code fills
+every input, whichever one has focus.
 
 <Example>
 
@@ -220,16 +203,21 @@ const service = useMachine(pinInput.machine, {
 
 </Example>
 
-### Paste sanitizing
+### Normalizing input
 
-Use `sanitizeValue` to strip dashes, spaces, or other formatting from pasted
-values before validation.
+Pasted text drops spaces and any characters that don't match `type` or
+`pattern`, so `123 456` and `123-456` both fill as `123456`. Dropped characters
+are reported through `onValueInvalid`.
 
-<Example id="PinInputSanitize">
+Use `normalizeValue` to transform typed or pasted text before it's checked, for
+example to uppercase it.
+
+<Example id="PinInputNormalize">
 
 ```tsx
 const service = useMachine(pinInput.machine, {
-  sanitizeValue: (value) => value.replace(/[-\s]/g, ""),
+  type: "alphanumeric",
+  normalizeValue: (value) => value.toUpperCase(),
 })
 ```
 
@@ -237,15 +225,14 @@ const service = useMachine(pinInput.machine, {
 
 ### Autofocus
 
-Use `autoFocus` to focus the first input on mount, and `selectOnFocus` to select
-the active character on focus.
+Use `autoFocus` to focus the first input on mount. A focused input always
+selects its character, so typing replaces it.
 
 <Example>
 
 ```tsx
 const service = useMachine(pinInput.machine, {
   autoFocus: true,
-  selectOnFocus: true,
 })
 ```
 

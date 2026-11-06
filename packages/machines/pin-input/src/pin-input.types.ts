@@ -114,19 +114,10 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    */
   autoSubmit?: boolean | undefined
   /**
-   * Whether to blur the input when the value is complete
+   * Function to normalize typed or pasted text, such as uppercasing it.
+   * @example (value) => value.toUpperCase()
    */
-  blurOnComplete?: boolean | undefined
-  /**
-   * Whether to select input value when input is focused
-   */
-  selectOnFocus?: boolean | undefined
-  /**
-   * Function to sanitize pasted values before validation.
-   * Useful for stripping dashes, spaces, or other formatting.
-   * @example (value) => value.replace(/-/g, "")
-   */
-  sanitizeValue?: ((value: string) => string) | undefined
+  normalizeValue?: ((value: string) => string) | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -160,7 +151,6 @@ export interface PinInputSchema {
     pasteFrame: AnimationFrame
     pasteFocusFrame: AnimationFrame
     selectFrame: AnimationFrame
-    blurFrame: AnimationFrame
   }
   event: EventObject
   action: string

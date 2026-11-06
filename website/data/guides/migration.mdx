@@ -106,6 +106,44 @@ automatically.
   })
 ```
 
+`blurOnComplete` is removed. Blurring left focus on the page body, so move focus
+somewhere useful in `onValueComplete` instead, such as the submit button.
+
+```diff
+  pinInput.machine({
+    id: "pin",
+    count: 4,
+-   blurOnComplete: true,
++   onValueComplete() {
++     document.getElementById("verify")?.focus()
++   },
+  })
+```
+
+`selectOnFocus` is removed. A focused input now always selects its character, so
+delete the prop.
+
+```diff
+  pinInput.machine({
+    id: "pin",
+    count: 4,
+-   selectOnFocus: true,
+  })
+```
+
+`sanitizeValue` is renamed to `normalizeValue`, and it now runs on typed text as
+well as pasted text. Dashes and spaces are already dropped from pasted codes, so
+if your function only stripped those, delete it.
+
+```diff
+  pinInput.machine({
+    id: "pin",
+    count: 4,
+-   sanitizeValue: (value) => value.toUpperCase(),
++   normalizeValue: (value) => value.toUpperCase(),
+  })
+```
+
 ## Tags input
 
 `editable` now defaults to `false`. Set it to keep inline editing of tags.
@@ -198,6 +236,9 @@ These aren't API changes, but code that relies on the old behavior needs a look.
   not on blur. The scrubber no longer creates its cursor element; render the
   `scrubberCursor` part with `getScrubberCursorProps()`.
 - **Color Picker:** `getGamutOverlay()` replaces the `gamutOverlay` property.
+- **Pin Input:** a paste drops spaces and characters that don't match `type` or
+  `pattern` instead of being rejected, and reports them through
+  `onValueInvalid`.
 
 ## Adapter authors
 

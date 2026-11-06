@@ -46,6 +46,67 @@ export class PinInputModel extends Model {
     await this.page.keyboard.press("ControlOrMeta+v")
   }
 
+  async typeWithIme(composing: string, committed: string) {
+    const cdp = await this.page.context().newCDPSession(this.page)
+    await cdp.send("Input.imeSetComposition", { text: composing, selectionStart: 1, selectionEnd: 1 })
+    await cdp.send("Input.insertText", { text: committed })
+    await cdp.detach()
+  }
+
+  async clickButtonKeepingFocus(id: string) {
+    await this.page.locator(testid(id)).evaluate((el) => (el as HTMLElement).click())
+  }
+
+  async insertText(index: number, text: string) {
+    await this.focusInput(index)
+    await this.page.evaluate((text) => document.execCommand("insertText", false, text), text)
+  }
+
+  async composeAndroid(index: number, char: string) {
+    const input = this.getInput(index)
+    await input.dispatchEvent("compositionstart", { data: "" })
+    await input.evaluate((el: HTMLInputElement, char) => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(el, char)
+      el.dispatchEvent(
+        new InputEvent("input", { bubbles: true, data: char, inputType: "insertCompositionText", isComposing: true }),
+      )
+    }, char)
+  }
+
+  async endComposition(index: number, data: string) {
+    await this.getInput(index).dispatchEvent("compositionend", { data })
+  }
+
+  async addRequiredFieldBeforeInputs() {
+    await this.page.locator("main form").evaluate((form) => {
+      const input = document.createElement("input")
+      input.required = true
+      input.dataset.testid = "required-field"
+      form.prepend(input)
+    })
+  }
+
+  async seeRequiredFieldIsFocused() {
+    await expect(this.page.locator(testid("required-field"))).toBeFocused()
+  }
+
+  async seeButtonIsFocused(id: string) {
+    await expect(this.page.locator(testid(id))).toBeFocused()
+  }
+
+  async seeComplete() {
+    await expect(this.page.locator("[data-pin-input-root]")).toHaveAttribute("data-complete", "")
+    for (let i = 1; i <= (await this.allInputs.count()); i++) {
+      await expect(this.getInput(i)).toHaveAttribute("data-complete", "")
+    }
+  }
+
+  async seeInputsAreDisabled() {
+    for (let i = 1; i <= (await this.allInputs.count()); i++) {
+      await expect(this.getInput(i)).toBeDisabled()
+    }
+  }
+
   async fillAll(...values: string[]) {
     for (const value of values) {
       await this.page.keyboard.press(value)
