@@ -47,12 +47,12 @@ function NumberInput(props: {
 }
 
 export function NumberInputDefaultValue() {
-  const api = useNumberInput({ defaultValue: "13" })
+  const api = useNumberInput({ defaultValue: 13 })
   return <NumberInput api={api} />
 }
 
 export function NumberInputControlled() {
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState<number | null>(null)
   const api = useNumberInput({
     value,
     onValueChange: (details) => setValue(details.value),
@@ -61,8 +61,8 @@ export function NumberInputControlled() {
     <Stack>
       <NumberInput api={api} />
       <Row>
-        <Ghost onClick={() => setValue("42")}>Set to 42</Ghost>
-        <Ghost onClick={() => setValue("")}>Clear</Ghost>
+        <Ghost onClick={() => setValue(42)}>Set to 42</Ghost>
+        <Ghost onClick={() => setValue(null)}>Clear</Ghost>
       </Row>
     </Stack>
   )
@@ -72,7 +72,7 @@ export function NumberInputMinMax() {
   const api = useNumberInput({
     min: 10,
     max: 200,
-    defaultValue: "195",
+    defaultValue: 195,
     step: 5,
   })
   return <NumberInput api={api} label="Between 10 and 200" />
@@ -83,12 +83,12 @@ export function NumberInputValueInvalid() {
   const api = useNumberInput({
     min: 0,
     max: 10,
-    defaultValue: "9",
-    allowOverflow: true,
+    defaultValue: 9,
+    allowOutOfRange: true,
     onValueInvalid: (details) => setReason(details.reason),
     onValueChange: (details) => {
-      const n = details.valueAsNumber
-      if (n >= 0 && n <= 10) setReason("—")
+      const n = details.value
+      if (n == null || (n >= 0 && n <= 10)) setReason("—")
     },
   })
   return (
@@ -100,7 +100,7 @@ export function NumberInputValueInvalid() {
 }
 
 export function NumberInputScrubber() {
-  const api = useNumberInput({ defaultValue: "20" })
+  const api = useNumberInput({ defaultValue: 20 })
   return (
     <Stack>
       <NumberInput api={api} scrubber />
@@ -110,7 +110,7 @@ export function NumberInputScrubber() {
 }
 
 export function NumberInputMouseWheel() {
-  const api = useNumberInput({ allowMouseWheel: true, defaultValue: "5" })
+  const api = useNumberInput({ allowMouseWheel: true, defaultValue: 5 })
   return (
     <Stack>
       <NumberInput api={api} />
@@ -121,9 +121,9 @@ export function NumberInputMouseWheel() {
 
 export function NumberInputNoClamp() {
   const api = useNumberInput({
-    clampValueOnBlur: false,
+    allowOutOfRange: true,
     max: 10,
-    defaultValue: "8",
+    defaultValue: 8,
   })
   return (
     <Stack>
@@ -135,7 +135,7 @@ export function NumberInputNoClamp() {
 
 export function NumberInputValueChange() {
   const [details, setDetails] = useState<numberInput.ValueChangeDetails>()
-  const api = useNumberInput({ defaultValue: "1", onValueChange: setDetails })
+  const api = useNumberInput({ defaultValue: 1, onValueChange: setDetails })
   return (
     <Stack>
       <NumberInput api={api} />
@@ -149,7 +149,7 @@ export function NumberInputValueChange() {
 
 export function NumberInputValueCommit() {
   const [details, setDetails] = useState<numberInput.ValueChangeDetails>()
-  const api = useNumberInput({ defaultValue: "1", onValueCommit: setDetails })
+  const api = useNumberInput({ defaultValue: 1, onValueCommit: setDetails })
   return (
     <Stack>
       <NumberInput api={api} />
@@ -176,7 +176,7 @@ export function NumberInputFocusChange() {
 
 export function NumberInputPrecision() {
   const api = useNumberInput({
-    defaultValue: "1.5",
+    defaultValue: 1.5,
     step: 0.25,
     formatOptions: { maximumFractionDigits: 4, minimumFractionDigits: 2 },
   })
@@ -184,7 +184,7 @@ export function NumberInputPrecision() {
 }
 
 export function NumberInputNoSpin() {
-  const api = useNumberInput({ spinOnPress: false, defaultValue: "0" })
+  const api = useNumberInput({ spinOnPress: false, defaultValue: 0 })
   return (
     <Stack>
       <NumberInput api={api} />
@@ -195,7 +195,7 @@ export function NumberInputNoSpin() {
 
 export function NumberInputCurrency() {
   const api = useNumberInput({
-    defaultValue: "1250",
+    defaultValue: 1250,
     step: 50,
     formatOptions: { style: "currency", currency: "USD" },
   })

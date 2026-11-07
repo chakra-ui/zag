@@ -2,7 +2,7 @@
 <script setup lang="ts">
   import { ref } from "vue"
 
-  const valueRef = ref("")
+  const valueRef = ref<number | null>(null)
 
   const service = useMachine(numberInput.machine, {
     get value() {

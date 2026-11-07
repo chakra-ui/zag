@@ -2,7 +2,7 @@
 import { createSignal } from "solid-js"
 
 export function ControlledNumberInput() {
-  const [value, setValue] = createSignal("")
+  const [value, setValue] = createSignal<number | null>(null)
 
   const service = useMachine(numberInput.machine, {
     get value() {
