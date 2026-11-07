@@ -3,11 +3,9 @@ title: Migration Guide
 description: Upgrading your project from Zag v1 to v2
 ---
 
-Most v2 changes are additive, so you can upgrade one machine at a time, and this
-guide lists every breaking change by package
-
-> Still on v0? Follow the [v0 to v1 guide](https://zagjs.com/guides/migration)
-> first.
+Most v2 changes are additive, so you can upgrade one machine at a time. This
+guide lists every breaking change, starting with a rename table you can work
+through as a checklist.
 
 ## Upgrade packages
 
@@ -18,11 +16,70 @@ one version, so mixing v1 and v2 packages isn't supported.
 npm install @zag-js/react@next @zag-js/dialog@next
 ```
 
+Some adapters need a newer framework:
+
+- **Solid:** `solid-js` and `@solidjs/web` `>=2.0.0-rc.19`
+- **Preact:** `preact` `>=11`. `preact/compat` is no longer needed.
+
+## Renames
+
+Search your code for each v1 name. Sections below cover changes that need more
+than a rename.
+
+| Package                                  | v1                                            | v2                                                    |
+| ---------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| All                                      | `[data-scope="x"][data-part="y"]`             | `[data-x-y]`                                          |
+| All                                      | `parts.y.attrs`                               | `parts.y.attrs(id)`                                   |
+| Async list                               | `initialFilterText`                           | `initialFilter`                                       |
+| Async list                               | `initialSortDescriptor`                       | `initialSorting`                                      |
+| Async list                               | `filterText`, `sortDescriptor` in `load`      | `filter`, `sorting`                                   |
+| Async list                               | `api.setFilterText()`                         | `api.setFilter()`                                     |
+| Async list                               | `api.sort()`                                  | `api.setSorting()`                                    |
+| Async list                               | `api.filterText`                              | `api.filter`                                          |
+| Async list                               | `api.sortDescriptor`                          | `api.sorting`                                         |
+| Async list                               | `api.sorting` (boolean)                       | `api.isSorting`                                       |
+| Async list                               | `api.loading`                                 | `api.isLoading`                                       |
+| Async list                               | `api.empty`                                   | `api.isEmpty`                                         |
+| Async list                               | `descriptor`, `filterText` in `sort`          | `sorting`, `filter`                                   |
+| Carousel                                 | `slideCount`                                  | `count`                                               |
+| Carousel                                 | `autoplay`                                    | `autoPlay`                                            |
+| Carousel                                 | `padding`                                     | `itemSpacing`                                         |
+| Carousel                                 | `api.scrollPrev()`                            | `api.scrollPrevious()`                                |
+| Carousel                                 | `api.canScrollPrev`                           | `api.canScrollPrevious`                               |
+| Carousel, date picker, steps, pagination | `getPrevTriggerProps()`                       | `getPreviousTriggerProps()`                           |
+| Carousel, date picker, steps, pagination | `[data-*-prev-trigger]`                       | `[data-*-previous-trigger]`                           |
+| Carousel, date picker, steps, pagination | `ids.prevTrigger`, `translations.prevTrigger` | `ids.previousTrigger`, `translations.previousTrigger` |
+| Combobox                                 | `disableLayer`                                | `inline`                                              |
+| Combobox, menu, select                   | `composite: false`                            | `popupType: "dialog"`                                 |
+| Combobox, select, cascade select         | `api.setHighlightValue(v)`                    | `api.setHighlightedValue(v)`                          |
+| Combobox, select, cascade select         | `api.clearHighlightValue()`                   | `api.setHighlightedValue(null)`                       |
+| Date picker                              | `api.goToPrev()`                              | `api.goToPrevious()`                                  |
+| Floating panel                           | `resizeTriggerAxes`                           | `resizeTriggerPlacements`                             |
+| Floating panel                           | `ResizeTriggerProps.axis`, `data-axis`        | `placement`, `data-placement`                         |
+| Floating panel                           | `ResizeTriggerAxis`                           | `HandlePosition`                                      |
+| Image cropper                            | `handles`                                     | `placements`                                          |
+| Image cropper                            | `HandleProps.position`, `data-position`       | `placement`, `data-placement`                         |
+| Listbox                                  | `api.highlightValue(v)`                       | `api.setHighlightedValue(v)`                          |
+| Pagination                               | `api.goToPrevPage()`                          | `api.goToPreviousPage()`                              |
+| Pagination                               | `translations.prevTriggerLabel`               | `translations.previousTriggerLabel`                   |
+| Pin input                                | `sanitizeValue`                               | `normalizeValue`                                      |
+| Radio group, tabs                        | `data-ssr`                                    | `data-indicator-pending`                              |
+| Slider                                   | `aria-label` (array)                          | `getAriaLabel`                                        |
+| Slider                                   | `aria-labelledby` (array)                     | `getAriaLabelledBy`                                   |
+| Steps                                    | `api.goToPrevStep()`, `api.hasPrevStep`       | `api.goToPreviousStep()`, `api.hasPreviousStep`       |
+| Tabs                                     | `composite: false`                            | `virtualFocus: true`                                  |
+| Tabs                                     | `api.selectPrev()`                            | `api.selectPrevious()`                                |
+| Toggle, toggle group                     | `data-state="on"`                             | `data-pressed`                                        |
+| Tour                                     | `api.prev()`, `api.hasPrevStep`               | `api.previous()`, `api.hasPreviousStep`               |
+| Tour                                     | `action: "prev"`, `actions.prev()`            | `action: "previous"`, `actions.previous()`            |
+| Tour                                     | `translations.prevStep`                       | `translations.previousStep`                           |
+
+Steps has its own table in [Steps](#steps).
+
 ## Data attributes
 
 Every part now renders one attribute, `data-{scope}-{part}`, in place of
 `data-scope`, `data-part` and `data-ownedby`. Its value is the machine's id.
-Update your CSS and DOM queries.
 
 ```diff
 - [data-scope="dialog"][data-part="trigger"] { ... }
@@ -33,10 +90,11 @@ Update your CSS and DOM queries.
 ```
 
 State attributes like `data-state`, `data-focus` and `data-disabled` are
-unchanged.
+unchanged, except in
+[toggle, toggle group and toolbar](#toggle-toggle-group-and-toolbar).
 
-If you build on the anatomy API, `parts.X.attrs` is now a function that takes
-the machine id, and each part exposes the attribute name as `attr`.
+If you build on the anatomy API, `parts.X.attrs` is a function that takes the
+machine id, and each part exposes the attribute name as `attr`.
 
 ```diff
 - ...parts.trigger.attrs
@@ -44,10 +102,47 @@ the machine id, and each part exposes the attribute name as `attr`.
 + ...parts.trigger.attrs(scope.id)
 ```
 
-## Select and combobox
+## Accordion
 
-`role="listbox"` moves from the content part to a new `list` part. Wrap the
-items in `getListProps()` inside `getContentProps()`.
+Arrow, `Home` and `End` navigation between triggers is removed, along with
+`loopFocus`, following the WAI-ARIA accordion pattern. Users move between
+triggers with `Tab`.
+
+`collapsible` now defaults to `true`. Set it to `false` to keep one item open.
+
+```diff
+  accordion.machine({
+    id: "faq",
+-   loopFocus: true,
++   collapsible: false,
+  })
+```
+
+## Async list
+
+The machine takes four type parameters, `Item, Filter, Sorting, Cursor`, instead
+of two. See [Renames](#renames) for the props and API.
+
+```diff
+- asyncList.machine as asyncList.Machine<Item, string>
++ asyncList.machine as asyncList.Machine<Item, string, SortDescriptor<Item>, string>
+- async load({ signal, cursor, filterText, sortDescriptor }) {
++ async load({ signal, cursor, filter, sorting }) {
+```
+
+## Avatar
+
+`api.setSrc` is removed. Update `src` on the image you render instead.
+
+```diff
+- api.setSrc(nextSrc)
++ setSrc(nextSrc) // your own state, passed to <img src={src} />
+```
+
+## Combobox
+
+`role="listbox"` moves from the content part to a new `list` part, and
+`aria-controls` points to it. Wrap the items in `getListProps()`.
 
 ```tsx
 <div {...api.getContentProps()}>
@@ -55,11 +150,16 @@ items in `getListProps()` inside `getContentProps()`.
 </div>
 ```
 
-- `composite` is replaced by `popupType: "listbox" | "dialog"`. Migrate
-  `composite: false` to `popupType: "dialog"`.
-- Combobox: `scrollContentToTop` is renamed `scrollToTop`.
-- `aria-controls` now points to the list id.
-- Select: scroll arrows render inside the content instead of the positioner.
+`disableLayer` is replaced by `inline`. An inline combobox is always open, isn't
+positioned or dismissable, and doesn't call `onOpenChange`.
+
+```diff
+  combobox.machine({
+-   open: true,
+-   disableLayer: true,
++   inline: true,
+  })
+```
 
 ## Listbox
 
@@ -72,32 +172,20 @@ carries `aria-activedescendant`.
 </div>
 ```
 
-If you virtualize the list, attach the scroll ref to the list element, since
-`scrollIntoView` now targets it.
+If you virtualize the list, attach the scroll ref to the list element.
 
-## Tabs
+## Number input
 
-The `composite` prop is replaced by `virtualFocus`, and the boolean is inverted.
+The scrubber no longer creates its cursor element. Render the `scrubberCursor`
+part.
 
-```diff
-- tabs.machine({ composite: false })
-+ tabs.machine({ virtualFocus: true })
-```
-
-## Popover
-
-The `portalled` prop and `api.portalled` are removed. Portalling is detected
-automatically.
-
-```diff
-- const service = useMachine(popover.machine, { id, portalled: true })
-- const Wrapper = api.portalled ? Portal : Fragment
-+ <Portal>
+```tsx
+<div {...api.getScrubberCursorProps()} />
 ```
 
 ## Pin input
 
-`count` is now required. The machine no longer counts the inputs in the DOM.
+`count` is required. The machine no longer counts the inputs in the DOM.
 
 ```diff
   pinInput.machine({
@@ -106,139 +194,171 @@ automatically.
   })
 ```
 
-`blurOnComplete` is removed. Blurring left focus on the page body, so move focus
-somewhere useful in `onValueComplete` instead, such as the submit button.
+`blurOnComplete` is removed. Move focus somewhere useful in `onValueComplete`.
 
 ```diff
-  pinInput.machine({
-    id: "pin",
-    count: 4,
 -   blurOnComplete: true,
 +   onValueComplete() {
 +     document.getElementById("verify")?.focus()
 +   },
-  })
 ```
 
-`selectOnFocus` is removed. A focused input now always selects its character, so
+`selectOnFocus` is removed. A focused input always selects its character, so
 delete the prop.
 
+`sanitizeValue` is renamed `normalizeValue` and also runs on typed text. Pasted
+codes already drop dashes and spaces, so delete a function that only stripped
+those.
+
+## Popover
+
+`portalled` and `api.portalled` are removed. Portalling is detected
+automatically.
+
 ```diff
-  pinInput.machine({
-    id: "pin",
-    count: 4,
--   selectOnFocus: true,
+- const Wrapper = api.portalled ? Portal : Fragment
+- <Wrapper>
++ <Portal>
+```
+
+## Radio group and tabs indicator
+
+The indicator no longer sets inline transition styles, and the
+`--transition-property`, `--transition-duration` and
+`--transition-timing-function` variables are removed. Add the transition in your
+CSS, and skip it while `data-instant` is set.
+
+```css
+[data-tabs-indicator]:not([data-instant]) {
+  transition: all 150ms ease;
+}
+```
+
+## Select
+
+`role="listbox"` moves from the content part to a new `list` part, and
+`aria-controls` points to it. Wrap the items in `getListProps()`. Scroll arrows
+render inside the content instead of the positioner.
+
+```tsx
+<div {...api.getContentProps()}>
+  <div {...api.getListProps()}>{/* items */}</div>
+</div>
+```
+
+## Slider
+
+The array props for thumb labels are replaced by functions, matching
+`getAriaValueText`.
+
+```diff
+  slider.machine({
+-   "aria-label": ["Minimum price", "Maximum price"],
++   getAriaLabel: ({ index }) => (index === 0 ? "Minimum price" : "Maximum price"),
   })
 ```
 
-`sanitizeValue` is renamed to `normalizeValue`, and it now runs on typed text as
-well as pasted text. Dashes and spaces are already dropped from pasted codes, so
-if your function only stripped those, delete it.
+## Steps
+
+Steps are defined by an `items` array and addressed by string `value` instead of
+index.
 
 ```diff
-  pinInput.machine({
-    id: "pin",
-    count: 4,
--   sanitizeValue: (value) => value.toUpperCase(),
-+   normalizeValue: (value) => value.toUpperCase(),
+  steps.machine({
+-   count: 3,
+-   defaultStep: 0,
++   items: [{ value: "cart" }, { value: "shipping" }, { value: "gift", optional: true }],
++   defaultValue: "cart",
   })
 ```
+
+| v1                                          | v2                                                              |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| `count`                                     | `items`                                                         |
+| `step` / `defaultStep`                      | `value` / `defaultValue`                                        |
+| `onStepChange`                              | `onValueChange`                                                 |
+| `onStepComplete`                            | `onComplete`                                                    |
+| `isStepValid(index)`                        | `invalid` on the item                                           |
+| `isStepSkippable(index)`                    | `optional` on the item, plus `skipTrigger`                      |
+| `onStepInvalid`                             | `onNavigationBlocked` (`reason`, `blockedBy`)                   |
+| `api.setStep(index)`                        | `api.setValue(value)`                                           |
+| `api.isCompleted`                           | `api.complete`                                                  |
+| `step === count` (completed screen)         | `value === steps.COMPLETE`                                      |
+| `getContentProps({ index: count })`         | `getContentProps({ value: steps.COMPLETE })`                    |
+| `api.isStepValid` / `isStepSkippable`       | `api.getItemState({ value })`                                   |
+| `{ index }` in part props                   | `{ value }`                                                     |
+| `itemState.incomplete`                      | `[data-incomplete]`, or not `current`, `completed` or `skipped` |
+| `itemState.first` / `itemState.last`        | `index === 0` / `index === api.count - 1`                       |
+| `itemState.skippable` / `isValid()`         | `itemState.optional` / `!itemState.invalid`                     |
+| `ids.triggerId(index)` / `contentId(index)` | `(value) => string`                                             |
+| `--percent`                                 | `--steps-percent`                                               |
+
+## Tabs
+
+`composite` is replaced by `virtualFocus`, with the boolean inverted.
+
+```diff
+- tabs.machine({ composite: false })
++ tabs.machine({ virtualFocus: true })
+```
+
+`onValueChange` and `onFocusChange` details are typed as nullable. `value` is
+`null` after a `deselectable` tab is deselected, and `focusedValue` is `null`
+when focus leaves the tab list.
 
 ## Tags input
 
-`editable` now defaults to `false`. Set it to keep inline editing of tags.
+`editable` defaults to `false`. Set it to keep inline editing of tags.
 
 ```diff
 +   editable: true,
 ```
 
-## Avatar
+## Toast
 
-`api.setSrc` is removed. Update `src` on the image you render instead.
-`api.setLoaded()` and `api.setError()` are unchanged.
+Render the new `content` part around the title, description and other content.
+The toast's height follows it, and without it the height stops updating after
+mount.
 
-```diff
-- api.setSrc(nextSrc)
-+ imageEl.src = nextSrc
+```tsx
+<div {...api.getRootProps()}>
+  <div {...api.getContentProps()}>{/* title, description */}</div>
+</div>
 ```
 
-## Carousel
+Toasts now swipe to dismiss. Pass `swipeDirections: []` to the store or a toast
+to turn it off.
 
-Three props are renamed.
-
-| v1           | v2            |
-| ------------ | ------------- |
-| `slideCount` | `count`       |
-| `autoplay`   | `autoPlay`    |
-| `padding`    | `itemSpacing` |
-
-## Tree View
-
-```diff
-- api.getCellProps(nodeProps)
-+ api.getNodeCellProps(nodeProps)
-```
-
-## Toggle and toggle group
+## Toggle, toggle group and toolbar
 
 - Toggle group uses toggle-button semantics in every mode: `role="group"` and
-  `aria-pressed`, with no radio roles and no `aria-checked`.
-- `data-state="on|off"` is removed from toggle and toggle group. Style with
-  `data-pressed`.
-- `data-focus` is removed from toggle group parts. Use `:focus-visible` and
-  `:focus-within`.
+  `aria-pressed`, with no radio roles.
+- `data-state="on|off"` is removed. Style with `data-pressed`.
+- `data-focus` is removed from toggle group and toolbar parts. Use
+  `:focus-visible` and `:focus-within`.
 
 ```diff
 - screen.getByRole("radio", { checked: true })
 + screen.getByRole("button", { pressed: true })
 ```
 
-## Floating panel and image cropper
-
-Handle naming is the same across both machines now.
-
-- Floating panel: `ResizeTriggerProps.axis` is `placement`, `data-axis` is
-  `data-placement`, and `resizeTriggerAxes` is `resizeTriggerPlacements`.
-  `ResizeTriggerAxis` is removed; use `HandlePosition`.
-- Image cropper: `HandleProps.position` is `placement`, `data-position` is
-  `data-placement`, and `handles` is `placements`.
-
-## Async list
-
-Filter and sorting state are generic. The machine takes four type parameters,
-`Item, Filter, Sorting, Cursor`, instead of two.
-
-```diff
-- asyncList.machine as asyncList.Machine<Item, string>
-+ asyncList.machine as asyncList.Machine<Item, string, SortDescriptor<Item>, string>
-- async load({ signal, cursor, filterText, sortDescriptor }) {
-+ async load({ signal, cursor, filter, sorting }) {
-```
-
-| v1                      | v2                 |
-| ----------------------- | ------------------ |
-| `initialFilterText`     | `initialFilter`    |
-| `initialSortDescriptor` | `initialSorting`   |
-| `api.setFilterText()`   | `api.setFilter()`  |
-| `api.sort()`            | `api.setSorting()` |
-| `api.filterText`        | `api.filter`       |
-| `api.sortDescriptor`    | `api.sorting`      |
-| `api.sorting` (boolean) | `api.isSorting`    |
-| `api.loading`           | `api.isLoading`    |
-| `api.empty`             | `api.isEmpty`      |
-
 ## Behavior changes
 
-These aren't API changes, but code that relies on the old behavior needs a look.
+These compile without changes but behave differently.
 
-- **Hover Card:** the `closing` state is now `open.closing`.
-- **Number Input:** `onValueInvalid` fires as the out-of-range value is entered,
-  not on blur. The scrubber no longer creates its cursor element; render the
-  `scrubberCursor` part with `getScrubberCursorProps()`.
-- **Color Picker:** `getGamutOverlay()` replaces the `gamutOverlay` property.
-- **Pin Input:** a paste drops spaces and characters that don't match `type` or
+- **Hover card:** the `closing` state is now `open.closing`. `matches("open")`
+  still works; only code matching `"closing"` needs updating.
+- **Number input:** `onValueInvalid` fires as the out-of-range value is entered,
+  not on blur.
+- **Pin input:** a paste drops spaces and characters that don't match `type` or
   `pattern` instead of being rejected, and reports them through
   `onValueInvalid`.
+- **Table of contents:** `multiple` defaults to `false`, so only the topmost
+  visible heading is active. Pass `multiple: true` for the v1 behavior.
+- **Toast:** `--duration` is the toast's total duration, not the time remaining.
+- **Forms:** a read-only radio group or file upload now submits its value. A
+  disabled slider or angle slider is left out of the form.
+- **Tags input:** `onHighlightChange` reports the tag's value, not its DOM id.
 
 ## Adapter authors
 
@@ -247,5 +367,5 @@ These aren't API changes, but code that relies on the old behavior needs a look.
   render output.
 - `@zag-js/rect-utils`: `resizeRect`, `AffineTransform`, `compassDirectionMap`,
   `oppositeDirectionMap` and `ScalingOptions` are removed.
-- `@zag-js/core`: `isEqual` compares functions by reference and only reads an
+- `@zag-js/utils`: `isEqual` compares functions by reference and only reads an
   object's own properties.
