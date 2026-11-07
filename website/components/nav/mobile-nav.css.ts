@@ -1,4 +1,20 @@
-import { css } from "styled-system/css"
+import { css, keyframes } from "styled-system/css"
+
+const curtainIn = keyframes({ from: { backgroundColor: "transparent" } })
+
+const sheetOut = keyframes({ to: { opacity: "0" } })
+
+const fadeIn = keyframes({ from: { opacity: "0" } })
+
+const dropIn = keyframes({
+  from: { opacity: "0", transform: "translateY(-8px)" },
+})
+
+const turnIn = keyframes({
+  from: { opacity: "0", transform: "rotate(-45deg) scale(0.8)" },
+})
+
+const easeOut = "cubic-bezier(0.23, 1, 0.32, 1)"
 
 const focusRing = {
   outline: "2px solid {colors.primary}",
@@ -17,6 +33,22 @@ export const sheet = css({
   overscrollBehavior: "contain",
   bg: "canvas",
   outline: "0",
+  _open: { animation: `${curtainIn} 240ms ease-out` },
+  _closed: { animation: `${sheetOut} 150ms ease-out` },
+})
+
+export const closeIcon = css({
+  "[data-state=open] &": {
+    animation: `${fadeIn} 200ms ${easeOut}`,
+    _motionSafe: { animationName: turnIn },
+  },
+})
+
+export const reveal = css({
+  "[data-state=open] &": {
+    animation: `${fadeIn} 240ms ${easeOut} calc(60ms + var(--index) * 20ms) both`,
+    _motionSafe: { animationName: dropIn },
+  },
 })
 
 export const bar = css({
@@ -41,6 +73,8 @@ export const body = css({
   pt: "2",
   pb: "16",
 })
+
+export const rest = css({ display: "flex", flexDirection: "column" })
 
 export const divider = css({ h: "1px", bg: "line", my: "6" })
 

@@ -1,7 +1,11 @@
-import { css, cva } from "styled-system/css"
+import { css, cva, keyframes } from "styled-system/css"
 import { focusRing, plateRaw } from "./home.css"
 
 const ease = "cubic-bezier(0.4, 0.1, 0.2, 1)"
+
+const swapIn = keyframes({
+  from: { opacity: "0", transform: "translateY(6px)" },
+})
 
 export const header = css({
   display: "flex",
@@ -18,7 +22,24 @@ export const intro = css({
   maxWidth: "560px",
 })
 
-export const toolTabs = css({ display: "flex", flexWrap: "wrap", gap: "4px" })
+export const toolTabs = css({
+  position: "relative",
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "4px",
+})
+
+export const toolIndicator = css({
+  top: "var(--top)",
+  width: "var(--width)",
+  height: "var(--height)",
+  rounded: "full",
+  bg: "surface",
+  boxShadow: "0 0 0 1px {colors.line}",
+  transition: `left 0.3s ${ease}, top 0.3s ${ease}, width 0.3s ${ease}`,
+  _motionReduce: { transition: "none" },
+  "&[data-instant]": { transition: "none" },
+})
 
 export const toolTab = css({
   appearance: "none",
@@ -32,11 +53,13 @@ export const toolTab = css({
   rounded: "full",
   bg: "transparent",
   color: "ink.muted",
+  position: "relative",
+  zIndex: "1",
   font: "500 14px {fonts.body}",
-  _selected: {
-    bg: "surface",
-    color: "ink",
-    boxShadow: "0 0 0 1px {colors.line}",
+  transition: "color 0.2s",
+  _selected: { color: "ink" },
+  "&[data-indicator-pending]": {
+    _selected: { bg: "surface", boxShadow: "0 0 0 1px {colors.line}" },
   },
   _focusVisible: focusRing,
 })
@@ -83,6 +106,12 @@ export const column = css({
   flexDirection: "column",
   gap: "16px",
   minWidth: "0",
+})
+
+export const swap = css({
+  "[data-selected] &": {
+    _motionSafe: { animation: `${swapIn} 0.35s ${ease} both` },
+  },
 })
 
 export const plate = cva({

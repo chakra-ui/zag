@@ -6,12 +6,18 @@ import { getActiveTab } from "lib/pagination-utils"
 import { useRouteChange } from "lib/use-route-change"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useRef, useSyncExternalStore } from "react"
+import {
+  type CSSProperties,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import { tabs as docsTabs } from "sidebar.config"
 import siteConfig from "site.config"
 import { cx } from "styled-system/css"
 import { FrameworkSelect } from "../docs/framework-select"
+import { Presence } from "../docs/presence"
 import { Sidebar } from "../docs/sidebar"
 import { LogoWithLink } from "../logo"
 import { navCluster, navControl } from "./control"
@@ -67,44 +73,50 @@ export function MobileNav(props: { className?: string }) {
         <HiMenu aria-hidden />
       </button>
 
-      {api.open && (
-        <Portal>
-          <div {...api.getPositionerProps()}>
-            <div className={styles.sheet} {...api.getContentProps()}>
-              <div className={styles.bar}>
-                <div className={styles.brand}>
-                  <LogoWithLink />
-                  <VersionSelect />
-                </div>
-                <div className={navCluster}>
-                  <button
-                    ref={initialRef}
-                    type="button"
-                    className={navControl}
-                    {...api.getCloseTriggerProps()}
-                    aria-label="Close menu"
-                  >
-                    <HiX aria-hidden />
-                  </button>
-                </div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <Presence
+            present={api.open}
+            className={styles.sheet}
+            {...api.getContentProps()}
+          >
+            <div className={styles.bar}>
+              <div className={styles.brand}>
+                <LogoWithLink />
+                <VersionSelect />
               </div>
+              <div className={navCluster}>
+                <button
+                  ref={initialRef}
+                  type="button"
+                  className={navControl}
+                  {...api.getCloseTriggerProps()}
+                  aria-label="Close menu"
+                >
+                  <HiX aria-hidden className={styles.closeIcon} />
+                </button>
+              </div>
+            </div>
 
-              <div className={styles.body}>
-                <nav aria-label="Main" className={styles.primaryNav}>
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={styles.primaryLink}
-                      aria-current={
-                        link.isActive(pathname) ? "page" : undefined
-                      }
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
+            <div className={styles.body}>
+              <nav aria-label="Main" className={styles.primaryNav}>
+                {navLinks.map((link, index) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cx(styles.primaryLink, styles.reveal)}
+                    style={{ "--index": index } as CSSProperties}
+                    aria-current={link.isActive(pathname) ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
 
+              <div
+                className={cx(styles.rest, styles.reveal)}
+                style={{ "--index": navLinks.length } as CSSProperties}
+              >
                 <div className={styles.divider} />
                 <MobileDocs />
                 <div className={styles.divider} />
@@ -125,9 +137,9 @@ export function MobileNav(props: { className?: string }) {
                 </nav>
               </div>
             </div>
-          </div>
-        </Portal>
-      )}
+          </Presence>
+        </div>
+      </Portal>
     </>
   )
 }
