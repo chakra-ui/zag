@@ -16,11 +16,6 @@ const turnIn = keyframes({
 
 const easeOut = "cubic-bezier(0.23, 1, 0.32, 1)"
 
-const reveal = (delay: number) => ({
-  animation: `${fadeIn} 240ms ${easeOut} ${delay}ms both`,
-  _motionSafe: { animationName: dropIn },
-})
-
 const focusRing = {
   outline: "2px solid {colors.primary}",
   outlineOffset: "-2px",
@@ -43,8 +38,17 @@ export const sheet = css({
 })
 
 export const closeIcon = css({
-  animation: `${fadeIn} 200ms ${easeOut}`,
-  _motionSafe: { animationName: turnIn },
+  "[data-state=open] &": {
+    animation: `${fadeIn} 200ms ${easeOut}`,
+    _motionSafe: { animationName: turnIn },
+  },
+})
+
+export const reveal = css({
+  "[data-state=open] &": {
+    animation: `${fadeIn} 240ms ${easeOut} calc(60ms + var(--index) * 20ms) both`,
+    _motionSafe: { animationName: dropIn },
+  },
 })
 
 export const bar = css({
@@ -68,11 +72,9 @@ export const body = css({
   px: gutter,
   pt: "2",
   pb: "16",
-  "& > :nth-child(2)": reveal(140),
-  "& > :nth-child(3)": reveal(160),
-  "& > :nth-child(4)": reveal(180),
-  "& > :nth-child(5)": reveal(200),
 })
+
+export const rest = css({ display: "flex", flexDirection: "column" })
 
 export const divider = css({ h: "1px", bg: "line", my: "6" })
 
@@ -90,10 +92,6 @@ export const primaryLink = css({
   _hover: { color: "ink" },
   _focusVisible: focusRing,
   _currentPage: { color: "ink" },
-  "&:nth-child(1)": reveal(60),
-  "&:nth-child(2)": reveal(80),
-  "&:nth-child(3)": reveal(100),
-  "&:nth-child(4)": reveal(120),
 })
 
 export const sections = css({

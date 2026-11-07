@@ -6,7 +6,12 @@ import { getActiveTab } from "lib/pagination-utils"
 import { useRouteChange } from "lib/use-route-change"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useRef, useSyncExternalStore } from "react"
+import {
+  type CSSProperties,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import { tabs as docsTabs } from "sidebar.config"
 import siteConfig from "site.config"
@@ -95,11 +100,12 @@ export function MobileNav(props: { className?: string }) {
 
             <div className={styles.body}>
               <nav aria-label="Main" className={styles.primaryNav}>
-                {navLinks.map((link) => (
+                {navLinks.map((link, index) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={styles.primaryLink}
+                    className={cx(styles.primaryLink, styles.reveal)}
+                    style={{ "--index": index } as CSSProperties}
                     aria-current={link.isActive(pathname) ? "page" : undefined}
                   >
                     {link.label}
@@ -107,24 +113,29 @@ export function MobileNav(props: { className?: string }) {
                 ))}
               </nav>
 
-              <div className={styles.divider} />
-              <MobileDocs />
-              <div className={styles.divider} />
+              <div
+                className={cx(styles.rest, styles.reveal)}
+                style={{ "--index": navLinks.length } as CSSProperties}
+              >
+                <div className={styles.divider} />
+                <MobileDocs />
+                <div className={styles.divider} />
 
-              <nav aria-label="Project" className={styles.projectLinks}>
-                {projectLinks.map(({ label, href, Icon }) => (
-                  <a
-                    key={label}
-                    className={styles.projectLink}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Icon aria-hidden />
-                    {label}
-                  </a>
-                ))}
-              </nav>
+                <nav aria-label="Project" className={styles.projectLinks}>
+                  {projectLinks.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      className={styles.projectLink}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Icon aria-hidden />
+                      {label}
+                    </a>
+                  ))}
+                </nav>
+              </div>
             </div>
           </Presence>
         </div>

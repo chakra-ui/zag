@@ -134,7 +134,6 @@ function Slider({ value, dragging }: { value: number; dragging: boolean }) {
 export function StylingSection() {
   const api = useTabs("home-styling", tools[0].name)
   const [ref, step] = useStep<HTMLDivElement>(steps.length, 1600)
-  const tool = tools.find((t) => t.name === api.value) ?? tools[0]
   const { dragging, value } = steps[step]
 
   return (
@@ -172,49 +171,47 @@ export function StylingSection() {
       <div ref={ref} className={styles.stage}>
         {tools.map((t) => (
           <div key={t.name} {...api.getContentProps({ value: t.name })}>
-            {t.name === tool.name && (
-              <div className={styles.panel}>
-                <div className={styles.column()}>
-                  <p className={tierName}>
-                    <b>Zag code</b> · spread the props
-                  </p>
-                  <div className={styles.plate({ tone: "code" })}>
-                    <Code lines={zagCode(dragging)} />
-                    <div className={styles.attrs}>
-                      <span className={styles.pill()}>thumb</span>
-                      <span className={styles.pill({ active: dragging })}>
-                        data-dragging
-                      </span>
-                      <span className={styles.pill()}>
-                        aria-valuenow="{value}"
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <Arrow />
-                <div className={styles.column({ swap: true })}>
-                  <p className={cx(tierName, styles.toolLabel)}>
-                    <b>You write</b> ·{" "}
-                    <span className={styles.toolName}>
-                      <Logo tool={tool} />
-                      {tool.name}
+            <div className={styles.panel}>
+              <div className={styles.column}>
+                <p className={tierName}>
+                  <b>Zag code</b> · spread the props
+                </p>
+                <div className={styles.plate({ tone: "code" })}>
+                  <Code lines={zagCode(dragging)} />
+                  <div className={styles.attrs}>
+                    <span className={styles.pill()}>thumb</span>
+                    <span className={styles.pill({ active: dragging })}>
+                      data-dragging
                     </span>
-                  </p>
-                  <div className={styles.plate({ tone: "code" })}>
-                    <Code lines={tool.code(dragging)} />
-                  </div>
-                </div>
-                <Arrow />
-                <div className={styles.column()}>
-                  <p className={tierName}>
-                    <b>You get</b> · the same slider
-                  </p>
-                  <div className={styles.plate({ tone: "output" })}>
-                    <Slider value={value} dragging={dragging} />
+                    <span className={styles.pill()}>
+                      aria-valuenow="{value}"
+                    </span>
                   </div>
                 </div>
               </div>
-            )}
+              <Arrow />
+              <div className={cx(styles.column, styles.swap)}>
+                <p className={cx(tierName, styles.toolLabel)}>
+                  <b>You write</b> ·{" "}
+                  <span className={styles.toolName}>
+                    <Logo tool={t} />
+                    {t.name}
+                  </span>
+                </p>
+                <div className={styles.plate({ tone: "code" })}>
+                  <Code lines={t.code(dragging)} />
+                </div>
+              </div>
+              <Arrow />
+              <div className={styles.column}>
+                <p className={tierName}>
+                  <b>You get</b> · the same slider
+                </p>
+                <div className={styles.plate({ tone: "output" })}>
+                  <Slider value={value} dragging={dragging} />
+                </div>
+              </div>
+            </div>
           </div>
         ))}
       </div>

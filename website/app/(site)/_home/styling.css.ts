@@ -101,17 +101,16 @@ export const panel = css({
   },
 })
 
-export const column = cva({
-  base: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    minWidth: "0",
-  },
-  variants: {
-    swap: {
-      true: { _motionSafe: { animation: `${swapIn} 0.35s ${ease} both` } },
-    },
+export const column = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  minWidth: "0",
+})
+
+export const swap = css({
+  "[data-selected] &": {
+    _motionSafe: { animation: `${swapIn} 0.35s ${ease} both` },
   },
 })
 
