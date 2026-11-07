@@ -1,15 +1,45 @@
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
 import { ImageResponse } from "next/og"
 
-export const ogSize = { width: 1200, height: 630 }
-
-interface OgImageProps {
-  section: string
-  title: string
-  description: string
+const colors = {
+  canvas: "#0f1211",
+  surface: "#151918",
+  ink: "#e6eae7",
+  muted: "#9aa39e",
+  line: "#232927",
+  lineStrong: "#46504b",
+  primary: "#34d27d",
 }
 
-/** The share card for a docs page: section, title and description on the brand colors */
-export function renderOgImage({ section, title, description }: OgImageProps) {
+const read = (path: string) => readFile(join(process.cwd(), path))
+
+const toDataUri = (svg: string) =>
+  `data:image/svg+xml,${encodeURIComponent(svg)}`
+
+interface OgImageProps {
+  section?: string
+  title: string
+  description: string
+  code?: string[]
+  footer?: string
+}
+
+export async function renderOgImage({
+  section,
+  title,
+  description,
+  code,
+  footer,
+}: OgImageProps) {
+  const [logo, mark, regular, semibold, mono] = await Promise.all([
+    read("public/brand/zag-logo-dark.svg"),
+    read("public/brand/zag-mark.svg"),
+    read("assets/og/wix-madefor-text-400.woff"),
+    read("assets/og/wix-madefor-text-600.woff"),
+    read("assets/og/geist-mono-400.woff"),
+  ])
+
   return new ImageResponse(
     <div
       style={{
@@ -18,42 +48,115 @@ export function renderOgImage({ section, title, description }: OgImageProps) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: "72px 80px",
-        background: "#18181b",
-        color: "#fafafa",
+        padding: "64px 72px",
+        fontFamily: "Wix Madefor Text",
+        color: colors.ink,
+        backgroundColor: colors.canvas,
+        backgroundImage:
+          "radial-gradient(70% 90% at 100% 0%, rgba(0, 198, 94, 0.16) 0%, transparent 70%)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>
-          zag
-        </div>
+      <img
+        src={toDataUri(mark.toString())}
+        alt=""
+        width={420}
+        height={357}
+        style={{ position: "absolute", right: -40, bottom: -70, opacity: 0.12 }}
+      />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <img
+          src={toDataUri(logo.toString().replaceAll("#ffffff", colors.ink))}
+          alt="Zag"
+          width={128}
+          height={45}
+        />
+        {section && (
+          <div
+            style={{
+              display: "flex",
+              paddingLeft: 20,
+              borderLeft: `2px solid ${colors.lineStrong}`,
+              fontSize: 28,
+              color: colors.muted,
+            }}
+          >
+            {section}
+          </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          maxWidth: 1000,
+        }}
+      >
         <div
           style={{
-            width: 4,
-            height: 36,
-            background: "#00C65E",
-            rotate: "20deg",
+            fontSize: 76,
+            fontWeight: 600,
+            letterSpacing: -2,
+            lineHeight: 1.05,
           }}
-        />
-        <div style={{ fontSize: 28, color: "#a1a1aa" }}>{section}</div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        <div style={{ fontSize: 80, fontWeight: 700, letterSpacing: -2 }}>
+        >
           {title}
         </div>
         <div
           style={{
-            fontSize: 32,
-            lineHeight: 1.4,
-            color: "#d4d4d8",
-            maxWidth: 960,
+            display: "block",
+            lineClamp: 2,
+            fontSize: 30,
+            lineHeight: 1.45,
+            color: colors.muted,
           }}
         >
           {description}
         </div>
       </div>
-      <div style={{ height: 8, width: 160, background: "#00C65E" }} />
+
+      {code ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignSelf: "flex-start",
+            gap: 6,
+            padding: "18px 24px",
+            borderRadius: 14,
+            border: `1px solid ${colors.line}`,
+            backgroundColor: colors.surface,
+            fontFamily: "Geist Mono",
+            fontSize: 24,
+            color: colors.primary,
+          }}
+        >
+          {code.map((line) => (
+            <div key={line}>{line}</div>
+          ))}
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "Geist Mono",
+            fontSize: 24,
+            color: colors.muted,
+          }}
+        >
+          {footer}
+        </div>
+      )}
     </div>,
-    ogSize,
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        { name: "Wix Madefor Text", data: regular, weight: 400 },
+        { name: "Wix Madefor Text", data: semibold, weight: 600 },
+        { name: "Geist Mono", data: mono, weight: 400 },
+      ],
+    },
   )
 }

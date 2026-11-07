@@ -1,3 +1,4 @@
+import { type DataAttrDocKey, getDataAttrDoc } from "@zag-js/docs"
 import { renderOgImage } from "lib/og-image"
 import { components, guides, overviews, posts, utilities } from "lib/source"
 
@@ -7,6 +8,35 @@ const sections = {
   components: { label: "Components", docs: components },
   utilities: { label: "Utilities", docs: utilities },
   blog: { label: "Blog", docs: posts },
+}
+
+function findDataAttrs(slug: string) {
+  try {
+    return getDataAttrDoc(slug as DataAttrDocKey)
+  } catch {
+    return undefined
+  }
+}
+
+function getSelectors(slug: string) {
+  const doc = findDataAttrs(slug)
+  if (!doc) return undefined
+
+  const attrs = Object.entries(
+    doc.Trigger ?? doc.Root ?? Object.values(doc)[0] ?? {},
+  )
+  const part = attrs.find(([name]) => name.startsWith(`data-${slug}-`))
+  const state =
+    attrs.find(([name]) => name === "data-state") ??
+    attrs.find(([, desc]) => desc.startsWith("Present when"))
+  const value = state?.[1].match(/"([^"]+)"/)?.[1]
+
+  const selectors = [
+    part && `[${part[0]}]`,
+    state && `[${state[0]}${value ? `="${value}"` : ""}]`,
+  ].filter((selector) => selector !== undefined)
+
+  return selectors.length ? selectors : undefined
 }
 
 export const dynamic = "force-static"
@@ -30,5 +60,7 @@ export async function GET(
     section: entry.label,
     title: doc.title,
     description: doc.description,
+    code: section === "components" ? getSelectors(doc.slug) : undefined,
+    footer: `zagjs.com/${section}/${doc.slug}`,
   })
 }
