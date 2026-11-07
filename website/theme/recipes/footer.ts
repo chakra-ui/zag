@@ -112,9 +112,9 @@ export const siteFooter = defineSlotRecipe({
     },
     credits: {
       display: "flex",
-      flexWrap: "wrap",
+      flexDirection: { base: "column", sm: "row" },
       justifyContent: "space-between",
-      gap: "4",
+      gap: { base: "1.5", sm: "4" },
       pt: "5",
       pb: "6",
       fontSize: "13px",
