@@ -1,5 +1,62 @@
 # @zag-js/pin-input
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`3838af0`](https://github.com/chakra-ui/zag/commit/3838af0e92ee4572526a027aa923baecb7c26ab5) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking change:** Remove `blurOnComplete`. Move
+  focus in `onValueComplete` instead, such as to the submit button.
+
+  ```diff
+  - blurOnComplete: true,
+  + onValueComplete() {
+  +   document.getElementById("verify")?.focus()
+  + },
+  ```
+
+  - **Breaking change:** Remove `selectOnFocus`. A focused input always selects its character now, so delete the prop.
+
+    ```diff
+    - selectOnFocus: true,
+    ```
+
+  - **Breaking change:** Rename `sanitizeValue` to `normalizeValue`, which also applies to typed text.
+
+    ```diff
+    - sanitizeValue: (value) => value.toUpperCase(),
+    + normalizeValue: (value) => value.toUpperCase(),
+    ```
+
+  - Drop spaces and invalid characters from pasted text instead of rejecting it, and report them through
+    `onValueInvalid`.
+  - Fill from the first input when a full code is pasted or autofilled into any input.
+  - Only set `autocomplete="one-time-code"` on the first input when `otp` is set.
+  - Delete everything before the cursor on Cmd/Ctrl/Alt + Backspace, as in a single text field.
+  - Fix Backspace, Delete and paste changing a `readOnly` value.
+  - Fix pasting into a filled input clearing the characters after it.
+  - Fix two characters inserted at once keeping only the last one.
+  - Fix `onValueComplete` and `autoSubmit` not running when a pasted code replaces a complete one.
+  - Fix focus staying on a later input after the value is cleared from outside the field.
+  - Fix IME input filling the wrong input and accepting full-width characters.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Cancel pending focus, scroll and sync frames when the
+  machine stops, and let a newer request replace a pending one.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

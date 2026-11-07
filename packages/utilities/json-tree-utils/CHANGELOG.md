@@ -1,5 +1,9 @@
 # @zag-js/json-tree-utils
 
+## 2.0.0-next.4
+
+No changes in this release.
+
 ## 2.0.0-next.3
 
 ## 2.0.0-next.2

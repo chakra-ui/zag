@@ -1,5 +1,37 @@
 # @zag-js/preact
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`8f659ca`](https://github.com/chakra-ui/zag/commit/8f659ca7e15aae533d00807aece809589da569a9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Require Preact 11 and stop depending on
+  `preact/compat`, so apps without compat no longer bundle it.
+  - Keep `send`, `prop`, `context`, `computed`, `refs` and `getStatus` referentially stable across renders, so they're
+    safe in effect dependencies.
+  - Compare bindable values with `Object.is` by default, matching the other adapters.
+  - Type prop getters with Preact's HTML attributes, without signals, so they spread onto any element.
+  - Fix characters getting dropped when typing fast into an input whose value a machine syncs, such as combobox or
+    tags-input.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d8de206`](https://github.com/chakra-ui/zag/commit/d8de2068c05b62d6d9fbaa0f350fe3153b1b9c9a) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a machine reading a stale value when several events
+  arrive before the next render, so number-flow digits that animate out together are all removed at once.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`46e5057`](https://github.com/chakra-ui/zag/commit/46e5057ad8d1825ac44f9ee9c778bb285e11869b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a duplicate, unpositioned popup after hydrating
+  server-rendered markup. `Portal` now renders nothing on the server and mounts its content right after hydration.
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/store@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.47.0

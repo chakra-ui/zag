@@ -1,5 +1,30 @@
 # @zag-js/toolbar
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Cancel pending focus, scroll and sync frames when the
+  machine stops, and let a newer request replace a pending one.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`9b61799`](https://github.com/chakra-ui/zag/commit/9b617992522cfd0f6a1474442db2295a8a4fbae7) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a disabled toolbar trapping keyboard focus on its
+  root instead of moving it to the items.
+  - Fix clicking an empty part of the toolbar moving focus onto the root.
+  - Fix the focused item not scrolling into view when the toolbar overflows.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

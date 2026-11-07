@@ -1,5 +1,68 @@
 # @zag-js/radio-group
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3573](https://github.com/chakra-ui/zag/pull/3573)
+  [`bc53c5f`](https://github.com/chakra-ui/zag/commit/bc53c5f1c70aaedfdce7d17bf4366ca98b21efe9) Thanks
+  [@jramke](https://github.com/jramke)! - - Submit the value of a read-only radio group or file upload; only a disabled
+  one is left out of the form.
+  - Leave a disabled slider or angle slider out of the form.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`10be285`](https://github.com/chakra-ui/zag/commit/10be285a38966aa2f44d73b1101fed7da6561da1) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Remove the inline transition styles from the indicator.
+  Add the transition in your CSS.
+  - Add `data-instant` to the indicator when it moves for a reason other than a value change (first render, resize,
+    `dir` or `orientation` change), so it can snap into place.
+  - Remove the `--transition-property`, `--transition-duration` and `--transition-timing-function` CSS variables.
+  - Replace `data-ssr` with `data-indicator-pending` on tab triggers and radio items. It's present during server
+    rendering and also while the indicator hasn't been measured, such as inside a hidden panel.
+  - Fix the indicator animating on resize after a transition never finished.
+
+  **Migration**
+
+  Move the indicator transition into your CSS, and turn it off for `data-instant`:
+
+  ```diff
+    [data-tabs-indicator] {
+  -   --transition-duration: 0.2s;
+  -   --transition-timing-function: ease-in-out;
+  +   transition:
+  +     left 0.2s ease-in-out,
+  +     width 0.2s ease-in-out;
+    }
+  +
+  + [data-tabs-indicator][data-instant] {
+  +   transition: none;
+  + }
+  ```
+
+  Rename `data-ssr` in the styles that paint the selected item before the indicator is in place:
+
+  ```diff
+  - [data-tabs-trigger][data-selected][data-ssr] { ... }
+  + [data-tabs-trigger][data-selected][data-indicator-pending] { ... }
+
+  - [data-radio-group-item][data-state="checked"][data-ssr] { ... }
+  + [data-radio-group-item][data-state="checked"][data-indicator-pending] { ... }
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`3527451`](https://github.com/chakra-ui/zag/commit/3527451f2717ac7ec851e1845ea94cdfc508cb2e),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

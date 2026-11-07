@@ -1,5 +1,73 @@
 # @zag-js/listbox
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Added filter inputs and "no results" messages to menu and
+  select. You filter the items; the input keeps focus while the arrow keys move the highlight.
+
+  ```tsx
+  // popupType: "dialog" on menu and select
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
+    <div {...api.getListProps()}>{/* items */}</div>
+  </div>
+  ```
+
+  - `getEmptyProps()` is a polite live region, so keep it rendered and toggle its text. Combobox and listbox have it
+    too.
+  - **Breaking:** Select, combobox, listbox and cascade select now set the highlight with `setHighlightedValue`, like
+    menu. Pass `null` to clear it.
+
+    ```diff
+    - api.setHighlightValue("react") // select, combobox, cascade select
+    - api.highlightValue("react") // listbox
+    + api.setHighlightedValue("react")
+
+    - api.clearHighlightValue()
+    + api.setHighlightedValue(null)
+    ```
+
+  - **Menu**
+    - **Breaking:** Replaced `composite` with `popupType: "menu" | "dialog"` (default `"menu"`), matching select and
+      combobox. Migrate `composite: false` to `popupType: "dialog"`.
+    - `autoHighlight` highlights the first item as the query changes. A submenu can have its own input; `Escape`,
+      `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's.
+    - `onHighlightChange` reports a `reason` (`keyboard`, `pointer` or `programmatic`), and `setHighlightedValue`
+      accepts `null`.
+  - **Select**
+    - `Home` and `End` jump to the first or last item when the input is empty, and `Shift+Tab` closes the select. A
+      dialog popup opens below the trigger.
+    - `alignItemWithTrigger` keeps the selected item of a long or wrapping list next to the trigger.
+  - Fixed issue where a lazily mounted popup inside nested dialogs rendered behind the dialog.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`e96fd9e`](https://github.com/chakra-ui/zag/commit/e96fd9e523b89adae9d033dabc2256e978f02e32) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Highlight the first selected item when the listbox
+  receives focus.
+  - Move through a horizontal listbox with ArrowLeft and ArrowRight only, starting from the first or last item when none
+    is highlighted.
+- Updated dependencies [[`b0c2a7c`](https://github.com/chakra-ui/zag/commit/b0c2a7ce82f310bc236e2a553a81c153329bed0d),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`b0c2a7c`](https://github.com/chakra-ui/zag/commit/b0c2a7ce82f310bc236e2a553a81c153329bed0d),
+  [`3527451`](https://github.com/chakra-ui/zag/commit/3527451f2717ac7ec851e1845ea94cdfc508cb2e),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/collection@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

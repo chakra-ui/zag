@@ -1,5 +1,44 @@
 # @zag-js/toggle
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Number flow:** Smoother transitions when the number
+  gains or loses digits.
+
+  - Digits and symbols that enter or exit (e.g. `999` to `1,000`) now grow or shrink in place while fading, instead of
+    popping in and out. New digits also roll in by one step.
+  - `transformTiming` now controls these enter and exit transitions. Previously it had no effect.
+  - The default timing for rolls and transitions is now a spring-like easing over `900ms`.
+  - Digits and symbols expose `data-entering` and `data-exiting` while they animate in or out.
+  - Reordering `formatOptions` keys no longer restarts the format update.
+
+  **Slider:** Allow `thumbSize` to be a single number that sets both the thumb width and height, e.g. `thumbSize: 20`.
+
+  **Infinite scroll:** Loading more now keeps working after the list is replaced (e.g. by a new search), and when the
+  sentinel renders after the machine starts observing.
+
+  **Tabs:** `onValueChange` and `onFocusChange` details are now typed as nullable. `value` is `null` after a
+  `deselectable` tab is deselected, and `focusedValue` is `null` when focus leaves the tab list.
+
+  **Toggle:** The machine now accepts the common `id` and `getRootNode` props, and `splitProps` keeps them.
+
+  **Anatomy icons:** Add missing anatomy diagrams for angle slider, cascade select, collapsible, drawer, image cropper,
+  listbox, marquee, navigation menu, and timer.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.47.0

@@ -1,5 +1,66 @@
 # @zag-js/toast
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`f41d558`](https://github.com/chakra-ui/zag/commit/f41d558c4e57087ba0e7afbcfd6bf8b52575e415) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add the `content` part (`api.getContentProps()`).
+  Render the title, description and other content inside it; the toast's height now follows it with one observer instead
+  of one per child.
+  - Add swipe to dismiss. Toasts swipe toward the nearest edges of their placement by default; set `swipeDirections` on
+    the store or a toast to change them, or pass `[]` to turn swiping off.
+  - Add `data-swiping`, `data-swipe-direction` and the `--swipe-x` and `--swipe-y` CSS variables to the root.
+
+  **Migration**
+
+  Wrap the toast's content in the content part, so its height keeps updating after mount:
+
+  ```diff
+    <div {...api.getRootProps()}>
+  -   <h3 {...api.getTitleProps()}>{api.title}</h3>
+  -   <p {...api.getDescriptionProps()}>{api.description}</p>
+  +   <div {...api.getContentProps()}>
+  +     <h3 {...api.getTitleProps()}>{api.title}</h3>
+  +     <p {...api.getDescriptionProps()}>{api.description}</p>
+  +   </div>
+    </div>
+  ```
+
+  Turn transitions off while swiping, so the toast follows the pointer:
+
+  ```css
+  [data-toast-root][data-swiping] {
+    transition: none;
+  }
+  ```
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Cancel pending focus, scroll and sync frames when the
+  machine stops, and let a newer request replace a pending one.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`56c6ba6`](https://github.com/chakra-ui/zag/commit/56c6ba6ad2d96623d7b4bf551889fd6ebb0cceac) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Fixed issue where a progress bar driven by `--duration`
+  jumped when the toast was paused and resumed. `--duration` is now the toast's total duration instead of the remaining
+  time, so pausing the animation with `animation-play-state` stays in sync with the dismiss timer.
+- Updated dependencies [[`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`3527451`](https://github.com/chakra-ui/zag/commit/3527451f2717ac7ec851e1845ea94cdfc508cb2e),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

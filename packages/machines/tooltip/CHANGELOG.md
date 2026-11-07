@@ -1,5 +1,44 @@
 # @zag-js/tooltip
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`3527451`](https://github.com/chakra-ui/zag/commit/3527451f2717ac7ec851e1845ea94cdfc508cb2e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Hover Card**
+  - Fix a card opened without hovering its trigger, such as with `defaultOpen`, closing when the pointer passes over it.
+  - Fix a card or menu opened from inside the card closing it. Opening a menu from the card now keeps it open until
+    dismissed.
+  - Fix `onOpenChange` reporting a close twice when a controlled card is dismissed during a pending hover close.
+  - Fix the card reopening when the window regains focus.
+  - Fix the card staying open when its trigger is removed.
+  - Add `data-instant` to the content when focus opens the card or Escape closes it, so the animation can be skipped.
+  - **Tooltip**: Fix a closed tooltip reopening when the window regains focus.
+  - **Focus Visible**: Add `isFocusRestoredByWindow`.
+  - **Safe Area**: Add the `isTargetInside` option.
+  - **Dismissable**: Add `isInNestedLayer`.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`b1388f0`](https://github.com/chakra-ui/zag/commit/b1388f0030321a3e0f3e00d1251916e651350f4d) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix the tooltip opening after the trigger is clicked
+  during the open delay.
+  - Fix the next tooltip waiting for its full delay when hovered shortly after another one closes.
+  - Fix Escape not closing the tooltip inside an iframe.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`c8ae9b4`](https://github.com/chakra-ui/zag/commit/c8ae9b4bc86bc2c0c3d8445fc2378df9cfb003f1),
+  [`3527451`](https://github.com/chakra-ui/zag/commit/3527451f2717ac7ec851e1845ea94cdfc508cb2e),
+  [`601907c`](https://github.com/chakra-ui/zag/commit/601907c870f000539220d5fbe287b1e4b55482f7),
+  [`f984da6`](https://github.com/chakra-ui/zag/commit/f984da6fca728f76742c7f85fdd45e28e82d4fff)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/safe-area@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/popper@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
