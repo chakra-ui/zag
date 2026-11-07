@@ -98,9 +98,9 @@ export function FooterCredits() {
   return (
     <Box
       display="flex"
-      flexWrap="wrap"
-      alignItems="center"
-      gap="4"
+      flexDirection={{ base: "column", sm: "row" }}
+      alignItems={{ base: "flex-start", sm: "center" }}
+      gap={{ base: "1.5", sm: "4" }}
       justifyContent="space-between"
       fontSize="13px"
       color="text.muted"
