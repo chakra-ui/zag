@@ -88,7 +88,7 @@ export function MobileNav(props: { className?: string }) {
                   {...api.getCloseTriggerProps()}
                   aria-label="Close menu"
                 >
-                  <HiX aria-hidden />
+                  <HiX aria-hidden className={styles.closeIcon} />
                 </button>
               </div>
             </div>

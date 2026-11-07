@@ -1,11 +1,24 @@
 import { css, keyframes } from "styled-system/css"
 
-const sheetIn = keyframes({
+const curtainIn = keyframes({ from: { backgroundColor: "transparent" } })
+
+const sheetOut = keyframes({ to: { opacity: "0" } })
+
+const fadeIn = keyframes({ from: { opacity: "0" } })
+
+const dropIn = keyframes({
   from: { opacity: "0", transform: "translateY(-8px)" },
 })
 
-const sheetOut = keyframes({
-  to: { opacity: "0", transform: "translateY(-8px)" },
+const turnIn = keyframes({
+  from: { opacity: "0", transform: "rotate(-45deg) scale(0.8)" },
+})
+
+const easeOut = "cubic-bezier(0.23, 1, 0.32, 1)"
+
+const reveal = (delay: number) => ({
+  animation: `${fadeIn} 240ms ${easeOut} ${delay}ms both`,
+  _motionSafe: { animationName: dropIn },
 })
 
 const focusRing = {
@@ -25,10 +38,13 @@ export const sheet = css({
   overscrollBehavior: "contain",
   bg: "canvas",
   outline: "0",
-  _motionSafe: {
-    _open: { animation: `${sheetIn} 200ms cubic-bezier(0.2, 0.8, 0.2, 1)` },
-    _closed: { animation: `${sheetOut} 140ms ease-in` },
-  },
+  _open: { animation: `${curtainIn} 240ms ease-out` },
+  _closed: { animation: `${sheetOut} 150ms ease-out` },
+})
+
+export const closeIcon = css({
+  animation: `${fadeIn} 200ms ${easeOut}`,
+  _motionSafe: { animationName: turnIn },
 })
 
 export const bar = css({
@@ -52,6 +68,10 @@ export const body = css({
   px: gutter,
   pt: "2",
   pb: "16",
+  "& > :nth-child(2)": reveal(140),
+  "& > :nth-child(3)": reveal(160),
+  "& > :nth-child(4)": reveal(180),
+  "& > :nth-child(5)": reveal(200),
 })
 
 export const divider = css({ h: "1px", bg: "line", my: "6" })
@@ -70,6 +90,10 @@ export const primaryLink = css({
   _hover: { color: "ink" },
   _focusVisible: focusRing,
   _currentPage: { color: "ink" },
+  "&:nth-child(1)": reveal(60),
+  "&:nth-child(2)": reveal(80),
+  "&:nth-child(3)": reveal(100),
+  "&:nth-child(4)": reveal(120),
 })
 
 export const sections = css({
