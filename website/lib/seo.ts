@@ -45,7 +45,7 @@ export function createPageMetadata({
       description,
       site: "@zag_js",
       creator: "@zag_js",
-      ...(image && { images: [image] }),
+      images: [image ?? `${siteConfig.url}/og/site.png`],
     },
   }
 }

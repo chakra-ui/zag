@@ -1,3 +1,4 @@
+import { type DataAttrDocKey, getDataAttrDoc } from "@zag-js/docs"
 import { renderOgImage } from "lib/og-image"
 import { components, guides, overviews, posts, utilities } from "lib/source"
 
@@ -7,6 +8,27 @@ const sections = {
   components: { label: "Components", docs: components },
   utilities: { label: "Utilities", docs: utilities },
   blog: { label: "Blog", docs: posts },
+}
+
+function getSelectors(slug: string) {
+  let doc: Record<string, Record<string, string>>
+  try {
+    doc = getDataAttrDoc(slug as DataAttrDocKey)
+  } catch {
+    return undefined
+  }
+  const attrs = doc.Trigger ?? doc.Root ?? Object.values(doc)[0]
+  if (!attrs) return undefined
+  const entries = Object.entries(attrs)
+  const part = entries.find(([name]) => name.startsWith(`data-${slug}-`))
+  const state =
+    entries.find(([name]) => name === "data-state") ??
+    entries.find(([, desc]) => desc.startsWith("Present when"))
+  const value = state?.[1].match(/"([^"]+)"/)?.[1]
+  return [
+    part && `[${part[0]}]`,
+    state && (value ? `[${state[0]}="${value}"]` : `[${state[0]}]`),
+  ].filter((line): line is string => !!line)
 }
 
 export const dynamic = "force-static"
@@ -30,5 +52,7 @@ export async function GET(
     section: entry.label,
     title: doc.title,
     description: doc.description,
+    code: section === "components" ? getSelectors(doc.slug) : undefined,
+    footer: `zagjs.com/${section}/${doc.slug}`,
   })
 }

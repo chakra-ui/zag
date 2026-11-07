@@ -36,16 +36,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     siteName: siteConfig.title,
     images: [
-      {
-        url: `${siteConfig.url}/open-graph/website.png`,
-        width: 1240,
-        height: 480,
-      },
-      {
-        url: `${siteConfig.url}/open-graph/twitter.png`,
-        width: 1012,
-        height: 506,
-      },
+      { url: `${siteConfig.url}/og/site.png`, width: 1200, height: 630 },
     ],
   },
   twitter: {
@@ -54,6 +45,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     site: "@zag_js",
     creator: "@zag_js",
+    images: [`${siteConfig.url}/og/site.png`],
   },
   icons: {
     icon: [

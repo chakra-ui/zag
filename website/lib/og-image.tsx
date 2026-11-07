@@ -1,15 +1,60 @@
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
 import { ImageResponse } from "next/og"
 
 export const ogSize = { width: 1200, height: 630 }
 
-interface OgImageProps {
-  section: string
-  title: string
-  description: string
+const colors = {
+  canvas: "#0f1211",
+  surface: "#151918",
+  ink: "#e6eae7",
+  muted: "#9aa39e",
+  line: "#232927",
+  lineStrong: "#46504b",
+  primary: "#34d27d",
+  solid: "#00c65e",
 }
 
-/** The share card for a docs page: section, title and description on the brand colors */
-export function renderOgImage({ section, title, description }: OgImageProps) {
+const read = (path: string) => readFile(join(process.cwd(), path))
+
+async function loadAssets() {
+  const [logo, mark, regular, semibold, mono] = await Promise.all([
+    read("public/brand/zag-logo-dark.svg"),
+    read("public/brand/zag-mark.svg"),
+    read("assets/og/wix-madefor-text-400.woff"),
+    read("assets/og/wix-madefor-text-600.woff"),
+    read("assets/og/geist-mono-400.woff"),
+  ])
+  const svg = (buf: Buffer) =>
+    `data:image/svg+xml;base64,${buf.toString("base64")}`
+  return {
+    logo: svg(Buffer.from(logo.toString().replaceAll("#ffffff", colors.ink))),
+    mark: svg(mark),
+    fonts: [
+      { name: "Wix Madefor Text", data: regular, weight: 400 as const },
+      { name: "Wix Madefor Text", data: semibold, weight: 600 as const },
+      { name: "Geist Mono", data: mono, weight: 400 as const },
+    ],
+  }
+}
+
+interface OgImageProps {
+  section?: string
+  title: string
+  description: string
+  code?: string[]
+  footer?: string
+}
+
+export async function renderOgImage({
+  section,
+  title,
+  description,
+  code,
+  footer,
+}: OgImageProps) {
+  const { logo, mark, fonts } = await loadAssets()
+
   return new ImageResponse(
     <div
       style={{
@@ -18,42 +63,101 @@ export function renderOgImage({ section, title, description }: OgImageProps) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: "72px 80px",
-        background: "#18181b",
-        color: "#fafafa",
+        padding: "64px 72px",
+        fontFamily: "Wix Madefor Text",
+        color: colors.ink,
+        backgroundColor: colors.canvas,
+        backgroundImage: `radial-gradient(70% 90% at 100% 0%, rgba(0, 198, 94, 0.16) 0%, transparent 70%)`,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>
-          zag
-        </div>
+      <img
+        src={mark}
+        alt=""
+        width={420}
+        height={357}
+        style={{ position: "absolute", right: -40, bottom: -70, opacity: 0.12 }}
+      />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <img src={logo} alt="Zag" width={128} height={45} />
+        {section && (
+          <div
+            style={{
+              display: "flex",
+              paddingLeft: 20,
+              borderLeft: `2px solid ${colors.lineStrong}`,
+              fontSize: 28,
+              color: colors.muted,
+            }}
+          >
+            {section}
+          </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          maxWidth: 940,
+        }}
+      >
         <div
           style={{
-            width: 4,
-            height: 36,
-            background: "#00C65E",
-            rotate: "20deg",
+            fontSize: 76,
+            fontWeight: 600,
+            letterSpacing: -2,
+            lineHeight: 1.05,
           }}
-        />
-        <div style={{ fontSize: 28, color: "#a1a1aa" }}>{section}</div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        <div style={{ fontSize: 80, fontWeight: 700, letterSpacing: -2 }}>
+        >
           {title}
         </div>
         <div
           style={{
-            fontSize: 32,
-            lineHeight: 1.4,
-            color: "#d4d4d8",
-            maxWidth: 960,
+            fontSize: 30,
+            lineHeight: 1.45,
+            color: colors.muted,
+            lineClamp: 2,
+            display: "block",
           }}
         >
           {description}
         </div>
       </div>
-      <div style={{ height: 8, width: 160, background: "#00C65E" }} />
+
+      {code?.length ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignSelf: "flex-start",
+            gap: 6,
+            padding: "18px 24px",
+            borderRadius: 14,
+            backgroundColor: colors.surface,
+            border: `1px solid ${colors.line}`,
+            fontFamily: "Geist Mono",
+            fontSize: 24,
+            color: colors.primary,
+          }}
+        >
+          {code.map((line) => (
+            <div key={line}>{line}</div>
+          ))}
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "Geist Mono",
+            fontSize: 24,
+            color: colors.muted,
+          }}
+        >
+          {footer ?? "zagjs.com"}
+        </div>
+      )}
     </div>,
-    ogSize,
+    { ...ogSize, fonts },
   )
 }

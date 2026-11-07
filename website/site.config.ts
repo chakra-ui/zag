@@ -52,16 +52,7 @@ const siteConfig = {
       description: baseConfig.description,
       site_name: baseConfig.title,
       images: [
-        {
-          url: `${baseConfig.url}/open-graph/website.png`,
-          width: 1240,
-          height: 480,
-        },
-        {
-          url: `${baseConfig.url}/open-graph/twitter.png`,
-          width: 1012,
-          height: 506,
-        },
+        { url: `${baseConfig.url}/og/site.png`, width: 1200, height: 630 },
       ],
     },
   },
