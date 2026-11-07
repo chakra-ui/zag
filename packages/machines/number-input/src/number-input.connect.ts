@@ -3,20 +3,24 @@ import {
   dataAttr,
   getEventPoint,
   getEventStepValue,
+  getNativeEvent,
   getWindow,
   isComposingEvent,
+  isInternalChangeEvent,
   isLeftClick,
   isModifierKey,
   MAX_Z_INDEX,
   raf,
   recordCursor,
   setCaretToEnd,
+  visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { mergeWithDefault, roundToDpr, toPx } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import { defaultTranslations } from "./number-input.translations"
+import { normalizeNumberText } from "./number-input.utils"
 import type {
   DecrementTriggerState,
   IncrementTriggerState,
@@ -45,6 +49,11 @@ export function connect<T extends PropTypes>(
   const isDecrementDisabled = disabled || !computed("canDecrement") || readOnly
 
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+
+  const min = prop("min")
+  const max = prop("max")
+  const allowsNegative = min == null || min < 0
+  const inputMode = prop("inputMode") ?? (context.get("platform").iPhone && allowsNegative ? "text" : "decimal")
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -75,8 +84,8 @@ export function connect<T extends PropTypes>(
     scrubbing: scrubbing,
     invalid: invalid,
     empty: empty,
-    value: computed("formattedValue"),
-    valueAsNumber: computed("valueAsNumber"),
+    value: context.get("value"),
+    formattedValue: computed("formattedValue"),
     setValue(value) {
       send({ type: "VALUE.SET", value, src: "script" })
     },
@@ -90,10 +99,12 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.DECREMENT", src: "script" })
     },
     setToMax() {
-      send({ type: "VALUE.SET", value: prop("max"), src: "script" })
+      if (max == null) return
+      send({ type: "VALUE.SET", value: max, src: "script" })
     },
     setToMin() {
-      send({ type: "VALUE.SET", value: prop("min"), src: "script" })
+      if (min == null) return
+      send({ type: "VALUE.SET", value: min, src: "script" })
     },
     focus() {
       dom.getInputEl(scope)?.focus()
@@ -162,13 +173,10 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
-        name: prop("name"),
-        form: prop("form"),
         id: dom.getInputId(scope),
-        role: "spinbutton",
-        defaultValue: computed("formattedValue"),
+        defaultValue: context.get("inputValue"),
         pattern: prop("formatOptions") ? undefined : prop("pattern"),
-        inputMode: prop("inputMode"),
+        inputMode,
         "aria-invalid": ariaAttr(inputState.invalid),
         "data-invalid": dataAttr(inputState.invalid),
         disabled: inputState.disabled,
@@ -179,11 +187,7 @@ export function connect<T extends PropTypes>(
         autoCorrect: "off",
         spellCheck: "false",
         type: "text",
-        "aria-roledescription": "numberfield",
-        "aria-valuemin": prop("min"),
-        "aria-valuemax": prop("max"),
-        "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
-        "aria-valuetext": computed("valueText"),
+        "aria-roledescription": context.get("platform").ios ? undefined : translations.roleDescription,
         "data-scrubbing": dataAttr(inputState.scrubbing),
         onFocus() {
           send({ type: "INPUT.FOCUS" })
@@ -193,14 +197,19 @@ export function connect<T extends PropTypes>(
         },
         onInput(event) {
           const selection = recordCursor(event.currentTarget)
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection, src: "input-change" })
+          send({ type: "INPUT.CHANGE", value: event.currentTarget.value, selection, src: "input-change" })
         },
         onBeforeInput(event) {
           try {
             const { selectionStart, selectionEnd, value } = event.currentTarget
 
             const nextValue = value.slice(0, selectionStart!) + ((event as any).data ?? "") + value.slice(selectionEnd!)
-            const isValid = computed("parser").isValidPartialNumber(nextValue)
+            const allowOutOfRange = prop("allowOutOfRange")
+            const isValid = computed("parser").isValidPartialNumber(
+              normalizeNumberText(nextValue),
+              allowOutOfRange ? undefined : min,
+              allowOutOfRange ? undefined : max,
+            )
 
             if (!isValid) {
               event.preventDefault()
@@ -242,13 +251,13 @@ export function connect<T extends PropTypes>(
               event.stopPropagation()
             },
             Home() {
-              if (isModifierKey(event)) return
+              if (isModifierKey(event) || min == null) return
               send({ type: "INPUT.HOME", src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
             },
             End() {
-              if (isModifierKey(event)) return
+              if (isModifierKey(event) || max == null) return
               send({ type: "INPUT.END", src: "keyboard" })
               event.preventDefault()
               event.stopPropagation()
@@ -261,6 +270,39 @@ export function connect<T extends PropTypes>(
 
           const exec = keyMap[event.key]
           exec?.(event)
+        },
+      })
+    },
+
+    getHiddenInputProps() {
+      const value = context.get("value")
+
+      const handleChange = (e: { currentTarget: HTMLInputElement; nativeEvent?: Event }) => {
+        if (isInternalChangeEvent(getNativeEvent(e)) || disabled || readOnly) return
+        const next = e.currentTarget.valueAsNumber
+        if (Number.isNaN(next)) send({ type: "VALUE.CLEAR", src: "autofill" })
+        else send({ type: "VALUE.SET", value: next, src: "autofill" })
+      }
+
+      return normalize.input({
+        type: "number",
+        id: dom.getHiddenInputId(scope),
+        name: prop("name"),
+        form: prop("form"),
+        min,
+        max,
+        step: "any",
+        disabled,
+        readOnly,
+        required,
+        defaultValue: value == null ? "" : String(value),
+        "aria-hidden": true,
+        tabIndex: -1,
+        style: visuallyHiddenStyle,
+        onChange: handleChange,
+        onInput: handleChange,
+        onFocus() {
+          dom.getInputEl(scope)?.focus({ preventScroll: true })
         },
       })
     },
@@ -278,12 +320,17 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
+        onClick(event) {
+          // Pointer presses step on their own. This handles screen readers and `click()`.
+          if (decrementTriggerState.disabled || event.detail !== 0) return
+          send({ type: "VALUE.DECREMENT", src: "decrement-press" })
+        },
         onPointerDown(event) {
           if (decrementTriggerState.disabled) return
           if (!isLeftClick(event)) return
           send({
             type: "TRIGGER.PRESS_DOWN",
-            hint: "decrement",
+            direction: -1,
             pointerType: event.pointerType,
             src: "decrement-press",
           })
@@ -295,14 +342,26 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
+          send({ type: "TRIGGER.PRESS_UP", direction: -1, pointerType: event.pointerType, src: "decrement-press" })
         },
-        onPointerLeave() {
+        onPointerLeave(event) {
           if (decrementTriggerState.disabled) return
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", src: "decrement-press" })
+          send({
+            type: "TRIGGER.PRESS_UP",
+            direction: -1,
+            pointerType: event.pointerType,
+            cancelled: true,
+            src: "decrement-press",
+          })
         },
         onPointerCancel(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType, src: "decrement-press" })
+          send({
+            type: "TRIGGER.PRESS_UP",
+            direction: -1,
+            pointerType: event.pointerType,
+            cancelled: true,
+            src: "decrement-press",
+          })
         },
       })
     },
@@ -320,11 +379,16 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
+        onClick(event) {
+          // Pointer presses step on their own. This handles screen readers and `click()`.
+          if (incrementTriggerState.disabled || event.detail !== 0) return
+          send({ type: "VALUE.INCREMENT", src: "increment-press" })
+        },
         onPointerDown(event) {
           if (incrementTriggerState.disabled || !isLeftClick(event)) return
           send({
             type: "TRIGGER.PRESS_DOWN",
-            hint: "increment",
+            direction: 1,
             pointerType: event.pointerType,
             src: "increment-press",
           })
@@ -336,13 +400,25 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
+          send({ type: "TRIGGER.PRESS_UP", direction: 1, pointerType: event.pointerType, src: "increment-press" })
         },
         onPointerLeave(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
+          send({
+            type: "TRIGGER.PRESS_UP",
+            direction: 1,
+            pointerType: event.pointerType,
+            cancelled: true,
+            src: "increment-press",
+          })
         },
         onPointerCancel(event) {
-          send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType, src: "increment-press" })
+          send({
+            type: "TRIGGER.PRESS_UP",
+            direction: 1,
+            pointerType: event.pointerType,
+            cancelled: true,
+            src: "increment-press",
+          })
         },
       })
     },
@@ -357,7 +433,7 @@ export function connect<T extends PropTypes>(
         role: "presentation",
         "data-scrubbing": dataAttr(scrubbing),
         onMouseDown(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (!isLeftClick(event)) return
 
           const pt = getEventPoint(event)
@@ -385,7 +461,7 @@ export function connect<T extends PropTypes>(
     getScrubberCursorProps() {
       return normalize.element({
         ...parts.scrubberCursor.attrs(scope.id),
-        hidden: !scrubbing || !context.get("isPointerLockSupported"),
+        hidden: !scrubbing || !context.get("platform").supportsPointerLock,
         style: {
           position: "fixed",
           pointerEvents: "none",

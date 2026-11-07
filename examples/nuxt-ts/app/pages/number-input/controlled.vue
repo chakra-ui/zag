@@ -4,17 +4,18 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { MinusIcon, PlusIcon } from "lucide-vue-next"
 import "@styles/number-input.css"
 
-const value = ref("")
+const value = ref<number | null>(null)
 const formatOptions = ref<Intl.NumberFormatOptions | undefined>(undefined)
 const maxFractionDigits = ref<number | undefined>(undefined)
 const reason = ref("-")
 const commits = ref(0)
 const commitReason = ref("-")
+const commitValue = ref("-")
 const focusReports = ref<string[]>([])
 const invalids = ref(0)
 const invalidReport = ref("-")
 const focusInputOnChange = ref(true)
-const clampValueOnBlur = ref(true)
+const allowOutOfRange = ref(false)
 
 const id = useId()
 
@@ -26,7 +27,7 @@ const service = useMachine(
     max: 1000,
     min: 0,
     focusInputOnChange: focusInputOnChange.value,
-    clampValueOnBlur: clampValueOnBlur.value,
+    allowOutOfRange: allowOutOfRange.value,
     formatOptions:
       maxFractionDigits.value !== undefined
         ? { ...formatOptions.value, maximumFractionDigits: maxFractionDigits.value }
@@ -45,6 +46,7 @@ const service = useMachine(
     onValueCommit(details) {
       commits.value++
       commitReason.value = details.reason ?? "-"
+      commitValue.value = String(details.value)
     },
   })),
 )
@@ -63,18 +65,16 @@ const setFormat = (options: Intl.NumberFormatOptions | undefined, digits: number
 
     <!-- Test buttons for external value changes -->
     <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap">
-      <button data-testid="set-decimal" @click="value = '123.456789012345'">
-        Set High Precision (123.456789012345)
-      </button>
-      <button data-testid="set-simple" @click="value = '50.25'">Set Simple (50.25)</button>
-      <button data-testid="set-zero" @click="value = '0'">Set Zero</button>
-      <button data-testid="clear-value" @click="value = ''">Clear (Uncontrolled)</button>
+      <button data-testid="set-decimal" @click="value = 123.456789012345">Set High Precision (123.456789012345)</button>
+      <button data-testid="set-simple" @click="value = 50.25">Set Simple (50.25)</button>
+      <button data-testid="set-zero" @click="value = 0">Set Zero</button>
+      <button data-testid="clear-value" @click="value = null">Clear</button>
       <button data-testid="api-set-value" @click="api.setValue(42)">api.setValue(42)</button>
       <button data-testid="toggle-focus-on-change" @click="focusInputOnChange = !focusInputOnChange">
         focusInputOnChange: {{ String(focusInputOnChange) }}
       </button>
-      <button data-testid="toggle-clamp-on-blur" @click="clampValueOnBlur = !clampValueOnBlur">
-        clampValueOnBlur: {{ String(clampValueOnBlur) }}
+      <button data-testid="toggle-allow-out-of-range" @click="allowOutOfRange = !allowOutOfRange">
+        allowOutOfRange: {{ String(allowOutOfRange) }}
       </button>
     </div>
 
@@ -113,14 +113,15 @@ const setFormat = (options: Intl.NumberFormatOptions | undefined, digits: number
         }}<span data-testid="invalid-report">{{ invalidReport }}</span>
         <br />
         <strong>Commits:</strong> <span data-testid="commits">{{ commits }}</span> {{ " "
-        }}<span data-testid="commit-reason">{{ commitReason }}</span>
+        }}<span data-testid="commit-reason">{{ commitReason }}</span> {{ " "
+        }}<span data-testid="commit-value">{{ commitValue }}</span>
         <br />
-        <strong>Controlled Value:</strong> "{{ value }}"
+        <strong>Controlled Value:</strong> {{ String(value) }}
       </div>
-      <div><strong>Is Controlled:</strong> {{ value !== "" ? "Yes" : "No" }}</div>
+      <div><strong>Is Controlled:</strong> {{ value != null ? "Yes" : "No" }}</div>
       <div><strong>Format Options:</strong> {{ formatOptions ? JSON.stringify(formatOptions) : "None" }}</div>
       <div><strong>Max Fraction Digits:</strong> {{ maxFractionDigits ?? "None" }}</div>
-      <div><strong>Value As Number:</strong> {{ api.valueAsNumber }}</div>
+      <div><strong>Formatted Value:</strong> {{ api.formattedValue }}</div>
     </div>
 
     <div style="margin-top: 1rem; padding: 1rem; background-color: #e8f4fd; border-radius: 4px">

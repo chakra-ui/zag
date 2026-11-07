@@ -119,7 +119,8 @@ export const tooltipControls = defineControls({
 export const numberInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
-  clampValueOnBlur: { type: "boolean", defaultValue: true },
+  readOnly: { type: "boolean", defaultValue: false },
+  allowOutOfRange: { type: "boolean", defaultValue: false },
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
   focusInputOnChange: { type: "boolean", defaultValue: true },

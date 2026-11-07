@@ -19,16 +19,19 @@ export type ValueChangeReason =
   | "wheel"
   | "scrub"
   | "script"
+  | "autofill"
 
 export interface ValueChangeDetails {
-  value: string
-  valueAsNumber: number
+  /** The number, or `null` when the input is empty */
+  value: number | null
+  /** The value as shown in the input */
+  formattedValue: string
   reason?: ValueChangeReason | undefined
 }
 
 export interface FocusChangeDetails {
-  value: string
-  valueAsNumber: number
+  value: number | null
+  formattedValue: string
   focused: boolean
 }
 
@@ -36,8 +39,8 @@ export type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 /** Detached from `ValueChangeDetails`: here `reason` is why the value is invalid. */
 export interface ValueInvalidDetails {
-  value: string
-  valueAsNumber: number
+  value: number
+  formattedValue: string
   reason: ValidityState
 }
 
@@ -55,22 +58,22 @@ export type ElementIds = Partial<{
   decrementTrigger: string
   scrubber: string
   scrubberCursor: string
+  hiddenInput: string
 }>
 
 export interface IntlTranslations {
   /**
-   * Function that returns the human-readable value.
-   * It is used to set the `aria-valuetext` property of the input
-   */
-  valueText?: ((value: string) => string) | undefined
-  /**
-   * The label foe the increment button
+   * The label for the increment button
    */
   incrementLabel?: string | undefined
   /**
    * The label for the decrement button
    */
   decrementLabel?: string | undefined
+  /**
+   * How screen readers describe the input. Left out on iOS, where VoiceOver would skip the required state.
+   */
+  roleDescription?: string | undefined
 }
 
 export interface NumberInputProps extends LocaleProperties, CommonProperties {
@@ -109,22 +112,20 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    */
   pattern?: string | undefined
   /**
-   * The controlled value of the input
+   * The controlled value. Use `null` for an empty input.
    */
-  value?: string | undefined
+  value?: number | null | undefined
   /**
-   * The initial value of the input when rendered.
-   * Use when you don't need to control the value of the input.
+   * The initial value when rendered.
+   * Use when you don't need to control the value.
    */
-  defaultValue?: string | undefined
+  defaultValue?: number | null | undefined
   /**
    * The minimum value of the number input
-   * @default Number.MIN_SAFE_INTEGER
    */
   min?: number | undefined
   /**
    * The maximum value of the number input
-   * @default Number.MAX_SAFE_INTEGER
    */
   max?: number | undefined
   /**
@@ -137,15 +138,11 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    */
   allowMouseWheel?: boolean | undefined
   /**
-   * Whether to allow the value overflow the min/max range
-   * @default true
+   * Whether a typed value can stay outside the min/max range instead of being clamped on blur or Enter.
+   * The value is then reported as invalid. Stepping always stays within the range.
+   * @default false
    */
-  allowOverflow?: boolean | undefined
-  /**
-   * Whether to clamp the value when the input loses focus (blur)
-   * @default true
-   */
-  clampValueOnBlur?: boolean | undefined
+  allowOutOfRange?: boolean | undefined
   /**
    * Whether to focus input when the value changes
    * @default true
@@ -161,8 +158,8 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
   formatOptions?: Intl.NumberFormatOptions | undefined
   /**
    * Hints at the type of data that might be entered by the user. It also determines
-   * the type of keyboard shown to the user on mobile devices
-   * @default "decimal"
+   * the type of keyboard shown to the user on mobile devices.
+   * Defaults to `"text"` on iPhone when negatives are allowed, otherwise `"decimal"`.
    */
   inputMode?: InputMode | undefined
   /**
@@ -224,25 +221,25 @@ type PropsWithDefault =
   | "dir"
   | "locale"
   | "focusInputOnChange"
-  | "clampValueOnBlur"
-  | "allowOverflow"
-  | "inputMode"
+  | "allowOutOfRange"
   | "pattern"
   | "step"
   | "largeStep"
   | "smallStep"
   | "spinOnPress"
-  | "min"
-  | "max"
   | "scrubberPixelSensitivity"
   | "scrubberDirection"
   | "snapOnStep"
 
 type ComputedContext = Readonly<{
   /**
-   * The value of the input as a number
+   * The min, or `-Infinity` when there's none
    */
-  valueAsNumber: number
+  min: number
+  /**
+   * The max, or `Infinity` when there's none
+   */
+  max: number
   /**
    * Whether the value is at the min
    */
@@ -272,10 +269,6 @@ type ComputedContext = Readonly<{
    */
   canDecrement: boolean
   /**
-   * The `aria-valuetext` attribute of the input
-   */
-  valueText: string | undefined
-  /**
    * The formatted value of the input
    */
   formattedValue: string
@@ -293,13 +286,18 @@ type ComputedContext = Readonly<{
   parser: NumberParser
 }>
 
-export type HintValue = "increment" | "decrement"
+export type StepDirection = 1 | -1
+
+export interface Platform {
+  /** Whether the device is an iPhone */
+  iPhone: boolean
+  /** Whether the device runs iOS or iPadOS */
+  ios: boolean
+  /** Whether the browser supports pointer lock (not Safari) */
+  supportsPointerLock: boolean
+}
 
 interface PrivateContext {
-  /**
-   * The hint that determines if we're incrementing or decrementing
-   */
-  hint: HintValue | null
   /**
    * The scrubber cursor position
    */
@@ -309,17 +307,21 @@ interface PrivateContext {
    */
   fieldsetDisabled: boolean
   /**
-   * The value of the input
+   * The number, or `null` when empty
    */
-  value: string
+  value: number | null
+  /**
+   * The text in the input. Kept while typing, reformatted from `value` otherwise.
+   */
+  inputValue: string
   /**
    * The accumulated delta for pixel sensitivity tracking
    */
   cumulativeDelta: number
   /**
-   * Whether the browser supports pointer lock (false on Safari, false during SSR)
+   * The detected platform, read after mount (all false during SSR)
    */
-  isPointerLockSupported: boolean
+  platform: Platform
   /**
    * The visual viewport scale (for pinch-zoom compensation on the cursor)
    */
@@ -335,6 +337,8 @@ export interface NumberInputSchema {
   refs: {
     syncFrame: AnimationFrame
     focusFrame: AnimationFrame
+    pressDirection: StepDirection
+    committedValue: number | null
   }
   computed: ComputedContext
   action: string
@@ -421,13 +425,13 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
    */
   empty: boolean
   /**
-   * The formatted value of the input.
+   * The number, or `null` when the input is empty.
    */
-  value: string
+  value: number | null
   /**
-   * The value of the input as a number.
+   * The value as shown in the input.
    */
-  valueAsNumber: number
+  formattedValue: string
   /**
    * Function to set the value of the input.
    */
@@ -470,6 +474,7 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
    */
   getInputState: () => InputState
   getInputProps: () => T["input"]
+  getHiddenInputProps: () => T["input"]
   /**
    * Returns the state of the decrement trigger.
    */

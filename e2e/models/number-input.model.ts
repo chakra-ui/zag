@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y } from "../_utils"
+import { a11y, testid } from "../_utils"
 import { Model } from "./model"
 
 export class NumberInputModel extends Model {
@@ -62,6 +62,10 @@ export class NumberInputModel extends Model {
     return this.seeTestIdText("commit-reason", reason)
   }
 
+  seeCommitValue(value: string) {
+    return this.seeTestIdText("commit-value", value)
+  }
+
   seeCommitCount(count: number) {
     return this.seeTestIdText("commits", String(count))
   }
@@ -72,6 +76,10 @@ export class NumberInputModel extends Model {
   }
 
   async releaseIncWithTouch() {
+    await this.incButton.dispatchEvent("pointerup", { button: 0, pointerType: "touch" })
+  }
+
+  async cancelIncTouch() {
     await this.incButton.dispatchEvent("pointercancel", { pointerType: "touch" })
   }
 
@@ -113,20 +121,18 @@ export class NumberInputModel extends Model {
     await this.input.blur()
   }
 
-  clickCurrencyFormat() {
-    return this.testId("currency-format").click()
+  async seeInputIsTextField() {
+    await expect(this.input).toHaveRole("textbox")
+    await expect(this.input).not.toHaveAttribute("aria-valuenow")
   }
 
-  async seeValueText(value: string) {
-    await expect(this.input).toHaveAttribute("aria-valuetext", value)
+  seeRoleDescription(value: string | null) {
+    if (value === null) return expect(this.input).not.toHaveAttribute("aria-roledescription")
+    return expect(this.input).toHaveAttribute("aria-roledescription", value)
   }
 
-  async dontSeeValueText() {
-    await expect(this.input).not.toHaveAttribute("aria-valuetext", /.*/)
-  }
-
-  async seeValueNow(value: string) {
-    await expect(this.input).toHaveAttribute("aria-valuenow", value)
+  seeNumber(value: string) {
+    return expect(this.hiddenInput).toHaveValue(value)
   }
 
   async getInputValue() {
@@ -149,8 +155,8 @@ export class NumberInputModel extends Model {
     return this.seeTestIdText("invalid-report", report)
   }
 
-  toggleClampValueOnBlur() {
-    return this.testId("toggle-clamp-on-blur").click()
+  toggleAllowOutOfRange() {
+    return this.testId("toggle-allow-out-of-range").click()
   }
 
   toggleFocusInputOnChange() {
@@ -186,6 +192,15 @@ export class NumberInputModel extends Model {
     await this.decButton.click()
   }
 
+  /** Activates like a screen reader does: a click with no pointer press */
+  async activateInc() {
+    await this.incButton.evaluate((el: HTMLElement) => el.click())
+  }
+
+  async activateDec() {
+    await this.decButton.evaluate((el: HTMLElement) => el.click())
+  }
+
   async scrubBy(x: number) {
     // Pointer lock is granted on Linux but not macOS, and skews synthetic mouse deltas once engaged
     await this.page.evaluate(() => {
@@ -203,8 +218,8 @@ export class NumberInputModel extends Model {
 
   async waitForTick(n: number) {
     // these match the delays in the machine
-    const CHANGE_INTERVAL = 50
-    const CHANGE_DELAY = 300
+    const CHANGE_INTERVAL = 60
+    const CHANGE_DELAY = 400
     const time = CHANGE_INTERVAL * n + CHANGE_DELAY
     await this.wait(time)
   }
@@ -217,5 +232,61 @@ export class NumberInputModel extends Model {
   async mousedownDec() {
     await this.decButton.hover()
     await this.page.mouse.down()
+  }
+
+  get hiddenInput() {
+    return this.page.locator(testid("hidden-input"))
+  }
+
+  async wheelInput(deltaY: number, opts: { ctrl?: boolean; shift?: boolean; deltaX?: number } = {}) {
+    await this.input.focus()
+    const box = await this.input.boundingBox()
+    if (!box) throw new Error("no input")
+    await this.page.mouse.move(box.x + 20, box.y + box.height / 2)
+    const key = opts.ctrl ? "Control" : opts.shift ? "Shift" : null
+    if (key) await this.page.keyboard.down(key)
+    await this.page.mouse.wheel(opts.deltaX ?? 0, deltaY)
+    if (key) await this.page.keyboard.up(key)
+    await this.wait(100)
+  }
+
+  /** Whether a horizontal scroll over the input is left for the page to handle */
+  async seeHorizontalScrollIsNotBlocked() {
+    await this.input.focus()
+    const prevented = await this.input.evaluate((el) => {
+      const event = new WheelEvent("wheel", { deltaX: 100, deltaY: 1, bubbles: true, cancelable: true })
+      el.dispatchEvent(event)
+      return event.defaultPrevented
+    })
+    expect(prevented).toBe(false)
+  }
+
+  async insertText(text: string) {
+    await this.input.focus()
+    await this.page.keyboard.insertText(text)
+  }
+
+  seeInputMode(mode: string) {
+    return expect(this.input).toHaveAttribute("inputmode", mode)
+  }
+
+  async allowNegatives() {
+    await this.controls.num("min", "-1000")
+    await expect
+      .poll(async () => {
+        await this.input.fill("")
+        await this.input.focus()
+        await this.page.keyboard.insertText("-")
+        return this.input.inputValue()
+      })
+      .toBe("-")
+    await this.input.fill("")
+  }
+
+  async autofill(value: string) {
+    await this.hiddenInput.evaluate((el: HTMLInputElement, value) => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(el, value)
+      el.dispatchEvent(new Event("input", { bubbles: true }))
+    }, value)
   }
 }

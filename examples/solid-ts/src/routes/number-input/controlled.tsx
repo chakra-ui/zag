@@ -5,17 +5,18 @@ import { createMemo, createSignal, createUniqueId } from "solid-js"
 import "@styles/number-input.css"
 
 export default function Page() {
-  const [value, setValue] = createSignal("")
+  const [value, setValue] = createSignal<number | null>(null)
   const [formatOptions, setFormatOptions] = createSignal<Intl.NumberFormatOptions | undefined>(undefined)
   const [maxFractionDigits, setMaxFractionDigits] = createSignal<number | undefined>(undefined)
   const [reason, setReason] = createSignal("-")
   const [commits, setCommits] = createSignal(0)
   const [commitReason, setCommitReason] = createSignal("-")
+  const [commitValue, setCommitValue] = createSignal("-")
   const [focusReports, setFocusReports] = createSignal<string[]>([])
   const [invalids, setInvalids] = createSignal(0)
   const [invalidReport, setInvalidReport] = createSignal("-")
   const [focusInputOnChange, setFocusInputOnChange] = createSignal(true)
-  const [clampValueOnBlur, setClampValueOnBlur] = createSignal(true)
+  const [allowOutOfRange, setAllowOutOfRange] = createSignal(false)
 
   const id = createUniqueId()
 
@@ -27,7 +28,7 @@ export default function Page() {
       max: 1000,
       min: 0,
       focusInputOnChange: focusInputOnChange(),
-      clampValueOnBlur: clampValueOnBlur(),
+      allowOutOfRange: allowOutOfRange(),
       formatOptions: digits !== undefined ? { ...formatOptions(), maximumFractionDigits: digits } : formatOptions(),
       onValueChange(details: numberInput.ValueChangeDetails) {
         setValue(details.value)
@@ -43,6 +44,7 @@ export default function Page() {
       onValueCommit(details: numberInput.ValueChangeDetails) {
         setCommits((c) => c + 1)
         setCommitReason(details.reason ?? "-")
+        setCommitValue(String(details.value))
       },
     }
   })
@@ -56,17 +58,17 @@ export default function Page() {
 
         {/* Test buttons for external value changes */}
         <div style={{ "margin-bottom": "1rem", display: "flex", gap: "0.5rem", "flex-wrap": "wrap" }}>
-          <button data-testid="set-decimal" onClick={() => setValue("123.456789012345")}>
+          <button data-testid="set-decimal" onClick={() => setValue(123.456789012345)}>
             Set High Precision (123.456789012345)
           </button>
-          <button data-testid="set-simple" onClick={() => setValue("50.25")}>
+          <button data-testid="set-simple" onClick={() => setValue(50.25)}>
             Set Simple (50.25)
           </button>
-          <button data-testid="set-zero" onClick={() => setValue("0")}>
+          <button data-testid="set-zero" onClick={() => setValue(0)}>
             Set Zero
           </button>
-          <button data-testid="clear-value" onClick={() => setValue("")}>
-            Clear (Uncontrolled)
+          <button data-testid="clear-value" onClick={() => setValue(null)}>
+            Clear
           </button>
           <button data-testid="api-set-value" onClick={() => api().setValue(42)}>
             api.setValue(42)
@@ -74,8 +76,8 @@ export default function Page() {
           <button data-testid="toggle-focus-on-change" onClick={() => setFocusInputOnChange((v) => !v)}>
             focusInputOnChange: {String(focusInputOnChange())}
           </button>
-          <button data-testid="toggle-clamp-on-blur" onClick={() => setClampValueOnBlur((v) => !v)}>
-            clampValueOnBlur: {String(clampValueOnBlur())}
+          <button data-testid="toggle-allow-out-of-range" onClick={() => setAllowOutOfRange((v) => !v)}>
+            allowOutOfRange: {String(allowOutOfRange())}
           </button>
         </div>
 
@@ -146,12 +148,13 @@ export default function Page() {
             <span data-testid="invalid-report">{invalidReport()}</span>
             <br />
             <strong>Commits:</strong> <span data-testid="commits">{commits()}</span>{" "}
-            <span data-testid="commit-reason">{commitReason()}</span>
+            <span data-testid="commit-reason">{commitReason()}</span>{" "}
+            <span data-testid="commit-value">{commitValue()}</span>
             <br />
-            <strong>Controlled Value:</strong> "{value()}"
+            <strong>Controlled Value:</strong> {String(value())}
           </div>
           <div>
-            <strong>Is Controlled:</strong> {value() !== "" ? "Yes" : "No"}
+            <strong>Is Controlled:</strong> {value() != null ? "Yes" : "No"}
           </div>
           <div>
             <strong>Format Options:</strong> {formatOptions() ? JSON.stringify(formatOptions()) : "None"}
@@ -160,7 +163,7 @@ export default function Page() {
             <strong>Max Fraction Digits:</strong> {maxFractionDigits() ?? "None"}
           </div>
           <div>
-            <strong>Value As Number:</strong> {api().valueAsNumber}
+            <strong>Formatted Value:</strong> {api().formattedValue}
           </div>
         </div>
 

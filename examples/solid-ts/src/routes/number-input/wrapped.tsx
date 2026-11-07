@@ -8,17 +8,20 @@ export default function Page() {
   const min = 0
   const max = 10
 
+  // No min/max on the machine, so stepping never stops at the bounds
   const service = useMachine(numberInput.machine, {
     id: createUniqueId(),
-    allowOverflow: true,
-    max,
-    min,
-    onValueInvalid(details) {
-      if (details.valueAsNumber > max) {
-        api().setValue(min)
-      } else if (details.valueAsNumber < min) {
-        api().setValue(max)
-      }
+    defaultValue: 8,
+    onValueChange({ value, reason }) {
+      if (value == null || reason === "input-change") return
+      if (value > max) api().setValue(min)
+      else if (value < min) api().setValue(max)
+    },
+    // Typed values clamp instead of wrapping
+    onValueCommit({ value }) {
+      if (value == null) return
+      if (value > max) api().setValue(max)
+      else if (value < min) api().setValue(min)
     },
   })
 
@@ -27,7 +30,7 @@ export default function Page() {
   return (
     <main>
       <div {...api().getRootProps()}>
-        <label {...api().getLabelProps()}>Enter number:</label>
+        <label {...api().getLabelProps()}>Wraps between 0 and 10</label>
         <div {...api().getControlProps()}>
           <button {...api().getDecrementTriggerProps()}>
             <MinusIcon />
