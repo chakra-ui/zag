@@ -48,7 +48,8 @@ export function useMachine<T extends MachineSchema>(
   const props = createMemo(
     () =>
       machine.props?.({
-        props: compact(access(userProps)),
+        // Solid's merged props are proxies, which compact() skips
+        props: compact({ ...access(userProps) }),
         scope: scope(),
       }) ?? access(userProps),
   )
