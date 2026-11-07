@@ -4,6 +4,11 @@ const baseConfig = {
   title: "Zag - Rapidly build UI components without sweating over the logic.",
   description:
     "State machines for accessible, interactive and performant UI components",
+  hero: {
+    title: "Accessible components for any framework",
+    description:
+      "60+ components with keyboard, focus and screen reader support built in. Use them in React, Vue, Solid, Svelte or Preact, with your own styles",
+  },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://zagjs.com",
   // empty disables the Plausible script entirely
   analyticsDomain: process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN ?? "zagjs.com",

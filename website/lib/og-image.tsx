@@ -91,7 +91,7 @@ export async function renderOgImage({
           display: "flex",
           flexDirection: "column",
           gap: 20,
-          maxWidth: 940,
+          maxWidth: 1000,
         }}
       >
         <div
