@@ -2,8 +2,6 @@ import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ImageResponse } from "next/og"
 
-export const ogSize = { width: 1200, height: 630 }
-
 const colors = {
   canvas: "#0f1211",
   surface: "#151918",
@@ -12,31 +10,12 @@ const colors = {
   line: "#232927",
   lineStrong: "#46504b",
   primary: "#34d27d",
-  solid: "#00c65e",
 }
 
 const read = (path: string) => readFile(join(process.cwd(), path))
 
-async function loadAssets() {
-  const [logo, mark, regular, semibold, mono] = await Promise.all([
-    read("public/brand/zag-logo-dark.svg"),
-    read("public/brand/zag-mark.svg"),
-    read("assets/og/wix-madefor-text-400.woff"),
-    read("assets/og/wix-madefor-text-600.woff"),
-    read("assets/og/geist-mono-400.woff"),
-  ])
-  const svg = (buf: Buffer) =>
-    `data:image/svg+xml;base64,${buf.toString("base64")}`
-  return {
-    logo: svg(Buffer.from(logo.toString().replaceAll("#ffffff", colors.ink))),
-    mark: svg(mark),
-    fonts: [
-      { name: "Wix Madefor Text", data: regular, weight: 400 as const },
-      { name: "Wix Madefor Text", data: semibold, weight: 600 as const },
-      { name: "Geist Mono", data: mono, weight: 400 as const },
-    ],
-  }
-}
+const toDataUri = (svg: string) =>
+  `data:image/svg+xml,${encodeURIComponent(svg)}`
 
 interface OgImageProps {
   section?: string
@@ -53,7 +32,13 @@ export async function renderOgImage({
   code,
   footer,
 }: OgImageProps) {
-  const { logo, mark, fonts } = await loadAssets()
+  const [logo, mark, regular, semibold, mono] = await Promise.all([
+    read("public/brand/zag-logo-dark.svg"),
+    read("public/brand/zag-mark.svg"),
+    read("assets/og/wix-madefor-text-400.woff"),
+    read("assets/og/wix-madefor-text-600.woff"),
+    read("assets/og/geist-mono-400.woff"),
+  ])
 
   return new ImageResponse(
     <div
@@ -67,11 +52,12 @@ export async function renderOgImage({
         fontFamily: "Wix Madefor Text",
         color: colors.ink,
         backgroundColor: colors.canvas,
-        backgroundImage: `radial-gradient(70% 90% at 100% 0%, rgba(0, 198, 94, 0.16) 0%, transparent 70%)`,
+        backgroundImage:
+          "radial-gradient(70% 90% at 100% 0%, rgba(0, 198, 94, 0.16) 0%, transparent 70%)",
       }}
     >
       <img
-        src={mark}
+        src={toDataUri(mark.toString())}
         alt=""
         width={420}
         height={357}
@@ -79,7 +65,12 @@ export async function renderOgImage({
       />
 
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        <img src={logo} alt="Zag" width={128} height={45} />
+        <img
+          src={toDataUri(logo.toString().replaceAll("#ffffff", colors.ink))}
+          alt="Zag"
+          width={128}
+          height={45}
+        />
         {section && (
           <div
             style={{
@@ -115,18 +106,18 @@ export async function renderOgImage({
         </div>
         <div
           style={{
+            display: "block",
+            lineClamp: 2,
             fontSize: 30,
             lineHeight: 1.45,
             color: colors.muted,
-            lineClamp: 2,
-            display: "block",
           }}
         >
           {description}
         </div>
       </div>
 
-      {code?.length ? (
+      {code ? (
         <div
           style={{
             display: "flex",
@@ -135,8 +126,8 @@ export async function renderOgImage({
             gap: 6,
             padding: "18px 24px",
             borderRadius: 14,
-            backgroundColor: colors.surface,
             border: `1px solid ${colors.line}`,
+            backgroundColor: colors.surface,
             fontFamily: "Geist Mono",
             fontSize: 24,
             color: colors.primary,
@@ -154,10 +145,18 @@ export async function renderOgImage({
             color: colors.muted,
           }}
         >
-          {footer ?? "zagjs.com"}
+          {footer}
         </div>
       )}
     </div>,
-    { ...ogSize, fonts },
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        { name: "Wix Madefor Text", data: regular, weight: 400 },
+        { name: "Wix Madefor Text", data: semibold, weight: 600 },
+        { name: "Geist Mono", data: mono, weight: 400 },
+      ],
+    },
   )
 }

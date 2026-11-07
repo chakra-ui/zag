@@ -10,25 +10,33 @@ const sections = {
   blog: { label: "Blog", docs: posts },
 }
 
-function getSelectors(slug: string) {
-  let doc: Record<string, Record<string, string>>
+function findDataAttrs(slug: string) {
   try {
-    doc = getDataAttrDoc(slug as DataAttrDocKey)
+    return getDataAttrDoc(slug as DataAttrDocKey)
   } catch {
     return undefined
   }
-  const attrs = doc.Trigger ?? doc.Root ?? Object.values(doc)[0]
-  if (!attrs) return undefined
-  const entries = Object.entries(attrs)
-  const part = entries.find(([name]) => name.startsWith(`data-${slug}-`))
+}
+
+function getSelectors(slug: string) {
+  const doc = findDataAttrs(slug)
+  if (!doc) return undefined
+
+  const attrs = Object.entries(
+    doc.Trigger ?? doc.Root ?? Object.values(doc)[0] ?? {},
+  )
+  const part = attrs.find(([name]) => name.startsWith(`data-${slug}-`))
   const state =
-    entries.find(([name]) => name === "data-state") ??
-    entries.find(([, desc]) => desc.startsWith("Present when"))
+    attrs.find(([name]) => name === "data-state") ??
+    attrs.find(([, desc]) => desc.startsWith("Present when"))
   const value = state?.[1].match(/"([^"]+)"/)?.[1]
-  return [
+
+  const selectors = [
     part && `[${part[0]}]`,
-    state && (value ? `[${state[0]}="${value}"]` : `[${state[0]}]`),
-  ].filter((line): line is string => !!line)
+    state && `[${state[0]}${value ? `="${value}"` : ""}]`,
+  ].filter((selector) => selector !== undefined)
+
+  return selectors.length ? selectors : undefined
 }
 
 export const dynamic = "force-static"
