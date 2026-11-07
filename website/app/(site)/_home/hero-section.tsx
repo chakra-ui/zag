@@ -1,4 +1,5 @@
 import Link from "next/link"
+import siteConfig from "site.config"
 import { cx } from "styled-system/css"
 import { HeroMachine } from "./hero-machine"
 import { button, buttonSolid, h1, wrap } from "./home.css"
@@ -38,13 +39,8 @@ export function HeroSection() {
         />
         <path d={markPath} fill="none" strokeWidth="19" />
       </svg>
-      <h1 className={cx(h1, heroTitle)}>
-        Accessible components for any framework
-      </h1>
-      <p className={heroLede}>
-        60+ components with keyboard, focus and screen reader support built in.
-        Use them in React, Vue, Solid, Svelte or Preact, with your own styles
-      </p>
+      <h1 className={cx(h1, heroTitle)}>{siteConfig.hero.title}</h1>
+      <p className={heroLede}>{siteConfig.hero.description}</p>
       <div className={heroActions}>
         <Link className={buttonSolid} href="/overview/introduction">
           Get started

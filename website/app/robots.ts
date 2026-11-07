@@ -15,8 +15,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // share images and JSON endpoints aren't pages
-      disallow: ["/og/", "/api/", "/search.json"],
+      disallow: ["/api/", "/search.json"],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
     host: siteConfig.url,
