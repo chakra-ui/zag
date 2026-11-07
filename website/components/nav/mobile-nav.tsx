@@ -12,6 +12,7 @@ import { tabs as docsTabs } from "sidebar.config"
 import siteConfig from "site.config"
 import { cx } from "styled-system/css"
 import { FrameworkSelect } from "../docs/framework-select"
+import { Presence } from "../docs/presence"
 import { Sidebar } from "../docs/sidebar"
 import { LogoWithLink } from "../logo"
 import { navCluster, navControl } from "./control"
@@ -67,67 +68,67 @@ export function MobileNav(props: { className?: string }) {
         <HiMenu aria-hidden />
       </button>
 
-      {api.open && (
-        <Portal>
-          <div {...api.getPositionerProps()}>
-            <div className={styles.sheet} {...api.getContentProps()}>
-              <div className={styles.bar}>
-                <div className={styles.brand}>
-                  <LogoWithLink />
-                  <VersionSelect />
-                </div>
-                <div className={navCluster}>
-                  <button
-                    ref={initialRef}
-                    type="button"
-                    className={navControl}
-                    {...api.getCloseTriggerProps()}
-                    aria-label="Close menu"
-                  >
-                    <HiX aria-hidden />
-                  </button>
-                </div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <Presence
+            present={api.open}
+            className={styles.sheet}
+            {...api.getContentProps()}
+          >
+            <div className={styles.bar}>
+              <div className={styles.brand}>
+                <LogoWithLink />
+                <VersionSelect />
               </div>
-
-              <div className={styles.body}>
-                <nav aria-label="Main" className={styles.primaryNav}>
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={styles.primaryLink}
-                      aria-current={
-                        link.isActive(pathname) ? "page" : undefined
-                      }
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </nav>
-
-                <div className={styles.divider} />
-                <MobileDocs />
-                <div className={styles.divider} />
-
-                <nav aria-label="Project" className={styles.projectLinks}>
-                  {projectLinks.map(({ label, href, Icon }) => (
-                    <a
-                      key={label}
-                      className={styles.projectLink}
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Icon aria-hidden />
-                      {label}
-                    </a>
-                  ))}
-                </nav>
+              <div className={navCluster}>
+                <button
+                  ref={initialRef}
+                  type="button"
+                  className={navControl}
+                  {...api.getCloseTriggerProps()}
+                  aria-label="Close menu"
+                >
+                  <HiX aria-hidden />
+                </button>
               </div>
             </div>
-          </div>
-        </Portal>
-      )}
+
+            <div className={styles.body}>
+              <nav aria-label="Main" className={styles.primaryNav}>
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={styles.primaryLink}
+                    aria-current={link.isActive(pathname) ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className={styles.divider} />
+              <MobileDocs />
+              <div className={styles.divider} />
+
+              <nav aria-label="Project" className={styles.projectLinks}>
+                {projectLinks.map(({ label, href, Icon }) => (
+                  <a
+                    key={label}
+                    className={styles.projectLink}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon aria-hidden />
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </Presence>
+        </div>
+      </Portal>
     </>
   )
 }

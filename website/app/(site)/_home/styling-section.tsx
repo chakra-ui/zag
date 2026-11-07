@@ -166,6 +166,7 @@ export function StylingSection() {
               {t.name}
             </button>
           ))}
+          <div {...api.getIndicatorProps()} className={styles.toolIndicator} />
         </div>
       </div>
       <div ref={ref} className={styles.stage}>
@@ -173,7 +174,7 @@ export function StylingSection() {
           <div key={t.name} {...api.getContentProps({ value: t.name })}>
             {t.name === tool.name && (
               <div className={styles.panel}>
-                <div className={styles.column}>
+                <div className={styles.column()}>
                   <p className={tierName}>
                     <b>Zag code</b> · spread the props
                   </p>
@@ -191,7 +192,7 @@ export function StylingSection() {
                   </div>
                 </div>
                 <Arrow />
-                <div className={styles.column}>
+                <div className={styles.column({ swap: true })}>
                   <p className={cx(tierName, styles.toolLabel)}>
                     <b>You write</b> ·{" "}
                     <span className={styles.toolName}>
@@ -204,7 +205,7 @@ export function StylingSection() {
                   </div>
                 </div>
                 <Arrow />
-                <div className={styles.column}>
+                <div className={styles.column()}>
                   <p className={tierName}>
                     <b>You get</b> · the same slider
                   </p>

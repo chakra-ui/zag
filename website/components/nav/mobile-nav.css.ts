@@ -1,4 +1,12 @@
-import { css } from "styled-system/css"
+import { css, keyframes } from "styled-system/css"
+
+const sheetIn = keyframes({
+  from: { opacity: "0", transform: "translateY(-8px)" },
+})
+
+const sheetOut = keyframes({
+  to: { opacity: "0", transform: "translateY(-8px)" },
+})
 
 const focusRing = {
   outline: "2px solid {colors.primary}",
@@ -17,6 +25,10 @@ export const sheet = css({
   overscrollBehavior: "contain",
   bg: "canvas",
   outline: "0",
+  _motionSafe: {
+    _open: { animation: `${sheetIn} 200ms cubic-bezier(0.2, 0.8, 0.2, 1)` },
+    _closed: { animation: `${sheetOut} 140ms ease-in` },
+  },
 })
 
 export const bar = css({
