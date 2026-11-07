@@ -26,53 +26,56 @@ Some adapters need a newer framework:
 Search your code for each v1 name. Sections below cover changes that need more
 than a rename.
 
-| Package                                  | v1                                            | v2                                                    |
-| ---------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
-| All                                      | `[data-scope="x"][data-part="y"]`             | `[data-x-y]`                                          |
-| All                                      | `parts.y.attrs`                               | `parts.y.attrs(id)`                                   |
-| Async list                               | `initialFilterText`                           | `initialFilter`                                       |
-| Async list                               | `initialSortDescriptor`                       | `initialSorting`                                      |
-| Async list                               | `filterText`, `sortDescriptor` in `load`      | `filter`, `sorting`                                   |
-| Async list                               | `api.setFilterText()`                         | `api.setFilter()`                                     |
-| Async list                               | `api.sort()`                                  | `api.setSorting()`                                    |
-| Async list                               | `api.filterText`                              | `api.filter`                                          |
-| Async list                               | `api.sortDescriptor`                          | `api.sorting`                                         |
-| Async list                               | `api.sorting` (boolean)                       | `api.isSorting`                                       |
-| Async list                               | `api.loading`                                 | `api.isLoading`                                       |
-| Async list                               | `api.empty`                                   | `api.isEmpty`                                         |
-| Async list                               | `descriptor`, `filterText` in `sort`          | `sorting`, `filter`                                   |
-| Carousel                                 | `slideCount`                                  | `count`                                               |
-| Carousel                                 | `autoplay`                                    | `autoPlay`                                            |
-| Carousel                                 | `padding`                                     | `itemSpacing`                                         |
-| Carousel                                 | `api.scrollPrev()`                            | `api.scrollPrevious()`                                |
-| Carousel                                 | `api.canScrollPrev`                           | `api.canScrollPrevious`                               |
-| Carousel, date picker, steps, pagination | `getPrevTriggerProps()`                       | `getPreviousTriggerProps()`                           |
-| Carousel, date picker, steps, pagination | `[data-*-prev-trigger]`                       | `[data-*-previous-trigger]`                           |
-| Carousel, date picker, steps, pagination | `ids.prevTrigger`, `translations.prevTrigger` | `ids.previousTrigger`, `translations.previousTrigger` |
-| Combobox                                 | `disableLayer`                                | `inline`                                              |
-| Combobox, menu, select                   | `composite: false`                            | `popupType: "dialog"`                                 |
-| Combobox, select, cascade select         | `api.setHighlightValue(v)`                    | `api.setHighlightedValue(v)`                          |
-| Combobox, select, cascade select         | `api.clearHighlightValue()`                   | `api.setHighlightedValue(null)`                       |
-| Date picker                              | `api.goToPrev()`                              | `api.goToPrevious()`                                  |
-| Floating panel                           | `resizeTriggerAxes`                           | `resizeTriggerPlacements`                             |
-| Floating panel                           | `ResizeTriggerProps.axis`, `data-axis`        | `placement`, `data-placement`                         |
-| Floating panel                           | `ResizeTriggerAxis`                           | `HandlePosition`                                      |
-| Image cropper                            | `handles`                                     | `placements`                                          |
-| Image cropper                            | `HandleProps.position`, `data-position`       | `placement`, `data-placement`                         |
-| Listbox                                  | `api.highlightValue(v)`                       | `api.setHighlightedValue(v)`                          |
-| Pagination                               | `api.goToPrevPage()`                          | `api.goToPreviousPage()`                              |
-| Pagination                               | `translations.prevTriggerLabel`               | `translations.previousTriggerLabel`                   |
-| Pin input                                | `sanitizeValue`                               | `normalizeValue`                                      |
-| Radio group, tabs                        | `data-ssr`                                    | `data-indicator-pending`                              |
-| Slider                                   | `aria-label` (array)                          | `getAriaLabel`                                        |
-| Slider                                   | `aria-labelledby` (array)                     | `getAriaLabelledBy`                                   |
-| Steps                                    | `api.goToPrevStep()`, `api.hasPrevStep`       | `api.goToPreviousStep()`, `api.hasPreviousStep`       |
-| Tabs                                     | `composite: false`                            | `virtualFocus: true`                                  |
-| Tabs                                     | `api.selectPrev()`                            | `api.selectPrevious()`                                |
-| Toggle, toggle group                     | `data-state="on"`                             | `data-pressed`                                        |
-| Tour                                     | `api.prev()`, `api.hasPrevStep`               | `api.previous()`, `api.hasPreviousStep`               |
-| Tour                                     | `action: "prev"`, `actions.prev()`            | `action: "previous"`, `actions.previous()`            |
-| Tour                                     | `translations.prevStep`                       | `translations.previousStep`                           |
+| Package                                             | v1                                            | v2                                                    |
+| --------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| All                                                 | `[data-scope="x"][data-part="y"]`             | `[data-x-y]`                                          |
+| All                                                 | `parts.y.attrs`                               | `parts.y.attrs(id)`                                   |
+| Async list                                          | `initialFilterText`                           | `initialFilter`                                       |
+| Async list                                          | `initialSortDescriptor`                       | `initialSorting`                                      |
+| Async list                                          | `filterText`, `sortDescriptor` in `load`      | `filter`, `sorting`                                   |
+| Async list                                          | `api.setFilterText()`                         | `api.setFilter()`                                     |
+| Async list                                          | `api.sort()`                                  | `api.setSorting()`                                    |
+| Async list                                          | `api.filterText`                              | `api.filter`                                          |
+| Async list                                          | `api.sortDescriptor`                          | `api.sorting`                                         |
+| Async list                                          | `api.sorting` (boolean)                       | `api.isSorting`                                       |
+| Async list                                          | `api.loading`                                 | `api.isLoading`                                       |
+| Async list                                          | `api.empty`                                   | `api.isEmpty`                                         |
+| Async list                                          | `descriptor`, `filterText` in `sort`          | `sorting`, `filter`                                   |
+| Carousel                                            | `slideCount`                                  | `count`                                               |
+| Carousel                                            | `autoplay`                                    | `autoPlay`                                            |
+| Carousel                                            | `padding`                                     | `itemSpacing`                                         |
+| Carousel                                            | `api.scrollPrev()`                            | `api.scrollPrevious()`                                |
+| Carousel                                            | `api.canScrollPrev`                           | `api.canScrollPrevious`                               |
+| Carousel, date picker, pagination, scheduler, steps | `getPrevTriggerProps()`                       | `getPreviousTriggerProps()`                           |
+| Carousel, date picker, pagination, scheduler, steps | `[data-*-prev-trigger]`                       | `[data-*-previous-trigger]`                           |
+| Carousel, date picker, pagination, scheduler, steps | `ids.prevTrigger`, `translations.prevTrigger` | `ids.previousTrigger`, `translations.previousTrigger` |
+| Color picker                                        | `api.gamutOverlay`                            | `api.getGamutOverlay(props)`                          |
+| Combobox                                            | `disableLayer`                                | `inline`                                              |
+| Combobox                                            | `scrollContentToTop`                          | `scrollToTop`                                         |
+| Combobox, menu, select                              | `composite: false`                            | `popupType: "dialog"`                                 |
+| Combobox, select, cascade select                    | `api.setHighlightValue(v)`                    | `api.setHighlightedValue(v)`                          |
+| Combobox, select, cascade select                    | `api.clearHighlightValue()`                   | `api.setHighlightedValue(null)`                       |
+| Date picker, scheduler                              | `api.goToPrev()`                              | `api.goToPrevious()`                                  |
+| Floating panel                                      | `resizeTriggerAxes`                           | `resizeTriggerPlacements`                             |
+| Floating panel                                      | `ResizeTriggerProps.axis`, `data-axis`        | `placement`, `data-placement`                         |
+| Floating panel                                      | `ResizeTriggerAxis`                           | `HandlePosition`                                      |
+| Image cropper                                       | `handles`                                     | `placements`                                          |
+| Image cropper                                       | `HandleProps.position`, `data-position`       | `placement`, `data-placement`                         |
+| Listbox                                             | `api.highlightValue(v)`                       | `api.setHighlightedValue(v)`                          |
+| Pagination                                          | `api.goToPrevPage()`                          | `api.goToPreviousPage()`                              |
+| Pagination, scheduler                               | `translations.prevTriggerLabel`               | `translations.previousTriggerLabel`                   |
+| Pin input                                           | `sanitizeValue`                               | `normalizeValue`                                      |
+| Radio group, tabs                                   | `data-ssr`                                    | `data-indicator-pending`                              |
+| Slider                                              | `aria-label` (array)                          | `getAriaLabel`                                        |
+| Slider                                              | `aria-labelledby` (array)                     | `getAriaLabelledBy`                                   |
+| Steps                                               | `api.goToPrevStep()`, `api.hasPrevStep`       | `api.goToPreviousStep()`, `api.hasPreviousStep`       |
+| Tabs                                                | `composite: false`                            | `virtualFocus: true`                                  |
+| Tabs                                                | `api.selectPrev()`                            | `api.selectPrevious()`                                |
+| Toggle, toggle group                                | `data-state="on"`                             | `data-pressed`                                        |
+| Tour                                                | `api.prev()`, `api.hasPrevStep`               | `api.previous()`, `api.hasPreviousStep`               |
+| Tour                                                | `action: "prev"`, `actions.prev()`            | `action: "previous"`, `actions.previous()`            |
+| Tour                                                | `translations.prevStep`                       | `translations.previousStep`                           |
+| Tree view                                           | `api.getCellProps()`                          | `api.getNodeCellProps()`                              |
 
 Steps has its own table in [Steps](#steps).
 
@@ -232,6 +235,19 @@ CSS, and skip it while `data-instant` is set.
 [data-tabs-indicator]:not([data-instant]) {
   transition: all 150ms ease;
 }
+```
+
+## Scheduler
+
+Dates in the scheduler API are `CalendarDateTime` instead of `DateValue`, since
+the scheduler always works in wall-clock time. Convert zoned or date-only values
+before passing them in.
+
+```diff
+- import { parseZonedDateTime } from "@internationalized/date"
+- start: parseZonedDateTime("2026-03-02T09:00[America/New_York]")
++ import { parseDateTime } from "@internationalized/date"
++ start: parseDateTime("2026-03-02T09:00")
 ```
 
 ## Select
