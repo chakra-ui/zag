@@ -29,7 +29,6 @@ export const toolTabs = css({
   gap: "4px",
 })
 
-// Zag's tabs indicator measures the selected trigger and sets --top/--width/--height
 export const toolIndicator = css({
   top: "var(--top)",
   width: "var(--width)",
@@ -59,7 +58,6 @@ export const toolTab = css({
   font: "500 14px {fonts.body}",
   transition: "color 0.2s",
   _selected: { color: "ink" },
-  // Paints the pill on the trigger until the indicator is measured
   "&[data-indicator-pending]": {
     _selected: { bg: "surface", boxShadow: "0 0 0 1px {colors.line}" },
   },
@@ -111,7 +109,6 @@ export const column = cva({
     minWidth: "0",
   },
   variants: {
-    // Replays on each tab switch, since the panel remounts
     swap: {
       true: { _motionSafe: { animation: `${swapIn} 0.35s ${ease} both` } },
     },
