@@ -133,7 +133,7 @@ export const machine = createMachine<AccordionSchema>({
 
         return () => {
           frameCleanup()
-          revertTimer.clear()
+          revertTimer.cancel()
           revertFrame.cancel()
         }
       },

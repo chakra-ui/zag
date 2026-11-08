@@ -247,7 +247,7 @@ export const machine = createMachine<CollapsibleSchema>({
         return () => {
           active = false
           frameCleanup()
-          revertTimer.clear()
+          revertTimer.cancel()
           revertFrame.cancel()
         }
       },

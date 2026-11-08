@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { setElementValue } from "@zag-js/dom-query"
-import { setRafTimeout } from "@zag-js/utils"
+import { setElementValue, Timeout } from "@zag-js/dom-query"
 import * as dom from "./clipboard.dom"
 import type { ClipboardSchema } from "./clipboard.types"
 
@@ -75,9 +74,9 @@ export const machine = createMachine<ClipboardSchema>({
   implementations: {
     effects: {
       waitForTimeout({ prop, send }) {
-        return setRafTimeout(() => {
-          send({ type: "COPY.DONE" })
-        }, prop("timeout"))
+        const timeout = Timeout.create()
+        timeout.start(prop("timeout"), () => send({ type: "COPY.DONE" }))
+        return timeout.cancel
       },
     },
     actions: {

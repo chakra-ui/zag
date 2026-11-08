@@ -1,6 +1,6 @@
 import { createMachine, type Params } from "@zag-js/core"
-import { observeChildren, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
-import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
+import { observeChildren, resizeObserverBorderBox, Timeout, trackPointerMove } from "@zag-js/dom-query"
+import { ensure, ensureProps, isEqual, next, prev } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
 import type { CursorState, ResizeTriggerId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
@@ -290,9 +290,9 @@ export const machine = createMachine<SplitterSchema>({
         })
       },
       waitForHoverDelay: ({ send }) => {
-        return setRafTimeout(() => {
-          send({ type: "HOVER_DELAY" })
-        }, 250)
+        const timeout = Timeout.create()
+        timeout.start(250, () => send({ type: "HOVER_DELAY" }))
+        return timeout.cancel
       },
       trackPointerMove: ({ scope, send }) => {
         const doc = scope.getDoc()

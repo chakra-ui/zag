@@ -1,5 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
-import { clampValue, setRafInterval, setRafTimeout } from "@zag-js/utils"
+import { AnimationFrameInterval, raf } from "@zag-js/dom-query"
+import { clampValue } from "@zag-js/utils"
 import type { Time, TimerProps, TimerSchema } from "./timer.types"
 
 export const machine = createMachine<TimerSchema>({
@@ -107,14 +108,12 @@ export const machine = createMachine<TimerSchema>({
   implementations: {
     effects: {
       keepTicking({ prop, send }) {
-        return setRafInterval(({ deltaMs }) => {
-          send({ type: "TICK", deltaMs })
-        }, prop("interval"))
+        const interval = AnimationFrameInterval.create()
+        interval.start(prop("interval"), (deltaMs) => send({ type: "TICK", deltaMs }))
+        return interval.cancel
       },
       waitForNextTick({ send }) {
-        return setRafTimeout(() => {
-          send({ type: "CONTINUE" })
-        }, 0)
+        return raf(() => send({ type: "CONTINUE" }))
       },
     },
 

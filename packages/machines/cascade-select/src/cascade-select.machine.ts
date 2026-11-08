@@ -1010,11 +1010,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         })
       },
       clearGraceArea({ context, refs }) {
-        refs.get("graceAreaTimeout").clear()
+        refs.get("graceAreaTimeout").cancel()
         context.set("graceArea", null)
       },
       cancelGraceAreaTimeout({ refs }) {
-        refs.get("graceAreaTimeout").clear()
+        refs.get("graceAreaTimeout").cancel()
       },
       setHighlightingForHoveredItem(params) {
         const { prop, event } = params

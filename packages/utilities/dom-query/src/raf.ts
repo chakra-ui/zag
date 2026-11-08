@@ -14,7 +14,7 @@ export class AnimationFrame {
     })
   }
 
-  cancel() {
+  cancel = () => {
     if (this.id !== null) {
       globalThis.cancelAnimationFrame(this.id)
       this.id = null
