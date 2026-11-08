@@ -1,0 +1,124 @@
+.body-scroller,
+.nested,
+.scrollbar-gutter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.body-scroller .hint,
+.nested .hint,
+.scrollbar-gutter .hint {
+  margin: 0;
+  font-size: var(--z-text-md);
+  color: var(--z-fg-muted);
+}
+
+/* The playground clips <html> and <body>. These rules hand the page back its own document scroll */
+
+/* <body> is the scroller: <html> must not be one, so the lock falls through to <body> */
+html:has(.pg):has(.body-scroller) {
+  overflow: visible;
+}
+
+body:has(.pg):has(.body-scroller) {
+  overflow: auto;
+}
+
+/* <html> is the scroller, with a classic scrollbar that takes layout space */
+html:has(.pg):is(:has(.nested), :has(.scrollbar-gutter)) {
+  overflow: auto;
+}
+
+body:has(.pg):is(:has(.nested), :has(.scrollbar-gutter)) {
+  overflow: visible;
+}
+
+html:has(.pg):has(.scrollbar-gutter) {
+  scrollbar-gutter: stable;
+}
+
+/* Tall tail after the canvas, so the document overflows its viewport */
+body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::after {
+  content: "";
+  display: block;
+  height: 1600px;
+  background: repeating-linear-gradient(180deg, var(--z-bg-subtle) 0 80px, var(--z-bg-muted) 80px 160px);
+}
+
+/* Panels */
+
+.body-scroller .backdrop,
+.nested .backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: rgb(9 9 11 / 0.28);
+}
+
+.body-scroller .panel,
+.nested .panel {
+  position: fixed;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--z-bg);
+  color: var(--z-fg);
+  border: 1px solid var(--z-border);
+  box-shadow: var(--z-shadow-lg);
+}
+
+.body-scroller .panel,
+.nested .sheet {
+  top: var(--pg-topbar-h);
+  bottom: 0;
+  left: 0;
+  width: 18rem;
+}
+
+.nested .confirm {
+  top: 9rem;
+  left: 10rem;
+  z-index: 4;
+  width: 16rem;
+  border-radius: var(--z-radius-lg);
+}
+
+.nested .backdrop[data-layer="confirm"] {
+  z-index: 3;
+}
+
+.body-scroller .panel p,
+.nested .panel p {
+  margin: 0;
+}
+
+.body-scroller .panel-title,
+.nested .panel-title {
+  font-weight: 600;
+}
+
+.nested .row {
+  display: flex;
+  gap: 8px;
+}
+
+/* Full-width header: it follows the page's content width, so a lock that eats the gutter would resize it */
+
+.scrollbar-gutter {
+  max-width: none;
+}
+
+.scrollbar-gutter .header {
+  align-self: stretch;
+  padding: 10px 16px;
+  background: var(--z-bg-inverted);
+  color: var(--z-fg-inverted);
+  border-radius: var(--z-radius);
+  font-weight: 600;
+}

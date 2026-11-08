@@ -105,7 +105,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "scroll-lock",
     label: "Scroll Lock",
-    examples: [{ slug: "html-scroller", title: "HTML Scroll Container" }],
+    examples: [
+      { slug: "html-scroller", title: "HTML Scroll Container" },
+      { slug: "body-scroller", title: "Body Scroll Container" },
+      { slug: "nested", title: "Nested" },
+      { slug: "scrollbar-gutter", title: "Scrollbar Gutter" },
+    ],
   },
   {
     slug: "async-list",
