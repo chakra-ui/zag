@@ -828,7 +828,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "segment-control",
     label: "Segment Control",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "icon-only", title: "Icon Only" },
+      { slug: "time-range", title: "Time Range" },
+      { slug: "vertical", title: "Vertical" },
+    ],
   },
   {
     slug: "splitter",

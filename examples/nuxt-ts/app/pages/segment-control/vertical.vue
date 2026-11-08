@@ -1,0 +1,48 @@
+<script setup lang="ts">
+import * as radio from "@zag-js/radio-group"
+import { settingsSections } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { useId } from "vue"
+import "@styles/segmented-control.css"
+import "@styles/radio-group.css"
+
+const service = useMachine(radio.machine, {
+  id: useId(),
+  name: "section",
+  orientation: "vertical",
+  defaultValue: "profile",
+})
+
+const api = computed(() => radio.connect(service, normalizeProps))
+const section = computed(() => settingsSections.find((s) => s.id === api.value.value) ?? settingsSections[0]!)
+</script>
+
+<template>
+  <main>
+    <div class="segmented-control settings-nav">
+      <p class="hint">Focus a section and press the up and down arrows.</p>
+      <div class="layout">
+        <div v-bind="api.getRootProps()">
+          <div v-bind="api.getIndicatorProps()" />
+          <label
+            v-for="opt in settingsSections"
+            :key="opt.id"
+            :data-testid="`radio-${opt.id}`"
+            v-bind="api.getItemProps({ value: opt.id })"
+          >
+            <span v-bind="api.getItemTextProps({ value: opt.id })">{{ opt.label }}</span>
+            <input v-bind="api.getItemHiddenInputProps({ value: opt.id })" />
+          </label>
+        </div>
+        <div class="panel" data-testid="panel">
+          <p class="title">{{ section.label }}</p>
+          <p class="description">{{ section.description }}</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Toolbar viz>
+    <StateVisualizer :state="service" />
+  </Toolbar>
+</template>

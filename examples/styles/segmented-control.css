@@ -58,3 +58,127 @@
     transition: none;
   }
 }
+
+/* Layout shared by the time-range, icon-only and settings-nav examples */
+.time-range,
+.icon-only,
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 24rem;
+}
+
+.settings-nav {
+  max-width: 32rem;
+}
+
+.time-range .hint,
+.icon-only .hint,
+.settings-nav .hint {
+  margin: 0;
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+}
+
+.time-range [data-radio-group-root],
+.icon-only [data-radio-group-root] {
+  align-self: flex-start;
+}
+
+/* time-range: bars driven by the selected range */
+.time-range .chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+}
+
+.time-range .bar {
+  flex: 1;
+  min-height: 2px;
+  border-radius: var(--z-radius-sm) var(--z-radius-sm) 0 0;
+  background: var(--z-fg-muted);
+}
+
+.time-range .caption {
+  margin: 0;
+  font-size: var(--z-text-md);
+}
+
+/* icon-only: square items with an inline icon */
+.icon-only [data-radio-group-item] {
+  width: 32px;
+  padding: 0;
+}
+
+.icon-only svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.icon-only .preview {
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--z-radius);
+  background: var(--z-bg-muted);
+  font-size: var(--z-text-md);
+  line-height: 1.5;
+}
+
+.icon-only .preview[data-align="center"] {
+  text-align: center;
+}
+
+.icon-only .preview[data-align="right"] {
+  text-align: right;
+}
+
+.icon-only .preview[data-align="justify"] {
+  text-align: justify;
+}
+
+/* settings-nav: vertical items beside a content panel */
+.settings-nav .layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.settings-nav [data-radio-group-root] {
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  width: 9rem;
+}
+
+.settings-nav [data-radio-group-item] {
+  justify-content: flex-start;
+}
+
+.settings-nav .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--z-text-md);
+}
+
+.settings-nav .panel .title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.settings-nav .panel .description {
+  margin: 0;
+  color: var(--z-fg-muted);
+}
+
+.time-range .actions {
+  display: flex;
+  gap: 8px;
+}
