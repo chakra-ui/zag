@@ -87,9 +87,7 @@
   /* Sizing */
   --z-control-h: 34px;
   --z-control-h-sm: 28px;
-  --z-font-sans:
-    var(--font-sans, "Wix Madefor Text"), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", sans-serif;
+  --z-font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --z-font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --z-text-xs: 12px;
   --z-text-sm: 13px;
