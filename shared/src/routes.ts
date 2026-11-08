@@ -341,6 +341,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "with-menu", title: "With Menu" },
       { slug: "with-tooltip", title: "With Tooltip" },
+      { slug: "status", title: "Load Status" },
     ],
   },
   {

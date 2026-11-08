@@ -34,6 +34,7 @@ export const routes: RouteDefinition[] = [
   { path: "/avatar/basic", component: lazy(() => import("./pages/avatar/basic")) },
   { path: "/avatar/with-menu", component: lazy(() => import("./pages/avatar/with-menu")) },
   { path: "/avatar/with-tooltip", component: lazy(() => import("./pages/avatar/with-tooltip")) },
+  { path: "/avatar/status", component: lazy(() => import("./pages/avatar/status")) },
   { path: "/carousel/auto-size", component: lazy(() => import("./pages/carousel/auto-size")) },
   { path: "/carousel/basic", component: lazy(() => import("./pages/carousel/basic")) },
   { path: "/carousel/dialog", component: lazy(() => import("./pages/carousel/dialog")) },

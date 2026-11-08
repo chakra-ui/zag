@@ -1,14 +1,21 @@
-import { observeAttributes, observeChildren } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
+import { createSharedMutationObserver } from "@zag-js/dom-query"
 import type { AvatarSchema } from "./avatar.types"
 import * as dom from "./avatar.dom"
+
+// Watches the whole subtree, so a replaced or wrapped image is still tracked
+const imageObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["src", "srcset"],
+})
 
 export const machine = createMachine<AvatarSchema>({
   initialState() {
     return "loading"
   },
 
-  effects: ["trackImageRemoval", "trackSrcChange"],
+  effects: ["trackImage"],
 
   on: {
     "src.change": {
@@ -72,28 +79,24 @@ export const machine = createMachine<AvatarSchema>({
     },
 
     effects: {
-      trackImageRemoval({ send, scope }) {
+      trackImage({ send, scope }) {
         const rootEl = dom.getRootEl(scope)
-        return observeChildren(rootEl, {
-          callback(records) {
-            const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
-            const removed = removedNodes.find(
-              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-avatar-image]"),
-            )
-            if (removed) {
-              send({ type: "img.unmount" })
-            }
-          },
-        })
-      },
+        if (!rootEl) return
 
-      trackSrcChange({ send, scope }) {
-        const imageEl = dom.getImageEl(scope)
-        return observeAttributes(imageEl, {
-          attributes: ["src", "srcset"],
-          callback() {
-            send({ type: "src.change" })
-          },
+        let imageEl = dom.getImageEl(scope)
+
+        return imageObserver.observe(rootEl, (records) => {
+          const nextEl = dom.getImageEl(scope)
+          const prevEl = imageEl
+          imageEl = nextEl
+
+          if (!nextEl) {
+            if (prevEl) send({ type: "img.unmount" })
+            return
+          }
+
+          const srcChanged = records.some((record) => record.type === "attributes" && record.target === nextEl)
+          if (nextEl !== prevEl || srcChanged) send({ type: "src.change" })
         })
       },
     },

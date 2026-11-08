@@ -108,7 +108,7 @@ const components = {
       component={Avatar}
       defaultProps={{
         name: "Segun Adebayo",
-        src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
+        src: "https://randomuser.me/api/portraits/men/32.jpg",
       }}
     />
   ),

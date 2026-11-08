@@ -37,7 +37,7 @@ export interface AvatarSchema {
   defaultPropKey: never
   context: any
   initial: "loading"
-  effect: "trackImageRemoval" | "trackSrcChange"
+  effect: "trackImage"
   action: "invokeOnLoad" | "invokeOnError" | "checkImageStatus"
   event:
     | { type: "img.loaded"; src?: string | undefined }
