@@ -29,34 +29,40 @@
   })
 </script>
 
-<main class="prevent-dismiss">
-  <button
-    bind:this={triggerRef}
-    data-testid="trigger"
-    onclick={() => {
-      blocked = false
-      open = !open
-    }}
-  >
-    Reply to Ama
-  </button>
+<main>
+  <div class="prevent-dismiss">
+    <button
+      bind:this={triggerRef}
+      data-testid="trigger"
+      onclick={() => {
+        if (open && draft) {
+          blocked = true
+          return
+        }
+        blocked = false
+        open = !open
+      }}
+    >
+      Reply to Ama
+    </button>
 
-  <div bind:this={panelRef} hidden={!open} role="dialog" aria-label="Reply" data-testid="panel" class="panel">
-    <label for="reply">Your reply</label>
-    <textarea
-      id="reply"
-      data-testid="reply"
-      value={draft}
-      oninput={(event) => {
-        draft = event.currentTarget.value
-        if (!draft) blocked = false
-      }}></textarea>
-    <p role="status" data-testid="hint" class="hint">
-      {blocked ? "Your reply is not sent yet. Clear it to close this panel." : ""}
+    <div bind:this={panelRef} hidden={!open} role="dialog" aria-label="Reply" data-testid="panel" class="panel">
+      <label for="reply">Your reply</label>
+      <textarea
+        id="reply"
+        data-testid="reply"
+        value={draft}
+        oninput={(event) => {
+          draft = event.currentTarget.value
+          if (!draft) blocked = false
+        }}></textarea>
+      <p role="status" data-testid="hint" class="hint">
+        {blocked ? "Your reply is not sent yet. Clear it to close this panel." : ""}
+      </p>
+    </div>
+
+    <p data-testid="outside">
+      Ama asked whether the Lagos shipment will arrive before the 14th. Click here to try closing the reply.
     </p>
   </div>
-
-  <p data-testid="outside">
-    Ama asked whether the Lagos shipment will arrive before the 14th. Click here to try closing the reply.
-  </p>
 </main>

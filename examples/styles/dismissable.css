@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
+  width: 100%;
   max-width: 480px;
 }
 

@@ -23,6 +23,17 @@ test.describe("dismissable prevent-dismiss", () => {
     await expect(page.getByTestId("hint")).not.toHaveText("")
   })
 
+  test("should stay open when the trigger is clicked while the reply is dirty", async ({ page }) => {
+    await page.getByTestId("reply").fill("Yes, it ships on the 12th.")
+    await page.getByTestId("trigger").click()
+    await expect(page.getByTestId("panel")).toBeVisible()
+    await expect(page.getByTestId("hint")).not.toHaveText("")
+
+    await page.getByTestId("reply").fill("")
+    await page.getByTestId("trigger").click()
+    await expect(page.getByTestId("panel")).toBeHidden()
+  })
+
   test("should close on outside click once the reply is cleared", async ({ page }) => {
     await page.getByTestId("reply").fill("Draft")
     await page.getByTestId("reply").fill("")

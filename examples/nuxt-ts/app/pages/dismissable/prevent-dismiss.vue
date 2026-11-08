@@ -33,6 +33,10 @@ watchEffect(
 )
 
 function toggle() {
+  if (open.value && draft.value) {
+    blocked.value = true
+    return
+  }
   blocked.value = false
   open.value = !open.value
 }
@@ -44,19 +48,21 @@ function onInput(event: Event) {
 </script>
 
 <template>
-  <main class="prevent-dismiss">
-    <button ref="triggerRef" data-testid="trigger" @click="toggle">Reply to Ama</button>
+  <main>
+    <div class="prevent-dismiss">
+      <button ref="triggerRef" data-testid="trigger" @click="toggle">Reply to Ama</button>
 
-    <div ref="panelRef" :hidden="!open" role="dialog" aria-label="Reply" data-testid="panel" class="panel">
-      <label for="reply">Your reply</label>
-      <textarea id="reply" data-testid="reply" :value="draft" @input="onInput" />
-      <p role="status" data-testid="hint" class="hint">
-        {{ blocked ? "Your reply is not sent yet. Clear it to close this panel." : "" }}
+      <div ref="panelRef" :hidden="!open" role="dialog" aria-label="Reply" data-testid="panel" class="panel">
+        <label for="reply">Your reply</label>
+        <textarea id="reply" data-testid="reply" :value="draft" @input="onInput" />
+        <p role="status" data-testid="hint" class="hint">
+          {{ blocked ? "Your reply is not sent yet. Clear it to close this panel." : "" }}
+        </p>
+      </div>
+
+      <p data-testid="outside">
+        Ama asked whether the Lagos shipment will arrive before the 14th. Click here to try closing the reply.
       </p>
     </div>
-
-    <p data-testid="outside">
-      Ama asked whether the Lagos shipment will arrive before the 14th. Click here to try closing the reply.
-    </p>
   </main>
 </template>

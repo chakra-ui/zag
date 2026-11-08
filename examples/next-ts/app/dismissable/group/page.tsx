@@ -43,16 +43,18 @@ function PeerPanel(props: { id: string; label: string; children: React.ReactNode
 
 export default function Page() {
   return (
-    <main className="group">
-      <div className="row">
-        <PeerPanel id="a" label="Notifications">
-          <p>2 new comments on your pull request.</p>
-        </PeerPanel>
-        <PeerPanel id="b" label="Account">
-          <p>Signed in as ama@example.com.</p>
-        </PeerPanel>
+    <main>
+      <div className="group">
+        <div className="row">
+          <PeerPanel id="a" label="Notifications">
+            <p>2 new comments on your pull request.</p>
+          </PeerPanel>
+          <PeerPanel id="b" label="Account">
+            <p>Signed in as ama@example.com.</p>
+          </PeerPanel>
+        </div>
+        <p data-testid="outside">Open both panels, then press Escape twice. The last one opened closes first.</p>
       </div>
-      <p data-testid="outside">Open both panels, then press Escape twice. The last one opened closes first.</p>
     </main>
   )
 }
