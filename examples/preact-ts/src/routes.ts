@@ -464,6 +464,7 @@ export const routes: RouteDefinition[] = [
   { path: "/tabs/basic", component: lazy(() => import("./pages/tabs/basic")) },
   { path: "/tabs/disabled", component: lazy(() => import("./pages/tabs/disabled")) },
   { path: "/tabs/with-link", component: lazy(() => import("./pages/tabs/with-link")) },
+  { path: "/tabs/animated-panels", component: lazy(() => import("./pages/tabs/animated-panels")) },
   { path: "/tags-input/allow-duplicates", component: lazy(() => import("./pages/tags-input/allow-duplicates")) },
   { path: "/tags-input/basic", component: lazy(() => import("./pages/tags-input/basic")) },
   { path: "/tags-input/editable", component: lazy(() => import("./pages/tags-input/editable")) },

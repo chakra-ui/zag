@@ -141,6 +141,44 @@ test.describe("tabs", () => {
     await I.seeTabContent("agnes")
   })
 
+  test("should ignore arrow keys pressed with a modifier", async () => {
+    await I.focusTab("nils")
+    for (const key of ["Alt+ArrowRight", "Control+ArrowRight", "Meta+ArrowRight", "Shift+ArrowRight"]) {
+      await I.pressKey(key)
+    }
+    await I.seeTabIsFocused("nils")
+    await I.seeTabContent("nils")
+  })
+
+  test("should expose the direction of the selected tab", async () => {
+    await I.seeActivationDirection("none")
+
+    await I.clickTab("joke")
+    await I.seeActivationDirection("right")
+
+    await I.clickTab("nils")
+    await I.seeActivationDirection("left")
+  })
+
+  test("vertical: should expose an up or down direction", async () => {
+    await I.controls.select("orientation", "vertical")
+
+    await I.clickTab("joke")
+    await I.seeActivationDirection("down")
+
+    await I.clickTab("nils")
+    await I.seeActivationDirection("up")
+  })
+
+  test("rtl: the direction follows the visual order", async () => {
+    await I.controls.select("dir", "rtl")
+
+    await I.focusTab("nils")
+    await I.pressKey("ArrowLeft")
+    await I.seeTabIsFocused("agnes")
+    await I.seeActivationDirection("left")
+  })
+
   test("loopFocus=false", async () => {
     await I.controls.bool("loopFocus", false)
 
@@ -191,10 +229,46 @@ test.describe("tabs / disabled", () => {
     await I.goto("/tabs/disabled")
   })
 
+  test("a tab added and selected at once gets a direction", async () => {
+    await I.clickButton("Add a tab")
+    await I.seeTabIsSelected("Tab 1")
+    await I.seeActivationDirection("right")
+  })
+
   test("disabling the selected tab moves the tab stop to the first enabled tab", async () => {
     await I.seeTabIsTabStop("nils")
 
     await I.disableSelectedTab()
     await I.seeTabIsTabStop("agnes")
+  })
+})
+
+test.describe("tabs / animated-panels", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TabsModel(page)
+    await I.goto("/tabs/animated-panels")
+  })
+
+  test("should not animate the selected panel on first render", async () => {
+    await I.seePanelIsVisible("Overview")
+    await I.seePanelState("Overview", null)
+  })
+
+  test("should keep the previous panel visible until its exit animation ends", async () => {
+    await I.clickTabByName("Projects")
+    await I.seePanelState("Overview", "closed")
+    await I.seePanelIsVisible("Overview")
+    await I.seePanelState("Projects", "open")
+
+    await I.seePanelIsHidden("Overview")
+    await I.seePanelIsVisible("Projects")
+  })
+
+  test("should slide in the direction of the selected tab", async () => {
+    await I.clickTabByName("Account")
+    await I.seeActivationDirection("right")
+
+    await I.clickTabByName("Overview")
+    await I.seeActivationDirection("left")
   })
 })

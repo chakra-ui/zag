@@ -709,6 +709,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "with-link", title: "With Links" },
+      { slug: "animated-panels", title: "Animated Panels" },
       { slug: "disabled", title: "Disabled Tab" },
     ],
   },
