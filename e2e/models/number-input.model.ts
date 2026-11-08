@@ -216,6 +216,20 @@ export class NumberInputModel extends Model {
     await this.page.mouse.up()
   }
 
+  async scrubVerticallyBy(y: number) {
+    await this.page.evaluate(() => {
+      Element.prototype.requestPointerLock = () => Promise.resolve()
+    })
+    const scrubber = await this.scrubber.boundingBox()
+    if (!scrubber) throw new Error("No scrubber found")
+    await this.scrubber.hover()
+    await this.page.mouse.down()
+    await this.page.mouse.move(scrubber.x + scrubber.width / 2, scrubber.y + scrubber.height / 2 + y, {
+      steps: Math.abs(y),
+    })
+    await this.page.mouse.up()
+  }
+
   async waitForTick(n: number) {
     // these match the delays in the machine
     const CHANGE_INTERVAL = 60
@@ -232,6 +246,53 @@ export class NumberInputModel extends Model {
   async mousedownDec() {
     await this.decButton.hover()
     await this.page.mouse.down()
+  }
+
+  async seeSteppersAreDisabled() {
+    await expect(this.incButton).toBeDisabled()
+    await expect(this.decButton).toBeDisabled()
+  }
+
+  async seeIncIsDisabled(disabled = true) {
+    if (disabled) await expect(this.incButton).toBeDisabled()
+    else await expect(this.incButton).toBeEnabled()
+  }
+
+  async seeDecIsDisabled(disabled = true) {
+    if (disabled) await expect(this.decButton).toBeDisabled()
+    else await expect(this.decButton).toBeEnabled()
+  }
+
+  async seeSteppersControlTheInput() {
+    const id = await this.input.getAttribute("id")
+    await expect(this.incButton).toHaveAttribute("aria-controls", id!)
+    await expect(this.decButton).toHaveAttribute("aria-controls", id!)
+    await expect(this.incButton).toHaveAttribute("aria-label", "increment value")
+    await expect(this.decButton).toHaveAttribute("aria-label", "decrease value")
+  }
+
+  async rightClickInc() {
+    await this.incButton.click({ button: "right" })
+  }
+
+  /** Holds the increment button, waits, then releases */
+  async holdInc(ms: number) {
+    await this.incButton.hover()
+    await this.page.mouse.down()
+    await this.wait(ms)
+    await this.page.mouse.up()
+  }
+
+  clickTestId(id: string) {
+    return this.testId(id).click()
+  }
+
+  async seeInputIsDisabled() {
+    await expect(this.input).toBeDisabled()
+  }
+
+  async seeInputIsReadOnly() {
+    await expect(this.input).toHaveAttribute("readonly", "")
   }
 
   get hiddenInput() {

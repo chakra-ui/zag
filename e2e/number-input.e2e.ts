@@ -204,12 +204,13 @@ test.describe("number input", () => {
     await I.seeInputValueIsApprox(60)
   })
 
-  test.skip("inc longpress: should spin value upwards", async () => {
+  test("inc longpress: should spin value upwards", async () => {
+    await I.type("10")
     await I.mousedownInc()
-    await I.seeInputHasValue("1")
-    await I.waitForTick(3)
+    await I.seeInputHasValue("11")
+    await I.waitForTick(9)
     await I.mouseup()
-    await I.seeInputHasValue("4")
+    await I.seeInputValueIsApprox(21, 1)
   })
 
   test("dec longpress: should spin value downwards", async () => {
@@ -1103,6 +1104,270 @@ test.describe("number input", () => {
       await I.blurInput()
       expect(await I.hiddenInput.evaluate((el: HTMLInputElement) => el.validity.rangeOverflow)).toBe(true)
     })
+  })
+})
+
+test.describe("number input coverage", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new NumberInputModel(page)
+    await I.goto()
+  })
+
+  test.describe("keyboard", () => {
+    test("should leave other keys to the input", async () => {
+      await I.focusInput()
+      await I.typeSequentially("123")
+      await I.pressKey("ArrowLeft")
+      await I.typeSequentially("4")
+      await I.seeInputHasValue("1243")
+    })
+
+    test("should step by 0.1 without float noise", async () => {
+      await I.controls.num("step", "0.1")
+      await I.fillInput("0.1")
+      await I.pressKey("ArrowUp")
+      await I.seeInputHasValue("0.2")
+      await I.pressKey("ArrowUp")
+      await I.seeInputHasValue("0.3")
+      await I.pressKey("ArrowDown", 3)
+      await I.seeInputHasValue("0")
+    })
+
+    test("should start from the max when the range is below 0", async () => {
+      await I.controls.num("min", "-10")
+      await I.controls.num("max", "-5")
+      await I.focusInput()
+      await I.pressKey("ArrowUp")
+      await I.seeInputHasValue("-5")
+    })
+
+    test("should start from the min when the range is above 0", async () => {
+      await I.controls.num("min", "5")
+      await I.focusInput()
+      await I.pressKey("ArrowDown")
+      await I.seeInputHasValue("5")
+    })
+  })
+
+  test.describe("read-only", () => {
+    test.beforeEach(async () => {
+      await I.fillInput("5")
+      await I.controls.bool("readOnly")
+    })
+
+    test("should mark the input read-only and disable the steppers", async () => {
+      await I.seeInputIsReadOnly()
+      await I.seeSteppersAreDisabled()
+    })
+
+    test("should not step with the keyboard", async () => {
+      await I.focusInput()
+      await I.pressKey("ArrowUp")
+      await I.pressKey("End")
+      await I.seeInputHasValue("5")
+    })
+  })
+
+  test.describe("disabled", () => {
+    test("should disable the input and the steppers", async () => {
+      await I.fillInput("5")
+      await I.controls.bool("disabled")
+      await I.seeInputIsDisabled()
+      await I.seeSteppersAreDisabled()
+      await I.activateInc()
+      await I.seeInputHasValue("5")
+    })
+  })
+
+  test.describe("steppers", () => {
+    test("should point the steppers at the input", async () => {
+      await I.seeSteppersControlTheInput()
+    })
+
+    test("should disable a stepper as soon as a typed value reaches its bound", async () => {
+      await I.type("100")
+      // still focused, so this is before any blur
+      await I.seeIncIsDisabled()
+      await I.seeDecIsDisabled(false)
+
+      await I.fillInput("0")
+      await I.seeDecIsDisabled()
+      await I.seeIncIsDisabled(false)
+    })
+
+    test("should ignore a right-click", async () => {
+      await I.fillInput("5")
+      await I.rightClickInc()
+      await I.seeInputHasValue("5")
+    })
+
+    test("should spin from an empty field", async () => {
+      await I.holdInc(700)
+      const value = Number(await I.getInputValue())
+      expect(value).toBeGreaterThan(1)
+    })
+
+    test("should stop spinning at the max", async () => {
+      await I.fillInput("97")
+      await I.holdInc(1000)
+      await I.seeInputHasValue("100")
+    })
+  })
+
+  test.describe("typing", () => {
+    test("should treat whitespace as empty", async () => {
+      await I.fillInput("5")
+      await I.fillInput("   ")
+      await I.seeNumber("")
+    })
+
+    test("should read a thousands separator", async () => {
+      await I.controls.num("max", "10000")
+      await I.fillInput("1,234")
+      await I.seeNumber("1234")
+    })
+
+    test("should read Arabic digits", async () => {
+      await I.fillInput("")
+      await I.insertText("٣٤")
+      await I.seeNumber("34")
+    })
+
+    test("should read a comma as the decimal point in German", async () => {
+      await I.controls.select("locale", "de-DE")
+      await I.fillInput("1,5")
+      await I.seeNumber("1.5")
+      await I.blurInput()
+      await I.seeInputHasValue("1,5")
+    })
+  })
+
+  test.describe("formatting", () => {
+    test("should step a currency value and keep its format", async () => {
+      await I.controls.select("formatOptions.style", "currency")
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.seeInputHasValue("$5.00")
+      await I.focusInput()
+      await I.pressKey("ArrowUp")
+      await I.seeInputHasValue("$6.00")
+      await I.seeNumber("6")
+    })
+
+    test("should reformat when the locale changes", async () => {
+      await I.fillInput("1.5")
+      await I.blurInput()
+      await I.controls.select("locale", "de-DE")
+      await I.seeInputHasValue("1,5")
+      await I.seeNumber("1.5")
+    })
+
+    test("should read a percent as a fraction", async () => {
+      await I.controls.select("formatOptions.style", "percent")
+      await I.controls.num("max", "1")
+      await I.fillInput("50%")
+      await I.blurInput()
+      await I.seeInputHasValue("50%")
+      await I.seeNumber("0.5")
+    })
+
+    test("should not accept a decimal point when no fraction digits are allowed", async () => {
+      await I.controls.num("formatOptions.maximumFractionDigits", "0")
+      await I.focusInput()
+      await I.typeSequentially("4.6")
+      await I.seeInputHasValue("46")
+    })
+  })
+
+  test.describe("wheel", () => {
+    test("should not step by default", async () => {
+      await I.fillInput("5")
+      await I.wheelInput(-100)
+      await I.seeInputHasValue("5")
+    })
+
+    test("should not step when the input isn't focused", async () => {
+      await I.controls.bool("allowMouseWheel")
+      await I.fillInput("5")
+      await I.blurInput()
+      await I.page.mouse.move(0, 0)
+      const box = await I.page.getByTestId("input").boundingBox()
+      await I.page.mouse.move(box!.x + 20, box!.y + box!.height / 2)
+      await I.page.mouse.wheel(0, -100)
+      await I.wait(100)
+      await I.seeInputHasValue("5")
+    })
+  })
+
+  test.describe("scrubbing", () => {
+    test("should scrub up when dragging up in vertical mode", async () => {
+      await I.goto("/number-input/scrubber")
+      await I.controls.select("scrubberDirection", "vertical")
+      await I.type("50")
+      await I.scrubVerticallyBy(-20)
+      await I.seeInputValueIsApprox(60)
+    })
+  })
+
+  test.describe("form", () => {
+    test("should clear the submitted value when autofill clears it", async () => {
+      await I.autofill("77")
+      await I.seeNumber("77")
+      await I.autofill("")
+      await I.seeInputHasValue("")
+      await I.seeNumber("")
+    })
+
+    test("should mirror required, disabled and range on the hidden input", async () => {
+      await I.controls.num("min", "2")
+      await I.controls.bool("disabled")
+      await expect(I.hiddenInput).toHaveAttribute("min", "2")
+      await expect(I.hiddenInput).toHaveAttribute("max", "100")
+      await expect(I.hiddenInput).toBeDisabled()
+    })
+  })
+})
+
+test.describe("number input (controlled)", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new NumberInputModel(page)
+    await I.goto("/number-input/controlled")
+  })
+
+  test("should show a value set by the parent", async () => {
+    await I.clickTestId("set-simple")
+    await I.seeInputHasValue("50.25")
+    await I.clickTestId("set-zero")
+    await I.seeInputHasValue("0")
+  })
+
+  test("should empty the input when the parent sets null", async () => {
+    await I.clickTestId("set-simple")
+    await I.clickTestId("clear-value")
+    await I.seeInputHasValue("")
+  })
+
+  test("should round a parent value to the format's precision", async () => {
+    await I.clickTestId("precision-2")
+    await I.clickTestId("set-decimal")
+    await I.seeInputHasValue("123.46")
+  })
+
+  test("should reformat when the parent changes formatOptions", async () => {
+    await I.fillInput("5")
+    await I.blurInput()
+    await I.clickTestId("currency-format")
+    await I.seeInputHasValue("$5.00")
+  })
+
+  test("should spin to the max and commit once on release", async () => {
+    await I.fillInput("998")
+    await I.blurInput()
+    await I.seeCommitCount(1)
+    await I.holdInc(1000)
+    await I.seeInputHasValue("1000")
+    await I.seeCommitCount(2)
+    await I.seeCommitValue("1000")
   })
 })
 
