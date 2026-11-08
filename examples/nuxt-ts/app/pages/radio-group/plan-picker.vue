@@ -27,7 +27,7 @@ const selected = computed(() => planOptions.find((plan) => plan.id === value.val
 <template>
   <main>
     <div class="plan-picker">
-      <p class="hint">Pick a plan, or let the button pick one for you. Enterprise is sold out.</p>
+      <p class="hint">Pick a plan, or use the button to switch to Team.</p>
       <div v-bind="api.getRootProps()">
         <span v-bind="api.getLabelProps()">Plan</span>
         <label

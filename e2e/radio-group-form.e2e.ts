@@ -48,4 +48,16 @@ test.describe("radio-group form", () => {
     await expect(page.getByText("Choose a contact method.")).toBeVisible()
     await expect(output).toBeHidden()
   })
+
+  test("reset from the invalid state clears the error", async ({ page }) => {
+    await page.getByRole("button", { name: "Save preference" }).click()
+    await expect(page.getByText("Choose a contact method.")).toBeVisible()
+
+    await page.getByRole("button", { name: "Reset" }).click()
+    await expect(page.getByText("Choose a contact method.")).toBeHidden()
+    await expect(page.getByRole("radiogroup")).not.toHaveAttribute("data-invalid", "")
+    for (const name of ["Email", "Phone call", "Post"]) {
+      await expect(page.getByRole("radio", { name })).not.toBeChecked()
+    }
+  })
 })

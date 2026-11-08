@@ -25,7 +25,7 @@ export default function Page() {
     <>
       <main>
         <div className="plan-picker">
-          <p className="hint">Pick a plan, or let the button pick one for you. Enterprise is sold out.</p>
+          <p className="hint">Pick a plan, or use the button to switch to Team.</p>
           <div {...api.getRootProps()}>
             <span {...api.getLabelProps()}>Plan</span>
             {planOptions.map((opt) => (

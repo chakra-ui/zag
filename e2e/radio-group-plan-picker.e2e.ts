@@ -34,10 +34,13 @@ test.describe("radio-group plan-picker", () => {
     await expect(enterprise).not.toBeChecked()
     await expect(page.getByTestId("selected-plan")).toHaveText("Selected plan: Free")
 
-    // arrow keys skip the disabled plan
+    // arrow keys skip the disabled plan: Team wraps to Free
+    await page.getByRole("button", { name: "Switch to Team" }).click()
+    await expect(page.getByRole("radio", { name: /Team/ })).toBeChecked()
     await page.getByRole("radio", { name: /Team/ }).focus()
     await page.keyboard.press("ArrowDown")
-    await expect(enterprise).not.toBeChecked()
     await expect(page.getByRole("radio", { name: /Free/ })).toBeChecked()
+    await expect(page.getByRole("radio", { name: /Team/ })).not.toBeChecked()
+    await expect(enterprise).not.toBeChecked()
   })
 })

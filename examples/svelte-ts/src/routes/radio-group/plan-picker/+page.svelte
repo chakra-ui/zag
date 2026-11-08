@@ -24,7 +24,7 @@
 
 <main>
   <div class="plan-picker">
-    <p class="hint">Pick a plan, or let the button pick one for you. Enterprise is sold out.</p>
+    <p class="hint">Pick a plan, or use the button to switch to Team.</p>
     <div {...api.getRootProps()}>
       <span {...api.getLabelProps()}>Plan</span>
       {#each planOptions as opt (opt.id)}
