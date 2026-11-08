@@ -79,23 +79,23 @@
     "keyboard": [
       {
         "keys": ["Enter"],
-        "description": "<span>When focus is on the trigger, opens the color picker<br />When focus is on a trigger of a swatch, selects the color (and closes the color picker)<br />When focus is on the input or channel inputs, selects the color</span>"
+        "description": "<span>When focus is on the trigger, opens the color picker<br />When focus is on a swatch trigger, selects the color (and closes the color picker)<br />When focus is on a channel input, commits the value</span>"
       },
       {
-        "keys": ["ArrowLeft"],
-        "description": "<span>When focus is on the color area, decreases the hue value of the color<br />When focus is on the channel sliders, decreases the value of the channel</span>"
+        "keys": ["ArrowLeft", "ArrowRight"],
+        "description": "<span>When focus is on the color area, decreases or increases the x channel<br />When focus is on a channel slider, decreases or increases the channel</span>"
       },
       {
-        "keys": ["ArrowRight"],
-        "description": "<span>When focus is on the color area, increases the hue value of the color<br />When focus is on the channel sliders, increases the value of the channel</span>"
+        "keys": ["ArrowUp", "ArrowDown"],
+        "description": "<span>When focus is on the color area, increases or decreases the y channel<br />When focus is on a channel slider or a number channel input, increases or decreases the channel</span>"
       },
       {
-        "keys": ["ArrowUp"],
-        "description": "<span>When focus is on the color area, increases the saturation value of the color<br />When focus is on the channel sliders, increases the value of the channel</span>"
+        "keys": ["PageUp", "PageDown"],
+        "description": "<span>When focus is on the color area, increases or decreases the y channel by a larger step<br />When focus is on a channel slider, increases or decreases the channel by a larger step</span>"
       },
       {
-        "keys": ["ArrowDown"],
-        "description": "<span>When focus is on the color area, decreases the saturation value of the color<br />When focus is on the channel sliders, decreases the value of the channel</span>"
+        "keys": ["Home", "End"],
+        "description": "<span>When focus is on the color area, decreases or increases the x channel by a larger step<br />When focus is on a channel slider, sets the channel to its minimum or maximum</span>"
       },
       {
         "keys": ["Esc"],

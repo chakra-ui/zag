@@ -4,7 +4,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, Orientation, PropTypes } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
@@ -61,7 +61,7 @@ export interface ElementIds {
   channelSliderThumb?: ((id: ColorChannel) => string) | undefined
 }
 
-export interface ColorPickerProps extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
+export interface ColorPickerProps extends CommonProperties, LocaleProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
@@ -156,7 +156,7 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
   inline?: boolean | undefined
 }
 
-type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "dir" | "positioning"
+type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "dir" | "locale" | "positioning"
 
 export type ColorPickerSchema = {
   tag: "open" | "closed" | "dragging" | "focused"
@@ -180,7 +180,7 @@ export type ColorPickerSchema = {
     activeId: string | null
     activeChannel: Partial<ColorAxes> | null
     activeOrientation: Orientation | null
-    areaBaseColor: Color | null
+    editedColor: Color | null
     areaDragPosition: { x: number; y: number } | null
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
@@ -372,9 +372,10 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
    */
   getChannelValue: (channel: ColorChannel) => string
   /**
-   * Function to get the formatted and localized value of a specific channel
+   * Function to get the formatted and localized value of a specific channel.
+   * Uses the `locale` prop when `locale` is omitted.
    */
-  getChannelValueText: (channel: ColorChannel, locale: string) => string
+  getChannelValueText: (channel: ColorChannel, locale?: string) => string
   /**
    * Function to set the color value of a specific channel
    */
