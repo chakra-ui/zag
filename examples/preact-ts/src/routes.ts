@@ -332,6 +332,12 @@ export const routes: RouteDefinition[] = [
   { path: "/pagination/links", component: lazy(() => import("./pages/pagination/links")) },
   { path: "/pagination/page-size", component: lazy(() => import("./pages/pagination/page-size")) },
   { path: "/password-input/basic", component: lazy(() => import("./pages/password-input/basic")) },
+  { path: "/password-input/sign-up", component: lazy(() => import("./pages/password-input/sign-up")) },
+  {
+    path: "/password-input/confirm-password",
+    component: lazy(() => import("./pages/password-input/confirm-password")),
+  },
+  { path: "/password-input/form", component: lazy(() => import("./pages/password-input/form")) },
   { path: "/pin-input/basic", component: lazy(() => import("./pages/pin-input/basic")) },
   { path: "/pin-input/controlled", component: lazy(() => import("./pages/pin-input/controlled")) },
   { path: "/pin-input/transform-paste", component: lazy(() => import("./pages/pin-input/transform-paste")) },

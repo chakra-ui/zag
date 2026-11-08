@@ -121,7 +121,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "password-input",
     label: "Password Input",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sign-up", title: "Sign Up" },
+      { slug: "confirm-password", title: "Confirm Password" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "gridlist",
