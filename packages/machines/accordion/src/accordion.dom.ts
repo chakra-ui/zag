@@ -22,3 +22,12 @@ export const syncHiddenUntilFound = (ctx: Scope) => {
     if (contentEl.hidden) contentEl.setAttribute("hidden", "until-found")
   })
 }
+
+// Find-in-page removes `hidden` before the item expands; put it back on items that stayed collapsed
+export const restoreHiddenUntilFound = (ctx: Scope, expanded: string[]) => {
+  getItemContentEls(ctx).forEach((contentEl) => {
+    const value = contentEl.dataset.value
+    if (contentEl.hidden || (value != null && expanded.includes(value))) return
+    contentEl.setAttribute("hidden", "until-found")
+  })
+}

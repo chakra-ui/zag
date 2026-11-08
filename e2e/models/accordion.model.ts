@@ -56,11 +56,15 @@ export class AccordionModel extends Model {
     await expect(this.getContent(id)).not.toBeVisible()
   }
 
-  /** Mirrors the browser's find-in-page reveal: fire `beforematch`, then drop `hidden` */
-  async revealByFind(value: string) {
-    await this.getContentByValue(value).evaluate((el) => {
-      el.dispatchEvent(new Event("beforematch"))
-      el.removeAttribute("hidden")
-    })
+  /** Mirrors the browser's find-in-page reveal: fire `beforematch`, then drop `hidden`. Several values match in one task. */
+  async revealByFind(...values: string[]) {
+    const selectors = values.map((value) => `[data-accordion-item-content][data-value="${value}"]`)
+    await this.page.evaluate((selectors) => {
+      for (const selector of selectors) {
+        const el = document.querySelector(selector)!
+        el.dispatchEvent(new Event("beforematch"))
+        el.removeAttribute("hidden")
+      }
+    }, selectors)
   }
 }

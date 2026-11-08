@@ -1,6 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import {
   addDomEvent,
+  AnimationFrame,
   getComputedStyle,
   getEventTarget,
   getTabbables,
@@ -9,6 +10,7 @@ import {
   raf,
   setAttribute,
   setStyle,
+  Timeout,
 } from "@zag-js/dom-query"
 import * as dom from "./collapsible.dom"
 import type { CollapsibleSchema } from "./collapsible.types"
@@ -215,8 +217,8 @@ export const machine = createMachine<CollapsibleSchema>({
 
         // Some adapters exit `closed` synchronously inside `send`, so check a flag, not timer handles
         let active = true
-        let revertTimer: ReturnType<typeof setTimeout> | undefined
-        let revertFrame: VoidFunction | undefined
+        const revertTimer = Timeout.create()
+        const revertFrame = AnimationFrame.create()
 
         const frameCleanup = raf(() => {
           const contentEl = dom.getContentEl(scope)
@@ -231,9 +233,8 @@ export const machine = createMachine<CollapsibleSchema>({
             if (!active) return
 
             // Re-hide if still closed (ignored controlled `open`)
-            revertTimer = setTimeout(() => {
-              revertFrame = raf(() => {
-                if (!active) return
+            revertTimer.start(0, () => {
+              revertFrame.request(() => {
                 refs.set("revealedByFind", false)
                 contentEl.setAttribute("hidden", "until-found")
               })
@@ -246,8 +247,8 @@ export const machine = createMachine<CollapsibleSchema>({
         return () => {
           active = false
           frameCleanup()
-          clearTimeout(revertTimer)
-          revertFrame?.()
+          revertTimer.clear()
+          revertFrame.cancel()
         }
       },
 

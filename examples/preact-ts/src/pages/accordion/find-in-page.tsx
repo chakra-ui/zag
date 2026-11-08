@@ -19,16 +19,16 @@ export default function Page() {
         <p className="accordion-hint">Search the page for “refund” or “invoices” to open the matching answer.</p>
         <div {...api.getRootProps()}>
           {accordionFaqData.map((item) => (
-            <div key={item.value} {...api.getItemProps({ value: item.value })}>
-              <h3 {...api.getItemHeaderProps({ value: item.value })}>
-                <button {...api.getItemTriggerProps({ value: item.value })}>
+            <div key={item.value} {...api.getItemProps({ value: item.value, disabled: item.value === "support" })}>
+              <h3 {...api.getItemHeaderProps({ value: item.value, disabled: item.value === "support" })}>
+                <button {...api.getItemTriggerProps({ value: item.value, disabled: item.value === "support" })}>
                   {item.title}
-                  <span {...api.getItemIndicatorProps({ value: item.value })}>
+                  <span {...api.getItemIndicatorProps({ value: item.value, disabled: item.value === "support" })}>
                     <ArrowRight />
                   </span>
                 </button>
               </h3>
-              <div {...api.getItemContentProps({ value: item.value })}>
+              <div {...api.getItemContentProps({ value: item.value, disabled: item.value === "support" })}>
                 <div className="accordion-item-body">{item.content}</div>
               </div>
             </div>

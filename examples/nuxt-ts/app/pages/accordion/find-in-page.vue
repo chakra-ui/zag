@@ -14,14 +14,20 @@ const api = computed(() => accordion.connect(service, normalizeProps))
     <div class="accordion-layout">
       <p class="accordion-hint">Search the page for “refund” or “invoices” to open the matching answer.</p>
       <div v-bind="api.getRootProps()">
-        <div v-for="item in accordionFaqData" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
-          <h3 v-bind="api.getItemHeaderProps({ value: item.value })">
-            <button v-bind="api.getItemTriggerProps({ value: item.value })">
+        <div
+          v-for="item in accordionFaqData"
+          :key="item.value"
+          v-bind="api.getItemProps({ value: item.value, disabled: item.value === 'support' })"
+        >
+          <h3 v-bind="api.getItemHeaderProps({ value: item.value, disabled: item.value === 'support' })">
+            <button v-bind="api.getItemTriggerProps({ value: item.value, disabled: item.value === 'support' })">
               {{ item.title }}
-              <span v-bind="api.getItemIndicatorProps({ value: item.value })"><ArrowRight /></span>
+              <span v-bind="api.getItemIndicatorProps({ value: item.value, disabled: item.value === 'support' })"
+                ><ArrowRight
+              /></span>
             </button>
           </h3>
-          <div v-bind="api.getItemContentProps({ value: item.value })">
+          <div v-bind="api.getItemContentProps({ value: item.value, disabled: item.value === 'support' })">
             <div class="accordion-item-body">{{ item.content }}</div>
           </div>
         </div>

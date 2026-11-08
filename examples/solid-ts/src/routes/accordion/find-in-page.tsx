@@ -16,16 +16,16 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <For each={accordionFaqData}>
             {(item) => (
-              <div {...api().getItemProps({ value: item.value })}>
-                <h3 {...api().getItemHeaderProps({ value: item.value })}>
-                  <button {...api().getItemTriggerProps({ value: item.value })}>
+              <div {...api().getItemProps({ value: item.value, disabled: item.value === "support" })}>
+                <h3 {...api().getItemHeaderProps({ value: item.value, disabled: item.value === "support" })}>
+                  <button {...api().getItemTriggerProps({ value: item.value, disabled: item.value === "support" })}>
                     {item.title}
-                    <span {...api().getItemIndicatorProps({ value: item.value })}>
+                    <span {...api().getItemIndicatorProps({ value: item.value, disabled: item.value === "support" })}>
                       <ArrowRight />
                     </span>
                   </button>
                 </h3>
-                <div {...api().getItemContentProps({ value: item.value })}>
+                <div {...api().getItemContentProps({ value: item.value, disabled: item.value === "support" })}>
                   <div class="accordion-item-body">{item.content}</div>
                 </div>
               </div>
