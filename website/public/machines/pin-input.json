@@ -25,6 +25,12 @@
     {
       "from": "*",
       "to": null,
+      "event": "VALUE.COMPLETE",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
       "event": "VALUE.SET",
       "guard": "hasIndex"
     },
@@ -81,6 +87,12 @@
       "to": null,
       "event": "INPUT.DELETE",
       "guard": "hasValue"
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.DELETE_TO_START",
+      "guard": null
     },
     {
       "from": "focused",
@@ -147,21 +159,11 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "INPUT.BLUR"
-          ],
-          "lines": [
-            "INPUT.BLUR"
-          ],
+          "events": ["INPUT.BLUR"],
+          "lines": ["INPUT.BLUR"],
           "points": [
-            [
-              149,
-              63
-            ],
-            [
-              458,
-              63
-            ]
+            [149, 63],
+            [458, 63]
           ],
           "label": {
             "x": 263,
@@ -173,37 +175,15 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "INPUT.FOCUS"
-          ],
-          "lines": [
-            "INPUT.FOCUS"
-          ],
+          "events": ["INPUT.FOCUS"],
+          "lines": ["INPUT.FOCUS"],
           "points": [
-            [
-              458,
-              77
-            ],
-            [
-              374,
-              77
-            ],
-            [
-              374,
-              80
-            ],
-            [
-              175,
-              80
-            ],
-            [
-              175,
-              77
-            ],
-            [
-              149,
-              77
-            ]
+            [458, 77],
+            [374, 77],
+            [374, 80],
+            [175, 80],
+            [175, 77],
+            [149, 77]
           ],
           "label": {
             "x": 259,
@@ -235,21 +215,11 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "INPUT.BLUR"
-          ],
-          "lines": [
-            "INPUT.BLUR"
-          ],
+          "events": ["INPUT.BLUR"],
+          "lines": ["INPUT.BLUR"],
           "points": [
-            [
-              136,
-              76
-            ],
-            [
-              136,
-              320
-            ]
+            [136, 76],
+            [136, 320]
           ],
           "label": {
             "x": 48,
@@ -261,29 +231,13 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "INPUT.FOCUS"
-          ],
-          "lines": [
-            "INPUT.FOCUS"
-          ],
+          "events": ["INPUT.FOCUS"],
+          "lines": ["INPUT.FOCUS"],
           "points": [
-            [
-              162,
-              320
-            ],
-            [
-              162,
-              102
-            ],
-            [
-              169,
-              102
-            ],
-            [
-              169,
-              76
-            ]
+            [162, 320],
+            [162, 102],
+            [169, 102],
+            [169, 76]
           ],
           "label": {
             "x": 169,

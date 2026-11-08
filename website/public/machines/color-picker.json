@@ -241,7 +241,19 @@
     {
       "from": "open.idle",
       "to": null,
+      "event": "AREA.END",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": null,
       "event": "AREA.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "open.idle",
+      "to": null,
+      "event": "AREA.HOME",
       "guard": null
     },
     {
@@ -399,31 +411,13 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "CHANNEL_INPUT.BLUR",
-            "TRIGGER.BLUR"
-          ],
-          "lines": [
-            "CHANNEL_INPUT.BLUR",
-            "TRIGGER.BLUR"
-          ],
+          "events": ["CHANNEL_INPUT.BLUR", "TRIGGER.BLUR"],
+          "lines": ["CHANNEL_INPUT.BLUR", "TRIGGER.BLUR"],
           "points": [
-            [
-              1409,
-              259
-            ],
-            [
-              1074,
-              259
-            ],
-            [
-              1074,
-              262
-            ],
-            [
-              1013,
-              262
-            ]
+            [1409, 259],
+            [1074, 259],
+            [1074, 262],
+            [1013, 262]
           ],
           "label": {
             "x": 1161,
@@ -435,41 +429,15 @@
         {
           "from": "focused",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              1409,
-              274
-            ],
-            [
-              1335,
-              274
-            ],
-            [
-              1335,
-              346
-            ],
-            [
-              48,
-              346
-            ],
-            [
-              48,
-              76
-            ],
-            [
-              84,
-              76
-            ]
+            [1409, 274],
+            [1335, 274],
+            [1335, 346],
+            [48, 346],
+            [48, 76],
+            [84, 76]
           ],
           "label": {
             "x": 672,
@@ -481,29 +449,13 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "CHANNEL_INPUT.FOCUS"
-          ],
-          "lines": [
-            "CHANNEL_INPUT.FOCUS"
-          ],
+          "events": ["CHANNEL_INPUT.FOCUS"],
+          "lines": ["CHANNEL_INPUT.FOCUS"],
           "points": [
-            [
-              1013,
-              276
-            ],
-            [
-              1325,
-              276
-            ],
-            [
-              1325,
-              266
-            ],
-            [
-              1409,
-              266
-            ]
+            [1013, 276],
+            [1325, 276],
+            [1325, 266],
+            [1409, 266]
           ],
           "label": {
             "x": 1158,
@@ -515,41 +467,15 @@
         {
           "from": "idle",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              935,
-              276
-            ],
-            [
-              816,
-              276
-            ],
-            [
-              816,
-              321
-            ],
-            [
-              58,
-              321
-            ],
-            [
-              58,
-              86
-            ],
-            [
-              84,
-              86
-            ]
+            [935, 276],
+            [816, 276],
+            [816, 321],
+            [58, 321],
+            [58, 86],
+            [84, 86]
           ],
           "label": {
             "x": 264,
@@ -561,41 +487,15 @@
         {
           "from": "open",
           "to": "idle",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              553,
-              146
-            ],
-            [
-              584,
-              146
-            ],
-            [
-              584,
-              233
-            ],
-            [
-              816,
-              233
-            ],
-            [
-              816,
-              262
-            ],
-            [
-              935,
-              262
-            ]
+            [553, 146],
+            [584, 146],
+            [584, 233],
+            [816, 233],
+            [816, 262],
+            [935, 262]
           ],
           "label": {
             "x": 668,
@@ -607,39 +507,15 @@
         {
           "from": "open",
           "to": "focused",
-          "events": [
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              553,
-              136
-            ],
-            [
-              594,
-              136
-            ],
-            [
-              594,
-              143
-            ],
-            [
-              1325,
-              143
-            ],
-            [
-              1325,
-              252
-            ],
-            [
-              1409,
-              252
-            ]
+            [553, 136],
+            [594, 136],
+            [594, 143],
+            [1325, 143],
+            [1325, 252],
+            [1409, 252]
           ],
           "label": {
             "x": 913,
@@ -651,23 +527,11 @@
         {
           "from": "open.dragging",
           "to": "open.idle",
-          "events": [
-            "AREA.POINTER_UP",
-            "CHANNEL_SLIDER.POINTER_UP"
-          ],
-          "lines": [
-            "AREA.POINTER_UP",
-            "CHANNEL_SLIDER.POINTER_UP"
-          ],
+          "events": ["AREA.POINTER_UP", "CHANNEL_SLIDER.POINTER_UP"],
+          "lines": ["AREA.POINTER_UP", "CHANNEL_SLIDER.POINTER_UP"],
           "points": [
-            [
-              217,
-              119
-            ],
-            [
-              451,
-              119
-            ]
+            [217, 119],
+            [451, 119]
           ],
           "label": {
             "x": 244,
@@ -679,23 +543,11 @@
         {
           "from": "open.idle",
           "to": "open.dragging",
-          "events": [
-            "AREA.POINTER_DOWN",
-            "CHANNEL_SLIDER.POINTER_DOWN"
-          ],
-          "lines": [
-            "AREA.POINTER_DOWN",
-            "CHANNEL_SLIDER.POINTER_DOWN"
-          ],
+          "events": ["AREA.POINTER_DOWN", "CHANNEL_SLIDER.POINTER_DOWN"],
+          "lines": ["AREA.POINTER_DOWN", "CHANNEL_SLIDER.POINTER_DOWN"],
           "points": [
-            [
-              451,
-              134
-            ],
-            [
-              217,
-              134
-            ]
+            [451, 134],
+            [217, 134]
           ],
           "label": {
             "x": 237,
@@ -707,35 +559,14 @@
         {
           "from": "open.idle",
           "to": "focused",
-          "events": [
-            "SWATCH_TRIGGER.CLICK",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "SWATCH_TRIGGER.CLICK",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["SWATCH_TRIGGER.CLICK", "TRIGGER.CLICK"],
+          "lines": ["SWATCH_TRIGGER.CLICK", "TRIGGER.CLICK"],
           "points": [
-            [
-              529,
-              126
-            ],
-            [
-              558,
-              126
-            ],
-            [
-              1335,
-              126
-            ],
-            [
-              1335,
-              244
-            ],
-            [
-              1409,
-              244
-            ]
+            [529, 126],
+            [558, 126],
+            [1335, 126],
+            [1335, 244],
+            [1409, 244]
           ],
           "label": {
             "x": 900,
@@ -785,23 +616,11 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "CHANNEL_INPUT.BLUR",
-            "TRIGGER.BLUR"
-          ],
-          "lines": [
-            "CHANNEL_INPUT.BLUR",
-            "TRIGGER.BLUR"
-          ],
+          "events": ["CHANNEL_INPUT.BLUR", "TRIGGER.BLUR"],
+          "lines": ["CHANNEL_INPUT.BLUR", "TRIGGER.BLUR"],
           "points": [
-            [
-              496,
-              889
-            ],
-            [
-              496,
-              629
-            ]
+            [496, 889],
+            [496, 629]
           ],
           "label": {
             "x": 355,
@@ -813,41 +632,15 @@
         {
           "from": "focused",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              529,
-              889
-            ],
-            [
-              529,
-              805
-            ],
-            [
-              824,
-              805
-            ],
-            [
-              824,
-              32
-            ],
-            [
-              72,
-              32
-            ],
-            [
-              72,
-              68
-            ]
+            [529, 889],
+            [529, 805],
+            [824, 805],
+            [824, 32],
+            [72, 32],
+            [72, 68]
           ],
           "label": {
             "x": 703,
@@ -859,29 +652,13 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "CHANNEL_INPUT.FOCUS"
-          ],
-          "lines": [
-            "CHANNEL_INPUT.FOCUS"
-          ],
+          "events": ["CHANNEL_INPUT.FOCUS"],
+          "lines": ["CHANNEL_INPUT.FOCUS"],
           "points": [
-            [
-              522,
-              629
-            ],
-            [
-              522,
-              805
-            ],
-            [
-              512,
-              805
-            ],
-            [
-              512,
-              889
-            ]
+            [522, 629],
+            [522, 805],
+            [512, 805],
+            [512, 889]
           ],
           "label": {
             "x": 529,
@@ -893,41 +670,15 @@
         {
           "from": "idle",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              522,
-              585
-            ],
-            [
-              522,
-              335
-            ],
-            [
-              679,
-              335
-            ],
-            [
-              679,
-              42
-            ],
-            [
-              82,
-              42
-            ],
-            [
-              82,
-              68
-            ]
+            [522, 585],
+            [522, 335],
+            [679, 335],
+            [679, 42],
+            [82, 42],
+            [82, 68]
           ],
           "label": {
             "x": 558,
@@ -939,33 +690,13 @@
         {
           "from": "open",
           "to": "idle",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              288,
-              304
-            ],
-            [
-              288,
-              335
-            ],
-            [
-              496,
-              335
-            ],
-            [
-              496,
-              585
-            ]
+            [288, 304],
+            [288, 335],
+            [496, 335],
+            [496, 585]
           ],
           "label": {
             "x": 368,
@@ -977,39 +708,15 @@
         {
           "from": "open",
           "to": "focused",
-          "events": [
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              278,
-              304
-            ],
-            [
-              278,
-              345
-            ],
-            [
-              285,
-              345
-            ],
-            [
-              285,
-              805
-            ],
-            [
-              479,
-              805
-            ],
-            [
-              479,
-              889
-            ]
+            [278, 304],
+            [278, 345],
+            [285, 345],
+            [285, 805],
+            [479, 805],
+            [479, 889]
           ],
           "label": {
             "x": 292,
@@ -1021,23 +728,11 @@
         {
           "from": "open.dragging",
           "to": "open.idle",
-          "events": [
-            "AREA.POINTER_UP",
-            "CHANNEL_SLIDER.POINTER_UP"
-          ],
-          "lines": [
-            "AREA.POINTER_UP",
-            "CHANNEL_SLIDER.POINTER_UP"
-          ],
+          "events": ["AREA.POINTER_UP", "CHANNEL_SLIDER.POINTER_UP"],
+          "lines": ["AREA.POINTER_UP", "CHANNEL_SLIDER.POINTER_UP"],
           "points": [
-            [
-              255,
-              156
-            ],
-            [
-              255,
-              236
-            ]
+            [255, 156],
+            [255, 236]
           ],
           "label": {
             "x": 72,
@@ -1049,31 +744,13 @@
         {
           "from": "open.idle",
           "to": "open.dragging",
-          "events": [
-            "AREA.POINTER_DOWN",
-            "CHANNEL_SLIDER.POINTER_DOWN"
-          ],
-          "lines": [
-            "AREA.POINTER_DOWN",
-            "CHANNEL_SLIDER.POINTER_DOWN"
-          ],
+          "events": ["AREA.POINTER_DOWN", "CHANNEL_SLIDER.POINTER_DOWN"],
+          "lines": ["AREA.POINTER_DOWN", "CHANNEL_SLIDER.POINTER_DOWN"],
           "points": [
-            [
-              281,
-              236
-            ],
-            [
-              281,
-              166
-            ],
-            [
-              291,
-              166
-            ],
-            [
-              291,
-              156
-            ]
+            [281, 236],
+            [281, 166],
+            [291, 166],
+            [291, 156]
           ],
           "label": {
             "x": 284,
@@ -1085,31 +762,13 @@
         {
           "from": "open.idle",
           "to": "focused",
-          "events": [
-            "SWATCH_TRIGGER.CLICK",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "SWATCH_TRIGGER.CLICK",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["SWATCH_TRIGGER.CLICK", "TRIGGER.CLICK"],
+          "lines": ["SWATCH_TRIGGER.CLICK", "TRIGGER.CLICK"],
           "points": [
-            [
-              268,
-              280
-            ],
-            [
-              268,
-              815
-            ],
-            [
-              462,
-              815
-            ],
-            [
-              462,
-              889
-            ]
+            [268, 280],
+            [268, 815],
+            [462, 815],
+            [462, 889]
           ],
           "label": {
             "x": 114,

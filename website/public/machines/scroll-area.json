@@ -43,6 +43,12 @@
     {
       "from": "*",
       "to": null,
+      "event": "user.scroll",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
       "event": "viewport.scroll",
       "guard": null
     },
@@ -99,23 +105,11 @@
         {
           "from": "dragging",
           "to": "idle",
-          "events": [
-            "scrollbar.pointerup",
-            "thumb.pointerup"
-          ],
-          "lines": [
-            "scrollbar.pointerup",
-            "thumb.pointerup"
-          ],
+          "events": ["scrollbar.pointerup", "thumb.pointerup"],
+          "lines": ["scrollbar.pointerup", "thumb.pointerup"],
           "points": [
-            [
-              157,
-              79
-            ],
-            [
-              532,
-              79
-            ]
+            [157, 79],
+            [532, 79]
           ],
           "label": {
             "x": 274,
@@ -127,39 +121,15 @@
         {
           "from": "idle",
           "to": "dragging",
-          "events": [
-            "scrollbar.pointerdown",
-            "thumb.pointerdown"
-          ],
-          "lines": [
-            "scrollbar.pointerdown",
-            "thumb.pointerdown"
-          ],
+          "events": ["scrollbar.pointerdown", "thumb.pointerdown"],
+          "lines": ["scrollbar.pointerdown", "thumb.pointerdown"],
           "points": [
-            [
-              532,
-              93
-            ],
-            [
-              448,
-              93
-            ],
-            [
-              448,
-              96
-            ],
-            [
-              183,
-              96
-            ],
-            [
-              183,
-              93
-            ],
-            [
-              157,
-              93
-            ]
+            [532, 93],
+            [448, 93],
+            [448, 96],
+            [183, 96],
+            [183, 93],
+            [157, 93]
           ],
           "label": {
             "x": 267,
@@ -191,23 +161,11 @@
         {
           "from": "dragging",
           "to": "idle",
-          "events": [
-            "scrollbar.pointerup",
-            "thumb.pointerup"
-          ],
-          "lines": [
-            "scrollbar.pointerup",
-            "thumb.pointerup"
-          ],
+          "events": ["scrollbar.pointerup", "thumb.pointerup"],
+          "lines": ["scrollbar.pointerup", "thumb.pointerup"],
           "points": [
-            [
-              195,
-              76
-            ],
-            [
-              195,
-              336
-            ]
+            [195, 76],
+            [195, 336]
           ],
           "label": {
             "x": 48,
@@ -219,31 +177,13 @@
         {
           "from": "idle",
           "to": "dragging",
-          "events": [
-            "scrollbar.pointerdown",
-            "thumb.pointerdown"
-          ],
-          "lines": [
-            "scrollbar.pointerdown",
-            "thumb.pointerdown"
-          ],
+          "events": ["scrollbar.pointerdown", "thumb.pointerdown"],
+          "lines": ["scrollbar.pointerdown", "thumb.pointerdown"],
           "points": [
-            [
-              221,
-              336
-            ],
-            [
-              221,
-              102
-            ],
-            [
-              232,
-              102
-            ],
-            [
-              232,
-              76
-            ]
+            [221, 336],
+            [221, 102],
+            [232, 102],
+            [232, 76]
           ],
           "label": {
             "x": 228,
