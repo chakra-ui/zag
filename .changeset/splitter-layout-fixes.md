@@ -4,23 +4,22 @@
 
 - Fix handles with a one-sided id, such as `"left:"`, not resizing.
 
-- Fix dragging in RTL moving the handle the opposite way from the pointer.
+- Fix handles breaking when a panel id contains `:`, as React's `useId` ids do.
 
-- Fix the handle lagging behind the pointer when the group has handles or fixed-size content. Pixel sizes are now
-  measured against the panels' space too.
+- Fix dragging in RTL moving the handle the wrong way.
 
-- Fix `Enter` collapsing a panel from its starting size instead of its current size.
+- Fix the handle lagging the pointer next to other handles or fixed-size content.
 
-- Fix expanding a panel not restoring the size it had before it collapsed by dragging or the keyboard.
+- Fix `Enter` collapsing from the starting size instead of the current one.
 
-- Fix `aria-valuenow` dropping below `aria-valuemin` when a panel collapses.
+- Fix expanding not restoring the size from before the collapse.
 
-- Fix a pixel `minSize` or `maxSize` not letting go once the group grows back.
+- Fix `aria-valuenow` dropping below `aria-valuemin` when collapsed.
 
-- Fix hiding a panel and showing it again resetting the layout. Changing a panel's limits keeps the layout too.
+- Fix pixel limits not letting go when the group grows back.
 
-- Fix disabled handles missing `aria-disabled`, being reached by `F6`, and being draggable with the registry.
+- Fix hiding and showing a panel resetting the layout.
 
-- Fix the `keyboardResizeBy` docs, which said pixels. It's a percentage.
+- Fix disabled handles missing `aria-disabled` and being reachable with `F6`.
 
-- Add double-clicking a handle to reset the panel before it to its default size.
+- Add double-click on a handle to reset the panel before it.

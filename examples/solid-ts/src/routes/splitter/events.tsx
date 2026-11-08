@@ -5,15 +5,19 @@ import "@styles/splitter.css"
 
 export default function Page() {
   const [disabled, setDisabled] = createSignal(false)
+  const [lockA, setLockA] = createSignal(false)
+  const [disableAll, setDisableAll] = createSignal(false)
   const [resizeCount, setResizeCount] = createSignal(0)
   const [resizeEnd, setResizeEnd] = createSignal<string[]>([])
   const [collapseLog, setCollapseLog] = createSignal<string[]>([])
 
-  const service = useMachine(splitter.machine, {
-    id: createUniqueId(),
+  const id = createUniqueId()
+  const service = useMachine(splitter.machine, () => ({
+    id,
     defaultSize: [25, 50, 25],
+    disabled: disableAll(),
     panels: [
-      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40 },
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40, disabled: lockA() },
       { id: "b", minSize: 20 },
       { id: "c", minSize: 20 },
     ],
@@ -29,7 +33,7 @@ export default function Page() {
     onExpand({ panelId }) {
       setCollapseLog((prev) => [...prev, `expand:${panelId}`])
     },
-  })
+  }))
 
   const api = createMemo(() => splitter.connect(service, normalizeProps))
 
@@ -41,6 +45,9 @@ export default function Page() {
         <button onClick={() => setDisabled((value) => !value)}>
           {disabled() ? "Enable" : "Disable"} second handle
         </button>
+        <button onClick={() => api().resizePanel("a", "200px")}>Resize A to 200px</button>
+        <button onClick={() => setLockA((value) => !value)}>{lockA() ? "Unlock" : "Lock"} A</button>
+        <button onClick={() => setDisableAll((value) => !value)}>{disableAll() ? "Enable" : "Disable"} splitter</button>
       </div>
 
       <div {...api().getRootProps()}>

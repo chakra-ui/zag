@@ -6,7 +6,14 @@ import * as dom from "./splitter.dom"
 import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
-import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
+import {
+  findPanelIndex,
+  getPanelById,
+  getPanelFlexBoxStyle,
+  getPanelLayout,
+  panelDataHelper,
+  splitResizeTriggerId,
+} from "./utils/panel"
 import { resolvePanelSizes } from "./utils/size"
 
 export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>): SplitterApi<T> {
@@ -55,7 +62,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
   }
 
   const resolveResizeTriggerId = (id: string) => {
-    const [beforeId, afterId] = id.split(":")
+    const [beforeId, afterId] = splitResizeTriggerId(id, rawPanels)
     if (beforeId && afterId) return id
 
     if (beforeId) {
@@ -73,14 +80,21 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     return id
   }
 
+  const isNextToDisabledPanel = (id: string) => {
+    return splitResizeTriggerId(resolveResizeTriggerId(id), rawPanels).some(
+      (panelId) => rawPanels.find((panel) => panel.id === panelId)?.disabled,
+    )
+  }
+
   const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
-    const { id, disabled } = props
+    const { id } = props
+    const disabled = !!props.disabled || !!prop("disabled") || isNextToDisabledPanel(id)
     const dragging = context.get("dragState")?.resizeTriggerId === id
     const focused = dragging || (state.matches("focused") && context.get("keyboardState")?.resizeTriggerId === id)
     return {
       dragging,
       focused,
-      disabled: !!disabled,
+      disabled,
     }
   }
 
@@ -120,8 +134,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     expandPanel(id, minSize) {
       send({ type: "PANEL.EXPAND", id, minSize })
     },
-    resizePanel(id, unsafePanelSize) {
-      send({ type: "PANEL.RESIZE", id, size: unsafePanelSize })
+    resizePanel(id, size) {
+      send({ type: "PANEL.RESIZE", id, size })
     },
     getPanelSize(id) {
       const panels = context.get("panels")

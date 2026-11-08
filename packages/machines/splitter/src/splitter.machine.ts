@@ -12,10 +12,11 @@ import {
   panelDataHelper,
   serializePanels,
   sortPanels,
+  splitResizeTriggerId,
 } from "./utils/panel"
 import { preserveFixedPanelSizes } from "./utils/preserve-fixed-panel-sizes"
 import { resizeByDelta } from "./utils/resize-by-delta"
-import { getGroupSize, normalizePanels, resolvePanelSizes } from "./utils/size"
+import { getGroupSize, normalizePanels, parsePanelSize, resolvePanelSizes } from "./utils/size"
 import { validateSizes } from "./utils/validate-sizes"
 
 export const machine = createMachine<SplitterSchema>({
@@ -387,7 +388,6 @@ export const machine = createMachine<SplitterSchema>({
           refs.set("requestedLayout", cachedLayout ?? defaultLayout)
         }
 
-        // Lay out from what was asked for, so a size clamped while the group was small grows back
         const requestedLayout = refs.get("requestedLayout")!
         const nextSize = validateSizes({
           size: preserveFixedPanelSizes({
@@ -420,7 +420,7 @@ export const machine = createMachine<SplitterSchema>({
         const orientation = prop("orientation")
         const size = context.get("size")
         const resizeTriggerId = event.id
-        const resolvedResizeTriggerId = dom.resolveResizeTriggerId(scope, resizeTriggerId)
+        const resolvedResizeTriggerId = dom.resolveResizeTriggerId(scope, resizeTriggerId, context.get("panels"))
         if (!resolvedResizeTriggerId) return
 
         const panelGroupEl = dom.getRootEl(scope)
@@ -449,7 +449,7 @@ export const machine = createMachine<SplitterSchema>({
         if (id == null) return
         context.set("keyboardState", {
           resizeTriggerId: id,
-          resolvedResizeTriggerId: dom.resolveResizeTriggerId(scope, id),
+          resolvedResizeTriggerId: dom.resolveResizeTriggerId(scope, id, context.get("panels")),
         })
       },
 
@@ -538,13 +538,14 @@ export const machine = createMachine<SplitterSchema>({
       },
 
       resizePanel(params) {
-        const { context, event } = params
+        const { context, event, prop, scope } = params
 
         const prevSize = context.get("size")
         const panels = context.get("panels")
 
         const panel = getPanelById(panels, event.id)
-        const unsafePanelSize = event.size
+        const unsafePanelSize = parsePanelSize(event.size, dom.getRootEl(scope), prop("orientation"))
+        if (unsafePanelSize == null) return
 
         const { panelSize, pivotIndices } = panelDataHelper(panels, panel, prevSize)
         ensure(panelSize != null, () => `Panel size not found for panel "${panel.id}"`)
@@ -568,13 +569,15 @@ export const machine = createMachine<SplitterSchema>({
 
       resetPanelBeforeTrigger(params) {
         const { context, event, refs, scope } = params
-        const resizeTriggerId = dom.resolveResizeTriggerId(scope, event.id)
+        const resizeTriggerId = dom.resolveResizeTriggerId(scope, event.id, context.get("panels"))
         const initialSize = refs.get("initialSize")
         if (!resizeTriggerId || !initialSize) return
 
         const panels = context.get("panels")
         const prevSize = context.get("size")
-        const pivotIndices = resizeTriggerId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
+        const pivotIndices = splitResizeTriggerId(resizeTriggerId, panels).map((id) =>
+          panels.findIndex((panel) => panel.id === id),
+        )
         const [beforeIndex] = pivotIndices
 
         const nextSize = resizeByDelta({
@@ -603,9 +606,9 @@ export const machine = createMachine<SplitterSchema>({
         const panelGroupElement = dom.getRootEl(scope)
         ensure(panelGroupElement, () => `Panel group element not found`)
 
-        const pivotIndices = resolvedResizeTriggerId
-          .split(":")
-          .map((id) => panels.findIndex((panel) => panel.id === id))
+        const pivotIndices = splitResizeTriggerId(resolvedResizeTriggerId, panels).map((id) =>
+          panels.findIndex((panel) => panel.id === id),
+        )
 
         const horizontal = prop("orientation") === "horizontal"
 
@@ -637,13 +640,13 @@ export const machine = createMachine<SplitterSchema>({
 
         const panelDataArray = context.get("panels")
 
-        const resizeTriggerId = dom.resolveResizeTriggerId(params.scope, event.id as ResizeTriggerId)
+        const resizeTriggerId = dom.resolveResizeTriggerId(params.scope, event.id as ResizeTriggerId, panelDataArray)
         if (!resizeTriggerId) return
         const delta = event.delta
 
-        const pivotIndices = resizeTriggerId
-          .split(":")
-          .map((id) => panelDataArray.findIndex((panelData) => panelData.id === id))
+        const pivotIndices = splitResizeTriggerId(resizeTriggerId, panelDataArray).map((id) =>
+          panelDataArray.findIndex((panelData) => panelData.id === id),
+        )
 
         const prevSize = context.get("size")
 
@@ -685,7 +688,7 @@ export const machine = createMachine<SplitterSchema>({
         const sizes = context.get("size")
 
         const resizeTriggerId = context.get("keyboardState")?.resolvedResizeTriggerId
-        const [idBefore, idAfter] = resizeTriggerId?.split(":") ?? []
+        const [idBefore, idAfter] = resizeTriggerId ? splitResizeTriggerId(resizeTriggerId, panelDataArray) : []
 
         const index = panelDataArray.findIndex((panelData) => panelData.id === idBefore)
         if (index === -1) return
@@ -733,7 +736,7 @@ export const machine = createMachine<SplitterSchema>({
         const panels = context.get("panels")
         const horizontal = prop("orientation") === "horizontal"
 
-        const [idBefore] = dragState.resolvedResizeTriggerId.split(":")
+        const [idBefore] = splitResizeTriggerId(dragState.resolvedResizeTriggerId, panels)
         const indexBefore = panels.findIndex((panel) => panel.id === idBefore)
         const panel = panels[indexBefore]
 

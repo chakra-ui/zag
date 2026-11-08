@@ -4,6 +4,7 @@ import type { PanelProps, ResizeTriggerProps, SplitterProps } from "./splitter.t
 
 export const props = createProps<SplitterProps>()([
   "dir",
+  "disabled",
   "getRootNode",
   "id",
   "ids",

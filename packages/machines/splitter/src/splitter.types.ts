@@ -42,13 +42,22 @@ export interface PanelData {
    * The size of the panel when collapsed.
    */
   collapsedSize?: PanelSize | undefined
+  /**
+   * How far a drag must go to collapse or expand the panel. Defaults to half the gap between `collapsedSize` and `minSize`.
+   */
+  collapsedThreshold?: PanelSize | undefined
+  /**
+   * Whether the panel's size is locked
+   */
+  disabled?: boolean | undefined
 }
 
 // zag-ignore-export
-export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize"> & {
+export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize" | "collapsedThreshold"> & {
   minSize?: number | undefined
   maxSize?: number | undefined
   collapsedSize?: number | undefined
+  collapsedThreshold?: number | undefined
 }
 
 export interface CursorState {
@@ -85,6 +94,10 @@ export interface ElementIds {
 }
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
+  /**
+   * Whether resizing is disabled for the whole splitter
+   */
+  disabled?: boolean | undefined
   /**
    * The orientation of the splitter. Can be `horizontal` or `vertical`
    * @default "horizontal"
@@ -178,9 +191,7 @@ interface Refs {
   prevInitialLayout: string | null
   prevPanelIds: string | null
   prevSizeProps: string | null
-  /** The sizes last set by the user or the API, and the group size at that time */
   requestedLayout: RequestedLayout | null
-  /** The last requested layout for each set of panels, so hiding a panel and showing it again keeps the layout */
   layoutCache: Map<string, RequestedLayout>
   suppressOnResize: boolean
 }
@@ -286,9 +297,9 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   expandPanel: (id: PanelId, minSize?: number) => void
   /**
-   * Resizes the specified panel.
+   * Resizes the specified panel. Takes a percentage, or a size with a unit such as `"200px"`.
    */
-  resizePanel: (id: PanelId, unsafePanelSize: number) => void
+  resizePanel: (id: PanelId, size: PanelSize) => void
   /**
    * Returns the layout of the splitter.
    */

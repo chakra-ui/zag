@@ -146,5 +146,6 @@ export function normalizePanels(
     minSize: parsePanelSize(panel.minSize, rootEl, orientation),
     maxSize: parsePanelSize(panel.maxSize, rootEl, orientation),
     collapsedSize: parsePanelSize(panel.collapsedSize, rootEl, orientation),
+    collapsedThreshold: parsePanelSize(panel.collapsedThreshold, rootEl, orientation),
   }))
 }

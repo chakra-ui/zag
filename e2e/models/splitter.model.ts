@@ -2,7 +2,6 @@ import { expect, type Page } from "@playwright/test"
 import { a11y } from "../_utils"
 import { Model } from "./model"
 
-/** A handle by position, or by its id such as "a:b" */
 type HandleRef = number | string
 
 export class SplitterModel extends Model {
@@ -14,6 +13,10 @@ export class SplitterModel extends Model {
 
   goto(example = "basic") {
     return this.page.goto(`/splitter/${example}`)
+  }
+
+  reload() {
+    return this.page.reload()
   }
 
   checkAccessibility() {
@@ -33,7 +36,6 @@ export class SplitterModel extends Model {
     return this.page.locator("[data-splitter-panel]").nth(index)
   }
 
-  /** The `<pre>` most examples print `api.getSizes()` into */
   async getSizes(): Promise<number[]> {
     const text = await this.page.locator("main pre").textContent()
     return JSON.parse(text!).map((size: number) => Math.round(size))
@@ -68,7 +70,6 @@ export class SplitterModel extends Model {
     return (await this.handleCenter(ref)).x
   }
 
-  /** Presses on a handle and moves `dx` pixels without releasing */
   async startDrag(ref: HandleRef, dx: number) {
     this.dragStart = await this.handleCenter(ref)
     await this.page.mouse.move(this.dragStart.x, this.dragStart.y)
@@ -76,16 +77,29 @@ export class SplitterModel extends Model {
     await this.moveDrag(dx)
   }
 
-  /** Moves an ongoing drag to `dx` pixels from where it started */
   async moveDrag(dx: number) {
     await this.page.mouse.move(this.dragStart.x + dx, this.dragStart.y, { steps: 4 })
   }
 
-  /** Drags a handle by `dx` pixels in one gesture, optionally through `via` first */
   async drag(ref: HandleRef, dx: number, via?: number) {
     await this.startDrag(ref, via ?? dx)
     if (via != null) await this.moveDrag(dx)
     await this.page.mouse.up()
+  }
+
+  async dragByPercent(ref: HandleRef, percent: number) {
+    const total = await this.page
+      .locator("[data-splitter-panel]")
+      .evaluateAll((els) => els.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0))
+    await this.drag(ref, Math.round((total * percent) / 100))
+  }
+
+  async seePanelWidthNear(index: number, width: number) {
+    await expect.poll(async () => Math.abs((await this.panelWidth(index)) - width)).toBeLessThanOrEqual(2)
+  }
+
+  async seeHandleEnabled(ref: HandleRef) {
+    await expect(this.handle(ref)).not.toHaveAttribute("aria-disabled")
   }
 
   async dragVertically(ref: HandleRef, dy: number) {
@@ -108,7 +122,6 @@ export class SplitterModel extends Model {
     return this.handle(ref).dblclick()
   }
 
-  /** Adds a focused button before the splitter, so Tab moves into it */
   async focusButtonBeforeSplitter() {
     await this.page.locator("main").evaluate((main) => {
       const button = document.createElement("button")
@@ -134,7 +147,6 @@ export class SplitterModel extends Model {
     await expect(this.handle(ref)).toHaveAttribute("aria-valuemin", String(value))
   }
 
-  /** Allows 2px for sub-pixel rounding */
   async seeHandleMovedBy(ref: HandleRef, startX: number, dx: number) {
     await expect.poll(async () => Math.abs((await this.handleX(ref)) - startX - dx)).toBeLessThanOrEqual(2)
   }
@@ -156,7 +168,6 @@ export class SplitterModel extends Model {
     await expect(this.handle(ref)).toHaveAttribute("aria-orientation", orientation)
   }
 
-  /** The layout direction, shared by the root, panels and handles */
   async seeLayoutOrientation(orientation: "horizontal" | "vertical") {
     await expect(this.root).toHaveAttribute("data-orientation", orientation)
     await expect(this.panel(0)).toHaveAttribute("data-orientation", orientation)
@@ -183,7 +194,6 @@ export class SplitterModel extends Model {
     return expect(this.output(name)).toHaveText(text)
   }
 
-  /** Sizes from the events example's "Sizes" output */
   async getOutputSizes() {
     const text = await this.output("Sizes").textContent()
     return text!.split("/").map(Number)

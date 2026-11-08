@@ -1,12 +1,7 @@
-/**
- * This code was modified from react-resizable-panels by Brian Vaughn
- * @see https://github.com/bvaughn/react-resizable-panels
- */
-
 import { ensure } from "@zag-js/utils"
 import type { NormalizedPanelData } from "../splitter.types"
 import { fuzzyCompareNumbers, fuzzySizeEqual, fuzzyNumbersEqual } from "./fuzzy"
-import { resizePanel } from "./resize-panel"
+import { getCollapsedThreshold, resizePanel } from "./resize-panel"
 
 interface Layout {
   delta: number
@@ -86,6 +81,21 @@ export function resizeByDelta(props: Layout): number[] {
           }
         }
       }
+    } else {
+      const index = delta < 0 ? secondPivotIndex : firstPivotIndex
+      const panel = panels[index]
+      ensure(panel, () => `Panel data not found for index ${index}`)
+
+      const { collapsedSize = 0, collapsible, minSize = 0 } = panel
+      const prevSize = initialSize[index]
+
+      if (collapsible && prevSize != null && fuzzyCompareNumbers(prevSize, minSize) < 0) {
+        const gapSize = minSize - collapsedSize
+        if (fuzzyCompareNumbers(prevSize + Math.abs(delta), minSize) < 0) {
+          const opens = fuzzyCompareNumbers(Math.abs(delta), getCollapsedThreshold(panel)) > 0
+          delta = opens ? (delta < 0 ? -gapSize : gapSize) : 0
+        }
+      }
     }
   }
 
@@ -105,11 +115,7 @@ export function resizeByDelta(props: Layout): number[] {
       const prevSize = initialSize[index]
       ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
-      const maxSafeSize = resizePanel({
-        panels,
-        index: index,
-        size: 100,
-      })
+      const maxSafeSize = resizePanel({ panels, index, size: 100, prevSize })
       const delta = maxSafeSize - prevSize
 
       maxAvailableDelta += delta
@@ -136,7 +142,7 @@ export function resizeByDelta(props: Layout): number[] {
       ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
       const unsafeSize = prevSize - deltaRemaining
-      const safeSize = resizePanel({ panels, index, size: unsafeSize })
+      const safeSize = resizePanel({ panels, index, size: unsafeSize, prevSize })
 
       if (!fuzzyNumbersEqual(prevSize, safeSize)) {
         deltaApplied += prevSize - safeSize
@@ -174,7 +180,7 @@ export function resizeByDelta(props: Layout): number[] {
     ensure(prevSize, () => `Previous size not found for panel index ${pivotIndex}`)
 
     const unsafeSize = prevSize + deltaApplied
-    const safeSize = resizePanel({ panels, index: pivotIndex, size: unsafeSize })
+    const safeSize = resizePanel({ panels, index: pivotIndex, size: unsafeSize, prevSize })
 
     // Adjust the pivot panel before, but only by the amount that surrounding panels were able to shrink/contract.
     nextSize[pivotIndex] = safeSize
@@ -190,7 +196,7 @@ export function resizeByDelta(props: Layout): number[] {
         ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
         const unsafeSize = prevSize + deltaRemaining
-        const safeSize = resizePanel({ panels, index, size: unsafeSize })
+        const safeSize = resizePanel({ panels, index, size: unsafeSize, prevSize })
 
         if (!fuzzyNumbersEqual(prevSize, safeSize)) {
           deltaRemaining -= safeSize - prevSize

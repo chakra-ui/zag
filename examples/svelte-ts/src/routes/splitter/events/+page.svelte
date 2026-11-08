@@ -4,16 +4,19 @@
   import "@styles/splitter.css"
 
   let disabled = $state(false)
+  let lockA = $state(false)
+  let disableAll = $state(false)
   let resizeCount = $state(0)
   let resizeEnd = $state<string[]>([])
   let collapseLog = $state<string[]>([])
 
   const id = $props.id()
-  const service = useMachine(splitter.machine, {
+  const service = useMachine(splitter.machine, () => ({
     id,
     defaultSize: [25, 50, 25],
+    disabled: disableAll,
     panels: [
-      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40 },
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40, disabled: lockA },
       { id: "b", minSize: 20 },
       { id: "c", minSize: 20 },
     ],
@@ -29,7 +32,7 @@
     onExpand({ panelId }) {
       collapseLog = [...collapseLog, `expand:${panelId}`]
     },
-  })
+  }))
 
   const api = $derived(splitter.connect(service, normalizeProps))
 </script>
@@ -39,6 +42,9 @@
     <button onclick={() => api.collapsePanel("a")}>Collapse A</button>
     <button onclick={() => api.expandPanel("a")}>Expand A</button>
     <button onclick={() => (disabled = !disabled)}>{disabled ? "Enable" : "Disable"} second handle</button>
+    <button onclick={() => api.resizePanel("a", "200px")}>Resize A to 200px</button>
+    <button onclick={() => (lockA = !lockA)}>{lockA ? "Unlock" : "Lock"} A</button>
+    <button onclick={() => (disableAll = !disableAll)}>{disableAll ? "Enable" : "Disable"} splitter</button>
   </div>
 
   <div {...api.getRootProps()}>

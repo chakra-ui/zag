@@ -3,32 +3,39 @@ import * as splitter from "@zag-js/splitter"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/splitter.css"
 
+const id = useId()
 const disabled = ref(false)
+const lockA = ref(false)
+const disableAll = ref(false)
 const resizeCount = ref(0)
 const resizeEnd = ref<string[]>([])
 const collapseLog = ref<string[]>([])
 
-const service = useMachine(splitter.machine, {
-  id: useId(),
-  defaultSize: [25, 50, 25],
-  panels: [
-    { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40 },
-    { id: "b", minSize: 20 },
-    { id: "c", minSize: 20 },
-  ],
-  onResize() {
-    resizeCount.value++
-  },
-  onResizeEnd({ size }) {
-    resizeEnd.value = [...resizeEnd.value, size.map(Math.round).join("/")]
-  },
-  onCollapse({ panelId }) {
-    collapseLog.value = [...collapseLog.value, `collapse:${panelId}`]
-  },
-  onExpand({ panelId }) {
-    collapseLog.value = [...collapseLog.value, `expand:${panelId}`]
-  },
-})
+const service = useMachine(
+  splitter.machine,
+  computed(() => ({
+    id,
+    defaultSize: [25, 50, 25],
+    disabled: disableAll.value,
+    panels: [
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40, disabled: lockA.value },
+      { id: "b", minSize: 20 },
+      { id: "c", minSize: 20 },
+    ],
+    onResize() {
+      resizeCount.value++
+    },
+    onResizeEnd({ size }) {
+      resizeEnd.value = [...resizeEnd.value, size.map(Math.round).join("/")]
+    },
+    onCollapse({ panelId }) {
+      collapseLog.value = [...collapseLog.value, `collapse:${panelId}`]
+    },
+    onExpand({ panelId }) {
+      collapseLog.value = [...collapseLog.value, `expand:${panelId}`]
+    },
+  })),
+)
 
 const api = computed(() => splitter.connect(service, normalizeProps))
 </script>
@@ -39,6 +46,9 @@ const api = computed(() => splitter.connect(service, normalizeProps))
       <button @click="api.collapsePanel('a')">Collapse A</button>
       <button @click="api.expandPanel('a')">Expand A</button>
       <button @click="disabled = !disabled">{{ disabled ? "Enable" : "Disable" }} second handle</button>
+      <button @click="api.resizePanel('a', '200px')">Resize A to 200px</button>
+      <button @click="lockA = !lockA">{{ lockA ? "Unlock" : "Lock" }} A</button>
+      <button @click="disableAll = !disableAll">{{ disableAll ? "Enable" : "Disable" }} splitter</button>
     </div>
 
     <div v-bind="api.getRootProps()">

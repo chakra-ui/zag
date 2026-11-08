@@ -5,6 +5,8 @@ import "@styles/splitter.css"
 
 export default function Page() {
   const [disabled, setDisabled] = useState(false)
+  const [lockA, setLockA] = useState(false)
+  const [disableAll, setDisableAll] = useState(false)
   const [resizeCount, setResizeCount] = useState(0)
   const [resizeEnd, setResizeEnd] = useState<string[]>([])
   const [collapseLog, setCollapseLog] = useState<string[]>([])
@@ -12,8 +14,9 @@ export default function Page() {
   const service = useMachine(splitter.machine, {
     id: useId(),
     defaultSize: [25, 50, 25],
+    disabled: disableAll,
     panels: [
-      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40 },
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40, disabled: lockA },
       { id: "b", minSize: 20 },
       { id: "c", minSize: 20 },
     ],
@@ -39,6 +42,9 @@ export default function Page() {
         <button onClick={() => api.collapsePanel("a")}>Collapse A</button>
         <button onClick={() => api.expandPanel("a")}>Expand A</button>
         <button onClick={() => setDisabled((value) => !value)}>{disabled ? "Enable" : "Disable"} second handle</button>
+        <button onClick={() => api.resizePanel("a", "200px")}>Resize A to 200px</button>
+        <button onClick={() => setLockA((value) => !value)}>{lockA ? "Unlock" : "Lock"} A</button>
+        <button onClick={() => setDisableAll((value) => !value)}>{disableAll ? "Enable" : "Disable"} splitter</button>
       </div>
 
       <div {...api.getRootProps()}>

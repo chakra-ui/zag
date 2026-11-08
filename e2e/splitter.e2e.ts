@@ -276,3 +276,135 @@ test.describe("splitter / disabled handle", () => {
     await I.seeOutput("Sizes", sizes!)
   })
 })
+
+test.describe("splitter / collapse threshold", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("collapsible")
+    await I.focusHandle(0)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 5)
+  })
+
+  test("a short drag leaves a collapsed panel shut", async () => {
+    // collapsed at 5 with a min of 10, so it opens past 2.5
+    await I.dragByPercent(0, 2)
+    await I.seeHandleValue(0, 5)
+  })
+
+  test("a drag past half the gap opens it to its min", async () => {
+    await I.dragByPercent(0, 3)
+    await I.seeHandleValue(0, 10)
+  })
+})
+
+test.describe("splitter / disabled panel", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+    await I.clickButton("Lock A")
+  })
+
+  test("disables the handles next to it", async () => {
+    await I.seeHandleIsDisabled(0)
+    await I.seeHandleEnabled(1)
+  })
+
+  test("other handles can't push into it", async () => {
+    await I.drag(1, -800)
+    await I.seeOutput("Sizes", "25/20/55")
+  })
+
+  test("the API can't resize it", async () => {
+    await I.clickButton("Resize A to 200px")
+    await I.clickButton("Collapse A")
+    await I.seeOutput("Sizes", "25/50/25")
+  })
+})
+
+test.describe("splitter / disabled splitter", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+    await I.clickButton("Disable splitter")
+  })
+
+  test("disables every handle", async () => {
+    await I.seeHandleIsDisabled(0)
+    await I.seeHandleIsDisabled(1)
+    await I.drag(0, 100)
+    await I.seeOutput("Sizes", "25/50/25")
+  })
+
+  test("the API still works", async () => {
+    await I.clickButton("Resize A to 200px")
+    await I.seePanelWidthNear(0, 200)
+  })
+})
+
+test.describe("splitter / api", () => {
+  test.beforeEach(({ page }) => {
+    I = new SplitterModel(page)
+  })
+
+  test("resizePanel takes a size with a unit", async () => {
+    await I.goto("events")
+    await I.clickButton("Resize A to 200px")
+    await I.seePanelWidthNear(0, 200)
+  })
+
+  test("onResize doesn't fire on mount", async () => {
+    await I.goto("events")
+    await I.seeOutput("Resize count", "0")
+  })
+})
+
+test.describe("splitter / group resize behavior", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("group-resize-behavior")
+  })
+
+  test("a preserve-pixel-size panel keeps its width when the window resizes", async () => {
+    const width = await I.panelWidth(0)
+    await I.resizeWindow({ width: 900, height: 720 })
+    await I.seePanelWidthNear(0, width)
+    await I.resizeWindow({ width: 1280, height: 720 })
+    await I.seePanelWidthNear(0, width)
+  })
+})
+
+test.describe("splitter / controlled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("controlled")
+  })
+
+  test("follows sizes set by the parent", async () => {
+    await I.clickButton("Left wide")
+    await I.seeHandleValue(0, 50)
+    await I.clickButton("Center wide")
+    await I.seeHandleValue(0, 15)
+  })
+
+  test("reports drags back to the parent", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 2)
+    await I.seeSizes([27, 48, 25])
+  })
+})
+
+test.describe("splitter / persistent layout", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("persistent-layout")
+  })
+
+  test("keeps the layout after a reload", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 5)
+    const sizes = await I.getSizes()
+    await I.reload()
+    await I.seeSizes(sizes)
+  })
+})
