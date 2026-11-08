@@ -56,7 +56,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "marquee",
     label: "Marquee",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "logo-wall", title: "Logo Wall" },
+      { slug: "vertical", title: "Vertical" },
+      { slug: "ticker", title: "Ticker" },
+    ],
   },
   {
     slug: "image-cropper",

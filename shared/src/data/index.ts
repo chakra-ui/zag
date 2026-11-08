@@ -7,6 +7,7 @@ export { cascadeSelectData } from "./cascade-select"
 export { listboxData, type ListboxOption } from "./listbox"
 export * from "./scheduler"
 export * from "./json-tree"
+export * from "./marquee"
 
 export const selectData = countryList.map((country) => ({
   label: `${country.name} (${country.code})`,
