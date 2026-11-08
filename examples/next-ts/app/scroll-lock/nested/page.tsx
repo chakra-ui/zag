@@ -27,7 +27,7 @@ export default function Page() {
     <main>
       <div className="nested">
         <p className="hint">
-          Open the settings, then the confirmation. Closing the confirmation keeps the page locked.
+          Open the settings, then the confirmation, and close the confirmation to see the page stay locked.
         </p>
         <button data-testid="open-sheet" onClick={() => setSheetOpen(true)}>
           Open settings

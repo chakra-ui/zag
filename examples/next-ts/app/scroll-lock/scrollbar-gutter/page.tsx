@@ -18,9 +18,7 @@ export default function Page() {
         <div className="header" data-testid="header">
           Northwind Design
         </div>
-        <p className="hint">
-          The page reserves its scrollbar gutter. Lock scrolling and the header stays the same width.
-        </p>
+        <p className="hint">Lock scrolling and watch the header keep its width.</p>
         <button data-testid="toggle-lock" aria-pressed={locked} onClick={() => setLocked((v) => !v)}>
           {locked ? "Unlock scrolling" : "Lock scrolling"}
         </button>

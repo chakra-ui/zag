@@ -42,22 +42,32 @@ test.describe("scroll lock nested", () => {
   test("closing the outer panel while the inner one is open releases everything", async ({ page }) => {
     await page.getByTestId("open-sheet").click()
     await page.getByTestId("open-confirm").click()
+    await expect(page.getByTestId("confirm")).toBeVisible()
     await expect(page.locator("body")).toHaveAttribute("data-scroll-lock", "")
 
-    // the confirmation sits over the sheet, so close it through the keyboard-free path: inner first
-    await page.getByTestId("close-confirm").click()
-    await page.getByTestId("close-sheet").click()
+    // the confirmation's backdrop covers the sheet, so reach its close button with the keyboard
+    await page.getByTestId("close-sheet").focus()
+    await page.keyboard.press("Enter")
+
+    await expect(page.getByTestId("sheet")).toBeHidden()
+    await expect(page.getByTestId("confirm")).toBeHidden()
     await expect(page.locator("body")).not.toHaveAttribute("data-scroll-lock", "")
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("")
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("")
   })
 
-  test("the lock works again after the panels are remounted", async ({ page }) => {
-    for (let i = 0; i < 2; i++) {
-      await page.getByTestId("open-sheet").click()
-      await page.getByTestId("open-confirm").click()
-      await expect(page.locator("body")).toHaveAttribute("data-scroll-lock", "")
-      await page.getByTestId("close-confirm").click()
-      await page.getByTestId("close-sheet").click()
-      await expect(page.locator("body")).not.toHaveAttribute("data-scroll-lock", "")
-    }
+  test("navigating away while both panels are open releases the lock", async ({ page }) => {
+    await page.evaluate(() => ((window as any).__spa = true))
+    await page.getByTestId("open-sheet").click()
+    await page.getByTestId("open-confirm").click()
+    await expect(page.locator("body")).toHaveAttribute("data-scroll-lock", "")
+
+    await page.getByRole("link", { name: "All components" }).dispatchEvent("click")
+
+    await expect(page).toHaveURL(/\/$/)
+    expect(await page.evaluate(() => (window as any).__spa)).toBe(true) // client-side, not a reload
+    await expect(page.locator("body")).not.toHaveAttribute("data-scroll-lock", "")
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("")
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("")
   })
 })

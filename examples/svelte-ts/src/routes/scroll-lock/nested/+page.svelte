@@ -23,7 +23,9 @@
 
 <main>
   <div class="nested">
-    <p class="hint">Open the settings, then the confirmation. Closing the confirmation keeps the page locked.</p>
+    <p class="hint">
+      Open the settings, then the confirmation, and close the confirmation to see the page stay locked.
+    </p>
     <button data-testid="open-sheet" onclick={() => (sheetOpen = true)}>Open settings</button>
 
     {#if sheetOpen}

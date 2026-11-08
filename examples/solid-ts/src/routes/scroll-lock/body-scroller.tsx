@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <main>
       <div class="body-scroller">
-        <p class="hint">Scroll the page, then open the filters and try again. The lock lands on body.</p>
+        <p class="hint">Open the filters, then try scrolling the page behind them.</p>
         <button data-testid="open-panel" onClick={() => setOpen(true)}>
           Open filters
         </button>
