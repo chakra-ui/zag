@@ -102,6 +102,7 @@
 }
 
 .popper-dropdown .trigger {
+  align-self: flex-end;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -109,7 +110,9 @@
   max-width: 100%;
 }
 
-.popper-dropdown .menu {
+.popper-dropdown .content {
+  position: relative;
+  isolation: isolate;
   background: var(--z-bg);
   border: 1px solid var(--z-border);
   border-radius: var(--z-radius);

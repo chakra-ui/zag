@@ -54,6 +54,7 @@ function show() {
     flip: ["top-start"],
     sameWidth: true,
     overflowPadding: 16,
+    shift: 32,
     getArrowElement: () => arrowRef.value,
     onComplete: (data) => {
       placement.value = data.placement
@@ -73,13 +74,12 @@ onBeforeUnmount(close)
 <template>
   <main>
     <div class="popper-dropdown">
-      <p class="hint">The button sits at the bottom edge, so the list flips above it.</p>
+      <p class="hint">Open the menu near the bottom edge; it flips above and stays on screen.</p>
       <button
         ref="triggerRef"
         type="button"
         class="trigger"
         data-testid="dropdown-trigger"
-        aria-haspopup="true"
         :aria-expanded="open"
         aria-controls="sort-menu"
         @click="open ? close() : show()"
@@ -96,15 +96,17 @@ onBeforeUnmount(close)
         :data-placement="placement"
         :style="floatingStyle"
       >
-        <ul class="list">
-          <li v-for="option in options" :key="option">
-            <button type="button" :aria-current="option === value" @click="choose(option)">
-              {{ option }}
-            </button>
-          </li>
-        </ul>
-        <div ref="arrowRef" class="arrow" data-testid="dropdown-arrow" :style="arrow.arrow">
-          <div class="arrow-tip" :style="arrow.arrowTip" />
+        <div class="content">
+          <ul class="list">
+            <li v-for="option in options" :key="option">
+              <button type="button" :aria-current="option === value" @click="choose(option)">
+                {{ option }}
+              </button>
+            </li>
+          </ul>
+          <div ref="arrowRef" class="arrow" data-testid="dropdown-arrow" :style="arrow.arrow">
+            <div class="arrow-tip" :style="arrow.arrowTip" />
+          </div>
         </div>
       </div>
     </div>

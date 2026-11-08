@@ -20,7 +20,8 @@ test.describe("popper dropdown", () => {
     const t = (await trigger.boundingBox())!
     await expect.poll(async () => Math.round((await menu.boundingBox())!.width)).toBe(Math.round(t.width))
     const m = (await menu.boundingBox())!
-    expect(Math.abs(m.x - t.x)).toBeLessThan(1)
+    // shifted 32px along the alignment axis
+    expect(Math.round(m.x - t.x)).toBe(32)
     // flipped above the trigger: 10px gutter plus half of the 10px arrow
     expect(Math.round(t.y - (m.y + m.height))).toBe(15)
     await expect(menu).toHaveAttribute("data-placement", "top-start")
@@ -57,5 +58,19 @@ test.describe("popper dropdown", () => {
     await trigger.click()
     await page.mouse.click(5, 5)
     await expect(menu).toBeHidden()
+  })
+
+  test("the list slides back inside the viewport padding when the shift pushes it past the edge", async ({ page }) => {
+    await page.setViewportSize({ width: 440, height: 720 })
+    const menu = page.getByTestId("dropdown-menu")
+    await page.getByTestId("dropdown-trigger").click()
+    await expect(menu).toBeVisible()
+    // 16px overflow padding from the right edge
+    await expect
+      .poll(async () => {
+        const m = (await menu.boundingBox())!
+        return Math.round(440 - 16 - (m.x + m.width))
+      })
+      .toBe(0)
   })
 })

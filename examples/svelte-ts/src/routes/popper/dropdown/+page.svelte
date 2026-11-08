@@ -55,6 +55,7 @@
       flip: ["top-start"],
       sameWidth: true,
       overflowPadding: 16,
+      shift: 32,
       getArrowElement: () => arrowRef,
       onComplete: (data) => {
         placement = data.placement
@@ -67,13 +68,12 @@
 
 <main>
   <div class="popper-dropdown">
-    <p class="hint">The button sits at the bottom edge, so the list flips above it.</p>
+    <p class="hint">Open the menu near the bottom edge; it flips above and stays on screen.</p>
     <button
       type="button"
       class="trigger"
       bind:this={triggerRef}
       data-testid="dropdown-trigger"
-      aria-haspopup="true"
       aria-expanded={open}
       aria-controls="sort-menu"
       onclick={() => (open ? close() : show())}
@@ -90,30 +90,32 @@
       data-placement={placement}
       {...normalizeProps.element({ style: floatingStyle })}
     >
-      <ul class="list">
-        {#each options as option (option)}
-          <li>
-            <button
-              type="button"
-              aria-current={option === value ? "true" : undefined}
-              onclick={() => {
-                value = option
-                close()
-                triggerRef.focus()
-              }}
-            >
-              {option}
-            </button>
-          </li>
-        {/each}
-      </ul>
-      <div
-        class="arrow"
-        bind:this={arrowRef}
-        data-testid="dropdown-arrow"
-        {...normalizeProps.element({ style: arrow.arrow })}
-      >
-        <div class="arrow-tip" {...normalizeProps.element({ style: arrow.arrowTip })}></div>
+      <div class="content">
+        <ul class="list">
+          {#each options as option (option)}
+            <li>
+              <button
+                type="button"
+                aria-current={option === value ? "true" : undefined}
+                onclick={() => {
+                  value = option
+                  close()
+                  triggerRef.focus()
+                }}
+              >
+                {option}
+              </button>
+            </li>
+          {/each}
+        </ul>
+        <div
+          class="arrow"
+          bind:this={arrowRef}
+          data-testid="dropdown-arrow"
+          {...normalizeProps.element({ style: arrow.arrow })}
+        >
+          <div class="arrow-tip" {...normalizeProps.element({ style: arrow.arrowTip })}></div>
+        </div>
       </div>
     </div>
   </div>

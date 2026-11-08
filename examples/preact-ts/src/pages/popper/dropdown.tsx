@@ -48,6 +48,7 @@ export default function Page() {
         flip: ["top-start"],
         sameWidth: true,
         overflowPadding: 16,
+        shift: 32,
         getArrowElement: () => arrowRef.current,
         onComplete: (data) => setPlacement(data.placement),
       })
@@ -62,13 +63,12 @@ export default function Page() {
   return (
     <main>
       <div className="popper-dropdown">
-        <p className="hint">The button sits at the bottom edge, so the list flips above it.</p>
+        <p className="hint">Open the menu near the bottom edge; it flips above and stays on screen.</p>
         <button
           type="button"
           className="trigger"
           ref={triggerRef}
           data-testid="dropdown-trigger"
-          aria-haspopup="true"
           aria-expanded={open}
           aria-controls="sort-menu"
           onClick={() => (open ? closeRef.current() : openRef.current())}
@@ -85,25 +85,27 @@ export default function Page() {
           data-placement={placement}
           style={styles.floating}
         >
-          <ul className="list">
-            {options.map((option) => (
-              <li key={option}>
-                <button
-                  type="button"
-                  aria-current={option === value}
-                  onClick={() => {
-                    setValue(option)
-                    closeRef.current()
-                    triggerRef.current?.focus()
-                  }}
-                >
-                  {option}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="arrow" ref={arrowRef} data-testid="dropdown-arrow" style={arrow.arrow}>
-            <div className="arrow-tip" style={arrow.arrowTip} />
+          <div className="content">
+            <ul className="list">
+              {options.map((option) => (
+                <li key={option}>
+                  <button
+                    type="button"
+                    aria-current={option === value}
+                    onClick={() => {
+                      setValue(option)
+                      closeRef.current()
+                      triggerRef.current?.focus()
+                    }}
+                  >
+                    {option}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="arrow" ref={arrowRef} data-testid="dropdown-arrow" style={arrow.arrow}>
+              <div className="arrow-tip" style={arrow.arrowTip} />
+            </div>
           </div>
         </div>
       </div>
