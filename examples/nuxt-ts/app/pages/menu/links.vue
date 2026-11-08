@@ -3,7 +3,8 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/menu.css"
 
-const service = useMachine(menu.machine, { id: useId() })
+const selected = ref("")
+const service = useMachine(menu.machine, { id: useId(), onSelect: (details) => (selected.value = details.value) })
 const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
@@ -17,7 +18,10 @@ const api = computed(() => menu.connect(service, normalizeProps))
         <a v-bind="api.getItemProps({ value: 'duplicate' })" href="https://bing.com">Bing</a>
         <a v-bind="api.getItemProps({ value: 'delete' })" href="https://github.com" target="_blank">GitHub</a>
         <a v-bind="api.getItemProps({ value: 'export' })" href="https://youtube.com" target="_blank">YouTube</a>
+        <a v-bind="api.getItemProps({ value: 'section' })" href="#section">Section</a>
+        <a v-bind="api.getItemProps({ value: 'basic' })" href="/menu/basic">Basic menu</a>
       </div>
     </div>
+    <output data-testid="selected">{{ selected }}</output>
   </div>
 </template>
