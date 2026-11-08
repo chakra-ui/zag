@@ -190,6 +190,37 @@ export interface ContentState {
    * Whether the tab content is selected
    */
   selected: boolean
+  /**
+   * The orientation of the tabs
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
+}
+
+export interface IndicatorState {
+  /**
+   * The position and size of the selected tab, relative to the indicator's offset parent
+   */
+  rect: Rect | null
+  /**
+   * Whether the indicator has a measured rect to point to
+   */
+  visible: boolean
+  /**
+   * Whether the indicator should snap into place instead of animating
+   */
+  instant: boolean
+  /**
+   * The orientation of the tabs
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
 }
 
 export interface TabsApi<T extends PropTypes = PropTypes> {
@@ -238,14 +269,18 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
    * Returns the state of the trigger with the given props
    */
   getTriggerState: (props: TriggerProps) => TriggerState
+  getTriggerProps: (props: TriggerProps) => T["button"]
 
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
-  getTriggerProps: (props: TriggerProps) => T["button"]
   /**
    * Returns the state of the content with the given props
    */
   getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState: () => IndicatorState
   getIndicatorProps: () => T["element"]
 }

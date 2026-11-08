@@ -265,7 +265,8 @@ the triggers get `data-indicator-pending` until it's measured.
 
 Every part gets `data-activation-direction`: where the selected tab sits
 relative to the previous one (`left`, `right`, `up`, `down` or `none`). It's
-also available as `api.activationDirection` and in `onValueChange`.
+also available as `api.activationDirection`, in `onValueChange`, and in
+`api.getContentState()` and `api.getIndicatorState()`.
 
 To animate panels in and out, keep the previous panel mounted while it exits
 (for example with [Presence](/components/presence)) and slide panels based on

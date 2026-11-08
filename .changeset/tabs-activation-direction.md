@@ -5,6 +5,8 @@
 - Add `data-activation-direction` to every part, plus `api.activationDirection` and `activationDirection` in
   `onValueChange`, for animating panels in the direction of the selected tab.
 
+- Add `getIndicatorState`, and add `orientation` and `activationDirection` to `getContentState`.
+
 - Fix `setIndicatorRect` not moving the indicator.
 
 - Fix `selectNext` and `selectPrevious` not selecting in manual mode and moving focus.

@@ -11,6 +11,7 @@ export type {
   ElementIds,
   ContentProps,
   ContentState,
+  IndicatorState,
   IntlTranslations,
   FocusChangeDetails,
   NavigateDetails,

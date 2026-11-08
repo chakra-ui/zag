@@ -29,6 +29,11 @@ export const getNextTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: 
 export const getPrevTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean | undefined }) =>
   prevById(getElements(ctx), getTriggerId(ctx, opts.value), opts.loopFocus)
 
+export const getSiblingTriggerEl = (ctx: Scope, value: string | null, step: number, loopFocus?: boolean) => {
+  if (value == null) return step > 0 ? getFirstTriggerEl(ctx) : getLastTriggerEl(ctx)
+  return step > 0 ? getNextTriggerEl(ctx, { value, loopFocus }) : getPrevTriggerEl(ctx, { value, loopFocus })
+}
+
 // Offsets ignore transforms, so a scaling ancestor doesn't skew the indicator
 export const getTriggerRect = (ctx: Scope, triggerEl: HTMLElement) => {
   const container = getIndicatorEl(ctx)?.offsetParent ?? triggerEl.offsetParent
