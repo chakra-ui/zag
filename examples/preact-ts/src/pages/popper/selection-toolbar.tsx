@@ -66,6 +66,7 @@ export default function Page() {
           className="format-bar"
           ref={toolbarRef}
           role="toolbar"
+          tabIndex={-1}
           aria-label="Text formatting"
           data-testid="selection-toolbar"
           data-open={open ? "true" : "false"}

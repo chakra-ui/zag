@@ -71,6 +71,7 @@ onBeforeUnmount(() => {
         ref="toolbarRef"
         class="format-bar"
         role="toolbar"
+        tabindex="-1"
         aria-label="Text formatting"
         data-testid="selection-toolbar"
         :data-open="open ? 'true' : 'false'"

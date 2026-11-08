@@ -17,7 +17,11 @@ export default function Page() {
           Northwind Design
         </div>
         <p class="hint">Lock scrolling and watch the header keep its width.</p>
-        <button data-testid="toggle-lock" aria-pressed={locked()} onClick={() => setLocked((v) => !v)}>
+        <button
+          data-testid="toggle-lock"
+          aria-pressed={locked() ? "true" : "false"}
+          onClick={() => void setLocked((v) => !v)}
+        >
           {locked() ? "Unlock scrolling" : "Lock scrolling"}
         </button>
       </div>
