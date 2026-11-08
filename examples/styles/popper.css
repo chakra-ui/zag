@@ -1,0 +1,162 @@
+.popper-selection,
+.popper-inline,
+.popper-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.popper-selection .hint,
+.popper-inline .hint,
+.popper-dropdown .hint {
+  margin: 0;
+  font-size: var(--z-text-md);
+  color: var(--z-fg-muted);
+}
+
+/* Selection toolbar */
+
+.popper-selection .article {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.popper-selection .format-bar {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--z-bg-inverted);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-lg);
+}
+
+.popper-selection .format-bar[data-open="false"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.popper-selection .format-bar button {
+  height: 28px;
+  padding: 0 10px;
+  background: transparent;
+  color: white;
+  border: 0;
+  border-radius: var(--z-radius-sm);
+  font-size: var(--z-text-sm);
+
+  &:hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+}
+
+.popper-selection .status {
+  min-height: 1.5em;
+  margin: 0;
+  font-size: var(--z-text-md);
+  color: var(--z-fg-muted);
+}
+
+/* Inline anchor */
+
+.popper-inline .article {
+  width: 18rem;
+  max-width: 100%;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.popper-inline .term {
+  color: var(--z-blue-500);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.popper-inline .card {
+  width: 14rem;
+  padding: 10px 12px;
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-popover);
+  font-size: var(--z-text-sm);
+}
+
+.popper-inline .card[data-open="false"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Dropdown */
+
+.popper-dropdown {
+  /* Fills the canvas so the trigger sits at the bottom edge and the list has to flip */
+  flex: 1;
+  justify-content: space-between;
+  --arrow-size: 10px;
+  --arrow-background: var(--z-bg);
+}
+
+.popper-dropdown .trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 16rem;
+  max-width: 100%;
+}
+
+.popper-dropdown .menu {
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-popover);
+}
+
+.popper-dropdown .menu[data-open="false"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.popper-dropdown .list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--z-bg);
+  border-radius: var(--z-radius);
+}
+
+.popper-dropdown .list button {
+  width: 100%;
+  justify-content: flex-start;
+  height: 32px;
+  padding: 0 8px;
+  background: transparent;
+  border: 0;
+  text-align: start;
+  font-size: var(--z-text-md);
+
+  &:hover {
+    background: var(--z-bg-muted);
+  }
+
+  &[aria-current="true"] {
+    font-weight: 600;
+  }
+}
+
+.popper-dropdown .arrow {
+  z-index: -1;
+}
+
+.popper-dropdown .arrow-tip {
+  border: 1px solid var(--z-border);
+  border-bottom-color: transparent;
+  border-inline-end-color: transparent;
+}

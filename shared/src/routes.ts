@@ -651,7 +651,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "popper",
     label: "Popper",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "selection-toolbar", title: "Selection Toolbar" },
+      { slug: "inline-anchor", title: "Inline Anchor" },
+      { slug: "dropdown", title: "Dropdown" },
+    ],
   },
   {
     slug: "popover",
