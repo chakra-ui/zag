@@ -169,6 +169,7 @@ export function connect<T extends PropTypes>(
         },
         onPointerMove(event) {
           if (!interactive) return
+          if (event.pointerType === "touch") return
           const point = getEventPoint(event)
           const relativePoint = getRelativePoint(point, event.currentTarget)
           const percentX = relativePoint.getPercentValue({

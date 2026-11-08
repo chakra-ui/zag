@@ -28,6 +28,26 @@ test.describe("rating / pointer", () => {
     await I.seeRatingIsChecked(3)
   })
 
+  test("should preview the item the pointer first lands on", async () => {
+    const box = await I.getRating(4).boundingBox()
+    if (!box) throw new Error("rating item has no box")
+    await I.getRating(4).dispatchEvent("pointermove", {
+      pointerType: "mouse",
+      clientX: box.x + box.width * 0.75,
+      clientY: box.y + box.height / 2,
+    })
+    await I.seeRatingIsHighlighted(4)
+  })
+
+  test("should not preview on a touch move", async () => {
+    await I.getRating(5).dispatchEvent("pointermove", { pointerType: "touch" })
+    await I.seeRatingIsNotHighlighted(5)
+
+    await I.focusRating(3)
+    await I.getRating(5).dispatchEvent("pointermove", { pointerType: "touch" })
+    await I.seeRatingIsNotHighlighted(5)
+  })
+
   test.skip("highlight when hovered", async () => {
     await I.hoverRating(4)
     await I.seeRatingIsHighlighted(4)

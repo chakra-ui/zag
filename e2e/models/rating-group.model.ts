@@ -61,6 +61,10 @@ export class RatingGroupModel extends Model {
     await expect(this.getRating(value)).toHaveAttribute("data-highlighted", "")
   }
 
+  async seeRatingIsNotHighlighted(value: number) {
+    await expect(this.getRating(value)).not.toHaveAttribute("data-highlighted", "")
+  }
+
   async seeRatingIsDisabled(value: number) {
     await expect(this.getRating(value)).toHaveAttribute("data-disabled", "")
   }
