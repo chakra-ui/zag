@@ -825,7 +825,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "json-tree",
     label: "JSON Tree",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "api-response", title: "API Response" },
+      { slug: "large-data", title: "Large Data" },
+      { slug: "circular", title: "Circular" },
+    ],
   },
   {
     slug: "hotkeys",

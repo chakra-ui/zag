@@ -279,3 +279,10 @@
   color: #dc2626;
   opacity: 0.85;
 }
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
