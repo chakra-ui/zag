@@ -2,6 +2,7 @@ export { anatomy } from "./tabs.anatomy"
 export { connect } from "./tabs.connect"
 export { machine } from "./tabs.machine"
 export * from "./tabs.props"
+export type { ActivationDirection } from "@zag-js/types"
 export type {
   TabsApi as Api,
   TabsMachine as Machine,

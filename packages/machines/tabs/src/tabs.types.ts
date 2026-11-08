@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
+import type { ActivationDirection, CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,6 +9,8 @@ import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-
 export interface ValueChangeDetails {
   /** `null` when a `deselectable` tab is deselected */
   value: string | null
+  /** Where the selected tab sits relative to the previous one */
+  activationDirection: ActivationDirection
 }
 
 export interface FocusChangeDetails {
@@ -119,6 +121,8 @@ export type TabsSchema = {
     indicatorRect: Rect | null
     indicatorInstant: boolean
     tabStopValue: string | null
+    hasFocusableContent: boolean
+    activationDirection: ActivationDirection
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
@@ -126,15 +130,17 @@ export type TabsSchema = {
     focusFrame: AnimationFrame
     selectFrame: AnimationFrame
     tabIndexFrame: AnimationFrame
+    directionFrame: AnimationFrame
+    previousValue: string | null
   }
   computed: {
-    focused: boolean
+    activationDirection: ActivationDirection
   }
   action: string
   guard: string
   effect: string
   event: EventObject & {
-    src?: "keyboard" | "selectNext" | "selectPrevious" | undefined
+    src?: "keyboard" | undefined
   }
 }
 
@@ -196,6 +202,10 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
    */
   focusedValue: string | null
   /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
+  /**
    * Sets the value of the tabs.
    */
   setValue: (value: string) => void
@@ -217,11 +227,11 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
   /**
-   * Selects the next tab
+   * Selects the next enabled tab, without moving focus
    */
   selectNext: (fromValue?: string) => void
   /**
-   * Selects the previous tab
+   * Selects the previous enabled tab, without moving focus
    */
   selectPrevious: (fromValue?: string) => void
   /**

@@ -14,6 +14,8 @@ export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
 
+export type ActivationDirection = "left" | "right" | "up" | "down" | "none"
+
 export type MaybeFn<T> = T | (() => T)
 
 export type MaybeElement<T extends HTMLElement = HTMLElement> = Nullable<T>
