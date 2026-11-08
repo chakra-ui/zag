@@ -300,6 +300,7 @@ export const routes: RouteDefinition[] = [
   { path: "/meter/battery", component: lazy(() => import("./pages/meter/battery")) },
   { path: "/navigation-menu/basic", component: lazy(() => import("./pages/navigation-menu/basic")) },
   { path: "/navigation-menu/viewport", component: lazy(() => import("./pages/navigation-menu/viewport")) },
+  { path: "/navigation-menu/default-value", component: lazy(() => import("./pages/navigation-menu/default-value")) },
   { path: "/number-flow/basic", component: lazy(() => import("./pages/number-flow/basic")) },
   { path: "/number-flow/compact", component: lazy(() => import("./pages/number-flow/compact")) },
   { path: "/number-flow/continuous", component: lazy(() => import("./pages/number-flow/continuous")) },

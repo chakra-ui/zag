@@ -166,6 +166,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "viewport", title: "Viewport" },
+      { slug: "default-value", title: "Default Value" },
     ],
   },
   {
