@@ -5,8 +5,8 @@ test.describe("json-tree large-data", () => {
     await page.goto("/json-tree/large-data")
   })
 
-  test("should group the 500 events into ranges of 100", async ({ page }) => {
-    for (const range of ["[0…99]", "[100…199]", "[200…299]", "[300…399]", "[400…499]"]) {
+  test("should group the 500 events into ranges of 50", async ({ page }) => {
+    for (const range of ["[0…49]", "[50…99]", "[100…149]", "[250…299]", "[450…499]"]) {
       await expect(page.getByRole("row", { name: new RegExp(`^${range.replace(/[[\]]/g, "\\$&")}:`) })).toBeVisible()
     }
   })
@@ -16,11 +16,12 @@ test.describe("json-tree large-data", () => {
   })
 
   test("should expand a group to show its events", async ({ page }) => {
-    const group = page.getByRole("row", { name: /^\[0…99\]:/ })
+    const group = page.getByRole("row", { name: /^\[0…49\]:/ })
     await group.click()
     await expect(group).toHaveAttribute("aria-expanded", "true")
     await expect(page.getByRole("row", { name: /^0:/ })).toBeVisible()
-    await expect(page.getByRole("row", { name: /^99:/ })).toBeVisible()
+    await expect(page.getByRole("row", { name: /^49:/ })).toBeVisible()
+    await expect(page.getByRole("row", { name: /^50:/ })).toHaveCount(0)
   })
 
   test("should collapse long strings in the object preview", async ({ page }) => {

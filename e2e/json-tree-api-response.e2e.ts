@@ -24,7 +24,19 @@ test.describe("json-tree api-response", () => {
     await expect(page.getByRole("row").filter({ hasText: 'key: "warehouse", value: "rotterdam-2"' })).toBeVisible()
   })
 
+  test("should reveal every Set entry when the Set node is expanded", async ({ page }) => {
+    const tags = page.getByRole("row", { name: /^tags:/ })
+    await expect(tags).toHaveAttribute("aria-expanded", "false")
+
+    await tags.click()
+    await expect(tags).toHaveAttribute("aria-expanded", "true")
+
+    await page.getByRole("row", { name: /^\[\[Entries\]\]:/ }).click()
+    await expect(page.getByRole("row", { name: '2: "fragile"' })).toBeVisible()
+  })
+
   test("should render the Date, URL and Error values", async ({ page }) => {
+    await expect(page.getByRole("row", { name: /^placedAt:/ })).toContainText("2026-11-05T14:12:45.000Z")
     await expect(page.getByRole("row", { name: /^receiptUrl:/ })).toContainText(
       "https://shop.example.com/orders/ord_10482/receipt",
     )
