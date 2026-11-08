@@ -51,7 +51,7 @@ export default function Page() {
               {finished ? "Finished" : ""}
             </span>
           </div>
-          <p className="hint">Hover the ticker or press Pause. It stops after two loops.</p>
+          <p className="hint">Press Pause or hover to stop; it ends after two loops.</p>
         </div>
       </main>
 

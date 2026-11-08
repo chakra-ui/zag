@@ -10,7 +10,7 @@
   const service = useMachine(marquee.machine, {
     id,
     autoFill: true,
-    spacing: "2rem",
+    spacing: "1.5rem",
   })
 
   const api = $derived(marquee.connect(service, normalizeProps))

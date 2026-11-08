@@ -7,11 +7,12 @@ import { Toolbar } from "../../components/toolbar"
 import "@styles/marquee.css"
 
 export default function Page() {
+  const id = createUniqueId()
   const [paused, setPaused] = createSignal(false)
   const [finished, setFinished] = createSignal(false)
 
   const service = useMachine(marquee.machine, () => ({
-    id: createUniqueId(),
+    id,
     speed: 200,
     spacing: "2rem",
     loopCount: 2,
@@ -53,7 +54,7 @@ export default function Page() {
               {finished() ? "Finished" : ""}
             </span>
           </div>
-          <p class="hint">Hover the ticker or press Pause. It stops after two loops.</p>
+          <p class="hint">Press Pause or hover to stop; it ends after two loops.</p>
         </div>
       </main>
 

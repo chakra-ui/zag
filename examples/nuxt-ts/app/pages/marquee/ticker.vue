@@ -44,7 +44,7 @@ const api = computed(() => marquee.connect(service, normalizeProps))
         <button @click="paused = !paused">{{ paused ? "Resume" : "Pause" }}</button>
         <span class="status" role="status" data-testid="status">{{ finished ? "Finished" : "" }}</span>
       </div>
-      <p class="hint">Hover the ticker or press Pause. It stops after two loops.</p>
+      <p class="hint">Press Pause or hover to stop; it ends after two loops.</p>
     </div>
   </main>
 

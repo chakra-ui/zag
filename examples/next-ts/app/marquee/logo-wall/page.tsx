@@ -12,7 +12,7 @@ export default function Page() {
   const service = useMachine(marquee.machine, {
     id: useId(),
     autoFill: true,
-    spacing: "2rem",
+    spacing: "1.5rem",
   })
 
   const api = marquee.connect(service, normalizeProps)

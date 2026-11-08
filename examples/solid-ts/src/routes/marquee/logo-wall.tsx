@@ -10,7 +10,7 @@ export default function Page() {
   const service = useMachine(marquee.machine, {
     id: createUniqueId(),
     autoFill: true,
-    spacing: "2rem",
+    spacing: "1.5rem",
   })
 
   const api = createMemo(() => marquee.connect(service, normalizeProps))

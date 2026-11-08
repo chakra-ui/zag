@@ -124,13 +124,13 @@
 
 .logo-wall [data-marquee-item] {
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
   background: none;
   border: 0;
 }
 
 .logo-wall .wordmark {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #6b7280;

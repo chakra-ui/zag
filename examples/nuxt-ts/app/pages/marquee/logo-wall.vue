@@ -7,7 +7,7 @@ import "@styles/marquee.css"
 const service = useMachine(marquee.machine, {
   id: useId(),
   autoFill: true,
-  spacing: "2rem",
+  spacing: "1.5rem",
 })
 
 const api = computed(() => marquee.connect(service, normalizeProps))

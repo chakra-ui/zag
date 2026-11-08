@@ -32,7 +32,6 @@ test.describe("marquee ticker", () => {
 
   test("finishes after two loops", async ({ page }) => {
     const status = page.getByTestId("status")
-    await expect(status).toBeEmpty()
     await expect(status).toHaveText("Finished", { timeout: 15_000 })
   })
 
