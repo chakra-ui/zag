@@ -660,31 +660,33 @@ export const machine = createMachine<TagsInputSchema>({
       addTagFromPaste({ context, computed, prop, refs }) {
         refs.get("pasteFrame").request(() => {
           const inputValue = computed("sanitizedInputValue")
-          const value = context.get("value")
           const sanitize = prop("sanitizeValue")
+          const delimiter = prop("delimiter")
+          const validate = prop("validate")
+          const candidates = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
 
-          const guard = prop("validate")?.({
-            inputValue: inputValue,
-            value: Array.from(value),
-          })
+          // Check each pasted tag the way typing does
+          const nextValue = Array.from(context.get("value"))
+          const added: string[] = []
+          for (const candidate of candidates) {
+            if (!candidate) continue
+            if (!prop("allowOverflow") && nextValue.length >= prop("max")) break
+            if (validate && !validate({ inputValue: candidate, value: Array.from(nextValue) })) {
+              prop("onValueInvalid")?.({ reason: "invalidTag" })
+              continue
+            }
+            if (!prop("allowDuplicates") && nextValue.includes(candidate)) continue
+            nextValue.push(candidate)
+            added.push(candidate)
+          }
 
-          if (guard) {
-            const delimiter = prop("delimiter")
-            const sanitizedValues = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
-
-            const nextValue = prop("allowDuplicates")
-              ? value.concat(...sanitizedValues)
-              : uniq(value.concat(...sanitizedValues))
+          if (added.length) {
             context.set("value", nextValue)
-            // log
             const prevLog = refs.get("log")
             refs.set("log", {
               prev: prevLog.current,
-              current: { type: "paste", values: sanitizedValues },
+              current: { type: "paste", values: added },
             })
-            //
-          } else {
-            prop("onValueInvalid")?.({ reason: "invalidTag" })
           }
 
           context.set("inputValue", "")

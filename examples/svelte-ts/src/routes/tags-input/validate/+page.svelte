@@ -16,6 +16,7 @@
   const service = useMachine(tagsInput.machine, {
     id,
     defaultValue: ["react", "vue"],
+    addOnPaste: true,
     validate(details) {
       return /^[a-z]+$/.test(details.inputValue)
     },

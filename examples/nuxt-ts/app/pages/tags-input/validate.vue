@@ -14,6 +14,7 @@ const invalidReason = ref<string | null>(null)
 const service = useMachine(tagsInput.machine, {
   id: useId(),
   defaultValue: ["react", "vue"],
+  addOnPaste: true,
   validate(details) {
     return /^[a-z]+$/.test(details.inputValue)
   },

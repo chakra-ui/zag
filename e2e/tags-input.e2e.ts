@@ -193,6 +193,26 @@ test.describe("tags-input", () => {
     await I.seeTag("Jenkins")
   })
 
+  test("[addOnPaste: true] pasting skips empty segments and duplicates", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("Svelte,, ,Vue,")
+    await I.seeTag("Svelte")
+    await expect(I.getTag("Vue")).toHaveCount(1)
+    await expect(I.getTagElements()).toHaveCount(3)
+    await I.seeInputHasValue("")
+  })
+
+  test("[addOnPaste: true] pasting stops at max", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    // max is 6 and two tags exist
+    await I.paste("Svelte,Solid,Angular,Ember,Lit")
+    await I.seeTag("Ember")
+    await I.dontSeeTag("Lit")
+    await expect(I.getTagElements()).toHaveCount(6)
+  })
+
   test("[addOnPaste: true] when input is empty, should work", async () => {
     await I.controls.bool("addOnPaste", true)
 
@@ -403,5 +423,20 @@ test.describe("tags-input / editable [highlight frame]", () => {
     await page.clock.runFor(32)
     await I.seeTag("ReactJS")
     await expect(page.locator("[data-testid=input]")).not.toBeFocused()
+  })
+})
+
+test.describe("tags-input / validate", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/validate")
+  })
+
+  test("pasting validates each tag", async ({ page }) => {
+    await page.locator("[data-tags-input-input]").focus()
+    await page.evaluate(() => navigator.clipboard.writeText("svelte,React,solid"))
+    await page.keyboard.press("ControlOrMeta+V")
+    await expect(I.getTagElements()).toHaveText(["react", "vue", "svelte", "solid"])
   })
 })
