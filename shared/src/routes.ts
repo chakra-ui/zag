@@ -548,6 +548,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-nested", title: "Multiple Nested" },
       { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "virtualized", title: "Virtualized" },
     ],
   },
   {

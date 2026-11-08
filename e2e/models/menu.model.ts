@@ -115,6 +115,18 @@ export class MenuModel extends Model {
     expect(await isInViewport(this.content, item)).toBe(true)
   }
 
+  seeHighlightedItemText = async (text: string) => {
+    await expect(this.highlightedItem).toHaveText(text)
+  }
+
+  seeHighlightedItemInViewport = async () => {
+    await expect.poll(() => isInViewport(this.content, this.highlightedItem)).toBe(true)
+  }
+
+  seeSelectedValue = async (value: string) => {
+    await expect(this.page.getByRole("status", { name: "Selected item" })).toHaveText(value)
+  }
+
   seeMenuIsPositioned = async () => {
     const positioner = this.page.locator("[data-menu-positioner]")
     await expect(positioner).toHaveCSS("--x", /\d+px/)

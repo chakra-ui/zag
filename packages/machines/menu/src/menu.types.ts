@@ -1,3 +1,4 @@
+import type { ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
@@ -8,6 +9,11 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
+
+export interface ScrollToIndexDetails {
+  index: number
+  getElement: () => HTMLElement | null
+}
 
 export interface OpenChangeDetails {
   /**
@@ -91,6 +97,15 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * The controlled highlighted value of the menu item.
    */
   highlightedValue?: string | null | undefined
+  /**
+   * The menu's items, in order. Set it when the items are virtualized, so the keyboard
+   * and typeahead can reach items that aren't rendered.
+   */
+  collection?: ListCollection<any> | undefined
+  /**
+   * Scrolls the item at an index into view, for virtualized items. Used with `collection`.
+   */
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
    * Function called when the highlighted menu item changes.
    */

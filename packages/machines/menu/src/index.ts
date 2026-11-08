@@ -1,5 +1,6 @@
 export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./menu.anatomy"
+export { collection } from "./menu.collection"
 export { connect } from "./menu.connect"
 export { machine } from "./menu.machine"
 export * from "./menu.props"
@@ -23,6 +24,7 @@ export type {
   Point,
   PositioningOptions,
   PositionerState,
+  ScrollToIndexDetails,
   MenuProps as Props,
   SelectionDetails,
   MenuService as Service,

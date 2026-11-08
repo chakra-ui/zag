@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { contains, getByTypeahead, getWindow, isHTMLElement, type TypeaheadState } from "@zag-js/dom-query"
-import { first, isFunction, last, next, prev } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import type { MenuService } from "./menu.types"
 
@@ -72,30 +72,9 @@ export const getElements = (ctx: Scope) => {
   return contentEl ? Array.from(contentEl.querySelectorAll<HTMLElement>(selector)) : []
 }
 
-export const getFirstEl = (ctx: Scope) => first(getElements(ctx))
-export const getLastEl = (ctx: Scope) => last(getElements(ctx))
-
 const isMatch = (el: HTMLElement, value: string | null) => {
   if (!value) return false
   return el.id === value || el.dataset.value === value
-}
-
-export const getNextEl = (
-  ctx: Scope,
-  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
-) => {
-  const items = getElements(ctx)
-  const index = items.findIndex((el) => isMatch(el, opts.value))
-  return next(items, index, { loop: opts.loop ?? opts.loopFocus })
-}
-
-export const getPrevEl = (
-  ctx: Scope,
-  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
-) => {
-  const items = getElements(ctx)
-  const index = items.findIndex((el) => isMatch(el, opts.value))
-  return prev(items, index, { loop: opts.loop ?? opts.loopFocus })
 }
 
 export const getElemByKey = (

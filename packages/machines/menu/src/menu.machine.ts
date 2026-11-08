@@ -29,6 +29,9 @@ import * as dom from "./menu.dom"
 import type { MenuSchema } from "./menu.types"
 import {
   closeRootMenu,
+  getAdjacentValue,
+  getEdgeValue,
+  hasItemValue,
   isWithinPolygon,
   resolveItemId,
   setParentRoutingLock,
@@ -819,11 +822,19 @@ export const machine = createMachine<MenuSchema>({
           }
         })
       },
-      scrollToHighlightedItem({ scope, computed }) {
+      scrollToHighlightedItem({ scope, computed, prop, context }) {
         const exec = () => {
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
           if (modality === "pointer") return
+
+          const collection = prop("collection")
+          const scrollToIndexFn = prop("scrollToIndexFn")
+          if (collection && scrollToIndexFn) {
+            const value = context.get("highlightedValue")
+            scrollToIndexFn({ index: collection.indexOf(value), getElement: () => dom.getItemEl(scope, value) })
+            return
+          }
 
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
@@ -987,8 +998,8 @@ export const machine = createMachine<MenuSchema>({
         if (prop("autoHighlight") !== "always") return
         refs.get("autoHighlightFrame").request(() => {
           if (!dom.getInputEl(scope) || context.get("highlightedValue") != null) return
-          const first = dom.getFirstEl(scope)
-          if (first) context.set("highlightedValue", dom.getItemValue(first))
+          const first = getEdgeValue(scope, prop("collection"), "first")
+          if (first != null) context.set("highlightedValue", first)
         })
       },
       warnIfFilterInputNotDialog({ prop, scope }) {
@@ -1012,18 +1023,18 @@ export const machine = createMachine<MenuSchema>({
       // Arrow keys from a filter input cycle through the input: past either end of the list the highlight
       // returns to the input, unless `autoHighlight` keeps an item highlighted
       navigateFromInput({ context, scope, event, prop }) {
-        const items = dom.getElements(scope)
-        const index = items.findIndex((el) => dom.getItemValue(el) === context.get("highlightedValue"))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
         const wrap = !!prop("autoHighlight")
-        const lastIndex = items.length - 1
-        let next: HTMLElement | null | undefined = null
-        if (event.key === "first") next = items[0]
-        else if (event.key === "last") next = items[lastIndex]
+        let value: string | null = null
+        if (event.key === "first" || event.key === "last") value = getEdgeValue(scope, collection, event.key)
         else if (event.key === "next")
-          next = index === -1 ? items[0] : index < lastIndex ? items[index + 1] : wrap ? items[0] : null
+          value =
+            getAdjacentValue(scope, collection, current, 1) ?? (wrap ? getEdgeValue(scope, collection, "first") : null)
         else if (event.key === "prev")
-          next = index === -1 ? items[lastIndex] : index > 0 ? items[index - 1] : wrap ? items[lastIndex] : null
-        context.set("highlightedValue", next ? dom.getItemValue(next) : null)
+          value =
+            getAdjacentValue(scope, collection, current, -1) ?? (wrap ? getEdgeValue(scope, collection, "last") : null)
+        context.set("highlightedValue", value)
       },
       // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
       syncInputHighlight({ context, scope, event, prop, refs }) {
@@ -1031,14 +1042,13 @@ export const machine = createMachine<MenuSchema>({
         refs.get("syncHighlightFrame").request(() => {
           const inputEl = dom.getInputEl(scope)
           if (!inputEl) return
-          const items = dom.getElements(scope)
+          const collection = prop("collection")
           const autoHighlight = prop("autoHighlight")
           const hasQuery = inputEl.value.trim() !== ""
           const current = context.get("highlightedValue")
-          const isRendered = items.some((el) => dom.getItemValue(el) === current)
+          const isRendered = hasItemValue(scope, collection, current)
           if (autoHighlight === "always" || (autoHighlight && hasQuery)) {
-            if (queryChanged || !isRendered)
-              context.set("highlightedValue", items[0] ? dom.getItemValue(items[0]) : null)
+            if (queryChanged || !isRendered) context.set("highlightedValue", getEdgeValue(scope, collection, "first"))
             return
           }
           if (autoHighlight && queryChanged) {
@@ -1101,39 +1111,39 @@ export const machine = createMachine<MenuSchema>({
         refs.get("autoHighlightFrame").cancel()
         refs.get("syncHighlightFrame").cancel()
       },
-      highlightFirstItem({ context, scope }) {
+      highlightFirstItem({ context, scope, prop }) {
         // use raf in event content is lazy mounted
         const fn = dom.getContentEl(scope) ? queueMicrotask : raf
         fn(() => {
-          const first = dom.getFirstEl(scope)
-          if (!first) return
-          context.set("highlightedValue", dom.getItemValue(first))
+          const first = getEdgeValue(scope, prop("collection"), "first")
+          if (first == null) return
+          context.set("highlightedValue", first)
         })
       },
-      highlightLastItem({ context, scope }) {
+      highlightLastItem({ context, scope, prop }) {
         // use raf in event content is lazy mounted
         const fn = dom.getContentEl(scope) ? queueMicrotask : raf
         fn(() => {
-          const last = dom.getLastEl(scope)
-          if (!last) return
-          context.set("highlightedValue", dom.getItemValue(last))
+          const last = getEdgeValue(scope, prop("collection"), "last")
+          if (last == null) return
+          context.set("highlightedValue", last)
         })
       },
       highlightNextItem({ context, scope, event, prop }) {
-        const next = dom.getNextEl(scope, {
-          loop: event.loop,
-          value: context.get("highlightedValue"),
-          loopFocus: prop("loopFocus"),
-        })
-        context.set("highlightedValue", dom.getItemValue(next))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
+        const loop = event.loop ?? prop("loopFocus")
+        const next =
+          getAdjacentValue(scope, collection, current, 1) ?? (loop ? getEdgeValue(scope, collection, "first") : current)
+        context.set("highlightedValue", next)
       },
       highlightPrevItem({ context, scope, event, prop }) {
-        const prev = dom.getPrevEl(scope, {
-          loop: event.loop,
-          value: context.get("highlightedValue"),
-          loopFocus: prop("loopFocus"),
-        })
-        context.set("highlightedValue", dom.getItemValue(prev))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
+        const loop = event.loop ?? prop("loopFocus")
+        const prev =
+          getAdjacentValue(scope, collection, current, -1) ?? (loop ? getEdgeValue(scope, collection, "last") : current)
+        context.set("highlightedValue", prev)
       },
       invokeOnSelect({ context, prop, scope, event }) {
         const value = event.value || dom.getItemValue(event.target) || context.get("highlightedValue")
@@ -1152,7 +1162,16 @@ export const machine = createMachine<MenuSchema>({
           triggerEl?.focus({ preventScroll: true })
         })
       },
-      highlightMatchedItem({ scope, context, event, refs }) {
+      highlightMatchedItem({ scope, context, event, refs, prop }) {
+        const collection = prop("collection")
+        if (collection) {
+          const value = collection.search(event.key, {
+            state: refs.get("typeaheadState"),
+            currentValue: context.get("highlightedValue"),
+          })
+          if (value != null) context.set("highlightedValue", value)
+          return
+        }
         const node = dom.getElemByKey(scope, {
           key: event.key,
           value: context.get("highlightedValue"),

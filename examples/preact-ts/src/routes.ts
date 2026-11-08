@@ -293,6 +293,7 @@ export const routes: RouteDefinition[] = [
   { path: "/menu/overflow", component: lazy(() => import("./pages/menu/overflow")) },
   { path: "/menu/presence", component: lazy(() => import("./pages/menu/presence")) },
   { path: "/menu/submenu-glitch", component: lazy(() => import("./pages/menu/submenu-glitch")) },
+  { path: "/menu/virtualized", component: lazy(() => import("./pages/menu/virtualized")) },
   { path: "/menubar/basic", component: lazy(() => import("./pages/menubar/basic")) },
   { path: "/menubar/nested", component: lazy(() => import("./pages/menubar/nested")) },
   { path: "/menubar/vertical", component: lazy(() => import("./pages/menubar/vertical")) },
