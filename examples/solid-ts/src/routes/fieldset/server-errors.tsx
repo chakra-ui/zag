@@ -1,7 +1,7 @@
 import * as field from "@zag-js/field"
 import * as fieldset from "@zag-js/fieldset"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, createUniqueId } from "solid-js"
+import { createMemo, createSignal, createUniqueId, onCleanup } from "solid-js"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/field.css"
@@ -12,16 +12,12 @@ type Errors = { email?: string; username?: string }
 const takenUsernames = ["admin", "lope"]
 
 // stands in for a round trip to the server
-function validate(email: string, username: string): Promise<Errors> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const errors: Errors = {}
-      if (!email) errors.email = "Enter your email address"
-      if (!username) errors.username = "Choose a username"
-      else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
-      resolve(errors)
-    }, 200)
-  })
+function check(email: string, username: string): Errors {
+  const errors: Errors = {}
+  if (!email) errors.email = "Enter your email address"
+  if (!username) errors.username = "Choose a username"
+  else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
+  return errors
 }
 
 export default function Page() {
@@ -32,6 +28,10 @@ export default function Page() {
   const fieldsetId = createUniqueId()
   const emailId = createUniqueId()
   const usernameId = createUniqueId()
+
+  let timer: ReturnType<typeof setTimeout> | undefined
+  let requestId = 0
+  onCleanup(() => clearTimeout(timer))
 
   const hasErrors = () => Object.keys(errors()).length > 0
 
@@ -48,26 +48,31 @@ export default function Page() {
     <>
       <main>
         <div class="field-page server-errors">
-          <h1>Fieldset — Server errors</h1>
-          <p class="hint">
-            Submit the empty form, or pick the username "lope". The server check marks the fieldset and the fields
-            invalid.
-          </p>
+          <p class="hint">Submit empty, or use the username "lope", to see server errors.</p>
           <form
-            onSubmit={async (e) => {
+            onSubmit={(e) => {
               e.preventDefault()
               const data = new FormData(e.currentTarget)
               const email = String(data.get("email") ?? "").trim()
               const username = String(data.get("username") ?? "").trim()
+              const id = ++requestId
+              clearTimeout(timer)
               setPending(true)
               setCreated("")
               setErrors({})
-              const result = await validate(email, username)
-              setPending(false)
-              setErrors(result)
-              if (!Object.keys(result).length) setCreated(`Account created for ${username}`)
+              timer = setTimeout(() => {
+                // a Reset (or a newer submit) makes this result stale
+                if (id !== requestId) return
+                const result = check(email, username)
+                setPending(false)
+                setErrors(result)
+                if (!Object.keys(result).length) setCreated(`Account created for ${username}`)
+              }, 200)
             }}
             onReset={() => {
+              requestId++
+              clearTimeout(timer)
+              setPending(false)
               setErrors({})
               setCreated("")
             }}

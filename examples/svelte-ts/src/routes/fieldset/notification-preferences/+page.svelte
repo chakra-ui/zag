@@ -16,9 +16,7 @@
 
 <main>
   <div class="field-page notification-preferences">
-    <h1>Fieldset — Notification preferences</h1>
-    <p class="hint">The legend names the checkbox group and the helper text describes it to screen readers.</p>
-    <form onsubmit={(e) => e.preventDefault()} onreset={() => (selected = ["Order updates"])}>
+    <form onsubmit={(e) => e.preventDefault()}>
       <fieldset {...api.getRootProps()}>
         <legend {...api.getLegendProps()}>Email notifications</legend>
         <span {...api.getHelperTextProps()}>Choose which emails you would like to receive.</span>
@@ -30,7 +28,7 @@
         {/each}
       </fieldset>
       <div class="actions">
-        <button type="reset">Reset</button>
+        <button type="button" onclick={() => (selected = ["Order updates"])}>Reset</button>
       </div>
     </form>
     <p class="summary" role="status" data-testid="summary">

@@ -49,4 +49,13 @@ test.describe("fieldset server errors", () => {
     await expect(page.getByText("Choose a username")).toBeHidden()
     await expect(page.getByLabel("Username")).not.toHaveAttribute("aria-invalid")
   })
+
+  test("a late result after Reset is ignored", async ({ page }) => {
+    await page.getByRole("button", { name: "Create account" }).click()
+    await page.getByRole("button", { name: "Reset" }).click()
+    await page.waitForTimeout(400)
+    await expect(page.getByText("Choose a username")).toBeHidden()
+    await expect(page.getByLabel("Username")).not.toHaveAttribute("aria-invalid")
+    await expect(page.getByRole("button", { name: "Create account" })).toBeEnabled()
+  })
 })

@@ -26,5 +26,8 @@ test.describe("fieldset notification preferences", () => {
 
     await page.getByRole("button", { name: "Reset" }).click()
     await expect(summary).toHaveText("Subscribed to: Order updates")
+    await expect(group.getByRole("checkbox", { name: "Order updates" })).toBeChecked()
+    await expect(group.getByRole("checkbox", { name: "Price drops" })).not.toBeChecked()
+    await expect(group.getByRole("checkbox", { name: "Weekly newsletter" })).not.toBeChecked()
   })
 })

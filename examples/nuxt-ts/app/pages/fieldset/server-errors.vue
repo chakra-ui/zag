@@ -10,16 +10,12 @@ type Errors = { email?: string; username?: string }
 const takenUsernames = ["admin", "lope"]
 
 // stands in for a round trip to the server
-function validate(email: string, username: string): Promise<Errors> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const errors: Errors = {}
-      if (!email) errors.email = "Enter your email address"
-      if (!username) errors.username = "Choose a username"
-      else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
-      resolve(errors)
-    }, 200)
-  })
+function check(email: string, username: string): Errors {
+  const errors: Errors = {}
+  if (!email) errors.email = "Enter your email address"
+  if (!username) errors.username = "Choose a username"
+  else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
+  return errors
 }
 
 const errors = ref<Errors>({})
@@ -48,20 +44,33 @@ const usernameService = useMachine(
 )
 const usernameApi = computed(() => field.connect(usernameService, normalizeProps))
 
-async function onSubmit(e: Event) {
+let timer: ReturnType<typeof setTimeout> | undefined
+let requestId = 0
+onBeforeUnmount(() => clearTimeout(timer))
+
+function onSubmit(e: Event) {
   const data = new FormData(e.currentTarget as HTMLFormElement)
   const email = String(data.get("email") ?? "").trim()
   const username = String(data.get("username") ?? "").trim()
+  const id = ++requestId
+  clearTimeout(timer)
   pending.value = true
   created.value = ""
   errors.value = {}
-  const result = await validate(email, username)
-  pending.value = false
-  errors.value = result
-  if (!Object.keys(result).length) created.value = `Account created for ${username}`
+  timer = setTimeout(() => {
+    // a Reset (or a newer submit) makes this result stale
+    if (id !== requestId) return
+    const result = check(email, username)
+    pending.value = false
+    errors.value = result
+    if (!Object.keys(result).length) created.value = `Account created for ${username}`
+  }, 200)
 }
 
 function onReset() {
+  requestId++
+  clearTimeout(timer)
+  pending.value = false
   errors.value = {}
   created.value = ""
 }
@@ -70,10 +79,7 @@ function onReset() {
 <template>
   <main>
     <div class="field-page server-errors">
-      <h1>Fieldset — Server errors</h1>
-      <p class="hint">
-        Submit the empty form, or pick the username "lope". The server check marks the fieldset and the fields invalid.
-      </p>
+      <p class="hint">Submit empty, or use the username "lope", to see server errors.</p>
       <form @submit.prevent="onSubmit" @reset="onReset">
         <fieldset v-bind="fieldsetApi.getRootProps()">
           <legend v-bind="fieldsetApi.getLegendProps()">Create your account</legend>

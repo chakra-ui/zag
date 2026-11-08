@@ -28,11 +28,7 @@ export default function Page() {
     <>
       <main>
         <div className="field-page shipping-address">
-          <h1>Fieldset — Shipping address</h1>
-          <p className="hint">
-            Tick &quot;Same as billing address&quot; to disable the whole fieldset. Every field inside is disabled and
-            left out of the submitted form.
-          </p>
+          <p className="hint">Tick "Same as billing address" to disable every field.</p>
           <form
             onSubmit={(e) => {
               e.preventDefault()

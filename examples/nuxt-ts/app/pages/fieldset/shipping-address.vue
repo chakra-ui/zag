@@ -38,11 +38,7 @@ function onReset() {
 <template>
   <main>
     <div class="field-page shipping-address">
-      <h1>Fieldset — Shipping address</h1>
-      <p class="hint">
-        Tick "Same as billing address" to disable the whole fieldset. Every field inside is disabled and left out of the
-        submitted form.
-      </p>
+      <p class="hint">Tick "Same as billing address" to disable every field.</p>
       <form @submit.prevent="onSubmit" @reset="onReset">
         <label class="same-as-billing">
           <input v-model="sameAsBilling" type="checkbox" name="sameAsBilling" />

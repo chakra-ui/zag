@@ -14,11 +14,13 @@
   color: hsl(219, 1%, 42%);
 }
 
+.basic [data-fieldset-root],
 .shipping-address [data-fieldset-root],
 .server-errors [data-fieldset-root] {
   width: 100%;
 }
 
+.basic [data-field-root],
 .shipping-address [data-field-root],
 .server-errors [data-field-root] {
   max-width: none;
@@ -46,6 +48,7 @@
   color: hsl(219, 1%, 42%);
 }
 
+.basic,
 .shipping-address,
 .notification-preferences,
 .server-errors {

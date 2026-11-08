@@ -18,9 +18,7 @@ function onReset() {
 <template>
   <main>
     <div class="field-page notification-preferences">
-      <h1>Fieldset — Notification preferences</h1>
-      <p class="hint">The legend names the checkbox group and the helper text describes it to screen readers.</p>
-      <form @submit.prevent @reset="onReset">
+      <form @submit.prevent>
         <fieldset v-bind="api.getRootProps()">
           <legend v-bind="api.getLegendProps()">Email notifications</legend>
           <span v-bind="api.getHelperTextProps()">Choose which emails you would like to receive.</span>
@@ -30,7 +28,7 @@ function onReset() {
           </label>
         </fieldset>
         <div class="actions">
-          <button type="reset">Reset</button>
+          <button type="button" @click="onReset">Reset</button>
         </div>
       </form>
       <p class="summary" role="status" data-testid="summary">
