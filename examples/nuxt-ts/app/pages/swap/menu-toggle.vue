@@ -7,13 +7,7 @@ const open = ref(false)
 <template>
   <main>
     <div class="swap-menu-toggle">
-      <button
-        type="button"
-        class="swap-trigger"
-        :aria-label="open ? 'Close menu' : 'Open menu'"
-        :aria-expanded="open"
-        @click="open = !open"
-      >
+      <button type="button" class="swap-trigger" :aria-label="open ? 'Close menu' : 'Open menu'" @click="open = !open">
         <Swap :open="open">
           <svg class="swap-icon" viewBox="0 0 24 24" aria-hidden="true" data-testid="icon-close">
             <path d="M6 6l12 12M18 6L6 18" />

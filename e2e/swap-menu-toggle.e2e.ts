@@ -10,17 +10,14 @@ test.describe("swap menu-toggle", () => {
     await expect(button).toHaveAccessibleName("Open menu")
     await expect(menu).toBeVisible()
     await expect(close).toBeHidden()
-    await expect(button).toHaveAttribute("aria-expanded", "false")
 
     await button.click()
     await expect(button).toHaveAccessibleName("Close menu")
-    await expect(button).toHaveAttribute("aria-expanded", "true")
     await expect(close).toBeVisible()
     await expect(menu).toBeHidden()
 
     await button.click()
     await expect(button).toHaveAccessibleName("Open menu")
-    await expect(button).toHaveAttribute("aria-expanded", "false")
     await expect(menu).toBeVisible()
     await expect(close).toBeHidden()
   })

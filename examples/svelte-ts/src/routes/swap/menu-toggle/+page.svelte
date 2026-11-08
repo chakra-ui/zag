@@ -11,7 +11,6 @@
       type="button"
       class="swap-trigger"
       aria-label={open ? "Close menu" : "Open menu"}
-      aria-expanded={open}
       onclick={() => (open = !open)}
     >
       <Swap {open}>

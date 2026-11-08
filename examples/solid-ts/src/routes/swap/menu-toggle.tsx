@@ -12,7 +12,7 @@ export default function Page() {
           type="button"
           class="swap-trigger"
           aria-label={open() ? "Close menu" : "Open menu"}
-          aria-expanded={open() ? "true" : "false"}
+
           onClick={() => setOpen((v) => !v)}
         >
           <Swap
