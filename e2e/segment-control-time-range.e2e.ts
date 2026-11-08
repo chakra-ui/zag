@@ -30,8 +30,12 @@ test.describe("segment-control time-range", () => {
 
     await page.getByTestId("radio-day").click()
     await expect(page.getByRole("radio", { name: "Year" })).not.toBeChecked()
-    await expect(page.getByTestId("caption")).toHaveText("Page views per hour, last 24 hours")
+    await expect(page.getByTestId("caption")).toHaveText("Page views per 3 hours, last 24 hours")
     await expect(page.getByTestId("bar")).toHaveCount(8)
+  })
+
+  test("the group has an accessible name", async ({ page }) => {
+    await expect(page.getByRole("radiogroup", { name: "Time range" })).toBeVisible()
   })
 
   test("the items lay out in a row", async ({ page }) => {

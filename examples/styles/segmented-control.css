@@ -182,3 +182,14 @@
   display: flex;
   gap: 8px;
 }
+
+/* Group names stay available to screen readers without taking space in the strip */
+.segmented-control [data-radio-group-label] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

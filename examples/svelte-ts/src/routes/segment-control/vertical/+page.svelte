@@ -16,7 +16,7 @@
   })
 
   const api = $derived(radio.connect(service, normalizeProps))
-  const section = $derived(settingsSections.find((s) => s.id === api.value) ?? settingsSections[0])
+  const section = $derived(settingsSections.find((s) => s.id === api.value)!)
 </script>
 
 <main>
@@ -24,6 +24,7 @@
     <p class="hint">Focus a section and press the up and down arrows.</p>
     <div class="layout">
       <div {...api.getRootProps()}>
+        <span {...api.getLabelProps()}>Settings section</span>
         <div {...api.getIndicatorProps()}></div>
         {#each settingsSections as opt (opt.id)}
           <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
@@ -32,7 +33,7 @@
           </label>
         {/each}
       </div>
-      <div class="panel" data-testid="panel">
+      <div class="panel" role="region" aria-label={section.label} data-testid="panel">
         <p class="title">{section.label}</p>
         <p class="description">{section.description}</p>
       </div>

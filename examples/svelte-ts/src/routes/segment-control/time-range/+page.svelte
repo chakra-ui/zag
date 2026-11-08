@@ -7,7 +7,7 @@
   import "@styles/segmented-control.css"
   import "@styles/radio-group.css"
 
-  let value = $state<string | null>("week")
+  let value = $state("week")
 
   const id = $props.id()
   const service = useMachine(radio.machine, () => ({
@@ -16,12 +16,12 @@
     orientation: "horizontal" as const,
     value,
     onValueChange: (details: radio.ValueChangeDetails) => {
-      value = details.value
+      if (details.value) value = details.value
     },
   }))
 
   const api = $derived(radio.connect(service, normalizeProps))
-  const range = $derived(timeRanges.find((r) => r.id === value) ?? timeRanges[1])
+  const range = $derived(timeRanges.find((r) => r.id === value)!)
   const max = $derived(Math.max(...range.bars))
 </script>
 
@@ -29,6 +29,7 @@
   <div class="segmented-control time-range">
     <p class="hint">Switch the range to redraw the chart, or jump to Year with the button.</p>
     <div {...api.getRootProps()}>
+      <span {...api.getLabelProps()}>Time range</span>
       <div {...api.getIndicatorProps()}></div>
       {#each timeRanges as opt (opt.id)}
         <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>

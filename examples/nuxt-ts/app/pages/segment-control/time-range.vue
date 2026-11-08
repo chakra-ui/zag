@@ -7,7 +7,7 @@ import "@styles/segmented-control.css"
 import "@styles/radio-group.css"
 
 const id = useId()
-const value = ref<string | null>("week")
+const value = ref("week")
 
 const service = useMachine(
   radio.machine,
@@ -17,13 +17,13 @@ const service = useMachine(
     orientation: "horizontal",
     value: value.value,
     onValueChange: (details) => {
-      value.value = details.value
+      if (details.value) value.value = details.value
     },
   })),
 )
 
 const api = computed(() => radio.connect(service, normalizeProps))
-const range = computed(() => timeRanges.find((r) => r.id === value.value) ?? timeRanges[1]!)
+const range = computed(() => timeRanges.find((r) => r.id === value.value)!)
 const max = computed(() => Math.max(...range.value.bars))
 </script>
 
@@ -32,6 +32,7 @@ const max = computed(() => Math.max(...range.value.bars))
     <div class="segmented-control time-range">
       <p class="hint">Switch the range to redraw the chart, or jump to Year with the button.</p>
       <div v-bind="api.getRootProps()">
+        <span v-bind="api.getLabelProps()">Time range</span>
         <div v-bind="api.getIndicatorProps()" />
         <label
           v-for="opt in timeRanges"

@@ -18,7 +18,7 @@ export const contactMethods = [
 ]
 
 export const timeRanges = [
-  { id: "day", label: "Day", caption: "Page views per hour, last 24 hours", bars: [12, 8, 5, 9, 22, 35, 48, 41] },
+  { id: "day", label: "Day", caption: "Page views per 3 hours, last 24 hours", bars: [12, 8, 5, 9, 22, 35, 48, 41] },
   { id: "week", label: "Week", caption: "Page views per day, last 7 days", bars: [320, 410, 380, 450, 520, 290, 240] },
   { id: "month", label: "Month", caption: "Page views per week, last 4 weeks", bars: [2100, 2450, 2300, 2800] },
   {

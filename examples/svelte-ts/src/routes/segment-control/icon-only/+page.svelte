@@ -20,8 +20,9 @@
 
 <main>
   <div class="segmented-control icon-only">
-    <p class="hint">Pick an alignment. Each icon is named for screen readers.</p>
+    <p class="hint">Pick an alignment, or focus one and press the arrow keys.</p>
     <div {...api.getRootProps()}>
+      <span {...api.getLabelProps()}>Text alignment</span>
       <div {...api.getIndicatorProps()}></div>
       {#each alignOptions as opt (opt.id)}
         <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>

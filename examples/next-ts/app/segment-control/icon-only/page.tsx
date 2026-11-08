@@ -23,8 +23,9 @@ export default function Page() {
     <>
       <main>
         <div className="segmented-control icon-only">
-          <p className="hint">Pick an alignment. Each icon is named for screen readers.</p>
+          <p className="hint">Pick an alignment, or focus one and press the arrow keys.</p>
           <div {...api.getRootProps()}>
+            <span {...api.getLabelProps()}>Text alignment</span>
             <div {...api.getIndicatorProps()} />
             {alignOptions.map((opt) => (
               <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>

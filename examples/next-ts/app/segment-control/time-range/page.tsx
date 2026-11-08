@@ -10,18 +10,18 @@ import "@styles/segmented-control.css"
 import "@styles/radio-group.css"
 
 export default function Page() {
-  const [value, setValue] = useState<string | null>("week")
+  const [value, setValue] = useState("week")
 
   const service = useMachine(radio.machine, {
     id: useId(),
     name: "range",
     orientation: "horizontal",
     value,
-    onValueChange: (details) => setValue(details.value),
+    onValueChange: (details) => details.value && setValue(details.value),
   })
 
   const api = radio.connect(service, normalizeProps)
-  const range = timeRanges.find((r) => r.id === value) ?? timeRanges[1]
+  const range = timeRanges.find((r) => r.id === value)!
   const max = Math.max(...range.bars)
 
   return (
@@ -30,6 +30,7 @@ export default function Page() {
         <div className="segmented-control time-range">
           <p className="hint">Switch the range to redraw the chart, or jump to Year with the button.</p>
           <div {...api.getRootProps()}>
+            <span {...api.getLabelProps()}>Time range</span>
             <div {...api.getIndicatorProps()} />
             {timeRanges.map((opt) => (
               <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>

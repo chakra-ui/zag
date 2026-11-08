@@ -7,7 +7,10 @@ test.describe("segment-control vertical", () => {
 
   test("ArrowDown and ArrowUp move the selection and the panel", async ({ page }) => {
     const panel = page.getByTestId("panel")
-    await expect(page.getByRole("radiogroup")).toHaveAttribute("aria-orientation", "vertical")
+    const group = page.getByRole("radiogroup", { name: "Settings section" })
+    await expect(group).toHaveAttribute("aria-orientation", "vertical")
+    await expect(group).toHaveAttribute("data-orientation", "vertical")
+    await expect(page.getByRole("region", { name: "Profile" })).toBeVisible()
     await expect(panel).toContainText("Your name, photo and public bio.")
 
     await page.getByRole("radio", { name: "Profile" }).focus()
@@ -18,6 +21,7 @@ test.describe("segment-control vertical", () => {
     await page.keyboard.press("ArrowDown")
     await expect(page.getByRole("radio", { name: "Billing" })).toBeChecked()
     await expect(panel).toContainText("Update your card")
+    await expect(page.getByRole("region", { name: "Billing" })).toBeVisible()
 
     await page.keyboard.press("ArrowUp")
     await expect(page.getByRole("radio", { name: "Notifications" })).toBeChecked()

@@ -19,8 +19,9 @@ const api = computed(() => radio.connect(service, normalizeProps))
 <template>
   <main>
     <div class="segmented-control icon-only">
-      <p class="hint">Pick an alignment. Each icon is named for screen readers.</p>
+      <p class="hint">Pick an alignment, or focus one and press the arrow keys.</p>
       <div v-bind="api.getRootProps()">
+        <span v-bind="api.getLabelProps()">Text alignment</span>
         <div v-bind="api.getIndicatorProps()" />
         <label
           v-for="opt in alignOptions"

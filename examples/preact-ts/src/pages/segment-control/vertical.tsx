@@ -16,7 +16,7 @@ export default function Page() {
   })
 
   const api = radio.connect(service, normalizeProps)
-  const section = settingsSections.find((s) => s.id === api.value) ?? settingsSections[0]
+  const section = settingsSections.find((s) => s.id === api.value)!
 
   return (
     <>
@@ -25,6 +25,7 @@ export default function Page() {
           <p className="hint">Focus a section and press the up and down arrows.</p>
           <div className="layout">
             <div {...api.getRootProps()}>
+              <span {...api.getLabelProps()}>Settings section</span>
               <div {...api.getIndicatorProps()} />
               {settingsSections.map((opt) => (
                 <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
@@ -33,7 +34,7 @@ export default function Page() {
                 </label>
               ))}
             </div>
-            <div className="panel" data-testid="panel">
+            <div className="panel" role="region" aria-label={section.label} data-testid="panel">
               <p className="title">{section.label}</p>
               <p className="description">{section.description}</p>
             </div>

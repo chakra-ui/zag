@@ -16,7 +16,7 @@ export default function Page() {
   })
 
   const api = createMemo(() => radio.connect(service, normalizeProps))
-  const section = () => settingsSections.find((s) => s.id === api().value) ?? settingsSections[0]
+  const section = () => settingsSections.find((s) => s.id === api().value)!
 
   return (
     <>
@@ -25,6 +25,7 @@ export default function Page() {
           <p class="hint">Focus a section and press the up and down arrows.</p>
           <div class="layout">
             <div {...api().getRootProps()}>
+              <span {...api().getLabelProps()}>Settings section</span>
               <div {...api().getIndicatorProps()} />
               <For each={settingsSections}>
                 {(opt) => (
@@ -35,7 +36,7 @@ export default function Page() {
                 )}
               </For>
             </div>
-            <div class="panel" data-testid="panel">
+            <div class="panel" role="region" aria-label={section().label} data-testid="panel">
               <p class="title">{section().label}</p>
               <p class="description">{section().description}</p>
             </div>

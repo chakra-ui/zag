@@ -10,6 +10,7 @@ test.describe("segment-control icon-only", () => {
     await expect(center).toHaveAccessibleName("Align center")
     await expect(page.getByRole("radio", { name: "Align left" })).toBeChecked()
     await expect(page.getByRole("radio", { name: "Justify" })).toHaveCount(1)
+    await expect(page.getByRole("radiogroup", { name: "Text alignment" })).toBeVisible()
     await expect(page.getByTestId("radio-center").locator("svg")).toBeVisible()
   })
 
