@@ -11,11 +11,13 @@
 
   let options = $state.raw(comboboxData)
 
-  const collection = $derived(combobox.collection({
-    items: options,
-    itemToValue: (item) => item.code,
-    itemToString: (item) => item.label,
-  }))
+  const collection = $derived(
+    combobox.collection({
+      items: options,
+      itemToValue: (item) => item.code,
+      itemToString: (item) => item.label,
+    }),
+  )
 
   const id = $props.id()
 
@@ -28,9 +30,7 @@
       options = comboboxData
     },
     onInputValueChange({ inputValue }) {
-      const filtered = comboboxData.filter((item) =>
-        item.label.toLowerCase().includes(inputValue.toLowerCase()),
-      )
+      const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(inputValue.toLowerCase()))
       const newOptions = filtered.length > 0 ? filtered : comboboxData
       options = newOptions
     },

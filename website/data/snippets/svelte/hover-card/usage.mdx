@@ -4,7 +4,7 @@
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(hoverCard.machine, ({ id }))
+  const service = useMachine(hoverCard.machine, { id })
   const api = $derived(hoverCard.connect(service, normalizeProps))
 </script>
 

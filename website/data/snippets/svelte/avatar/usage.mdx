@@ -4,12 +4,12 @@
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(avatar.machine, ({ id }))
+  const service = useMachine(avatar.machine, { id })
   const api = $derived(avatar.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>
   <span {...api.getFallbackProps()}>PA</span>
-  <img alt="PA" src={src} {...api.getImageProps()} />
+  <img alt="PA" {src} {...api.getImageProps()} />
 </div>
 ```

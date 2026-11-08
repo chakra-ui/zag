@@ -4,7 +4,7 @@
   import * as tree from "@zag-js/tree-view"
   import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-svelte"
 
-// 1. Create the tree collection
+  // 1. Create the tree collection
 
   interface Node {
     id: string
@@ -13,10 +13,10 @@
   }
 
   const collection = tree.collection<Node>({
-  // ...
+    // ...
   })
 
-// 2. Create the recursive tree node
+  // 2. Create the recursive tree node
 
   interface TreeNodeProps {
     node: Node
@@ -71,5 +71,4 @@
     {/each}
   </div>
 </div>
-
 ```

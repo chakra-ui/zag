@@ -11,12 +11,7 @@
     new Promise((resolve) => {
       const start = (page - 1) * PAGE_SIZE
       setTimeout(() => {
-        resolve(
-          Array.from(
-            { length: Math.min(PAGE_SIZE, TOTAL - start) },
-            (_, i) => `Item ${start + i + 1}`,
-          ),
-        )
+        resolve(Array.from({ length: Math.min(PAGE_SIZE, TOTAL - start) }, (_, i) => `Item ${start + i + 1}`))
       }, 400)
     })
 

@@ -35,10 +35,7 @@
   <button {...api.getTriggerProps()}>Characters</button>
   {#if api.open}
     <div {...api.getPositionerProps()}>
-      <ul
-        {...api.getContentProps()}
-        style="max-height: 240px; overflow-y: auto"
-      >
+      <ul {...api.getContentProps()} style="max-height: 240px; overflow-y: auto">
         {#each listApi.items as item (item.name)}
           <li {...api.getItemProps({ value: item.name })}>{item.name}</li>
         {/each}

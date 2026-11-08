@@ -27,11 +27,7 @@
 </script>
 
 {#if !unmount}
-  <div
-    {@attach setNode}
-    hidden={!api.present}
-    data-state={api.skip ? undefined : present ? "open" : "closed"}
-  >
+  <div {@attach setNode} hidden={!api.present} data-state={api.skip ? undefined : present ? "open" : "closed"}>
     {@render children?.()}
   </div>
 {/if}

@@ -4,7 +4,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(dateInput.machine, ({ id }))
+  const service = useMachine(dateInput.machine, { id })
   const api = $derived(dateInput.connect(service, normalizeProps))
 </script>
 

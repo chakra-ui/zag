@@ -3,11 +3,9 @@
   // initial focused element ref
   let inputRef: HTMLInputElement | null = null
 
-  const service = useMachine(
-    dialog.machine, ({
-      initialFocusEl: () => inputRef,
-    }),
-  )
+  const service = useMachine(dialog.machine, {
+    initialFocusEl: () => inputRef,
+  })
   // ...
 </script>
 

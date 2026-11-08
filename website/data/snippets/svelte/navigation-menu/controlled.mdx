@@ -16,8 +16,8 @@
 </script>
 
 <div>
-  <button onclick={() => value = "products"}>Open Products</button>
-  <button onclick={() => value = ""}>Close All</button>
+  <button onclick={() => (value = "products")}>Open Products</button>
+  <button onclick={() => (value = "")}>Close All</button>
 
   <nav {...api.getRootProps()}>
     <!-- ... navigation items ... -->
