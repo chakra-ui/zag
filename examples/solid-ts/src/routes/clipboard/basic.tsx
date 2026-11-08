@@ -2,7 +2,7 @@ import * as clipboard from "@zag-js/clipboard"
 import { clipboardControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ClipboardCheck, ClipboardCopyIcon } from "lucide-solid"
-import { Show, createMemo, createUniqueId } from "solid-js"
+import { Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -10,12 +10,16 @@ import "@styles/clipboard.css"
 
 export default function Page() {
   const controls = useControls(clipboardControls)
+  const [reports, setReports] = createSignal<string[]>([])
 
   const service = useMachine(
     clipboard.machine,
     controls.mergeProps({
       id: createUniqueId(),
       value: "https://github.com/chakra-ui/zag",
+      onStatusChange(details: clipboard.CopyStatusDetails) {
+        setReports((prev) => [...prev, details.error ? "error" : details.copied ? "copied" : "reset"])
+      },
     }),
   )
 
@@ -37,6 +41,9 @@ export default function Page() {
           <div {...api().getIndicatorProps({ copied: true })}>Copied!</div>
           <div {...api().getIndicatorProps({ copied: false })}>Copy</div>
         </div>
+        <p>
+          onStatusChange: <output aria-label="Status reports">{reports().join(",") || "-"}</output>
+        </p>
       </main>
 
       <Toolbar controls={controls}>

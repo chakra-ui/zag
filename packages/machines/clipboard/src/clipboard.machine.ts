@@ -40,31 +40,33 @@ export const machine = createMachine<ClipboardSchema>({
       actions: ["setValue"],
     },
     COPY: {
+      actions: ["copyToClipboard"],
+    },
+    // `reenter` restarts the timeout when copying again while copied
+    "COPY.SUCCESS": {
       target: "copied",
-      actions: ["copyToClipboard", "invokeOnCopy"],
+      reenter: true,
+      actions: ["invokeOnCopy"],
+    },
+    "INPUT.COPY": {
+      target: "copied",
+      reenter: true,
+      actions: ["invokeOnCopy"],
+    },
+    "COPY.ERROR": {
+      target: "idle",
+      actions: ["invokeOnCopyError"],
     },
   },
+
   states: {
-    idle: {
-      on: {
-        "INPUT.COPY": {
-          target: "copied",
-          actions: ["invokeOnCopy"],
-        },
-      },
-    },
+    idle: {},
     copied: {
       effects: ["waitForTimeout"],
       on: {
         "COPY.DONE": {
           target: "idle",
-        },
-        COPY: {
-          target: "copied",
-          actions: ["copyToClipboard", "invokeOnCopy"],
-        },
-        "INPUT.COPY": {
-          actions: ["invokeOnCopy"],
+          actions: ["invokeOnCopyEnd"],
         },
       },
     },
@@ -82,11 +84,20 @@ export const machine = createMachine<ClipboardSchema>({
       setValue({ context, event }) {
         context.set("value", event.value)
       },
-      copyToClipboard({ context, scope }) {
-        dom.writeToClipboard(scope, context.get("value"))
+      copyToClipboard({ context, scope, send }) {
+        dom.writeToClipboard(scope, context.get("value")).then(
+          () => send({ type: "COPY.SUCCESS" }),
+          (error) => send({ type: "COPY.ERROR", error }),
+        )
       },
       invokeOnCopy({ prop }) {
         prop("onStatusChange")?.({ copied: true })
+      },
+      invokeOnCopyEnd({ prop }) {
+        prop("onStatusChange")?.({ copied: false })
+      },
+      invokeOnCopyError({ prop, event }) {
+        prop("onStatusChange")?.({ copied: false, error: event.error })
       },
       syncInputElement({ context, scope }) {
         const inputEl = dom.getInputEl(scope)
