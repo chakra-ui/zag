@@ -48,7 +48,7 @@
             <!-- svelte-ignore a11y_label_has_associated_control -->
             <label {...api.getChannelSliderLabelProps({ channel })}>{label}</label>
             <span {...api.getChannelSliderValueTextProps({ channel })}>
-              {api.value.toFormat("hsla").formatChannelValue(channel, "en-US")}
+              {api.getChannelValueText(channel)}
             </span>
           </div>
           <div {...api.getChannelSliderProps({ channel })}>

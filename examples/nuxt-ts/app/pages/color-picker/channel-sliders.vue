@@ -43,7 +43,7 @@ const api = computed(() => colorPicker.connect(service, normalizeProps))
           <div class="channel-sliders__header">
             <label v-bind="api.getChannelSliderLabelProps({ channel })">{{ label }}</label>
             <span v-bind="api.getChannelSliderValueTextProps({ channel })">
-              {{ api.value.toFormat("hsla").formatChannelValue(channel, "en-US") }}
+              {{ api.getChannelValueText(channel) }}
             </span>
           </div>
           <div v-bind="api.getChannelSliderProps({ channel })">

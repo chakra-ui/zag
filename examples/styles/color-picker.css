@@ -71,6 +71,28 @@
   border-radius: 4px;
 }
 
+[data-color-picker-trigger] {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #c2c2c2;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+
+  & [data-color-picker-swatch] {
+    width: 100%;
+    height: 100%;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
 .channel-sliders {
   width: 320px;
   display: flex;
@@ -134,5 +156,116 @@
   & [data-color-picker-channel-slider-value-text] {
     color: #555;
     font-variant-numeric: tabular-nums;
+  }
+}
+
+.color-picker-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-picker-swatch-button {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+
+  &[data-state="checked"] {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+  }
+
+  & [data-color-picker-swatch] {
+    width: 100%;
+    height: 100%;
+  }
+
+  & [data-color-picker-swatch-indicator] {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: white;
+    filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.8));
+  }
+}
+
+.color-picker-add-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px dashed #999;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.color-picker-readouts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.color-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+
+  & > [data-color-picker-root] {
+    width: 160px;
+  }
+}
+
+.color-picker-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+[data-color-picker-channel-input][data-invalid] {
+  border-color: #dc2626;
+}
+
+.color-picker-channel-inputs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  font-size: 12px;
+
+  & label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-transform: capitalize;
+  }
+
+  & input {
+    padding: 4px 6px;
+    font: inherit;
+  }
+}
+
+.color-picker-swatch-preview {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+
+  & [data-color-picker-swatch] {
+    width: 100%;
+    height: 100%;
   }
 }

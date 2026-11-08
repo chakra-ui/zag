@@ -47,9 +47,7 @@ export default function Page() {
               <div key={channel} className="channel-sliders__field">
                 <div className="channel-sliders__header">
                   <label {...api.getChannelSliderLabelProps({ channel })}>{label}</label>
-                  <span {...api.getChannelSliderValueTextProps({ channel })}>
-                    {api.value.toFormat("hsla").formatChannelValue(channel, "en-US")}
-                  </span>
+                  <span {...api.getChannelSliderValueTextProps({ channel })}>{api.getChannelValueText(channel)}</span>
                 </div>
                 <div {...api.getChannelSliderProps({ channel })}>
                   {channel === "alpha" && <div {...api.getTransparencyGridProps({ size: "10px" })} />}

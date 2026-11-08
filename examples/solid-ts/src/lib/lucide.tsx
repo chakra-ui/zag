@@ -104,6 +104,7 @@ export const MousePointer2Icon = createIcon("MousePointer2", lucide.MousePointer
 export const MoveHorizontalIcon = createIcon("MoveHorizontal", lucide.MoveHorizontal)
 export const PauseIcon = createIcon("Pause", lucide.Pause)
 export const PawPrint = createIcon("PawPrint", lucide.PawPrint)
+export const PipetteIcon = createIcon("Pipette", lucide.Pipette)
 export const PencilIcon = createIcon("Pencil", lucide.Pencil)
 export const PlayIcon = createIcon("Play", lucide.Play)
 export const PlusIcon = createIcon("Plus", lucide.Plus)

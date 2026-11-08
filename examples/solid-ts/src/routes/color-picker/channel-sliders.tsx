@@ -49,7 +49,7 @@ export default function Page() {
                   <div class="channel-sliders__header">
                     <label {...api().getChannelSliderLabelProps({ channel })}>{label}</label>
                     <span {...api().getChannelSliderValueTextProps({ channel })}>
-                      {api().value.toFormat("hsla").formatChannelValue(channel, "en-US")}
+                      {api().getChannelValueText(channel)}
                     </span>
                   </div>
                   <div {...api().getChannelSliderProps({ channel })}>
