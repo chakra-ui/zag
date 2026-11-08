@@ -11,22 +11,26 @@ export default function Page() {
     id: createUniqueId(),
     value: "https://zagjs.com/components/react/clipboard",
     timeout: 1500,
-    translations: { triggerLabel: (copied) => (copied ? "Link copied" : "Copy link") },
+    translations: {
+      triggerLabel: (copied) => (copied ? "Link copied" : "Copy link"),
+    },
   })
 
   const api = createMemo(() => clipboard.connect(service, normalizeProps))
 
   return (
     <>
-      <main class="share-link">
-        <div {...api().getRootProps()}>
-          <p>Anyone with this link can view the Clipboard docs.</p>
-          <button {...api().getTriggerProps()}>
-            <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
-              <ClipboardCheck />
-            </Show>
-            <span>{api().copied ? "Link copied" : "Copy link"}</span>
-          </button>
+      <main>
+        <div class="share-link">
+          <div {...api().getRootProps()}>
+            <p>Anyone with this link can view the Clipboard docs.</p>
+            <button {...api().getTriggerProps()}>
+              <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
+                <ClipboardCheck />
+              </Show>
+              <span>{api().copied ? "Link copied" : "Copy link"}</span>
+            </button>
+          </div>
         </div>
       </main>
 

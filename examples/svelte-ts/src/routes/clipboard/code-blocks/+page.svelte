@@ -31,35 +31,37 @@
   const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
-<main class="code-blocks">
-  <div {...api.getRootProps()}>
-    {#each snippets as snippet (snippet.id)}
-      {@const copied = api.copied && activeId === snippet.id}
-      <div class="block">
-        <div class="block-header">
-          <strong>{snippet.title}</strong>
-          <button
-            type="button"
-            data-testid="copy-{snippet.id}"
-            data-copied={copied ? "" : undefined}
-            aria-label="{copied ? 'Copied!' : 'Copy'} {snippet.title} snippet"
-            onclick={() => {
-              activeId = snippet.id
-              api.setValue(snippet.code)
-              api.copy()
-            }}
-          >
-            {#if copied}
-              <ClipboardCheckIcon />
-            {:else}
-              <ClipboardCopyIcon />
-            {/if}
-            <span>{copied ? "Copied!" : "Copy"}</span>
-          </button>
+<main>
+  <div class="code-blocks">
+    <div {...api.getRootProps()}>
+      {#each snippets as snippet (snippet.id)}
+        {@const copied = api.copied && activeId === snippet.id}
+        <div class="block">
+          <div class="block-header">
+            <strong>{snippet.title}</strong>
+            <button
+              type="button"
+              data-testid="copy-{snippet.id}"
+              data-copied={copied ? "" : undefined}
+              aria-label="{copied ? 'Copied!' : 'Copy'} {snippet.title} snippet"
+              onclick={() => {
+                activeId = snippet.id
+                api.setValue(snippet.code)
+                api.copy()
+              }}
+            >
+              {#if copied}
+                <ClipboardCheckIcon />
+              {:else}
+                <ClipboardCopyIcon />
+              {/if}
+              <span>{copied ? "Copied!" : "Copy"}</span>
+            </button>
+          </div>
+          <pre data-testid="code-{snippet.id}">{snippet.code}</pre>
         </div>
-        <pre data-testid="code-{snippet.id}">{snippet.code}</pre>
-      </div>
-    {/each}
+      {/each}
+    </div>
   </div>
 </main>
 

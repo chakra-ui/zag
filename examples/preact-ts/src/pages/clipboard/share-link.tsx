@@ -11,20 +11,24 @@ export default function Page() {
     id: useId(),
     value: "https://zagjs.com/components/react/clipboard",
     timeout: 1500,
-    translations: { triggerLabel: (copied) => (copied ? "Link copied" : "Copy link") },
+    translations: {
+      triggerLabel: (copied) => (copied ? "Link copied" : "Copy link"),
+    },
   })
 
   const api = clipboard.connect(service, normalizeProps)
 
   return (
     <>
-      <main className="share-link">
-        <div {...api.getRootProps()}>
-          <p>Anyone with this link can view the Clipboard docs.</p>
-          <button {...api.getTriggerProps()}>
-            {api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
-            <span>{api.copied ? "Link copied" : "Copy link"}</span>
-          </button>
+      <main>
+        <div className="share-link">
+          <div {...api.getRootProps()}>
+            <p>Anyone with this link can view the Clipboard docs.</p>
+            <button {...api.getTriggerProps()}>
+              {api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+              <span>{api.copied ? "Link copied" : "Copy link"}</span>
+            </button>
+          </div>
         </div>
       </main>
 

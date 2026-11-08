@@ -26,28 +26,30 @@ export default function Page() {
 
   return (
     <>
-      <main class="api-key">
-        <div {...api().getRootProps()}>
-          <label {...api().getLabelProps()}>Secret API key</label>
-          <div {...api().getControlProps()}>
-            <input {...api().getInputProps()} style={{ width: "100%" }} />
-            <button {...api().getTriggerProps()}>
-              <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
-                <ClipboardCheck />
-              </Show>
-            </button>
-          </div>
-          <div class="actions">
-            <button
-              type="button"
-              onClick={() => {
-                setValue(generateKey())
-                setStatus("")
-              }}
-            >
-              Regenerate
-            </button>
-            <span data-testid="status">{status()}</span>
+      <main>
+        <div class="api-key">
+          <div {...api().getRootProps()}>
+            <label {...api().getLabelProps()}>Secret API key</label>
+            <div {...api().getControlProps()}>
+              <input {...api().getInputProps()} style={{ width: "100%" }} />
+              <button {...api().getTriggerProps()}>
+                <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
+                  <ClipboardCheck />
+                </Show>
+              </button>
+            </div>
+            <div class="actions">
+              <button
+                type="button"
+                onClick={() => {
+                  setValue(generateKey())
+                  setStatus("")
+                }}
+              >
+                Regenerate
+              </button>
+              <span data-testid="status">{status()}</span>
+            </div>
           </div>
         </div>
       </main>

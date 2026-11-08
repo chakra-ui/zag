@@ -46,10 +46,16 @@
   gap: 12px;
 }
 
+.share-link,
+.api-key,
 .code-blocks {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.share-link [data-clipboard-root],
+.api-key [data-clipboard-root] {
+  width: 100%;
 }
 
 .code-blocks [data-clipboard-root] {

@@ -21,7 +21,7 @@
 
 <main>
   <div class="segmented-control settings-nav">
-    <p class="hint">Focus a section and press the up and down arrows.</p>
+    <p class="hint">Use the up and down arrow keys to switch sections.</p>
     <div class="layout">
       <div {...api.getRootProps()}>
         <span {...api.getLabelProps()}>Settings section</span>

@@ -17,6 +17,7 @@ const takenUsernames = ["admin", "lope"]
 function check(email: string, username: string): Errors {
   const errors: Errors = {}
   if (!email) errors.email = "Enter your email address"
+  else if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Enter a valid email address"
   if (!username) errors.username = "Choose a username"
   else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
   return errors
@@ -49,6 +50,7 @@ export default function Page() {
         <div className="field-page server-errors">
           <p className="hint">Submit empty, or use the username &quot;lope&quot;, to see server errors.</p>
           <form
+            noValidate
             onSubmit={(e) => {
               e.preventDefault()
               const data = new FormData(e.currentTarget)

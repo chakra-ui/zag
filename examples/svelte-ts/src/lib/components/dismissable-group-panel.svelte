@@ -5,11 +5,12 @@
   interface Props {
     id: string
     label: string
+    open: boolean
+    ondismiss: () => void
     children?: Snippet
   }
 
-  let { id, label, children }: Props = $props()
-  let open = $state(false)
+  let { id, label, open, ondismiss, children }: Props = $props()
   let panelRef = $state<HTMLDivElement>()
 
   const peers = () => Array.from(document.querySelectorAll<HTMLElement>("[data-peer]"))
@@ -20,22 +21,19 @@
       group: "toolbar-panels",
       exclude: peers,
       onLayerChange: () => {},
-      onDismiss: () => (open = false),
+      onDismiss: () => ondismiss(),
     })
   })
 </script>
 
-<div>
-  <button data-peer data-testid="trigger-{id}" onclick={() => (open = !open)}>{label}</button>
-  <div
-    bind:this={panelRef}
-    data-peer
-    hidden={!open}
-    role="dialog"
-    aria-label={label}
-    data-testid="panel-{id}"
-    class="panel"
-  >
-    {@render children?.()}
-  </div>
+<div
+  bind:this={panelRef}
+  data-peer
+  hidden={!open}
+  role="dialog"
+  aria-label={label}
+  data-testid="panel-{id}"
+  class="panel"
+>
+  {@render children?.()}
 </div>

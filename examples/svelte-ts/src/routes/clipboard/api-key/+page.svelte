@@ -24,31 +24,33 @@
   const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
-<main class="api-key">
-  <div {...api.getRootProps()}>
-    <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.getLabelProps()}>Secret API key</label>
-    <div {...api.getControlProps()}>
-      <input {...api.getInputProps()} />
-      <button {...api.getTriggerProps()}>
-        {#if api.copied}
-          <ClipboardCheckIcon />
-        {:else}
-          <ClipboardCopyIcon />
-        {/if}
-      </button>
-    </div>
-    <div class="actions">
-      <button
-        type="button"
-        onclick={() => {
-          value = generateKey()
-          status = ""
-        }}
-      >
-        Regenerate
-      </button>
-      <span data-testid="status">{status}</span>
+<main>
+  <div class="api-key">
+    <div {...api.getRootProps()}>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <label {...api.getLabelProps()}>Secret API key</label>
+      <div {...api.getControlProps()}>
+        <input {...api.getInputProps()} />
+        <button {...api.getTriggerProps()}>
+          {#if api.copied}
+            <ClipboardCheckIcon />
+          {:else}
+            <ClipboardCopyIcon />
+          {/if}
+        </button>
+      </div>
+      <div class="actions">
+        <button
+          type="button"
+          onclick={() => {
+            value = generateKey()
+            status = ""
+          }}
+        >
+          Regenerate
+        </button>
+        <span data-testid="status">{status}</span>
+      </div>
     </div>
   </div>
 </main>

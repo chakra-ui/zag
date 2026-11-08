@@ -42,6 +42,17 @@ test.describe("fieldset server errors", () => {
     await expect(page.getByRole("group", { name: "Create your account" })).not.toHaveAttribute("aria-invalid")
   })
 
+  test("a malformed email reaches the server check instead of the browser bubble", async ({ page }) => {
+    await page.getByLabel("Email").fill("not-an-email")
+    await page.getByLabel("Username").fill("ada")
+    await page.getByRole("button", { name: "Create account" }).click()
+
+    await expect(page.getByTestId("status")).toHaveText("Checking with the server…")
+    await expect(page.getByText("Enter a valid email address")).toBeVisible()
+    await expect(page.getByLabel("Email")).toHaveAttribute("aria-invalid", "true")
+    await expect(page.getByLabel("Username")).not.toHaveAttribute("aria-invalid")
+  })
+
   test("reset clears the errors", async ({ page }) => {
     await page.getByRole("button", { name: "Create account" }).click()
     await expect(page.getByText("Choose a username")).toBeVisible()

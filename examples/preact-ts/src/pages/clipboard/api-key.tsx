@@ -25,24 +25,26 @@ export default function Page() {
 
   return (
     <>
-      <main className="api-key">
-        <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Secret API key</label>
-          <div {...api.getControlProps()}>
-            <input {...api.getInputProps()} />
-            <button {...api.getTriggerProps()}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
-          </div>
-          <div className="actions">
-            <button
-              type="button"
-              onClick={() => {
-                setValue(generateKey())
-                setStatus("")
-              }}
-            >
-              Regenerate
-            </button>
-            <span data-testid="status">{status}</span>
+      <main>
+        <div className="api-key">
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Secret API key</label>
+            <div {...api.getControlProps()}>
+              <input {...api.getInputProps()} />
+              <button {...api.getTriggerProps()}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+            </div>
+            <div className="actions">
+              <button
+                type="button"
+                onClick={() => {
+                  setValue(generateKey())
+                  setStatus("")
+                }}
+              >
+                Regenerate
+              </button>
+              <span data-testid="status">{status}</span>
+            </div>
           </div>
         </div>
       </main>

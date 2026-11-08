@@ -5,53 +5,62 @@ import "@styles/dismissable.css"
 
 const peers = () => Array.from(document.querySelectorAll<HTMLElement>("[data-peer]"))
 
-function PeerPanel(props: { id: string; label: string; children: JSX.Element }) {
-  const [open, setOpen] = createSignal(false)
+function PeerPanel(props: { id: string; label: string; open: boolean; onDismiss: () => void; children: JSX.Element }) {
   let panelRef: HTMLDivElement | undefined
 
   createTrackedEffect(() => {
-    if (!open()) return
+    if (!props.open) return
     return trackDismissableElement(panelRef ?? null, {
       group: "toolbar-panels",
       exclude: peers,
       onLayerChange: () => {},
-      onDismiss: () => setOpen(false),
+      onDismiss: () => props.onDismiss(),
     })
   })
 
   return (
-    <div>
-      <button data-peer data-testid={`trigger-${props.id}`} onClick={() => setOpen((value) => !value)}>
-        {props.label}
-      </button>
-      <div
-        ref={panelRef}
-        data-peer
-        hidden={!open()}
-        role="dialog"
-        aria-label={props.label}
-        data-testid={`panel-${props.id}`}
-        class="panel"
-      >
-        {props.children}
-      </div>
+    <div
+      ref={panelRef}
+      data-peer
+      hidden={!props.open}
+      role="dialog"
+      aria-label={props.label}
+      data-testid={`panel-${props.id}`}
+      class="panel"
+    >
+      {props.children}
     </div>
   )
 }
 
 export default function Page() {
+  const [notifications, setNotifications] = createSignal(false)
+  const [details, setDetails] = createSignal(false)
+
   return (
     <main>
       <div class="group">
-        <div class="row">
-          <PeerPanel id="a" label="Notifications">
-            <p>2 new comments on your pull request.</p>
-          </PeerPanel>
-          <PeerPanel id="b" label="Account">
-            <p>Signed in as ama@example.com.</p>
-          </PeerPanel>
+        <div class="columns">
+          <div class="column">
+            <button data-peer data-testid="trigger-a" onClick={() => setNotifications((value) => !value)}>
+              Notifications
+            </button>
+            <PeerPanel id="a" label="Notifications" open={notifications()} onDismiss={() => setNotifications(false)}>
+              <p>2 new comments on your pull request.</p>
+              <button data-testid="open-details" onClick={() => setDetails(true)}>
+                View details
+              </button>
+            </PeerPanel>
+          </div>
+          <div class="column">
+            <PeerPanel id="b" label="Details" open={details()} onDismiss={() => setDetails(false)}>
+              <p>Ama commented on Fix select positioning.</p>
+            </PeerPanel>
+          </div>
         </div>
-        <p data-testid="outside">Open both panels, then press Escape twice. The last one opened closes first.</p>
+        <p data-testid="outside">
+          Open Notifications, choose View details, then close Notifications to see Details stay open.
+        </p>
       </div>
     </main>
   )

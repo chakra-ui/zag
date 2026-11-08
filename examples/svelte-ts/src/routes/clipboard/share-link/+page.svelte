@@ -17,17 +17,19 @@
   const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
-<main class="share-link">
-  <div {...api.getRootProps()}>
-    <p>Anyone with this link can view the Clipboard docs.</p>
-    <button {...api.getTriggerProps()}>
-      {#if api.copied}
-        <ClipboardCheckIcon />
-      {:else}
-        <ClipboardCopyIcon />
-      {/if}
-      <span>{api.copied ? "Link copied" : "Copy link"}</span>
-    </button>
+<main>
+  <div class="share-link">
+    <div {...api.getRootProps()}>
+      <p>Anyone with this link can view the Clipboard docs.</p>
+      <button {...api.getTriggerProps()}>
+        {#if api.copied}
+          <ClipboardCheckIcon />
+        {:else}
+          <ClipboardCopyIcon />
+        {/if}
+        <span>{api.copied ? "Link copied" : "Copy link"}</span>
+      </button>
+    </div>
   </div>
 </main>
 

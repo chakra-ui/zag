@@ -20,7 +20,7 @@ const section = computed(() => settingsSections.find((s) => s.id === api.value.v
 <template>
   <main>
     <div class="segmented-control settings-nav">
-      <p class="hint">Focus a section and press the up and down arrows.</p>
+      <p class="hint">Use the up and down arrow keys to switch sections.</p>
       <div class="layout">
         <div v-bind="api.getRootProps()">
           <span v-bind="api.getLabelProps()">Settings section</span>

@@ -13,6 +13,7 @@ const takenUsernames = ["admin", "lope"]
 function check(email: string, username: string): Errors {
   const errors: Errors = {}
   if (!email) errors.email = "Enter your email address"
+  else if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Enter a valid email address"
   if (!username) errors.username = "Choose a username"
   else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
   return errors
@@ -80,7 +81,7 @@ function onReset() {
   <main>
     <div class="field-page server-errors">
       <p class="hint">Submit empty, or use the username "lope", to see server errors.</p>
-      <form @submit.prevent="onSubmit" @reset="onReset">
+      <form novalidate @submit.prevent="onSubmit" @reset="onReset">
         <fieldset v-bind="fieldsetApi.getRootProps()">
           <legend v-bind="fieldsetApi.getLegendProps()">Create your account</legend>
           <span v-bind="fieldsetApi.getHelperTextProps()">We will email you a confirmation link.</span>

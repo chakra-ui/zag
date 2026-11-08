@@ -24,7 +24,7 @@ export default function Page() {
     <>
       <main>
         <div className="segmented-control settings-nav">
-          <p className="hint">Focus a section and press the up and down arrows.</p>
+          <p className="hint">Use the up and down arrow keys to switch sections.</p>
           <div className="layout">
             <div {...api.getRootProps()}>
               <span {...api.getLabelProps()}>Settings section</span>

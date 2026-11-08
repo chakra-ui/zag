@@ -16,6 +16,7 @@
   function check(email: string, username: string): Errors {
     const errors: Errors = {}
     if (!email) errors.email = "Enter your email address"
+    else if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Enter a valid email address"
     if (!username) errors.username = "Choose a username"
     else if (takenUsernames.includes(username.toLowerCase())) errors.username = "That username is already taken"
     return errors
@@ -74,7 +75,7 @@
 <main>
   <div class="field-page server-errors">
     <p class="hint">Submit empty, or use the username "lope", to see server errors.</p>
-    <form {onsubmit} {onreset}>
+    <form novalidate {onsubmit} {onreset}>
       <fieldset {...fieldsetApi.getRootProps()}>
         <legend {...fieldsetApi.getLegendProps()}>Create your account</legend>
         <span {...fieldsetApi.getHelperTextProps()}>We will email you a confirmation link.</span>

@@ -33,19 +33,21 @@ const regenerate = () => {
 </script>
 
 <template>
-  <main class="api-key">
-    <div v-bind="api.getRootProps()">
-      <label v-bind="api.getLabelProps()">Secret API key</label>
-      <div v-bind="api.getControlProps()">
-        <input v-bind="api.getInputProps()" />
-        <button v-bind="api.getTriggerProps()">
-          <ClipboardCheck v-if="api.copied" />
-          <ClipboardCopyIcon v-else />
-        </button>
-      </div>
-      <div class="actions">
-        <button type="button" @click="regenerate">Regenerate</button>
-        <span data-testid="status">{{ status }}</span>
+  <main>
+    <div class="api-key">
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Secret API key</label>
+        <div v-bind="api.getControlProps()">
+          <input v-bind="api.getInputProps()" />
+          <button v-bind="api.getTriggerProps()">
+            <ClipboardCheck v-if="api.copied" />
+            <ClipboardCopyIcon v-else />
+          </button>
+        </div>
+        <div class="actions">
+          <button type="button" @click="regenerate">Regenerate</button>
+          <span data-testid="status">{{ status }}</span>
+        </div>
       </div>
     </div>
   </main>

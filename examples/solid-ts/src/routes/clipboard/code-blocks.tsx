@@ -32,37 +32,39 @@ export default function Page() {
 
   return (
     <>
-      <main class="code-blocks">
-        <div {...api().getRootProps()}>
-          <For each={snippets}>
-            {(snippet) => {
-              const copied = () => api().copied && activeId() === snippet.id
-              return (
-                <div class="block">
-                  <div class="block-header">
-                    <strong>{snippet.title}</strong>
-                    <button
-                      type="button"
-                      data-testid={`copy-${snippet.id}`}
-                      data-copied={copied() ? "" : undefined}
-                      aria-label={`${copied() ? "Copied!" : "Copy"} ${snippet.title} snippet`}
-                      onClick={() => {
-                        setActiveId(snippet.id)
-                        api().setValue(snippet.code)
-                        api().copy()
-                      }}
-                    >
-                      <Show when={copied()} fallback={<ClipboardCopyIcon />}>
-                        <ClipboardCheck />
-                      </Show>
-                      <span>{copied() ? "Copied!" : "Copy"}</span>
-                    </button>
+      <main>
+        <div class="code-blocks">
+          <div {...api().getRootProps()}>
+            <For each={snippets}>
+              {(snippet) => {
+                const copied = () => api().copied && activeId() === snippet.id
+                return (
+                  <div class="block">
+                    <div class="block-header">
+                      <strong>{snippet.title}</strong>
+                      <button
+                        type="button"
+                        data-testid={`copy-${snippet.id}`}
+                        data-copied={copied() ? "" : undefined}
+                        aria-label={`${copied() ? "Copied!" : "Copy"} ${snippet.title} snippet`}
+                        onClick={() => {
+                          setActiveId(snippet.id)
+                          api().setValue(snippet.code)
+                          api().copy()
+                        }}
+                      >
+                        <Show when={copied()} fallback={<ClipboardCopyIcon />}>
+                          <ClipboardCheck />
+                        </Show>
+                        <span>{copied() ? "Copied!" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <pre data-testid={`code-${snippet.id}`}>{snippet.code}</pre>
                   </div>
-                  <pre data-testid={`code-${snippet.id}`}>{snippet.code}</pre>
-                </div>
-              )
-            }}
-          </For>
+                )
+              }}
+            </For>
+          </div>
         </div>
       </main>
 

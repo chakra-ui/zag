@@ -35,24 +35,26 @@ const copy = (snippet: (typeof snippets)[number]) => {
 </script>
 
 <template>
-  <main class="code-blocks">
-    <div v-bind="api.getRootProps()">
-      <div v-for="snippet in snippets" :key="snippet.id" class="block">
-        <div class="block-header">
-          <strong>{{ snippet.title }}</strong>
-          <button
-            type="button"
-            :data-testid="`copy-${snippet.id}`"
-            :data-copied="api.copied && activeId === snippet.id ? '' : undefined"
-            :aria-label="`${api.copied && activeId === snippet.id ? 'Copied!' : 'Copy'} ${snippet.title} snippet`"
-            @click="copy(snippet)"
-          >
-            <ClipboardCheck v-if="api.copied && activeId === snippet.id" />
-            <ClipboardCopyIcon v-else />
-            <span>{{ api.copied && activeId === snippet.id ? "Copied!" : "Copy" }}</span>
-          </button>
+  <main>
+    <div class="code-blocks">
+      <div v-bind="api.getRootProps()">
+        <div v-for="snippet in snippets" :key="snippet.id" class="block">
+          <div class="block-header">
+            <strong>{{ snippet.title }}</strong>
+            <button
+              type="button"
+              :data-testid="`copy-${snippet.id}`"
+              :data-copied="api.copied && activeId === snippet.id ? '' : undefined"
+              :aria-label="`${api.copied && activeId === snippet.id ? 'Copied!' : 'Copy'} ${snippet.title} snippet`"
+              @click="copy(snippet)"
+            >
+              <ClipboardCheck v-if="api.copied && activeId === snippet.id" />
+              <ClipboardCopyIcon v-else />
+              <span>{{ api.copied && activeId === snippet.id ? "Copied!" : "Copy" }}</span>
+            </button>
+          </div>
+          <pre :data-testid="`code-${snippet.id}`">{{ snippet.code }}</pre>
         </div>
-        <pre :data-testid="`code-${snippet.id}`">{{ snippet.code }}</pre>
       </div>
     </div>
   </main>

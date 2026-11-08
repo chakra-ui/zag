@@ -34,33 +34,35 @@ export default function Page() {
 
   return (
     <>
-      <main className="code-blocks">
-        <div {...api.getRootProps()}>
-          {snippets.map((snippet) => {
-            const copied = api.copied && activeId === snippet.id
-            return (
-              <div className="block" key={snippet.id}>
-                <div className="block-header">
-                  <strong>{snippet.title}</strong>
-                  <button
-                    type="button"
-                    data-testid={`copy-${snippet.id}`}
-                    data-copied={copied ? "" : undefined}
-                    aria-label={`${copied ? "Copied!" : "Copy"} ${snippet.title} snippet`}
-                    onClick={() => {
-                      setActiveId(snippet.id)
-                      api.setValue(snippet.code)
-                      api.copy()
-                    }}
-                  >
-                    {copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
-                    <span>{copied ? "Copied!" : "Copy"}</span>
-                  </button>
+      <main>
+        <div className="code-blocks">
+          <div {...api.getRootProps()}>
+            {snippets.map((snippet) => {
+              const copied = api.copied && activeId === snippet.id
+              return (
+                <div className="block" key={snippet.id}>
+                  <div className="block-header">
+                    <strong>{snippet.title}</strong>
+                    <button
+                      type="button"
+                      data-testid={`copy-${snippet.id}`}
+                      data-copied={copied ? "" : undefined}
+                      aria-label={`${copied ? "Copied!" : "Copy"} ${snippet.title} snippet`}
+                      onClick={() => {
+                        setActiveId(snippet.id)
+                        api.setValue(snippet.code)
+                        api.copy()
+                      }}
+                    >
+                      {copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+                      <span>{copied ? "Copied!" : "Copy"}</span>
+                    </button>
+                  </div>
+                  <pre data-testid={`code-${snippet.id}`}>{snippet.code}</pre>
                 </div>
-                <pre data-testid={`code-${snippet.id}`}>{snippet.code}</pre>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </main>
 
