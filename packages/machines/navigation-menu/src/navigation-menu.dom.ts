@@ -76,6 +76,7 @@ export function trackResizeObserver(element: Array<HTMLElement | null>, onResize
 
 export function setMotionAttr(scope: Scope, value: string | null, previousValue: string | null) {
   const triggers = getTriggerEls(scope)
+  if (!triggers.length) return
   const dir = triggers[0].dir
 
   let values = triggers.map((trigger) => trigger.getAttribute("data-value"))
