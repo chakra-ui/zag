@@ -679,7 +679,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "radio-group",
     label: "Radio Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "shipping-options", title: "Shipping Options" },
+      { slug: "plan-picker", title: "Plan Picker" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "rating-group",
