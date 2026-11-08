@@ -384,7 +384,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "switch",
     label: "Switch",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "settings", title: "Settings" },
+      { slug: "form", title: "Form" },
+      { slug: "two-factor", title: "Two-Factor" },
+    ],
   },
   {
     slug: "carousel",

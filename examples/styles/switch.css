@@ -71,3 +71,66 @@
     opacity: var(--z-disabled-opacity);
   }
 }
+
+.switch-settings,
+.switch-form,
+.switch-two-factor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 24rem;
+
+  .hint,
+  .output,
+  .error,
+  .status,
+  .description {
+    margin: 0;
+    font-size: var(--z-text-md);
+  }
+
+  .hint,
+  .description {
+    color: var(--z-fg-muted);
+  }
+
+  .error {
+    color: var(--z-danger-fg);
+  }
+
+  .output {
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: hsl(219, 14%, 96%);
+    overflow-x: auto;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.switch-settings .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.switch-two-factor .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.switch-two-factor .description,
+.switch-two-factor .error {
+  padding-inline-start: 44px;
+}
