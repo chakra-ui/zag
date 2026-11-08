@@ -16,12 +16,12 @@
       },
       "./anatomy": {
         "import": {
-          "types": "./dist/toc.anatomy.d.mts",
-          "default": "./dist/toc.anatomy.mjs"
+          "types": "./dist/infinite-scroll.anatomy.d.mts",
+          "default": "./dist/infinite-scroll.anatomy.mjs"
         },
         "require": {
-          "types": "./dist/toc.anatomy.d.ts",
-          "default": "./dist/toc.anatomy.js"
+          "types": "./dist/infinite-scroll.anatomy.d.ts",
+          "default": "./dist/infinite-scroll.anatomy.js"
         }
       },
       "./package.json": "./package.json"
