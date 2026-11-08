@@ -274,6 +274,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "expand-trigger", title: "Expand Trigger" },
       { slug: "actions", title: "Actions" },
       { slug: "in-dialog", title: "Dialog" },
+      { slug: "list-view", title: "List and Tree View" },
     ],
   },
   {

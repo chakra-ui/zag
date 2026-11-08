@@ -516,6 +516,7 @@ export const routes: RouteDefinition[] = [
   { path: "/tree-view/expand-trigger", component: lazy(() => import("./pages/tree-view/expand-trigger")) },
   { path: "/tree-view/filtering", component: lazy(() => import("./pages/tree-view/filtering")) },
   { path: "/tree-view/in-dialog", component: lazy(() => import("./pages/tree-view/in-dialog")) },
+  { path: "/tree-view/list-view", component: lazy(() => import("./pages/tree-view/list-view")) },
   { path: "/tree-view/json-tree", component: lazy(() => import("./pages/tree-view/json-tree")) },
   { path: "/tree-view/links", component: lazy(() => import("./pages/tree-view/links")) },
   { path: "/tree-view/rename", component: lazy(() => import("./pages/tree-view/rename")) },
