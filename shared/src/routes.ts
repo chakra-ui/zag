@@ -255,7 +255,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "clipboard",
     label: "Clipboard",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "share-link", title: "Share Link" },
+      { slug: "api-key", title: "API Key" },
+      { slug: "code-blocks", title: "Code Blocks" },
+    ],
   },
   {
     slug: "tree-view",
