@@ -9,6 +9,7 @@
   import "@styles/clipboard.css"
 
   const controls = useControls(clipboardControls)
+  let reports = $state<string[]>([])
 
   const id = $props.id()
   const service = useMachine(
@@ -16,6 +17,9 @@
     controls.mergeProps<clipboard.Props>({
       id,
       value: "https://github.com/chakra-ui/zag",
+      onStatusChange(details) {
+        reports = [...reports, details.error ? "error" : details.copied ? "copied" : "reset"]
+      },
     }),
   )
 
@@ -39,6 +43,7 @@
     <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
     <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
   </div>
+  <p>onStatusChange: <output aria-label="Status reports">{reports.join(",") || "-"}</output></p>
 </main>
 
 <Toolbar {controls}>

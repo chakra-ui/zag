@@ -7,8 +7,37 @@ export class ClipboardModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto("/clipboard/basic")
+  async goto() {
+    await this.page.context().grantPermissions(["clipboard-read", "clipboard-write"])
+    await this.page.goto("/clipboard/basic")
+  }
+
+  readClipboard() {
+    return this.page.evaluate(() => navigator.clipboard.readText())
+  }
+
+  /** Makes writing fail, like a denied permission */
+  async denyClipboardWrite() {
+    await this.page.evaluate(() => {
+      navigator.clipboard.writeText = () =>
+        Promise.reject(new DOMException("Write permission denied", "NotAllowedError"))
+    })
+  }
+
+  /** Removes the Clipboard API, like a page served over plain http */
+  async removeClipboardApi() {
+    await this.page.evaluate(() => {
+      Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true })
+    })
+  }
+
+  async copyFromInput() {
+    await this.page.getByLabel("Copy this link").focus()
+    await this.page.keyboard.press("ControlOrMeta+c")
+  }
+
+  seeStatusReports(reports: string) {
+    return expect(this.page.getByRole("status", { name: "Status reports" })).toHaveText(reports)
   }
 
   checkAccessibility(selector?: string): Promise<void> {
@@ -41,5 +70,15 @@ export class ClipboardModel extends Model {
 
   async dontSeeContent(text: string) {
     await expect(this.getContent(text)).toBeHidden()
+  }
+
+  async seeCopied() {
+    await this.seeContent("Copied!")
+    await this.dontSeeContent("Copy")
+  }
+
+  async seeNotCopied() {
+    await this.seeContent("Copy")
+    await this.dontSeeContent("Copied!")
   }
 }

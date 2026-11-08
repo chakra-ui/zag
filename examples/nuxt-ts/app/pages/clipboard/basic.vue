@@ -6,12 +6,16 @@ import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
 import "@styles/clipboard.css"
 
 const controls = useControls(clipboardControls)
+const reports = ref<string[]>([])
 
 const service = useMachine(
   clipboard.machine,
   controls.mergeProps<clipboard.Props>({
     id: useId(),
     value: "https://github.com/chakra-ui/zag",
+    onStatusChange(details) {
+      reports.value = [...reports.value, details.error ? "error" : details.copied ? "copied" : "reset"]
+    },
   }),
 )
 
@@ -32,6 +36,9 @@ const api = computed(() => clipboard.connect(service, normalizeProps))
       <div v-bind="api.getIndicatorProps({ copied: true })">Copied!</div>
       <div v-bind="api.getIndicatorProps({ copied: false })">Copy</div>
     </div>
+    <p>
+      onStatusChange: <output aria-label="Status reports">{{ reports.join(",") || "-" }}</output>
+    </p>
   </main>
 
   <Toolbar>
