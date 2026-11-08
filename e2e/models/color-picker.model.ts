@@ -29,6 +29,10 @@ export class ColorPickerModel extends Model {
     return this.page.locator(`[data-color-picker-control] [data-channel=hex]`)
   }
 
+  private get contentHexInput() {
+    return this.content.locator(`[data-channel=hex]`)
+  }
+
   private get alphaInput() {
     return this.page.locator(`[data-color-picker-control] [data-channel=alpha]`)
   }
@@ -53,6 +57,18 @@ export class ColorPickerModel extends Model {
     return this.page.locator(`[data-color-picker-channel-slider][data-channel=${channel}]`)
   }
 
+  channelValueText(channel: string) {
+    return this.page.locator(`[data-color-picker-channel-slider-value-text][data-channel=${channel}]`)
+  }
+
+  private get colorValueText() {
+    return this.page.locator(part("color-picker", "value-text"))
+  }
+
+  private get contentSwatch() {
+    return this.content.locator(part("color-picker", "swatch"))
+  }
+
   private get swatchTriggers() {
     return this.page.locator(part("color-picker", "swatch-trigger"))
   }
@@ -73,6 +89,14 @@ export class ColorPickerModel extends Model {
     return expect(this.hexInput).toHaveValue(value)
   }
 
+  typeInContentHex(value: string) {
+    return this.contentHexInput.fill(value)
+  }
+
+  seeContentHexInputHasValue(value: string) {
+    return expect(this.contentHexInput).toHaveValue(value)
+  }
+
   typeInAlphaInput(value: string) {
     return this.alphaInput.fill(value)
   }
@@ -83,6 +107,40 @@ export class ColorPickerModel extends Model {
 
   seeValueText(value: string) {
     return expect(this.valueText).toContainText(value)
+  }
+
+  seeChannelValueText(channel: Channel, value: string) {
+    return expect(this.channelValueText(channel)).toHaveText(value)
+  }
+
+  seeColorValueText(value: string) {
+    return expect(this.colorValueText).toHaveText(value)
+  }
+
+  seeSwatchColor(color: string) {
+    return expect(this.contentSwatch).toHaveCSS("background-color", color)
+  }
+
+  seeChannelThumbValue(channel: Channel, value: string) {
+    return expect(this.channelThumb(channel)).toHaveAttribute("aria-valuenow", value)
+  }
+
+  focusChannelThumb(channel: Channel) {
+    return this.channelThumb(channel).focus()
+  }
+
+  clickChannelSliderLabel(channel: Channel) {
+    return this.page.locator(`[data-color-picker-channel-slider-label][data-channel=${channel}]`).click()
+  }
+
+  async dragChannelSlider(channel: Channel, percent: number) {
+    const thumbBox = await rect(this.channelThumb(channel))
+    const trackBox = await rect(this.page.locator(`[data-color-picker-channel-slider-track][data-channel=${channel}]`))
+
+    await this.page.mouse.move(thumbBox.midX, thumbBox.midY)
+    await this.page.mouse.down()
+    await this.page.mouse.move(trackBox.x + trackBox.width * percent, trackBox.midY, { steps: 10 })
+    await this.page.mouse.up()
   }
 
   clickTrigger() {

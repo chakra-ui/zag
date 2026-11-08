@@ -357,6 +357,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "in-dialog", title: "Dialog" },
       { slug: "oklch", title: "OKLCH + gamut overlay" },
       { slug: "oklab", title: "OKLab + gamut overlay" },
+      { slug: "channel-sliders", title: "Hue & Alpha Sliders" },
     ],
   },
   {

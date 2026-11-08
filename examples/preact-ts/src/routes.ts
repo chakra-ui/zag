@@ -57,6 +57,10 @@ export const routes: RouteDefinition[] = [
   { path: "/collapsible/partial", component: lazy(() => import("./pages/collapsible/partial")) },
   { path: "/collapsible/uncontrolled", component: lazy(() => import("./pages/collapsible/uncontrolled")) },
   { path: "/color-picker/basic", component: lazy(() => import("./pages/color-picker/basic")) },
+  {
+    path: "/color-picker/channel-sliders",
+    component: lazy(() => import("./pages/color-picker/channel-sliders")),
+  },
   { path: "/color-picker/controlled", component: lazy(() => import("./pages/color-picker/controlled")) },
   { path: "/color-picker/default-open", component: lazy(() => import("./pages/color-picker/default-open")) },
   { path: "/color-picker/focus-next-field", component: lazy(() => import("./pages/color-picker/focus-next-field")) },
