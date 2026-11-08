@@ -39,6 +39,7 @@ export default function Page() {
   return (
     <>
       <main class="navigation-menu viewport">
+        <p>Press Escape or click outside to close the menu that starts open.</p>
         <div
           style={{
             position: "relative",
@@ -166,8 +167,6 @@ export default function Page() {
           </div>
           <button>Login</button>
         </div>
-
-        <p>Press Escape or click outside to close the menu that starts open.</p>
       </main>
 
       <Toolbar controls={controls} viz>

@@ -21,6 +21,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
 
 <template>
   <main class="navigation-menu viewport">
+    <p>Press Escape or click outside to close the menu that starts open.</p>
     <div
       :style="{
         position: 'relative',
@@ -164,8 +165,6 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
       </div>
       <button>Login</button>
     </div>
-
-    <p>Press Escape or click outside to close the menu that starts open.</p>
   </main>
 
   <Toolbar viz>

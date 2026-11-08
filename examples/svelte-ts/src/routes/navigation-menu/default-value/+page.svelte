@@ -28,6 +28,7 @@
 {/snippet}
 
 <main class="navigation-menu viewport">
+  <p>Press Escape or click outside to close the menu that starts open.</p>
   <div
     style="position: relative; display: flex; box-sizing: border-box; align-items: center; padding: 15px 20px; justify-content: space-between; width: 100%; background-color: white; box-shadow: 0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)"
   >
@@ -124,8 +125,6 @@
     </div>
     <button>Login</button>
   </div>
-
-  <p>Press Escape or click outside to close the menu that starts open.</p>
 </main>
 
 <Toolbar {controls} viz>
