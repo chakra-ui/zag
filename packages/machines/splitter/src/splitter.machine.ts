@@ -92,9 +92,10 @@ export const machine = createMachine<SplitterSchema>({
       panelIdToLastNotifiedSizeMap: new Map(),
       initialSize: null,
       prevInitialLayout: null,
-      prevGroupSize: null,
-      prevPropsKey: null,
-      lastRequestedSize: null,
+      prevPanelIds: null,
+      prevSizeProps: null,
+      requestedLayout: null,
+      layoutCache: new Map(),
       suppressOnResize: false,
     }
   },
@@ -120,6 +121,9 @@ export const machine = createMachine<SplitterSchema>({
     },
     "PANEL.RESIZE": {
       actions: ["resizePanel"],
+    },
+    "PANEL.RESET": {
+      actions: ["resetPanelBeforeTrigger"],
     },
     "ROOT.RESIZE": {
       actions: ["syncSize"],
@@ -253,7 +257,7 @@ export const machine = createMachine<SplitterSchema>({
             .getResizeTriggerEls(scope)
             .map((resizeTriggerEl) => {
               const id = resizeTriggerEl.dataset.id
-              if (!id) return
+              if (!id || resizeTriggerEl.hasAttribute("data-disabled")) return
               return registry!.register({
                 id: dom.getResizeTriggerId(scope, id),
                 element: resizeTriggerEl as HTMLElement,
@@ -274,6 +278,8 @@ export const machine = createMachine<SplitterSchema>({
         // Re-register when panels change (DOM updates)
         const observeCleanup = observeChildren(dom.getRootEl(scope), {
           callback: exec,
+          attributes: true,
+          attributeFilter: ["data-disabled"],
         })
 
         return () => {
@@ -355,59 +361,59 @@ export const machine = createMachine<SplitterSchema>({
         if (!rootEl) return
 
         const orientation = prop("orientation")
-        const nextGroupSize = getGroupSize(rootEl, orientation)
-        if (nextGroupSize <= 0) return
+        const groupSize = getGroupSize(rootEl, orientation)
+        if (groupSize <= 0) return
 
-        const panels = normalizePanels(prop("panels"), rootEl, prop("orientation"))
+        const panels = normalizePanels(prop("panels"), rootEl, orientation)
         context.set("panels", panels)
 
-        const sizeSpec = prop("size") ?? prop("defaultSize")
-        const initialLayout = `${getPanelLayout(prop("panels"))}:${JSON.stringify(prop("size") ?? [])}:${JSON.stringify(prop("defaultSize") ?? [])}`
-        const prevGroupSize = refs.get("prevGroupSize")
-        const currentSize = context.get("size")
-        const nextResolvedSize = resolvePanelSizes({
-          sizes: sizeSpec,
-          panels: prop("panels"),
-          rootEl,
-          orientation,
-        })
+        const panelIds = getPanelLayout(prop("panels"))
+        const sizeProps = JSON.stringify([prop("size") ?? [], prop("defaultSize") ?? []])
+        const panelsChanged = refs.get("prevPanelIds") !== panelIds
+        const sizePropsChanged = refs.get("prevSizeProps") !== sizeProps
 
-        const hasCurrentLayout = prevGroupSize != null && currentSize.length === panels.length
-        const propsKey = `${serializePanels(prop("panels"))}:${JSON.stringify(prop("size") ?? [])}:${JSON.stringify(prop("defaultSize") ?? [])}`
-        const propsChanged = refs.get("prevPropsKey") !== propsKey
-
-        let nextSize = nextResolvedSize
-        if (hasCurrentLayout && prevGroupSize !== nextGroupSize) {
-          nextSize = preserveFixedPanelSizes({
-            panels,
-            prevLayout: currentSize,
-            prevGroupSize,
-            nextGroupSize,
-          })
-        } else if (hasCurrentLayout && !propsChanged) {
-          // The root resized along the cross axis only, so the current layout still holds
-          nextSize = currentSize
+        const controlled = prop("size") != null
+        if (controlled || sizePropsChanged || panelsChanged) {
+          const cachedLayout = controlled || sizePropsChanged ? undefined : refs.get("layoutCache").get(panelIds)
+          const defaultLayout = {
+            size: resolvePanelSizes({
+              sizes: prop("size") ?? prop("defaultSize"),
+              panels: prop("panels"),
+              rootEl,
+              orientation,
+            }),
+            groupSize,
+          }
+          refs.set("requestedLayout", cachedLayout ?? defaultLayout)
         }
 
-        const safeSize = validateSizes({
-          size: nextSize,
+        // Lay out from what was asked for, so a size clamped while the group was small grows back
+        const requestedLayout = refs.get("requestedLayout")!
+        const nextSize = validateSizes({
+          size: preserveFixedPanelSizes({
+            panels,
+            prevLayout: requestedLayout.size,
+            prevGroupSize: requestedLayout.groupSize,
+            nextGroupSize: groupSize,
+          }),
           panels,
         })
 
+        const initialLayout = `${panelIds}:${sizeProps}`
         if (refs.get("prevInitialLayout") !== initialLayout) {
-          refs.set("initialSize", safeSize)
+          refs.set("initialSize", nextSize)
           refs.set("prevInitialLayout", initialLayout)
         }
 
         const prevSize = context.get("size")
-        if (!isEqual(prevSize, safeSize)) {
+        if (!isEqual(prevSize, nextSize)) {
           refs.set("suppressOnResize", prop("size") != null || prevSize.length === 0)
-          context.set("size", safeSize)
+          context.set("size", nextSize)
           refs.set("suppressOnResize", false)
         }
 
-        refs.set("prevGroupSize", nextGroupSize)
-        refs.set("prevPropsKey", propsKey)
+        refs.set("prevPanelIds", panelIds)
+        refs.set("prevSizeProps", sizeProps)
       },
 
       setDraggingState({ context, event, prop, scope }) {
@@ -560,6 +566,31 @@ export const machine = createMachine<SplitterSchema>({
         }
       },
 
+      resetPanelBeforeTrigger(params) {
+        const { context, event, refs, scope } = params
+        const resizeTriggerId = dom.resolveResizeTriggerId(scope, event.id)
+        const initialSize = refs.get("initialSize")
+        if (!resizeTriggerId || !initialSize) return
+
+        const panels = context.get("panels")
+        const prevSize = context.get("size")
+        const pivotIndices = resizeTriggerId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
+        const [beforeIndex] = pivotIndices
+
+        const nextSize = resizeByDelta({
+          delta: initialSize[beforeIndex] - prevSize[beforeIndex],
+          initialSize: prevSize,
+          panels,
+          pivotIndices,
+          prevSize,
+          trigger: "imperative-api",
+        })
+
+        if (!isEqual(prevSize, nextSize)) {
+          setSize(params, nextSize)
+        }
+      },
+
       setPointerValue(params) {
         const { context, event, prop, scope } = params
 
@@ -579,10 +610,10 @@ export const machine = createMachine<SplitterSchema>({
         const horizontal = prop("orientation") === "horizontal"
 
         const cursorPosition = horizontal ? event.point.x : event.point.y
-        const groupRect = panelGroupElement.getBoundingClientRect()
-        const groupSizeInPixels = horizontal ? groupRect.width : groupRect.height
+        const groupSizeInPixels = getGroupSize(panelGroupElement, prop("orientation"))
 
-        const offsetPixels = cursorPosition - initialCursorPosition
+        let offsetPixels = cursorPosition - initialCursorPosition
+        if (horizontal && prop("dir") === "rtl") offsetPixels = -offsetPixels
         const offsetPercentage = (offsetPixels / groupSizeInPixels) * 100
 
         const prevSize = context.get("size")
@@ -635,7 +666,7 @@ export const machine = createMachine<SplitterSchema>({
         const resizeTriggerId = event.id ?? context.get("dragState")?.resizeTriggerId ?? null
         queueMicrotask(() => {
           prop("onResizeEnd")?.({
-            size: refs.get("lastRequestedSize") ?? context.get("size"),
+            size: refs.get("requestedLayout")?.size ?? context.get("size"),
             resizeTriggerId,
           })
         })
@@ -671,9 +702,13 @@ export const machine = createMachine<SplitterSchema>({
             panelDataArray.findIndex((panelData) => panelData.id === id),
           )
 
+          const sizeBeforeCollapse = refs.get("panelSizeBeforeCollapse").get(panelData.id)
+          const expandSize = sizeBeforeCollapse != null && sizeBeforeCollapse >= minSize ? sizeBeforeCollapse : minSize
+          const targetSize = fuzzyNumbersEqual(size, collapsedSize) ? expandSize : collapsedSize
+
           const nextSize = resizeByDelta({
-            delta: fuzzyNumbersEqual(size, collapsedSize) ? minSize - collapsedSize : collapsedSize - size,
-            initialSize: refs.get("initialSize") ?? sizes,
+            delta: targetSize - size,
+            initialSize: sizes,
             panels: panelDataArray,
             pivotIndices,
             prevSize: sizes,
@@ -718,7 +753,7 @@ export const machine = createMachine<SplitterSchema>({
       },
 
       focusNextResizeTrigger({ event, scope }) {
-        const resizeTriggers = dom.getResizeTriggerEls(scope)
+        const resizeTriggers = dom.getResizeTriggerEls(scope).filter((el) => !el.hasAttribute("data-disabled"))
         const index = resizeTriggers.findIndex((el) => el.dataset.id === event.id)
         const handleEl = event.shiftKey ? prev(resizeTriggers, index) : next(resizeTriggers, index)
         handleEl?.focus()
@@ -728,7 +763,7 @@ export const machine = createMachine<SplitterSchema>({
 })
 
 function setSize(params: Params<SplitterSchema>, sizes: number[]) {
-  const { refs, prop, context } = params
+  const { refs, prop, context, scope } = params
 
   const panelsArray = context.get("panels")
   const onCollapse = prop("onCollapse")
@@ -744,7 +779,9 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
   const dragState = context.get("dragState")
   const keyboardState = context.get("keyboardState")
   const isProgrammatic = dragState === null && keyboardState === null
-  refs.set("lastRequestedSize", sizes)
+  const requestedLayout = { size: sizes, groupSize: getGroupSize(dom.getRootEl(scope), prop("orientation")) }
+  refs.set("requestedLayout", requestedLayout)
+  refs.get("layoutCache").set(getPanelLayout(prop("panels")), requestedLayout)
 
   // Call onResizeStart for programmatic resizes
   if (isProgrammatic && onResizeStart) {
@@ -780,12 +817,16 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
     if (lastNotifiedSize == null || size !== lastNotifiedSize) {
       panelIdToLastNotifiedSizeMap.set(panelId, size)
 
-      if (collapsible && lastNotifiedSize != null && (onCollapse || onExpand)) {
+      if (collapsible && lastNotifiedSize != null) {
         if (fuzzyNumbersEqual(lastNotifiedSize, collapsedSize) && !fuzzyNumbersEqual(size, collapsedSize)) {
           onExpand?.({ panelId, size })
         }
 
         if (!fuzzyNumbersEqual(lastNotifiedSize, collapsedSize) && fuzzyNumbersEqual(size, collapsedSize)) {
+          const dragStartSize = dragState?.initialSize[index]
+          const sizeBeforeCollapse =
+            dragStartSize != null && !fuzzyNumbersEqual(dragStartSize, collapsedSize) ? dragStartSize : lastNotifiedSize
+          refs.get("panelSizeBeforeCollapse").set(panelId, sizeBeforeCollapse)
           onCollapse?.({ panelId, size })
         }
       }

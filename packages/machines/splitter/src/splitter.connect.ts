@@ -212,6 +212,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         role: "separator",
         "data-id": id,
         tabIndex: triggerState.disabled ? undefined : 0,
+        "aria-disabled": triggerState.disabled || undefined,
         "aria-valuenow": aria.valueNow,
         "aria-valuemin": aria.valueMin,
         "aria-valuemax": aria.valueMax,
@@ -260,6 +261,10 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
           event.preventDefault()
           event.stopPropagation()
+        },
+        onDoubleClick(event) {
+          if (event.defaultPrevented || triggerState.disabled) return
+          send({ type: "PANEL.RESET", id })
         },
         onPointerUp(event) {
           if (triggerState.disabled) return

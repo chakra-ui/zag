@@ -20,7 +20,7 @@ export const getPanelEl = (ctx: Scope, id: string | number) =>
   ctx.query(`${ctx.selector(parts.panel)}[data-id="${id}"]`)
 
 const getPanelIdFromEl = (el: Element | null) => {
-  return isHTMLElement(el) && el.dataset.part === "panel" ? el.dataset.id : undefined
+  return isHTMLElement(el) && el.hasAttribute(parts.panel.attr) ? el.dataset.id : undefined
 }
 
 const getPrevPanelId = (el: HTMLElement | null) => {

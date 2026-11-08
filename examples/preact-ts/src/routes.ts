@@ -433,6 +433,7 @@ export const routes: RouteDefinition[] = [
   { path: "/splitter/persistent-layout", component: lazy(() => import("./pages/splitter/persistent-layout")) },
   { path: "/splitter/pixel-constraints", component: lazy(() => import("./pages/splitter/pixel-constraints")) },
   { path: "/splitter/relative-units", component: lazy(() => import("./pages/splitter/relative-units")) },
+  { path: "/splitter/events", component: lazy(() => import("./pages/splitter/events")) },
   { path: "/steps/async-items", component: lazy(() => import("./pages/steps/async-items")) },
   { path: "/steps/basic", component: lazy(() => import("./pages/steps/basic")) },
   { path: "/steps/conditional-steps", component: lazy(() => import("./pages/steps/conditional-steps")) },

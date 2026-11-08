@@ -137,14 +137,15 @@ const service = useMachine(splitter.machine, {
 
 ### Keyboard step
 
-Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
+Use `keyboardResizeBy` to set how much each arrow key press resizes, as a
+percentage of the group.
 
 <Example id="SplitterKeyboard">
 
 ```tsx
 const service = useMachine(splitter.machine, {
   panels,
-  keyboardResizeBy: 16,
+  keyboardResizeBy: 5,
 })
 ```
 
@@ -172,7 +173,21 @@ const service = useMachine(splitter.machine, {
 </Example>
 
 This allows the user to drag the splitter to collapse the panel to the
-`collapsedSize`.
+`collapsedSize`. Pressing `Enter` on the handle collapses the panel, and
+pressing it again restores the size the panel had before it collapsed.
+
+### Reset with double-click
+
+Double-clicking a handle resets the panel before it to its default size.
+
+### Disabled handle
+
+Pass `disabled` to `getResizeTriggerProps` to stop a handle from resizing. It
+can't be focused, `F6` skips it, and it gets `aria-disabled`.
+
+```tsx
+<div {...api.getResizeTriggerProps({ id: "a:b", disabled: true })} />
+```
 
 ### Collapse events
 

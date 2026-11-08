@@ -812,6 +812,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "persistent-layout", title: "Persistent Layout" },
       { slug: "pixel-constraints", title: "Pixel Constraints" },
       { slug: "relative-units", title: "Relative Units" },
+      { slug: "events", title: "Events & Disabled Handle" },
     ],
   },
   {

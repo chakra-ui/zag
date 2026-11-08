@@ -14,7 +14,7 @@ export default function Page() {
     splitter.machine,
     controls.mergeProps<splitter.Props>({
       id: createUniqueId(),
-      panels: [{ id: "a" }, { id: "b" }],
+      panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
     }),
   )
 
@@ -23,13 +23,18 @@ export default function Page() {
   return (
     <>
       <main class="splitter">
+        <pre>{JSON.stringify(api().getSizes())}</pre>
         <div {...api().getRootProps()}>
           <div {...api().getPanelProps({ id: "a" })}>
-            <p>A</p>
+            <p>Left</p>
           </div>
-          <div {...api().getResizeTriggerProps({ id: "a:b" })} />
+          <div data-testid="trigger-a:b" {...api().getResizeTriggerProps({ id: "a:b" })} />
           <div {...api().getPanelProps({ id: "b" })}>
-            <p>B</p>
+            <p>Middle</p>
+          </div>
+          <div data-testid="trigger-b:c" {...api().getResizeTriggerProps({ id: "b:c" })} />
+          <div {...api().getPanelProps({ id: "c" })}>
+            <p>Right</p>
           </div>
         </div>
       </main>

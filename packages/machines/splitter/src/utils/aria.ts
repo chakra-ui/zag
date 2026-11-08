@@ -24,7 +24,8 @@ export function calculateAriaValues({
   ensure(firstIndex, () => "No pivot index found")
 
   panels.forEach((panel, index) => {
-    const { maxSize = 100, minSize = 0 } = panel
+    const { maxSize = 100, collapsible, collapsedSize = 0 } = panel
+    const minSize = collapsible ? collapsedSize : (panel.minSize ?? 0)
 
     if (index === firstIndex) {
       currentMinSize = minSize

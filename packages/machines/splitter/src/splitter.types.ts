@@ -120,7 +120,8 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The number of pixels to resize the panel by when the keyboard is used.
+   * The percentage to resize the panel by when an arrow key is pressed.
+   * @default 1
    */
   keyboardResizeBy?: number | null | undefined
   /**
@@ -164,15 +165,23 @@ interface Context {
   panels: NormalizedPanelData[]
 }
 
+interface RequestedLayout {
+  size: number[]
+  groupSize: number
+}
+
 interface Refs {
   panelSizeBeforeCollapse: Map<string, number>
   panelIdToLastNotifiedSizeMap: Map<string, number>
   prevDelta: number
   initialSize: number[] | null
   prevInitialLayout: string | null
-  prevGroupSize: number | null
-  prevPropsKey: string | null
-  lastRequestedSize: number[] | null
+  prevPanelIds: string | null
+  prevSizeProps: string | null
+  /** The sizes last set by the user or the API, and the group size at that time */
+  requestedLayout: RequestedLayout | null
+  /** The last requested layout for each set of panels, so hiding a panel and showing it again keeps the layout */
+  layoutCache: Map<string, RequestedLayout>
   suppressOnResize: boolean
 }
 

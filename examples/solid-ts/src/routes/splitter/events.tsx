@@ -1,0 +1,74 @@
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import * as splitter from "@zag-js/splitter"
+import { createMemo, createSignal, createUniqueId } from "solid-js"
+import "@styles/splitter.css"
+
+export default function Page() {
+  const [disabled, setDisabled] = createSignal(false)
+  const [resizeCount, setResizeCount] = createSignal(0)
+  const [resizeEnd, setResizeEnd] = createSignal<string[]>([])
+  const [collapseLog, setCollapseLog] = createSignal<string[]>([])
+
+  const service = useMachine(splitter.machine, {
+    id: createUniqueId(),
+    defaultSize: [25, 50, 25],
+    panels: [
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 40 },
+      { id: "b", minSize: 20 },
+      { id: "c", minSize: 20 },
+    ],
+    onResize() {
+      setResizeCount((count) => count + 1)
+    },
+    onResizeEnd({ size }) {
+      setResizeEnd((prev) => [...prev, size.map(Math.round).join("/")])
+    },
+    onCollapse({ panelId }) {
+      setCollapseLog((prev) => [...prev, `collapse:${panelId}`])
+    },
+    onExpand({ panelId }) {
+      setCollapseLog((prev) => [...prev, `expand:${panelId}`])
+    },
+  })
+
+  const api = createMemo(() => splitter.connect(service, normalizeProps))
+
+  return (
+    <main class="splitter">
+      <div class="controls">
+        <button onClick={() => api().collapsePanel("a")}>Collapse A</button>
+        <button onClick={() => api().expandPanel("a")}>Expand A</button>
+        <button onClick={() => setDisabled((value) => !value)}>
+          {disabled() ? "Enable" : "Disable"} second handle
+        </button>
+      </div>
+
+      <div {...api().getRootProps()}>
+        <div {...api().getPanelProps({ id: "a" })}>
+          <p>A</p>
+        </div>
+        <div {...api().getResizeTriggerProps({ id: "a:b" })} />
+        <div {...api().getPanelProps({ id: "b" })}>
+          <p>B</p>
+        </div>
+        <div {...api().getResizeTriggerProps({ id: "b:c", disabled: disabled() })} />
+        <div {...api().getPanelProps({ id: "c" })}>
+          <p>C</p>
+        </div>
+      </div>
+
+      <p>
+        Sizes: <output aria-label="Sizes">{api().getSizes().map(Math.round).join("/")}</output>
+      </p>
+      <p>
+        onResize calls: <output aria-label="Resize count">{resizeCount()}</output>
+      </p>
+      <p>
+        onResizeEnd: <output aria-label="Resize end reports">{resizeEnd().join(",") || "-"}</output>
+      </p>
+      <p>
+        onCollapse / onExpand: <output aria-label="Collapse reports">{collapseLog().join(",") || "-"}</output>
+      </p>
+    </main>
+  )
+}

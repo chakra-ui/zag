@@ -1,3 +1,4 @@
+import { parts } from "../splitter.anatomy"
 import type { NormalizedPanelData, PanelData, PanelSize } from "../splitter.types"
 
 const sizeRegex = /^(-?\d*\.?\d+)(%|px|em|rem|vw|vh)?$/
@@ -5,8 +6,14 @@ const percentRegex = /^(-?\d*\.?\d+)%$/
 
 function getRootSize(rootEl: HTMLElement | null, orientation: "horizontal" | "vertical") {
   if (!rootEl) return 0
-  const rect = rootEl.getBoundingClientRect()
-  return orientation === "horizontal" ? rect.width : rect.height
+  const horizontal = orientation === "horizontal"
+  const measure = (el: Element) => {
+    const rect = el.getBoundingClientRect()
+    return horizontal ? rect.width : rect.height
+  }
+  const panels = Array.from(rootEl.children).filter((el) => el.hasAttribute(parts.panel.attr))
+  if (panels.length === 0) return measure(rootEl)
+  return panels.reduce((total, el) => total + measure(el), 0)
 }
 
 export function getGroupSize(rootEl: HTMLElement | null, orientation: "horizontal" | "vertical") {
