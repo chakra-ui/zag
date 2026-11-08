@@ -868,7 +868,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "dismissable",
     label: "Dismissable",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "prevent-dismiss", title: "Prevent Dismiss" },
+      { slug: "exclude", title: "Exclude" },
+      { slug: "group", title: "Group" },
+    ],
   },
   {
     slug: "focus-visible",
