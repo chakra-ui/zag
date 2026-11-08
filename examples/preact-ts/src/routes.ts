@@ -216,6 +216,12 @@ export const routes: RouteDefinition[] = [
   { path: "/field/textarea-autoresize", component: lazy(() => import("./pages/field/textarea-autoresize")) },
   { path: "/field/validation", component: lazy(() => import("./pages/field/validation")) },
   { path: "/fieldset/basic", component: lazy(() => import("./pages/fieldset/basic")) },
+  { path: "/fieldset/shipping-address", component: lazy(() => import("./pages/fieldset/shipping-address")) },
+  {
+    path: "/fieldset/notification-preferences",
+    component: lazy(() => import("./pages/fieldset/notification-preferences")),
+  },
+  { path: "/fieldset/server-errors", component: lazy(() => import("./pages/fieldset/server-errors")) },
   { path: "/file-upload/basic", component: lazy(() => import("./pages/file-upload/basic")) },
   { path: "/file-upload/cover", component: lazy(() => import("./pages/file-upload/cover")) },
   { path: "/file-upload/react-hook-form", component: lazy(() => import("./pages/file-upload/react-hook-form")) },

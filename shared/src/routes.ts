@@ -318,7 +318,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "fieldset",
     label: "Fieldset",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "shipping-address", title: "Shipping Address" },
+      { slug: "notification-preferences", title: "Notification Preferences" },
+      { slug: "server-errors", title: "Server Errors" },
+    ],
   },
   {
     slug: "file-upload",
