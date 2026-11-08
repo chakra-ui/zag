@@ -19,7 +19,7 @@ export default function Page() {
     id,
     required: true,
     invalid: invalid(),
-    onCheckedChange: (details: zagSwitch.CheckedChangeDetails) => {
+    onCheckedChange: (details) => {
       setChecked(details.checked)
       setSaved(false)
     },
@@ -33,7 +33,7 @@ export default function Page() {
         <div class="switch-two-factor">
           <p class="hint">Save with it off to see the error.</p>
           <form
-            noValidate
+            novalidate
             onSubmit={(e) => {
               e.preventDefault()
               setSubmitted(true)

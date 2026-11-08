@@ -18,7 +18,7 @@
     id,
     required: true,
     invalid,
-    onCheckedChange: (details: zagSwitch.CheckedChangeDetails) => {
+    onCheckedChange: (details) => {
       checked = details.checked
       saved = false
     },

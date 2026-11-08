@@ -23,7 +23,7 @@ export default function Page() {
         <div class="switch-form">
           <p class="hint">Turn it on and subscribe to see what the form sends, then reset.</p>
           <form
-            noValidate
+            novalidate
             onSubmit={(e) => {
               e.preventDefault()
               const params = new URLSearchParams(new FormData(e.currentTarget) as unknown as Record<string, string>)

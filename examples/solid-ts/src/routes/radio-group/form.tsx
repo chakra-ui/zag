@@ -30,7 +30,7 @@ export default function Page() {
         <div class="radio-form">
           <p class="hint">Save without choosing to see the invalid state, then pick one.</p>
           <form
-            noValidate
+            novalidate
             onSubmit={(e) => {
               e.preventDefault()
               setSubmitted(true)
