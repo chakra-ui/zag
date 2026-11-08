@@ -96,7 +96,7 @@ export const machine = createMachine({
     }
   },
 
-  entry: ["checkViewportNode"],
+  entry: ["checkViewportNode", "setTriggerNode", "syncContentNode", "syncMotionAttribute"],
 
   exit: ["cleanupObservers", "clearAllTimeouts", "cancelFocusFrame"],
 
