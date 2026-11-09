@@ -27,6 +27,38 @@ export class MenuModel extends Model {
     return this.page.locator("[data-menu-content]")
   }
 
+  /** The trigger with this value, or the first one */
+  getTrigger(value?: string) {
+    if (value == null) return this.trigger.first()
+    return this.page.locator(`[data-menu-trigger][data-value="${value}"]`)
+  }
+
+  /** The content for this trigger value, or the only one */
+  getContent(value?: string) {
+    if (value == null) return this.content
+    return this.page.locator(`[data-menu-content][data-value="${value}"]`)
+  }
+
+  get positioner() {
+    return this.page.locator("[data-menu-positioner]")
+  }
+
+  get viewport() {
+    return this.page.locator("[data-menu-viewport]")
+  }
+
+  get arrow() {
+    return this.page.locator("[data-menu-arrow]")
+  }
+
+  seePositionerIsTransitioning() {
+    return this.seeDataAttr(this.positioner, "transitioning")
+  }
+
+  seePositionerIsNotTransitioning() {
+    return this.dontSeeDataAttr(this.positioner, "transitioning")
+  }
+
   getItem = (text: string) => {
     return this.page.locator(`[data-menu-item]`, { hasText: text })
   }

@@ -45,6 +45,37 @@ export class HoverCardModel extends Model {
   get content() {
     return this.page.locator(part("hover-card", "content"))
   }
+  /** The trigger with this value, or the first one */
+  getTrigger(value?: string) {
+    if (value == null) return this.trigger.first()
+    return this.page.locator(`[data-hover-card-trigger][data-value="${value}"]`)
+  }
+
+  /** The content for this trigger value, or the only one */
+  getContent(value?: string) {
+    if (value == null) return this.content
+    return this.page.locator(`[data-hover-card-content][data-value="${value}"]`)
+  }
+
+  get positioner() {
+    return this.page.locator("[data-hover-card-positioner]")
+  }
+
+  get viewport() {
+    return this.page.locator("[data-hover-card-viewport]")
+  }
+
+  get arrow() {
+    return this.page.locator("[data-hover-card-arrow]")
+  }
+
+  seePositionerIsTransitioning() {
+    return this.seeDataAttr(this.positioner, "transitioning")
+  }
+
+  seePositionerIsNotTransitioning() {
+    return this.dontSeeDataAttr(this.positioner, "transitioning")
+  }
 
   get testText() {
     return this.page.locator(testid("test-text"))
