@@ -15,7 +15,7 @@ function toDashCase(str: string) {
  * Duplicates are prevented by default. Use onValueInvalid for feedback.
  */
 export default function Page() {
-  const [invalidReason, setInvalidReason] = useState<string | null>(null)
+  const [invalid, setInvalid] = useState<string | null>(null)
 
   const service = useMachine(tagsInput.machine, {
     id: useId(),
@@ -25,10 +25,10 @@ export default function Page() {
       return /^[a-z]+$/.test(details.inputValue)
     },
     onValueChange() {
-      setInvalidReason(null)
+      setInvalid(null)
     },
     onValueInvalid(details) {
-      setInvalidReason(details.reason)
+      setInvalid(details.values?.join(", ") ?? details.reason)
     },
   })
 
@@ -56,7 +56,7 @@ export default function Page() {
               <XIcon />
             </button>
           </div>
-          {invalidReason && <p style={{ marginTop: 8, fontSize: 14, color: "red" }}>Invalid: {invalidReason}</p>}
+          {invalid && <p style={{ marginTop: 8, fontSize: 14, color: "red" }}>Invalid: {invalid}</p>}
           <input {...api.getHiddenInputProps()} />
         </div>
       </main>

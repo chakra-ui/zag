@@ -7,6 +7,7 @@ import { isEqual, mergeWithDefault, removeAt, uniq, warn } from "@zag-js/utils"
 import * as dom from "./tags-input.dom"
 import { defaultTranslations } from "./tags-input.translations"
 import type { TagsInputSchema } from "./tags-input.types"
+import { getPastedTags } from "./tags-input.utils"
 
 const { and, not, or } = createGuards<TagsInputSchema>()
 
@@ -653,43 +654,37 @@ export const machine = createMachine<TagsInputSchema>({
             current: { type: "add", value: inputValue },
           })
         } else {
-          prop("onValueInvalid")?.({ reason: "invalidTag" })
+          prop("onValueInvalid")?.({ reason: "invalidTag", values: [inputValue] })
         }
       },
 
       addTagFromPaste({ context, computed, prop, refs }) {
         refs.get("pasteFrame").request(() => {
-          const inputValue = computed("sanitizedInputValue")
-          const sanitize = prop("sanitizeValue")
+          const pasted = computed("sanitizedInputValue")
           const delimiter = prop("delimiter")
-          const validate = prop("validate")
-          const candidates = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
+          const tags = delimiter ? pasted.split(delimiter).map(prop("sanitizeValue")) : [pasted]
 
-          // Check each pasted tag the way typing does
-          const nextValue = Array.from(context.get("value"))
-          const added: string[] = []
-          for (const candidate of candidates) {
-            if (!candidate) continue
-            if (!prop("allowOverflow") && nextValue.length >= prop("max")) break
-            if (validate && !validate({ inputValue: candidate, value: Array.from(nextValue) })) {
-              prop("onValueInvalid")?.({ reason: "invalidTag" })
-              continue
-            }
-            if (!prop("allowDuplicates") && nextValue.includes(candidate)) continue
-            nextValue.push(candidate)
-            added.push(candidate)
-          }
+          const { value, added, invalid } = getPastedTags(tags, {
+            value: context.get("value"),
+            max: prop("max"),
+            allowOverflow: prop("allowOverflow"),
+            allowDuplicates: prop("allowDuplicates"),
+            validate: prop("validate"),
+          })
 
           if (added.length) {
-            context.set("value", nextValue)
+            context.set("value", value)
             const prevLog = refs.get("log")
             refs.set("log", {
               prev: prevLog.current,
               current: { type: "paste", values: added },
             })
+            context.set("inputValue", "")
           }
 
-          context.set("inputValue", "")
+          if (invalid.length) {
+            prop("onValueInvalid")?.({ reason: "invalidTag", values: invalid })
+          }
         })
       },
 

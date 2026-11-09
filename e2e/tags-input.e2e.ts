@@ -433,10 +433,17 @@ test.describe("tags-input / validate", () => {
     await I.goto("/tags-input/validate")
   })
 
-  test("pasting validates each tag", async ({ page }) => {
-    await page.locator("[data-tags-input-input]").focus()
-    await page.evaluate(() => navigator.clipboard.writeText("svelte,React,solid"))
-    await page.keyboard.press("ControlOrMeta+V")
+  test("pasting validates each tag", async () => {
+    await I.paste("svelte,React,solid")
     await expect(I.getTagElements()).toHaveText(["react", "vue", "svelte", "solid"])
+    await I.seeInputHasValue("")
+    await I.see("Invalid: React")
+  })
+
+  test("pasting only invalid tags keeps the text", async () => {
+    await I.paste("React,Vue")
+    await expect(I.getTagElements()).toHaveText(["react", "vue"])
+    await I.seeInputHasValue("React,Vue")
+    await I.see("Invalid: React, Vue")
   })
 })
