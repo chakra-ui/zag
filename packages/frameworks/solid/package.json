@@ -36,7 +36,7 @@
     "@testing-library/jest-dom": "^7.0.0",
     "@types/jsdom": "^30.0.0",
     "clean-package": "2.2.0",
-    "jsdom": "^30.0.0",
+    "jsdom": "^31.0.0",
     "solid-js": "1.9.18",
     "vite-plugin-solid": "^2.11.11"
   },
