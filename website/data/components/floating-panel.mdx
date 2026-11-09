@@ -374,6 +374,16 @@ panel.
 
 ### Stacking
 
+The positioner's `--z-index` variable tracks the panel's order in the stack. Use
+it in CSS to keep the focused panel above the others, and add a base value when
+panels need to appear above other page elements:
+
+```css
+[data-scope="floating-panel"][data-part="positioner"] {
+  z-index: calc(1400 + var(--z-index, 0));
+}
+```
+
 The floating panel has several states that can be targeted using data
 attributes:
 
