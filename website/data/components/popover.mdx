@@ -217,6 +217,107 @@ return (
 When the popover is open and a different trigger is clicked, it repositions
 without closing. Focus returns to the correct trigger on close.
 
+### Animating between triggers
+
+To animate the switch from one trigger to another, render a content per trigger
+inside the viewport, and wrap the viewport and each content in
+[Presence](/components/presence). Keep the arrow next to the viewport.
+
+```tsx
+<div {...api.getPositionerProps()}>
+  <div {...api.getArrowProps()}>
+    <div {...api.getArrowTipProps()} />
+  </div>
+  <Presence {...api.getViewportProps()}>
+    {items.map((item) => (
+      <Presence
+        key={item.value}
+        {...api.getContentProps({ value: item.value })}
+      >
+        <div {...api.getTitleProps({ value: item.value })}>{item.title}</div>
+        <p {...api.getDescriptionProps({ value: item.value })}>
+          {item.description}
+        </p>
+      </Presence>
+    ))}
+  </Presence>
+</div>
+```
+
+The viewport is the popup: it opens and closes, and takes the size of the
+current content through `--viewport-width` and `--viewport-height`. Each content
+gets `data-state="open"` while its trigger is the current one.
+
+While switching, the positioner and viewport get `data-transitioning`, and the
+viewport and contents get `data-activation-direction`: where the new trigger
+sits relative to the previous one, on both axes (`right`, `left up`, ...). It's
+also available as `api.activationDirection`.
+
+```css
+[data-popover-positioner][data-transitioning] {
+  transition: transform 350ms ease;
+}
+
+[data-popover-viewport] {
+  overflow: clip;
+
+  &[data-transitioning] {
+    transition:
+      width 350ms ease,
+      height 350ms ease;
+  }
+}
+
+[data-popover-content] {
+  /* Laid out at its own size, so the viewport can measure it */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  --slide: 50%;
+
+  &[data-activation-direction~="left"] {
+    --slide: -50%;
+  }
+
+  [data-transitioning] > &[data-state="open"] {
+    animation:
+      slide-in 350ms ease,
+      fade-in 175ms ease;
+  }
+
+  [data-transitioning] > &[data-state="closed"] {
+    animation:
+      slide-out 350ms ease forwards,
+      fade-out 175ms ease forwards;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(var(--slide));
+  }
+}
+
+@keyframes slide-out {
+  to {
+    transform: translateX(calc(var(--slide) * -1));
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+```
+
 ### Inside a dialog
 
 When using the popover within a dialog, avoid rendering the popover in a

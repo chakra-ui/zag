@@ -1,12 +1,28 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
+import type { ViewportSize } from "./popover.style"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  MaybeElement,
+  PopupActivationDirection,
+  PropTypes,
+} from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
+
+/**
+ * Why the next animation should be skipped:
+ * - `click`: opened or closed from the keyboard on the trigger
+ * - `dismiss`: closed with Escape
+ * - `focus`: closed because focus left
+ * - `trigger-change`: moved between triggers, so repositioning snaps
+ */
+export type InstantType = "click" | "dismiss" | "focus" | "trigger-change" | null
 
 export interface OpenChangeDetails {
   open: boolean
@@ -145,6 +161,7 @@ interface PrivateContext {
   renderedElements: {
     title: boolean
     description: boolean
+    viewport: boolean
   }
   /**
    * The computed placement (maybe different from initial placement)
@@ -154,6 +171,24 @@ interface PrivateContext {
    * The trigger value
    */
   triggerValue: string | null
+  /**
+   * Where the current trigger sits relative to the previous one, after switching triggers while open
+   */
+  activationDirection: PopupActivationDirection | null
+  /** The trigger value before the last switch, kept until the switch ends */
+  previousTriggerValue: string | null
+  /**
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
+  /**
+   * Whether the content is animating between triggers
+   */
+  transitioning: boolean
+  /**
+   * The size of the current content, when the viewport is rendered
+   */
+  viewportSize: ViewportSize | null
 }
 
 export interface PopoverSchema {
@@ -165,6 +200,8 @@ export interface PopoverSchema {
   refs: {
     renderedFrame: AnimationFrame
     initialFocusFrame: AnimationFrame
+    cancelTriggerSwitch: VoidFunction | null
+    awaitingViewportSize: boolean
   }
   event: EventObject
   action: string
@@ -208,14 +245,33 @@ export interface PositionerState {
    */
   nested: boolean
   /**
+   * Whether the popover is moving from one trigger to another
+   */
+  transitioning: boolean
+  /**
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
+  /**
    * Whether the popover has nested layered elements within it
    */
   hasNested: boolean
 }
 
+export interface ContentProps {
+  /**
+   * The trigger value this content belongs to. Use one content per trigger inside the viewport.
+   */
+  value?: string | undefined
+}
+
 export interface ContentState {
   /**
-   * Whether the popover is open
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
+  /**
+   * Whether the content is shown. For a content with a `value`, whether its trigger is the current one.
    */
   open: boolean
   /**
@@ -238,6 +294,35 @@ export interface ContentState {
    * The side of the trigger the content is placed on
    */
   side: PlacementSide | undefined
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the popover switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+}
+
+export interface ViewportState {
+  /**
+   * Whether the popover is open
+   */
+  open: boolean
+  /**
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
+  /**
+   * The side of the trigger the viewport is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the popover switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Whether the popover is moving between triggers
+   */
+  transitioning: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -262,6 +347,15 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
    */
   setTriggerValue: (value: string | null) => void
   /**
+   * Where the current trigger sits relative to the previous one, after switching triggers while open
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Returns the trigger values whose content to render: the current one, plus the previous one while
+   * it animates out after a switch. Oldest first.
+   */
+  getContentValues: () => string[]
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
@@ -283,10 +377,21 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of the content
    */
-  getContentState: () => ContentState
-  getContentProps: () => T["element"]
-  getTitleProps: () => T["element"]
-  getDescriptionProps: () => T["element"]
+  getContentState: (props?: ContentProps) => ContentState
+  getContentProps: (props?: ContentProps) => T["element"]
+  /**
+   * Returns the state of the viewport
+   */
+  getViewportState: () => ViewportState
+  getViewportProps: () => T["element"]
+  /**
+   * Pass the content's `value` when there's one content per trigger
+   */
+  getTitleProps: (props?: ContentProps) => T["element"]
+  /**
+   * Pass the content's `value` when there's one content per trigger
+   */
+  getDescriptionProps: (props?: ContentProps) => T["element"]
   getCloseTriggerProps: () => T["button"]
 }
 
