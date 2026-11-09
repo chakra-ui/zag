@@ -57,8 +57,28 @@ export class RatingGroupModel extends Model {
     await el.dispatchEvent("pointermove", { button: 0 })
   }
 
+  /** One pointer move onto the item, on its right half so it counts as the full star */
+  async movePointerOnto(value: number) {
+    const item = this.getRating(value)
+    const box = await item.boundingBox()
+    if (!box) throw new Error(`rating ${value} is not visible`)
+    await item.dispatchEvent("pointermove", {
+      pointerType: "mouse",
+      clientX: box.x + box.width * 0.75,
+      clientY: box.y + box.height / 2,
+    })
+  }
+
+  async touchMove(value: number) {
+    await this.getRating(value).dispatchEvent("pointermove", { pointerType: "touch" })
+  }
+
   async seeRatingIsHighlighted(value: number) {
     await expect(this.getRating(value)).toHaveAttribute("data-highlighted", "")
+  }
+
+  async seeRatingIsNotHighlighted(value: number) {
+    await this.dontSeeDataAttr(this.getRating(value), "highlighted")
   }
 
   async seeRatingIsDisabled(value: number) {
