@@ -24,6 +24,10 @@ export type ValidityState = "rangeOverflow" | "invalidTag"
 
 export interface ValidityChangeDetails {
   reason: ValidityState
+  /**
+   * The tags that failed `validate`, for the `invalidTag` reason
+   */
+  values?: string[] | undefined
 }
 
 export interface ValidateArgs {
