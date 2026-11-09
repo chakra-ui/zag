@@ -3,8 +3,10 @@ export { anatomy } from "./hover-card.anatomy"
 export { connect } from "./hover-card.connect"
 export { machine } from "./hover-card.machine"
 export * from "./hover-card.props"
+export type { PopupActivationDirection } from "@zag-js/types"
 export type {
   HoverCardApi as Api,
+  ContentProps,
   ContentState,
   ElementIds,
   HoverCardMachine as Machine,
@@ -17,4 +19,5 @@ export type {
   TriggerProps,
   TriggerState,
   TriggerValueChangeDetails,
+  ViewportState,
 } from "./hover-card.types"
