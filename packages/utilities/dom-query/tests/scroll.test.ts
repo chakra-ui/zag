@@ -99,4 +99,41 @@ describe("scrollToNearest", () => {
     scrollToNearest(item, { rootEl: content })
     expect(outer.scrollTo).not.toHaveBeenCalled()
   })
+
+  it("does not scroll when the item is already visible", () => {
+    const { content, viewport, item } = setup()
+    layout(item, { top: 40, height: 20 })
+
+    expect(scrollToNearest(item, { rootEl: content })).toBe(false)
+    expect(viewport.scrollTo).not.toHaveBeenCalled()
+    expect(content.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it("falls back to the root when nothing inside it scrolls", () => {
+    const { content, viewport, item } = setup()
+    layout(viewport, { top: 0, height: 100 })
+
+    expect(scrollToNearest(item, { rootEl: content })).toBe(true)
+    expect(content.scrollTo).toHaveBeenCalledWith({ top: 170, left: 0 })
+    expect(viewport.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it("does nothing for an item outside the root", () => {
+    const { content, viewport } = setup()
+    const item = layout(document.createElement("div"), { top: 250, height: 20 })
+    document.body.append(item)
+
+    expect(scrollToNearest(item, { rootEl: content })).toBe(false)
+    expect(content.scrollTo).not.toHaveBeenCalled()
+    expect(viewport.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it("returns false without an item or a root", () => {
+    const { content, item } = setup()
+
+    expect(scrollToNearest(null, { rootEl: content })).toBe(false)
+    expect(scrollToNearest(item, { rootEl: null })).toBe(false)
+    expect(scrollToNearest(item)).toBe(false)
+    expect(content.scrollTo).not.toHaveBeenCalled()
+  })
 })
