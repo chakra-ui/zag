@@ -189,6 +189,66 @@ return (
 When hovering a different trigger while the tooltip is open, it repositions
 without closing. `aria-describedby` is scoped to the active trigger.
 
+### Animating between triggers
+
+To animate the switch from one trigger to another, render a content per trigger
+inside the viewport, and wrap the viewport and each content in
+[Presence](/components/presence). Keep the arrow next to the viewport.
+
+```tsx
+<div {...api.getPositionerProps()}>
+  <div {...api.getArrowProps()}>
+    <div {...api.getArrowTipProps()} />
+  </div>
+  <Presence {...api.getViewportProps()}>
+    {items.map((item) => (
+      <Presence
+        key={item.value}
+        {...api.getContentProps({ value: item.value })}
+      >
+        {item.label}
+      </Presence>
+    ))}
+  </Presence>
+</div>
+```
+
+The viewport is the tooltip box: it opens and closes, and takes the size of the
+current content through `--viewport-width` and `--viewport-height`. Each content
+gets `data-state="open"` while its trigger is the current one.
+
+While switching, the positioner and viewport get `data-transitioning`, and the
+viewport and contents get `data-activation-direction`: where the new trigger
+sits relative to the previous one, on both axes (`right`, `left up`, ...). It's
+also available as `api.activationDirection`.
+
+```css
+[data-tooltip-positioner][data-transitioning] {
+  transition: transform 250ms ease;
+}
+
+[data-tooltip-viewport] {
+  overflow: clip;
+
+  &[data-transitioning] {
+    transition:
+      width 250ms ease,
+      height 250ms ease;
+  }
+}
+
+[data-tooltip-content] {
+  /* Laid out at its own size, so the viewport can measure it */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+}
+```
+
+See the [popover](/components/popover#animating-between-triggers) for sliding
+the contents in the direction of the new trigger.
+
 ### Controlled open
 
 Use `open` and `onOpenChange` for controlled usage.

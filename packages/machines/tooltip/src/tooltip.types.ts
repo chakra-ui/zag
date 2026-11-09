@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PopupActivationDirection, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -135,6 +135,28 @@ export interface TooltipSchema {
     hasPointerMoveOpened: string | null
     isPointer: boolean
     triggerValue: string | null
+    /**
+     * Where the current trigger sits relative to the previous one, after switching triggers while open
+     */
+    activationDirection: PopupActivationDirection | null
+    /** The trigger value before the last switch, kept until the switch ends */
+    previousTriggerValue: string | null
+    /**
+     * Whether the tooltip is moving between triggers
+     */
+    transitioning: boolean
+    /**
+     * Whether a viewport is rendered, with one content per trigger
+     */
+    viewportRendered: boolean
+    /**
+     * The size of the current content, when the viewport is rendered
+     */
+    viewportSize: ViewportSize | null
+  }
+  refs: {
+    cancelTriggerSwitch: VoidFunction | null
+    awaitingViewportSize: boolean
   }
   event: EventObject
   action: string
@@ -172,9 +194,21 @@ export interface TriggerState {
   open: boolean
 }
 
+export interface ViewportSize {
+  width: number
+  height: number
+}
+
+export interface ContentProps {
+  /**
+   * The trigger value this content belongs to. Use one content per trigger inside the viewport.
+   */
+  value?: string | undefined
+}
+
 export interface ContentState {
   /**
-   * Whether the tooltip is open
+   * Whether the content is shown. For a content with a `value`, whether its trigger is the current one.
    */
   open: boolean
   /**
@@ -189,6 +223,35 @@ export interface ContentState {
    * The side of the trigger the content is placed on
    */
   side: PlacementSide | undefined
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the tooltip switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+}
+
+export interface ViewportState {
+  /**
+   * Whether the tooltip is open
+   */
+  open: boolean
+  /**
+   * Whether the tooltip should skip its enter animation, following a rapid switch between tooltips
+   */
+  instant: boolean
+  /**
+   * The side of the trigger the viewport is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the tooltip switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Whether the tooltip is moving between triggers
+   */
+  transitioning: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -213,6 +276,15 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
    */
   setTriggerValue: (value: string | null) => void
   /**
+   * Where the current trigger sits relative to the previous one, after switching triggers while open
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Returns the trigger values whose content to render: the current one, plus the previous one while
+   * it animates out after a switch. Oldest first.
+   */
+  getContentValues: () => string[]
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
@@ -228,8 +300,13 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of the content
    */
-  getContentState: () => ContentState
-  getContentProps: () => T["element"]
+  getContentState: (props?: ContentProps) => ContentState
+  getContentProps: (props?: ContentProps) => T["element"]
+  /**
+   * Returns the state of the viewport
+   */
+  getViewportState: () => ViewportState
+  getViewportProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

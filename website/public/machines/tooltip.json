@@ -31,6 +31,12 @@
     {
       "from": "*",
       "to": null,
+      "event": "TRIGGER_SWITCH.END",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
       "event": "TRIGGER_VALUE.SET",
       "guard": null
     },
@@ -116,7 +122,19 @@
       "from": "closing",
       "to": null,
       "event": "POINTER_MOVE",
+      "guard": "isOpenControlled && isNewTriggerValue"
+    },
+    {
+      "from": "closing",
+      "to": null,
+      "event": "POINTER_MOVE",
       "guard": "isOpenControlled"
+    },
+    {
+      "from": "closing",
+      "to": "open",
+      "event": "POINTER_MOVE",
+      "guard": "isNewTriggerValue"
     },
     {
       "from": "closing",
