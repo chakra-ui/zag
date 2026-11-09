@@ -92,7 +92,7 @@ export const machine = createMachine<CascadeSelectSchema>({
   },
 
   computed: {
-    isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    isInteractive: ({ context, prop }) => !(prop("disabled") || prop("readOnly") || context.get("fieldsetDisabled")),
 
     valueAsString: ({ prop, context }) => {
       const collection = prop("collection")
