@@ -11,7 +11,7 @@ export class TagsInputModel extends Model {
   }
 
   private get input() {
-    return this.page.locator("[data-testid=input]")
+    return this.page.locator("[data-tags-input-input]")
   }
 
   get clearTrigger() {

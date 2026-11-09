@@ -7,6 +7,7 @@ import { isEqual, mergeWithDefault, removeAt, uniq, warn } from "@zag-js/utils"
 import * as dom from "./tags-input.dom"
 import { defaultTranslations } from "./tags-input.translations"
 import type { TagsInputSchema } from "./tags-input.types"
+import { getPastedTags } from "./tags-input.utils"
 
 const { and, not, or } = createGuards<TagsInputSchema>()
 
@@ -653,41 +654,37 @@ export const machine = createMachine<TagsInputSchema>({
             current: { type: "add", value: inputValue },
           })
         } else {
-          prop("onValueInvalid")?.({ reason: "invalidTag" })
+          prop("onValueInvalid")?.({ reason: "invalidTag", values: [inputValue] })
         }
       },
 
       addTagFromPaste({ context, computed, prop, refs }) {
         refs.get("pasteFrame").request(() => {
-          const inputValue = computed("sanitizedInputValue")
-          const value = context.get("value")
-          const sanitize = prop("sanitizeValue")
+          const pasted = computed("sanitizedInputValue")
+          const delimiter = prop("delimiter")
+          const tags = delimiter ? pasted.split(delimiter).map(prop("sanitizeValue")) : [pasted]
 
-          const guard = prop("validate")?.({
-            inputValue: inputValue,
-            value: Array.from(value),
+          const { value, added, invalid } = getPastedTags(tags, {
+            value: context.get("value"),
+            max: prop("max"),
+            allowOverflow: prop("allowOverflow"),
+            allowDuplicates: prop("allowDuplicates"),
+            validate: prop("validate"),
           })
 
-          if (guard) {
-            const delimiter = prop("delimiter")
-            const sanitizedValues = delimiter ? inputValue.split(delimiter).map(sanitize) : [inputValue]
-
-            const nextValue = prop("allowDuplicates")
-              ? value.concat(...sanitizedValues)
-              : uniq(value.concat(...sanitizedValues))
-            context.set("value", nextValue)
-            // log
+          if (added.length) {
+            context.set("value", value)
             const prevLog = refs.get("log")
             refs.set("log", {
               prev: prevLog.current,
-              current: { type: "paste", values: sanitizedValues },
+              current: { type: "paste", values: added },
             })
-            //
-          } else {
-            prop("onValueInvalid")?.({ reason: "invalidTag" })
+            context.set("inputValue", "")
           }
 
-          context.set("inputValue", "")
+          if (invalid.length) {
+            prop("onValueInvalid")?.({ reason: "invalidTag", values: invalid })
+          }
         })
       },
 

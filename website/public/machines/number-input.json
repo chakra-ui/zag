@@ -86,13 +86,7 @@
       "from": "focused",
       "to": "idle",
       "event": "INPUT.BLUR",
-      "guard": "clampValueOnBlur && !isValueEmpty && !isInRange"
-    },
-    {
-      "from": "focused",
-      "to": "idle",
-      "event": "INPUT.BLUR",
-      "guard": "!isInRange"
+      "guard": "!allowOutOfRange && !isInRange"
     },
     {
       "from": "focused",
@@ -111,6 +105,12 @@
       "to": null,
       "event": "INPUT.END",
       "guard": null
+    },
+    {
+      "from": "focused",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": "!allowOutOfRange && !isInRange"
     },
     {
       "from": "focused",
@@ -182,19 +182,31 @@
       "from": "pressed.repeating",
       "to": null,
       "event": "SPIN",
-      "guard": "isIncrementHint"
-    },
-    {
-      "from": "pressed.repeating",
-      "to": null,
-      "event": "SPIN",
-      "guard": "isDecrementHint"
+      "guard": null
     },
     {
       "from": "pressed.waiting",
       "to": "pressed.repeating",
       "event": "CHANGE_DELAY",
       "guard": "isInRange && spinOnPress"
+    },
+    {
+      "from": "pressed.waiting",
+      "to": "focused",
+      "event": "TRIGGER.PRESS_UP",
+      "guard": "isTouchPointer && isTouchTap"
+    },
+    {
+      "from": "pressed.waiting",
+      "to": "focused",
+      "event": "TRIGGER.PRESS_UP",
+      "guard": "isTouchPointer"
+    },
+    {
+      "from": "pressed.waiting",
+      "to": "focused",
+      "event": "TRIGGER.PRESS_UP",
+      "guard": null
     },
     {
       "from": "scrubbing",
@@ -212,19 +224,13 @@
       "from": "scrubbing",
       "to": null,
       "event": "SCRUBBER.STEP",
-      "guard": "isIncrementHint"
-    },
-    {
-      "from": "scrubbing",
-      "to": null,
-      "event": "SCRUBBER.STEP",
-      "guard": "isDecrementHint"
+      "guard": null
     }
   ],
   "layouts": {
     "right": {
-      "width": 1852,
-      "height": 343,
+      "width": 1857,
+      "height": 408,
       "states": {
         "idle": {
           "x": 48,
@@ -233,32 +239,32 @@
           "h": 44
         },
         "focused": {
-          "x": 1242,
-          "y": 87,
+          "x": 1247,
+          "y": 90,
           "w": 101,
           "h": 44
         },
         "pressed": {
           "x": 481,
-          "y": 193,
+          "y": 241,
           "w": 400,
-          "h": 118
+          "h": 135
         },
         "pressed.waiting": {
           "x": 505,
-          "y": 237,
+          "y": 295,
           "w": 101,
           "h": 44
         },
         "pressed.repeating": {
           "x": 741,
-          "y": 237,
+          "y": 302,
           "w": 116,
           "h": 44
         },
         "scrubbing": {
-          "x": 1704,
-          "y": 77,
+          "x": 1709,
+          "y": 80,
           "w": 116,
           "h": 44
         }
@@ -267,32 +273,16 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "INPUT.BLUR"
-          ],
-          "lines": [
-            "INPUT.BLUR"
-          ],
+          "events": ["INPUT.BLUR"],
+          "lines": ["INPUT.BLUR"],
           "points": [
-            [
-              1242,
-              96
-            ],
-            [
-              1158,
-              96
-            ],
-            [
-              1158,
-              88
-            ],
-            [
-              126,
-              88
-            ]
+            [1247, 97],
+            [1163, 97],
+            [1163, 88],
+            [126, 88]
           ],
           "label": {
-            "x": 640,
+            "x": 643,
             "y": 57,
             "w": 82,
             "h": 24
@@ -301,33 +291,17 @@
         {
           "from": "focused",
           "to": "scrubbing",
-          "events": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
-          "lines": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
+          "events": ["SCRUBBER.PRESS_DOWN"],
+          "lines": ["SCRUBBER.PRESS_DOWN"],
           "points": [
-            [
-              1343,
-              102
-            ],
-            [
-              1369,
-              102
-            ],
-            [
-              1369,
-              99
-            ],
-            [
-              1704,
-              99
-            ]
+            [1348, 105],
+            [1374, 105],
+            [1374, 102],
+            [1709, 102]
           ],
           "label": {
-            "x": 1453,
-            "y": 68,
+            "x": 1458,
+            "y": 71,
             "w": 141,
             "h": 24
           }
@@ -335,33 +309,19 @@
         {
           "from": "focused",
           "to": "pressed",
-          "events": [
-            "TRIGGER.PRESS_DOWN"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_DOWN"
-          ],
+          "events": ["TRIGGER.PRESS_DOWN"],
+          "lines": ["TRIGGER.PRESS_DOWN"],
           "points": [
-            [
-              1242,
-              113
-            ],
-            [
-              1158,
-              113
-            ],
-            [
-              1158,
-              232
-            ],
-            [
-              881,
-              232
-            ]
+            [1247, 112],
+            [1163, 112],
+            [1163, 153],
+            [397, 153],
+            [397, 285],
+            [481, 285]
           ],
           "label": {
-            "x": 994,
-            "y": 201,
+            "x": 616,
+            "y": 160,
             "w": 135,
             "h": 24
           }
@@ -369,32 +329,16 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "INPUT.FOCUS"
-          ],
-          "lines": [
-            "INPUT.FOCUS"
-          ],
+          "events": ["INPUT.FOCUS"],
+          "lines": ["INPUT.FOCUS"],
           "points": [
-            [
-              126,
-              96
-            ],
-            [
-              162,
-              96
-            ],
-            [
-              162,
-              105
-            ],
-            [
-              1242,
-              105
-            ]
+            [126, 96],
+            [162, 96],
+            [162, 105],
+            [1247, 105]
           ],
           "label": {
-            "x": 637,
+            "x": 639,
             "y": 112,
             "w": 89,
             "h": 24
@@ -403,40 +347,18 @@
         {
           "from": "idle",
           "to": "scrubbing",
-          "events": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
-          "lines": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
+          "events": ["SCRUBBER.PRESS_DOWN"],
+          "lines": ["SCRUBBER.PRESS_DOWN"],
           "points": [
-            [
-              126,
-              79
-            ],
-            [
-              152,
-              79
-            ],
-            [
-              152,
-              32
-            ],
-            [
-              1620,
-              32
-            ],
-            [
-              1620,
-              88
-            ],
-            [
-              1704,
-              88
-            ]
+            [126, 79],
+            [152, 79],
+            [152, 32],
+            [1625, 32],
+            [1625, 91],
+            [1709, 91]
           ],
           "label": {
-            "x": 991,
+            "x": 996,
             "y": 39,
             "w": 141,
             "h": 24
@@ -445,33 +367,17 @@
         {
           "from": "idle",
           "to": "pressed",
-          "events": [
-            "TRIGGER.PRESS_DOWN"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_DOWN"
-          ],
+          "events": ["TRIGGER.PRESS_DOWN"],
+          "lines": ["TRIGGER.PRESS_DOWN"],
           "points": [
-            [
-              126,
-              105
-            ],
-            [
-              152,
-              105
-            ],
-            [
-              152,
-              252
-            ],
-            [
-              481,
-              252
-            ]
+            [126, 105],
+            [152, 105],
+            [152, 295],
+            [481, 295]
           ],
           "label": {
             "x": 236,
-            "y": 259,
+            "y": 302,
             "w": 135,
             "h": 24
           }
@@ -479,33 +385,17 @@
         {
           "from": "pressed",
           "to": "focused",
-          "events": [
-            "TRIGGER.PRESS_UP"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_UP"
-          ],
+          "events": ["TRIGGER.PRESS_UP"],
+          "lines": ["TRIGGER.PRESS_UP"],
           "points": [
-            [
-              881,
-              272
-            ],
-            [
-              1168,
-              272
-            ],
-            [
-              1168,
-              122
-            ],
-            [
-              1242,
-              122
-            ]
+            [881, 311],
+            [1183, 311],
+            [1183, 127],
+            [1247, 127]
           ],
           "label": {
-            "x": 1001,
-            "y": 279,
+            "x": 1006,
+            "y": 318,
             "w": 122,
             "h": 24
           }
@@ -513,59 +403,54 @@
         {
           "from": "pressed.waiting",
           "to": "pressed.repeating",
-          "events": [
-            "CHANGE_DELAY"
-          ],
-          "lines": [
-            "CHANGE_DELAY"
-          ],
+          "events": ["CHANGE_DELAY"],
+          "lines": ["CHANGE_DELAY"],
           "points": [
-            [
-              606,
-              259
-            ],
-            [
-              741,
-              259
-            ]
+            [606, 324],
+            [741, 324]
           ],
           "label": {
             "x": 626,
-            "y": 262,
+            "y": 327,
             "w": 95,
+            "h": 24
+          }
+        },
+        {
+          "from": "pressed.waiting",
+          "to": "focused",
+          "events": ["TRIGGER.PRESS_UP"],
+          "lines": ["TRIGGER.PRESS_UP"],
+          "points": [
+            [606, 310],
+            [616, 310],
+            [616, 291],
+            [886, 291],
+            [1173, 291],
+            [1173, 119],
+            [1247, 119]
+          ],
+          "label": {
+            "x": 1006,
+            "y": 260,
+            "w": 122,
             "h": 24
           }
         },
         {
           "from": "scrubbing",
           "to": "focused",
-          "events": [
-            "SCRUBBER.POINTER_UP"
-          ],
-          "lines": [
-            "SCRUBBER.POINTER_UP"
-          ],
+          "events": ["SCRUBBER.POINTER_UP"],
+          "lines": ["SCRUBBER.POINTER_UP"],
           "points": [
-            [
-              1704,
-              110
-            ],
-            [
-              1620,
-              110
-            ],
-            [
-              1620,
-              116
-            ],
-            [
-              1343,
-              116
-            ]
+            [1709, 113],
+            [1625, 113],
+            [1625, 119],
+            [1348, 119]
           ],
           "label": {
-            "x": 1453,
-            "y": 123,
+            "x": 1458,
+            "y": 126,
             "w": 141,
             "h": 24
           }
@@ -573,8 +458,8 @@
       ]
     },
     "down": {
-      "width": 773,
-      "height": 1148,
+      "width": 890,
+      "height": 1153,
       "states": {
         "idle": {
           "x": 277,
@@ -583,32 +468,32 @@
           "h": 44
         },
         "focused": {
-          "x": 329,
-          "y": 784,
+          "x": 333,
+          "y": 789,
           "w": 101,
           "h": 44
         },
         "pressed": {
-          "x": 477,
+          "x": 635,
           "y": 320,
-          "w": 203,
+          "w": 223,
           "h": 220
         },
         "pressed.waiting": {
-          "x": 548,
+          "x": 669,
           "y": 364,
           "w": 101,
           "h": 44
         },
         "pressed.repeating": {
-          "x": 540,
+          "x": 678,
           "y": 472,
           "w": 116,
           "h": 44
         },
         "scrubbing": {
           "x": 309,
-          "y": 1072,
+          "y": 1077,
           "w": 116,
           "h": 44
         }
@@ -617,33 +502,17 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "INPUT.BLUR"
-          ],
-          "lines": [
-            "INPUT.BLUR"
-          ],
+          "events": ["INPUT.BLUR"],
+          "lines": ["INPUT.BLUR"],
           "points": [
-            [
-              349,
-              784
-            ],
-            [
-              349,
-              710
-            ],
-            [
-              308,
-              710
-            ],
-            [
-              308,
-              76
-            ]
+            [350, 789],
+            [350, 715],
+            [308, 715],
+            [308, 76]
           ],
           "label": {
             "x": 220,
-            "y": 418,
+            "y": 421,
             "w": 82,
             "h": 24
           }
@@ -651,33 +520,15 @@
         {
           "from": "focused",
           "to": "scrubbing",
-          "events": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
-          "lines": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
+          "events": ["SCRUBBER.PRESS_DOWN"],
+          "lines": ["SCRUBBER.PRESS_DOWN"],
           "points": [
-            [
-              363,
-              828
-            ],
-            [
-              363,
-              854
-            ],
-            [
-              367,
-              854
-            ],
-            [
-              367,
-              1072
-            ]
+            [367, 833],
+            [367, 1077]
           ],
           "label": {
             "x": 220,
-            "y": 938,
+            "y": 943,
             "w": 141,
             "h": 24
           }
@@ -685,33 +536,19 @@
         {
           "from": "focused",
           "to": "pressed",
-          "events": [
-            "TRIGGER.PRESS_DOWN"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_DOWN"
-          ],
+          "events": ["TRIGGER.PRESS_DOWN"],
+          "lines": ["TRIGGER.PRESS_DOWN"],
           "points": [
-            [
-              390,
-              784
-            ],
-            [
-              390,
-              700
-            ],
-            [
-              545,
-              700
-            ],
-            [
-              545,
-              540
-            ]
+            [384, 789],
+            [384, 571],
+            [578, 571],
+            [578, 236],
+            [659, 236],
+            [659, 320]
           ],
           "label": {
-            "x": 404,
-            "y": 650,
+            "x": 437,
+            "y": 421,
             "w": 135,
             "h": 24
           }
@@ -719,41 +556,19 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "INPUT.FOCUS"
-          ],
-          "lines": [
-            "INPUT.FOCUS"
-          ],
+          "events": ["INPUT.FOCUS"],
+          "lines": ["INPUT.FOCUS"],
           "points": [
-            [
-              324,
-              76
-            ],
-            [
-              324,
-              102
-            ],
-            [
-              325,
-              102
-            ],
-            [
-              325,
-              700
-            ],
-            [
-              369,
-              700
-            ],
-            [
-              369,
-              784
-            ]
+            [324, 76],
+            [324, 102],
+            [325, 102],
+            [325, 705],
+            [367, 705],
+            [367, 789]
           ],
           "label": {
             "x": 332,
-            "y": 418,
+            "y": 421,
             "w": 89,
             "h": 24
           }
@@ -761,41 +576,19 @@
         {
           "from": "idle",
           "to": "scrubbing",
-          "events": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
-          "lines": [
-            "SCRUBBER.PRESS_DOWN"
-          ],
+          "events": ["SCRUBBER.PRESS_DOWN"],
+          "lines": ["SCRUBBER.PRESS_DOWN"],
           "points": [
-            [
-              293,
-              76
-            ],
-            [
-              293,
-              102
-            ],
-            [
-              195,
-              102
-            ],
-            [
-              195,
-              988
-            ],
-            [
-              338,
-              988
-            ],
-            [
-              338,
-              1072
-            ]
+            [293, 76],
+            [293, 102],
+            [195, 102],
+            [195, 993],
+            [338, 993],
+            [338, 1077]
           ],
           "label": {
             "x": 48,
-            "y": 650,
+            "y": 655,
             "w": 141,
             "h": 24
           }
@@ -803,32 +596,16 @@
         {
           "from": "idle",
           "to": "pressed",
-          "events": [
-            "TRIGGER.PRESS_DOWN"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_DOWN"
-          ],
+          "events": ["TRIGGER.PRESS_DOWN"],
+          "lines": ["TRIGGER.PRESS_DOWN"],
           "points": [
-            [
-              339,
-              76
-            ],
-            [
-              339,
-              102
-            ],
-            [
-              579,
-              102
-            ],
-            [
-              579,
-              320
-            ]
+            [339, 76],
+            [339, 102],
+            [669, 102],
+            [669, 320]
           ],
           "label": {
-            "x": 586,
+            "x": 676,
             "y": 186,
             "w": 135,
             "h": 24
@@ -837,33 +614,17 @@
         {
           "from": "pressed",
           "to": "focused",
-          "events": [
-            "TRIGGER.PRESS_UP"
-          ],
-          "lines": [
-            "TRIGGER.PRESS_UP"
-          ],
+          "events": ["TRIGGER.PRESS_UP"],
+          "lines": ["TRIGGER.PRESS_UP"],
           "points": [
-            [
-              612,
-              540
-            ],
-            [
-              612,
-              710
-            ],
-            [
-              410,
-              710
-            ],
-            [
-              410,
-              784
-            ]
+            [687, 540],
+            [687, 715],
+            [417, 715],
+            [417, 789]
           ],
           "label": {
-            "x": 619,
-            "y": 650,
+            "x": 694,
+            "y": 655,
             "w": 122,
             "h": 24
           }
@@ -871,51 +632,56 @@
         {
           "from": "pressed.waiting",
           "to": "pressed.repeating",
-          "events": [
-            "CHANGE_DELAY"
-          ],
-          "lines": [
-            "CHANGE_DELAY"
-          ],
+          "events": ["CHANGE_DELAY"],
+          "lines": ["CHANGE_DELAY"],
           "points": [
-            [
-              598,
-              408
-            ],
-            [
-              598,
-              472
-            ]
+            [736, 408],
+            [736, 472]
           ],
           "label": {
-            "x": 501,
+            "x": 739,
             "y": 428,
             "w": 95,
             "h": 24
           }
         },
         {
+          "from": "pressed.waiting",
+          "to": "focused",
+          "events": ["TRIGGER.PRESS_UP"],
+          "lines": ["TRIGGER.PRESS_UP"],
+          "points": [
+            [703, 408],
+            [703, 418],
+            [667, 418],
+            [667, 545],
+            [667, 571],
+            [670, 571],
+            [670, 705],
+            [400, 705],
+            [400, 789]
+          ],
+          "label": {
+            "x": 542,
+            "y": 655,
+            "w": 122,
+            "h": 24
+          }
+        },
+        {
           "from": "scrubbing",
           "to": "focused",
-          "events": [
-            "SCRUBBER.POINTER_UP"
-          ],
-          "lines": [
-            "SCRUBBER.POINTER_UP"
-          ],
+          "events": ["SCRUBBER.POINTER_UP"],
+          "lines": ["SCRUBBER.POINTER_UP"],
           "points": [
-            [
-              396,
-              1072
-            ],
-            [
-              396,
-              828
-            ]
+            [396, 1077],
+            [396, 859],
+            [400, 859],
+            [400, 833]
           ],
           "label": {
             "x": 403,
-            "y": 938,
+            "y": 943,
             "w": 141,
             "h": 24
           }

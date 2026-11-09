@@ -9,19 +9,20 @@ function toDashCase(str: string) {
 }
 
 // Only lowercase alphabetic tags; duplicates are prevented by default
-const invalidReason = ref<string | null>(null)
+const invalid = ref<string | null>(null)
 
 const service = useMachine(tagsInput.machine, {
   id: useId(),
   defaultValue: ["react", "vue"],
+  addOnPaste: true,
   validate(details) {
     return /^[a-z]+$/.test(details.inputValue)
   },
   onValueChange() {
-    invalidReason.value = null
+    invalid.value = null
   },
   onValueInvalid(details) {
-    invalidReason.value = details.reason
+    invalid.value = details.values?.join(", ") ?? details.reason
   },
 })
 
@@ -51,7 +52,7 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
           <XIcon />
         </button>
       </div>
-      <p v-if="invalidReason" style="margin-top: 8px; font-size: 14px; color: red">Invalid: {{ invalidReason }}</p>
+      <p v-if="invalid" style="margin-top: 8px; font-size: 14px; color: red">Invalid: {{ invalid }}</p>
       <input v-bind="api.getHiddenInputProps()" />
     </div>
   </main>

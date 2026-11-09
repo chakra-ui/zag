@@ -280,6 +280,23 @@ npm install @zag-js/async-list @zag-js/infinite-scroll
 
 <CodeSnippet id="menu/async.mdx" />
 
+### Virtualized items
+
+When only some items are rendered, pass the full list as a `collection` so the
+arrow keys, `Home`, `End`, and typeahead can reach the rest. `scrollToIndexFn`
+scrolls the highlighted item into view.
+
+```tsx
+const collection = menu.collection({ items })
+
+const service = useMachine(menu.machine, {
+  collection,
+  scrollToIndexFn(details) {
+    virtualizer.scrollToIndex(details.index)
+  },
+})
+```
+
 ### Nested menus
 
 A nested menu is a second menu machine. Link the two, then render the child's

@@ -14,6 +14,17 @@ export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
 
+export type ActivationDirection = "left" | "right" | "up" | "down" | "none"
+
+type HorizontalDirection = "left" | "right"
+type VerticalDirection = "up" | "down"
+
+/** Where a popup's new trigger sits relative to the previous one, on both axes */
+export type PopupActivationDirection =
+  | HorizontalDirection
+  | VerticalDirection
+  | `${HorizontalDirection} ${VerticalDirection}`
+
 export type MaybeFn<T> = T | (() => T)
 
 export type MaybeElement<T extends HTMLElement = HTMLElement> = Nullable<T>

@@ -119,4 +119,8 @@ export class TreeViewModel extends Model {
   seeItemIsTabbable(name: string) {
     return expect(this.item(name)).toHaveAttribute("tabindex", "0")
   }
+
+  switchView(view: "Tree" | "List") {
+    return this.page.getByRole("button", { name: view, exact: true }).click()
+  }
 }

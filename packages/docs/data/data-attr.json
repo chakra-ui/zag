@@ -2229,16 +2229,19 @@
   "tabs": {
     "Root": {
       "data-tabs-root": "<uid>",
+      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the tabs",
       "data-focus": "Present when focused"
     },
     "List": {
       "data-tabs-list": "<uid>",
+      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-focus": "Present when focused",
       "data-orientation": "The orientation of the list"
     },
     "Trigger": {
       "data-tabs-trigger": "<uid>",
+      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the trigger",
       "data-disabled": "Present when disabled",
       "data-value": "The value of the item",
@@ -2248,11 +2251,13 @@
     },
     "Content": {
       "data-tabs-content": "<uid>",
+      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-selected": "Present when selected",
       "data-orientation": "The orientation of the content"
     },
     "Indicator": {
       "data-tabs-indicator": "<uid>",
+      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the indicator",
       "data-instant": ""
     }

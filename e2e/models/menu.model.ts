@@ -27,6 +27,38 @@ export class MenuModel extends Model {
     return this.page.locator("[data-menu-content]")
   }
 
+  /** The trigger with this value, or the first one */
+  getTrigger(value?: string) {
+    if (value == null) return this.trigger.first()
+    return this.page.locator(`[data-menu-trigger][data-value="${value}"]`)
+  }
+
+  /** The content for this trigger value, or the only one */
+  getContent(value?: string) {
+    if (value == null) return this.content
+    return this.page.locator(`[data-menu-content][data-value="${value}"]`)
+  }
+
+  get positioner() {
+    return this.page.locator("[data-menu-positioner]")
+  }
+
+  get viewport() {
+    return this.page.locator("[data-menu-viewport]")
+  }
+
+  get arrow() {
+    return this.page.locator("[data-menu-arrow]")
+  }
+
+  seePositionerIsTransitioning() {
+    return this.seeDataAttr(this.positioner, "transitioning")
+  }
+
+  seePositionerIsNotTransitioning() {
+    return this.dontSeeDataAttr(this.positioner, "transitioning")
+  }
+
   getItem = (text: string) => {
     return this.page.locator(`[data-menu-item]`, { hasText: text })
   }
@@ -113,6 +145,18 @@ export class MenuModel extends Model {
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
     expect(await isInViewport(this.content, item)).toBe(true)
+  }
+
+  seeHighlightedItemText = async (text: string) => {
+    await expect(this.highlightedItem).toHaveText(text)
+  }
+
+  seeHighlightedItemInViewport = async () => {
+    await expect.poll(() => isInViewport(this.content, this.highlightedItem)).toBe(true)
+  }
+
+  seeSelectedValue = async (value: string) => {
+    await expect(this.page.getByRole("status", { name: "Selected item" })).toHaveText(value)
   }
 
   seeMenuIsPositioned = async () => {

@@ -37,6 +37,12 @@
     {
       "from": "*",
       "to": null,
+      "event": "TRIGGER_SWITCH.END",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
       "event": "TRIGGER_VALUE.SET",
       "guard": null
     },
@@ -66,7 +72,7 @@
     },
     {
       "from": "open",
-      "to": null,
+      "to": "open.idle",
       "event": "CLOSE",
       "guard": "isOpenControlled"
     },
@@ -90,7 +96,7 @@
     },
     {
       "from": "open",
-      "to": null,
+      "to": "open.idle",
       "event": "TRIGGER_BLUR",
       "guard": "isOpenControlled && !isPointer"
     },
@@ -99,6 +105,12 @@
       "to": "closed",
       "event": "TRIGGER_BLUR",
       "guard": "!isPointer"
+    },
+    {
+      "from": "open",
+      "to": "open.idle",
+      "event": "TRIGGER_VALUE.SET",
+      "guard": "isNewTriggerValue"
     },
     {
       "from": "open.closing",
@@ -110,6 +122,18 @@
       "from": "open.closing",
       "to": "closed",
       "event": "CLOSE_DELAY",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "CONTENT.INTERACT",
+      "guard": null
+    },
+    {
+      "from": "open.closing",
+      "to": "open.idle",
+      "event": "CONTENT.POINTER_ENTER",
       "guard": null
     },
     {
@@ -137,9 +161,9 @@
       "guard": null
     },
     {
-      "from": "open.closing",
-      "to": "open.idle",
-      "event": "TRIGGER_VALUE.SET",
+      "from": "open.idle",
+      "to": null,
+      "event": "CONTENT.INTERACT",
       "guard": null
     },
     {
@@ -152,7 +176,7 @@
       "from": "open.idle",
       "to": "open.closing",
       "event": "SAFE_AREA.EXIT",
-      "guard": null
+      "guard": "isPointer && !isInteractionInside"
     },
     {
       "from": "opening",
@@ -223,12 +247,12 @@
   ],
   "layouts": {
     "right": {
-      "width": 1339,
-      "height": 561,
+      "width": 1406,
+      "height": 640,
       "states": {
         "closed": {
-          "x": 1213,
-          "y": 270,
+          "x": 1280,
+          "y": 186,
           "w": 94,
           "h": 44
         },
@@ -240,19 +264,19 @@
         },
         "open": {
           "x": 484,
-          "y": 248,
-          "w": 382,
-          "h": 193
+          "y": 296,
+          "w": 449,
+          "h": 272
         },
         "open.idle": {
-          "x": 764,
-          "y": 360,
+          "x": 831,
+          "y": 463,
           "w": 78,
           "h": 44
         },
         "open.closing": {
-          "x": 508,
-          "y": 356,
+          "x": 535,
+          "y": 474,
           "w": 101,
           "h": 44
         }
@@ -261,41 +285,17 @@
         {
           "from": "closed",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN"],
+          "lines": ["CONTROLLED.OPEN"],
           "points": [
-            [
-              1213,
-              307
-            ],
-            [
-              1139,
-              307
-            ],
-            [
-              1139,
-              497
-            ],
-            [
-              400,
-              497
-            ],
-            [
-              400,
-              356
-            ],
-            [
-              484,
-              356
-            ]
+            [1280, 208],
+            [400, 208],
+            [400, 379],
+            [484, 379]
           ],
           "label": {
-            "x": 620,
-            "y": 504,
+            "x": 654,
+            "y": 215,
             "w": 115,
             "h": 24
           }
@@ -303,44 +303,18 @@
         {
           "from": "closed",
           "to": "opening",
-          "events": [
-            "OPEN",
-            "POINTER_ENTER",
-            "TRIGGER_FOCUS"
-          ],
-          "lines": [
-            "OPEN",
-            "POINTER_ENTER",
-            "TRIGGER_FOCUS"
-          ],
+          "events": ["OPEN", "POINTER_ENTER", "TRIGGER_FOCUS"],
+          "lines": ["OPEN", "POINTER_ENTER", "TRIGGER_FOCUS"],
           "points": [
-            [
-              1213,
-              277
-            ],
-            [
-              1139,
-              277
-            ],
-            [
-              1139,
-              95
-            ],
-            [
-              175,
-              95
-            ],
-            [
-              175,
-              101
-            ],
-            [
-              149,
-              101
-            ]
+            [1280, 193],
+            [1206, 193],
+            [1206, 95],
+            [175, 95],
+            [175, 101],
+            [149, 101]
           ],
           "label": {
-            "x": 627,
+            "x": 660,
             "y": 32,
             "w": 102,
             "h": 56
@@ -348,38 +322,36 @@
         },
         {
           "from": "open",
-          "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TRIGGER_BLUR"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TRIGGER_BLUR"
-          ],
+          "to": "open.idle",
+          "events": ["CLOSE", "TRIGGER_BLUR", "TRIGGER_VALUE.SET"],
+          "lines": ["CLOSE", "TRIGGER_BLUR", "TRIGGER_VALUE.SET"],
           "points": [
-            [
-              866,
-              312
-            ],
-            [
-              1129,
-              312
-            ],
-            [
-              1129,
-              299
-            ],
-            [
-              1213,
-              299
-            ]
+            [484, 399],
+            [821, 399],
+            [821, 474],
+            [831, 474]
           ],
           "label": {
-            "x": 981,
-            "y": 319,
+            "x": 508,
+            "y": 340,
+            "w": 128,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "TRIGGER_BLUR"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "TRIGGER_BLUR"],
+          "points": [
+            [933, 544],
+            [1206, 544],
+            [1206, 223],
+            [1280, 223]
+          ],
+          "label": {
+            "x": 1048,
+            "y": 551,
             "w": 122,
             "h": 56
           }
@@ -387,33 +359,21 @@
         {
           "from": "open.closing",
           "to": "closed",
-          "events": [
-            "CLOSE_DELAY"
-          ],
-          "lines": [
-            "CLOSE_DELAY"
-          ],
+          "events": ["CLOSE_DELAY"],
+          "lines": ["CLOSE_DELAY"],
           "points": [
-            [
-              609,
-              367
-            ],
-            [
-              619,
-              367
-            ],
-            [
-              619,
-              292
-            ],
-            [
-              1213,
-              292
-            ]
+            [636, 507],
+            [646, 507],
+            [646, 534],
+            [964, 534],
+            [964, 527],
+            [1196, 527],
+            [1196, 215],
+            [1280, 215]
           ],
           "label": {
-            "x": 998,
-            "y": 261,
+            "x": 1065,
+            "y": 496,
             "w": 89,
             "h": 24
           }
@@ -422,65 +382,42 @@
           "from": "open.closing",
           "to": "open.idle",
           "events": [
+            "CONTENT.INTERACT",
+            "CONTENT.POINTER_ENTER",
             "CONTROLLED.OPEN",
             "POINTER_ENTER",
             "SAFE_AREA.ENTER",
-            "TRIGGER_FOCUS",
-            "TRIGGER_VALUE.SET"
+            "TRIGGER_FOCUS"
           ],
           "lines": [
+            "CONTENT.INTERACT",
+            "CONTENT.POINTER_ENTER",
             "CONTROLLED.OPEN",
-            "POINTER_ENTER",
-            "SAFE_AREA.ENTER",
-            "+2 more"
+            "+3 more"
           ],
           "points": [
-            [
-              609,
-              378
-            ],
-            [
-              754,
-              378
-            ],
-            [
-              754,
-              374
-            ],
-            [
-              764,
-              374
-            ]
+            [636, 485],
+            [831, 485]
           ],
           "label": {
-            "x": 629,
-            "y": 303,
-            "w": 115,
+            "x": 656,
+            "y": 410,
+            "w": 155,
             "h": 72
           }
         },
         {
           "from": "open.idle",
           "to": "open.closing",
-          "events": [
-            "SAFE_AREA.EXIT"
-          ],
-          "lines": [
-            "SAFE_AREA.EXIT"
-          ],
+          "events": ["SAFE_AREA.EXIT"],
+          "lines": ["SAFE_AREA.EXIT"],
           "points": [
-            [
-              764,
-              389
-            ],
-            [
-              609,
-              389
-            ]
+            [831, 496],
+            [636, 496]
           ],
           "label": {
-            "x": 633,
-            "y": 392,
+            "x": 680,
+            "y": 499,
             "w": 108,
             "h": 24
           }
@@ -494,32 +431,15 @@
             "POINTER_LEAVE",
             "TRIGGER_BLUR"
           ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "POINTER_LEAVE",
-            "+1 more"
-          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "POINTER_LEAVE", "+1 more"],
           "points": [
-            [
-              149,
-              112
-            ],
-            [
-              1129,
-              112
-            ],
-            [
-              1129,
-              285
-            ],
-            [
-              1213,
-              285
-            ]
+            [149, 112],
+            [1196, 112],
+            [1196, 201],
+            [1280, 201]
           ],
           "label": {
-            "x": 617,
+            "x": 650,
             "y": 119,
             "w": 122,
             "h": 72
@@ -528,35 +448,17 @@
         {
           "from": "opening",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN_DELAY"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN_DELAY"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN_DELAY"],
+          "lines": ["CONTROLLED.OPEN", "OPEN_DELAY"],
           "points": [
-            [
-              149,
-              123
-            ],
-            [
-              175,
-              123
-            ],
-            [
-              175,
-              346
-            ],
-            [
-              484,
-              346
-            ]
+            [149, 123],
+            [175, 123],
+            [175, 389],
+            [484, 389]
           ],
           "label": {
             "x": 259,
-            "y": 353,
+            "y": 396,
             "w": 115,
             "h": 40
           }
@@ -564,12 +466,12 @@
       ]
     },
     "down": {
-      "width": 881,
-      "height": 961,
+      "width": 1121,
+      "height": 983,
       "states": {
         "closed": {
-          "x": 335,
-          "y": 885,
+          "x": 392,
+          "y": 907,
           "w": 94,
           "h": 44
         },
@@ -580,20 +482,20 @@
           "h": 44
         },
         "open": {
-          "x": 358,
+          "x": 496,
           "y": 336,
-          "w": 312,
-          "h": 268
+          "w": 488,
+          "h": 290
         },
         "open.idle": {
-          "x": 483,
-          "y": 536,
+          "x": 631,
+          "y": 558,
           "w": 78,
           "h": 44
         },
         "open.closing": {
-          "x": 460,
-          "y": 380,
+          "x": 779,
+          "y": 392,
           "w": 101,
           "h": 44
         }
@@ -602,41 +504,17 @@
         {
           "from": "closed",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN"],
+          "lines": ["CONTROLLED.OPEN"],
           "points": [
-            [
-              413,
-              885
-            ],
-            [
-              413,
-              801
-            ],
-            [
-              727,
-              801
-            ],
-            [
-              727,
-              252
-            ],
-            [
-              460,
-              252
-            ],
-            [
-              460,
-              336
-            ]
+            [439, 907],
+            [439, 262],
+            [630, 262],
+            [630, 336]
           ],
           "label": {
-            "x": 734,
-            "y": 461,
+            "x": 318,
+            "y": 472,
             "w": 115,
             "h": 24
           }
@@ -644,75 +522,51 @@
         {
           "from": "closed",
           "to": "opening",
-          "events": [
-            "OPEN",
-            "POINTER_ENTER",
-            "TRIGGER_FOCUS"
-          ],
-          "lines": [
-            "OPEN",
-            "POINTER_ENTER",
-            "TRIGGER_FOCUS"
-          ],
+          "events": ["OPEN", "POINTER_ENTER", "TRIGGER_FOCUS"],
+          "lines": ["OPEN", "POINTER_ENTER", "TRIGGER_FOCUS"],
           "points": [
-            [
-              351,
-              885
-            ],
-            [
-              351,
-              811
-            ],
-            [
-              156,
-              811
-            ],
-            [
-              156,
-              76
-            ]
+            [408, 907],
+            [408, 833],
+            [156, 833],
+            [156, 76]
           ],
           "label": {
             "x": 48,
-            "y": 445,
+            "y": 456,
             "w": 102,
             "h": 56
           }
         },
         {
           "from": "open",
-          "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TRIGGER_BLUR"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TRIGGER_BLUR"
-          ],
+          "to": "open.idle",
+          "events": ["CLOSE", "TRIGGER_BLUR", "TRIGGER_VALUE.SET"],
+          "lines": ["CLOSE", "TRIGGER_BLUR", "TRIGGER_VALUE.SET"],
           "points": [
-            [
-              402,
-              604
-            ],
-            [
-              402,
-              801
-            ],
-            [
-              398,
-              801
-            ],
-            [
-              398,
-              885
-            ]
+            [650, 336],
+            [650, 558]
           ],
           "label": {
-            "x": 409,
-            "y": 719,
+            "x": 520,
+            "y": 380,
+            "w": 128,
+            "h": 56
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed",
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "TRIGGER_BLUR"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "TRIGGER_BLUR"],
+          "points": [
+            [960, 626],
+            [960, 833],
+            [470, 833],
+            [470, 907]
+          ],
+          "label": {
+            "x": 967,
+            "y": 741,
             "w": 122,
             "h": 56
           }
@@ -720,33 +574,21 @@
         {
           "from": "open.closing",
           "to": "closed",
-          "events": [
-            "CLOSE_DELAY"
-          ],
-          "lines": [
-            "CLOSE_DELAY"
-          ],
+          "events": ["CLOSE_DELAY"],
+          "lines": ["CLOSE_DELAY"],
           "points": [
-            [
-              485,
-              424
-            ],
-            [
-              485,
-              434
-            ],
-            [
-              382,
-              434
-            ],
-            [
-              382,
-              885
-            ]
+            [854, 436],
+            [854, 446],
+            [950, 446],
+            [950, 657],
+            [558, 657],
+            [558, 823],
+            [455, 823],
+            [455, 907]
           ],
           "label": {
-            "x": 287,
-            "y": 735,
+            "x": 463,
+            "y": 757,
             "w": 89,
             "h": 24
           }
@@ -755,65 +597,48 @@
           "from": "open.closing",
           "to": "open.idle",
           "events": [
+            "CONTENT.INTERACT",
+            "CONTENT.POINTER_ENTER",
             "CONTROLLED.OPEN",
             "POINTER_ENTER",
             "SAFE_AREA.ENTER",
-            "TRIGGER_FOCUS",
-            "TRIGGER_VALUE.SET"
+            "TRIGGER_FOCUS"
           ],
           "lines": [
+            "CONTENT.INTERACT",
+            "CONTENT.POINTER_ENTER",
             "CONTROLLED.OPEN",
-            "POINTER_ENTER",
-            "SAFE_AREA.ENTER",
-            "+2 more"
+            "+3 more"
           ],
           "points": [
-            [
-              510,
-              424
-            ],
-            [
-              510,
-              526
-            ],
-            [
-              509,
-              526
-            ],
-            [
-              509,
-              536
-            ]
+            [804, 436],
+            [804, 446],
+            [818, 446],
+            [818, 538],
+            [670, 538],
+            [670, 558]
           ],
           "label": {
-            "x": 393,
-            "y": 444,
-            "w": 115,
+            "x": 661,
+            "y": 456,
+            "w": 155,
             "h": 72
           }
         },
         {
           "from": "open.idle",
           "to": "open.closing",
-          "events": [
-            "SAFE_AREA.EXIT"
-          ],
-          "lines": [
-            "SAFE_AREA.EXIT"
-          ],
+          "events": ["SAFE_AREA.EXIT"],
+          "lines": ["SAFE_AREA.EXIT"],
           "points": [
-            [
-              535,
-              536
-            ],
-            [
-              535,
-              424
-            ]
+            [689, 558],
+            [689, 548],
+            [829, 548],
+            [829, 436]
           ],
           "label": {
-            "x": 538,
-            "y": 468,
+            "x": 832,
+            "y": 480,
             "w": 108,
             "h": 24
           }
@@ -827,41 +652,18 @@
             "POINTER_LEAVE",
             "TRIGGER_BLUR"
           ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "POINTER_LEAVE",
-            "+1 more"
-          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "POINTER_LEAVE", "+1 more"],
           "points": [
-            [
-              182,
-              76
-            ],
-            [
-              182,
-              102
-            ],
-            [
-              173,
-              102
-            ],
-            [
-              173,
-              801
-            ],
-            [
-              366,
-              801
-            ],
-            [
-              366,
-              885
-            ]
+            [182, 76],
+            [182, 102],
+            [173, 102],
+            [173, 823],
+            [423, 823],
+            [423, 907]
           ],
           "label": {
             "x": 180,
-            "y": 437,
+            "y": 448,
             "w": 122,
             "h": 72
           }
@@ -869,31 +671,13 @@
         {
           "from": "opening",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN_DELAY"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN_DELAY"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN_DELAY"],
+          "lines": ["CONTROLLED.OPEN", "OPEN_DELAY"],
           "points": [
-            [
-              207,
-              76
-            ],
-            [
-              207,
-              252
-            ],
-            [
-              450,
-              252
-            ],
-            [
-              450,
-              336
-            ]
+            [207, 76],
+            [207, 252],
+            [640, 252],
+            [640, 336]
           ],
           "label": {
             "x": 214,

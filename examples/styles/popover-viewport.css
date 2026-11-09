@@ -1,0 +1,134 @@
+.animated-triggers__list {
+  display: flex;
+  gap: 8px;
+}
+
+/* Moving between triggers: the positioner slides, the viewport resizes, and the contents slide toward the new trigger */
+[data-popover-positioner] {
+  --easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 350ms;
+
+  &[data-transitioning] {
+    transition: transform var(--duration) var(--easing);
+
+    & [data-popover-arrow] {
+      transition:
+        left var(--duration) var(--easing),
+        top var(--duration) var(--easing);
+    }
+  }
+}
+
+[data-popover-arrow] {
+  --arrow-background: white;
+  --arrow-size: 10px;
+  z-index: 1;
+
+  /* Next to the viewport, the arrow fades with it */
+  &[data-state="open"] {
+    animation: fadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: fadeOut 0.1s ease-in-out;
+  }
+}
+
+/* The popup box: sized by the machine from the current content */
+[data-popover-viewport] {
+  overflow: clip;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform-origin: var(--transform-origin);
+
+  &[data-state="open"] {
+    animation: scaleFadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: scaleFadeOut 0.1s ease-in-out;
+  }
+
+  &[data-transitioning] {
+    transition:
+      width var(--duration) var(--easing),
+      height var(--duration) var(--easing);
+  }
+}
+
+[data-popover-content] {
+  --slide: 50%;
+
+  /* Laid out at its own size, so the viewport can measure it */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: 320px;
+  padding: 12px 16px;
+
+  /* The content takes focus when it has nothing focusable; the viewport already frames it */
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  & p {
+    margin: 0;
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--z-fg-muted);
+  }
+
+  &[data-activation-direction~="left"] {
+    --slide: -50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    --slide: 0%;
+  }
+
+  /* Slide over the full duration, fade over half of it */
+  [data-transitioning] > &[data-state="open"] {
+    animation:
+      popover-slide-in var(--duration) var(--easing),
+      popover-fade-in calc(var(--duration) / 2) var(--easing);
+  }
+
+  [data-transitioning] > &[data-state="closed"] {
+    animation:
+      popover-slide-out var(--duration) var(--easing) forwards,
+      popover-fade-out calc(var(--duration) / 2) var(--easing) forwards;
+  }
+}
+
+[data-popover-title] {
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: bold;
+}
+
+@keyframes popover-slide-in {
+  from {
+    transform: translateX(var(--slide));
+  }
+}
+
+@keyframes popover-slide-out {
+  to {
+    transform: translateX(calc(var(--slide) * -1));
+  }
+}
+
+@keyframes popover-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes popover-fade-out {
+  to {
+    opacity: 0;
+  }
+}

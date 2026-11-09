@@ -8,6 +8,8 @@ import "@styles/tabs.css"
 
 export default function Page() {
   const [disabled, setDisabled] = createSignal(false)
+  const [addedTabs, setAddedTabs] = createSignal<typeof tabsData>([])
+  const items = () => [...tabsData, ...addedTabs()]
 
   const service = useMachine(tabs.machine, {
     id: createUniqueId(),
@@ -16,6 +18,13 @@ export default function Page() {
 
   const api = createMemo(() => tabs.connect(service, normalizeProps))
 
+  const addTab = () => {
+    const n = addedTabs().length + 1
+    const tab = { id: `tab-${n}`, label: `Tab ${n}`, content: `Content of tab ${n}` }
+    setAddedTabs([...addedTabs(), tab])
+    api().setValue(tab.id)
+  }
+
   return (
     <>
       <main class="tabs">
@@ -23,7 +32,7 @@ export default function Page() {
           <div {...api().getIndicatorProps()} />
 
           <div {...api().getListProps()}>
-            <For each={tabsData}>
+            <For each={items()}>
               {(item) => (
                 <button
                   data-testid={`${item.id}-tab`}
@@ -35,7 +44,7 @@ export default function Page() {
             </For>
           </div>
 
-          <For each={tabsData}>
+          <For each={items()}>
             {(item) => (
               <div data-testid={`${item.id}-tab-panel`} {...api().getContentProps({ value: item.id })}>
                 <p>{item.content}</p>
@@ -52,6 +61,7 @@ export default function Page() {
           />
           Disable the selected tab
         </label>
+        <button onClick={addTab}>Add a tab</button>
       </main>
 
       <Toolbar>

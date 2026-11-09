@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
+import type { ActivationDirection, CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,6 +9,8 @@ import type { CommonProperties, DirectionProperty, PropTypes, Rect } from "@zag-
 export interface ValueChangeDetails {
   /** `null` when a `deselectable` tab is deselected */
   value: string | null
+  /** Where the selected tab sits relative to the previous one */
+  activationDirection: ActivationDirection
 }
 
 export interface FocusChangeDetails {
@@ -119,6 +121,8 @@ export type TabsSchema = {
     indicatorRect: Rect | null
     indicatorInstant: boolean
     tabStopValue: string | null
+    hasFocusableContent: boolean
+    activationDirection: ActivationDirection
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
@@ -126,15 +130,17 @@ export type TabsSchema = {
     focusFrame: AnimationFrame
     selectFrame: AnimationFrame
     tabIndexFrame: AnimationFrame
+    directionFrame: AnimationFrame
+    previousValue: string | null
   }
   computed: {
-    focused: boolean
+    activationDirection: ActivationDirection
   }
   action: string
   guard: string
   effect: string
   event: EventObject & {
-    src?: "keyboard" | "selectNext" | "selectPrevious" | undefined
+    src?: "keyboard" | undefined
   }
 }
 
@@ -184,6 +190,37 @@ export interface ContentState {
    * Whether the tab content is selected
    */
   selected: boolean
+  /**
+   * The orientation of the tabs
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
+}
+
+export interface IndicatorState {
+  /**
+   * The position and size of the selected tab, relative to the indicator's offset parent
+   */
+  rect: Rect | null
+  /**
+   * Whether the indicator has a measured rect to point to
+   */
+  visible: boolean
+  /**
+   * Whether the indicator should snap into place instead of animating
+   */
+  instant: boolean
+  /**
+   * The orientation of the tabs
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
 }
 
 export interface TabsApi<T extends PropTypes = PropTypes> {
@@ -195,6 +232,10 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
    * The value of the tab that is currently focused.
    */
   focusedValue: string | null
+  /**
+   * Where the selected tab sits relative to the previously selected one
+   */
+  activationDirection: ActivationDirection
   /**
    * Sets the value of the tabs.
    */
@@ -217,25 +258,29 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
    */
   focus: VoidFunction
   /**
-   * Selects the next tab
+   * Selects the next enabled tab, without moving focus
    */
   selectNext: (fromValue?: string) => void
   /**
-   * Selects the previous tab
+   * Selects the previous enabled tab, without moving focus
    */
   selectPrevious: (fromValue?: string) => void
   /**
    * Returns the state of the trigger with the given props
    */
   getTriggerState: (props: TriggerProps) => TriggerState
+  getTriggerProps: (props: TriggerProps) => T["button"]
 
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
-  getTriggerProps: (props: TriggerProps) => T["button"]
   /**
    * Returns the state of the content with the given props
    */
   getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
+  /**
+   * Returns the state of the indicator
+   */
+  getIndicatorState: () => IndicatorState
   getIndicatorProps: () => T["element"]
 }

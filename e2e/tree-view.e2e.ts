@@ -259,3 +259,43 @@ test.describe("tree view / actions", () => {
     await I.seeBranchIsCollapsed("node_modules")
   })
 })
+
+test.describe("tree-view / list view", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/list-view")
+  })
+
+  test("falls back to the first row when the focused folder is not in the list", async () => {
+    await I.clickItem("src")
+    await I.switchView("List")
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("node_modules/zag-js")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsFocused("node_modules/panda")
+    await I.pressKey("End")
+    await I.seeItemIsFocused("README.md")
+  })
+
+  test("falls back to the first row when the focused file is collapsed in the tree", async () => {
+    await I.switchView("List")
+    await I.clickItem("src/index.ts")
+    await I.switchView("Tree")
+    await I.focusButton("List")
+    await I.pressKey("Tab")
+    await I.seeBranchIsFocused("node_modules")
+    await I.pressKey("ArrowDown")
+    await I.seeBranchIsFocused("src")
+  })
+
+  test("keeps the focused file tabbable across views", async () => {
+    await I.clickItem("package.json")
+    await I.switchView("List")
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("package.json")
+    await I.switchView("Tree")
+    await I.focusButton("List")
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("package.json")
+  })
+})

@@ -1,11 +1,21 @@
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { isInNestedLayer, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { isShadowRoot, observeChildren } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  getPopupActivationDirection,
+  isShadowRoot,
+  observeChildren,
+  raf,
+  resizeObserverBorderBox,
+  waitForAnimationEnd,
+} from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import * as dom from "./hover-card.dom"
-import type { HoverCardSchema, InstantType, OpenChangeReason, Placement } from "./hover-card.types"
+import { getViewportSizeStyle } from "./hover-card.style"
+import type { HoverCardSchema, InstantType, OpenChangeReason, Placement, ViewportSize } from "./hover-card.types"
+import type { PopupActivationDirection } from "@zag-js/types"
 
 const { not, and } = createGuards<HoverCardSchema>()
 
@@ -25,6 +35,8 @@ export const machine = createMachine<HoverCardSchema>({
 
   effects: ["trackFocusVisible"],
 
+  exit: ["endTriggerSwitch"],
+
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
     return open ? "open" : "closed"
@@ -35,6 +47,8 @@ export const machine = createMachine<HoverCardSchema>({
       inlineCoords: undefined,
       inlineLines: undefined,
       isInteractionInside: false,
+      cancelTriggerSwitch: null,
+      awaitingViewportSize: false,
     }
   },
 
@@ -62,10 +76,15 @@ export const machine = createMachine<HoverCardSchema>({
         onChange(value) {
           const onTriggerValueChange = prop("onTriggerValueChange")
           if (!onTriggerValueChange) return
-          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          const triggerElement = dom.getTriggerEl(scope, value)
           onTriggerValueChange({ value, triggerElement })
         },
       })),
+      activationDirection: bindable<PopupActivationDirection | null>(() => ({ defaultValue: null })),
+      previousTriggerValue: bindable<string | null>(() => ({ defaultValue: null })),
+      transitioning: bindable<boolean>(() => ({ defaultValue: false })),
+      viewportRendered: bindable<boolean>(() => ({ defaultValue: false })),
+      viewportSize: bindable<ViewportSize | null>(() => ({ defaultValue: null })),
     }
   },
 
@@ -88,12 +107,15 @@ export const machine = createMachine<HoverCardSchema>({
     "TRIGGER_VALUE.SET": {
       actions: ["setTriggerValue"],
     },
+    "TRIGGER_SWITCH.END": {
+      actions: ["endTriggerSwitch"],
+    },
   },
 
   states: {
     closed: {
       tags: ["closed"],
-      entry: ["clearIsPointer", "clearInteractionInside"],
+      entry: ["clearIsPointer", "clearInteractionInside", "endTriggerSwitch", "clearActivationDirection"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
@@ -175,7 +197,13 @@ export const machine = createMachine<HoverCardSchema>({
     open: {
       tags: ["open"],
       initial: "idle",
-      effects: ["trackDismissableElement", "trackPositioning", "trackSafeArea", "trackTriggerRemoval"],
+      effects: [
+        "trackDismissableElement",
+        "trackPositioning",
+        "trackViewportSize",
+        "trackSafeArea",
+        "trackTriggerRemoval",
+      ],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -205,6 +233,11 @@ export const machine = createMachine<HoverCardSchema>({
         ],
         "POSITIONING.SET": {
           actions: ["reposition"],
+        },
+        "TRIGGER_VALUE.SET": {
+          guard: "isNewTriggerValue",
+          target: "open.idle",
+          actions: ["setActivationDirection", "setPreviousTriggerValue", "setTriggerValue", "startTriggerSwitch"],
         },
       },
       states: {
@@ -258,10 +291,6 @@ export const machine = createMachine<HoverCardSchema>({
               target: "idle",
               actions: ["setTriggerValue"],
             },
-            "TRIGGER_VALUE.SET": {
-              target: "idle",
-              actions: ["setTriggerValue"],
-            },
           },
         },
       },
@@ -273,6 +302,7 @@ export const machine = createMachine<HoverCardSchema>({
       isPointer: ({ context }) => !!context.get("isPointer"),
       isInteractionInside: ({ refs }) => refs.get("isInteractionInside"),
       isOpenControlled: ({ prop }) => prop("open") != null,
+      isNewTriggerValue: ({ context, event }) => event.value != null && event.value !== context.get("triggerValue"),
     },
 
     effects: {
@@ -299,10 +329,10 @@ export const machine = createMachine<HoverCardSchema>({
 
       trackSafeArea({ send, scope, context }) {
         return trackSafeArea({
-          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
-          getContentEl: () => dom.getContentEl(scope),
+          getTriggerEl: () => dom.getTriggerEl(scope, context.get("triggerValue")),
+          getContentEl: () => dom.getLayerEl(scope, context.get("triggerValue")),
           openedByPointer: () => context.get("isPointer"),
-          isTargetInside: (target) => isInNestedLayer(dom.getContentEl(scope), target),
+          isTargetInside: (target) => isInNestedLayer(dom.getLayerEl(scope, context.get("triggerValue")), target),
           defer: true,
           onLeave() {
             send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
@@ -314,7 +344,7 @@ export const machine = createMachine<HoverCardSchema>({
       },
 
       trackTriggerRemoval({ send, scope, context }) {
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
         const root = scope.getRootNode()
         const node = (isShadowRoot(root) ? root : scope.getDoc().body) as HTMLElement
         return observeChildren(() => (getTriggerEl() ? node : null), {
@@ -330,13 +360,17 @@ export const machine = createMachine<HoverCardSchema>({
           context.set("currentPlacement", prop("positioning").placement)
         }
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
         const positioning = prop("positioning")
         return getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
           // Triggers are links in prose, which wrap.
           middleware: [inline({ getCoords: () => refs.get("inlineCoords") }), ...(positioning.middleware ?? [])],
+          updatePosition(data) {
+            if (refs.get("awaitingViewportSize")) return
+            return positioning.updatePosition ? positioning.updatePosition(data) : data.updatePosition()
+          },
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -344,16 +378,38 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
 
+      trackViewportSize(params) {
+        const { context, scope, watchEffect } = params
+        return watchEffect([() => context.get("triggerValue")], () => {
+          const frame = AnimationFrame.create()
+          const stopObserving = raf(() => {
+            const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+            const viewportRendered = !!dom.getViewportEl(scope)
+            context.set("viewportRendered", viewportRendered)
+            if (!viewportRendered || !contentEl) return
+
+            return resizeObserverBorderBox.observe(contentEl, (entry) => {
+              const [{ inlineSize, blockSize }] = entry.borderBoxSize
+              frame.request(() => setViewportSize(params, { width: inlineSize, height: blockSize }))
+            })
+          })
+          return () => {
+            stopObserving()
+            frame.cancel()
+          }
+        })
+      },
+
       trackDismissableElement({ send, scope, prop, context }) {
-        const getContentEl = () => dom.getContentEl(scope)
-        return trackDismissableElement(getContentEl, {
+        const getLayerEl = () => dom.getLayerEl(scope, context.get("triggerValue"))
+        return trackDismissableElement(getLayerEl, {
           type: "popover",
           onLayerChange(layer) {
             context.set("layer", layer)
           },
           defer: true,
           getRootNode: scope.getRootNode,
-          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
+          exclude: dom.getTriggerEls(scope),
           onEscapeKeyDown(event) {
             // Claim the event so the layer's own dismiss does not also fire.
             event.preventDefault()
@@ -396,8 +452,9 @@ export const machine = createMachine<HoverCardSchema>({
         refs.set("isInteractionInside", false)
       },
       reposition({ context, prop, refs, scope, event }) {
+        if (refs.get("awaitingViewportSize")) return
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
         const positioning = { ...prop("positioning"), ...event.options }
         getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
@@ -409,6 +466,34 @@ export const machine = createMachine<HoverCardSchema>({
             context.set("currentPlacement", data.placement)
           },
         })
+      },
+      setActivationDirection({ context, event, scope }) {
+        const fromEl = dom.getTriggerEl(scope, context.get("triggerValue"))
+        const toEl = dom.getTriggerEl(scope, event.value)
+        context.set("activationDirection", getPopupActivationDirection(fromEl, toEl))
+      },
+      clearActivationDirection({ context }) {
+        context.set("activationDirection", null)
+      },
+      setPreviousTriggerValue({ context }) {
+        context.set("previousTriggerValue", context.get("triggerValue"))
+      },
+      startTriggerSwitch({ context, refs, scope, send }) {
+        refs.get("cancelTriggerSwitch")?.()
+        context.set("transitioning", true)
+        const positionerEl = dom.getPositionerEl(scope)
+        if (!positionerEl) return
+        positionerEl.setAttribute("data-transitioning", "")
+        refs.set("awaitingViewportSize", !!dom.getViewportEl(scope))
+        const cancel = waitForAnimationEnd(positionerEl, () => send({ type: "TRIGGER_SWITCH.END" }))
+        refs.set("cancelTriggerSwitch", cancel)
+      },
+      endTriggerSwitch({ context, refs }) {
+        context.set("previousTriggerValue", null)
+        refs.get("cancelTriggerSwitch")?.()
+        refs.set("cancelTriggerSwitch", null)
+        refs.set("awaitingViewportSize", false)
+        context.set("transitioning", false)
       },
       setTriggerValue({ context, event }) {
         if (event.value === undefined) return
@@ -427,4 +512,16 @@ export const machine = createMachine<HoverCardSchema>({
 // user event before them.
 function getOpenChangeReason(event: HoverCardSchema["event"]): OpenChangeReason | undefined {
   return (event.previousEvent || event).src
+}
+
+function setViewportSize(params: Params<HoverCardSchema>, size: ViewportSize) {
+  const { context, scope, refs, send } = params
+  context.set("viewportSize", size)
+  const positionerEl = dom.getPositionerEl(scope)
+  for (const [key, value] of Object.entries(getViewportSizeStyle(size))) {
+    positionerEl?.style.setProperty(key, value)
+  }
+  if (!refs.get("awaitingViewportSize")) return
+  refs.set("awaitingViewportSize", false)
+  send({ type: "POSITIONING.SET" })
 }

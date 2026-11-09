@@ -73,6 +73,8 @@ export const layerStack = {
   branches: [] as HTMLElement[],
   /** Ids of layers whose descendant just closed. */
   closingAncestors: new Set<string>(),
+  /** Descendants queued to close with their ancestor. A new layer can't nest in them. */
+  dismissing: new WeakSet<HTMLElement>(),
   pendingReattach: new Map<HTMLElement, { id: string | undefined; parentId: string | undefined; index: number }>(),
   count(): number {
     return this.layers.length
@@ -101,10 +103,10 @@ export const layerStack = {
   },
   parentFor(layer: Layer): Layer | undefined {
     const origins = layer.origins?.filter(Boolean)
-    if (!origins) return this.layers[this.count() - 1]
     for (let i = this.count() - 1; i >= 0; i--) {
       const candidate = this.layers[i]
-      if (origins.some((origin) => contains(candidate.node, origin))) return candidate
+      if (this.dismissing.has(candidate.node)) continue
+      if (!origins || origins.some((origin) => contains(candidate.node, origin))) return candidate
     }
     return undefined
   },
@@ -214,8 +216,11 @@ export const layerStack = {
         this.closingAncestors.clear()
       })
 
+      this.dismissing.delete(node)
+
       // Deferred, so descendants unmounting in the same pass aren't dismissed
       const nested = this.getNestedLayers(node)
+      nested.forEach((layer) => this.dismissing.add(layer.node))
       if (nested.length) queueMicrotask(() => nested.forEach((layer) => this.dismiss(layer.node, node)))
     }
 
@@ -279,7 +284,8 @@ export const layerStack = {
       targetIndex: parent ? this.indexOf(parent) : -1,
     })
     layer.requestDismiss?.(event)
-    if (!event.defaultPrevented) layer.dismiss()
+    if (event.defaultPrevented) this.dismissing.delete(node)
+    else layer.dismiss()
     // `remove` syncs after the cascade
   },
 }

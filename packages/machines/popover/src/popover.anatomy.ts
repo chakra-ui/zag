@@ -8,6 +8,7 @@ export const anatomy = createAnatomy("popover").parts(
   "indicator",
   "positioner",
   "content",
+  "viewport",
   "title",
   "description",
   "closeTrigger",

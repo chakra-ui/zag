@@ -427,12 +427,6 @@
     {
       "from": "open",
       "to": null,
-      "event": "INPUT.TAB",
-      "guard": null
-    },
-    {
-      "from": "open",
-      "to": null,
       "event": "ITEMS.CHANGE",
       "guard": null
     },
@@ -493,6 +487,12 @@
     {
       "from": "open",
       "to": null,
+      "event": "TAB",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
       "event": "TRIGGER_CLICK",
       "guard": "!isTriggerItem && isOpenControlled"
     },
@@ -513,6 +513,18 @@
       "to": null,
       "event": "TRIGGER_POINTERMOVE",
       "guard": "isTriggerItem"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_SWITCH.END",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": "isNewTriggerValue"
     },
     {
       "from": "open",
@@ -701,29 +713,12 @@
             "OPEN",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "ARROW_DOWN",
-            "ARROW_UP",
-            "CONTEXT_MENU",
-            "+3 more"
-          ],
+          "lines": ["ARROW_DOWN", "ARROW_UP", "CONTEXT_MENU", "+3 more"],
           "points": [
-            [
-              1645,
-              437
-            ],
-            [
-              1714,
-              437
-            ],
-            [
-              1714,
-              436
-            ],
-            [
-              2030,
-              436
-            ]
+            [1645, 437],
+            [1714, 437],
+            [1714, 436],
+            [2030, 436]
           ],
           "label": {
             "x": 1812,
@@ -735,37 +730,15 @@
         {
           "from": "closed",
           "to": "opening:contextmenu",
-          "events": [
-            "CONTEXT_MENU_START"
-          ],
-          "lines": [
-            "CONTEXT_MENU_START"
-          ],
+          "events": ["CONTEXT_MENU_START"],
+          "lines": ["CONTEXT_MENU_START"],
           "points": [
-            [
-              1551,
-              427
-            ],
-            [
-              1486,
-              427
-            ],
-            [
-              1486,
-              224
-            ],
-            [
-              715,
-              224
-            ],
-            [
-              715,
-              241
-            ],
-            [
-              679,
-              241
-            ]
+            [1551, 427],
+            [1486, 427],
+            [1486, 224],
+            [715, 224],
+            [715, 241],
+            [679, 241]
           ],
           "label": {
             "x": 1042,
@@ -777,37 +750,15 @@
         {
           "from": "closed",
           "to": "idle",
-          "events": [
-            "TRIGGER_BLUR"
-          ],
-          "lines": [
-            "TRIGGER_BLUR"
-          ],
+          "events": ["TRIGGER_BLUR"],
+          "lines": ["TRIGGER_BLUR"],
           "points": [
-            [
-              1551,
-              442
-            ],
-            [
-              1456,
-              442
-            ],
-            [
-              1456,
-              429
-            ],
-            [
-              957,
-              429
-            ],
-            [
-              957,
-              365
-            ],
-            [
-              126,
-              365
-            ]
+            [1551, 442],
+            [1456, 442],
+            [1456, 429],
+            [957, 429],
+            [957, 365],
+            [126, 365]
           ],
           "label": {
             "x": 803,
@@ -819,29 +770,13 @@
         {
           "from": "closed",
           "to": "opening",
-          "events": [
-            "TRIGGER_POINTERMOVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERMOVE"
-          ],
+          "events": ["TRIGGER_POINTERMOVE"],
+          "lines": ["TRIGGER_POINTERMOVE"],
           "points": [
-            [
-              1551,
-              451
-            ],
-            [
-              1456,
-              451
-            ],
-            [
-              1456,
-              502
-            ],
-            [
-              661,
-              502
-            ]
+            [1551, 451],
+            [1456, 451],
+            [1456, 502],
+            [661, 502]
           ],
           "label": {
             "x": 1039,
@@ -859,37 +794,14 @@
             "DELAY.CLOSE",
             "POINTER_MOVED_AWAY_FROM_SUBMENU"
           ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "DELAY.CLOSE",
-            "+1 more"
-          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "DELAY.CLOSE", "+1 more"],
           "points": [
-            [
-              1198,
-              666
-            ],
-            [
-              1224,
-              666
-            ],
-            [
-              1224,
-              544
-            ],
-            [
-              1476,
-              544
-            ],
-            [
-              1476,
-              461
-            ],
-            [
-              1551,
-              461
-            ]
+            [1198, 666],
+            [1224, 666],
+            [1224, 544],
+            [1476, 544],
+            [1476, 461],
+            [1551, 461]
           ],
           "label": {
             "x": 1308,
@@ -901,41 +813,15 @@
         {
           "from": "closing",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "MENU_POINTERENTER",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "MENU_POINTERENTER",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "MENU_POINTERENTER", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "MENU_POINTERENTER", "OPEN"],
           "points": [
-            [
-              1198,
-              677
-            ],
-            [
-              1234,
-              677
-            ],
-            [
-              1234,
-              648
-            ],
-            [
-              1956,
-              648
-            ],
-            [
-              1956,
-              445
-            ],
-            [
-              2030,
-              445
-            ]
+            [1198, 677],
+            [1234, 677],
+            [1234, 648],
+            [1956, 648],
+            [1956, 445],
+            [2030, 445]
           ],
           "label": {
             "x": 1550,
@@ -953,37 +839,14 @@
             "OPEN",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "CONTEXT_MENU",
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "+1 more"
-          ],
+          "lines": ["CONTEXT_MENU", "CONTROLLED.OPEN", "OPEN", "+1 more"],
           "points": [
-            [
-              126,
-              350
-            ],
-            [
-              152,
-              350
-            ],
-            [
-              152,
-              32
-            ],
-            [
-              1966,
-              32
-            ],
-            [
-              1966,
-              421
-            ],
-            [
-              2030,
-              421
-            ]
+            [126, 350],
+            [152, 350],
+            [152, 32],
+            [1966, 32],
+            [1966, 421],
+            [2030, 421]
           ],
           "label": {
             "x": 1052,
@@ -995,29 +858,13 @@
         {
           "from": "idle",
           "to": "opening:contextmenu",
-          "events": [
-            "CONTEXT_MENU_START"
-          ],
-          "lines": [
-            "CONTEXT_MENU_START"
-          ],
+          "events": ["CONTEXT_MENU_START"],
+          "lines": ["CONTEXT_MENU_START"],
           "points": [
-            [
-              126,
-              358
-            ],
-            [
-              162,
-              358
-            ],
-            [
-              162,
-              245
-            ],
-            [
-              487,
-              245
-            ]
+            [126, 358],
+            [162, 358],
+            [162, 245],
+            [487, 245]
           ],
           "label": {
             "x": 239,
@@ -1029,39 +876,15 @@
         {
           "from": "idle",
           "to": "closed",
-          "events": [
-            "CONTROLLED.CLOSE",
-            "TRIGGER_FOCUS"
-          ],
-          "lines": [
-            "CONTROLLED.CLOSE",
-            "TRIGGER_FOCUS"
-          ],
+          "events": ["CONTROLLED.CLOSE", "TRIGGER_FOCUS"],
+          "lines": ["CONTROLLED.CLOSE", "TRIGGER_FOCUS"],
           "points": [
-            [
-              126,
-              372
-            ],
-            [
-              162,
-              372
-            ],
-            [
-              162,
-              382
-            ],
-            [
-              947,
-              382
-            ],
-            [
-              947,
-              446
-            ],
-            [
-              1551,
-              446
-            ]
+            [126, 372],
+            [162, 372],
+            [162, 382],
+            [947, 382],
+            [947, 446],
+            [1551, 446]
           ],
           "label": {
             "x": 789,
@@ -1073,29 +896,13 @@
         {
           "from": "idle",
           "to": "opening",
-          "events": [
-            "TRIGGER_POINTERMOVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERMOVE"
-          ],
+          "events": ["TRIGGER_POINTERMOVE"],
+          "lines": ["TRIGGER_POINTERMOVE"],
           "points": [
-            [
-              126,
-              380
-            ],
-            [
-              152,
-              380
-            ],
-            [
-              152,
-              506
-            ],
-            [
-              560,
-              506
-            ]
+            [126, 380],
+            [152, 380],
+            [152, 506],
+            [560, 506]
           ],
           "label": {
             "x": 236,
@@ -1114,37 +921,14 @@
             "ITEM_CLICK",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "ARROW_LEFT",
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "+2 more"
-          ],
+          "lines": ["ARROW_LEFT", "CLOSE", "CONTROLLED.CLOSE", "+2 more"],
           "points": [
-            [
-              2030,
-              440
-            ],
-            [
-              1946,
-              440
-            ],
-            [
-              1946,
-              453
-            ],
-            [
-              1714,
-              453
-            ],
-            [
-              1714,
-              451
-            ],
-            [
-              1645,
-              451
-            ]
+            [2030, 440],
+            [1946, 440],
+            [1946, 453],
+            [1714, 453],
+            [1714, 451],
+            [1645, 451]
           ],
           "label": {
             "x": 1798,
@@ -1156,37 +940,15 @@
         {
           "from": "open",
           "to": "closing",
-          "events": [
-            "TRIGGER_POINTERLEAVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERLEAVE"
-          ],
+          "events": ["TRIGGER_POINTERLEAVE"],
+          "lines": ["TRIGGER_POINTERLEAVE"],
           "points": [
-            [
-              2030,
-              450
-            ],
-            [
-              1966,
-              450
-            ],
-            [
-              1966,
-              665
-            ],
-            [
-              1244,
-              665
-            ],
-            [
-              1244,
-              688
-            ],
-            [
-              1198,
-              688
-            ]
+            [2030, 450],
+            [1966, 450],
+            [1966, 665],
+            [1244, 665],
+            [1244, 688],
+            [1198, 688]
           ],
           "label": {
             "x": 1540,
@@ -1204,37 +966,14 @@
             "CONTROLLED.CLOSE",
             "TRIGGER_POINTERLEAVE"
           ],
-          "lines": [
-            "BLUR",
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "+1 more"
-          ],
+          "lines": ["BLUR", "CLOSE", "CONTROLLED.CLOSE", "+1 more"],
           "points": [
-            [
-              661,
-              510
-            ],
-            [
-              715,
-              510
-            ],
-            [
-              715,
-              519
-            ],
-            [
-              1466,
-              519
-            ],
-            [
-              1466,
-              456
-            ],
-            [
-              1551,
-              456
-            ]
+            [661, 510],
+            [715, 510],
+            [715, 519],
+            [1466, 519],
+            [1466, 456],
+            [1551, 456]
           ],
           "label": {
             "x": 1049,
@@ -1246,41 +985,15 @@
         {
           "from": "opening",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "DELAY.OPEN",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "DELAY.OPEN",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "DELAY.OPEN", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "DELAY.OPEN", "OPEN"],
           "points": [
-            [
-              661,
-              519
-            ],
-            [
-              705,
-              519
-            ],
-            [
-              705,
-              723
-            ],
-            [
-              1976,
-              723
-            ],
-            [
-              1976,
-              455
-            ],
-            [
-              2030,
-              455
-            ]
+            [661, 519],
+            [705, 519],
+            [705, 723],
+            [1976, 723],
+            [1976, 455],
+            [2030, 455]
           ],
           "label": {
             "x": 1312,
@@ -1292,37 +1005,15 @@
         {
           "from": "opening",
           "to": "opening:requested",
-          "events": [
-            "DELAY.OPEN"
-          ],
-          "lines": [
-            "DELAY.OPEN"
-          ],
+          "events": ["DELAY.OPEN"],
+          "lines": ["DELAY.OPEN"],
           "points": [
-            [
-              661,
-              493
-            ],
-            [
-              705,
-              493
-            ],
-            [
-              705,
-              446
-            ],
-            [
-              937,
-              446
-            ],
-            [
-              937,
-              390
-            ],
-            [
-              1021,
-              390
-            ]
+            [661, 493],
+            [705, 493],
+            [705, 446],
+            [937, 446],
+            [937, 390],
+            [1021, 390]
           ],
           "label": {
             "x": 809,
@@ -1334,49 +1025,17 @@
         {
           "from": "opening:contextmenu",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTEXT_MENU_CANCEL",
-            "CONTROLLED.CLOSE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTEXT_MENU_CANCEL",
-            "CONTROLLED.CLOSE"
-          ],
+          "events": ["CLOSE", "CONTEXT_MENU_CANCEL", "CONTROLLED.CLOSE"],
+          "lines": ["CLOSE", "CONTEXT_MENU_CANCEL", "CONTROLLED.CLOSE"],
           "points": [
-            [
-              679,
-              258
-            ],
-            [
-              705,
-              258
-            ],
-            [
-              705,
-              305
-            ],
-            [
-              937,
-              305
-            ],
-            [
-              937,
-              241
-            ],
-            [
-              1476,
-              241
-            ],
-            [
-              1476,
-              432
-            ],
-            [
-              1551,
-              432
-            ]
+            [679, 258],
+            [705, 258],
+            [705, 305],
+            [937, 305],
+            [937, 241],
+            [1476, 241],
+            [1476, 432],
+            [1551, 432]
           ],
           "label": {
             "x": 1039,
@@ -1388,41 +1047,15 @@
         {
           "from": "opening:contextmenu",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "LONG_PRESS.OPEN",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "LONG_PRESS.OPEN",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "LONG_PRESS.OPEN", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "LONG_PRESS.OPEN", "OPEN"],
           "points": [
-            [
-              679,
-              232
-            ],
-            [
-              705,
-              232
-            ],
-            [
-              705,
-              136
-            ],
-            [
-              1956,
-              136
-            ],
-            [
-              1956,
-              426
-            ],
-            [
-              2030,
-              426
-            ]
+            [679, 232],
+            [705, 232],
+            [705, 136],
+            [1956, 136],
+            [1956, 426],
+            [2030, 426]
           ],
           "label": {
             "x": 1312,
@@ -1434,29 +1067,13 @@
         {
           "from": "opening:contextmenu",
           "to": "opening:requested",
-          "events": [
-            "LONG_PRESS.OPEN"
-          ],
-          "lines": [
-            "LONG_PRESS.OPEN"
-          ],
+          "events": ["LONG_PRESS.OPEN"],
+          "lines": ["LONG_PRESS.OPEN"],
           "points": [
-            [
-              679,
-              249
-            ],
-            [
-              967,
-              249
-            ],
-            [
-              967,
-              376
-            ],
-            [
-              1021,
-              376
-            ]
+            [679, 249],
+            [967, 249],
+            [967, 376],
+            [1021, 376]
           ],
           "label": {
             "x": 793,
@@ -1468,39 +1085,15 @@
         {
           "from": "opening:requested",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE"],
           "points": [
-            [
-              1198,
-              390
-            ],
-            [
-              1234,
-              390
-            ],
-            [
-              1234,
-              357
-            ],
-            [
-              1466,
-              357
-            ],
-            [
-              1466,
-              437
-            ],
-            [
-              1551,
-              437
-            ]
+            [1198, 390],
+            [1234, 390],
+            [1234, 357],
+            [1466, 357],
+            [1466, 437],
+            [1551, 437]
           ],
           "label": {
             "x": 1308,
@@ -1512,37 +1105,15 @@
         {
           "from": "opening:requested",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN"],
+          "lines": ["CONTROLLED.OPEN"],
           "points": [
-            [
-              1198,
-              376
-            ],
-            [
-              1224,
-              376
-            ],
-            [
-              1224,
-              332
-            ],
-            [
-              1946,
-              332
-            ],
-            [
-              1946,
-              431
-            ],
-            [
-              2030,
-              431
-            ]
+            [1198, 376],
+            [1224, 376],
+            [1224, 332],
+            [1946, 332],
+            [1946, 431],
+            [2030, 431]
           ],
           "label": {
             "x": 1557,
@@ -1612,29 +1183,12 @@
             "OPEN",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "ARROW_DOWN",
-            "ARROW_UP",
-            "CONTEXT_MENU",
-            "+3 more"
-          ],
+          "lines": ["ARROW_DOWN", "ARROW_UP", "CONTEXT_MENU", "+3 more"],
           "points": [
-            [
-              899,
-              1034
-            ],
-            [
-              899,
-              1252
-            ],
-            [
-              914,
-              1252
-            ],
-            [
-              914,
-              1336
-            ]
+            [899, 1034],
+            [899, 1252],
+            [914, 1252],
+            [914, 1336]
           ],
           "label": {
             "x": 798,
@@ -1646,37 +1200,15 @@
         {
           "from": "closed",
           "to": "opening:contextmenu",
-          "events": [
-            "CONTEXT_MENU_START"
-          ],
-          "lines": [
-            "CONTEXT_MENU_START"
-          ],
+          "events": ["CONTEXT_MENU_START"],
+          "lines": ["CONTEXT_MENU_START"],
           "points": [
-            [
-              878,
-              990
-            ],
-            [
-              878,
-              934
-            ],
-            [
-              481,
-              934
-            ],
-            [
-              481,
-              400
-            ],
-            [
-              575,
-              400
-            ],
-            [
-              575,
-              364
-            ]
+            [878, 990],
+            [878, 934],
+            [481, 934],
+            [481, 400],
+            [575, 400],
+            [575, 364]
           ],
           "label": {
             "x": 340,
@@ -1688,37 +1220,15 @@
         {
           "from": "closed",
           "to": "idle",
-          "events": [
-            "TRIGGER_BLUR"
-          ],
-          "lines": [
-            "TRIGGER_BLUR"
-          ],
+          "events": ["TRIGGER_BLUR"],
+          "lines": ["TRIGGER_BLUR"],
           "points": [
-            [
-              910,
-              990
-            ],
-            [
-              910,
-              904
-            ],
-            [
-              903,
-              904
-            ],
-            [
-              903,
-              550
-            ],
-            [
-              817,
-              550
-            ],
-            [
-              817,
-              76
-            ]
+            [910, 990],
+            [910, 904],
+            [903, 904],
+            [903, 550],
+            [817, 550],
+            [817, 76]
           ],
           "label": {
             "x": 716,
@@ -1730,37 +1240,15 @@
         {
           "from": "closed",
           "to": "opening",
-          "events": [
-            "TRIGGER_POINTERMOVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERMOVE"
-          ],
+          "events": ["TRIGGER_POINTERMOVE"],
+          "lines": ["TRIGGER_POINTERMOVE"],
           "points": [
-            [
-              931,
-              990
-            ],
-            [
-              931,
-              904
-            ],
-            [
-              1092,
-              904
-            ],
-            [
-              1092,
-              390
-            ],
-            [
-              1088,
-              390
-            ],
-            [
-              1088,
-              364
-            ]
+            [931, 990],
+            [931, 904],
+            [1092, 904],
+            [1092, 390],
+            [1088, 390],
+            [1088, 364]
           ],
           "label": {
             "x": 945,
@@ -1778,37 +1266,14 @@
             "DELAY.CLOSE",
             "POINTER_MOVED_AWAY_FROM_SUBMENU"
           ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "DELAY.CLOSE",
-            "+1 more"
-          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "DELAY.CLOSE", "+1 more"],
           "points": [
-            [
-              1319,
-              696
-            ],
-            [
-              1319,
-              722
-            ],
-            [
-              1262,
-              722
-            ],
-            [
-              1262,
-              924
-            ],
-            [
-              952,
-              924
-            ],
-            [
-              952,
-              990
-            ]
+            [1319, 696],
+            [1319, 722],
+            [1262, 722],
+            [1262, 924],
+            [952, 924],
+            [952, 990]
           ],
           "label": {
             "x": 1134,
@@ -1820,41 +1285,15 @@
         {
           "from": "closing",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "MENU_POINTERENTER",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "MENU_POINTERENTER",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "MENU_POINTERENTER", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "MENU_POINTERENTER", "OPEN"],
           "points": [
-            [
-              1345,
-              696
-            ],
-            [
-              1345,
-              732
-            ],
-            [
-              1287,
-              732
-            ],
-            [
-              1287,
-              1252
-            ],
-            [
-              931,
-              1252
-            ],
-            [
-              931,
-              1336
-            ]
+            [1345, 696],
+            [1345, 732],
+            [1287, 732],
+            [1287, 1252],
+            [931, 1252],
+            [931, 1336]
           ],
           "label": {
             "x": 1153,
@@ -1872,37 +1311,14 @@
             "OPEN",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "CONTEXT_MENU",
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "+1 more"
-          ],
+          "lines": ["CONTEXT_MENU", "CONTROLLED.OPEN", "OPEN", "+1 more"],
           "points": [
-            [
-              791,
-              76
-            ],
-            [
-              791,
-              102
-            ],
-            [
-              169,
-              102
-            ],
-            [
-              169,
-              1282
-            ],
-            [
-              888,
-              1282
-            ],
-            [
-              888,
-              1336
-            ]
+            [791, 76],
+            [791, 102],
+            [169, 102],
+            [169, 1282],
+            [888, 1282],
+            [888, 1336]
           ],
           "label": {
             "x": 48,
@@ -1914,29 +1330,13 @@
         {
           "from": "idle",
           "to": "opening:contextmenu",
-          "events": [
-            "CONTEXT_MENU_START"
-          ],
-          "lines": [
-            "CONTEXT_MENU_START"
-          ],
+          "events": ["CONTEXT_MENU_START"],
+          "lines": ["CONTEXT_MENU_START"],
           "points": [
-            [
-              804,
-              76
-            ],
-            [
-              804,
-              112
-            ],
-            [
-              594,
-              112
-            ],
-            [
-              594,
-              320
-            ]
+            [804, 76],
+            [804, 112],
+            [594, 112],
+            [594, 320]
           ],
           "label": {
             "x": 453,
@@ -1948,39 +1348,15 @@
         {
           "from": "idle",
           "to": "closed",
-          "events": [
-            "CONTROLLED.CLOSE",
-            "TRIGGER_FOCUS"
-          ],
-          "lines": [
-            "CONTROLLED.CLOSE",
-            "TRIGGER_FOCUS"
-          ],
+          "events": ["CONTROLLED.CLOSE", "TRIGGER_FOCUS"],
+          "lines": ["CONTROLLED.CLOSE", "TRIGGER_FOCUS"],
           "points": [
-            [
-              830,
-              76
-            ],
-            [
-              830,
-              102
-            ],
-            [
-              834,
-              102
-            ],
-            [
-              834,
-              540
-            ],
-            [
-              920,
-              540
-            ],
-            [
-              920,
-              990
-            ]
+            [830, 76],
+            [830, 102],
+            [834, 102],
+            [834, 540],
+            [920, 540],
+            [920, 990]
           ],
           "label": {
             "x": 841,
@@ -1992,29 +1368,13 @@
         {
           "from": "idle",
           "to": "opening",
-          "events": [
-            "TRIGGER_POINTERMOVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERMOVE"
-          ],
+          "events": ["TRIGGER_POINTERMOVE"],
+          "lines": ["TRIGGER_POINTERMOVE"],
           "points": [
-            [
-              843,
-              76
-            ],
-            [
-              843,
-              102
-            ],
-            [
-              1099,
-              102
-            ],
-            [
-              1099,
-              320
-            ]
+            [843, 76],
+            [843, 102],
+            [1099, 102],
+            [1099, 320]
           ],
           "label": {
             "x": 952,
@@ -2033,29 +1393,12 @@
             "ITEM_CLICK",
             "TRIGGER_CLICK"
           ],
-          "lines": [
-            "ARROW_LEFT",
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "+2 more"
-          ],
+          "lines": ["ARROW_LEFT", "CLOSE", "CONTROLLED.CLOSE", "+2 more"],
           "points": [
-            [
-              922,
-              1336
-            ],
-            [
-              922,
-              1070
-            ],
-            [
-              931,
-              1070
-            ],
-            [
-              931,
-              1034
-            ]
+            [922, 1336],
+            [922, 1070],
+            [931, 1070],
+            [931, 1034]
           ],
           "label": {
             "x": 929,
@@ -2067,37 +1410,15 @@
         {
           "from": "open",
           "to": "closing",
-          "events": [
-            "TRIGGER_POINTERLEAVE"
-          ],
-          "lines": [
-            "TRIGGER_POINTERLEAVE"
-          ],
+          "events": ["TRIGGER_POINTERLEAVE"],
+          "lines": ["TRIGGER_POINTERLEAVE"],
           "points": [
-            [
-              940,
-              1336
-            ],
-            [
-              940,
-              1262
-            ],
-            [
-              1304,
-              1262
-            ],
-            [
-              1304,
-              742
-            ],
-            [
-              1370,
-              742
-            ],
-            [
-              1370,
-              696
-            ]
+            [940, 1336],
+            [940, 1262],
+            [1304, 1262],
+            [1304, 742],
+            [1370, 742],
+            [1370, 696]
           ],
           "label": {
             "x": 1311,
@@ -2115,29 +1436,12 @@
             "CONTROLLED.CLOSE",
             "TRIGGER_POINTERLEAVE"
           ],
-          "lines": [
-            "BLUR",
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "+1 more"
-          ],
+          "lines": ["BLUR", "CLOSE", "CONTROLLED.CLOSE", "+1 more"],
           "points": [
-            [
-              1109,
-              364
-            ],
-            [
-              1109,
-              914
-            ],
-            [
-              941,
-              914
-            ],
-            [
-              941,
-              990
-            ]
+            [1109, 364],
+            [1109, 914],
+            [941, 914],
+            [941, 990]
           ],
           "label": {
             "x": 1116,
@@ -2149,41 +1453,15 @@
         {
           "from": "opening",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "DELAY.OPEN",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "DELAY.OPEN",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "DELAY.OPEN", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "DELAY.OPEN", "OPEN"],
           "points": [
-            [
-              1129,
-              364
-            ],
-            [
-              1129,
-              390
-            ],
-            [
-              1483,
-              390
-            ],
-            [
-              1483,
-              1272
-            ],
-            [
-              948,
-              1272
-            ],
-            [
-              948,
-              1336
-            ]
+            [1129, 364],
+            [1129, 390],
+            [1483, 390],
+            [1483, 1272],
+            [948, 1272],
+            [948, 1336]
           ],
           "label": {
             "x": 1362,
@@ -2195,37 +1473,15 @@
         {
           "from": "opening",
           "to": "opening:requested",
-          "events": [
-            "DELAY.OPEN"
-          ],
-          "lines": [
-            "DELAY.OPEN"
-          ],
+          "events": ["DELAY.OPEN"],
+          "lines": ["DELAY.OPEN"],
           "points": [
-            [
-              1068,
-              364
-            ],
-            [
-              1068,
-              390
-            ],
-            [
-              1067,
-              390
-            ],
-            [
-              1067,
-              560
-            ],
-            [
-              820,
-              560
-            ],
-            [
-              820,
-              638
-            ]
+            [1068, 364],
+            [1068, 390],
+            [1067, 390],
+            [1067, 560],
+            [820, 560],
+            [820, 638]
           ],
           "label": {
             "x": 979,
@@ -2237,41 +1493,15 @@
         {
           "from": "opening:contextmenu",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTEXT_MENU_CANCEL",
-            "CONTROLLED.CLOSE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTEXT_MENU_CANCEL",
-            "CONTROLLED.CLOSE"
-          ],
+          "events": ["CLOSE", "CONTEXT_MENU_CANCEL", "CONTROLLED.CLOSE"],
+          "lines": ["CLOSE", "CONTEXT_MENU_CANCEL", "CONTROLLED.CLOSE"],
           "points": [
-            [
-              652,
-              364
-            ],
-            [
-              652,
-              540
-            ],
-            [
-              498,
-              540
-            ],
-            [
-              498,
-              924
-            ],
-            [
-              889,
-              924
-            ],
-            [
-              889,
-              990
-            ]
+            [652, 364],
+            [652, 540],
+            [498, 540],
+            [498, 924],
+            [889, 924],
+            [889, 990]
           ],
           "label": {
             "x": 505,
@@ -2283,41 +1513,15 @@
         {
           "from": "opening:contextmenu",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "LONG_PRESS.OPEN",
-            "OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "LONG_PRESS.OPEN",
-            "OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN", "LONG_PRESS.OPEN", "OPEN"],
+          "lines": ["CONTROLLED.OPEN", "LONG_PRESS.OPEN", "OPEN"],
           "points": [
-            [
-              536,
-              364
-            ],
-            [
-              536,
-              390
-            ],
-            [
-              315,
-              390
-            ],
-            [
-              315,
-              1272
-            ],
-            [
-              896,
-              1272
-            ],
-            [
-              896,
-              1336
-            ]
+            [536, 364],
+            [536, 390],
+            [315, 390],
+            [315, 1272],
+            [896, 1272],
+            [896, 1336]
           ],
           "label": {
             "x": 194,
@@ -2329,37 +1533,15 @@
         {
           "from": "opening:contextmenu",
           "to": "opening:requested",
-          "events": [
-            "LONG_PRESS.OPEN"
-          ],
-          "lines": [
-            "LONG_PRESS.OPEN"
-          ],
+          "events": ["LONG_PRESS.OPEN"],
+          "lines": ["LONG_PRESS.OPEN"],
           "points": [
-            [
-              613,
-              364
-            ],
-            [
-              613,
-              390
-            ],
-            [
-              627,
-              390
-            ],
-            [
-              627,
-              550
-            ],
-            [
-              761,
-              550
-            ],
-            [
-              761,
-              638
-            ]
+            [613, 364],
+            [613, 390],
+            [627, 390],
+            [627, 550],
+            [761, 550],
+            [761, 638]
           ],
           "label": {
             "x": 506,
@@ -2371,39 +1553,15 @@
         {
           "from": "opening:requested",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE"],
           "points": [
-            [
-              820,
-              682
-            ],
-            [
-              820,
-              722
-            ],
-            [
-              878,
-              722
-            ],
-            [
-              878,
-              914
-            ],
-            [
-              899,
-              914
-            ],
-            [
-              899,
-              990
-            ]
+            [820, 682],
+            [820, 722],
+            [878, 722],
+            [878, 914],
+            [899, 914],
+            [899, 990]
           ],
           "label": {
             "x": 750,
@@ -2415,37 +1573,15 @@
         {
           "from": "opening:requested",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN"
-          ],
+          "events": ["CONTROLLED.OPEN"],
+          "lines": ["CONTROLLED.OPEN"],
           "points": [
-            [
-              761,
-              682
-            ],
-            [
-              761,
-              722
-            ],
-            [
-              725,
-              722
-            ],
-            [
-              725,
-              1262
-            ],
-            [
-              905,
-              1262
-            ],
-            [
-              905,
-              1336
-            ]
+            [761, 682],
+            [761, 722],
+            [725, 722],
+            [725, 1262],
+            [905, 1262],
+            [905, 1336]
           ],
           "label": {
             "x": 604,

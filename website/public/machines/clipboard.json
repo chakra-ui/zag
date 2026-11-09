@@ -18,8 +18,26 @@
   "transitions": [
     {
       "from": "*",
-      "to": "copied",
+      "to": null,
       "event": "COPY",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "idle",
+      "event": "COPY.ERROR",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "copied",
+      "event": "COPY.SUCCESS",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "copied",
+      "event": "INPUT.COPY",
       "guard": null
     },
     {
@@ -30,130 +48,24 @@
     },
     {
       "from": "copied",
-      "to": "copied",
-      "event": "COPY",
-      "guard": null
-    },
-    {
-      "from": "copied",
       "to": "idle",
       "event": "COPY.DONE",
-      "guard": null
-    },
-    {
-      "from": "copied",
-      "to": null,
-      "event": "INPUT.COPY",
-      "guard": null
-    },
-    {
-      "from": "idle",
-      "to": "copied",
-      "event": "INPUT.COPY",
       "guard": null
     }
   ],
   "layouts": {
     "right": {
-      "width": 554,
-      "height": 144,
+      "width": 547,
+      "height": 118,
       "states": {
         "idle": {
-          "x": 444,
-          "y": 48,
+          "x": 437,
+          "y": 32,
           "w": 78,
           "h": 44
         },
         "copied": {
           "x": 48,
-          "y": 48,
-          "w": 94,
-          "h": 44
-        }
-      },
-      "edges": [
-        {
-          "from": "copied",
-          "to": "idle",
-          "events": [
-            "COPY.DONE"
-          ],
-          "lines": [
-            "COPY.DONE"
-          ],
-          "points": [
-            [
-              142,
-              63
-            ],
-            [
-              444,
-              63
-            ]
-          ],
-          "label": {
-            "x": 256,
-            "y": 32,
-            "w": 75,
-            "h": 24
-          }
-        },
-        {
-          "from": "idle",
-          "to": "copied",
-          "events": [
-            "INPUT.COPY"
-          ],
-          "lines": [
-            "INPUT.COPY"
-          ],
-          "points": [
-            [
-              444,
-              77
-            ],
-            [
-              360,
-              77
-            ],
-            [
-              360,
-              80
-            ],
-            [
-              168,
-              80
-            ],
-            [
-              168,
-              77
-            ],
-            [
-              142,
-              77
-            ]
-          ],
-          "label": {
-            "x": 252,
-            "y": 87,
-            "w": 82,
-            "h": 24
-          }
-        }
-      ]
-    },
-    "down": {
-      "width": 276,
-      "height": 396,
-      "states": {
-        "idle": {
-          "x": 103,
-          "y": 320,
-          "w": 78,
-          "h": 44
-        },
-        "copied": {
-          "x": 98,
           "y": 32,
           "w": 94,
           "h": 44
@@ -163,60 +75,52 @@
         {
           "from": "copied",
           "to": "idle",
-          "events": [
-            "COPY.DONE"
-          ],
-          "lines": [
-            "COPY.DONE"
-          ],
+          "events": ["COPY.DONE"],
+          "lines": ["COPY.DONE"],
           "points": [
-            [
-              129,
-              76
-            ],
-            [
-              129,
-              320
-            ]
+            [142, 54],
+            [437, 54]
+          ],
+          "label": {
+            "x": 252,
+            "y": 61,
+            "w": 75,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 208,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 90,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "copied": {
+          "x": 82,
+          "y": 32,
+          "w": 94,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "copied",
+          "to": "idle",
+          "events": ["COPY.DONE"],
+          "lines": ["COPY.DONE"],
+          "points": [
+            [129, 76],
+            [129, 320]
           ],
           "label": {
             "x": 48,
             "y": 186,
             "w": 75,
-            "h": 24
-          }
-        },
-        {
-          "from": "idle",
-          "to": "copied",
-          "events": [
-            "INPUT.COPY"
-          ],
-          "lines": [
-            "INPUT.COPY"
-          ],
-          "points": [
-            [
-              155,
-              320
-            ],
-            [
-              155,
-              102
-            ],
-            [
-              161,
-              102
-            ],
-            [
-              161,
-              76
-            ]
-          ],
-          "label": {
-            "x": 162,
-            "y": 186,
-            "w": 82,
             "h": 24
           }
         }

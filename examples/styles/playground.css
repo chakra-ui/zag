@@ -31,9 +31,7 @@
   --zinc-900: #18181b;
   --zinc-950: #09090b;
 
-  --pg-font:
-    var(--font-sans, "Wix Madefor Text"), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", sans-serif;
+  --pg-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --pg-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --pg-radius-sm: 6px;
   --pg-radius: 8px;

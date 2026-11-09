@@ -479,3 +479,29 @@ test.describe("navigation-menu [frames]", () => {
     await I.seeContentLinkIsFocused("developers", "Partners")
   })
 })
+
+test.describe("navigation-menu / activation direction", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new NavigationMenuModel(page)
+    await I.goto("viewport")
+  })
+
+  test("has no direction when opened from closed", async () => {
+    await I.hoverTrigger("products")
+    await I.seeContent("products")
+    await I.dontSeeDataAttr(I.getViewport(), "activation-direction")
+  })
+
+  // Switched by hover: clicking an open item closes it
+  test("exposes where the new item sits relative to the previous one", async () => {
+    await I.hoverTrigger("products")
+    await I.seeContent("products")
+
+    await I.hoverTrigger("company")
+    await I.seeDataAttr(I.getViewport(), "activation-direction", "right")
+    await I.seeDataAttr(I.getContent("company"), "activation-direction", "right")
+
+    await I.hoverTrigger("products")
+    await I.seeDataAttr(I.getViewport(), "activation-direction", "left")
+  })
+})

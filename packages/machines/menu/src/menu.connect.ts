@@ -25,7 +25,9 @@ import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import { getTreeMenubar, setParentRoutingLock } from "./menu.utils"
+import { getViewportSizeStyle, getViewportStyle } from "./menu.style"
 import type {
+  ContentProps,
   ContentState,
   ItemProps,
   ItemState,
@@ -36,6 +38,7 @@ import type {
   PositionerState,
   TriggerProps,
   TriggerState,
+  ViewportState,
 } from "./menu.types"
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
@@ -61,6 +64,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const anchorPoint = context.get("anchorPoint")
   const highlightedValue = context.get("highlightedValue")
   const triggerValue = context.get("triggerValue")
+  const activationDirection = context.get("activationDirection")
+  const transitioning = context.get("transitioning")
+  const viewportRendered = context.get("viewportRendered")
   const labelledBy = anchorPoint
     ? dom.getContextTriggerId(scope, triggerValue ?? undefined)
     : dom.getTriggerId(scope, triggerValue ?? undefined)
@@ -97,14 +103,20 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
   }
 
-  function getContentState(): ContentState {
+  function getContentState(props: ContentProps = {}): ContentState {
+    const { value } = props
     return {
-      open,
+      open: value == null ? open : triggerValue === value,
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
       side: currentPlacementSide,
+      activationDirection,
     }
+  }
+
+  function getViewportState(): ViewportState {
+    return { open, side: currentPlacementSide, activationDirection, transitioning }
   }
 
   // -----------------------------------------------------------------------------
@@ -187,6 +199,14 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
     },
     triggerValue,
+    activationDirection,
+    getContentValues() {
+      const previousValue = context.get("previousTriggerValue")
+      const values: string[] = []
+      if (previousValue != null && previousValue !== triggerValue) values.push(previousValue)
+      if (triggerValue != null) values.push(triggerValue)
+      return values
+    },
     setTriggerValue(value) {
       send({ type: "TRIGGER_VALUE.SET", value })
     },
@@ -286,8 +306,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           "data-current": dataAttr(current),
         }),
         "aria-haspopup": isDialog ? "dialog" : "menu",
-        "aria-controls": dom.getContentId(scope),
-        "data-controls": dom.getContentId(scope),
+        "aria-controls": dom.getContentId(scope, viewportRendered ? value : null),
+        "data-controls": dom.getContentId(scope, viewportRendered ? value : null),
         "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
@@ -396,10 +416,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
         "data-instant": dataAttr(instant),
+        "data-transitioning": dataAttr(transitioning),
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
           ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
         },
       })
     },
@@ -408,7 +430,30 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
+        hidden: viewportRendered ? !open : undefined,
+        "data-state": open ? "open" : "closed",
         style: popperStyles.arrow,
+      })
+    },
+
+    getViewportState,
+    getViewportProps() {
+      const viewportState = getViewportState()
+      const viewportLayer = viewportRendered ? layer : null
+      return normalize.element({
+        ...parts.viewport.attrs(scope.id),
+        dir: prop("dir"),
+        hidden: !viewportState.open,
+        "data-state": viewportState.open ? "open" : "closed",
+        "data-instant": dataAttr(instant),
+        "data-side": viewportState.side,
+        "data-activation-direction": viewportState.activationDirection ?? undefined,
+        "data-transitioning": dataAttr(viewportState.transitioning),
+        ...getDismissableLayerAttrs(viewportLayer),
+        style: {
+          ...getDismissableLayerStyle(viewportLayer, { pointerEvents: true }),
+          ...getViewportStyle(viewportState.side),
+        },
       })
     },
 
@@ -421,25 +466,29 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     },
 
     getContentState,
-    getContentProps() {
-      const contentState = getContentState()
+    getContentProps(props = {}) {
+      const { value } = props
+      const contentState = getContentState(props)
+      const contentLayer = viewportRendered ? null : layer
       return normalize.element({
         ...parts.content.attrs(scope.id),
-        id: dom.getContentId(scope),
+        id: dom.getContentId(scope, value),
         "aria-label": prop("aria-label"),
         hidden: !contentState.open,
+        "data-value": value,
         "data-state": contentState.open ? "open" : "closed",
         "data-instant": dataAttr(instant),
         role: isDialog ? "dialog" : "menu",
         tabIndex: isDialog ? -1 : 0,
         dir: prop("dir"),
-        "aria-activedescendant": (!isDialog && computed("highlightedId")) || undefined,
+        "aria-activedescendant": (!isDialog && contentState.open && computed("highlightedId")) || undefined,
         "aria-labelledby": prop("aria-label") ? undefined : labelledBy,
         "data-placement": contentState.placement,
         "data-side": contentState.side,
-        ...getDismissableLayerAttrs(layer),
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        ...getDismissableLayerAttrs(contentLayer),
         style: {
-          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+          ...getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
         },
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
@@ -510,7 +559,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             ArrowRight() {
               const hv = context.get("highlightedValue")
               const isSubmenuTrigger =
-                (hv != null ? dom.getItemEl(scope, hv) : null)?.getAttribute("aria-haspopup") === "menu"
+                (hv != null ? dom.getItemEl(scope, hv, triggerValue) : null)?.getAttribute("aria-haspopup") === "menu"
               // A submenu trigger always opens its submenu (both orientations).
               if (isSubmenuTrigger) {
                 send({ type: "ARROW_RIGHT" })
