@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test"
+import { expect, type Locator, type Page } from "@playwright/test"
 import { a11y, clickControls, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
 
 export class Model {
@@ -159,6 +159,17 @@ export class Model {
 
   clickButton(name: string, options?: { modifiers?: Array<"Alt" | "Control" | "Meta" | "Shift"> }) {
     return this.page.getByRole("button", { name }).first().click(options)
+  }
+
+  /** `name` without the `data-` prefix. Without a value, checks the attribute is present */
+  seeDataAttr(locator: Locator, name: string, value = "") {
+    return expect(locator).toHaveAttribute(`data-${name}`, value)
+  }
+
+  /** `name` without the `data-` prefix. Without a value, checks the attribute is absent */
+  dontSeeDataAttr(locator: Locator, name: string, value?: string) {
+    if (value == null) return expect(locator).not.toHaveAttribute(`data-${name}`)
+    return expect(locator).not.toHaveAttribute(`data-${name}`, value)
   }
 
   seeTextValue(selector: string, value: string) {

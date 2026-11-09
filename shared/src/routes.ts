@@ -357,6 +357,16 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "in-dialog", title: "Dialog" },
       { slug: "oklch", title: "OKLCH + gamut overlay" },
       { slug: "oklab", title: "OKLab + gamut overlay" },
+      { slug: "channel-sliders", title: "Hue & Alpha Sliders" },
+      { slug: "swatches", title: "Swatches" },
+      { slug: "swatch-only", title: "Swatch Only" },
+      { slug: "swatches-with-trigger", title: "Swatches + Custom" },
+      { slug: "input-only", title: "Input Only" },
+      { slug: "channel-inputs", title: "Channel Inputs" },
+      { slug: "form", title: "Form" },
+      { slug: "disabled-readonly", title: "Disabled & Read-only" },
+      { slug: "change-end", title: "Change End" },
+      { slug: "open-controlled", title: "Controlled Open" },
     ],
   },
   {
@@ -519,6 +529,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
@@ -532,6 +543,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
@@ -548,6 +560,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-nested", title: "Multiple Nested" },
       { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "virtualized", title: "Virtualized" },
     ],
   },
   {
@@ -641,6 +654,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Popover",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
@@ -698,6 +712,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "with-link", title: "With Links" },
+      { slug: "animated-panels", title: "Animated Panels" },
       { slug: "disabled", title: "Disabled Tab" },
     ],
   },
@@ -782,6 +797,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-multiple", title: "Controlled Multiple" },

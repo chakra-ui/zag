@@ -58,6 +58,10 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const firstNode = collection.getFirstNode(undefined, { skip })
   const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
 
+  // Fall back to the first row when the focused node is missing or collapsed, so the tree stays tabbable
+  const focusedIndexPath = focusedValue != null ? collection.getIndexPath(focusedValue) : undefined
+  const tabbableValue = focusedIndexPath && !skip({ indexPath: focusedIndexPath }) ? focusedValue : firstNodeValue
+
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
@@ -67,7 +71,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? firstNodeValue === value : focusedValue === value,
+      focused: tabbableValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
       loading: loadingStatus[value] === "loading",

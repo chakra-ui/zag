@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
+    "@zag-js/collection": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-query": "workspace:*",

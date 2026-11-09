@@ -183,3 +183,50 @@ test.describe("color-picker / focus moved on value change", () => {
     await I.seeElementIsFocused("next-field")
   })
 })
+
+test.describe("color-picker / rgba format", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ColorPickerModel(page)
+    await I.gotoInline()
+    await I.selectFormat("rgba")
+  })
+
+  test("arrow keys step the hue", async () => {
+    await I.focusChannelThumb("hue")
+    await I.pressKey("ArrowRight", 30)
+    await I.seeChannelThumbValue("hue", "30")
+    await I.seeContentHexInputHasValue("#FF8000")
+  })
+
+  test("page keys step the hue by 15", async () => {
+    await I.focusChannelThumb("hue")
+    await I.pressKey("PageUp", 2)
+    await I.seeChannelThumbValue("hue", "30")
+    await I.pressKey("PageDown")
+    await I.seeChannelThumbValue("hue", "15")
+  })
+
+  test("Home and End reach the ends of the hue", async () => {
+    await I.focusChannelThumb("hue")
+    await I.pressKey("End")
+    await I.seeChannelThumbValue("hue", "360")
+    await I.pressKey("Home")
+    await I.seeChannelThumbValue("hue", "0")
+  })
+
+  test("a typed hex moves the hue thumb", async () => {
+    await I.focusChannelThumb("hue")
+    await I.pressKey("ArrowRight", 10)
+    await I.seeChannelThumbValue("hue", "10")
+    await I.commitContentHex("#00ff00")
+    await I.seeChannelThumbValue("hue", "120")
+  })
+
+  test("dragging the area to gray keeps the hue", async () => {
+    await I.focusChannelThumb("hue")
+    await I.pressKey("PageUp", 13)
+    await I.seeChannelThumbValue("hue", "195")
+    await I.dragAreaToLeftEdge()
+    await I.seeChannelThumbValue("hue", "195")
+  })
+})

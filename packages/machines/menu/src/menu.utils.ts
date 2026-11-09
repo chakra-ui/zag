@@ -1,3 +1,4 @@
+import type { ListCollection } from "@zag-js/collection"
 import type { Scope } from "@zag-js/core"
 import { isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import * as dom from "./menu.dom"
@@ -81,4 +82,43 @@ export function unlockParentOnSubmenuClose(parent: MenuService | null | undefine
   if (!isHighlightedItemSubmenuOpen(parent)) {
     setParentRoutingLock(parent, false)
   }
+}
+
+// A collection reaches items that aren't rendered; without one, the rendered items are the list
+type ItemList = ListCollection<any> | undefined
+
+export function getEdgeValue(
+  scope: Scope,
+  triggerValue: string | null,
+  collection: ItemList,
+  edge: "first" | "last",
+): string | null {
+  if (collection) return edge === "first" ? collection.firstValue : collection.lastValue
+  const items = dom.getElements(scope, triggerValue)
+  return dom.getItemValue(edge === "first" ? items[0] : items[items.length - 1])
+}
+
+/** The enabled value next to `value`, or null past the end. An unknown `value` starts from the edge. */
+export function getAdjacentValue(
+  scope: Scope,
+  triggerValue: string | null,
+  collection: ItemList,
+  value: string | null,
+  step: 1 | -1,
+) {
+  const edge = step > 0 ? "first" : "last"
+  if (collection) {
+    if (!collection.has(value)) return getEdgeValue(scope, triggerValue, collection, edge)
+    return step > 0 ? collection.getNextValue(value) : collection.getPreviousValue(value)
+  }
+  const items = dom.getElements(scope, triggerValue)
+  const index = items.findIndex((el) => dom.getItemValue(el) === value)
+  if (index === -1) return getEdgeValue(scope, triggerValue, collection, edge)
+  return dom.getItemValue(items[index + step])
+}
+
+export function hasItemValue(scope: Scope, triggerValue: string | null, collection: ItemList, value: string | null) {
+  if (value == null) return false
+  if (collection) return collection.has(value)
+  return dom.getElements(scope, triggerValue).some((el) => dom.getItemValue(el) === value)
 }

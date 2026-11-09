@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Transition } from "@zag-js/core"
+import { createGuards, createMachine, type Params, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -10,6 +10,7 @@ import {
   getEventTarget,
   getInitialFocus,
   getModifierKeys,
+  getPopupActivationDirection,
   getWindow,
   isAnchorElement,
   isDownloadingEvent,
@@ -18,7 +19,9 @@ import {
   isWebKit,
   observeAttributes,
   raf,
+  resizeObserverBorderBox,
   scrollIntoView,
+  waitForAnimationEnd,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
@@ -26,9 +29,14 @@ import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-ut
 import { isEqual } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
-import type { MenuSchema } from "./menu.types"
+import { getViewportSizeStyle } from "./menu.style"
+import type { MenuSchema, ViewportSize } from "./menu.types"
+import type { PopupActivationDirection } from "@zag-js/types"
 import {
   closeRootMenu,
+  getAdjacentValue,
+  getEdgeValue,
+  hasItemValue,
   isWithinPolygon,
   resolveItemId,
   setParentRoutingLock,
@@ -172,6 +180,11 @@ export const machine = createMachine<MenuSchema>({
       instant: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      activationDirection: bindable<PopupActivationDirection | null>(() => ({ defaultValue: null })),
+      previousTriggerValue: bindable<string | null>(() => ({ defaultValue: null })),
+      transitioning: bindable<boolean>(() => ({ defaultValue: false })),
+      viewportRendered: bindable<boolean>(() => ({ defaultValue: false })),
+      viewportSize: bindable<ViewportSize | null>(() => ({ defaultValue: null })),
     }
   },
 
@@ -187,6 +200,8 @@ export const machine = createMachine<MenuSchema>({
       focusMenuFrame: AnimationFrame.create(),
       autoHighlightFrame: AnimationFrame.create(),
       syncHighlightFrame: AnimationFrame.create(),
+      cancelTriggerSwitch: null,
+      awaitingViewportSize: false,
     }
   },
 
@@ -200,7 +215,7 @@ export const machine = createMachine<MenuSchema>({
   },
 
   entry: ["setIsWebKit"],
-  exit: ["cancelFocusMenu", "cancelHighlightFrames", "focusParentIfOrphaned"],
+  exit: ["cancelFocusMenu", "cancelHighlightFrames", "focusParentIfOrphaned", "endTriggerSwitch"],
   effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
@@ -399,7 +414,15 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["setInstant", "clearHighlightedItem", "unlockParentOnClose", "clearAnchorPoint", "dispatchMenubarClose"],
+      entry: [
+        "setInstant",
+        "clearHighlightedItem",
+        "unlockParentOnClose",
+        "clearAnchorPoint",
+        "dispatchMenubarClose",
+        "endTriggerSwitch",
+        "clearActivationDirection",
+      ],
       on: {
         OPEN: openTransitions,
         "CONTROLLED.OPEN": [
@@ -475,6 +498,7 @@ export const machine = createMachine<MenuSchema>({
         "trackInteractOutside",
         "trackFocusVisible",
         "trackPositioning",
+        "trackViewportSize",
         "scrollToHighlightedItem",
         "trackMenubarSiblings",
         "trackItemsChange",
@@ -626,12 +650,29 @@ export const machine = createMachine<MenuSchema>({
         "POSITIONING.SET": {
           actions: ["reposition"],
         },
+        "TRIGGER_VALUE.SET": {
+          guard: "isNewTriggerValue",
+          actions: [
+            "setActivationDirection",
+            "setPreviousTriggerValue",
+            "setTriggerValue",
+            "clearHighlightForNewContent",
+            "startTriggerSwitch",
+            "setAnchorPoint",
+            "reposition",
+            "focusMenu",
+          ],
+        },
+        "TRIGGER_SWITCH.END": {
+          actions: ["endTriggerSwitch"],
+        },
       },
     },
   },
 
   implementations: {
     guards: {
+      isNewTriggerValue: ({ context, event }) => event.value != null && event.value !== context.get("triggerValue"),
       closeOnSelect: ({ prop, event }) => !!(event?.closeOnSelect ?? prop("closeOnSelect")),
       // whether the trigger is also a menu item. menubar triggers look the same in the DOM,
       // but must toggle closed on click
@@ -666,10 +707,10 @@ export const machine = createMachine<MenuSchema>({
       // When coordinated by a menubar, close this menu if a sibling menu opens.
       // The consumer re-renders the filtered items, sometimes without a keystroke (async results, a clear button),
       // so the highlight is re-synced whenever the items change
-      trackItemsChange({ scope, send }) {
+      trackItemsChange({ scope, send, context }) {
         let observer: MutationObserver | undefined
         const frame = raf(() => {
-          const contentEl = dom.getContentEl(scope)
+          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
           if (!contentEl || !dom.getInputEl(scope)) return
           observer = new (scope.getWin().MutationObserver)(() => send({ type: "ITEMS.CHANGE" }))
           observer.observe(contentEl, { childList: true, subtree: true })
@@ -730,14 +771,39 @@ export const machine = createMachine<MenuSchema>({
         return getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
           ...positioning,
+          updatePosition(data) {
+            if (refs.get("awaitingViewportSize")) return
+            return positioning.updatePosition ? positioning.updatePosition(data) : data.updatePosition()
+          },
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
           },
         })
       },
+      trackViewportSize(params) {
+        const { context, scope, watchEffect } = params
+        return watchEffect([() => context.get("triggerValue")], () => {
+          const frame = AnimationFrame.create()
+          const stopObserving = raf(() => {
+            const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+            const viewportRendered = !!dom.getViewportEl(scope)
+            context.set("viewportRendered", viewportRendered)
+            if (!viewportRendered || !contentEl) return
+
+            return resizeObserverBorderBox.observe(contentEl, (entry) => {
+              const [{ inlineSize, blockSize }] = entry.borderBoxSize
+              frame.request(() => setViewportSize(params, { width: inlineSize, height: blockSize }))
+            })
+          })
+          return () => {
+            stopObserving()
+            frame.cancel()
+          }
+        })
+      },
       trackInteractOutside({ refs, scope, prop, context, send }) {
-        const getContentEl = () => dom.getContentEl(scope)
+        const getLayerEl = () => dom.getLayerEl(scope, context.get("triggerValue"))
         let restoreFocus = true
 
         // Helper to check if target is within any context trigger
@@ -745,7 +811,7 @@ export const machine = createMachine<MenuSchema>({
           return dom.getContextTriggerEls(scope).some((el) => contains(el, target as Element | null))
         }
 
-        return trackDismissableElement(getContentEl, {
+        return trackDismissableElement(getLayerEl, {
           type: "menu",
           // menubar menus open while a sibling is still registered, so group them to avoid nesting
           group: prop("menubar")?.rootId,
@@ -819,14 +885,25 @@ export const machine = createMachine<MenuSchema>({
           }
         })
       },
-      scrollToHighlightedItem({ scope, computed }) {
+      scrollToHighlightedItem({ scope, computed, prop, context }) {
         const exec = () => {
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
           if (modality === "pointer") return
 
+          const collection = prop("collection")
+          const scrollToIndexFn = prop("scrollToIndexFn")
+          if (collection && scrollToIndexFn) {
+            const value = context.get("highlightedValue")
+            scrollToIndexFn({
+              index: collection.indexOf(value),
+              getElement: () => dom.getItemEl(scope, value, context.get("triggerValue")),
+            })
+            return
+          }
+
           const itemEl = scope.getById(computed("highlightedId")!)
-          const contentEl = dom.getContentEl(scope)
+          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
@@ -835,7 +912,7 @@ export const machine = createMachine<MenuSchema>({
           exec()
         })
 
-        const contentEl = () => dom.getContentEl(scope)
+        const contentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
         const observerCleanup = observeAttributes(contentEl, {
           defer: true,
           attributes: ["aria-activedescendant"],
@@ -878,6 +955,7 @@ export const machine = createMachine<MenuSchema>({
         refs.set("positioningOverride", { placement, gutter: 0 })
       },
       reposition({ context, scope, prop, event, refs }) {
+        if (refs.get("awaitingViewportSize")) return
         const getPositionerEl = () => dom.getPositionerEl(scope)
         // Use event.point if available for immediate repositioning (context menu)
         const anchorPoint = event.point ?? context.get("anchorPoint")
@@ -941,7 +1019,7 @@ export const machine = createMachine<MenuSchema>({
         }
       },
       setIntentPolygon({ context, scope, event }) {
-        const menu = dom.getContentEl(scope)
+        const menu = dom.getContentEl(scope, context.get("triggerValue"))
         const placement = context.get("currentPlacement")
 
         if (!menu || !placement) return
@@ -979,6 +1057,39 @@ export const machine = createMachine<MenuSchema>({
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
       },
+      clearHighlightForNewContent({ context, scope, refs }) {
+        if (!dom.getViewportEl(scope)) return
+        context.set("highlightedValue", null)
+        refs.set("typeaheadState", { ...getByTypeahead.defaultOptions })
+      },
+      setActivationDirection({ context, event, scope }) {
+        const fromEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const toEl = dom.getActiveTriggerEl(scope, event.value)
+        context.set("activationDirection", getPopupActivationDirection(fromEl, toEl))
+      },
+      clearActivationDirection({ context }) {
+        context.set("activationDirection", null)
+      },
+      setPreviousTriggerValue({ context }) {
+        context.set("previousTriggerValue", context.get("triggerValue"))
+      },
+      startTriggerSwitch({ context, refs, scope, send }) {
+        refs.get("cancelTriggerSwitch")?.()
+        context.set("transitioning", true)
+        const positionerEl = dom.getPositionerEl(scope)
+        if (!positionerEl) return
+        positionerEl.setAttribute("data-transitioning", "")
+        refs.set("awaitingViewportSize", !!dom.getViewportEl(scope))
+        const cancel = waitForAnimationEnd(positionerEl, () => send({ type: "TRIGGER_SWITCH.END" }))
+        refs.set("cancelTriggerSwitch", cancel)
+      },
+      endTriggerSwitch({ context, refs }) {
+        context.set("previousTriggerValue", null)
+        refs.get("cancelTriggerSwitch")?.()
+        refs.set("cancelTriggerSwitch", null)
+        refs.set("awaitingViewportSize", false)
+        context.set("transitioning", false)
+      },
       // Read once the machine starts in the browser, so server and hydration markup leave it out
       setIsWebKit({ context }) {
         context.set("isWebKit", isWebKit())
@@ -987,8 +1098,8 @@ export const machine = createMachine<MenuSchema>({
         if (prop("autoHighlight") !== "always") return
         refs.get("autoHighlightFrame").request(() => {
           if (!dom.getInputEl(scope) || context.get("highlightedValue") != null) return
-          const first = dom.getFirstEl(scope)
-          if (first) context.set("highlightedValue", dom.getItemValue(first))
+          const first = getEdgeValue(scope, context.get("triggerValue"), prop("collection"), "first")
+          if (first != null) context.set("highlightedValue", first)
         })
       },
       warnIfFilterInputNotDialog({ prop, scope }) {
@@ -1012,18 +1123,21 @@ export const machine = createMachine<MenuSchema>({
       // Arrow keys from a filter input cycle through the input: past either end of the list the highlight
       // returns to the input, unless `autoHighlight` keeps an item highlighted
       navigateFromInput({ context, scope, event, prop }) {
-        const items = dom.getElements(scope)
-        const index = items.findIndex((el) => dom.getItemValue(el) === context.get("highlightedValue"))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
         const wrap = !!prop("autoHighlight")
-        const lastIndex = items.length - 1
-        let next: HTMLElement | null | undefined = null
-        if (event.key === "first") next = items[0]
-        else if (event.key === "last") next = items[lastIndex]
+        let value: string | null = null
+        if (event.key === "first" || event.key === "last")
+          value = getEdgeValue(scope, context.get("triggerValue"), collection, event.key)
         else if (event.key === "next")
-          next = index === -1 ? items[0] : index < lastIndex ? items[index + 1] : wrap ? items[0] : null
+          value =
+            getAdjacentValue(scope, context.get("triggerValue"), collection, current, 1) ??
+            (wrap ? getEdgeValue(scope, context.get("triggerValue"), collection, "first") : null)
         else if (event.key === "prev")
-          next = index === -1 ? items[lastIndex] : index > 0 ? items[index - 1] : wrap ? items[lastIndex] : null
-        context.set("highlightedValue", next ? dom.getItemValue(next) : null)
+          value =
+            getAdjacentValue(scope, context.get("triggerValue"), collection, current, -1) ??
+            (wrap ? getEdgeValue(scope, context.get("triggerValue"), collection, "last") : null)
+        context.set("highlightedValue", value)
       },
       // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
       syncInputHighlight({ context, scope, event, prop, refs }) {
@@ -1031,14 +1145,14 @@ export const machine = createMachine<MenuSchema>({
         refs.get("syncHighlightFrame").request(() => {
           const inputEl = dom.getInputEl(scope)
           if (!inputEl) return
-          const items = dom.getElements(scope)
+          const collection = prop("collection")
           const autoHighlight = prop("autoHighlight")
           const hasQuery = inputEl.value.trim() !== ""
           const current = context.get("highlightedValue")
-          const isRendered = items.some((el) => dom.getItemValue(el) === current)
+          const isRendered = hasItemValue(scope, context.get("triggerValue"), collection, current)
           if (autoHighlight === "always" || (autoHighlight && hasQuery)) {
             if (queryChanged || !isRendered)
-              context.set("highlightedValue", items[0] ? dom.getItemValue(items[0]) : null)
+              context.set("highlightedValue", getEdgeValue(scope, context.get("triggerValue"), collection, "first"))
             return
           }
           if (autoHighlight && queryChanged) {
@@ -1068,11 +1182,11 @@ export const machine = createMachine<MenuSchema>({
         else send(closeEvent)
         nextEl?.focus({ preventScroll: true })
       },
-      focusMenu({ scope, event, refs }) {
+      focusMenu({ scope, event, refs, context }) {
         const source = getFocusSource(event)
         const target = event.target
         refs.get("focusMenuFrame").request(() => {
-          const contentEl = dom.getContentEl(scope)
+          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
           const initialFocusEl = getInitialFocus({
             root: contentEl,
             enabled: !contains(contentEl, scope.getActiveElement()),
@@ -1101,45 +1215,47 @@ export const machine = createMachine<MenuSchema>({
         refs.get("autoHighlightFrame").cancel()
         refs.get("syncHighlightFrame").cancel()
       },
-      highlightFirstItem({ context, scope }) {
+      highlightFirstItem({ context, scope, prop }) {
         // use raf in event content is lazy mounted
-        const fn = dom.getContentEl(scope) ? queueMicrotask : raf
+        const fn = dom.getContentEl(scope, context.get("triggerValue")) ? queueMicrotask : raf
         fn(() => {
-          const first = dom.getFirstEl(scope)
-          if (!first) return
-          context.set("highlightedValue", dom.getItemValue(first))
+          const first = getEdgeValue(scope, context.get("triggerValue"), prop("collection"), "first")
+          if (first == null) return
+          context.set("highlightedValue", first)
         })
       },
-      highlightLastItem({ context, scope }) {
+      highlightLastItem({ context, scope, prop }) {
         // use raf in event content is lazy mounted
-        const fn = dom.getContentEl(scope) ? queueMicrotask : raf
+        const fn = dom.getContentEl(scope, context.get("triggerValue")) ? queueMicrotask : raf
         fn(() => {
-          const last = dom.getLastEl(scope)
-          if (!last) return
-          context.set("highlightedValue", dom.getItemValue(last))
+          const last = getEdgeValue(scope, context.get("triggerValue"), prop("collection"), "last")
+          if (last == null) return
+          context.set("highlightedValue", last)
         })
       },
       highlightNextItem({ context, scope, event, prop }) {
-        const next = dom.getNextEl(scope, {
-          loop: event.loop,
-          value: context.get("highlightedValue"),
-          loopFocus: prop("loopFocus"),
-        })
-        context.set("highlightedValue", dom.getItemValue(next))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
+        const loop = event.loop ?? prop("loopFocus")
+        const next =
+          getAdjacentValue(scope, context.get("triggerValue"), collection, current, 1) ??
+          (loop ? getEdgeValue(scope, context.get("triggerValue"), collection, "first") : current)
+        context.set("highlightedValue", next)
       },
       highlightPrevItem({ context, scope, event, prop }) {
-        const prev = dom.getPrevEl(scope, {
-          loop: event.loop,
-          value: context.get("highlightedValue"),
-          loopFocus: prop("loopFocus"),
-        })
-        context.set("highlightedValue", dom.getItemValue(prev))
+        const collection = prop("collection")
+        const current = context.get("highlightedValue")
+        const loop = event.loop ?? prop("loopFocus")
+        const prev =
+          getAdjacentValue(scope, context.get("triggerValue"), collection, current, -1) ??
+          (loop ? getEdgeValue(scope, context.get("triggerValue"), collection, "last") : current)
+        context.set("highlightedValue", prev)
       },
       invokeOnSelect({ context, prop, scope, event }) {
         const value = event.value || dom.getItemValue(event.target) || context.get("highlightedValue")
         if (value == null) return
 
-        const node = dom.getItemEl(scope, value)
+        const node = dom.getItemEl(scope, value, context.get("triggerValue"))
         dom.dispatchSelectionEvent(node, value)
 
         prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
@@ -1152,11 +1268,21 @@ export const machine = createMachine<MenuSchema>({
           triggerEl?.focus({ preventScroll: true })
         })
       },
-      highlightMatchedItem({ scope, context, event, refs }) {
+      highlightMatchedItem({ scope, context, event, refs, prop }) {
+        const collection = prop("collection")
+        if (collection) {
+          const value = collection.search(event.key, {
+            state: refs.get("typeaheadState"),
+            currentValue: context.get("highlightedValue"),
+          })
+          if (value != null) context.set("highlightedValue", value)
+          return
+        }
         const node = dom.getElemByKey(scope, {
           key: event.key,
           value: context.get("highlightedValue"),
           typeaheadState: refs.get("typeaheadState"),
+          triggerValue: context.get("triggerValue"),
         })
         if (!node) return
         context.set("highlightedValue", dom.getItemValue(node))
@@ -1170,7 +1296,7 @@ export const machine = createMachine<MenuSchema>({
         children[event.id] = event.value
         refs.set("children", children)
       },
-      closeSiblingMenus({ refs, event, scope }) {
+      closeSiblingMenus({ refs, event, scope, context }) {
         const target = event.target
         if (!dom.isTriggerItem(target)) return
         const hoveredChildId = target?.getAttribute(parts.triggerItem.attr)
@@ -1185,7 +1311,7 @@ export const machine = createMachine<MenuSchema>({
           }
           // Focus parent menu before closing to prevent focus from escaping
           // (fixes issue where submenus with focusable elements cause parent to close)
-          dom.getContentEl(scope)?.focus({ preventScroll: true })
+          dom.getContentEl(scope, context.get("triggerValue"))?.focus({ preventScroll: true })
           child.send({ type: "CLOSE" })
         }
       },
@@ -1250,3 +1376,15 @@ export const machine = createMachine<MenuSchema>({
     },
   },
 })
+
+function setViewportSize(params: Params<MenuSchema>, size: ViewportSize) {
+  const { context, scope, refs, send } = params
+  context.set("viewportSize", size)
+  const positionerEl = dom.getPositionerEl(scope)
+  for (const [key, value] of Object.entries(getViewportSizeStyle(size))) {
+    positionerEl?.style.setProperty(key, value)
+  }
+  if (!refs.get("awaitingViewportSize")) return
+  refs.set("awaitingViewportSize", false)
+  send({ type: "POSITIONING.SET" })
+}

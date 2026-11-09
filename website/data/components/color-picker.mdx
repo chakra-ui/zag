@@ -286,6 +286,20 @@ To support this, use the `getChannelInputProps(...)` to show the channel inputs.
 
 </Example>
 
+### Localized channel values
+
+Set `locale` to format the channel values that screen readers announce on the
+area and sliders. It defaults to `"en-US"`.
+
+```tsx
+const service = useMachine(colorPicker.machine, {
+  locale: "de-DE",
+})
+```
+
+Use `api.getChannelValueText(channel)` to show the same formatted value, like
+`80 %` for alpha in German.
+
 ### Color preview
 
 To display the value of a color, use the `getSwatchProps(...)` and pass the

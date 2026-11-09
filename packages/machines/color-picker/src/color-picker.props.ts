@@ -12,6 +12,7 @@ import type {
 export const props = createProps<ColorPickerProps>()([
   "closeOnSelect",
   "dir",
+  "locale",
   "disabled",
   "format",
   "defaultFormat",

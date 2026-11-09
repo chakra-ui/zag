@@ -5,13 +5,16 @@ import { getInlineRectCoords, getLineRects, getPlacementSide, getPlacementStyles
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import * as dom from "./hover-card.dom"
+import { getViewportSizeStyle, getViewportStyle } from "./hover-card.style"
 import type {
+  ContentProps,
   ContentState,
   HoverCardApi,
   HoverCardService,
   PositionerState,
   TriggerProps,
   TriggerState,
+  ViewportState,
 } from "./hover-card.types"
 
 export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
@@ -20,6 +23,9 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
 
   const open = state.hasTag("open")
   const triggerValue = context.get("triggerValue")
+  const activationDirection = context.get("activationDirection")
+  const transitioning = context.get("transitioning")
+  const viewportRendered = context.get("viewportRendered")
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
@@ -52,15 +58,32 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
     return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
   }
 
-  function getContentState(): ContentState {
+  function getContentState(props: ContentProps = {}): ContentState {
+    const { value } = props
     return {
-      open,
+      open: value == null ? open : triggerValue === value,
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
       side: currentPlacementSide,
       instant: context.get("instant"),
+      activationDirection,
     }
+  }
+
+  function getViewportState(): ViewportState {
+    return { open, instant: context.get("instant"), side: currentPlacementSide, activationDirection, transitioning }
+  }
+
+  const popupHandlers = {
+    onPointerEnter(event: { pointerType: string }) {
+      if (event.pointerType === "touch") return
+      if (prop("disabled")) return
+      send({ type: "CONTENT.POINTER_ENTER" })
+    },
+    onPointerDown(event: Parameters<typeof getEventTarget>[0]) {
+      if (getEventTarget<Element>(event)?.closest("[aria-haspopup]")) send({ type: "CONTENT.INTERACT" })
+    },
   }
 
   // -----------------------------------------------------------------------------
@@ -74,6 +97,14 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     triggerValue,
+    activationDirection,
+    getContentValues() {
+      const previousValue = context.get("previousTriggerValue")
+      const values: string[] = []
+      if (previousValue != null && previousValue !== triggerValue) values.push(previousValue)
+      if (triggerValue != null) values.push(triggerValue)
+      return values
+    },
     setTriggerValue(value) {
       send({ type: "TRIGGER_VALUE.SET", value })
     },
@@ -85,6 +116,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
+        hidden: viewportRendered ? !open : undefined,
+        "data-state": open ? "open" : "closed",
         style: popperStyles.arrow,
       })
     },
@@ -159,37 +192,57 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
+        "data-transitioning": dataAttr(transitioning),
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
           ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
         },
       })
     },
 
+    getViewportState,
+    getViewportProps() {
+      const viewportState = getViewportState()
+      return normalize.element({
+        ...parts.viewport.attrs(scope.id),
+        dir: prop("dir"),
+        hidden: !viewportState.open,
+        "data-state": viewportState.open ? "open" : "closed",
+        "data-instant": viewportState.instant ?? undefined,
+        "data-side": viewportState.side,
+        "data-activation-direction": viewportState.activationDirection ?? undefined,
+        "data-transitioning": dataAttr(viewportState.transitioning),
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+          ...getViewportStyle(viewportState.side),
+        },
+        ...popupHandlers,
+      })
+    },
+
     getContentState,
-    getContentProps() {
-      const contentState = getContentState()
+    getContentProps(props = {}) {
+      const { value } = props
+      const contentState = getContentState(props)
+      const contentLayer = viewportRendered ? null : layer
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getContentId(scope),
+        id: dom.getContentId(scope, value),
         hidden: !contentState.open,
         tabIndex: -1,
+        "data-value": value,
         "data-state": contentState.open ? "open" : "closed",
         "data-placement": contentState.placement,
         "data-side": contentState.side,
         "data-instant": contentState.instant ?? undefined,
-        ...getDismissableLayerAttrs(layer),
-        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
-        onPointerEnter(event) {
-          if (event.pointerType === "touch") return
-          if (prop("disabled")) return
-          send({ type: "CONTENT.POINTER_ENTER" })
-        },
-        onPointerDown(event) {
-          if (getEventTarget<Element>(event)?.closest("[aria-haspopup]")) send({ type: "CONTENT.INTERACT" })
-        },
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        ...getDismissableLayerAttrs(contentLayer),
+        style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
+        ...(viewportRendered ? {} : popupHandlers),
       })
     },
   }

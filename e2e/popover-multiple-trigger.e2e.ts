@@ -1,5 +1,6 @@
 import { expect, test } from "./_test"
 import { rect } from "./_utils"
+import { PopoverModel } from "./models/popover.model"
 
 const trigger = (id: number) => `[data-popover-trigger][data-value="${id}"]`
 const content = "[data-popover-content]"
@@ -105,5 +106,18 @@ test.describe("popover / multiple triggers", () => {
 
     await expect(page.locator(trigger(2))).toHaveAttribute("data-current", "")
     await expect(page.locator(trigger(1))).not.toHaveAttribute("data-current")
+  })
+
+  test("should tab back to the current trigger after switching", async ({ page }) => {
+    const I = new PopoverModel(page)
+    await I.getTrigger("5").click()
+    await I.seeContent()
+
+    await I.getTrigger("1").click()
+    await expect(I.content).toContainText("Project Proposal.pdf")
+
+    await I.content.getByRole("button", { name: "Open" }).focus()
+    await I.pressKey("Shift+Tab")
+    await I.seeTriggerIsFocused("1")
   })
 })

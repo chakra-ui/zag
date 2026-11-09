@@ -3,8 +3,15 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import "@styles/menu.css"
 
+  let selected = $state("")
+
   const id = $props.id()
-  const service = useMachine(menu.machine, { id })
+  const service = useMachine(menu.machine, {
+    id,
+    onSelect(details) {
+      selected = details.value
+    },
+  })
   const api = $derived(menu.connect(service, normalizeProps))
 </script>
 
@@ -19,6 +26,9 @@
       <a {...api.getItemProps({ value: "duplicate" })} href="https://bing.com">Bing</a>
       <a {...api.getItemProps({ value: "delete" })} href="https://github.com" target="_blank">GitHub</a>
       <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">YouTube</a>
+      <a {...api.getItemProps({ value: "section" })} href="#section">Section</a>
+      <a {...api.getItemProps({ value: "basic" })} href="/menu/basic">Basic menu</a>
     </div>
   </div>
+  <output data-testid="selected">{selected}</output>
 </div>

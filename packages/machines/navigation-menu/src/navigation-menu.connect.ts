@@ -40,6 +40,8 @@ export function connect<T extends PropTypes>(
   const open = Boolean(value)
 
   const isViewportRendered = context.get("isViewportRendered")
+  const direction = context.get("activationDirection")
+  const activationDirection = direction === "none" ? null : direction
   const preventTransition = value && !previousValue
 
   function getItemState(props: ItemProps): ItemState {
@@ -66,6 +68,14 @@ export function connect<T extends PropTypes>(
     return { value: props.value, disabled: itemState.disabled, open: itemState.selected }
   }
 
+  function getContentMotion(contentValue: string) {
+    if (!isViewportRendered || !activationDirection) return undefined
+    const forward = activationDirection === "right" || activationDirection === "down"
+    if (contentValue === value) return forward ? "from-end" : "from-start"
+    if (contentValue === previousValue) return forward ? "to-start" : "to-end"
+    return undefined
+  }
+
   function getContentState(props: ContentProps): ContentState {
     const itemState = getItemState(props)
     const currentValue = context.get("value") || context.get("previousValue")
@@ -76,6 +86,7 @@ export function connect<T extends PropTypes>(
       open: selected,
       nested: !!contentLayer?.nested,
       hasNested: !!contentLayer?.hasNested,
+      activationDirection,
     }
   }
 
@@ -88,6 +99,7 @@ export function connect<T extends PropTypes>(
     value,
     orientation: prop("orientation"),
     isViewportRendered,
+    activationDirection,
     getViewportNode() {
       return dom.getViewportEl(scope)
     },
@@ -356,6 +368,8 @@ export function connect<T extends PropTypes>(
         "aria-labelledby": itemState.triggerId,
         "data-state": contentState.open ? "open" : "closed",
         "data-orientation": prop("orientation"),
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        "data-motion": getContentMotion(props.value),
         "data-value": props.value,
         ...getDismissableLayerAttrs(contentLayer),
         style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
@@ -434,6 +448,7 @@ export function connect<T extends PropTypes>(
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation"),
+        "data-activation-direction": activationDirection ?? undefined,
         "data-align": align,
         ...getDismissableLayerAttrs(viewportLayer),
         style: {

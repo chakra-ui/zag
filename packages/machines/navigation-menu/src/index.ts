@@ -2,6 +2,7 @@ export { anatomy } from "./navigation-menu.anatomy"
 export { connect } from "./navigation-menu.connect"
 export { machine } from "./navigation-menu.machine"
 export * from "./navigation-menu.props"
+export type { ActivationDirection } from "@zag-js/types"
 export type {
   NavigationMenuApi as Api,
   NavigationMenuMachine as Machine,

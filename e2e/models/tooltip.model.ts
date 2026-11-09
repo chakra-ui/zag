@@ -49,17 +49,49 @@ export class TooltipModel extends Model {
     await this.advance(EXIT_ANIMATION)
   }
 
-  private getTrigger(id: string) {
+  private getTriggerById(id: string) {
     return this.page.locator(testid(id + "-trigger"))
   }
 
-  private getContent(id: string) {
+  private getContentById(id: string) {
     return this.page.locator(testid(id + "-tooltip"))
+  }
+
+  /** The trigger with this value, or the first one */
+  getTrigger(value?: string) {
+    if (value == null) return this.page.locator("[data-tooltip-trigger]").first()
+    return this.page.locator(`[data-tooltip-trigger][data-value="${value}"]`)
+  }
+
+  /** The content for this trigger value, or the only one */
+  getContent(value?: string) {
+    if (value == null) return this.page.locator("[data-tooltip-content]")
+    return this.page.locator(`[data-tooltip-content][data-value="${value}"]`)
+  }
+
+  get positioner() {
+    return this.page.locator("[data-tooltip-positioner]")
+  }
+
+  get viewport() {
+    return this.page.locator("[data-tooltip-viewport]")
+  }
+
+  get arrow() {
+    return this.page.locator("[data-tooltip-arrow]")
+  }
+
+  seePositionerIsTransitioning() {
+    return this.seeDataAttr(this.positioner, "transitioning")
+  }
+
+  seePositionerIsNotTransitioning() {
+    return this.dontSeeDataAttr(this.positioner, "transitioning")
   }
 
   hoverTrigger = async (id: string, opts: { wait?: boolean } = {}) => {
     const { wait = true } = opts
-    await this.getTrigger(id).hover()
+    await this.getTriggerById(id).hover()
     await this.advance(wait ? OPEN_DELAY : FRAME)
   }
 
@@ -69,16 +101,16 @@ export class TooltipModel extends Model {
   }
 
   seeContent = async (id: string) => {
-    await expect(this.getContent(id)).toBeVisible()
+    await expect(this.getContentById(id)).toBeVisible()
   }
 
   /** The mocked clock still runs in real time, so a plain `seeContent` would wait out the delay. */
   seeContentWithoutDelay = async (id: string) => {
-    await expect(this.getContent(id)).toBeVisible({ timeout: OPEN_DELAY / 2 })
+    await expect(this.getContentById(id)).toBeVisible({ timeout: OPEN_DELAY / 2 })
   }
 
   dontSeeContent = async (id: string) => {
-    await expect(this.getContent(id)).not.toBeVisible()
+    await expect(this.getContentById(id)).not.toBeVisible()
   }
 
   focusPage = async () => {
@@ -86,30 +118,30 @@ export class TooltipModel extends Model {
   }
 
   focusTrigger = async (id: string) => {
-    await this.getTrigger(id).focus()
+    await this.getTriggerById(id).focus()
     await this.advance(OPEN_DELAY)
   }
 
   clickTrigger = async (id: string) => {
-    await this.getTrigger(id).click()
+    await this.getTriggerById(id).click()
     await this.advance(FRAME)
   }
 
   moveWithinTrigger = async (id: string) => {
-    await this.getTrigger(id).hover({ position: { x: 4, y: 4 } })
+    await this.getTriggerById(id).hover({ position: { x: 4, y: 4 } })
     await this.advance(FRAME)
   }
 
   pointerdownTrigger = async (id: string) => {
-    await this.getTrigger(id).dispatchEvent("pointerdown", { button: 0 })
+    await this.getTriggerById(id).dispatchEvent("pointerdown", { button: 0 })
   }
 
   seeTriggerDescription = async (id: string, description: string) => {
-    await expect(this.getTrigger(id)).toHaveAccessibleDescription(description)
+    await expect(this.getTriggerById(id)).toHaveAccessibleDescription(description)
   }
 
   seeTriggerIsFocused = async (id: string) => {
-    await expect(this.getTrigger(id)).toBeFocused()
+    await expect(this.getTriggerById(id)).toBeFocused()
   }
 
   // ---------------------------------------------------------------------------
@@ -122,8 +154,8 @@ export class TooltipModel extends Model {
   }
 
   private async boxes(id: string) {
-    const trigger = await this.getTrigger(id).boundingBox()
-    const content = await this.getContent(id).boundingBox()
+    const trigger = await this.getTriggerById(id).boundingBox()
+    const content = await this.getContentById(id).boundingBox()
     if (!trigger || !content) throw new Error("tooltip is not open")
     return { trigger, content }
   }
@@ -145,7 +177,7 @@ export class TooltipModel extends Model {
 
   /** Move away from the tooltip, which must leave the safe area. */
   moveAwayFromContent = async (id: string) => {
-    const trigger = await this.getTrigger(id).boundingBox()
+    const trigger = await this.getTriggerById(id).boundingBox()
     if (!trigger) throw new Error("no trigger")
     await this.page.mouse.move(trigger.x + trigger.width / 2, Math.max(2, trigger.y - 40), { steps: 5 })
     await this.advance(FRAME)
@@ -157,11 +189,11 @@ export class TooltipModel extends Model {
   }
 
   blurTrigger = async (id: string) => {
-    await this.getTrigger(id).evaluate((el) => (el as HTMLElement).blur())
+    await this.getTriggerById(id).evaluate((el) => (el as HTMLElement).blur())
     await this.advance(FRAME)
   }
 
   seeContentIsHoverable = async (id: string) => {
-    await expect(this.getContent(id)).toHaveCSS("pointer-events", "auto")
+    await expect(this.getContentById(id)).toHaveCSS("pointer-events", "auto")
   }
 }

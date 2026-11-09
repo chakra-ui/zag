@@ -26,6 +26,7 @@ import type {
   TriggerState,
 } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
+import { getChannelLabel } from "./utils/get-channel-label"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getGamutOverlayData } from "./utils/get-gamut-overlay-path"
 import { getSliderBackground } from "./utils/get-slider-background"
@@ -45,9 +46,9 @@ export function connect<T extends PropTypes>(
 
   const value = context.get("value")
   const format = context.get("format")
+  const locale = prop("locale")
 
   const areaValue = computed("areaValue")
-  const stableAreaValue = context.get("areaBaseColor") ?? areaValue
   const valueAsString = computed("valueAsString")
 
   const disabled = computed("disabled")
@@ -70,7 +71,7 @@ export function connect<T extends PropTypes>(
 
   function resolveGamutOverlay(props: GamutOverlayProps = {}) {
     const pixelRatio = props.pixelRatio ?? getDefaultDevicePixelRatio()
-    return getGamutOverlayData(stableAreaValue, getAreaChannels(props), format, { pixelRatio })
+    return getGamutOverlayData(areaValue, getAreaChannels(props), format, { pixelRatio })
   }
 
   const currentPlacement = context.get("currentPlacement")
@@ -144,8 +145,9 @@ export function connect<T extends PropTypes>(
     getChannelValue(channel) {
       return getChannelValue(value, channel)
     },
-    getChannelValueText(channel, locale) {
-      return value.formatChannelValue(channel, locale)
+    getChannelValueText(channel, channelLocale = locale) {
+      const color = channel === "alpha" || value.getChannels().includes(channel) ? value : areaValue
+      return color.formatChannelValue(channel, channelLocale)
     },
     setChannelValue(channel, channelValue) {
       const color = value.withChannelValue(channel, channelValue)
@@ -283,7 +285,7 @@ export function connect<T extends PropTypes>(
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaStyles } = getColorAreaGradient(stableAreaValue, {
+      const { areaStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
         dir: prop("dir"),
@@ -317,7 +319,7 @@ export function connect<T extends PropTypes>(
 
     getAreaBackgroundProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaGradientStyles } = getColorAreaGradient(stableAreaValue, {
+      const { areaGradientStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
         dir: prop("dir"),
@@ -375,8 +377,8 @@ export function connect<T extends PropTypes>(
       }
       const finalXPercent = isRtl ? 1 - xPercent : xPercent
 
-      const xValue = areaValue.getChannelValue(xChannel)
-      const yValue = areaValue.getChannelValue(yChannel)
+      const xRange = areaValue.getChannelRange(xChannel)
+      const yRange = areaValue.getChannelRange(yChannel)
 
       const color = areaValue.withChannelValue("alpha", 1).toString("css")
 
@@ -390,12 +392,13 @@ export function connect<T extends PropTypes>(
         "data-readonly": dataAttr(readOnly),
         role: "slider",
         "aria-disabled": ariaAttr(disabled),
-        "aria-valuemin": 0,
-        "aria-valuemax": 100,
-        "aria-valuenow": xValue,
-        "aria-label": `${xChannel} and ${yChannel}`,
+        "aria-invalid": ariaAttr(invalid),
+        "aria-valuemin": xRange.minValue,
+        "aria-valuemax": xRange.maxValue,
+        "aria-valuenow": areaValue.getChannelValue(xChannel),
+        "aria-label": `${getChannelLabel(xChannel)} and ${getChannelLabel(yChannel)}`,
         "aria-roledescription": "2d slider",
-        "aria-valuetext": `${xChannel} ${xValue}, ${yChannel} ${yValue}`,
+        "aria-valuetext": `${getChannelLabel(xChannel)} ${areaValue.formatChannelValue(xChannel, locale)}, ${getChannelLabel(yChannel)} ${areaValue.formatChannelValue(yChannel, locale)}`,
         style: {
           position: "absolute",
           left: `${finalXPercent * 100}%`,
@@ -430,10 +433,16 @@ export function connect<T extends PropTypes>(
               send({ type: "AREA.ARROW_RIGHT", channel, step })
             },
             PageUp() {
-              send({ type: "AREA.PAGE_UP", channel, step })
+              send({ type: "AREA.PAGE_UP", channel, step: yRange.pageSize })
             },
             PageDown() {
-              send({ type: "AREA.PAGE_DOWN", channel, step })
+              send({ type: "AREA.PAGE_DOWN", channel, step: yRange.pageSize })
+            },
+            Home() {
+              send({ type: "AREA.HOME", channel, step: xRange.pageSize })
+            },
+            End() {
+              send({ type: "AREA.END", channel, step: xRange.pageSize })
             },
             Escape(event) {
               event.stopPropagation()
@@ -500,7 +509,7 @@ export function connect<T extends PropTypes>(
 
     getChannelSliderTrackProps(props) {
       const { orientation = "horizontal", channel, format } = props
-      const normalizedValue = format ? value.toFormat(format) : stableAreaValue
+      const normalizedValue = format ? value.toFormat(format) : areaValue
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs(scope.id),
@@ -548,7 +557,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel, format } = props
 
-      const normalizedValue = format ? value.toFormat(format) : stableAreaValue
+      const normalizedValue = format ? value.toFormat(format) : areaValue
       const channelRange = normalizedValue.getChannelRange(channel)
       const channelValue = normalizedValue.getChannelValue(channel)
 
@@ -559,27 +568,28 @@ export function connect<T extends PropTypes>(
       const placementStyles =
         orientation === "horizontal"
           ? { left: `${finalOffset * 100}%`, top: "50%" }
-          : { top: `${offset * 100}%`, left: "50%" }
+          : { top: `${(1 - offset) * 100}%`, left: "50%" }
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs(scope.id),
         id: dom.getChannelSliderThumbId(scope, channel),
         role: "slider",
-        "aria-label": channel,
+        "aria-label": getChannelLabel(channel),
         tabIndex: disabled ? undefined : 0,
         "data-channel": channel,
         "data-disabled": dataAttr(disabled),
         "data-orientation": orientation,
         "aria-disabled": ariaAttr(disabled),
+        "aria-invalid": ariaAttr(invalid),
         "aria-orientation": orientation,
         "aria-valuemax": channelRange.maxValue,
         "aria-valuemin": channelRange.minValue,
         "aria-valuenow": channelValue,
-        "aria-valuetext": `${channel} ${channelValue}`,
+        "aria-valuetext": normalizedValue.formatChannelValue(channel, locale),
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(stableAreaValue, channel).toString("css"),
+          background: getChannelDisplayColor(areaValue, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
@@ -594,28 +604,28 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send({ type: "CHANNEL_SLIDER.ARROW_UP", channel, step })
+              send({ type: "CHANNEL_SLIDER.ARROW_UP", channel, format, step })
             },
             ArrowDown() {
-              send({ type: "CHANNEL_SLIDER.ARROW_DOWN", channel, step })
+              send({ type: "CHANNEL_SLIDER.ARROW_DOWN", channel, format, step })
             },
             ArrowLeft() {
-              send({ type: "CHANNEL_SLIDER.ARROW_LEFT", channel, step })
+              send({ type: "CHANNEL_SLIDER.ARROW_LEFT", channel, format, step })
             },
             ArrowRight() {
-              send({ type: "CHANNEL_SLIDER.ARROW_RIGHT", channel, step })
+              send({ type: "CHANNEL_SLIDER.ARROW_RIGHT", channel, format, step })
             },
             PageUp() {
-              send({ type: "CHANNEL_SLIDER.PAGE_UP", channel })
+              send({ type: "CHANNEL_SLIDER.PAGE_UP", channel, format, step: channelRange.pageSize })
             },
             PageDown() {
-              send({ type: "CHANNEL_SLIDER.PAGE_DOWN", channel })
+              send({ type: "CHANNEL_SLIDER.PAGE_DOWN", channel, format, step: channelRange.pageSize })
             },
             Home() {
-              send({ type: "CHANNEL_SLIDER.HOME", channel })
+              send({ type: "CHANNEL_SLIDER.HOME", channel, format })
             },
             End() {
-              send({ type: "CHANNEL_SLIDER.END", channel })
+              send({ type: "CHANNEL_SLIDER.END", channel, format })
             },
             Escape(event) {
               event.stopPropagation()
@@ -648,7 +658,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         type: isTextField ? "text" : "number",
         "data-channel": channel,
-        "aria-label": channel,
+        "aria-label": getChannelLabel(channel),
+        "aria-invalid": ariaAttr(invalid),
         spellCheck: false,
         autoComplete: "off",
         disabled: disabled,
@@ -681,16 +692,36 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (isComposingEvent(event)) return
-          if (event.key === "Enter") {
-            const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
+
+          const inputEl = event.currentTarget
+          const commit = (value: string | number) => {
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
+          }
+          const stepBy = (direction: number) => {
+            const count = getEventStep(event)
+            if (direction > 0) inputEl.stepUp(count)
+            else inputEl.stepDown(count)
+            commit(inputEl.valueAsNumber)
+          }
+
+          const keyMap: EventKeyMap = {
+            Enter() {
+              commit(isTextField ? inputEl.value : inputEl.valueAsNumber)
+            },
+            ...(!isTextField && {
+              ArrowUp: () => stepBy(1),
+              ArrowDown: () => stepBy(-1),
+            }),
+          }
+
+          const exec = keyMap[event.key]
+          if (exec) {
+            exec(event)
             event.preventDefault()
           }
         },
         style: {
-          appearance: "none",
-          WebkitAppearance: "none",
-          MozAppearance: "textfield",
+          appearance: "textfield",
         },
       })
     },
@@ -743,6 +774,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         type: "button",
         "aria-label": `select ${swatchState.valueAsString} as the color`,
+        "aria-pressed": swatchState.checked,
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
         "data-disabled": dataAttr(swatchState.disabled),
@@ -802,7 +834,7 @@ export function connect<T extends PropTypes>(
         ...parts.formatSelect.attrs(scope.id),
         "aria-label": "change color format",
         dir: prop("dir"),
-        defaultValue: prop("format"),
+        defaultValue: format,
         disabled: disabled,
         onChange(event) {
           const format = assertFormat(event.currentTarget.value)

@@ -31,6 +31,40 @@ export class TabsModel extends Model {
     return this.page.locator("[data-tabs-indicator]")
   }
 
+  private getPanelByName = (name: string) => {
+    return this.page.getByRole("tabpanel", { name, includeHidden: true })
+  }
+
+  clickButton = async (name: string) => {
+    await this.page.getByRole("button", { name }).click()
+  }
+
+  seeTabIsSelected = async (name: string) => {
+    await expect(this.page.getByRole("tab", { name })).toHaveAttribute("aria-selected", "true")
+  }
+
+  clickTabByName = async (name: string) => {
+    await this.page.getByRole("tab", { name }).click()
+  }
+
+  seePanelState = async (name: string, state: string | null) => {
+    const panel = this.getPanelByName(name)
+    if (state == null) await expect(panel).not.toHaveAttribute("data-state")
+    else await expect(panel).toHaveAttribute("data-state", state)
+  }
+
+  seePanelIsVisible = async (name: string) => {
+    await expect(this.getPanelByName(name)).toBeVisible()
+  }
+
+  seePanelIsHidden = async (name: string) => {
+    await expect(this.getPanelByName(name)).toBeHidden()
+  }
+
+  seeActivationDirection = async (direction: string) => {
+    await expect(this.page.locator("[data-tabs-root]")).toHaveAttribute("data-activation-direction", direction)
+  }
+
   clickTab = async (id: string) => {
     await this.getTabTrigger(id).click()
   }

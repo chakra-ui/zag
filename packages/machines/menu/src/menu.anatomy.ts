@@ -18,5 +18,6 @@ export const anatomy = createAnatomy("menu").parts(
   "separator",
   "trigger",
   "triggerItem",
+  "viewport",
 )
 export const parts = anatomy.build()

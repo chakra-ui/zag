@@ -1,12 +1,23 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine } from "@zag-js/core"
+import { createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import { AnimationFrame, contains, getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  contains,
+  getInitialFocus,
+  getPopupActivationDirection,
+  waitForAnimationEnd,
+  proxyTabFocus,
+  raf,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./popover.dom"
-import type { Placement, PopoverSchema } from "./popover.types"
+import { getViewportSizeStyle, type ViewportSize } from "./popover.style"
+import type { PopupActivationDirection } from "@zag-js/types"
+import type { InstantType, Placement, PopoverSchema } from "./popover.types"
 
 export const machine = createMachine<PopoverSchema>({
   props({ props }) {
@@ -37,8 +48,8 @@ export const machine = createMachine<PopoverSchema>({
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
-      renderedElements: bindable<{ title: boolean; description: boolean }>(() => ({
-        defaultValue: { title: true, description: true },
+      renderedElements: bindable<{ title: boolean; description: boolean; viewport: boolean }>(() => ({
+        defaultValue: { title: true, description: true, viewport: false },
       })),
       triggerValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultTriggerValue") ?? null,
@@ -46,9 +57,22 @@ export const machine = createMachine<PopoverSchema>({
         onChange(value) {
           const onTriggerValueChange = prop("onTriggerValueChange")
           if (!onTriggerValueChange) return
-          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          const triggerElement = dom.getTriggerEl(scope, value)
           onTriggerValueChange({ value, triggerElement })
         },
+      })),
+      activationDirection: bindable<PopupActivationDirection | null>(() => ({
+        defaultValue: null,
+      })),
+      previousTriggerValue: bindable<string | null>(() => ({ defaultValue: null })),
+      instant: bindable<InstantType>(() => ({
+        defaultValue: null,
+      })),
+      transitioning: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      viewportSize: bindable<{ width: number; height: number } | null>(() => ({
+        defaultValue: null,
       })),
     }
   },
@@ -57,6 +81,8 @@ export const machine = createMachine<PopoverSchema>({
     return {
       renderedFrame: AnimationFrame.create(),
       initialFocusFrame: AnimationFrame.create(),
+      cancelTriggerSwitch: null,
+      awaitingViewportSize: false,
     }
   },
 
@@ -70,15 +96,12 @@ export const machine = createMachine<PopoverSchema>({
 
   exit: ["cancelFrames"],
 
-  on: {
-    "TRIGGER_VALUE.SET": {
-      actions: ["setTriggerValue", "reposition"],
-    },
-  },
-
   states: {
     closed: {
       on: {
+        "TRIGGER_VALUE.SET": {
+          actions: ["setTriggerValue"],
+        },
         "CONTROLLED.OPEN": {
           target: "open",
           actions: ["setInitialFocus"],
@@ -86,21 +109,21 @@ export const machine = createMachine<PopoverSchema>({
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setTriggerValue"],
+            actions: ["setInstant", "invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setTriggerValue", "setInitialFocus"],
+            actions: ["setInstant", "invokeOnOpen", "setTriggerValue", "setInitialFocus"],
           },
         ],
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setTriggerValue"],
+            actions: ["setInstant", "invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setTriggerValue", "setInitialFocus"],
+            actions: ["setInstant", "invokeOnOpen", "setTriggerValue", "setInitialFocus"],
           },
         ],
       },
@@ -108,13 +131,14 @@ export const machine = createMachine<PopoverSchema>({
 
     open: {
       entry: ["checkRenderedElements"],
-      exit: ["cancelInitialFocus"],
+      exit: ["cancelInitialFocus", "endTriggerSwitch", "clearActivationDirection"],
       effects: [
         "trapFocus",
         "preventScroll",
         "hideContentBelow",
         "trackDismissableElement",
         "trackPositioning",
+        "trackViewportSize",
         "proxyTabFocus",
       ],
       on: {
@@ -125,25 +149,38 @@ export const machine = createMachine<PopoverSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["setInstant", "invokeOnClose"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose", "setFinalFocus"],
+            actions: ["setInstant", "invokeOnClose", "setFinalFocus"],
           },
         ],
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["setInstant", "invokeOnClose"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
+            actions: ["setInstant", "invokeOnClose"],
           },
         ],
         "POSITIONING.SET": {
           actions: ["reposition"],
+        },
+        "TRIGGER_VALUE.SET": {
+          guard: "isNewTriggerValue",
+          actions: [
+            "setActivationDirection",
+            "setPreviousTriggerValue",
+            "setTriggerValue",
+            "startTriggerSwitch",
+            "reposition",
+          ],
+        },
+        "TRIGGER_SWITCH.END": {
+          actions: ["endTriggerSwitch", "setTriggerChangeInstant"],
         },
       },
     },
@@ -152,16 +189,22 @@ export const machine = createMachine<PopoverSchema>({
   implementations: {
     guards: {
       isOpenControlled: ({ prop }) => prop("open") != undefined,
+      isNewTriggerValue: ({ context, event }) => event.value !== context.get("triggerValue"),
     },
     effects: {
-      trackPositioning({ context, prop, scope }) {
+      trackPositioning({ context, prop, scope, refs }) {
         context.set("currentPlacement", prop("positioning").placement)
         const anchorEl = dom.getAnchorEl(scope)
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => anchorEl ?? dom.getTriggerEl(scope, context.get("triggerValue"))
+        const positioning = prop("positioning")
         return getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
-          ...prop("positioning"),
+          ...positioning,
+          updatePosition(data) {
+            if (refs.get("awaitingViewportSize")) return
+            return positioning.updatePosition ? positioning.updatePosition(data) : data.updatePosition()
+          },
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -169,12 +212,32 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
+      trackViewportSize(params) {
+        const { context, scope, watchEffect } = params
+        return watchEffect([() => context.get("triggerValue")], () => {
+          const frame = AnimationFrame.create()
+          const stopObserving = raf(() => {
+            const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+            if (!dom.getViewportEl(scope) || !contentEl) return
+
+            return resizeObserverBorderBox.observe(contentEl, (entry) => {
+              const [{ inlineSize, blockSize }] = entry.borderBoxSize
+              frame.request(() => setViewportSize(params, { width: inlineSize, height: blockSize }))
+            })
+          })
+          return () => {
+            stopObserving()
+            frame.cancel()
+          }
+        })
+      },
+
       trackDismissableElement({ send, prop, scope, context, watchEffect }) {
         // pointerBlocking is read at setup, so `modal` has to re-run this
         return watchEffect([() => prop("modal")], () => {
-          const getContentEl = () => dom.getContentEl(scope)
+          const getLayerEl = () => dom.getLayerEl(scope, context.get("triggerValue"))
           let restoreFocus = true
-          return trackDismissableElement(getContentEl, {
+          return trackDismissableElement(getLayerEl, {
             type: "popover",
             pointerBlocking: prop("modal"),
             onLayerChange(layer) {
@@ -201,19 +264,25 @@ export const machine = createMachine<PopoverSchema>({
             persistentElements: prop("persistentElements"),
             onRequestDismiss: prop("onRequestDismiss"),
             onDismiss(event) {
-              send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
+              send({
+                type: "CLOSE",
+                src: "interact-outside",
+                restoreFocus,
+                focusVisible: event?.type === "keydown",
+                instant: getDismissInstant(event),
+              })
             },
           })
         })
       },
 
       proxyTabFocus({ prop, scope, context, watchEffect }) {
-        return watchEffect([() => prop("modal")], () => {
+        return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
           if (prop("modal")) return
-          const getContentEl = () => dom.getContentEl(scope)
+          const getContentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
           let cleanup: VoidFunction | undefined
           const rafCleanup = raf(() => {
-            const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+            const triggerEl = dom.getTriggerEl(scope, context.get("triggerValue"))
             const contentEl = getContentEl()
             // only proxy when content is portalled out of the trigger's subtree (else it traps focus)
             if (!triggerEl || !contentEl || contains(triggerEl.parentElement, contentEl)) return
@@ -233,11 +302,11 @@ export const machine = createMachine<PopoverSchema>({
       },
 
       hideContentBelow({ prop, scope, context, watchEffect }) {
-        return watchEffect([() => prop("modal")], () => {
+        return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
           if (!prop("modal")) return
           const getElements = () => [
-            dom.getContentEl(scope),
-            dom.getActiveTriggerEl(scope, context.get("triggerValue")),
+            dom.getLayerEl(scope, context.get("triggerValue")),
+            dom.getTriggerEl(scope, context.get("triggerValue")),
           ]
           return ariaHidden(getElements, { defer: true })
         })
@@ -251,15 +320,15 @@ export const machine = createMachine<PopoverSchema>({
       },
 
       trapFocus({ prop, scope, context, watchEffect }) {
-        return watchEffect([() => prop("modal")], () => {
+        return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
           if (!prop("modal")) return
-          const contentEl = () => dom.getContentEl(scope)
-          const destroy = trapFocus(contentEl, {
+          const getContentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
+          const destroy = trapFocus(getContentEl, {
             preventScroll: true,
             returnFocusOnDeactivate: !!prop("restoreFocus"),
             initialFocus: () =>
               getInitialFocus({
-                root: dom.getContentEl(scope),
+                root: dom.getContentEl(scope, context.get("triggerValue")),
                 getInitialEl: prop("initialFocusEl"),
                 enabled: prop("autoFocus"),
               }),
@@ -269,8 +338,8 @@ export const machine = createMachine<PopoverSchema>({
 
               const triggerValue = context.get("triggerValue")
               if (triggerValue) {
-                const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
-                if (activeTriggerEl) return activeTriggerEl
+                const triggerEl = dom.getTriggerEl(scope, triggerValue)
+                if (triggerEl) return triggerEl
               }
 
               const fallbackTrigger = dom.getTriggerEls(scope)[0]
@@ -281,16 +350,17 @@ export const machine = createMachine<PopoverSchema>({
             getShadowRoot: true,
           })
 
-          return () => destroy({ returnFocus: !!prop("restoreFocus") && !!prop("modal") })
+          return (reason) => destroy({ returnFocus: reason === "exit" && !!prop("restoreFocus") && !!prop("modal") })
         })
       },
     },
 
     actions: {
-      reposition({ event, prop, scope, context }) {
+      reposition({ event, prop, scope, context, refs }) {
+        if (refs.get("awaitingViewportSize")) return
         const anchorEl = dom.getAnchorEl(scope)
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => anchorEl ?? dom.getTriggerEl(scope, context.get("triggerValue"))
         getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
@@ -310,8 +380,48 @@ export const machine = createMachine<PopoverSchema>({
       cancelFrames({ refs }) {
         refs.get("renderedFrame").cancel()
         refs.get("initialFocusFrame").cancel()
+        refs.get("cancelTriggerSwitch")?.()
       },
 
+      setActivationDirection({ context, event, scope }) {
+        const fromEl = dom.getTriggerEl(scope, context.get("triggerValue"))
+        const toEl = dom.getTriggerEl(scope, event.value)
+        context.set("activationDirection", getPopupActivationDirection(fromEl, toEl))
+      },
+
+      clearActivationDirection({ context }) {
+        context.set("activationDirection", null)
+      },
+
+      setPreviousTriggerValue({ context }) {
+        context.set("previousTriggerValue", context.get("triggerValue"))
+      },
+
+      startTriggerSwitch({ context, refs, scope, send }) {
+        refs.get("cancelTriggerSwitch")?.()
+        context.set("transitioning", true)
+        context.set("instant", null)
+        const positionerEl = dom.getPositionerEl(scope)
+        if (!positionerEl) return
+        refs.set("awaitingViewportSize", !!dom.getViewportEl(scope))
+        const cancel = waitForAnimationEnd(positionerEl, () => send({ type: "TRIGGER_SWITCH.END" }))
+        refs.set("cancelTriggerSwitch", cancel)
+      },
+
+      endTriggerSwitch({ context, refs }) {
+        context.set("previousTriggerValue", null)
+        refs.get("cancelTriggerSwitch")?.()
+        refs.set("cancelTriggerSwitch", null)
+        refs.set("awaitingViewportSize", false)
+        context.set("transitioning", false)
+      },
+
+      setInstant({ context, event }) {
+        context.set("instant", event.instant ?? null)
+      },
+      setTriggerChangeInstant({ context }) {
+        context.set("instant", "trigger-change")
+      },
       setTriggerValue({ context, event }) {
         if (event.value === undefined) return
         context.set("triggerValue", event.value)
@@ -322,16 +432,17 @@ export const machine = createMachine<PopoverSchema>({
           context.set("renderedElements", {
             title: !!dom.getTitleEl(scope),
             description: !!dom.getDescriptionEl(scope),
+            viewport: !!dom.getViewportEl(scope),
           })
         })
       },
 
-      setInitialFocus({ prop, scope, refs }) {
+      setInitialFocus({ prop, scope, refs, context }) {
         // handoff to `trapFocus` activity for initial focus
         if (prop("modal")) return
         refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
-            root: dom.getContentEl(scope),
+            root: dom.getContentEl(scope, context.get("triggerValue")),
             getInitialEl: prop("initialFocusEl"),
             enabled: prop("autoFocus"),
           })
@@ -359,7 +470,7 @@ export const machine = createMachine<PopoverSchema>({
             return
           }
 
-          const element = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+          const element = dom.getTriggerEl(scope, context.get("triggerValue"))
           element?.focus(focusOptions)
         })
       },
@@ -384,4 +495,22 @@ export const machine = createMachine<PopoverSchema>({
 function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
   const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
   return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
+}
+
+function setViewportSize(params: Params<PopoverSchema>, size: ViewportSize) {
+  const { context, scope, refs, send } = params
+  context.set("viewportSize", size)
+  const positionerEl = dom.getPositionerEl(scope)
+  for (const [key, value] of Object.entries(getViewportSizeStyle(size))) {
+    positionerEl?.style.setProperty(key, value)
+  }
+  if (!refs.get("awaitingViewportSize")) return
+  refs.set("awaitingViewportSize", false)
+  send({ type: "POSITIONING.SET" })
+}
+
+function getDismissInstant(event: Event | undefined): InstantType {
+  if (event?.type === "keydown") return "dismiss"
+  if (event?.type === "focus.outside") return "focus"
+  return null
 }
