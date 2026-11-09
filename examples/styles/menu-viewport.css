@@ -1,0 +1,147 @@
+.animated-triggers__list {
+  display: flex;
+  gap: 8px;
+}
+
+/* Moving between triggers: the positioner slides, the viewport resizes, and the contents slide toward the new trigger */
+[data-menu-positioner] {
+  --easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 300ms;
+
+  &[data-transitioning] {
+    transition: transform var(--duration) var(--easing);
+
+    & [data-menu-arrow] {
+      transition:
+        left var(--duration) var(--easing),
+        top var(--duration) var(--easing);
+    }
+  }
+}
+
+[data-menu-arrow] {
+  --arrow-background: var(--z-bg);
+  --arrow-size: 12px;
+  /* Above the viewport, so the tip's inner half hides the viewport's ring where they meet */
+  z-index: 1;
+
+  /* Next to the viewport, the arrow fades with it */
+  &[data-state="open"] {
+    animation: fadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: fadeOut 0.1s ease-in-out;
+  }
+}
+
+/* The tip is rotated so its top and left edges face the trigger, on every side: ring them like the viewport */
+[data-menu-arrow-tip] {
+  border-top-left-radius: 2px;
+  box-shadow: -1px -1px 0 0 var(--z-border);
+}
+
+/* The popup box: sized by the machine from the current content */
+[data-menu-viewport] {
+  overflow: clip;
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  /* The same border as the arrow's outer edges, so the two read as one shape */
+  box-shadow:
+    0 10px 28px -6px rgb(0 0 0 / 0.16),
+    0 0 0 1px var(--z-border);
+  color: var(--z-fg);
+  transform-origin: var(--transform-origin);
+
+  &[data-state="open"] {
+    animation: scaleFadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: scaleFadeOut 0.1s ease-in-out;
+  }
+
+  &[data-transitioning] {
+    transition:
+      width var(--duration) var(--easing),
+      height var(--duration) var(--easing);
+  }
+}
+
+[data-menu-content] {
+  --slide: 50%;
+  /* Laid out at its own size, so the viewport can measure it */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  min-width: 160px;
+  box-sizing: border-box;
+  padding: 4px;
+
+  /* The content takes focus when switching triggers; the highlighted item shows where you are */
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &[data-activation-direction~="left"] {
+    --slide: -50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    --slide: 0%;
+  }
+
+  /* Slide over the full duration, fade over half of it */
+  [data-transitioning] > &[data-state="open"] {
+    animation:
+      menu-slide-in var(--duration) var(--easing),
+      menu-fade-in calc(var(--duration) / 2) var(--easing);
+  }
+
+  [data-transitioning] > &[data-state="closed"] {
+    animation:
+      menu-slide-out var(--duration) var(--easing) forwards,
+      menu-fade-out calc(var(--duration) / 2) var(--easing) forwards;
+  }
+}
+
+[data-menu-item] {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--z-radius-sm);
+  font-size: var(--z-text-md);
+  user-select: none;
+
+  &[data-highlighted] {
+    background: var(--z-highlight);
+  }
+}
+
+@keyframes menu-slide-in {
+  from {
+    transform: translateX(var(--slide));
+  }
+}
+
+@keyframes menu-slide-out {
+  to {
+    transform: translateX(calc(var(--slide) * -1));
+  }
+}
+
+@keyframes menu-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes menu-fade-out {
+  to {
+    opacity: 0;
+  }
+}

@@ -529,6 +529,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
@@ -542,6 +543,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
@@ -652,6 +654,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Popover",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
@@ -794,6 +797,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-multiple", title: "Controlled Multiple" },
