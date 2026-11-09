@@ -1,3 +1,4 @@
+export * from "./animation"
 export * from "./caret"
 export * from "./computed-style"
 export * from "./controller"

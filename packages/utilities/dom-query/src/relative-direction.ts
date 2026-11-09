@@ -1,4 +1,4 @@
-import type { ActivationDirection, Orientation } from "@zag-js/types"
+import type { ActivationDirection, Orientation, PopupActivationDirection } from "@zag-js/types"
 
 export interface RelativeDirectionOptions {
   /** When omitted, the axis with the larger movement wins */
@@ -26,4 +26,30 @@ export function getRelativeDirection(
 
   if (dy === 0) return "none"
   return dy > 0 ? "down" : "up"
+}
+
+const POPUP_DIRECTION_TOLERANCE = 5
+
+/** Compares element centers on both axes, e.g. `"right"` or `"left down"` */
+export function getPopupActivationDirection(
+  fromEl: Element | null | undefined,
+  toEl: Element | null | undefined,
+): PopupActivationDirection | null {
+  if (!fromEl || !toEl || fromEl === toEl) return null
+
+  const from = getCenter(fromEl)
+  const to = getCenter(toEl)
+  const dx = to.x - from.x
+  const dy = to.y - from.y
+
+  const horizontal = dx > POPUP_DIRECTION_TOLERANCE ? "right" : dx < -POPUP_DIRECTION_TOLERANCE ? "left" : null
+  const vertical = dy > POPUP_DIRECTION_TOLERANCE ? "down" : dy < -POPUP_DIRECTION_TOLERANCE ? "up" : null
+
+  if (horizontal && vertical) return `${horizontal} ${vertical}`
+  return horizontal ?? vertical
+}
+
+function getCenter(el: Element) {
+  const rect = el.getBoundingClientRect()
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
 }
