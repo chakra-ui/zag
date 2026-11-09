@@ -1,7 +1,7 @@
 import { getComputedStyle } from "./computed-style"
 import { addDomEvent } from "./event"
 import { getWindow, isHTMLElement } from "./node"
-import { isScrollable } from "./overflow"
+import { getScrollParent, isScrollable } from "./overflow"
 import { Timeout } from "./timeout"
 
 export interface ScrollOptions extends ScrollIntoViewOptions {
@@ -90,17 +90,26 @@ export function getNearestScrollOffset(
   return { top: rootEl.scrollTop + deltaY, left: rootEl.scrollLeft + deltaX }
 }
 
-/** Like `scrollIntoView({ block: "nearest", inline: "nearest" })`, but only scrolls `rootEl` */
+/**
+ * Like `scrollIntoView({ block: "nearest", inline: "nearest" })`, but only scrolls `rootEl`,
+ * or, when `rootEl` doesn't scroll, the nearest scrollable ancestor of `el` inside it
+ * (e.g. a scroll area nested in the content)
+ */
 export function scrollToNearest(el: HTMLElement | null | undefined, options?: ScrollToElementOptions): boolean {
-  const { rootEl } = options || {}
-  const offset = getNearestScrollOffset(el, { rootEl })
-  if (!rootEl || !offset) return false
+  const scrollEl = getScrollRoot(el, options?.rootEl)
+  const offset = getNearestScrollOffset(el, { rootEl: scrollEl })
+  if (!scrollEl || !offset) return false
 
   let behavior = options?.behavior
-  if (behavior === "smooth" && prefersReducedMotion(rootEl)) behavior = "instant"
+  if (behavior === "smooth" && prefersReducedMotion(scrollEl)) behavior = "instant"
 
-  rootEl.scrollTo({ ...offset, ...(behavior && { behavior }) })
+  scrollEl.scrollTo({ ...offset, ...(behavior && { behavior }) })
   return true
+}
+
+function getScrollRoot(el: HTMLElement | null | undefined, rootEl: HTMLElement | null | undefined) {
+  if (!el || !rootEl || isScrollable(rootEl)) return rootEl
+  return getScrollParent(el, { stop: (node) => !rootEl.contains(node) }) ?? rootEl
 }
 
 function alignNearest(viewStart: number, viewEnd: number, start: number, end: number): number {
