@@ -2,6 +2,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type {
+  ActivationDirection,
   CommonProperties,
   DirectionProperty,
   Orientation,
@@ -110,6 +111,10 @@ export interface NavigationMenuSchema {
     layer: LayerSnapshot | null
     value: string
     previousValue: string
+    /**
+     * Where the open item's trigger sits relative to the previous one
+     */
+    activationDirection: ActivationDirection
 
     viewportSize: Size | null
     viewportPosition: Point | null
@@ -253,6 +258,10 @@ export interface ContentState {
    * Whether the content has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Where the open item's trigger sits relative to the previous one. `null` when opened from closed.
+   */
+  activationDirection: Exclude<ActivationDirection, "none"> | null
 }
 
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
@@ -272,6 +281,11 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    * Whether the viewport is rendered
    */
   isViewportRendered: boolean
+  /**
+   * Where the open item's trigger sits relative to the previous one: `left`, `right`, `up` or `down`.
+   * `null` when opened from closed.
+   */
+  activationDirection: Exclude<ActivationDirection, "none"> | null
   /**
    * Gets the viewport node element
    */

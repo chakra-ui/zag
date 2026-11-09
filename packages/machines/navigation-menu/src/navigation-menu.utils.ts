@@ -10,6 +10,7 @@ export function setCloseTimeout(
 
   const closeTimeoutId = window.setTimeout(() => {
     context.set("value", "")
+    context.set("activationDirection", "none")
   }, prop("closeDelay"))
 
   refs.set("closeTimeoutId", closeTimeoutId)

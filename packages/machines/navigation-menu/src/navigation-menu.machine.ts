@@ -1,7 +1,7 @@
-import { setup } from "@zag-js/core"
+import { setup, type Params, type Scope } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { addDomEvent, AnimationFrame, contains, navigate } from "@zag-js/dom-query"
-import type { Point, Rect, Size } from "@zag-js/types"
+import type { ActivationDirection, Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema } from "./navigation-menu.types"
@@ -46,6 +46,10 @@ export const machine = createMachine({
         defaultValue: "",
         sync: true,
       })),
+      activationDirection: bindable<ActivationDirection>(() => ({
+        defaultValue: "none",
+        sync: true,
+      })),
 
       // viewport
       viewportSize: bindable<Size | null>(() => ({
@@ -79,7 +83,7 @@ export const machine = createMachine({
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["restoreTabOrder", "setTriggerNode", "syncContentNode", "syncMotionAttribute"])
+      action(["restoreTabOrder", "setTriggerNode", "syncContentNode"])
     })
   },
 
@@ -96,7 +100,7 @@ export const machine = createMachine({
     }
   },
 
-  entry: ["checkViewportNode", "setTriggerNode", "syncContentNode", "syncMotionAttribute"],
+  entry: ["checkViewportNode", "setTriggerNode", "syncContentNode"],
 
   exit: ["cleanupObservers", "clearAllTimeouts", "cancelFocusFrame"],
 
@@ -173,7 +177,9 @@ export const machine = createMachine({
     },
 
     actions: {
-      setValue({ context, event }) {
+      setValue({ context, event, scope, prop }) {
+        const direction = dom.getActivationDirection(scope, context.get("value"), event.value, prop("orientation"))
+        context.set("activationDirection", direction)
         context.set("value", event.value)
       },
       clearCloseTimeout({ refs }) {
@@ -188,7 +194,7 @@ export const machine = createMachine({
       resetValueWithDelay({ event, refs }) {
         clearOpenTimeout(refs, event.value)
       },
-      setValueWithDelay({ event, prop, context, refs }) {
+      setValueWithDelay({ event, prop, context, refs, scope }) {
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
@@ -198,8 +204,7 @@ export const machine = createMachine({
           () => {
             const innerTimeoutId = window.setTimeout(() => {
               clearOpenTimeout(refs, event.value)
-              context.set("previousValue", context.get("value"))
-              context.set("value", event.value)
+              changeValue(context, scope, prop, event.value)
             })
             setOpenTimeout(refs, event.value, innerTimeoutId)
           },
@@ -208,15 +213,15 @@ export const machine = createMachine({
 
         setOpenTimeout(refs, event.value, openTimeoutId)
       },
-      selectValue: ({ context, event }) => {
+      selectValue: ({ context, event, scope, prop }) => {
         // When selecting item we trigger update immediately
-        context.set("previousValue", context.get("value"))
-        context.set("value", event.value)
+        changeValue(context, scope, prop, event.value)
       },
       deselectValue: ({ context }) => {
         // When deselecting, clear immediately to prevent overlap
         context.set("value", "")
         context.set("previousValue", "")
+        context.set("activationDirection", "none")
       },
 
       syncContentNode({ context, scope, refs, send }) {
@@ -320,10 +325,6 @@ export const machine = createMachine({
         const listEl = dom.getListEl(scope)
         const triggerResizeObserver = dom.trackResizeObserver([node, listEl], exec)
         refs.set("triggerResizeObserverCleanup", triggerResizeObserver)
-      },
-      syncMotionAttribute({ context, scope }) {
-        if (!context.get("isViewportRendered")) return
-        dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
 
       focusFirstTabbableEl({ event, scope, context, refs }) {
@@ -469,3 +470,15 @@ export const machine = createMachine({
     },
   },
 })
+
+function changeValue(
+  context: Params<NavigationMenuSchema>["context"],
+  scope: Scope,
+  prop: Params<NavigationMenuSchema>["prop"],
+  value: string,
+) {
+  const previousValue = context.get("value")
+  context.set("activationDirection", dom.getActivationDirection(scope, previousValue, value, prop("orientation")))
+  context.set("previousValue", previousValue)
+  context.set("value", value)
+}
