@@ -79,7 +79,6 @@ export const machine = createMachine<RatingGroupSchema>({
         GROUP_POINTER_OVER: {
           target: "hover",
         },
-        // The item's pointermove reaches the machine before the control's, so keep its value here
         POINTER_OVER: {
           target: "hover",
           actions: ["setHoveredValue"],
