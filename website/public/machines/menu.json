@@ -517,6 +517,18 @@
     {
       "from": "open",
       "to": null,
+      "event": "TRIGGER_SWITCH.END",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": "isNewTriggerValue"
+    },
+    {
+      "from": "open",
+      "to": null,
       "event": "TYPEAHEAD",
       "guard": null
     },

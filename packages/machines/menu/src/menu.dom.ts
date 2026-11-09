@@ -16,7 +16,10 @@ export const getContextTriggerId = (ctx: Scope, value?: string) => {
   if (customId != null) return isFunction(customId) ? customId(value) : customId
   return value ? `${ctx.id}:ctx-trigger:${value}` : `${ctx.id}:ctx-trigger`
 }
-export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`
+export const getContentId = (ctx: Scope, value?: string | null) => {
+  const id = ctx.ids?.content ?? `${ctx.id}:content`
+  return value != null ? `${id}:${value}` : id
+}
 export const getArrowId = (ctx: Scope) => ctx.ids?.arrow ?? `${ctx.id}:arrow`
 export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
@@ -29,7 +32,13 @@ export const getItemValue = (el: HTMLElement | null | undefined) => el?.dataset.
 export const getGroupLabelId = (ctx: Scope, id: string) => ctx.ids?.groupLabel?.(id) ?? `${ctx.id}:group-label:${id}`
 
 // Element lookups — use querySelector with merged data attributes
-export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
+export const getContentEl = (ctx: Scope, value?: string | null) => {
+  const selector = ctx.selector(parts.content)
+  if (value == null) return ctx.query(selector)
+  return ctx.query(`${selector}[data-value="${value}"]`) ?? ctx.query(`${selector}:not([data-value])`)
+}
+export const getViewportEl = (ctx: Scope) => ctx.query(ctx.selector(parts.viewport))
+export const getLayerEl = (ctx: Scope, value?: string | null) => getViewportEl(ctx) ?? getContentEl(ctx, value)
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
 export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
@@ -43,8 +52,11 @@ export const dispatchMenubarEvent = (menubarEl: HTMLElement, type: string, detai
   const win = getWindow(menubarEl)
   menubarEl.dispatchEvent(new win.CustomEvent(type, { detail }))
 }
-export const getItemEl = (ctx: Scope, value: string | null) =>
-  value ? ctx.query(`${ctx.selector(parts.item)}[data-value="${value}"]`) : null
+export const getItemEl = (ctx: Scope, value: string | null, triggerValue?: string | null) => {
+  if (!value) return null
+  const selector = `${ctx.selector(parts.item)}[data-value="${value}"]`
+  return getContentEl(ctx, triggerValue)?.querySelector<HTMLElement>(selector) ?? ctx.query(selector)
+}
 export const getArrowEl = (ctx: Scope) => ctx.query(ctx.selector(parts.arrow))
 export const getContextTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.contextTrigger))
 
@@ -65,10 +77,10 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
   )
 }
 
-export const getElements = (ctx: Scope) => {
+export const getElements = (ctx: Scope, triggerValue?: string | null) => {
   const ownerId = CSS.escape(ctx.id!)
   const selector = `[data-menu-item="${ownerId}"]:not([data-disabled])`
-  const contentEl = getContentEl(ctx)
+  const contentEl = getContentEl(ctx, triggerValue)
   return contentEl ? Array.from(contentEl.querySelectorAll<HTMLElement>(selector)) : []
 }
 
@@ -79,9 +91,9 @@ const isMatch = (el: HTMLElement, value: string | null) => {
 
 export const getElemByKey = (
   ctx: Scope,
-  opts: { key: string; value: string | null; typeaheadState: TypeaheadState },
+  opts: { key: string; value: string | null; typeaheadState: TypeaheadState; triggerValue?: string | null },
 ) => {
-  const items = getElements(ctx)
+  const items = getElements(ctx, opts.triggerValue)
   const item = items.find((el) => isMatch(el, opts.value))
   return getByTypeahead(items, { state: opts.typeaheadState, key: opts.key, activeId: item?.id ?? null })
 }
@@ -113,16 +125,17 @@ export function dispatchSelectionEvent(el: HTMLElement | null, value: string) {
   el.dispatchEvent(event)
 }
 
-function getPortaledContentEl(scope: MenuService["scope"]): HTMLElement | null {
-  const contentId = getContentId(scope)
-  return getContentEl(scope) ?? scope.getDoc().getElementById(contentId)
+function getPortaledContentEl(service: MenuService): HTMLElement | null {
+  const { scope, context } = service
+  const triggerValue = context.get("triggerValue")
+  return getLayerEl(scope, triggerValue) ?? scope.getDoc().getElementById(getContentId(scope, triggerValue))
 }
 
 export function isTargetWithinMenuTree(target: EventTarget | null, children: Record<string, MenuService>): boolean {
   if (!isHTMLElement(target)) return false
   for (const id in children) {
     const child = children[id]
-    const childContent = getPortaledContentEl(child.scope)
+    const childContent = getPortaledContentEl(child)
     if (childContent && contains(childContent, target)) return true
     const nested = child.refs.get("children")
     if (Object.keys(nested).length > 0 && isTargetWithinMenuTree(target, nested)) return true
