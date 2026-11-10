@@ -31,7 +31,6 @@ export class TocModel extends Model {
     return this.controls.select("rootMargin", value)
   }
 
-  // Scrolls so the heading sits at `ratio` of the view's height
   async scrollHeadingToRatio(value: string, ratio: number) {
     const container = await this.getScrollContainer()
     const height = await container.evaluate((el) => el.clientHeight)
@@ -39,7 +38,11 @@ export class TocModel extends Model {
   }
 
   async seeItemIsNotActive(value: string) {
-    await expect(this.page.locator(item(value))).not.toHaveAttribute("data-active")
+    await this.dontSeeDataAttr(this.page.locator(item(value)), "active")
+  }
+
+  waitForHeading(value: string) {
+    return this.page.locator(`[id="${value}"]`).waitFor()
   }
 
   clickLink(value: string) {

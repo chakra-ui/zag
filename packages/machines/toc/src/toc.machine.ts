@@ -9,7 +9,7 @@ import {
   trackScrollEnd,
 } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, first, isEqual, last, toArray } from "@zag-js/utils"
+import { callAll, first, isEqual, last, toArray, warn } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
@@ -91,9 +91,6 @@ export const machine = createMachine({
         action(["syncHeadings"])
       },
     )
-    track([() => prop("rootMargin"), () => String(prop("threshold"))], () => {
-      action(["restartHeadingObserver"])
-    })
   },
 
   entry: ["syncIndicatorRect"],
@@ -210,12 +207,6 @@ export const machine = createMachine({
         params.refs.get("headingsFrame").request(() => observeHeadings(params))
       },
 
-      restartHeadingObserver(params) {
-        // Only while `trackHeadings` runs, which owns the observer
-        if (!params.refs.get("headingObserver")) return
-        startHeadingObserver(params)
-      },
-
       cleanupIndicatorObserver({ refs }) {
         refs.get("indicatorCleanup")?.()
       },
@@ -279,47 +270,46 @@ export const machine = createMachine({
 
     effects: {
       trackHeadings(params) {
-        const { scope, refs, send } = params
-        const doc = scope.getDoc()
+        const { scope, prop, refs, send, watchEffect } = params
+        return watchEffect([() => prop("rootMargin"), () => String(prop("threshold"))], () => {
+          const doc = scope.getDoc()
+          restartHeadingObserver(params)
 
-        startHeadingObserver(params)
+          const frame = AnimationFrame.create()
+          const onScroll = (event: Event) => {
+            if (frame.isActive()) return
 
-        const frame = AnimationFrame.create()
-        const onScroll = (event: Event) => {
-          if (frame.isActive()) return
-          const headings = refs.get("headings")
-          const observer = refs.get("headingObserver")
+            if (hasScrollElChanged(params)) {
+              frame.request(() => restartHeadingObserver(params))
+              return
+            }
 
-          // `scrollEl` or the headings mounted after the toc
-          if (observer && observer.root !== getScrollEl(params)) {
-            frame.request(() => startHeadingObserver(params))
-            return
+            const headings = refs.get("headings")
+            if (headings.length === 0) {
+              frame.request(() => observeHeadings(params))
+              return
+            }
+
+            const target = getEventTarget<Node>(event)
+            const movesHeadings =
+              target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
+            if (!movesHeadings) return
+            frame.request(() => send({ type: "SCROLL" }))
           }
-          // Headings that mount later are looked up on the next scroll
-          if (headings.length === 0) {
-            frame.request(() => observeHeadings(params))
-            return
+
+          const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
+
+          return () => {
+            refs.get("headingObserver")?.disconnect()
+            cleanupScroll()
+            frame.cancel()
+            refs.get("headingsFrame").cancel()
+            refs.get("visibilityMap").clear()
+            refs.set("headingObserver", null)
+            refs.set("headings", [])
+            refs.set("scrollContainer", null)
           }
-          const target = getEventTarget<Node>(event)
-          const movesHeadings =
-            target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
-          if (!movesHeadings) return
-          frame.request(() => send({ type: "SCROLL" }))
-        }
-
-        const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
-
-        return () => {
-          const observer = refs.get("headingObserver")
-          if (observer) observer.disconnect()
-          cleanupScroll()
-          frame.cancel()
-          refs.get("headingsFrame").cancel()
-          refs.get("visibilityMap").clear()
-          refs.set("headingObserver", null)
-          refs.set("headings", [])
-          refs.set("scrollContainer", null)
-        }
+        })
       },
 
       waitForScrollEnd({ scope, send }) {
@@ -335,34 +325,43 @@ const getScrollEl = ({ prop }: Params<TocSchema>) => {
   return scrollEl() ?? null
 }
 
-/** Creates the heading observer from the current options and observes the headings */
-function startHeadingObserver(params: Params<TocSchema>) {
+/** Observes the headings with a new observer, built from the current options */
+function restartHeadingObserver(params: Params<TocSchema>) {
+  const { refs } = params
+  const observer = createHeadingObserver(params)
+  if (!observer) return
+  refs.get("headingObserver")?.disconnect()
+  refs.set("headingObserver", observer)
+  observeHeadings(params)
+}
+
+function createHeadingObserver(params: Params<TocSchema>): IntersectionObserver | null {
   const { scope, prop, refs, send } = params
   const win = scope.getWin()
   const visibilityMap = refs.get("visibilityMap")
+  try {
+    const observer = new win.IntersectionObserver(
+      (entries) => {
+        if (refs.get("headingObserver") !== observer) return
+        for (const entry of entries) {
+          visibilityMap.set(entry.target.id, entry.isIntersecting)
+        }
+        refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+        send({ type: "VISIBILITY.CHANGE" })
+      },
+      { root: getScrollEl(params), rootMargin: prop("rootMargin"), threshold: prop("threshold") },
+    )
+    return observer
+  } catch (error) {
+    warn(`[toc] Invalid observer options: ${error}`)
+    return null
+  }
+}
 
-  // Built before the old one is dropped, so invalid options keep the current observer
-  const observer = new win.IntersectionObserver(
-    (entries) => {
-      // Entries queued before a restart belong to the old options
-      if (refs.get("headingObserver") !== observer) return
-      for (const entry of entries) {
-        visibilityMap.set(entry.target.id, entry.isIntersecting)
-      }
-      refs.set("rootBounds", entries[0]?.rootBounds ?? null)
-      send({ type: "VISIBILITY.CHANGE" })
-    },
-    {
-      root: getScrollEl(params),
-      rootMargin: prop("rootMargin"),
-      threshold: prop("threshold"),
-    },
-  )
-
-  const current = refs.get("headingObserver")
-  if (current) current.disconnect()
-  refs.set("headingObserver", observer)
-  observeHeadings(params)
+/** Whether `scrollEl` now returns a different element, e.g. one that mounted after the toc */
+function hasScrollElChanged(params: Params<TocSchema>) {
+  const observer = params.refs.get("headingObserver")
+  return !!observer && observer.root !== getScrollEl(params)
 }
 
 /** Caches and observes the headings of the current items */

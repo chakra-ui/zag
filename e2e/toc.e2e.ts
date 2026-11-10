@@ -97,7 +97,6 @@ test.describe("toc / scroll element", () => {
   test("follows a rootMargin change", async () => {
     await I.setMultiple(true)
     await I.scrollHeadingToRatio("installation", 0.8)
-    // Wait for the observer to report before checking what isn't active
     await I.seeItemIsActive("getting-started")
     await I.seeItemIsNotActive("installation")
     await I.setRootMargin("0px")
@@ -113,8 +112,8 @@ test.describe("toc / content mounts after the toc", () => {
     await I.goto("/toc/late-content")
   })
 
-  test("tracks headings that mount after the toc", async ({ page }) => {
-    await page.locator("[id=installation]").waitFor()
+  test("tracks headings that mount after the toc", async () => {
+    await I.waitForHeading("installation")
     await I.scrollHeadingTo("installation", 40)
     await I.seeItemIsActive("installation")
   })
