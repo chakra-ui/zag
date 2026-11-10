@@ -34,8 +34,9 @@ it can't rewrite with a file and line, including props whose default changed.
 npx @zag-js/codemod@next v2 src
 ```
 
-Add `--dry` to preview the changes. Run your type checker afterwards; the
-remaining errors point at the sections below.
+Add `--dry-run` to see the changes as a diff first. It won't overwrite files
+with uncommitted changes, so commit before you run it. Run your type checker
+afterwards; the remaining errors point at the sections below.
 
 ## Renames
 

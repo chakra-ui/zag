@@ -3,11 +3,21 @@
 Codemods for upgrading zag.js projects.
 
 ```bash
-npx @zag-js/codemod v2 src
+npx @zag-js/codemod v2 src --dry-run   # see the changes as a diff
+npx @zag-js/codemod v2 src             # apply them
 ```
 
-Pass one or more files or folders. `node_modules`, build output and dot folders are skipped. Add `--dry` to see what
-would change without writing files.
+Pass one or more files or folders. `node_modules`, build output and dot folders are skipped.
+
+| Option          | What it does                                                   |
+| --------------- | -------------------------------------------------------------- |
+| `-d, --dry-run` | Print the changes as a diff and write nothing                  |
+| `--no-diff`     | With `--dry-run`, list the files instead of printing the diff  |
+| `--force`       | Write even when files it would change have uncommitted changes |
+
+It won't overwrite your work. If any file it would change has uncommitted changes, including untracked files, it stops
+before writing anything and lists them, so a bad run is always one `git checkout` away. In a terminal it asks first;
+elsewhere it exits with an error unless you pass `--force`. Outside a git repository it warns and writes.
 
 ## v2
 

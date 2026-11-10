@@ -6,6 +6,8 @@ import { isSupportedFile, transformV2 } from "./v2"
 export type { Note, TransformResult } from "./types"
 export { transformV2 } from "./v2"
 export { transformSelectors } from "./v2/selectors"
+export { formatDiff } from "./diff"
+export { uncommittedFiles } from "./git"
 
 export const transforms = {
   v2: { transform: transformV2, isSupportedFile },
@@ -43,7 +45,12 @@ export function collectFiles(paths: string[], isSupported: (file: string) => boo
 }
 
 export interface FileReport extends TransformResult {
+  /** Path relative to `cwd`, or absolute when outside it */
   file: string
+  /** Absolute path */
+  path: string
+  /** The file's contents before the transform */
+  source: string
   changed: boolean
 }
 
@@ -66,7 +73,8 @@ export function run(options: RunOptions): FileReport[] {
     if (changed && !options.dry) writeFileSync(path, result.code)
     if (changed || result.notes.length) {
       const rel = relative(cwd, path)
-      reports.push({ ...result, file: !rel || rel.startsWith("..") ? resolve(path) : rel, changed })
+      const abs = resolve(path)
+      reports.push({ ...result, file: !rel || rel.startsWith("..") ? abs : rel, path: abs, source: text, changed })
     }
   }
   return reports
