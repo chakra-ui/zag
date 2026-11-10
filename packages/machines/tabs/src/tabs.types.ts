@@ -6,11 +6,21 @@ import type { ActivationDirection, CommonProperties, DirectionProperty, PropType
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What changed the selected tab:
+ * - `trigger-click`: a tab trigger was pressed
+ * - `keyboard`: an arrow, `Home` or `End` key moved focus and selected the tab (automatic activation)
+ * - `script`: `setValue`, `clearValue`, `selectNext` or `selectPrevious` was called
+ */
+export type ValueChangeReason = "trigger-click" | "keyboard" | "script"
+
 export interface ValueChangeDetails {
   /** `null` when a `deselectable` tab is deselected */
   value: string | null
   /** Where the selected tab sits relative to the previous one */
   activationDirection: ActivationDirection
+  /** What changed the selected tab */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface FocusChangeDetails {
@@ -140,7 +150,7 @@ export type TabsSchema = {
   guard: string
   effect: string
   event: EventObject & {
-    src?: "keyboard" | undefined
+    src?: ValueChangeReason | undefined
   }
 }
 
@@ -239,7 +249,7 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the tabs.
    */
-  setValue: (value: string) => void
+  setValue: (value: string, reason?: ValueChangeReason) => void
   /**
    * Clears the value of the tabs.
    */

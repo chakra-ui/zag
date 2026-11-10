@@ -24,8 +24,29 @@ import type {
  */
 export type InstantType = "click" | "dismiss" | "focus" | "trigger-change" | null
 
+/**
+ * What opened or closed the popover:
+ * - `trigger-click`: the trigger was pressed
+ * - `close-trigger`: the close trigger was pressed
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "close-trigger"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the popover
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -337,7 +358,7 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the popover
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The trigger value
    */

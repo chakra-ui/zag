@@ -80,8 +80,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
   return {
     open: open,
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     triggerValue,
     activationDirection,
@@ -152,7 +152,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
           const instant = event.detail === 0 ? "click" : null
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, instant })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, instant, src: "trigger-click" })
         },
         onBlur(event) {
           send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
@@ -257,7 +257,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         onClick(event) {
           if (event.defaultPrevented) return
           event.stopPropagation()
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "close-trigger" })
         },
       })
     },

@@ -22,6 +22,7 @@ export type {
   MenubarContext,
   NavigateDetails,
   OpenChangeDetails,
+  OpenChangeReason,
   OptionItemProps,
   OptionItemState,
   Point,

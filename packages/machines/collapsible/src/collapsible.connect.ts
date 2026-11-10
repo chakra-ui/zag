@@ -51,8 +51,8 @@ export function connect<T extends PropTypes>(
     measureSize() {
       send({ type: "size.measure" })
     },
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "open" : "close", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "open" : "close", src: reason, replaces: "open" })
     },
 
     getRootProps() {
@@ -111,7 +111,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (triggerState.disabled) return
-          send({ type: triggerState.open ? "close" : "open" })
+          send({ type: triggerState.open ? "close" : "open", src: "trigger-click" })
         },
       })
     },

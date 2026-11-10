@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   contains,
@@ -17,7 +17,7 @@ import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./popover.dom"
 import { getViewportSizeStyle, type ViewportSize } from "./popover.style"
 import type { PopupActivationDirection } from "@zag-js/types"
-import type { InstantType, Placement, PopoverSchema } from "./popover.types"
+import type { InstantType, OpenChangeReason, Placement, PopoverSchema } from "./popover.types"
 
 export const machine = createMachine<PopoverSchema>({
   props({ props }) {
@@ -266,7 +266,7 @@ export const machine = createMachine<PopoverSchema>({
             onDismiss(event) {
               send({
                 type: "CLOSE",
-                src: "interact-outside",
+                src: getDismissReason(event),
                 restoreFocus,
                 focusVisible: event?.type === "keydown",
                 instant: getDismissInstant(event),
@@ -474,14 +474,14 @@ export const machine = createMachine<PopoverSchema>({
           element?.focus(focusOptions)
         })
       },
-      invokeOnOpen({ prop, flush }) {
+      invokeOnOpen({ prop, flush, event }) {
         flush(() => {
-          prop("onOpenChange")?.({ open: true })
+          prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
         })
       },
-      invokeOnClose({ prop, flush }) {
+      invokeOnClose({ prop, flush, event }) {
         flush(() => {
-          prop("onOpenChange")?.({ open: false })
+          prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
         })
       },
       toggleVisibility({ event, send, prop }) {
@@ -507,6 +507,10 @@ function setViewportSize(params: Params<PopoverSchema>, size: ViewportSize) {
   if (!refs.get("awaitingViewportSize")) return
   refs.set("awaitingViewportSize", false)
   send({ type: "POSITIONING.SET" })
+}
+
+function getOpenChangeReason(event: PopoverSchema["event"]) {
+  return event.src as OpenChangeReason | undefined
 }
 
 function getDismissInstant(event: Event | undefined): InstantType {

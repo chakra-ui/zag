@@ -7,8 +7,29 @@ import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } fro
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened or closed the dialog:
+ * - `trigger-click`: the trigger was pressed
+ * - `close-trigger`: the close trigger was pressed
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "close-trigger"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the dialog
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -162,6 +183,7 @@ export interface DialogSchema {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "TRIGGER_VALUE.SET"
     value?: string | null | undefined
     restoreFocus?: boolean | undefined
+    src?: OpenChangeReason | undefined
     previousEvent?: any
   }
 }
@@ -253,7 +275,7 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the dialog
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The active trigger value
    */

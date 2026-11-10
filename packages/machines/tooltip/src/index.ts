@@ -10,6 +10,7 @@ export type {
   ElementIds,
   TooltipMachine as Machine,
   OpenChangeDetails,
+  OpenChangeReason,
   Placement,
   PositioningOptions,
   TooltipProps as Props,

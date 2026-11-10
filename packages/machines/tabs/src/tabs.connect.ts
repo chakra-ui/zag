@@ -83,11 +83,11 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     value: context.get("value"),
     focusedValue: context.get("focusedValue"),
     activationDirection,
-    setValue(value) {
-      send({ type: "VALUE.SET", value })
+    setValue(value, reason = "script") {
+      send({ type: "VALUE.SET", value, src: reason })
     },
     clearValue() {
-      send({ type: "VALUE.SET", value: null })
+      send({ type: "VALUE.SET", value: null, src: "script" })
     },
     setIndicatorRect(value) {
       send({ type: "INDICATOR.SET", value })
@@ -96,10 +96,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       send({ type: "CONTENT.SYNC" })
     },
     selectNext(fromValue) {
-      send({ type: "VALUE.STEP", step: 1, from: fromValue })
+      send({ type: "VALUE.STEP", step: 1, from: fromValue, src: "script" })
     },
     selectPrevious(fromValue) {
-      send({ type: "VALUE.STEP", step: -1, from: fromValue })
+      send({ type: "VALUE.STEP", step: -1, from: fromValue, src: "script" })
     },
     focus() {
       const value = context.get("value")
@@ -216,7 +216,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           const shouldNavigate = prop("navigate") != null && isAnchorElement(node)
 
           if (shouldNavigate) event.preventDefault()
-          send({ type: "TRIGGER.CLICK", value })
+          send({ type: "TRIGGER.CLICK", value, src: "trigger-click" })
         },
       })
     },

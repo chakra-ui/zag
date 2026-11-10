@@ -15,11 +15,44 @@ export interface ScrollToIndexDetails {
   getElement: () => HTMLElement | null
 }
 
+/**
+ * What opened or closed the menu:
+ * - `trigger-click`: the trigger was pressed by pointer or Enter/Space
+ * - `arrow-key`: an arrow key opened or closed the menu
+ * - `context-menu`: the context trigger was right-clicked or long-pressed
+ * - `trigger-hover`: the pointer hovered the trigger (submenu or menubar)
+ * - `pointer-leave`: the pointer left a submenu or its trigger
+ * - `sibling-open`: another menu in the menubar opened
+ * - `item-select`: an item was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `tab-key`: Tab moved focus out of the menu
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "arrow-key"
+  | "context-menu"
+  | "trigger-hover"
+  | "pointer-leave"
+  | "sibling-open"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "tab-key"
+  | "script"
+
 export interface OpenChangeDetails {
   /**
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * What opened or closed the menu
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -499,7 +532,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the menu
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The trigger value
    */

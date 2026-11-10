@@ -16,6 +16,7 @@ export type {
   FocusChangeDetails,
   NavigateDetails,
   ValueChangeDetails,
+  ValueChangeReason,
   TriggerProps,
   TriggerState,
 } from "./tabs.types"

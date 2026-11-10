@@ -1,11 +1,11 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { AnimationFrame, getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
-import type { DialogSchema } from "./dialog.types"
+import type { DialogSchema, OpenChangeReason } from "./dialog.types"
 
 export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
@@ -174,8 +174,8 @@ export const machine = createMachine<DialogSchema>({
                 event.preventDefault()
               }
             },
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+            onDismiss(event) {
+              send({ type: "CLOSE", src: getDismissReason(event), restoreFocus })
             },
           })
         })
@@ -280,12 +280,12 @@ export const machine = createMachine<DialogSchema>({
         refs.get("renderedFrame").cancel()
       },
 
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
 
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
 
       setTriggerValue({ context, event }) {
@@ -302,3 +302,7 @@ export const machine = createMachine<DialogSchema>({
     },
   },
 })
+
+function getOpenChangeReason(event: DialogSchema["event"]) {
+  return event.src as OpenChangeReason | undefined
+}

@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
-import type { AccordionApi, AccordionSchema, ItemProps, ItemState } from "./accordion.types"
+import type { AccordionApi, AccordionSchema, ItemProps, ItemState, ValueChangeReason } from "./accordion.types"
 
 export function connect<T extends PropTypes>(
   service: Service<AccordionSchema>,
@@ -15,12 +15,12 @@ export function connect<T extends PropTypes>(
   const value = context.get("value")
   const multiple = prop("multiple")
 
-  function setValue(value: string[]) {
+  function setValue(value: string[], reason: ValueChangeReason = "script") {
     let nextValue = value
     if (!multiple && nextValue.length > 1) {
       nextValue = [nextValue[0]]
     }
-    send({ type: "VALUE.SET", value: nextValue })
+    send({ type: "VALUE.SET", value: nextValue, src: reason })
   }
 
   function getItemState(props: ItemProps): ItemState {
@@ -129,7 +129,7 @@ export function connect<T extends PropTypes>(
           if (isSafari()) {
             event.currentTarget.focus()
           }
-          send({ type: "TRIGGER.CLICK", value })
+          send({ type: "TRIGGER.CLICK", value, src: "trigger-click" })
         },
       })
     },

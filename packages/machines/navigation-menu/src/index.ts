@@ -19,4 +19,5 @@ export type {
   LinkProps,
   TriggerState,
   ValueChangeDetails,
+  ValueChangeReason,
 } from "./navigation-menu.types"

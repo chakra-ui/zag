@@ -103,8 +103,8 @@ export function connect<T extends PropTypes>(
     getViewportNode() {
       return dom.getViewportEl(scope)
     },
-    setValue(value) {
-      send({ type: "VALUE.SET", value })
+    setValue(value, reason = "script") {
+      send({ type: "VALUE.SET", value, src: reason })
     },
     reposition() {
       send({ type: "VIEWPORT.POSITION" })
@@ -223,7 +223,7 @@ export function connect<T extends PropTypes>(
         },
         onClick() {
           if (prop("disableClickTrigger")) return
-          send({ type: "TRIGGER.CLICK", value: props.value })
+          send({ type: "TRIGGER.CLICK", value: props.value, src: "trigger-click" })
         },
         onKeyDown(event) {
           const verticalEntryKey = prop("dir") === "rtl" ? "ArrowLeft" : "ArrowRight"
@@ -323,7 +323,7 @@ export function connect<T extends PropTypes>(
           target.dispatchEvent(linkSelectEvent)
 
           if (closeOnClick && !linkSelectEvent.defaultPrevented && !event.metaKey) {
-            send({ type: "CLOSE" })
+            send({ type: "CLOSE", src: "item-select" })
           }
         },
         onKeyDown(event) {

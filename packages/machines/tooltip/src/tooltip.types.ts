@@ -6,8 +6,39 @@ import type { CommonProperties, DirectionProperty, PopupActivationDirection, Pro
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened or closed the tooltip:
+ * - `trigger-hover`: the pointer entered the trigger
+ * - `trigger-focus`: the trigger received keyboard focus
+ * - `trigger-blur`: the trigger lost focus
+ * - `trigger-click`: the trigger was pressed
+ * - `pointer-leave`: the pointer left the trigger or content
+ * - `escape-key`: Escape was pressed
+ * - `scroll`: an ancestor of the trigger scrolled
+ * - `sibling-open`: another tooltip opened
+ * - `interact-outside`: the pointer was locked
+ * - `disabled`: the tooltip was disabled while open
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-hover"
+  | "trigger-focus"
+  | "trigger-blur"
+  | "trigger-click"
+  | "pointer-leave"
+  | "escape-key"
+  | "scroll"
+  | "sibling-open"
+  | "interact-outside"
+  | "disabled"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the tooltip
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -266,7 +297,7 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the tooltip.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The trigger value
    */

@@ -27,7 +27,7 @@ import {
 import { clampValue, ensureProps, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
-import type { FloatingPanelSchema, Stage } from "./floating-panel.types"
+import type { FloatingPanelSchema, OpenChangeReason, Stage } from "./floating-panel.types"
 
 const { not, and } = createGuards<FloatingPanelSchema>()
 
@@ -624,11 +624,11 @@ export const machine = createMachine<FloatingPanelSchema>({
       removeFromPanelStack({ prop }) {
         panelStack.remove(prop("id"))
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
       invokeOnDragEnd({ context, prop }) {
         prop("onPositionChangeEnd")?.({ position: context.get("position") })
@@ -665,3 +665,8 @@ export const machine = createMachine<FloatingPanelSchema>({
     },
   },
 })
+
+function getOpenChangeReason(event: FloatingPanelSchema["event"]): OpenChangeReason | undefined {
+  if (event.type === "ESCAPE") return "escape-key"
+  return event.src as OpenChangeReason | undefined
+}

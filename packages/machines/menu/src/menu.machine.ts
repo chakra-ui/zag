@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Params, type Transition } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
   AnimationFrame,
@@ -30,7 +30,7 @@ import { isEqual } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import { getViewportSizeStyle } from "./menu.style"
-import type { MenuSchema, ViewportSize } from "./menu.types"
+import type { MenuSchema, OpenChangeReason, ViewportSize } from "./menu.types"
 import type { PopupActivationDirection } from "@zag-js/types"
 import {
   closeRootMenu,
@@ -58,6 +58,10 @@ const keyboardEvents = new Set([
   "INPUT.NAVIGATE",
 ])
 const pointerEvents = new Set(["ITEM_POINTERMOVE", "ITEM_POINTERLEAVE", "ITEM_POINTERDOWN", "ITEM_CLICK"])
+
+function getOpenChangeReason(event: MenuSchema["event"]) {
+  return event.src as OpenChangeReason | undefined
+}
 
 function getHighlightReason(event: { type: string; previousEvent?: any } | undefined) {
   const type = event?.type === "CONTROLLED.OPEN" ? event.previousEvent?.type : event?.type
@@ -396,7 +400,7 @@ export const machine = createMachine<MenuSchema>({
           },
           {
             target: "closed",
-            actions: ["focusParentMenu", "restoreParentHighlightedItem"],
+            actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose", "releaseParentRoutingLock"],
           },
         ],
         "DELAY.CLOSE": [
@@ -701,7 +705,7 @@ export const machine = createMachine<MenuSchema>({
         if (!menubarEl) return
         const triggerId = dom.getTriggerId(scope)
         return addDomEvent(menubarEl, "menubar:open-request", (event: any) => {
-          if (event.detail?.triggerId === triggerId) send({ type: "OPEN", instant: true })
+          if (event.detail?.triggerId === triggerId) send({ type: "OPEN", instant: true, src: "arrow-key" })
         })
       },
       // When coordinated by a menubar, close this menu if a sibling menu opens.
@@ -730,7 +734,7 @@ export const machine = createMachine<MenuSchema>({
           // here would refocus this trigger and reset the menubar's active value.
           send({
             type: "CLOSE",
-            src: "menubar-sibling-open",
+            src: "sibling-open",
             restoreFocus: false,
             instant: true,
           })
@@ -738,19 +742,19 @@ export const machine = createMachine<MenuSchema>({
       },
       waitForOpenDelay({ send }) {
         const timer = setTimeout(() => {
-          send({ type: "DELAY.OPEN" })
+          send({ type: "DELAY.OPEN", src: "trigger-hover" })
         }, 200)
         return () => clearTimeout(timer)
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
-          send({ type: "DELAY.CLOSE" })
+          send({ type: "DELAY.CLOSE", src: "pointer-leave" })
         }, 100)
         return () => clearTimeout(timer)
       },
       waitForLongPress({ send }) {
         const timer = setTimeout(() => {
-          send({ type: "LONG_PRESS.OPEN" })
+          send({ type: "LONG_PRESS.OPEN", src: "context-menu" })
         }, 700)
         return () => clearTimeout(timer)
       },
@@ -842,11 +846,11 @@ export const machine = createMachine<MenuSchema>({
               event.preventDefault()
               // Escape from a submenu's filter input steps back to the parent, which keeps its own query
               if (isEditableElement(getEventTarget(event))) {
-                send({ type: "ARROW_LEFT" })
+                send({ type: "ARROW_LEFT", src: "escape-key" })
                 return
               }
             }
-            closeRootMenu({ parent: refs.get("parent") })
+            closeRootMenu({ parent: refs.get("parent"), src: "escape-key" })
           },
           onPointerDownOutside(event) {
             prop("onPointerDownOutside")?.(event)
@@ -860,8 +864,8 @@ export const machine = createMachine<MenuSchema>({
             }
             restoreFocus = !event.detail.focusable
           },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          onDismiss(event) {
+            send({ type: "CLOSE", src: getDismissReason(event), restoreFocus })
           },
         })
       },
@@ -880,7 +884,7 @@ export const machine = createMachine<MenuSchema>({
           })
 
           if (!isMovingToSubmenu) {
-            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU" })
+            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU", src: "pointer-leave" })
             setParentRoutingLock(parent, false)
           }
         })
@@ -1011,6 +1015,7 @@ export const machine = createMachine<MenuSchema>({
             value: highlightedValue,
             closeOnSelect: dom.getItemCloseOnSelect(itemEl),
             modifiers,
+            src: "item-select",
           })
         } else {
           const win = getWindow(itemEl)
@@ -1177,7 +1182,7 @@ export const machine = createMachine<MenuSchema>({
         const triggerEl = dom.getActiveTriggerEl(rootScope, triggerValue)
         const nextEl = getAdjacentTabbable(triggerEl, { exclude: positioners, backward: event.shiftKey })
 
-        const closeEvent = { type: "CLOSE", restoreFocus: nextEl ? false : undefined }
+        const closeEvent = { type: "CLOSE", src: "tab-key", restoreFocus: nextEl ? false : undefined }
         if (root) root.send(closeEvent)
         else send(closeEvent)
         nextEl?.focus({ preventScroll: true })
@@ -1312,18 +1317,18 @@ export const machine = createMachine<MenuSchema>({
           // Focus parent menu before closing to prevent focus from escaping
           // (fixes issue where submenus with focusable elements cause parent to close)
           dom.getContentEl(scope, context.get("triggerValue"))?.focus({ preventScroll: true })
-          child.send({ type: "CLOSE" })
+          child.send({ type: "CLOSE", src: "pointer-leave" })
         }
       },
       closeRootMenu({ refs }) {
-        closeRootMenu({ parent: refs.get("parent") })
+        closeRootMenu({ parent: refs.get("parent"), src: "item-select" })
       },
-      openSubmenu({ refs, scope, computed }) {
+      openSubmenu({ refs, scope, computed, event }) {
         const item = scope.getById(computed("highlightedId")!)
         const id = item?.getAttribute(parts.triggerItem.attr)
         const children = refs.get("children")
         const child = id ? children[id] : null
-        child?.send({ type: "OPEN_AUTOFOCUS" })
+        child?.send({ type: "OPEN_AUTOFOCUS", src: event.src })
       },
       focusParentMenu({ refs }) {
         refs.get("parent")?.send({ type: "FOCUS_MENU" })
@@ -1349,11 +1354,11 @@ export const machine = createMachine<MenuSchema>({
       restoreParentHighlightedItem({ refs }) {
         refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
       releaseParentRoutingLock({ refs, context }) {
         if (!context.get("isSubmenu")) return

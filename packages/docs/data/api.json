@@ -10,7 +10,7 @@
         "description": "The value of the accordion"
       },
       "setValue": {
-        "type": "(value: string[]) => void",
+        "type": "(value: string[], reason?: ValueChangeReason) => void",
         "description": "Sets the value of the accordion"
       },
       "getItemState": {
@@ -565,7 +565,7 @@
         "description": "Function to set the positioning options of the cascade-select"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason | undefined) => void",
         "description": "Function to open the cascade-select"
       },
       "setHighlightedValue": {
@@ -907,7 +907,7 @@
         "description": "Whether the collapsible is disabled"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the collapsible."
       },
       "measureSize": {
@@ -1010,8 +1010,8 @@
         "description": "Function to set the color value"
       },
       "getChannelValueText": {
-        "type": "(channel: ColorChannel, locale: string) => string",
-        "description": "Function to get the formatted and localized value of a specific channel"
+        "type": "(channel: ColorChannel, locale?: string) => string",
+        "description": "Function to get the formatted and localized value of a specific channel.\nUses the `locale` prop when `locale` is omitted."
       },
       "setChannelValue": {
         "type": "(channel: ColorChannel, value: number) => void",
@@ -1034,7 +1034,7 @@
         "description": "Function to set the color alpha"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the color picker"
       },
       "getRootState": {
@@ -1154,6 +1154,11 @@
       "getRootNode": {
         "type": "(() => ShadowRoot | Document | Node) | undefined",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "locale": {
+        "type": "string | undefined",
+        "description": "The current locale. Based on the BCP 47 definition.",
+        "defaultValue": "\"en-US\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\" | undefined",
@@ -1829,7 +1834,7 @@
         "description": "Clears the selected date(s)."
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the calendar."
       },
       "focusMonth": {
@@ -2109,7 +2114,7 @@
         "description": "Whether the dialog is modal"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the dialog"
       },
       "triggerValue": {
@@ -2411,7 +2416,7 @@
         "description": "Set the active trigger value."
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the menu."
       },
       "snapPoints": {
@@ -3211,7 +3216,7 @@
         "description": "Whether the panel is open"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the panel"
       },
       "dragging": {
@@ -4176,7 +4181,7 @@
         "description": "Whether the menu is open"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the menu"
       },
       "triggerValue": {
@@ -4186,6 +4191,14 @@
       "setTriggerValue": {
         "type": "(value: string | null) => void",
         "description": "Function to set the trigger value"
+      },
+      "activationDirection": {
+        "type": "PopupActivationDirection | null",
+        "description": "Where the current trigger sits relative to the previous one, after switching triggers while open"
+      },
+      "getContentValues": {
+        "type": "() => string[]",
+        "description": "Returns the trigger values whose content to render: the current one, plus the previous one while\nit animates out after a switch. Oldest first."
       },
       "highlightedValue": {
         "type": "string | null",
@@ -4228,8 +4241,12 @@
         "description": "Returns the state of the positioner"
       },
       "getContentState": {
-        "type": "() => ContentState",
+        "type": "(props?: ContentProps) => ContentState",
         "description": "Returns the state of the content"
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
       }
     },
     "context": {
@@ -4244,6 +4261,14 @@
       "highlightedValue": {
         "type": "string | null | undefined",
         "description": "The controlled highlighted value of the menu item."
+      },
+      "collection": {
+        "type": "ListCollection<any> | undefined",
+        "description": "The menu's items, in order. Set it when the items are virtualized, so the keyboard\nand typeahead can reach items that aren't rendered."
+      },
+      "scrollToIndexFn": {
+        "type": "((details: ScrollToIndexDetails) => void) | undefined",
+        "description": "Scrolls the item at an index into view, for virtualized items. Used with `collection`."
       },
       "onHighlightChange": {
         "type": "((details: HighlightChangeDetails) => void) | undefined",
@@ -4525,7 +4550,7 @@
         "description": "The current value of the menu"
       },
       "setValue": {
-        "type": "(value: string) => void",
+        "type": "(value: string, reason?: ValueChangeReason) => void",
         "description": "Sets the value of the menu"
       },
       "open": {
@@ -4535,6 +4560,10 @@
       "isViewportRendered": {
         "type": "boolean",
         "description": "Whether the viewport is rendered"
+      },
+      "activationDirection": {
+        "type": "Exclude<ActivationDirection, \"none\"> | null",
+        "description": "Where the open item's trigger sits relative to the previous one: `left`, `right`, `up` or `down`.\n`null` when opened from closed."
       },
       "getViewportNode": {
         "type": "() => HTMLElement | null",
@@ -5394,7 +5423,7 @@
         "description": "Whether the popover is open"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the popover"
       },
       "triggerValue": {
@@ -5404,6 +5433,14 @@
       "setTriggerValue": {
         "type": "(value: string | null) => void",
         "description": "Function to set the trigger value"
+      },
+      "activationDirection": {
+        "type": "PopupActivationDirection | null",
+        "description": "Where the current trigger sits relative to the previous one, after switching triggers while open"
+      },
+      "getContentValues": {
+        "type": "() => string[]",
+        "description": "Returns the trigger values whose content to render: the current one, plus the previous one while\nit animates out after a switch. Oldest first."
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -5418,8 +5455,20 @@
         "description": "Returns the state of the positioner"
       },
       "getContentState": {
-        "type": "() => ContentState",
+        "type": "(props?: ContentProps) => ContentState",
         "description": "Returns the state of the content"
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
+      },
+      "getTitleProps": {
+        "type": "(props?: ContentProps) => T[\"element\"]",
+        "description": "Pass the content's `value` when there's one content per trigger"
+      },
+      "getDescriptionProps": {
+        "type": "(props?: ContentProps) => T[\"element\"]",
+        "description": "Pass the content's `value` when there's one content per trigger"
       }
     },
     "context": {
@@ -6430,7 +6479,7 @@
         "description": "Returns the state of a select item"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the select"
       },
       "collection": {
@@ -7284,8 +7333,12 @@
         "type": "string | null",
         "description": "The value of the tab that is currently focused."
       },
+      "activationDirection": {
+        "type": "ActivationDirection",
+        "description": "Where the selected tab sits relative to the previously selected one"
+      },
       "setValue": {
-        "type": "(value: string) => void",
+        "type": "(value: string, reason?: ValueChangeReason) => void",
         "description": "Sets the value of the tabs."
       },
       "clearValue": {
@@ -7306,11 +7359,11 @@
       },
       "selectNext": {
         "type": "(fromValue?: string) => void",
-        "description": "Selects the next tab"
+        "description": "Selects the next enabled tab, without moving focus"
       },
       "selectPrevious": {
         "type": "(fromValue?: string) => void",
-        "description": "Selects the previous tab"
+        "description": "Selects the previous enabled tab, without moving focus"
       },
       "getTriggerState": {
         "type": "(props: TriggerProps) => TriggerState",
@@ -7319,6 +7372,10 @@
       "getContentState": {
         "type": "(props: ContentProps) => ContentState",
         "description": "Returns the state of the content with the given props"
+      },
+      "getIndicatorState": {
+        "type": "() => IndicatorState",
+        "description": "Returns the state of the indicator"
       }
     },
     "context": {
@@ -8092,7 +8149,7 @@
         "description": "Whether the tooltip is open."
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open the tooltip."
       },
       "triggerValue": {
@@ -8103,6 +8160,14 @@
         "type": "(value: string | null) => void",
         "description": "Function to set the trigger value"
       },
+      "activationDirection": {
+        "type": "PopupActivationDirection | null",
+        "description": "Where the current trigger sits relative to the previous one, after switching triggers while open"
+      },
+      "getContentValues": {
+        "type": "() => string[]",
+        "description": "Returns the trigger values whose content to render: the current one, plus the previous one while\nit animates out after a switch. Oldest first."
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -8112,8 +8177,12 @@
         "description": "Returns the state of a specific trigger, including whether it's the currently active one"
       },
       "getContentState": {
-        "type": "() => ContentState",
+        "type": "(props?: ContentProps) => ContentState",
         "description": "Returns the state of the content"
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
       }
     },
     "context": {

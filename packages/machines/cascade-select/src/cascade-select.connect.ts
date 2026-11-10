@@ -121,8 +121,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
       dom.getTriggerEl(scope)?.focus({ preventScroll: true })
     },
 
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
     setHighlightedValue(value) {
@@ -215,7 +215,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
         onFocus() {
           send({ type: "TRIGGER.FOCUS" })
@@ -229,22 +229,22 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send({ type: "TRIGGER.ARROW_UP" })
+              send({ type: "TRIGGER.ARROW_UP", src: "arrow-key" })
             },
             ArrowDown(event) {
-              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
+              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN", src: "arrow-key" })
             },
             ArrowLeft() {
-              send({ type: "TRIGGER.ARROW_LEFT" })
+              send({ type: "TRIGGER.ARROW_LEFT", src: "arrow-key" })
             },
             ArrowRight() {
-              send({ type: "TRIGGER.ARROW_RIGHT" })
+              send({ type: "TRIGGER.ARROW_RIGHT", src: "arrow-key" })
             },
             Enter() {
-              send({ type: "TRIGGER.ENTER" })
+              send({ type: "TRIGGER.ENTER", src: "trigger-click" })
             },
             Space() {
-              send({ type: "TRIGGER.ENTER" })
+              send({ type: "TRIGGER.ENTER", src: "trigger-click" })
             },
           }
 
@@ -332,7 +332,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
               send({ type: "CONTENT.ARROW_RIGHT" })
             },
             ArrowLeft() {
-              send({ type: "CONTENT.ARROW_LEFT" })
+              send({ type: "CONTENT.ARROW_LEFT", src: "arrow-key" })
             },
             Home() {
               send({ type: "CONTENT.HOME" })
@@ -341,10 +341,10 @@ export function connect<T extends PropTypes, V = TreeNode>(
               send({ type: "CONTENT.END" })
             },
             Enter() {
-              send({ type: "CONTENT.ENTER" })
+              send({ type: "CONTENT.ENTER", src: "item-select" })
             },
             " "() {
-              send({ type: "CONTENT.ENTER" })
+              send({ type: "CONTENT.ENTER", src: "item-select" })
             },
           }
 
@@ -415,13 +415,13 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-index-path": indexPath.toString(),
         onDoubleClick() {
           if (itemState.disabled) return
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "item-select" })
         },
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", value: itemState.value, indexPath })
+          send({ type: "ITEM.CLICK", value: itemState.value, indexPath, src: "item-select" })
         },
         onPointerMove(event) {
           if (!interactive) return

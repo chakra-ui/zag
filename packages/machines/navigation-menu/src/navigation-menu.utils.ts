@@ -9,6 +9,7 @@ export function setCloseTimeout(
   clearCloseTimeout(refs)
 
   const closeTimeoutId = window.setTimeout(() => {
+    refs.set("valueChangeReason", "pointer-leave")
     context.set("value", "")
     context.set("activationDirection", "none")
   }, prop("closeDelay"))

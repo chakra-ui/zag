@@ -8,8 +8,31 @@ import type { PhysicalSwipeDirection } from "./utils/session"
 export type SwipeDirection = "up" | "down" | "start" | "end"
 export type SnapPoint = number | string
 
+/**
+ * What opened or closed the drawer:
+ * - `trigger-click`: the trigger was pressed
+ * - `close-trigger`: the close trigger was pressed
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `swipe`: the drawer was swiped open or closed
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "close-trigger"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "swipe"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the drawer
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -448,7 +471,7 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the menu.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The snap points of the drawer.
    */

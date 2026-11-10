@@ -409,9 +409,9 @@ export function connect<T extends PropTypes>(
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
     },
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       if (prop("inline")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     focusMonth,
     focusYear,
@@ -547,7 +547,7 @@ export function connect<T extends PropTypes>(
                 const cellState = getYearTableCellState({ value: focusedValue.year })
                 if (!cellState.selectable) return
               }
-              send({ type: "TABLE.ENTER", view, columns, focus: true })
+              send({ type: "TABLE.ENTER", view, columns, focus: true, src: "item-select" })
             },
             Space(event) {
               keyMap.Enter?.(event)
@@ -717,7 +717,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "day", value })
+          send({ type: "CELL.CLICK", cell: "day", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -782,7 +782,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "month", value })
+          send({ type: "CELL.CLICK", cell: "month", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -841,7 +841,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "year", value })
+          send({ type: "CELL.CLICK", cell: "year", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -926,7 +926,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
       })
     },
@@ -1004,7 +1004,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!prop("openOnClick")) return
           if (!interactive) return
-          send({ type: "OPEN", src: "input.click" })
+          send({ type: "OPEN", src: "input-click" })
         },
         onFocus() {
           send({ type: "INPUT.FOCUS", index })
@@ -1089,7 +1089,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "PRESET.CLICK", value })
+          send({ type: "PRESET.CLICK", value, src: "item-select" })
         },
       })
     },

@@ -1,6 +1,6 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
 import { createGuards, createMachine, type Params, type Scope } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   disableTextSelection,
@@ -16,7 +16,7 @@ import type { Orientation } from "@zag-js/types"
 import { tryCatch } from "@zag-js/utils"
 import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
-import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
+import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel, OpenChangeReason } from "./color-picker.types"
 import { getAreaFormat } from "./utils/get-area-format"
 import { getChannelValue } from "./utils/get-channel-input-value"
 import { prefixHex } from "./utils/is-valid-hex"
@@ -435,7 +435,7 @@ export const machine = createMachine<ColorPickerSchema>({
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
           onDismiss(event) {
-            send({ type: "INTERACT_OUTSIDE", focusVisible: event?.type === "keydown" })
+            send({ type: "INTERACT_OUTSIDE", src: getDismissReason(event), focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -670,13 +670,13 @@ export const machine = createMachine<ColorPickerSchema>({
         if (newValue.isEqual(value)) return
         context.set("value", newValue)
       },
-      invokeOnOpen({ prop, context }) {
+      invokeOnOpen({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop, context }) {
+      invokeOnClose({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
       toggleVisibility({ prop, event, send }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
@@ -699,6 +699,10 @@ function syncFormatSelect(frame: AnimationFrame, scope: Scope, format: ColorForm
   const selectEl = dom.getFormatSelectEl(scope)
   if (!selectEl) return
   frame.request(() => setElementValue(selectEl, format))
+}
+
+function getOpenChangeReason(event: Params<ColorPickerSchema>["event"]) {
+  return event.src as OpenChangeReason | undefined
 }
 
 // Show the focus ring when closed from the keyboard; leave it to the browser otherwise

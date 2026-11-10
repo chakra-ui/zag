@@ -12,7 +12,7 @@ import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
 import type { Params } from "@zag-js/core"
 import type { ActivationDirection } from "@zag-js/types"
-import type { TabsSchema } from "./tabs.types"
+import type { TabsSchema, ValueChangeReason } from "./tabs.types"
 
 const { createMachine } = setup<TabsSchema>()
 
@@ -32,14 +32,15 @@ export const machine = createMachine({
     return "idle"
   },
 
-  context({ prop, bindable, scope }) {
+  context({ prop, bindable, scope, getEvent }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value, prevValue) {
           const activationDirection = dom.getActivationDirection(scope, prevValue ?? null, value, prop("orientation"))
-          prop("onValueChange")?.({ value, activationDirection })
+          const reason = getEvent().src as ValueChangeReason | undefined
+          prop("onValueChange")?.({ value, activationDirection, reason })
         },
       })),
       focusedValue: bindable(() => ({
@@ -165,7 +166,7 @@ export const machine = createMachine({
     },
 
     actions: {
-      selectFocusedTab({ context, prop, event, scope, refs }) {
+      selectFocusedTab({ context, prop, event, scope, refs, send }) {
         refs.get("selectFrame").request(() => {
           const value = context.get("focusedValue")
           if (!value || context.get("value") === value) return
@@ -178,7 +179,8 @@ export const machine = createMachine({
             }
           }
 
-          context.set("value", value)
+          // Sent so the change carries its reason; the frame runs after focus events
+          send({ type: "VALUE.SET", value, src: "keyboard" })
         })
       },
       setFocusedValue({ context, event, flush }) {

@@ -22,10 +22,33 @@ export interface HighlightChangeDetails<T = TreeNode> {
   highlightedItems: T[]
 }
 
+/**
+ * What opened or closed the cascade select:
+ * - `trigger-click`: the trigger was pressed
+ * - `arrow-key`: an arrow key was pressed
+ * - `item-select`: an item was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "arrow-key"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
   /** The current value when open state changes - for consistency with select */
   value: string[][]
+  /**
+   * What opened or closed the cascade select
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ScrollToIndexDetails {
@@ -387,7 +410,7 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   /**
    * Function to open the cascade-select
    */
-  setOpen(open: boolean): void
+  setOpen(open: boolean, reason?: OpenChangeReason): void
   /**
    * Function to set the highlighted value (path or single value to find), or clear it with `null`
    */

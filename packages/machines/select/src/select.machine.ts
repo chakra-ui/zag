@@ -1,6 +1,6 @@
 import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
   AnimationFrame,
@@ -24,7 +24,7 @@ import { addOrRemove, isEqual } from "@zag-js/utils"
 import { trackAlignItemWithTrigger } from "./align-with-trigger"
 import { collection } from "./select.collection"
 import * as dom from "./select.dom"
-import type { CollectionItem, SelectSchema } from "./select.types"
+import type { CollectionItem, OpenChangeReason, SelectSchema, ValueChangeReason } from "./select.types"
 
 const { and, not, or } = createGuards<SelectSchema>()
 
@@ -51,7 +51,7 @@ export const machine = createMachine<SelectSchema>({
     }
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
@@ -86,7 +86,11 @@ export const machine = createMachine<SelectSchema>({
                 })
 
           context.set("selectedItemMap", effective.nextSelectedItemMap)
-          return prop("onValueChange")?.({ value, items: proposed.selectedItems })
+          return prop("onValueChange")?.({
+            value,
+            items: proposed.selectedItems,
+            reason: getValueChangeReason(getEvent()),
+          })
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
@@ -601,7 +605,7 @@ export const machine = createMachine<SelectSchema>({
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
           onDismiss(event) {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
+            send({ type: "CLOSE", src: getDismissReason(event), restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -841,7 +845,7 @@ export const machine = createMachine<SelectSchema>({
       },
 
       clickReleasedItem({ send, event }) {
-        send({ type: "ITEM.CLICK", src: "pointerup", value: event.value })
+        send({ type: "ITEM.CLICK", src: "item-select", value: event.value })
       },
 
       focusAdjacentTabbable({ scope, event }) {
@@ -1029,12 +1033,12 @@ export const machine = createMachine<SelectSchema>({
         }
       },
 
-      invokeOnOpen({ prop, context }) {
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+      invokeOnOpen({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose({ prop, context }) {
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      invokeOnClose({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
 
       syncSelectElement({ context, prop, scope }) {
@@ -1117,6 +1121,14 @@ export const machine = createMachine<SelectSchema>({
     },
   },
 })
+
+function getOpenChangeReason(event: SelectSchema["event"]) {
+  return event.src as OpenChangeReason | undefined
+}
+
+function getValueChangeReason(event: SelectSchema["event"]) {
+  return (event.previousEvent ?? event).src as ValueChangeReason | undefined
+}
 
 function restoreFocusFn(event: Record<string, any>) {
   const v = event.restoreFocus ?? event.previousEvent?.restoreFocus

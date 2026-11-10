@@ -30,9 +30,30 @@ export interface ValueChangeDetails {
   valueAsString: string
 }
 
+/**
+ * What opened or closed the color picker:
+ * - `trigger-click`: the trigger was pressed
+ * - `item-select`: a swatch was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
   value: Color
+  /**
+   * What opened or closed the color picker
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface FormatChangeDetails {
@@ -399,7 +420,7 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the color picker
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
 
   /**
    * Returns the state of the root

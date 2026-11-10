@@ -18,6 +18,7 @@ export type {
   RootState,
   ScrollToIndexDetails,
   OpenChangeDetails,
+  OpenChangeReason,
   TreeNode,
   Placement,
   TriggerState,

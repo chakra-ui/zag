@@ -135,9 +135,9 @@ export function connect<T extends PropTypes>(
       return resolveGamutOverlay(props)
     },
     inline: !!prop("inline"),
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       if (prop("inline")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
@@ -232,7 +232,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         onClick() {
           if (!interactive) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
         onBlur() {
           if (!interactive) return
@@ -780,7 +780,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(swatchState.disabled),
         onClick() {
           if (swatchState.disabled) return
-          send({ type: "SWATCH_TRIGGER.CLICK", value: swatchState.value })
+          send({ type: "SWATCH_TRIGGER.CLICK", value: swatchState.value, src: "item-select" })
         },
         style: {
           "--color": swatchState.valueAsString,

@@ -1,5 +1,5 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   raf,
@@ -16,7 +16,7 @@ import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
 import { dom } from "./cascade-select.dom"
 import { createGraceArea, isPointerInGraceArea } from "./cascade-select.utils"
-import type { CascadeSelectSchema, IndexPath, TreeNode } from "./cascade-select.types"
+import type { CascadeSelectSchema, IndexPath, OpenChangeReason, TreeNode } from "./cascade-select.types"
 import { collection as cascadeSelectCollection } from "./cascade-select.collection"
 
 const { or, and, not } = createGuards<CascadeSelectSchema>()
@@ -631,7 +631,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
           onDismiss(event) {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
+            send({ type: "CLOSE", src: getDismissReason(event), restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -960,11 +960,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           triggerEl?.focus(focusOptions)
         })
       },
-      invokeOnOpen({ prop, context }) {
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+      invokeOnOpen({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop, context }) {
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      invokeOnClose({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
       toggleVisibility({ send, prop }) {
         if (prop("open") != null) {
@@ -1110,6 +1110,10 @@ const set = {
     // Invoke onHighlightChange
     prop("onHighlightChange")?.({ highlightedValue: value, highlightedItems })
   },
+}
+
+function getOpenChangeReason(event: Params<CascadeSelectSchema>["event"]) {
+  return event.src as OpenChangeReason | undefined
 }
 
 function restoreFocusFn(event: Record<string, any>) {

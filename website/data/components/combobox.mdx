@@ -443,13 +443,21 @@ Use `onValueChange` to listen for selected value changes.
 ```tsx {3-6}
 const service = useMachine(combobox.machine, {
   onValueChange(details) {
-    // details => { value: string[]; items: CollectionItem[] }
+    // details => { value: string[]; items: CollectionItem[]; reason?: ValueChangeReason }
     console.log(details)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason          | Meaning                                      |
+| --------------- | -------------------------------------------- |
+| `item-select`   | An item was clicked or selected with `Enter` |
+| `clear-trigger` | The clear trigger was pressed                |
+| `script`        | Changed programmatically, such as `setValue` |
 
 ### Form usage
 

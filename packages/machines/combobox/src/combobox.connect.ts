@@ -130,19 +130,19 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     selectValue(value) {
-      send({ type: "ITEM.SELECT", value })
+      send({ type: "ITEM.SELECT", value, src: "script" })
     },
     setValue(value) {
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "script" })
     },
     setInputValue(value, reason = "script") {
       send({ type: "INPUT_VALUE.SET", value, src: reason })
     },
     clearValue(value) {
       if (value != null) {
-        send({ type: "ITEM.CLEAR", value })
+        send({ type: "ITEM.CLEAR", value, src: "script" })
       } else {
-        send({ type: "VALUE.CLEAR" })
+        send({ type: "VALUE.CLEAR", src: "script" })
       }
     },
     focus() {

@@ -11,6 +11,7 @@ export type {
   FloatingPanelMachine as Machine,
   IntlTranslations,
   OpenChangeDetails,
+  OpenChangeReason,
   PositionChangeDetails,
   ResizeTriggerProps,
   ResizeTriggerState,

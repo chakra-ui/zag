@@ -12,6 +12,7 @@ export type {
   DialogService as Service,
   ElementIds,
   OpenChangeDetails,
+  OpenChangeReason,
   PositionerState,
   TriggerValueChangeDetails,
   TriggerProps,

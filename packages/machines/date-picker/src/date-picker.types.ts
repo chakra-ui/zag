@@ -41,9 +41,32 @@ export interface VisibleRangeChangeDetails {
   visibleRange: { start: DateValue; end: DateValue }
 }
 
+/**
+ * What opened or closed the date picker:
+ * - `trigger-click`: the trigger was pressed
+ * - `input-click`: the input was clicked (with `openOnClick`)
+ * - `item-select`: a date or preset was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "input-click"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
   value: DateValue[]
+  /**
+   * What opened or closed the date picker
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface Time {
@@ -781,7 +804,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the calendar.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to set the selected month.
    */

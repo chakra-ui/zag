@@ -17,7 +17,7 @@ import * as dom from "./tooltip.dom"
 import { isWarm, store } from "./tooltip.store"
 import { getViewportSizeStyle } from "./tooltip.style"
 import type { PopupActivationDirection } from "@zag-js/types"
-import type { Placement, TooltipSchema, ViewportSize } from "./tooltip.types"
+import type { OpenChangeReason, Placement, TooltipSchema, ViewportSize } from "./tooltip.types"
 
 const { and, not } = createGuards<TooltipSchema>()
 
@@ -371,7 +371,7 @@ export const machine = createMachine<TooltipSchema>({
       setGlobalId: ({ prop, event }) => {
         const prevId = store.get("id")
         const switching = prevId !== null && prevId !== prop("id")
-        const isInstant = event.src === "trigger.focus" || switching || isWarm()
+        const isInstant = event.src === "trigger-focus" || switching || isWarm()
         store.update({ id: prop("id"), prevId: switching ? prevId : null, instant: isInstant })
       },
 
@@ -381,17 +381,17 @@ export const machine = createMachine<TooltipSchema>({
         }
       },
 
-      invokeOnOpen: ({ prop }) => {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose: ({ prop }) => {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
 
       closeIfDisabled: ({ prop, send }) => {
         if (!prop("disabled")) return
-        send({ type: "CLOSE", src: "disabled.change" })
+        send({ type: "CLOSE", src: "disabled" })
       },
 
       reposition: ({ context, event, prop, scope, refs }) => {
@@ -511,7 +511,7 @@ export const machine = createMachine<TooltipSchema>({
           openedByPointer: () => context.get("isPointer"),
           defer: true,
           onLeave() {
-            send({ type: "SAFE_AREA.EXIT" })
+            send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
           },
         })
       },
@@ -562,7 +562,7 @@ export const machine = createMachine<TooltipSchema>({
 
       trackPointerlockChange: ({ send, scope }) => {
         const doc = scope.getDoc()
-        const onChange = () => send({ type: "CLOSE", src: "pointerlock:change" })
+        const onChange = () => send({ type: "CLOSE", src: "interact-outside" })
         return addDomEvent(doc, "pointerlockchange", onChange, false)
       },
 
@@ -598,7 +598,7 @@ export const machine = createMachine<TooltipSchema>({
           cleanup = store.subscribe(() => {
             const id = store.get("id")
             if (id !== null && id !== prop("id")) {
-              send({ type: "CLOSE", src: "id.change" })
+              send({ type: "CLOSE", src: "sibling-open" })
             }
           })
         })
@@ -615,7 +615,7 @@ export const machine = createMachine<TooltipSchema>({
           if (isComposingEvent(event)) return
           if (event.key !== "Escape") return
           event.stopPropagation()
-          send({ type: "CLOSE", src: "keydown.escape" })
+          send({ type: "CLOSE", src: "escape-key" })
         }
 
         return addDomEvent(scope.getDoc(), "keydown", onKeyDown, true)
@@ -648,4 +648,8 @@ function setViewportSize(params: Params<TooltipSchema>, size: ViewportSize) {
   if (!refs.get("awaitingViewportSize")) return
   refs.set("awaitingViewportSize", false)
   send({ type: "POSITIONING.SET" })
+}
+
+function getOpenChangeReason(event: TooltipSchema["event"]) {
+  return (event.previousEvent ?? event).src as OpenChangeReason | undefined
 }

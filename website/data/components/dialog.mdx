@@ -129,13 +129,24 @@ When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 ```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, reason?: OpenChangeReason }
     console.log("open:", details.open)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `trigger-click`    | The trigger was pressed                     |
+| `close-trigger`    | The close trigger was pressed               |
+| `escape-key`       | The user pressed `Esc`                      |
+| `interact-outside` | The user pressed outside the dialog         |
+| `focus-outside`    | Focus moved outside                         |
+| `script`           | Changed programmatically, such as `setOpen` |
 
 ### Escape to close
 

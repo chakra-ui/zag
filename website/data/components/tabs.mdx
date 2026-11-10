@@ -131,13 +131,21 @@ const service = useMachine(tabs.machine, {
     console.log("focused tab:", details.focusedValue)
   },
   onValueChange(details) {
-    // details => { value: string | null }
+    // details => { value: string | null, reason?: ValueChangeReason }
     console.log("selected tab:", details.value)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason          | Meaning                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `trigger-click` | A tab trigger was pressed                                             |
+| `keyboard`      | An arrow, `Home` or `End` key selected the tab (automatic activation) |
+| `script`        | Changed programmatically, such as `setValue` or `selectNext`          |
 
 ### Deselection
 

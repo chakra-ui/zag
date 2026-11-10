@@ -5,8 +5,20 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened or closed the collapsible:
+ * - `trigger-click`: the trigger was pressed
+ * - `find-in-page`: the browser's find-in-page revealed a match in the content
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason = "trigger-click" | "find-in-page" | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the collapsible
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ElementIds {
@@ -79,8 +91,8 @@ export interface CollapsibleSchema {
   event:
     | { type: "controlled.open" }
     | { type: "controlled.close" }
-    | { type: "open" }
-    | { type: "close" }
+    | { type: "open"; src?: OpenChangeReason }
+    | { type: "close"; src?: OpenChangeReason }
     | { type: "size.measure" }
     | { type: "animation.end" }
 
@@ -156,7 +168,7 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the collapsible.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to measure the size of the content.
    */

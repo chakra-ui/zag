@@ -3,7 +3,7 @@ import { addDomEvent, AnimationFrame, getEventTarget, raf, Timeout } from "@zag-
 import { add, remove, warn } from "@zag-js/utils"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
-import type { AccordionSchema } from "./accordion.types"
+import type { AccordionSchema, ValueChangeReason } from "./accordion.types"
 
 const { and, not } = createGuards<AccordionSchema>()
 
@@ -28,7 +28,7 @@ export const machine = createMachine<AccordionSchema>({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getEvent }) {
     return {
       focusedValue: bindable<string | null>(() => ({
         defaultValue: null,
@@ -42,7 +42,7 @@ export const machine = createMachine<AccordionSchema>({
         value: prop("value"),
         hash: (value) => value.join(","),
         onChange(value) {
-          prop("onValueChange")?.({ value })
+          prop("onValueChange")?.({ value, reason: getValueChangeReason(getEvent()) })
         },
       })),
     }
@@ -119,7 +119,7 @@ export const machine = createMachine<AccordionSchema>({
 
             const value = contentEl.dataset.value
             const disabled = contentEl.hasAttribute("data-disabled")
-            if (value != null && !disabled) send({ type: "ITEM.MATCH", value })
+            if (value != null && !disabled) send({ type: "ITEM.MATCH", value, src: "find-in-page" })
 
             // Re-hide what didn't expand (disabled or ignored controlled value).
             // It covers every item, so a newer match can replace a pending one.
@@ -178,3 +178,7 @@ export const machine = createMachine<AccordionSchema>({
     },
   },
 })
+
+function getValueChangeReason(event: AccordionSchema["event"]): ValueChangeReason | undefined {
+  return event.src as ValueChangeReason | undefined
+}

@@ -31,6 +31,7 @@ export type {
   LocaleDetails,
   MonthGridProps,
   OpenChangeDetails,
+  OpenChangeReason,
   PositioningOptions,
   PresetTriggerProps,
   RootState,

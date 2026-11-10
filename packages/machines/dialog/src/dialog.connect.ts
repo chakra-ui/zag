@@ -53,8 +53,8 @@ export function connect<T extends PropTypes>(
   return {
     open,
     modal: !!prop("modal"),
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
     triggerValue,
@@ -81,7 +81,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, src: "trigger-click" })
         },
       })
     },
@@ -157,7 +157,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           event.stopPropagation()
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "close-trigger" })
         },
       })
     },

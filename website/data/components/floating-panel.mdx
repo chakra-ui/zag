@@ -260,13 +260,22 @@ invoked.
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, reason?: OpenChangeReason }
     console.log("floating panel is:", details.open ? "opened" : "closed")
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason          | Meaning                                     |
+| --------------- | ------------------------------------------- |
+| `trigger-click` | The trigger was pressed                     |
+| `close-trigger` | The close trigger was pressed               |
+| `escape-key`    | The user pressed `Esc`                      |
+| `script`        | Changed programmatically, such as `setOpen` |
 
 #### Position change
 

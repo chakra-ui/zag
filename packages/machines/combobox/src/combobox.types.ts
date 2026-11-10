@@ -10,9 +10,21 @@ import type { LiveRegion } from "@zag-js/live-region"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What changed the combobox value:
+ * - `item-select`: an item was clicked or selected with Enter
+ * - `clear-trigger`: the clear trigger was pressed
+ * - `script`: `setValue`, `selectValue` or `clearValue` was called
+ */
+export type ValueChangeReason = "item-select" | "clear-trigger" | "script"
+
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
   items: T[]
+  /**
+   * What changed the value
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {

@@ -154,8 +154,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     open,
     modal: !!prop("modal"),
     dragging,
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
     snapPoints: prop("snapPoints"),
@@ -269,7 +269,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     triggerValue,
     setTriggerValue(value) {
-      send({ type: "OPEN", value: value ?? undefined })
+      send({ type: "OPEN", value: value ?? undefined, src: "script" })
     },
 
     getTriggerState,
@@ -291,7 +291,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : open ? "CLOSE" : "OPEN", value })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : open ? "CLOSE" : "OPEN", value, src: "trigger-click" })
         },
       })
     },
@@ -338,7 +338,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         ...parts.closeTrigger.attrs(scope.id),
         type: "button",
         onClick() {
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "close-trigger" })
         },
       })
     },

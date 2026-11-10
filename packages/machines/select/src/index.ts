@@ -21,11 +21,13 @@ export type {
   ItemProps,
   ItemState,
   OpenChangeDetails,
+  OpenChangeReason,
   PositioningOptions,
   RootState,
   ScrollArrowProps,
   ScrollToIndexDetails,
   TriggerState,
   ValueChangeDetails,
+  ValueChangeReason,
   SelectionDetails,
 } from "./select.types"

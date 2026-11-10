@@ -2,14 +2,14 @@ import type { ListCollection } from "@zag-js/collection"
 import type { Scope } from "@zag-js/core"
 import { isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import * as dom from "./menu.dom"
-import type { MenuService } from "./menu.types"
+import type { MenuService, OpenChangeReason } from "./menu.types"
 
-export function closeRootMenu(ctx: { parent: MenuService | null | undefined }) {
+export function closeRootMenu(ctx: { parent: MenuService | null | undefined; src?: OpenChangeReason | undefined }) {
   let parent = ctx.parent
   while (parent && parent.context.get("isSubmenu")) {
     parent = parent.refs.get("parent")
   }
-  parent?.send({ type: "CLOSE" })
+  parent?.send({ type: "CLOSE", src: ctx.src })
 }
 
 // Walks up to the root menu of the tree and returns its menubar element + orientation,

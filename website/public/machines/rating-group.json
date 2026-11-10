@@ -129,12 +129,18 @@
       "to": "hover",
       "event": "GROUP_POINTER_OVER",
       "guard": null
+    },
+    {
+      "from": "idle",
+      "to": "hover",
+      "event": "POINTER_OVER",
+      "guard": null
     }
   ],
   "layouts": {
     "right": {
       "width": 1023,
-      "height": 213,
+      "height": 229,
       "states": {
         "idle": {
           "x": 527,
@@ -159,29 +165,13 @@
         {
           "from": "focus",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              905,
-              132
-            ],
-            [
-              662,
-              132
-            ],
-            [
-              662,
-              135
-            ],
-            [
-              605,
-              135
-            ]
+            [905, 132],
+            [662, 132],
+            [662, 135],
+            [605, 135]
           ],
           "label": {
             "x": 750,
@@ -193,37 +183,15 @@
         {
           "from": "hover",
           "to": "focus",
-          "events": [
-            "GROUP_POINTER_LEAVE"
-          ],
-          "lines": [
-            "GROUP_POINTER_LEAVE"
-          ],
+          "events": ["GROUP_POINTER_LEAVE"],
+          "lines": ["GROUP_POINTER_LEAVE"],
           "points": [
-            [
-              134,
-              121
-            ],
-            [
-              160,
-              121
-            ],
-            [
-              160,
-              63
-            ],
-            [
-              821,
-              63
-            ],
-            [
-              821,
-              121
-            ],
-            [
-              905,
-              121
-            ]
+            [134, 121],
+            [160, 121],
+            [160, 63],
+            [821, 63],
+            [821, 121],
+            [905, 121]
           ],
           "label": {
             "x": 495,
@@ -235,29 +203,13 @@
         {
           "from": "hover",
           "to": "idle",
-          "events": [
-            "GROUP_POINTER_LEAVE"
-          ],
-          "lines": [
-            "GROUP_POINTER_LEAVE"
-          ],
+          "events": ["GROUP_POINTER_LEAVE"],
+          "lines": ["GROUP_POINTER_LEAVE"],
           "points": [
-            [
-              134,
-              132
-            ],
-            [
-              411,
-              132
-            ],
-            [
-              411,
-              135
-            ],
-            [
-              527,
-              135
-            ]
+            [134, 132],
+            [411, 132],
+            [411, 135],
+            [527, 135]
           ],
           "label": {
             "x": 244,
@@ -269,29 +221,13 @@
         {
           "from": "idle",
           "to": "focus",
-          "events": [
-            "FOCUS"
-          ],
-          "lines": [
-            "FOCUS"
-          ],
+          "events": ["FOCUS"],
+          "lines": ["FOCUS"],
           "points": [
-            [
-              605,
-              149
-            ],
-            [
-              821,
-              149
-            ],
-            [
-              821,
-              143
-            ],
-            [
-              905,
-              143
-            ]
+            [605, 149],
+            [821, 149],
+            [821, 143],
+            [905, 143]
           ],
           "label": {
             "x": 746,
@@ -303,52 +239,36 @@
         {
           "from": "idle",
           "to": "hover",
-          "events": [
-            "GROUP_POINTER_OVER"
-          ],
-          "lines": [
-            "GROUP_POINTER_OVER"
-          ],
+          "events": ["GROUP_POINTER_OVER", "POINTER_OVER"],
+          "lines": ["GROUP_POINTER_OVER", "POINTER_OVER"],
           "points": [
-            [
-              527,
-              149
-            ],
-            [
-              160,
-              149
-            ],
-            [
-              160,
-              143
-            ],
-            [
-              134,
-              143
-            ]
+            [527, 149],
+            [160, 149],
+            [160, 143],
+            [134, 143]
           ],
           "label": {
             "x": 247,
             "y": 156,
             "w": 135,
-            "h": 24
+            "h": 40
           }
         }
       ]
     },
     "down": {
       "width": 558,
-      "height": 684,
+      "height": 700,
       "states": {
         "idle": {
           "x": 332,
-          "y": 320,
+          "y": 336,
           "w": 78,
           "h": 44
         },
         "focus": {
           "x": 315,
-          "y": 608,
+          "y": 624,
           "w": 86,
           "h": 44
         },
@@ -363,25 +283,15 @@
         {
           "from": "focus",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              358,
-              608
-            ],
-            [
-              358,
-              364
-            ]
+            [358, 624],
+            [358, 380]
           ],
           "label": {
             "x": 310,
-            "y": 474,
+            "y": 490,
             "w": 42,
             "h": 24
           }
@@ -389,41 +299,19 @@
         {
           "from": "hover",
           "to": "focus",
-          "events": [
-            "GROUP_POINTER_LEAVE"
-          ],
-          "lines": [
-            "GROUP_POINTER_LEAVE"
-          ],
+          "events": ["GROUP_POINTER_LEAVE"],
+          "lines": ["GROUP_POINTER_LEAVE"],
           "points": [
-            [
-              341,
-              76
-            ],
-            [
-              341,
-              102
-            ],
-            [
-              195,
-              102
-            ],
-            [
-              195,
-              524
-            ],
-            [
-              337,
-              524
-            ],
-            [
-              337,
-              608
-            ]
+            [341, 76],
+            [341, 102],
+            [195, 102],
+            [195, 540],
+            [337, 540],
+            [337, 624]
           ],
           "label": {
             "x": 48,
-            "y": 330,
+            "y": 346,
             "w": 141,
             "h": 24
           }
@@ -431,41 +319,19 @@
         {
           "from": "hover",
           "to": "idle",
-          "events": [
-            "GROUP_POINTER_LEAVE"
-          ],
-          "lines": [
-            "GROUP_POINTER_LEAVE"
-          ],
+          "events": ["GROUP_POINTER_LEAVE"],
+          "lines": ["GROUP_POINTER_LEAVE"],
           "points": [
-            [
-              362,
-              76
-            ],
-            [
-              362,
-              102
-            ],
-            [
-              367,
-              102
-            ],
-            [
-              367,
-              236
-            ],
-            [
-              358,
-              236
-            ],
-            [
-              358,
-              320
-            ]
+            [362, 76],
+            [362, 102],
+            [367, 102],
+            [367, 252],
+            [358, 252],
+            [358, 336]
           ],
           "label": {
             "x": 220,
-            "y": 186,
+            "y": 194,
             "w": 141,
             "h": 24
           }
@@ -473,33 +339,17 @@
         {
           "from": "idle",
           "to": "focus",
-          "events": [
-            "FOCUS"
-          ],
-          "lines": [
-            "FOCUS"
-          ],
+          "events": ["FOCUS"],
+          "lines": ["FOCUS"],
           "points": [
-            [
-              384,
-              364
-            ],
-            [
-              384,
-              390
-            ],
-            [
-              380,
-              390
-            ],
-            [
-              380,
-              608
-            ]
+            [384, 380],
+            [384, 406],
+            [380, 406],
+            [380, 624]
           ],
           "label": {
             "x": 387,
-            "y": 474,
+            "y": 490,
             "w": 49,
             "h": 24
           }
@@ -507,27 +357,17 @@
         {
           "from": "idle",
           "to": "hover",
-          "events": [
-            "GROUP_POINTER_OVER"
-          ],
-          "lines": [
-            "GROUP_POINTER_OVER"
-          ],
+          "events": ["GROUP_POINTER_OVER", "POINTER_OVER"],
+          "lines": ["GROUP_POINTER_OVER", "POINTER_OVER"],
           "points": [
-            [
-              384,
-              320
-            ],
-            [
-              384,
-              76
-            ]
+            [384, 336],
+            [384, 76]
           ],
           "label": {
             "x": 391,
             "y": 186,
             "w": 135,
-            "h": 24
+            "h": 40
           }
         }
       ]

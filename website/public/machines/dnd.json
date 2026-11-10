@@ -48,6 +48,12 @@
     },
     {
       "from": "idle",
+      "to": null,
+      "event": "ITEM.MOVE",
+      "guard": null
+    },
+    {
+      "from": "idle",
       "to": "keyboard:session",
       "event": "KEYBOARD.GRAB",
       "guard": null
@@ -183,29 +189,13 @@
         {
           "from": "idle",
           "to": "pointer:pending",
-          "events": [
-            "DRAG.START"
-          ],
-          "lines": [
-            "DRAG.START"
-          ],
+          "events": ["DRAG.START"],
+          "lines": ["DRAG.START"],
           "points": [
-            [
-              1050,
-              140
-            ],
-            [
-              966,
-              140
-            ],
-            [
-              966,
-              188
-            ],
-            [
-              210,
-              188
-            ]
+            [1050, 140],
+            [966, 140],
+            [966, 188],
+            [210, 188]
           ],
           "label": {
             "x": 622,
@@ -217,29 +207,13 @@
         {
           "from": "idle",
           "to": "pointer:dragging",
-          "events": [
-            "DRAG.START"
-          ],
-          "lines": [
-            "DRAG.START"
-          ],
+          "events": ["DRAG.START"],
+          "lines": ["DRAG.START"],
           "points": [
-            [
-              1050,
-              123
-            ],
-            [
-              966,
-              123
-            ],
-            [
-              966,
-              72
-            ],
-            [
-              748,
-              72
-            ]
+            [1050, 123],
+            [966, 123],
+            [966, 72],
+            [748, 72]
           ],
           "label": {
             "x": 858,
@@ -251,21 +225,11 @@
         {
           "from": "idle",
           "to": "keyboard:session",
-          "events": [
-            "KEYBOARD.GRAB"
-          ],
-          "lines": [
-            "KEYBOARD.GRAB"
-          ],
+          "events": ["KEYBOARD.GRAB"],
+          "lines": ["KEYBOARD.GRAB"],
           "points": [
-            [
-              1128,
-              129
-            ],
-            [
-              1463,
-              129
-            ]
+            [1128, 129],
+            [1463, 129]
           ],
           "label": {
             "x": 1245,
@@ -277,39 +241,15 @@
         {
           "from": "keyboard:session",
           "to": "idle",
-          "events": [
-            "KEYBOARD.CANCEL",
-            "KEYBOARD.DROP"
-          ],
-          "lines": [
-            "KEYBOARD.CANCEL",
-            "KEYBOARD.DROP"
-          ],
+          "events": ["KEYBOARD.CANCEL", "KEYBOARD.DROP"],
+          "lines": ["KEYBOARD.CANCEL", "KEYBOARD.DROP"],
           "points": [
-            [
-              1463,
-              143
-            ],
-            [
-              1379,
-              143
-            ],
-            [
-              1379,
-              146
-            ],
-            [
-              1154,
-              146
-            ],
-            [
-              1154,
-              143
-            ],
-            [
-              1128,
-              143
-            ]
+            [1463, 143],
+            [1379, 143],
+            [1379, 146],
+            [1154, 146],
+            [1154, 143],
+            [1128, 143]
           ],
           "label": {
             "x": 1238,
@@ -321,29 +261,13 @@
         {
           "from": "pointer:dragging",
           "to": "idle",
-          "events": [
-            "POINTER.UP"
-          ],
-          "lines": [
-            "POINTER.UP"
-          ],
+          "events": ["POINTER.UP"],
+          "lines": ["POINTER.UP"],
           "points": [
-            [
-              748,
-              86
-            ],
-            [
-              774,
-              86
-            ],
-            [
-              774,
-              132
-            ],
-            [
-              1050,
-              132
-            ]
+            [748, 86],
+            [774, 86],
+            [774, 132],
+            [1050, 132]
           ],
           "label": {
             "x": 858,
@@ -355,31 +279,13 @@
         {
           "from": "pointer:pending",
           "to": "pointer:dragging",
-          "events": [
-            "ACTIVATION.DELAY_MET",
-            "POINTER.MOVE"
-          ],
-          "lines": [
-            "ACTIVATION.DELAY_MET",
-            "POINTER.MOVE"
-          ],
+          "events": ["ACTIVATION.DELAY_MET", "POINTER.MOVE"],
+          "lines": ["ACTIVATION.DELAY_MET", "POINTER.MOVE"],
           "points": [
-            [
-              210,
-              177
-            ],
-            [
-              236,
-              177
-            ],
-            [
-              236,
-              79
-            ],
-            [
-              578,
-              79
-            ]
+            [210, 177],
+            [236, 177],
+            [236, 79],
+            [578, 79]
           ],
           "label": {
             "x": 320,
@@ -391,37 +297,15 @@
         {
           "from": "pointer:pending",
           "to": "idle",
-          "events": [
-            "POINTER.UP"
-          ],
-          "lines": [
-            "POINTER.UP"
-          ],
+          "events": ["POINTER.UP"],
+          "lines": ["POINTER.UP"],
           "points": [
-            [
-              210,
-              199
-            ],
-            [
-              236,
-              199
-            ],
-            [
-              236,
-              205
-            ],
-            [
-              976,
-              205
-            ],
-            [
-              976,
-              149
-            ],
-            [
-              1050,
-              149
-            ]
+            [210, 199],
+            [236, 199],
+            [236, 205],
+            [976, 205],
+            [976, 149],
+            [1050, 149]
           ],
           "label": {
             "x": 622,
@@ -465,37 +349,15 @@
         {
           "from": "idle",
           "to": "pointer:pending",
-          "events": [
-            "DRAG.START"
-          ],
-          "lines": [
-            "DRAG.START"
-          ],
+          "events": ["DRAG.START"],
+          "lines": ["DRAG.START"],
           "points": [
-            [
-              334,
-              624
-            ],
-            [
-              334,
-              540
-            ],
-            [
-              431,
-              540
-            ],
-            [
-              431,
-              102
-            ],
-            [
-              407,
-              102
-            ],
-            [
-              407,
-              76
-            ]
+            [334, 624],
+            [334, 540],
+            [431, 540],
+            [431, 102],
+            [407, 102],
+            [407, 76]
           ],
           "label": {
             "x": 343,
@@ -507,29 +369,13 @@
         {
           "from": "idle",
           "to": "pointer:dragging",
-          "events": [
-            "DRAG.START"
-          ],
-          "lines": [
-            "DRAG.START"
-          ],
+          "events": ["DRAG.START"],
+          "lines": ["DRAG.START"],
           "points": [
-            [
-              303,
-              624
-            ],
-            [
-              303,
-              550
-            ],
-            [
-              174,
-              550
-            ],
-            [
-              174,
-              380
-            ]
+            [303, 624],
+            [303, 550],
+            [174, 550],
+            [174, 380]
           ],
           "label": {
             "x": 86,
@@ -541,21 +387,11 @@
         {
           "from": "idle",
           "to": "keyboard:session",
-          "events": [
-            "KEYBOARD.GRAB"
-          ],
-          "lines": [
-            "KEYBOARD.GRAB"
-          ],
+          "events": ["KEYBOARD.GRAB"],
+          "lines": ["KEYBOARD.GRAB"],
           "points": [
-            [
-              313,
-              668
-            ],
-            [
-              313,
-              928
-            ]
+            [313, 668],
+            [313, 928]
           ],
           "label": {
             "x": 205,
@@ -567,31 +403,13 @@
         {
           "from": "keyboard:session",
           "to": "idle",
-          "events": [
-            "KEYBOARD.CANCEL",
-            "KEYBOARD.DROP"
-          ],
-          "lines": [
-            "KEYBOARD.CANCEL",
-            "KEYBOARD.DROP"
-          ],
+          "events": ["KEYBOARD.CANCEL", "KEYBOARD.DROP"],
+          "lines": ["KEYBOARD.CANCEL", "KEYBOARD.DROP"],
           "points": [
-            [
-              369,
-              928
-            ],
-            [
-              369,
-              844
-            ],
-            [
-              339,
-              844
-            ],
-            [
-              339,
-              668
-            ]
+            [369, 928],
+            [369, 844],
+            [339, 844],
+            [339, 668]
           ],
           "label": {
             "x": 346,
@@ -603,29 +421,13 @@
         {
           "from": "pointer:dragging",
           "to": "idle",
-          "events": [
-            "POINTER.UP"
-          ],
-          "lines": [
-            "POINTER.UP"
-          ],
+          "events": ["POINTER.UP"],
+          "lines": ["POINTER.UP"],
           "points": [
-            [
-              230,
-              380
-            ],
-            [
-              230,
-              540
-            ],
-            [
-              318,
-              540
-            ],
-            [
-              318,
-              624
-            ]
+            [230, 380],
+            [230, 540],
+            [318, 540],
+            [318, 624]
           ],
           "label": {
             "x": 237,
@@ -637,31 +439,13 @@
         {
           "from": "pointer:pending",
           "to": "pointer:dragging",
-          "events": [
-            "ACTIVATION.DELAY_MET",
-            "POINTER.MOVE"
-          ],
-          "lines": [
-            "ACTIVATION.DELAY_MET",
-            "POINTER.MOVE"
-          ],
+          "events": ["ACTIVATION.DELAY_MET", "POINTER.MOVE"],
+          "lines": ["ACTIVATION.DELAY_MET", "POINTER.MOVE"],
           "points": [
-            [
-              367,
-              76
-            ],
-            [
-              367,
-              102
-            ],
-            [
-              202,
-              102
-            ],
-            [
-              202,
-              336
-            ]
+            [367, 76],
+            [367, 102],
+            [202, 102],
+            [202, 336]
           ],
           "label": {
             "x": 48,
@@ -673,29 +457,13 @@
         {
           "from": "pointer:pending",
           "to": "idle",
-          "events": [
-            "POINTER.UP"
-          ],
-          "lines": [
-            "POINTER.UP"
-          ],
+          "events": ["POINTER.UP"],
+          "lines": ["POINTER.UP"],
           "points": [
-            [
-              448,
-              76
-            ],
-            [
-              448,
-              550
-            ],
-            [
-              349,
-              550
-            ],
-            [
-              349,
-              624
-            ]
+            [448, 76],
+            [448, 550],
+            [349, 550],
+            [349, 624]
           ],
           "label": {
             "x": 455,

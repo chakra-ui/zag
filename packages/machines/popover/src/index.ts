@@ -13,6 +13,7 @@ export type {
   PopoverMachine as Machine,
   InstantType,
   OpenChangeDetails,
+  OpenChangeReason,
   Placement,
   PositionerState,
   PositioningOptions,

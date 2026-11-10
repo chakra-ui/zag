@@ -319,6 +319,24 @@
     {
       "from": "open",
       "to": null,
+      "event": "PRESET.CLICK",
+      "guard": "isInline"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "PRESET.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "focused",
+      "event": "PRESET.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
       "event": "TABLE.ARROW_DOWN",
       "guard": "isMonthView"
     },
@@ -579,33 +597,13 @@
         {
           "from": "focused",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              149,
-              255
-            ],
-            [
-              407,
-              255
-            ],
-            [
-              407,
-              120
-            ],
-            [
-              491,
-              120
-            ]
+            [149, 255],
+            [407, 255],
+            [407, 120],
+            [491, 120]
           ],
           "label": {
             "x": 263,
@@ -617,41 +615,15 @@
         {
           "from": "idle",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              149,
-              98
-            ],
-            [
-              175,
-              98
-            ],
-            [
-              175,
-              95
-            ],
-            [
-              407,
-              95
-            ],
-            [
-              407,
-              103
-            ],
-            [
-              491,
-              103
-            ]
+            [149, 98],
+            [175, 98],
+            [175, 95],
+            [407, 95],
+            [407, 103],
+            [491, 103]
           ],
           "label": {
             "x": 263,
@@ -667,6 +639,7 @@
             "CELL.CLICK",
             "CONTROLLED.CLOSE",
             "INTERACT_OUTSIDE",
+            "PRESET.CLICK",
             "TABLE.ENTER",
             "TABLE.ESCAPE",
             "TRIGGER.CLICK"
@@ -675,33 +648,15 @@
             "CELL.CLICK",
             "CONTROLLED.CLOSE",
             "INTERACT_OUTSIDE",
-            "+3 more"
+            "+4 more"
           ],
           "points": [
-            [
-              491,
-              129
-            ],
-            [
-              417,
-              129
-            ],
-            [
-              417,
-              272
-            ],
-            [
-              175,
-              272
-            ],
-            [
-              175,
-              269
-            ],
-            [
-              149,
-              269
-            ]
+            [491, 129],
+            [417, 129],
+            [417, 272],
+            [175, 272],
+            [175, 269],
+            [149, 269]
           ],
           "label": {
             "x": 259,
@@ -713,25 +668,11 @@
         {
           "from": "open",
           "to": "idle",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              491,
-              112
-            ],
-            [
-              149,
-              112
-            ]
+            [491, 112],
+            [149, 112]
           ],
           "label": {
             "x": 259,
@@ -769,41 +710,15 @@
         {
           "from": "focused",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              436,
-              76
-            ],
-            [
-              436,
-              102
-            ],
-            [
-              452,
-              102
-            ],
-            [
-              452,
-              284
-            ],
-            [
-              202,
-              284
-            ],
-            [
-              202,
-              368
-            ]
+            [436, 76],
+            [436, 102],
+            [452, 102],
+            [452, 284],
+            [202, 284],
+            [202, 368]
           ],
           "label": {
             "x": 331,
@@ -815,33 +730,13 @@
         {
           "from": "idle",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TRIGGER.CLICK"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TRIGGER.CLICK"],
           "points": [
-            [
-              169,
-              76
-            ],
-            [
-              169,
-              284
-            ],
-            [
-              171,
-              284
-            ],
-            [
-              171,
-              368
-            ]
+            [169, 76],
+            [169, 284],
+            [171, 284],
+            [171, 368]
           ],
           "label": {
             "x": 48,
@@ -857,6 +752,7 @@
             "CELL.CLICK",
             "CONTROLLED.CLOSE",
             "INTERACT_OUTSIDE",
+            "PRESET.CLICK",
             "TABLE.ENTER",
             "TABLE.ESCAPE",
             "TRIGGER.CLICK"
@@ -865,25 +761,13 @@
             "CELL.CLICK",
             "CONTROLLED.CLOSE",
             "INTERACT_OUTSIDE",
-            "+3 more"
+            "+4 more"
           ],
           "points": [
-            [
-              217,
-              368
-            ],
-            [
-              217,
-              294
-            ],
-            [
-              469,
-              294
-            ],
-            [
-              469,
-              76
-            ]
+            [217, 368],
+            [217, 294],
+            [469, 294],
+            [469, 76]
           ],
           "label": {
             "x": 476,
@@ -895,33 +779,13 @@
         {
           "from": "open",
           "to": "idle",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "INTERACT_OUTSIDE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INTERACT_OUTSIDE"],
           "points": [
-            [
-              186,
-              368
-            ],
-            [
-              186,
-              102
-            ],
-            [
-              195,
-              102
-            ],
-            [
-              195,
-              76
-            ]
+            [186, 368],
+            [186, 102],
+            [195, 102],
+            [195, 76]
           ],
           "label": {
             "x": 193,

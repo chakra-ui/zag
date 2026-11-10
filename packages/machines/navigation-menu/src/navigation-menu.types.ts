@@ -17,8 +17,33 @@ import type {
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened, switched or closed the menu:
+ * - `trigger-click`: a trigger was pressed
+ * - `trigger-hover`: the pointer rested on a trigger
+ * - `pointer-leave`: the pointer left the triggers and content
+ * - `item-select`: a link was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setValue` was called
+ */
+export type ValueChangeReason =
+  | "trigger-click"
+  | "trigger-hover"
+  | "pointer-leave"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface ValueChangeDetails {
   value: string
+  /**
+   * What caused the change
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface ElementIds {
@@ -102,6 +127,7 @@ export interface NavigationMenuSchema {
 
     closeTimeoutId: number | null
     openTimeoutIds: Record<string, number>
+    valueChangeReason: ValueChangeReason | undefined
     focusFrame: AnimationFrame
   }
   context: {
@@ -272,7 +298,7 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the menu
    */
-  setValue: (value: string) => void
+  setValue: (value: string, reason?: ValueChangeReason) => void
   /**
    * Whether the menu is open
    */

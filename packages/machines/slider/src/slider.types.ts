@@ -12,8 +12,21 @@ export type ThumbAlignment = "contain" | "center"
 
 export type SliderOrigin = "start" | "center" | "end" | number
 
+/**
+ * What changed the slider value:
+ * - `track-click`: the pointer was pressed on the track and the thumb jumped there
+ * - `drag`: a thumb was dragged
+ * - `keyboard`: an arrow, Page Up/Down, Home or End key was pressed
+ * - `script`: `setValue`, `setThumbValue`, `setThumbPercent`, `increment` or `decrement` was called
+ */
+export type ValueChangeReason = "track-click" | "drag" | "keyboard" | "script"
+
 export interface ValueChangeDetails {
   value: number[]
+  /**
+   * What changed the value
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface FocusChangeDetails {
@@ -262,6 +275,10 @@ export interface SliderSchema {
      * Used for swap collision behavior to determine swap direction.
      */
     startValue: number[] | null
+    /**
+     * The reason of the last pointer-driven change, reported by `onValueChangeEnd`.
+     */
+    pointerReason: ValueChangeReason | undefined
     focusFrame: AnimationFrame
   }
   computed: Computed
