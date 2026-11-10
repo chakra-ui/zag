@@ -211,6 +211,8 @@ export const machine = createMachine({
       },
 
       restartHeadingObserver(params) {
+        // Only while `trackHeadings` runs, which owns the observer
+        if (!params.refs.get("headingObserver")) return
         startHeadingObserver(params)
       },
 
@@ -336,13 +338,14 @@ const getScrollEl = ({ prop }: Params<TocSchema>) => {
 /** Creates the heading observer from the current options and observes the headings */
 function startHeadingObserver(params: Params<TocSchema>) {
   const { scope, prop, refs, send } = params
-  const current = refs.get("headingObserver")
-  if (current) current.disconnect()
-
   const win = scope.getWin()
   const visibilityMap = refs.get("visibilityMap")
+
+  // Built before the old one is dropped, so invalid options keep the current observer
   const observer = new win.IntersectionObserver(
     (entries) => {
+      // Entries queued before a restart belong to the old options
+      if (refs.get("headingObserver") !== observer) return
       for (const entry of entries) {
         visibilityMap.set(entry.target.id, entry.isIntersecting)
       }
@@ -356,12 +359,15 @@ function startHeadingObserver(params: Params<TocSchema>) {
     },
   )
 
+  const current = refs.get("headingObserver")
+  if (current) current.disconnect()
   refs.set("headingObserver", observer)
   observeHeadings(params)
 }
 
 /** Caches and observes the headings of the current items */
-function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
+function observeHeadings(params: Params<TocSchema>) {
+  const { context, scope, prop, refs } = params
   const observer = refs.get("headingObserver")
   if (!observer) return
 
@@ -370,7 +376,7 @@ function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
 
   const headings = dom.getHeadings(scope, prop("items"))
   refs.set("headings", headings)
-  refs.set("scrollContainer", headings.length ? getScrollContainer(prop("scrollEl")?.(), headings[0].el) : null)
+  refs.set("scrollContainer", headings.length ? getScrollContainer(getScrollEl(params), headings[0].el) : null)
 
   // Observing reports each heading's visibility, which resyncs the active ids
   for (const heading of headings) {
