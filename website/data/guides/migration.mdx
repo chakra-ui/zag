@@ -108,6 +108,21 @@ machine id, and each part exposes the attribute name as `attr`.
 + ...parts.trigger.attrs(scope.id)
 ```
 
+## Layering
+
+Zag no longer sets a `z-index`. Move it from the content to the positioner.
+
+```diff
+- [data-popover-content] {
++ [data-popover-positioner] {
+-   z-index: 1400;
++   z-index: calc(1400 + var(--layer-index));
+  }
+```
+
+`--z-index` is removed. The floating panel needs the same rule to bring the
+focused panel to the front. See [Layering](/guides/styling#layering).
+
 ## Accordion
 
 Arrow, `Home` and `End` navigation between triggers is removed, along with

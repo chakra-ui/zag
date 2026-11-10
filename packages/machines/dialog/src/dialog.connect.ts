@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(
         hidden: !backdropState.open,
         "data-state": backdropState.open ? "open" : "closed",
         ...getDismissableLayerAttrs(layer),
-        style: getDismissableLayerStyle(layer, { zIndex: true }),
+        style: getDismissableLayerStyle(layer),
       })
     },
 
@@ -106,7 +106,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         ...getDismissableLayerAttrs(layer),
         style: {
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
           pointerEvents: !open || !prop("modal") ? "none" : undefined,
         },
       })

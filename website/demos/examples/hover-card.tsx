@@ -47,7 +47,7 @@ function Card(props: { api: hoverCard.Api; user?: (typeof users)[number] }) {
   if (!api.open) return null
   return (
     <Portal>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           <div className={styles.Arrow} {...api.getArrowProps()}>
             <div className={styles.ArrowTip} {...api.getArrowTipProps()} />

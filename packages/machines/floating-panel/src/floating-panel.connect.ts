@@ -39,7 +39,6 @@ export function connect<T extends PropTypes>(
 
   const isTopmost = context.get("isTopmost")
   const stackIndex = context.get("stackIndex")
-  const contentZIndex = context.get("contentZIndex")
   const size = context.get("size")
   const position = context.get("position")
 
@@ -148,13 +147,11 @@ export function connect<T extends PropTypes>(
           "--height": toPx(size?.height),
           "--x": toPx(renderX),
           "--y": toPx(renderY),
-          "--z-index": contentZIndex ?? undefined,
           "--layer-index": stackIndex > -1 ? stackIndex : undefined,
           position: prop("strategy"),
           isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
-          zIndex: "calc(var(--z-index, 1) + var(--layer-index, 0))",
         },
       })
     },

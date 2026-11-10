@@ -77,7 +77,7 @@ function Field(props: {
     <div className={styles.Root} {...api.getRootProps()}>
       <Control api={api} label={props.label} />
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             {props.children ?? (
               <div {...api.getListProps()}>

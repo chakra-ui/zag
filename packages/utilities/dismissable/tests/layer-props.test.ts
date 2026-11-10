@@ -13,15 +13,14 @@ const inactiveLayer: LayerSnapshot = {
 }
 
 describe("layer props", () => {
-  test("clears stack metadata for inactive layers", () => {
+  test("keeps the layer index but clears nesting metadata for inactive layers", () => {
     expect(getDismissableLayerAttrs(inactiveLayer)).toEqual({
       "data-nested": undefined,
       "data-has-nested": undefined,
     })
-    expect(getDismissableLayerStyle(inactiveLayer, { zIndex: true, pointerEvents: true })).toEqual({
-      "--layer-index": undefined,
+    expect(getDismissableLayerStyle(inactiveLayer, { pointerEvents: true })).toEqual({
+      "--layer-index": "1",
       "--nested-layer-count": undefined,
-      "--z-index": undefined,
       pointerEvents: undefined,
     })
   })

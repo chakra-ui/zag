@@ -27,6 +27,10 @@
     }
   }
 
+  .Positioner {
+    z-index: 50;
+  }
+
   .Content {
     --background: var(--colors-fg);
     padding-inline: 0.5rem;
@@ -38,7 +42,6 @@
     color: var(--colors-bg-page);
     box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.3);
     transform-origin: var(--transform-origin);
-    z-index: calc(var(--layer-index) + 50);
 
     &[data-state="open"] {
       animation: tooltip-in 120ms ease-out;

@@ -201,7 +201,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...(prop("inline") ? undefined : popperStyles.floating),
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },

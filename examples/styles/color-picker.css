@@ -1,3 +1,7 @@
+[data-color-picker-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+}
+
 [data-color-picker-root] {
   display: flex;
   flex-direction: column;
@@ -16,7 +20,6 @@
   padding: 24px;
   border: 1px solid #d5d5d5;
   background: white;
-  z-index: calc(var(--layer-index) * 2 + 1);
 }
 
 [data-color-picker-content] > .content__inner {

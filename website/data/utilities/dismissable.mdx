@@ -176,14 +176,8 @@ const style = getDismissableLayerStyle(layer, { pointerEvents: true })
 // { "--layer-index": "2", "--nested-layer-count": "0", pointerEvents: "auto" }
 ```
 
-The style options:
-
-- `zIndex`: set `--z-index: var(--layer-index)`. Use it on the element that
-  creates the stacking context, like a dialog backdrop or positioner.
-- `zIndexFallback`: set `z-index: var(--z-index, var(--layer-index))` on a
-  popper positioner.
-- `pointerEvents`: set `pointer-events: none` while a modal layer sits above
-  this one.
+`--layer-index` stays set after close, so exit animations keep their place. Pass
+`pointerEvents: true` to block pointer events while a modal layer sits above.
 
 ## Machine usage
 

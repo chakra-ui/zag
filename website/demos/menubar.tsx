@@ -34,7 +34,7 @@ function Menu(props: MenuProps) {
         {props.label}
       </button>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <ul className={menuStyles.Content} {...api.getContentProps()}>
             {props.items.map((item) => (
               <li

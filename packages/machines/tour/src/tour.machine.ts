@@ -8,15 +8,7 @@ import { isEqual, isString, nextIndex, prevIndex, warn } from "@zag-js/utils"
 import * as dom from "./tour.dom"
 import type { StepDetails, StepEffectArgs, StepEffectCleanup, StepPlacement, TourSchema } from "./tour.types"
 import { isEventInRect, offset, type Point, type Rect, type Size } from "./utils/rect"
-import {
-  findStep,
-  findStepIndex,
-  getEffectiveSteps,
-  getProgress,
-  isDialogStep,
-  isTooltipStep,
-  isWaitStep,
-} from "./utils/step"
+import { findStep, findStepIndex, getEffectiveSteps, getProgress, isTooltipStep, isWaitStep } from "./utils/step"
 
 const { and } = createGuards<TourSchema>()
 
@@ -576,7 +568,7 @@ export const machine = createMachine<TourSchema>({
           refs.set("prevSpotlightRect", undefined)
           context.set("suppressSpotlightTransition", true)
           context.set("floatingOffset", null)
-          return isDialogStep(step) ? dom.syncZIndex(scope) : undefined
+          return
         }
 
         const positionerEl = () => dom.getPositionerEl(scope)

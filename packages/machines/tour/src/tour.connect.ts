@@ -228,7 +228,6 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
               "--x": toPx(floatingOffset.x),
               "--y": toPx(floatingOffset.y),
             }),
-            "--z-index": "calc(var(--tour-layer) + var(--tour-z-index))",
           }),
           ...(!open && { pointerEvents: "none" }),
         },

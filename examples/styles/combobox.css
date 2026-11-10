@@ -1,3 +1,7 @@
+[data-combobox-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+}
+
 [data-combobox-root] {
   display: inline-flex;
   flex-direction: column;
@@ -72,7 +76,6 @@
 }
 
 [data-combobox-content] {
-  z-index: calc(var(--layer-index) * 2 + 1);
   margin: 0;
   overflow: hidden;
   border-radius: var(--z-radius);

@@ -147,7 +147,9 @@ function Picker(props: PickerProps) {
             />
           </div>
           <Portal>
-            <div {...api.getPositionerProps()}>{content}</div>
+            <div className={styles.Positioner} {...api.getPositionerProps()}>
+              {content}
+            </div>
           </Portal>
         </>
       )}

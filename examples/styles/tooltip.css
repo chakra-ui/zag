@@ -3,10 +3,13 @@
   gap: 20px;
 }
 
+[data-tooltip-positioner] {
+  z-index: 1;
+}
+
 [data-tooltip-content] {
   --arrow-background: var(--z-bg-inverted);
   --arrow-size: 8px;
-  z-index: 1;
   padding: 6px 10px;
   border-radius: var(--z-radius-sm);
   background: var(--z-bg-inverted);

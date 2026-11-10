@@ -80,6 +80,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     display: flex;
     flex-direction: column;
@@ -93,7 +97,6 @@
     color: var(--colors-fg);
     font-size: 0.875rem;
     transform-origin: var(--transform-origin);
-    z-index: calc(var(--layer-index) + 50);
 
     &[data-state="open"]:not([data-inline]) {
       animation: date-picker-in 140ms ease-out;

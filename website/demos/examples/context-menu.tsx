@@ -25,7 +25,7 @@ function ContextMenu(props: { api: menu.Api }) {
         Right-click here
       </div>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             {items.map((item) => (
               <div

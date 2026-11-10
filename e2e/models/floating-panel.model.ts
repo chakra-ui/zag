@@ -164,8 +164,8 @@ export class FloatingPanelModel extends Model {
     await this.page.mouse.up()
   }
 
-  setContentZIndex(zIndex: number) {
-    return this.page.addStyleTag({ content: `${part("content")} { z-index: ${zIndex}; }` })
+  setPositionerZIndex(value: string) {
+    return this.page.addStyleTag({ content: `${part("positioner")} { z-index: ${value}; }` })
   }
 
   async seePositionerZIndex(zIndex: number) {

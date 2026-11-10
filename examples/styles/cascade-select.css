@@ -64,6 +64,7 @@
 }
 
 [data-cascade-select-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
   width: max-content;
 }
 

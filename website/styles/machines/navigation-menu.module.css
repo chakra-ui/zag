@@ -225,6 +225,7 @@
   }
 
   .ViewportPositioner {
+    z-index: calc(var(--layer-index, 0) + 50);
     position: absolute;
     display: flex;
     justify-content: center;
@@ -256,7 +257,6 @@
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.25);
-    z-index: calc(var(--layer-index) + 50);
     box-sizing: content-box;
 
     &[dir="rtl"] {

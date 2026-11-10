@@ -1,3 +1,7 @@
+[data-floating-panel-positioner] {
+  z-index: calc(var(--layer-index, 0) + 1);
+}
+
 [data-floating-panel-content] {
   border: 1px solid #ebebeb;
   box-shadow:

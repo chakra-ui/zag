@@ -420,7 +420,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
           ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
         },
       })

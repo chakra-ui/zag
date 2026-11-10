@@ -76,7 +76,7 @@ export function MenuAsync() {
       </button>
       {api.open && (
         <Portal>
-          <div {...api.getPositionerProps()}>
+          <div className={styles.Positioner} {...api.getPositionerProps()}>
             <ul
               className={`${styles.Content} ${styles.ScrollableContent}`}
               {...mergeProps(api.getContentProps(), {

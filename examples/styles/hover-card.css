@@ -1,3 +1,7 @@
+[data-hover-card-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+}
+
 [data-hover-card-trigger] {
   color: var(--z-fg);
   font-weight: 500;

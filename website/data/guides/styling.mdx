@@ -65,5 +65,18 @@ You can style the accordion's trigger using the CSS attribute selector.
 
 You'll see this pattern across every components within the library.
 
+## Layering
+
+Zag doesn't set a `z-index`. Set it on the positioner (and backdrop), and add
+`--layer-index` so nested overlays stack above their parent.
+
+```css
+[data-popover-positioner] {
+  z-index: calc(1400 + var(--layer-index));
+}
+```
+
+A `z-index` on the content has no effect outside the positioner.
+
 > Zag was designed to encapsulate logic, accessibility and interactions, while
 > giving you full control over styling.

@@ -31,7 +31,7 @@ function Content(props: { api: menu.Api; children?: React.ReactNode }) {
   const { api } = props
   return (
     <Portal>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           {props.children ??
             items.map((item) => (

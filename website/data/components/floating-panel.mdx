@@ -237,12 +237,12 @@ const service = useMachine(floatingPanel.machine, {
 
 ### Stacking
 
-Set the `z-index` on the content. The positioner takes that value and adds the
-panel's place in the stack, so the focused panel stays on top.
+Add `--layer-index` to the positioner's `z-index` so the focused panel comes to
+the front.
 
 ```css
-[data-floating-panel-content] {
-  z-index: 1400;
+[data-floating-panel-positioner] {
+  z-index: calc(1400 + var(--layer-index));
 }
 ```
 

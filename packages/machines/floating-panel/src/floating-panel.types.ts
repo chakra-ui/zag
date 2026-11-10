@@ -217,10 +217,6 @@ interface PrivateContext {
    */
   stackIndex: number
   /**
-   * The z-index of the content, mirrored on the positioner
-   */
-  contentZIndex: string | null
-  /**
    * The size of the panel
    */
   size: Size

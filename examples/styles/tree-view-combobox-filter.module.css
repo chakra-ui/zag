@@ -89,7 +89,6 @@
 }
 
 .content {
-  z-index: calc(var(--layer-index) * 2 + 1);
   overflow: hidden;
   border-radius: var(--z-radius);
   background: var(--z-bg);
@@ -186,4 +185,8 @@
     color: var(--z-fg);
     font-weight: 500;
   }
+}
+
+[data-combobox-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
 }

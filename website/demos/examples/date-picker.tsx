@@ -39,7 +39,7 @@ function Popover(props: { api: datePicker.Api; children?: React.ReactNode }) {
   const { api } = props
   return (
     <Portal>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           {props.children ?? <Calendar api={api} />}
         </div>

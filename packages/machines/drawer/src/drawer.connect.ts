@@ -190,7 +190,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": positionerState.swipeDirection,
         ...getDismissableLayerAttrs(layer),
         style: {
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
           pointerEvents: closing || !prop("modal") ? "none" : undefined,
         },
       })
@@ -306,7 +306,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swiping": backdropState.swiping ? "" : undefined,
         ...getDismissableLayerAttrs(layer),
         style: {
-          ...getDismissableLayerStyle(layer, { zIndex: true }),
+          ...getDismissableLayerStyle(layer),
           willChange: "opacity",
           pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,

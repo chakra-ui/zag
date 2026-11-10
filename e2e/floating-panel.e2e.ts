@@ -219,8 +219,8 @@ test.describe("floating-panel", () => {
     await expect(page.getByTestId("content-B")).not.toHaveAttribute("data-topmost", "")
   })
 
-  test("the positioner takes the content's z-index", async () => {
-    await I.setContentZIndex(1400)
+  test("the positioner's z-index comes from css", async () => {
+    await I.setPositionerZIndex("calc(1400 + var(--layer-index))")
     await I.clickTrigger()
     await I.seePositionerZIndex(1400)
   })

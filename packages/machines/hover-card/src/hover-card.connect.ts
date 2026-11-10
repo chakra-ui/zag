@@ -196,7 +196,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
           ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
         },
       })
