@@ -94,7 +94,7 @@ export const machine = createMachine<TourSchema>({
 
   // Watch for external stepId changes (via sync: true bindable).
   // Internal changes set internalChange flag to skip this.
-  watch({ track, context, refs, send }) {
+  watch({ track, context, refs, send, prop }) {
     track([() => context.get("stepId")], () => {
       if (refs.get("internalChange")) {
         refs.set("internalChange", false)
@@ -103,10 +103,19 @@ export const machine = createMachine<TourSchema>({
       // External change: resolve target and route
       const step = findStep(context.get("steps"), context.get("stepId"))
       context.set("resolvedTarget", step?.target?.() ?? null)
-      syncTargetAttrsFromContext({ context, refs })
+      syncTargetAttrsFromContext({ context, refs, prop })
       queueMicrotask(() => {
         send({ type: "STEP.CHANGED" })
       })
+    })
+
+    // Re-apply the active target so a preventInteraction change takes effect mid-step
+    track([() => prop("preventInteraction")], () => {
+      const cleanup = refs.get("targetCleanup")
+      if (!cleanup) return
+      cleanup()
+      refs.set("targetCleanup", undefined)
+      syncTargetAttrsFromContext({ context, refs, prop })
     })
   },
 
@@ -639,30 +648,34 @@ export const machine = createMachine<TourSchema>({
 function syncTargetAttrsFromContext(params: {
   context: Params<TourSchema>["context"]
   refs: Params<TourSchema>["refs"]
-  prop?: Params<TourSchema>["prop"]
+  prop: Params<TourSchema>["prop"]
 }) {
   const { context, refs, prop } = params
   const targetEl = context.get("resolvedTarget")
-  const prevTarget = refs.get("prevTarget")
+  const cleanup = refs.get("targetCleanup")
 
-  if (targetEl !== prevTarget) {
-    refs.get("targetCleanup")?.()
-    refs.set("targetCleanup", undefined)
-  }
+  // A step change runs the cleanup before syncing, so the same target is only skipped while it is still highlighted
+  if (targetEl === refs.get("prevTarget") && cleanup) return
+
+  if (cleanup) cleanup()
+  refs.set("targetCleanup", undefined)
 
   if (!targetEl) {
     refs.set("prevTarget", null)
     return
   }
 
-  if (targetEl === prevTarget) return
+  // Restore what the target had before, so an app's own inert or highlight survives the tour
+  const preventInteraction = !!prop("preventInteraction")
+  const wasInert = targetEl.inert
+  const wasHighlighted = targetEl.hasAttribute("data-tour-highlighted")
 
-  if (prop?.("preventInteraction")) targetEl.inert = true
+  if (preventInteraction) targetEl.inert = true
   targetEl.setAttribute("data-tour-highlighted", "")
 
   refs.set("targetCleanup", () => {
-    if (prop?.("preventInteraction")) targetEl.inert = false
-    targetEl.removeAttribute("data-tour-highlighted")
+    if (preventInteraction) targetEl.inert = wasInert
+    if (!wasHighlighted) targetEl.removeAttribute("data-tour-highlighted")
   })
   refs.set("prevTarget", targetEl)
 }

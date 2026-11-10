@@ -530,6 +530,14 @@ export const tourReplacedTargetData: StepDetails[] = [
     title: "Step 1",
     description: "This step follows its target, even when the page replaces the element.",
     target: () => document.querySelector<HTMLElement>("#target"),
+    actions: [{ label: "Next", action: "next" }],
+  },
+  {
+    id: "step-2",
+    type: "tooltip",
+    title: "Step 2",
+    description: "This step points at the same target as the one before it.",
+    target: () => document.querySelector<HTMLElement>("#target"),
     actions: [{ label: "Done", action: "dismiss" }],
   },
 ]
