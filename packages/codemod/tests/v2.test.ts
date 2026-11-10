@@ -185,7 +185,7 @@ useMachine(pagination.machine, { ids: { prevTrigger: "p" }, translations: { prev
     expect(out(code)).toContain(`{ ids: { previousTrigger: "p" }, translations: { previousTriggerLabel: "Back" } }`)
   })
 
-  test("keeps v1 defaults that changed", () => {
+  test("reports changed defaults without adding them", () => {
     const code = `
 import * as accordion from "@zag-js/accordion"
 const service = useMachine(accordion.machine, {
@@ -194,8 +194,8 @@ const service = useMachine(accordion.machine, {
 })
 `
     const result = run(code)
-    expect(result.code).toContain(`{\n  collapsible: false,\n  id: "faq",\n}`)
-    expect(result.notes.map((n) => n.message).join()).toMatch(/collapsible/)
+    expect(result.code).not.toContain("collapsible")
+    expect(result.notes.map((n) => n.message).join()).toContain("Pass `collapsible: false` to keep the v1 behavior")
   })
 
   test("does not add a default that is already set", () => {
@@ -337,26 +337,25 @@ service.state.matches("closing")
     expect(out(hover)).toContain(`matches("open.closing")`)
   })
 
-  test("replaces popover api.portalled, which is always true in v2", () => {
+  test("reports popover api.portalled without rewriting it", () => {
     const code = `
 import * as popover from "@zag-js/popover"
 const api = popover.connect(service, normalizeProps)
 const Wrapper = api.portalled ? Portal : Fragment
 const off = { disabled: !api.portalled }
-const on = api.portalled
 `
     const result = run(code)
-    expect(result.code).toContain(`const Wrapper = Portal`)
-    expect(result.code).toContain(`{ disabled: false }`)
-    expect(result.code).toContain(`const on = true`)
-    expect(result.notes.some((n) => n.message.includes("portalled"))).toBe(false)
+    expect(result.code).toBe(code)
+    expect(result.notes.filter((n) => n.message.includes("portalled")).map((n) => n.line)).toEqual([4, 5])
 
     const vue = `<script setup lang="ts">
 import * as popover from "@zag-js/popover"
 </script>
 <template><Teleport to="body" :disabled="!api.portalled"></Teleport></template>
 `
-    expect(out(vue, "P.vue")).toContain(`:disabled="false"`)
+    const vueResult = run(vue, "P.vue")
+    expect(vueResult.code).toBe(vue)
+    expect(vueResult.notes.filter((n) => n.message.includes("portalled")).map((n) => n.line)).toEqual([4])
   })
 
   test("flags removed members", () => {

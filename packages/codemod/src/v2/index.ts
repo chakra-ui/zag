@@ -1,7 +1,7 @@
 import MagicString from "magic-string"
 import type { Note, TransformResult } from "../types"
 import { dedupeNotes, lineAt } from "../utils"
-import { MEMBER_RULES } from "./rules"
+import { MEMBER_RULES, REMOVED_MEMBERS } from "./rules"
 import { transformScript } from "./script"
 import { transformSelectors } from "./selectors"
 
@@ -54,12 +54,12 @@ function transformTemplate(text: string, s: MagicString, blocks: Block[], pkgs: 
   const inScript = (i: number) => blocks.some((b) => i >= b.start && i < b.end)
   const onlyMachine = pkgs.size === 1 ? [...pkgs][0] : null
 
-  // popover always portals in v2
+  // popover always portals in v2; leave the change to the user
   if (pkgs.has("popover")) {
-    for (const m of text.matchAll(/(!\s*)?\b[\w$]*api(?:\(\))?(?:\.value)?\.portalled\b/gi)) {
+    const message = REMOVED_MEMBERS.find((r) => r.name === "portalled")!.message
+    for (const m of text.matchAll(/\b[\w$]*api(?:\(\))?(?:\.value)?\.portalled\b/gi)) {
       if (inScript(m.index!)) continue
-      s.overwrite(m.index!, m.index! + m[0].length, m[1] ? "false" : "true")
-      changes++
+      notes.push({ line: lineAt(text, m.index!), message })
     }
   }
 

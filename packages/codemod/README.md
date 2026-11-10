@@ -28,9 +28,6 @@ and stylesheets.
 - **Api members**, such as `getPrevTriggerProps()` → `getPreviousTriggerProps()` and `clearHighlightValue()` →
   `setHighlightedValue(null)`. Names that are common outside zag, like `getItemProps` or `loading`, are renamed only
   when the codemod can tell which machine's api they belong to.
-- **Changed defaults.** When accordion, tags input or table of contents props leave out a prop whose default changed,
-  the codemod adds the v1 value (`collapsible: false`, `editable: true`, `multiple: true`) so behavior stays the same.
-  Delete it to adopt the new default.
 
 ### What it reports
 
@@ -39,8 +36,11 @@ Changes that need a decision are listed with their file and line instead of bein
 - selectors that use `data-part` without `data-scope`, or `[data-part*=…]`
 - steps, which moved to an `items` array addressed by `value`
 - the new `list` part in combobox, select and listbox, and the `content` part in toast
-- removed apis such as `api.setSrc` and `api.gamutOverlay`
+- removed apis such as `api.setSrc`, `api.gamutOverlay` and popover's `api.portalled`
 - number input values, which are now numbers
+- props whose default changed, when you leave them out: accordion `collapsible`, tags input `editable` and table of
+  contents `multiple`. Pass the v1 value (`collapsible: false`, `editable: true`, `multiple: true`) to keep the old
+  behavior
 
 Run your type checker and tests afterwards, and see the [migration guide](https://zagjs.com/guides/migration) for
 everything else.
@@ -49,8 +49,7 @@ everything else.
 
 - It works one file at a time. Props passed through your own wrapper, such as `new MyCarousel(el, { slideCount })` where
   `MyCarousel` is defined in another file, are not detected; the type checker points at them.
-- Run it once, on v1 code. On code that is already on v2 it would add the v1 defaults again.
-- Replacing `api.portalled ? Portal : Fragment` with `Portal` can leave an unused `Fragment` import behind.
+- Run it on v1 code. Code that is already on v2 gets notes it doesn't need.
 
 ## API
 

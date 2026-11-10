@@ -143,7 +143,8 @@ export const REMOVED_MEMBERS: Array<{ pkgs: string[]; name: string; message: str
   {
     pkgs: ["popover"],
     name: "portalled",
-    message: "popover: `api.portalled` is removed. Portalling is detected automatically, so always render the Portal.",
+    message:
+      "popover: `api.portalled` is removed and popover always portals. Render the Portal unconditionally (`api.portalled ? Portal : Fragment` becomes `Portal`) and remove imports that are no longer used.",
   },
   {
     pkgs: ["color-picker"],
@@ -226,10 +227,14 @@ export const REMOVED_PROPS: Record<string, string[]> = {
 
 /**
  * Defaults that changed in v2. When a props object leaves the prop out, the
- * codemod writes the v1 default so behavior doesn't change.
+ * codemod reports it so the user can decide whether to keep the v1 behavior.
  */
 export const CHANGED_DEFAULTS: Record<string, { prop: string; v1: string; note: string }> = {
   accordion: { prop: "collapsible", v1: "false", note: "accordion: `collapsible` now defaults to `true`" },
   "tags-input": { prop: "editable", v1: "true", note: "tags-input: `editable` now defaults to `false`" },
   toc: { prop: "multiple", v1: "true", note: "toc: `multiple` now defaults to `false`" },
+}
+
+export function changedDefaultMessage(changed: { prop: string; v1: string; note: string }): string {
+  return `${changed.note}. Pass \`${changed.prop}: ${changed.v1}\` to keep the v1 behavior.`
 }

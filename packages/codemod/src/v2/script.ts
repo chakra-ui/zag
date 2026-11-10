@@ -4,6 +4,7 @@ import type { Note } from "../types"
 import { lineAt } from "../utils"
 import {
   CHANGED_DEFAULTS,
+  changedDefaultMessage,
   EXPORT_RENAMES,
   MEMBER_RULES,
   NESTED_RENAMES,
@@ -329,18 +330,6 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
     }
   }
 
-  const insertDefault = (obj: Node, prop: string, value: string) => {
-    const inner = code.slice(obj.start + 1, obj.end - 1)
-    const first = obj.properties[0]
-    if (!first) return insert(obj.start + 1, ` ${prop}: ${value} `)
-    if (inner.includes("\n")) {
-      const lineStart = code.lastIndexOf("\n", first.start) + 1
-      const indent = code.slice(lineStart, first.start)
-      return insert(first.start, `${prop}: ${value},\n${indent}`)
-    }
-    return insert(first.start, `${prop}: ${value}, `)
-  }
-
   const applyProps = (pkg: string, obj: Node) => {
     if (handledObjects.has(obj)) return
     handledObjects.add(obj)
@@ -457,14 +446,7 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
     }
 
     const changed = CHANGED_DEFAULTS[pkg]
-    if (changed && !byName.has(changed.prop)) {
-      const hasSpread = props.some((p) => p.type === "SpreadElement")
-      insertDefault(obj, changed.prop, changed.v1)
-      note(
-        obj,
-        `${changed.note}. Added \`${changed.prop}: ${changed.v1}\` to keep the v1 behavior${hasSpread ? " (spread props still override it)" : ""}; remove it to adopt the new default.`,
-      )
-    }
+    if (changed && !byName.has(changed.prop)) note(obj, changedDefaultMessage(changed))
 
     if (pkg === "pin-input" && !byName.has("count") && !props.some((p) => p.type === "SpreadElement")) {
       note(obj, "pin-input: `count` is now required. The machine no longer counts the inputs in the DOM.")
@@ -476,7 +458,7 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
     if (obj) return applyProps(pkg, obj)
     const changed = CHANGED_DEFAULTS[pkg]
     if (changed && arg) {
-      note(at, `${changed.note}. Pass \`${changed.prop}: ${changed.v1}\` to keep the v1 behavior.`)
+      note(at, changedDefaultMessage(changed))
     }
   }
 
@@ -541,16 +523,6 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
           (resolved && removed.pkgs.some((p) => resolved.has(p))) || (!resolved && inFile && apiLike(n.object))
         if (!matches) continue
 
-        // popover always portals in v2: `api.portalled ? Portal : Fragment` -> `Portal`
-        if (name === "portalled") {
-          const done =
-            parent?.type === "ConditionalExpression" && parent.test === n
-              ? overwrite(parent.start, parent.end, src(parent.consequent))
-              : parent?.type === "UnaryExpression" && parent.operator === "!"
-                ? overwrite(parent.start, parent.end, "false")
-                : overwrite(n.start, n.end, "true")
-          if (done) continue
-        }
         note(n, removed.message)
       }
 
