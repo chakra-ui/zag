@@ -80,6 +80,12 @@ export class ComboboxModel extends Model {
     await expect(this.content).not.toBeVisible()
   }
 
+  /** Item texts in order. Matched at the end, after the indicator */
+  seeItems = async (texts: string[]) => {
+    const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    await expect(this.items).toHaveText(texts.map((text) => new RegExp(`${escape(text)}$`)))
+  }
+
   seeNumberOfItems = async (count: number) => {
     const _count = await this.items.count()
     expect(_count).toBe(count)
