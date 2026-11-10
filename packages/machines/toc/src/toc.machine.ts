@@ -9,7 +9,7 @@ import {
   trackScrollEnd,
 } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, first, isEqual, last, toArray } from "@zag-js/utils"
+import { callAll, first, isEqual, last, toArray, warn } from "@zag-js/utils"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"
@@ -270,52 +270,46 @@ export const machine = createMachine({
 
     effects: {
       trackHeadings(params) {
-        const { scope, prop, refs, send } = params
-        const win = scope.getWin()
-        const doc = scope.getDoc()
-        const visibilityMap = refs.get("visibilityMap")
-        const observer = new win.IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              visibilityMap.set(entry.target.id, entry.isIntersecting)
+        const { scope, prop, refs, send, watchEffect } = params
+        return watchEffect([() => prop("rootMargin"), () => String(prop("threshold"))], () => {
+          const doc = scope.getDoc()
+          restartHeadingObserver(params)
+
+          const frame = AnimationFrame.create()
+          const onScroll = (event: Event) => {
+            if (frame.isActive()) return
+
+            if (hasScrollElChanged(params)) {
+              frame.request(() => restartHeadingObserver(params))
+              return
             }
-            refs.set("rootBounds", entries[0]?.rootBounds ?? null)
-            send({ type: "VISIBILITY.CHANGE" })
-          },
-          {
-            root: prop("scrollEl")?.() ?? null,
-            rootMargin: prop("rootMargin"),
-            threshold: prop("threshold"),
-          },
-        )
 
-        refs.set("headingObserver", observer)
-        observeHeadings(params)
+            const headings = refs.get("headings")
+            if (headings.length === 0) {
+              frame.request(() => observeHeadings(params))
+              return
+            }
 
-        const frame = AnimationFrame.create()
-        const onScroll = (event: Event) => {
-          if (frame.isActive()) return
-          const headings = refs.get("headings")
-          if (headings.length === 0) return
-          const target = getEventTarget<Node>(event)
-          const movesHeadings =
-            target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
-          if (!movesHeadings) return
-          frame.request(() => send({ type: "SCROLL" }))
-        }
+            const target = getEventTarget<Node>(event)
+            const movesHeadings =
+              target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
+            if (!movesHeadings) return
+            frame.request(() => send({ type: "SCROLL" }))
+          }
 
-        const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
+          const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
 
-        return () => {
-          observer.disconnect()
-          cleanupScroll()
-          frame.cancel()
-          refs.get("headingsFrame").cancel()
-          visibilityMap.clear()
-          refs.set("headingObserver", null)
-          refs.set("headings", [])
-          refs.set("scrollContainer", null)
-        }
+          return () => {
+            refs.get("headingObserver")?.disconnect()
+            cleanupScroll()
+            frame.cancel()
+            refs.get("headingsFrame").cancel()
+            refs.get("visibilityMap").clear()
+            refs.set("headingObserver", null)
+            refs.set("headings", [])
+            refs.set("scrollContainer", null)
+          }
+        })
       },
 
       waitForScrollEnd({ scope, send }) {
@@ -325,8 +319,54 @@ export const machine = createMachine({
   },
 })
 
+const getScrollEl = ({ prop }: Params<TocSchema>) => {
+  const scrollEl = prop("scrollEl")
+  if (!scrollEl) return null
+  return scrollEl() ?? null
+}
+
+/** Observes the headings with a new observer, built from the current options */
+function restartHeadingObserver(params: Params<TocSchema>) {
+  const { refs } = params
+  const observer = createHeadingObserver(params)
+  if (!observer) return
+  refs.get("headingObserver")?.disconnect()
+  refs.set("headingObserver", observer)
+  observeHeadings(params)
+}
+
+function createHeadingObserver(params: Params<TocSchema>): IntersectionObserver | null {
+  const { scope, prop, refs, send } = params
+  const win = scope.getWin()
+  const visibilityMap = refs.get("visibilityMap")
+  try {
+    const observer = new win.IntersectionObserver(
+      (entries) => {
+        if (refs.get("headingObserver") !== observer) return
+        for (const entry of entries) {
+          visibilityMap.set(entry.target.id, entry.isIntersecting)
+        }
+        refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+        send({ type: "VISIBILITY.CHANGE" })
+      },
+      { root: getScrollEl(params), rootMargin: prop("rootMargin"), threshold: prop("threshold") },
+    )
+    return observer
+  } catch (error) {
+    warn(`[toc] Invalid observer options: ${error}`)
+    return null
+  }
+}
+
+/** Whether `scrollEl` now returns a different element, e.g. one that mounted after the toc */
+function hasScrollElChanged(params: Params<TocSchema>) {
+  const observer = params.refs.get("headingObserver")
+  return !!observer && observer.root !== getScrollEl(params)
+}
+
 /** Caches and observes the headings of the current items */
-function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
+function observeHeadings(params: Params<TocSchema>) {
+  const { context, scope, prop, refs } = params
   const observer = refs.get("headingObserver")
   if (!observer) return
 
@@ -335,7 +375,7 @@ function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
 
   const headings = dom.getHeadings(scope, prop("items"))
   refs.set("headings", headings)
-  refs.set("scrollContainer", headings.length ? getScrollContainer(prop("scrollEl")?.(), headings[0].el) : null)
+  refs.set("scrollContainer", headings.length ? getScrollContainer(getScrollEl(params), headings[0].el) : null)
 
   // Observing reports each heading's visibility, which resyncs the active ids
   for (const heading of headings) {

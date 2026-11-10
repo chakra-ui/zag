@@ -27,6 +27,24 @@ export class TocModel extends Model {
     return this.controls.bool("multiple", value)
   }
 
+  setRootMargin(value: string) {
+    return this.controls.select("rootMargin", value)
+  }
+
+  async scrollHeadingToRatio(value: string, ratio: number) {
+    const container = await this.getScrollContainer()
+    const height = await container.evaluate((el) => el.clientHeight)
+    await this.scrollHeadingTo(value, height * ratio)
+  }
+
+  async seeItemIsNotActive(value: string) {
+    await this.dontSeeDataAttr(this.page.locator(item(value)), "active")
+  }
+
+  waitForHeading(value: string) {
+    return this.page.locator(`[id="${value}"]`).waitFor()
+  }
+
   clickLink(value: string) {
     return this.page.click(link(value))
   }
