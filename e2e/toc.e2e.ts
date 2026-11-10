@@ -87,3 +87,33 @@ test.describe("toc / nav inside scroll container", () => {
     await expect.poll(() => I.nav.evaluate((el) => el.scrollTop)).toBeGreaterThan(0)
   })
 })
+
+test.describe("toc / scroll element", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TocModel(page)
+    await I.goto("/toc/scroll-element")
+  })
+
+  test("follows a rootMargin change", async () => {
+    await I.setMultiple(true)
+    await I.scrollHeadingToRatio("installation", 0.8)
+    await I.seeItemIsNotActive("installation")
+    await I.setRootMargin("0px")
+    await I.seeItemIsActive("installation")
+  })
+})
+
+test.describe("toc / content mounts after the toc", () => {
+  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
+  test.beforeEach(async ({ page }) => {
+    I = new TocModel(page)
+    await I.goto("/toc/late-content")
+  })
+
+  test("tracks headings that mount after the toc", async ({ page }) => {
+    await page.locator("[id=installation]").waitFor()
+    await I.scrollHeadingTo("installation", 40)
+    await I.seeItemIsActive("installation")
+  })
+})

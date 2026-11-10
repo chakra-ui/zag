@@ -91,6 +91,9 @@ export const machine = createMachine({
         action(["syncHeadings"])
       },
     )
+    track([() => prop("rootMargin"), () => String(prop("threshold"))], () => {
+      action(["restartHeadingObserver"])
+    })
   },
 
   entry: ["syncIndicatorRect"],
@@ -207,6 +210,10 @@ export const machine = createMachine({
         params.refs.get("headingsFrame").request(() => observeHeadings(params))
       },
 
+      restartHeadingObserver(params) {
+        startHeadingObserver(params)
+      },
+
       cleanupIndicatorObserver({ refs }) {
         refs.get("indicatorCleanup")?.()
       },
@@ -270,33 +277,27 @@ export const machine = createMachine({
 
     effects: {
       trackHeadings(params) {
-        const { scope, prop, refs, send } = params
-        const win = scope.getWin()
+        const { scope, refs, send } = params
         const doc = scope.getDoc()
-        const visibilityMap = refs.get("visibilityMap")
-        const observer = new win.IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              visibilityMap.set(entry.target.id, entry.isIntersecting)
-            }
-            refs.set("rootBounds", entries[0]?.rootBounds ?? null)
-            send({ type: "VISIBILITY.CHANGE" })
-          },
-          {
-            root: prop("scrollEl")?.() ?? null,
-            rootMargin: prop("rootMargin"),
-            threshold: prop("threshold"),
-          },
-        )
 
-        refs.set("headingObserver", observer)
-        observeHeadings(params)
+        startHeadingObserver(params)
 
         const frame = AnimationFrame.create()
         const onScroll = (event: Event) => {
           if (frame.isActive()) return
           const headings = refs.get("headings")
-          if (headings.length === 0) return
+          const observer = refs.get("headingObserver")
+
+          // `scrollEl` or the headings mounted after the toc
+          if (observer && observer.root !== getScrollEl(params)) {
+            frame.request(() => startHeadingObserver(params))
+            return
+          }
+          // Headings that mount later are looked up on the next scroll
+          if (headings.length === 0) {
+            frame.request(() => observeHeadings(params))
+            return
+          }
           const target = getEventTarget<Node>(event)
           const movesHeadings =
             target === doc || target === refs.get("scrollContainer") || contains(target, headings[0].el)
@@ -307,11 +308,12 @@ export const machine = createMachine({
         const cleanupScroll = addDomEvent(doc, "scroll", onScroll, { capture: true, passive: true })
 
         return () => {
-          observer.disconnect()
+          const observer = refs.get("headingObserver")
+          if (observer) observer.disconnect()
           cleanupScroll()
           frame.cancel()
           refs.get("headingsFrame").cancel()
-          visibilityMap.clear()
+          refs.get("visibilityMap").clear()
           refs.set("headingObserver", null)
           refs.set("headings", [])
           refs.set("scrollContainer", null)
@@ -324,6 +326,39 @@ export const machine = createMachine({
     },
   },
 })
+
+const getScrollEl = ({ prop }: Params<TocSchema>) => {
+  const scrollEl = prop("scrollEl")
+  if (!scrollEl) return null
+  return scrollEl() ?? null
+}
+
+/** Creates the heading observer from the current options and observes the headings */
+function startHeadingObserver(params: Params<TocSchema>) {
+  const { scope, prop, refs, send } = params
+  const current = refs.get("headingObserver")
+  if (current) current.disconnect()
+
+  const win = scope.getWin()
+  const visibilityMap = refs.get("visibilityMap")
+  const observer = new win.IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        visibilityMap.set(entry.target.id, entry.isIntersecting)
+      }
+      refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+      send({ type: "VISIBILITY.CHANGE" })
+    },
+    {
+      root: getScrollEl(params),
+      rootMargin: prop("rootMargin"),
+      threshold: prop("threshold"),
+    },
+  )
+
+  refs.set("headingObserver", observer)
+  observeHeadings(params)
+}
 
 /** Caches and observes the headings of the current items */
 function observeHeadings({ context, scope, prop, refs }: Params<TocSchema>) {
