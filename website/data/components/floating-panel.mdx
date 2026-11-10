@@ -235,6 +235,17 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
+### Stacking
+
+Set the `z-index` on the content. The positioner takes that value and adds the
+panel's place in the stack, so the focused panel stays on top.
+
+```css
+[data-floating-panel-content] {
+  z-index: 1400;
+}
+```
+
 ### Events
 
 The floating panel generates a variety of events that you can handle.

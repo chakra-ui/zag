@@ -98,7 +98,8 @@
       "--height": "The height of the element",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value"
+      "--z-index": "The z-index of the content",
+      "--layer-index": "The index of the panel in the panel stack"
     }
   },
   "image-cropper": {

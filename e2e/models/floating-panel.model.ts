@@ -164,6 +164,14 @@ export class FloatingPanelModel extends Model {
     await this.page.mouse.up()
   }
 
+  setContentZIndex(zIndex: number) {
+    return this.page.addStyleTag({ content: `${part("content")} { z-index: ${zIndex}; }` })
+  }
+
+  async seePositionerZIndex(zIndex: number) {
+    await expect.poll(() => this.positioner.evaluate((el) => getComputedStyle(el).zIndex)).toBe(String(zIndex))
+  }
+
   seeStrategy(value: "fixed" | "absolute") {
     return expect(this.positioner).toHaveCSS("position", value)
   }

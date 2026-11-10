@@ -8,10 +8,6 @@
   display: flex;
   flex-direction: column;
 
-  &[data-topmost] {
-    z-index: 999999;
-  }
-
   &[data-behind] {
     opacity: 0.4;
   }

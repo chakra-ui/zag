@@ -2,6 +2,8 @@ import { createGuards, createMachine } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
+  createSharedMutationObserver,
+  getComputedStyle,
   getOverflowAncestors,
   isHTMLElement,
   raf,
@@ -33,6 +35,8 @@ const { not, and } = createGuards<FloatingPanelSchema>()
 
 const FALLBACK_SIZE = Object.freeze({ width: 320, height: 240 })
 const FALLBACK_POSITION = Object.freeze({ x: 300, y: 100 })
+
+const contentStyleObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["style", "class"] })
 
 export const machine = createMachine<FloatingPanelSchema>({
   props({ props }) {
@@ -100,6 +104,9 @@ export const machine = createMachine<FloatingPanelSchema>({
       })),
       stackIndex: bindable<number>(() => ({
         defaultValue: -1,
+      })),
+      contentZIndex: bindable<string | null>(() => ({
+        defaultValue: null,
       })),
     }
   },
@@ -186,6 +193,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
       exit: ["removeFromPanelStack"],
+      effects: ["trackContentZIndex"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": {
@@ -353,6 +361,28 @@ export const machine = createMachine<FloatingPanelSchema>({
         }
 
         return () => cleanups.forEach((fn) => fn?.())
+      },
+
+      trackContentZIndex({ context, scope }) {
+        let cleanupObserver: VoidFunction | undefined
+
+        const sync = (contentEl: HTMLElement) => {
+          const zIndex = getComputedStyle(contentEl).zIndex
+          context.set("contentZIndex", zIndex === "auto" ? null : zIndex)
+        }
+
+        // The content may render after the panel opens
+        const cleanupFrame = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+          sync(contentEl)
+          cleanupObserver = contentStyleObserver.observe(contentEl, () => sync(contentEl))
+        })
+
+        return () => {
+          cleanupFrame()
+          cleanupObserver?.()
+        }
       },
 
       trackPanelStack({ context, scope }) {
