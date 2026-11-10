@@ -125,6 +125,14 @@ export class TagsInputModel extends Model {
     await expect(this.getTagInput(value)).toHaveValue(value)
   }
 
+  async seeHighlightedTagText(text: string) {
+    await expect(this.page.locator("[data-tags-input-item-preview][data-highlighted]")).toHaveText(text)
+  }
+
+  async seeTagOrder(values: string[]) {
+    await expect(this.page.locator("[data-tags-input-item-text]")).toHaveText(values)
+  }
+
   async seeNoHighlightedTag() {
     await expect(this.page.locator("[data-tags-input-item-preview][data-highlighted]")).toHaveCount(0)
   }

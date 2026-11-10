@@ -58,17 +58,9 @@ export default function Page() {
       const toFruits = fruitIds().has(target)
 
       if (fromFruits && toFruits) {
-        setFruits((prev) => {
-          const fromIndex = prev.findIndex((i) => i.id === source)
-          const toIndex = prev.findIndex((i) => i.id === target)
-          return dnd.move(prev, fromIndex, dnd.getDestinationIndex(prev.length, fromIndex, toIndex, placement))
-        })
+        setFruits((prev) => dnd.reorder(prev, { source, target, placement, itemToValue: (i) => i.id }))
       } else if (!fromFruits && !toFruits) {
-        setVeggies((prev) => {
-          const fromIndex = prev.findIndex((i) => i.id === source)
-          const toIndex = prev.findIndex((i) => i.id === target)
-          return dnd.move(prev, fromIndex, dnd.getDestinationIndex(prev.length, fromIndex, toIndex, placement))
-        })
+        setVeggies((prev) => dnd.reorder(prev, { source, target, placement, itemToValue: (i) => i.id }))
       } else if (fromFruits && !toFruits) {
         setFruits((prev) => prev.filter((i) => i.id !== source))
         setVeggies((prev) => insertAt(prev, target, placement, sourceItem))

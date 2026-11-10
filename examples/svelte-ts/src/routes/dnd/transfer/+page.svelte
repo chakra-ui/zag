@@ -54,14 +54,10 @@
 
       if (fromFruits && toFruits) {
         // Reorder within fruits
-        const fromIndex = fruits.findIndex((i) => i.id === source)
-        const toIndex = fruits.findIndex((i) => i.id === target)
-        fruits = dnd.move(fruits, fromIndex, dnd.getDestinationIndex(fruits.length, fromIndex, toIndex, placement))
+        fruits = dnd.reorder(fruits, { source, target, placement, itemToValue: (i) => i.id })
       } else if (!fromFruits && !toFruits) {
         // Reorder within veggies
-        const fromIndex = veggies.findIndex((i) => i.id === source)
-        const toIndex = veggies.findIndex((i) => i.id === target)
-        veggies = dnd.move(veggies, fromIndex, dnd.getDestinationIndex(veggies.length, fromIndex, toIndex, placement))
+        veggies = dnd.reorder(veggies, { source, target, placement, itemToValue: (i) => i.id })
       } else if (fromFruits && !toFruits) {
         // Transfer fruits → veggies
         fruits = fruits.filter((i) => i.id !== source)

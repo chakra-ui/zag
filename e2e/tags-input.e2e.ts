@@ -447,3 +447,21 @@ test.describe("tags-input / validate", () => {
     await I.see("Invalid: React, Vue")
   })
 })
+
+test.describe("tags-input / sortable", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/sortable")
+  })
+
+  test("moves the highlighted tag with alt + arrow keys and keeps focus in the input", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeHighlightedTagText("Ship")
+
+    await I.pressKey("Alt+ArrowLeft")
+    await I.seeTagOrder(["Design", "Build", "Ship", "Test"])
+    await I.seeHighlightedTagText("Ship")
+    await I.seeInputIsFocused()
+  })
+})

@@ -272,3 +272,43 @@ test.describe("tabs / animated-panels", () => {
     await I.seeActivationDirection("left")
   })
 })
+
+test.describe("tabs / reorder", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TabsModel(page)
+    await I.goto("/tabs/reorder")
+  })
+
+  test("should reorder a tab by dragging", async () => {
+    await I.dragTab("Nils Frahm", "Joke")
+    await I.seeTabOrder(["Agnes Obel", "Joke", "Nils Frahm"])
+    await I.seeTabIsSelected("Nils Frahm")
+    await I.seeIndicatorOnSelectedTab()
+  })
+
+  test("should still select a tab on click", async () => {
+    await I.clickTabByName("Agnes Obel")
+    await I.seeTabIsSelected("Agnes Obel")
+    await I.seeTabOrder(["Nils Frahm", "Agnes Obel", "Joke"])
+  })
+
+  test("should move the focused tab with alt + arrow keys", async () => {
+    await I.focusTabByName("Nils Frahm")
+    await I.pressKey("Alt+ArrowRight")
+    await I.seeTabOrder(["Agnes Obel", "Nils Frahm", "Joke"])
+    await I.seeAnnouncement("Dropped Nils Frahm after Agnes Obel.")
+    await I.seeIndicatorOnSelectedTab()
+
+    await I.pressKey("Alt+ArrowLeft")
+    await I.seeTabOrder(["Nils Frahm", "Agnes Obel", "Joke"])
+  })
+
+  test("should not start a keyboard drag on space", async () => {
+    await I.focusTabByName("Nils Frahm")
+    await I.pressKey("Space")
+    await I.pressKey("ArrowRight")
+    await I.seeTabOrder(["Nils Frahm", "Agnes Obel", "Joke"])
+    await I.waitForKeyboardSelection()
+    await I.seeTabIsSelected("Agnes Obel")
+  })
+})

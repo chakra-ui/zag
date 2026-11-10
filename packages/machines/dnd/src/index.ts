@@ -2,7 +2,7 @@ export { anatomy } from "./dnd.anatomy"
 export { connect } from "./dnd.connect"
 export { machine } from "./dnd.machine"
 export { closestEdge, closestCenter, closestGrid, pointerWithin } from "./utils/collision"
-export { move, reorder, getDestinationIndex } from "./utils/move"
+export { reorder } from "./utils/reorder"
 export * from "./dnd.props"
 export type {
   DndApi as Api,
@@ -26,4 +26,5 @@ export type {
   ElementIds,
   IntlTranslations,
   ItemState,
+  MoveDetails,
 } from "./dnd.types"

@@ -1450,7 +1450,7 @@
       },
       "popupType": {
         "type": "\"listbox\" | \"dialog\" | undefined",
-        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the\n`role` of the content element, the trigger's keyboard handling, and the\nlabel's click target.\n- `\"listbox\"` (default) — input-driven combobox; popup is a passive listbox.\n- `\"dialog\"` — popover-style combobox; popup is announced as a dialog,\n  trigger is keyboard-active, label-click focuses the trigger.",
+        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the\n`role` of the content element, the trigger's keyboard handling, and the\nlabel's click target.\n- `\"listbox\"` (default) \u2014 input-driven combobox; popup is a passive listbox.\n- `\"dialog\"` \u2014 popover-style combobox; popup is announced as a dialog,\n  trigger is keyboard-active, label-click focuses the trigger.",
         "defaultValue": "\"listbox\""
       },
       "loading": {
@@ -2262,6 +2262,10 @@
         "type": "() => void",
         "description": "Programmatically cancel the current drag."
       },
+      "move": {
+        "type": "(details: MoveDetails) => void",
+        "description": "Moves an item one step, or to the start or end, without dragging.\nCalls `onDrop`, announces the move and keeps focus on the item."
+      },
       "pointerPosition": {
         "type": "Point | null",
         "description": "The current pointer position during drag. Null when not dragging."
@@ -2327,6 +2331,11 @@
       "activationConstraint": {
         "type": "{ distance?: number | undefined; delay?: number | undefined } | undefined",
         "description": "Activation constraint for pointer drag. Prevents accidental drags."
+      },
+      "isActivationKey": {
+        "type": "((event: KeyboardEvent) => boolean) | undefined",
+        "description": "Whether the key press starts a keyboard drag on a draggable or drag handle.\nReturn `false` for items that use Enter or Space for their own action, and reorder with `api.move`.\nUpdate `translations.instructions` to match.",
+        "defaultValue": "(event) => event.key === \"Enter\" || event.key === \" \""
       },
       "canDrag": {
         "type": "((value: string) => boolean) | undefined",
@@ -4406,7 +4415,7 @@
       },
       "percent": {
         "type": "number",
-        "description": "The percentage of the meter's value (0–100)."
+        "description": "The percentage of the meter's value (0\u2013100)."
       },
       "percentAsString": {
         "type": "string",
@@ -5296,7 +5305,7 @@
       "placeholder": {
         "type": "string | undefined",
         "description": "The placeholder text for the input",
-        "defaultValue": "\"○\""
+        "defaultValue": "\"\u25cb\""
       },
       "autoFocus": {
         "type": "boolean | undefined",
@@ -5911,7 +5920,7 @@
       },
       "today": {
         "type": "CalendarDateTime",
-        "description": "Locale/timezone-aware \"today\" date — useful for highlighting current day."
+        "description": "Locale/timezone-aware \"today\" date \u2014 useful for highlighting current day."
       },
       "visibleRange": {
         "type": "{ start: CalendarDateTime; end: CalendarDateTime }",
@@ -5919,7 +5928,7 @@
       },
       "visibleRangeText": {
         "type": "VisibleRangeText",
-        "description": "Localized text for the visible range — prefer this over formatting by hand."
+        "description": "Localized text for the visible range \u2014 prefer this over formatting by hand."
       },
       "visibleDays": {
         "type": "CalendarDateTime[]",
@@ -5927,7 +5936,7 @@
       },
       "columns": {
         "type": "SchedulerColumn<P>[]",
-        "description": "The columns to render — one per visible day, or one per day × resource when grouping by resource."
+        "description": "The columns to render \u2014 one per visible day, or one per day \u00d7 resource when grouping by resource."
       },
       "getTimelineState": {
         "type": "() => TimelineState<P>",
@@ -5951,7 +5960,7 @@
       },
       "formatTimeRange": {
         "type": "(start: CalendarDateTime, end: CalendarDateTime) => string",
-        "description": "Locale/timezone-aware time range, e.g. \"09:30 – 11:00\"."
+        "description": "Locale/timezone-aware time range, e.g. \"09:30 \u2013 11:00\"."
       },
       "formatLongDate": {
         "type": "(date: CalendarDateTime) => string",
@@ -5980,7 +5989,7 @@
       },
       "visibleEvents": {
         "type": "SchedulerEvent<P>[]",
-        "description": "Events whose range overlaps `visibleRange` — the set you actually render."
+        "description": "Events whose range overlaps `visibleRange` \u2014 the set you actually render."
       },
       "getAgendaGroups": {
         "type": "() => { date: CalendarDateTime; events: SchedulerEvent<P>[] }[]",
@@ -6000,7 +6009,7 @@
       },
       "dragState": {
         "type": "DragState<P> | null",
-        "description": "State of the active drag or resize — null when idle."
+        "description": "State of the active drag or resize \u2014 null when idle."
       },
       "selectedSlot": {
         "type": "{ start: CalendarDateTime; end: CalendarDateTime } | null",
@@ -6044,15 +6053,15 @@
       },
       "getEventState": {
         "type": "(id: string) => EventStateDetail",
-        "description": "Interaction state for an event — dragging, focused, conflicting, and so on."
+        "description": "Interaction state for an event \u2014 dragging, focused, conflicting, and so on."
       },
       "getDayColumnState": {
         "type": "(props: DayColumnProps) => DayColumnState",
-        "description": "Day-level flags for the given column — use to conditionally render custom UI (drop-target hint, day-specific styling) without reconstructing the comparisons from `dragState` / `selectedSlot`."
+        "description": "Day-level flags for the given column \u2014 use to conditionally render custom UI (drop-target hint, day-specific styling) without reconstructing the comparisons from `dragState` / `selectedSlot`."
       },
       "getEventPosition": {
         "type": "(event: SchedulerEvent<P>) => EventPosition",
-        "description": "Numeric position within a day column — use for custom layouts."
+        "description": "Numeric position within a day column \u2014 use for custom layouts."
       },
       "getTimePercent": {
         "type": "(date: CalendarDateTime) => number",
@@ -6072,7 +6081,7 @@
       },
       "getMonthGrid": {
         "type": "(date?: CalendarDateTime) => CalendarDateTime[][]",
-        "description": "Weeks × days covering the month that contains `date`, padded to full weeks."
+        "description": "Weeks \u00d7 days covering the month that contains `date`, padded to full weeks."
       },
       "getEventById": {
         "type": "(id: string) => SchedulerEvent<P> | undefined",
@@ -6084,11 +6093,11 @@
       },
       "getEventsForColumn": {
         "type": "(column: SchedulerColumn<P>) => SchedulerEvent<P>[]",
-        "description": "Events for a column — scoped to its resource when grouping by resource."
+        "description": "Events for a column \u2014 scoped to its resource when grouping by resource."
       },
       "getEventsForRow": {
         "type": "(row: TimelineRow<P>) => SchedulerEvent<P>[]",
-        "description": "Events for a timeline lane — scoped to its resource when the lane has one."
+        "description": "Events for a timeline lane \u2014 scoped to its resource when the lane has one."
       },
       "getEventsForSlot": {
         "type": "(start: CalendarDateTime, end: CalendarDateTime) => SchedulerEvent<P>[]",
@@ -6146,7 +6155,7 @@
       },
       "slotInterval": {
         "type": "15 | 30 | 60 | undefined",
-        "description": "Minutes per time slot — 15, 30, or 60.",
+        "description": "Minutes per time slot \u2014 15, 30, or 60.",
         "defaultValue": "30"
       },
       "dayStartHour": {
@@ -6161,7 +6170,7 @@
       },
       "workWeekDays": {
         "type": "number[] | undefined",
-        "description": "Days of week to show in work-week mode, 0=Sun…6=Sat.",
+        "description": "Days of week to show in work-week mode, 0=Sun\u20266=Sat.",
         "defaultValue": "[1,2,3,4,5]"
       },
       "workWeekOnly": {
@@ -6180,7 +6189,7 @@
       },
       "onSlotSelect": {
         "type": "((details: SlotSelectDetails) => void) | undefined",
-        "description": "Fires when a user selects an empty slot — either by single click or by drag-release."
+        "description": "Fires when a user selects an empty slot \u2014 either by single click or by drag-release."
       },
       "onEventReceive": {
         "type": "((details: EventReceiveDetails<T>) => void) | undefined",
@@ -6193,7 +6202,7 @@
       },
       "onSlotDoubleClick": {
         "type": "((details: SlotDoubleClickDetails) => void) | undefined",
-        "description": "Fires on double-click of an empty slot — the conventional \"create event\" fast-path that bypasses slot selection (selectedSlot is not set)."
+        "description": "Fires on double-click of an empty slot \u2014 the conventional \"create event\" fast-path that bypasses slot selection (selectedSlot is not set)."
       },
       "onDayActivate": {
         "type": "((details: DayActivateDetails) => void) | undefined",
@@ -6234,7 +6243,7 @@
       },
       "startOfWeek": {
         "type": "0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined",
-        "description": "Override the first day of the week (0=Sun…6=Sat)."
+        "description": "Override the first day of the week (0=Sun\u20266=Sat)."
       },
       "showWeekNumbers": {
         "type": "boolean | undefined",
@@ -6571,7 +6580,7 @@
       },
       "popupType": {
         "type": "\"listbox\" | \"dialog\" | undefined",
-        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and\nthe `role` of the content element.\n- `\"listbox\"` (default) — content is a passthrough wrapper; the list bears `role=\"listbox\"`.\n- `\"dialog\"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.",
+        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and\nthe `role` of the content element.\n- `\"listbox\"` (default) \u2014 content is a passthrough wrapper; the list bears `role=\"listbox\"`.\n- `\"dialog\"` \u2014 content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.",
         "defaultValue": "\"listbox\""
       },
       "dir": {
@@ -7354,7 +7363,7 @@
       },
       "virtualFocus": {
         "type": "boolean | undefined",
-        "description": "Whether the tabs use virtual focus instead of roving tabindex.\n\nWhen `true`, triggers receive no DOM focus — arrow keys update `focusedValue`\nand all triggers remain `tabIndex: -1`. Useful when tabs live inside another\nwidget that manages focus (e.g. a combobox).",
+        "description": "Whether the tabs use virtual focus instead of roving tabindex.\n\nWhen `true`, triggers receive no DOM focus \u2014 arrow keys update `focusedValue`\nand all triggers remain `tabIndex: -1`. Useful when tabs live inside another\nwidget that manages focus (e.g. a combobox).",
         "defaultValue": "false"
       },
       "deselectable": {

@@ -80,12 +80,20 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
     return false
   }
 
+  function startKeyboardDrag(event: any, value: string) {
+    if (!prop("isActivationKey")(event)) return
+    event.preventDefault()
+    send({ type: "KEYBOARD.GRAB", value })
+  }
+
   // Compute all values being dragged (source + selected, or just source)
   const selectedValues = prop("selectedValues")
   const dragValues: string[] = dragSource ? (selectedValues?.includes(dragSource) ? selectedValues : [dragSource]) : []
   const dragValueSet = new Set(dragValues)
   const defaultInstructions = "Press Enter or Space to start dragging."
   const instructions = prop("translations")?.instructions ?? defaultInstructions
+  const roleDescription = prop("translations")?.roleDescription
+  const draggableRoleDescription = roleDescription === undefined ? "draggable" : (roleDescription ?? undefined)
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -124,6 +132,10 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
       send({ type: "DRAG.CANCEL" })
     },
 
+    move(details) {
+      send({ type: "ITEM.MOVE", ...details })
+    },
+
     getRootProps() {
       const columnCount = prop("columnCount")
       return normalize.element({
@@ -150,7 +162,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
         "data-selected-dragging": dataAttr(!isSource && isPartOfDrag),
         "data-disabled": dataAttr(!canDrag),
         tabIndex: canDrag ? 0 : undefined,
-        "aria-roledescription": "draggable",
+        "aria-roledescription": draggableRoleDescription,
         "aria-description": canDrag ? instructions : undefined,
         "aria-grabbed": isDragging ? isPartOfDrag : undefined,
         style: {
@@ -171,21 +183,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
 
           // During keyboard session, handle session keys
           if (handleKeyboardSession(event)) return
-
-          const keyMap: EventKeyMap = {
-            Enter() {
-              event.preventDefault()
-              send({ type: "KEYBOARD.GRAB", value })
-            },
-            Space() {
-              event.preventDefault()
-              send({ type: "KEYBOARD.GRAB", value })
-            },
-          }
-
-          const key = getEventKey(event, { dir })
-          const exec = keyMap[key]
-          exec?.(event)
+          startKeyboardDrag(event, value)
         },
       })
     },
@@ -220,21 +218,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
           if (event.defaultPrevented) return
 
           if (handleKeyboardSession(event)) return
-
-          const keyMap: EventKeyMap = {
-            Enter() {
-              event.preventDefault()
-              send({ type: "KEYBOARD.GRAB", value })
-            },
-            Space() {
-              event.preventDefault()
-              send({ type: "KEYBOARD.GRAB", value })
-            },
-          }
-
-          const key = getEventKey(event, { dir })
-          const exec = keyMap[key]
-          exec?.(event)
+          startKeyboardDrag(event, value)
         },
       })
     },

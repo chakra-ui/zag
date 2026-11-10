@@ -714,6 +714,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "with-link", title: "With Links" },
       { slug: "animated-panels", title: "Animated Panels" },
       { slug: "disabled", title: "Disabled Tab" },
+      { slug: "reorder", title: "Reorder" },
     ],
   },
   {

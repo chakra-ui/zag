@@ -1,0 +1,37 @@
+[data-tabs-trigger][data-dnd-draggable] {
+  cursor: grab;
+
+  &[data-dragging] {
+    opacity: 0.4;
+    cursor: grabbing;
+  }
+}
+
+[data-dnd-drop-indicator] {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--z-accent, #3b82f6);
+  opacity: 0;
+  pointer-events: none;
+
+  &[data-placement="before"] {
+    inset-inline-start: -2px;
+  }
+
+  &[data-placement="after"] {
+    inset-inline-end: -2px;
+  }
+
+  &[data-active] {
+    opacity: 1;
+  }
+}
+
+.tabs-reorder-hint {
+  margin-top: 12px;
+  font-size: var(--z-text-sm);
+  color: var(--z-fg-muted);
+}

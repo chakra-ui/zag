@@ -1,12 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { getDestinationIndex, reorder } from "./move"
-
-describe("getDestinationIndex", () => {
-  test("keeps self before and self after as no-op destinations", () => {
-    expect(getDestinationIndex(4, 2, 2, "before")).toBe(2)
-    expect(getDestinationIndex(4, 2, 2, "after")).toBe(2)
-  })
-})
+import { reorder } from "./reorder"
 
 describe("reorder", () => {
   test("keeps self before and self after unchanged", () => {

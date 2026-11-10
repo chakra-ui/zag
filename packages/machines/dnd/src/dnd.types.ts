@@ -67,6 +67,17 @@ export interface DragEndDetails {
   dropped: boolean
 }
 
+export interface MoveDetails {
+  /**
+   * The value of the item to move
+   */
+  value: string
+  /**
+   * Where to move it: one step back or forward, or to the start or end
+   */
+  to: "prev" | "next" | "first" | "last"
+}
+
 /* -----------------------------------------------------------------------------
  * Translations
  * -----------------------------------------------------------------------------*/
@@ -77,6 +88,11 @@ export interface IntlTranslations {
   drop: (source: string, target: string, placement: DropPlacement) => string
   cancel: (source: string) => string
   instructions: string
+  /**
+   * The `aria-roledescription` of draggables. Set to `null` to keep the element's own role, like a tab.
+   * @default "draggable"
+   */
+  roleDescription: string | null
 }
 
 /* -----------------------------------------------------------------------------
@@ -195,6 +211,13 @@ export interface DndProps extends DirectionProperty, CommonProperties {
    */
   activationConstraint?: { distance?: number | undefined; delay?: number | undefined } | undefined
   /**
+   * Whether the key press starts a keyboard drag on a draggable or drag handle.
+   * Return `false` for items that use Enter or Space for their own action, and reorder with `api.move`.
+   * Update `translations.instructions` to match.
+   * @default (event) => event.key === "Enter" || event.key === " "
+   */
+  isActivationKey?: ((event: KeyboardEvent) => boolean) | undefined
+  /**
    * Whether the given item value can be dragged.
    */
   canDrag?: ((value: string) => boolean) | undefined
@@ -236,6 +259,7 @@ export interface DndProps extends DirectionProperty, CommonProperties {
 
 type PropsWithDefault =
   | "orientation"
+  | "isActivationKey"
   | "dropPlacements"
   | "edgeThreshold"
   | "stickyDelay"
@@ -325,6 +349,11 @@ export interface DndApi<T extends PropTypes = PropTypes> {
    * Programmatically cancel the current drag.
    */
   cancelDrag(): void
+  /**
+   * Moves an item one step, or to the start or end, without dragging.
+   * Calls `onDrop`, announces the move and keeps focus on the item.
+   */
+  move(details: MoveDetails): void
 
   /**
    * The current pointer position during drag. Null when not dragging.

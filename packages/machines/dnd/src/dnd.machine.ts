@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
-import { AnimationFrame, disableTextSelection, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, contains, disableTextSelection, trackPointerMove } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { createRect, distance as pointDistance, getElementRect } from "@zag-js/rect-utils"
 import type { Rect } from "@zag-js/rect-utils"
@@ -10,6 +10,7 @@ import * as dom from "./dnd.dom"
 import type { DndSchema, DropPlacement, IntlTranslations } from "./dnd.types"
 import { createAutoScroll } from "./utils/auto-scroll"
 import { closestEdge, closestGrid, midpointPlacement } from "./utils/collision"
+import { getMoveTarget } from "./utils/move-target"
 
 type ActionParams = Params<DndSchema>
 
@@ -26,6 +27,7 @@ const defaultTranslations: IntlTranslations = {
   },
   cancel: (source) => `Cancelled dragging ${source}.`,
   instructions: "Press Enter or Space to start dragging.",
+  roleDescription: "draggable",
 }
 
 function getTranslations(params: ActionParams): IntlTranslations {
@@ -103,6 +105,7 @@ export const machine = createMachine<DndSchema>({
       scrollMaxSpeed: 4,
       stickyDelay: 150,
       dragOverDelay: 500,
+      isActivationKey: (event) => event.key === "Enter" || event.key === " ",
       ...props,
     }
   },
@@ -166,6 +169,9 @@ export const machine = createMachine<DndSchema>({
         "KEYBOARD.GRAB": {
           target: "keyboard:session",
           actions: ["setDragSource", "buildDropSequence", "invokeOnDragStart", "announcePickup"],
+        },
+        "ITEM.MOVE": {
+          actions: ["moveItem"],
         },
       },
     },
@@ -667,6 +673,37 @@ export const machine = createMachine<DndSchema>({
         const sourceLabel = getLabel(params, source)
         const targetLabel = getLabel(params, target)
         refs.get("liveRegion")?.announce(t.drop(sourceLabel, targetLabel, placement))
+      },
+
+      moveItem(params) {
+        const { event, prop, refs, scope } = params
+        const selectedValues = prop("selectedValues")
+        const values = selectedValues?.includes(event.value) ? selectedValues : [event.value]
+        const order = dom.getDraggableEls(scope).map((el) => el.dataset.value!)
+
+        const moveTarget = getMoveTarget(order, values, { value: event.value, to: event.to })
+        if (!moveTarget) return
+
+        const { target, placement } = moveTarget
+        if (prop("canDrop")?.(event.value, target, placement) === false) return
+
+        // Moves from a button or menu keep focus there
+        const itemEl = dom.getDraggableEl(scope, event.value)
+        const hadFocus = contains(itemEl, scope.getActiveElement())
+
+        prop("onDrop")?.({ source: event.value, values, target, placement })
+
+        if (!refs.get("liveRegion")) {
+          refs.set("liveRegion", createLiveRegion({ level: "assertive" }))
+        }
+        const t = getTranslations(params)
+        refs.get("liveRegion")?.announce(t.drop(getLabel(params, event.value), getLabel(params, target), placement))
+
+        // The framework may re-insert the item, which drops focus
+        if (!hadFocus) return
+        refs.get("focusFrame").request(() => {
+          dom.focusDraggable(scope, event.value)
+        })
       },
 
       invokeOnDragStart(params) {

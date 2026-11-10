@@ -81,11 +81,7 @@ function moveColumn(columns: Column[], source: string, target: string, placement
   const targetId = getColumnId(target)
   if (!sourceId || !targetId || sourceId === targetId || placement === "on") return columns
 
-  const fromIndex = columns.findIndex((column) => column.id === sourceId)
-  const toIndex = columns.findIndex((column) => column.id === targetId)
-  if (fromIndex === -1 || toIndex === -1) return columns
-
-  return dnd.move(columns, fromIndex, dnd.getDestinationIndex(columns.length, fromIndex, toIndex, placement))
+  return dnd.reorder(columns, { source: sourceId, target: targetId, placement, itemToValue: (column) => column.id })
 }
 
 function moveCard(columns: Column[], source: string, target: string, placement: dnd.DropPlacement) {

@@ -13,7 +13,6 @@ const hint = "Drag to reorder, or highlight a tag with the arrow keys and press 
 export default function Page() {
   const id = useId()
   const [value, setValue] = useState(["Design", "Build", "Test", "Ship"])
-  const [announcement, setAnnouncement] = useState("")
 
   const tagsService = useMachine(tagsInput.machine, {
     id,
@@ -39,19 +38,9 @@ export default function Page() {
   function onInputKeyDown(event: TargetedKeyboardEvent<HTMLInputElement>) {
     const highlighted = tagsApi.highlightedValue
     if (!event.altKey || !highlighted) return
-    const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0
-    const target = value[value.indexOf(highlighted) + step]
-    if (!step || !target) return
-
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
     event.preventDefault()
-    const next = dnd.reorder(value, {
-      source: highlighted,
-      target,
-      placement: step < 0 ? "before" : "after",
-      itemToValue: (item) => item,
-    })
-    setValue(next)
-    setAnnouncement(`${highlighted} moved to position ${next.indexOf(highlighted) + 1} of ${next.length}`)
+    dndApi.move({ value: highlighted, to: event.key === "ArrowLeft" ? "prev" : "next" })
   }
 
   return (
@@ -94,9 +83,6 @@ export default function Page() {
           <p id={`${id}:hint`} className="tags-input-hint">
             {hint}
           </p>
-          <span className="sr-only" aria-live="polite">
-            {announcement}
-          </span>
         </div>
       </main>
       <Toolbar>

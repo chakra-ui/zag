@@ -193,6 +193,43 @@ next valid drop target. Arrow keys move within the list (or across a grid when
 `translations.instructions`. Override `translations` to change pickup, drag
 over, drop, and cancel announcements.
 
+### Change the start key
+
+`isActivationKey` decides which key starts a session. Return `false` for items
+that use `Enter` or `Space` for their own action, like tabs, and update
+`translations.instructions` to match. Set `translations.roleDescription` to
+`null` so a tab or option keeps its own role.
+
+```ts
+const service = useMachine(dnd.machine, {
+  isActivationKey: (event) => event.altKey && event.key === "Enter",
+  translations: { instructions: "Press Alt + Enter to start dragging." },
+})
+```
+
+### Move without dragging
+
+`api.move` moves an item one step, or to the start or end. It calls `onDrop` and
+announces the move, so the same `onDrop` handles drags and moves. Use it for
+shortcuts, or for "Move up" and "Move down" buttons for people who can't drag.
+
+```tsx
+import { mergeProps } from "@zag-js/react"
+
+;<button
+  {...mergeProps(api.getDraggableProps({ value }), {
+    onKeyDown(event) {
+      if (!event.altKey || event.key !== "ArrowDown") return
+      event.preventDefault()
+      api.move({ value, to: "next" })
+    },
+  })}
+/>
+```
+
+`to` is `"prev"`, `"next"`, `"first"` or `"last"`. Focus stays where it was, or
+returns to the item if the item had it.
+
 ## Multi-item drag
 
 Pass the current selection:

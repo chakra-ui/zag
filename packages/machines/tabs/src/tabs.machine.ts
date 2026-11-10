@@ -109,7 +109,7 @@ export const machine = createMachine({
       actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
     },
     "TRIGGERS.CHANGE": {
-      actions: ["syncTabStopValue"],
+      actions: ["syncTabStopValue", "syncIndicatorRect"],
     },
     "VALUE.SET": {
       actions: ["setValue"],
