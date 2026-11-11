@@ -108,7 +108,8 @@
     "lucide-preact": "1.66.0",
     "preact": "11.1.1",
     "preact-iso": "2.12.2",
-    "preact-render-to-string": "6.8.2"
+    "preact-render-to-string": "6.8.2",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@preact/preset-vite": "2.10.6",

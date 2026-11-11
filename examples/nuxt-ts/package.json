@@ -44,8 +44,8 @@
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-trap": "workspace:*",
-    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
+    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/gridlist": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
     "@zag-js/hotkeys": "workspace:*",
@@ -106,7 +106,8 @@
     "form-serialize": "0.7.2",
     "lucide-vue-next": "1.0.0",
     "vue": "3.5.44",
-    "vue-router": "5.0.4"
+    "vue-router": "5.0.4",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.4",

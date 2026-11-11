@@ -1,4 +1,4 @@
-import type { ValidateResult, ValidationMode, ValidityMatch, ValiditySnapshot } from "./field.types"
+import type { FormValues, ValidateResult, ValidationMode, ValidityMatch, ValiditySnapshot } from "./field.types"
 
 const VALIDITY_KEYS = [
   "badInput",
@@ -44,6 +44,24 @@ export function suppressValueMissing(validity: ValiditySnapshot): ValiditySnapsh
   const onlyValueMissing = VALIDITY_KEYS.every((key) => key === "valueMissing" || !validity[key])
   if (!onlyValueMissing) return validity
   return { ...validity, valueMissing: false, valid: true }
+}
+
+export function getFormValues(el: { form: HTMLFormElement | null }): FormValues {
+  const values: FormValues = {}
+  if (!el.form) return values
+  for (const [name, value] of new FormData(el.form)) {
+    const prev = values[name]
+    values[name] = prev === undefined ? value : Array.isArray(prev) ? [...prev, value] : [prev, value]
+  }
+  return values
+}
+
+export function getFirstInvalidControl(form: HTMLFormElement) {
+  for (const el of Array.from(form.elements)) {
+    const control = el as HTMLInputElement
+    if (control.willValidate && !control.validity.valid) return control
+  }
+  return null
 }
 
 export function toErrorArray(result: ValidateResult): string[] {

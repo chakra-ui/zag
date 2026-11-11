@@ -107,10 +107,15 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
             onChange(event: { currentTarget: EventTarget | null }) {
               send({ type: "CONTROL.CHANGE", value: getEventValue(event) })
             },
-            onInvalid(event: { preventDefault: VoidFunction; currentTarget: EventTarget | null }) {
-              // suppress the native browser bubble; the field surfaces the error itself
+            onInvalid(event: {
+              defaultPrevented: boolean
+              preventDefault: VoidFunction
+              currentTarget: EventTarget | null
+            }) {
+              // preventing the browser bubble also cancels its focus, so the field moves focus itself
+              const focus = !event.defaultPrevented
               event.preventDefault()
-              send({ type: "SUBMIT.INVALID", value: getEventValue(event) })
+              send({ type: "SUBMIT.INVALID", value: getEventValue(event), focus })
             },
           }
         : {}),
@@ -129,7 +134,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
     dirty,
     filled,
     validating,
-    errors: context.get("errors"),
+    errors: computed("externalErrors").length > 0 ? computed("externalErrors") : context.get("errors"),
     validity: context.get("validity"),
     ariaDescribedby,
 
@@ -153,7 +158,6 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
         ...parts.root.attrs(scope.id),
         id: ids.root,
         dir: prop("dir"),
-        role: "group",
         ...getDataAttrs(getFieldState()),
       })
     },
@@ -171,8 +175,13 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
 
     getControlState: getFieldState,
     getControlProps(props: ItemProps = {}) {
+      const { disabled, required, ...baseProps } = getControlBaseProps(props)
       return normalize.element({
-        ...getControlBaseProps(props),
+        ...baseProps,
+        "aria-labelledby": ids.label,
+        "aria-disabled": disabled || undefined,
+        "aria-required": required || undefined,
+        "aria-readonly": readOnly || undefined,
       })
     },
 
@@ -214,7 +223,6 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
         id: dom.getErrorTextId(scope, props.match, props.id),
         dir: prop("dir"),
         hidden: errorTextState.hidden,
-        "aria-live": "polite",
         ...getDataAttrs(errorTextState),
       })
     },

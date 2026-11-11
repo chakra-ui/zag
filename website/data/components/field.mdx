@@ -188,6 +188,76 @@ validate({ value }) {
 }
 ```
 
+### Cross-field validation
+
+`validate` also receives `formValues`, the values of the control's form keyed by
+name. Use it to compare fields.
+
+<Example id="FieldCrossField">
+
+```tsx
+const service = useMachine(field.machine, {
+  id: useId(),
+  validate: ({ value, formValues }) =>
+    value !== formValues.password ? "Passwords don't match" : null,
+})
+```
+
+</Example>
+
+### Schema validation
+
+Return a schema's messages from `validate`. Every message is kept, so you can
+list them.
+
+<Example id="FieldSchema">
+
+```tsx
+const schema = z
+  .string()
+  .min(8, "At least 8 characters")
+  .regex(/[0-9]/, "One number")
+
+const service = useMachine(field.machine, {
+  id: useId(),
+  validate: ({ value }) =>
+    schema.safeParse(value).error?.issues.map((issue) => issue.message),
+})
+```
+
+```tsx
+<div {...api.getErrorTextProps()}>
+  <ul>
+    {api.errors.map((error) => (
+      <li key={error}>{error}</li>
+    ))}
+  </ul>
+</div>
+```
+
+</Example>
+
+### Server errors
+
+Pass `errors` to show errors the field can't compute, such as a server response.
+The field stays invalid until the user changes the value. The same errors show
+again after the next submit.
+
+<Example id="FieldServerErrors">
+
+```tsx
+const service = useMachine(field.machine, {
+  id: useId(),
+  errors: serverErrors.email,
+})
+```
+
+</Example>
+
+### Focus on submit
+
+When a submit is blocked, the first invalid field in the form gets focus.
+
 ### Custom error messages
 
 Render several error texts and point each at a `ValidityState` key with `match`.
@@ -305,9 +375,9 @@ const service = useMachine(field.machine, {
 
 </Example>
 
-`invalid` is the right place for server errors and library-owned validation. It
-forces the invalid UI even when the machine has no messages of its own. Put the
-message in your error text node:
+`invalid` is the right place for library-owned validation. It forces the invalid
+UI even when the machine has no messages of its own. Put the message in your
+error text node:
 
 ```tsx
 <span {...api.getErrorTextProps()}>
@@ -463,7 +533,10 @@ const checkboxApi = checkbox.connect(checkboxService, normalizeProps)
 </Example>
 
 For a plain custom control that is not another Zag machine, prefer
-`api.getControlProps()` on the focusable element.
+`api.getControlProps()` on the focusable element. It names the control with
+`aria-labelledby` and uses `aria-disabled`, `aria-required`, and
+`aria-readonly`. A custom control has no native validity, so drive it with
+`invalid` or `errors`.
 
 ### Programmatic validation
 

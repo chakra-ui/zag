@@ -35,7 +35,13 @@ export interface ValidateDetails {
    * Snapshot of the control's native validity, taken before custom validation runs.
    */
   validity: ValiditySnapshot
+  /**
+   * The values of the control's form, keyed by name. Empty when the control has no form.
+   */
+  formValues: FormValues
 }
+
+export type FormValues = Record<string, FormDataEntryValue | FormDataEntryValue[]>
 
 /**
  * Return a string or list of strings to mark the field invalid; anything else means valid.
@@ -84,6 +90,11 @@ export interface FieldProps extends DirectionProperty, CommonProperties {
    * Use for app-level errors (e.g. server errors) the machine cannot compute itself.
    */
   invalid?: boolean | undefined
+  /**
+   * Errors from outside the field, such as a server response. They mark the field invalid
+   * until the user changes the value, and show again when different errors are passed or the form is submitted.
+   */
+  errors?: string | string[] | undefined
   /**
    * Whether the field's value has been changed from its initial value.
    * Useful when the field state is controlled by an external library.
@@ -144,8 +155,10 @@ export interface FieldSchema {
     hasHelperText: boolean
     fieldsetDisabled: boolean
     submitAttempted: boolean
+    dismissedErrorsKey: string | null
   }
   computed: {
+    externalErrors: string[]
     disabled: boolean
     /**
      * `null` until validation has run — the field is neither valid nor invalid.
