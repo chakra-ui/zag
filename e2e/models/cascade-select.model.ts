@@ -114,7 +114,7 @@ export class CascadeSelectModel extends Model {
 
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
-    expect(await isInViewport(this.content, item)).toBe(true)
+    await expect.poll(() => isInViewport(this.content, item)).toBe(true)
   }
 
   seeList = async (depth: number) => {

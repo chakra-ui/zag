@@ -82,18 +82,22 @@ export default function Page() {
   const controls = useControls(cascadeSelectControls)
 
   const [open, setOpen] = useState(false)
+  const [value, setValue] = useState<string[][]>([["asia", "india", "haryana:HR"]])
+  const [highlightedValue, setHighlightedValue] = useState<string[]>([])
 
   const service = useMachine(cascadeSelect.machine, {
     id: useId(),
     collection,
     name: "location",
     open,
-    // value: [["asia", "india", "haryana:HR"]],
-    // highlightedValue: ["asia", "india", "haryana:HR"],
+    value,
+    highlightedValue,
     onHighlightChange(details) {
+      setHighlightedValue(details.highlightedValue)
       console.log("onHighlightChange", details)
     },
     onValueChange(details) {
+      setValue(details.value)
       console.log("onChange", details)
     },
     onOpenChange(details) {
@@ -112,6 +116,12 @@ export default function Page() {
           <label {...api.getLabelProps()}>Select a location</label>
 
           <button onClick={() => setOpen((o) => !o)}>Toggle (external)</button>
+          <button onClick={() => setValue([["north-america", "united-states", "new-york:NY"]])}>
+            Set value (external)
+          </button>
+          <button onClick={() => setHighlightedValue(["north-america", "united-states", "new-york:NY"])}>
+            Highlight (external)
+          </button>
 
           {/* control */}
           <div {...api.getControlProps()}>
