@@ -1,35 +1,25 @@
+import { caseSensitiveSvgAttrs } from "./normalize-props"
+
 export interface Attrs {
   [key: string]: any
 }
 
-const prevAttrsMap = new WeakMap<Element, Map<string, Attrs>>()
-
-const assignableProps = new Set<string>(["value", "checked", "selected"])
-
-// SVG attributes that need to preserve case
-const caseSensitiveSvgAttrs = new Set<string>([
-  "viewBox",
-  "preserveAspectRatio",
-  "clipPath",
-  "clipRule",
-  "fillRule",
-  "strokeWidth",
-  "strokeLinecap",
-  "strokeLinejoin",
-  "strokeDasharray",
-  "strokeDashoffset",
-  "strokeMiterlimit",
-])
-
-// Check if element is SVG
-const isSvgElement = (node: Element): boolean => {
-  return node.tagName === "svg" || node.namespaceURI === "http://www.w3.org/2000/svg"
+interface Spread {
+  attrs: Attrs
+  // The latest handler per event type, called by one stable listener
+  handlers: Record<string, EventListener | undefined>
+  listeners: Record<string, EventListener>
 }
 
-// Get the correct attribute name, preserving case for SVG attributes
-const getAttributeName = (node: Element, attrName: string): string => {
-  const shouldPreserveCase = isSvgElement(node) && caseSensitiveSvgAttrs.has(attrName)
-  return shouldPreserveCase ? attrName : attrName.toLowerCase()
+const spreads = new WeakMap<Element, Map<string, Spread>>()
+
+const assignableProps = new Set(["value", "checked", "selected"])
+
+const isEvent = (key: string) => key.startsWith("on")
+
+const getAttributeName = (node: Element, name: string) => {
+  const isSvg = node.tagName === "svg" || node.namespaceURI === "http://www.w3.org/2000/svg"
+  return isSvg && caseSensitiveSvgAttrs.has(name) ? name : name.toLowerCase()
 }
 
 const toCssProperty = (key: string) =>
@@ -38,17 +28,10 @@ const toCssProperty = (key: string) =>
 // Patches inline styles property by property (like the react adapter) so that styles written
 // directly to the element by other code - popper's `--x`/`--y`, the layer stack's `--layer-index` -
 // are not wiped when an unrelated style property changes.
-const applyStyle = (node: Element, prevStyle: unknown, nextStyle: unknown): void => {
+const applyStyle = (node: Element, prevStyle: unknown, nextStyle: unknown) => {
   // a raw string means the caller owns the whole attribute
-  if (typeof nextStyle === "string") {
-    node.setAttribute("style", nextStyle)
-    return
-  }
-
-  if (nextStyle == null && typeof prevStyle === "string") {
-    node.removeAttribute("style")
-    return
-  }
+  if (typeof nextStyle === "string") return node.setAttribute("style", nextStyle)
+  if (nextStyle == null && typeof prevStyle === "string") return node.removeAttribute("style")
 
   const style = (node as HTMLElement).style
   if (style == null) return
@@ -64,111 +47,60 @@ const applyStyle = (node: Element, prevStyle: unknown, nextStyle: unknown): void
   }
 }
 
+const applyAttr = (node: Element, name: string, value: any, prev: any) => {
+  if (name === "class") (node as HTMLElement).className = value ?? ""
+  else if (name === "style") applyStyle(node, prev, value)
+  // DOM properties (value, checked, etc.) - must come before the boolean check
+  else if (assignableProps.has(name)) (node as any)[name] = value ?? ""
+  // Booleans toggle the attribute, except aria-* which keep their string values
+  else if (typeof value === "boolean" && !name.includes("aria-"))
+    node.toggleAttribute(getAttributeName(node, name), value)
+  else if (name === "children" && value != null) node.innerHTML = value
+  else if (value != null) node.setAttribute(getAttributeName(node, name), value)
+  else node.removeAttribute(getAttributeName(node, name))
+}
+
 export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
   const scopeKey = machineId || "default"
 
-  let machineMap = prevAttrsMap.get(node)
-  if (!machineMap) {
-    machineMap = new Map<string, Attrs>()
-    prevAttrsMap.set(node, machineMap)
-  }
+  let nodeSpreads = spreads.get(node)
+  if (!nodeSpreads) spreads.set(node, (nodeSpreads = new Map()))
 
-  const oldAttrs = machineMap.get(scopeKey) || {}
+  let spread = nodeSpreads.get(scopeKey)
+  if (!spread) nodeSpreads.set(scopeKey, (spread = { attrs: {}, handlers: {}, listeners: {} }))
 
-  const attrKeys = Object.keys(attrs)
+  const { attrs: prevAttrs, handlers, listeners } = spread
 
-  const addEvt = (e: string, f: EventListener) => {
-    node.addEventListener(e.toLowerCase(), f)
-  }
-
-  const remEvt = (e: string, f: EventListener) => {
-    node.removeEventListener(e.toLowerCase(), f)
-  }
-
-  const onEvents = (attr: string) => attr.startsWith("on")
-  const others = (attr: string) => !attr.startsWith("on")
-
-  const setup = (attr: string) => addEvt(attr.substring(2), attrs[attr])
-  const teardown = (attr: string) => remEvt(attr.substring(2), attrs[attr])
-
-  const apply = (attrName: string) => {
-    const value = attrs[attrName]
-
-    const oldValue = oldAttrs[attrName]
-    if (value === oldValue) return
-
-    // Handle class as property (faster than setAttribute)
-    if (attrName === "class") {
-      ;(node as HTMLElement).className = value ?? ""
-      return
-    }
-
-    // Handle style as individual properties (never as a whole attribute)
-    if (attrName === "style") {
-      applyStyle(node, oldValue, value)
-      return
-    }
-
-    // Handle DOM properties (value, checked, etc.) - must come before boolean check
-    if (assignableProps.has(attrName)) {
-      ;(node as any)[attrName] = value ?? ""
-      return
-    }
-
-    // Handle boolean attributes with toggleAttribute (for non-property booleans like disabled, hidden)
-    // Also skip aria- attributes to preserve their string values
-    if (typeof value === "boolean" && !attrName.includes("aria-")) {
-      ;(node as HTMLElement).toggleAttribute(getAttributeName(node, attrName), value)
-      return
-    }
-
-    // Special handling for children attribute
-    if (attrName === "children") {
-      node.innerHTML = value
-      return
-    }
-
-    if (value != null) {
-      node.setAttribute(getAttributeName(node, attrName), value)
-      return
-    }
-
-    node.removeAttribute(getAttributeName(node, attrName))
-  }
-
-  // reconcile old attributes (must match apply logic)
-  for (const key in oldAttrs) {
-    if (attrs[key] == null) {
-      if (key === "class") {
-        ;(node as HTMLElement).className = ""
-      } else if (key === "style") {
-        applyStyle(node, oldAttrs[key], undefined)
-      } else if (assignableProps.has(key)) {
-        ;(node as any)[key] = ""
-      } else {
-        node.removeAttribute(getAttributeName(node, key))
-      }
+  // Handlers change every render, so swap the reference instead of re-adding listeners
+  const setHandler = (key: string, handler: EventListener | undefined) => {
+    const type = key.slice(2).toLowerCase()
+    handlers[type] = handler
+    if (handler && !listeners[type]) {
+      listeners[type] = (event) => handlers[type]?.call(node, event)
+      node.addEventListener(type, listeners[type])
+    } else if (!handler && listeners[type]) {
+      node.removeEventListener(type, listeners[type])
+      delete listeners[type]
     }
   }
 
-  const oldEvents = Object.keys(oldAttrs).filter(onEvents)
-  oldEvents.forEach((evt) => {
-    remEvt(evt.substring(2), oldAttrs[evt])
-  })
+  for (const key in prevAttrs) {
+    if (attrs[key] != null) continue
+    if (isEvent(key)) setHandler(key, undefined)
+    else applyAttr(node, key, null, prevAttrs[key])
+  }
 
-  attrKeys.filter(onEvents).forEach(setup)
-  attrKeys.filter(others).forEach(apply)
+  for (const key in attrs) {
+    const value = attrs[key]
+    if (isEvent(key)) setHandler(key, value)
+    else if (value !== prevAttrs[key]) applyAttr(node, key, value, prevAttrs[key])
+  }
 
-  machineMap.set(scopeKey, attrs)
+  spread.attrs = attrs
 
   return function cleanup() {
-    attrKeys.filter(onEvents).forEach(teardown)
-    const currentMachineMap = prevAttrsMap.get(node)
-    if (currentMachineMap) {
-      currentMachineMap.delete(scopeKey)
-      if (currentMachineMap.size === 0) {
-        prevAttrsMap.delete(node)
-      }
-    }
+    for (const type in listeners) node.removeEventListener(type, listeners[type])
+    nodeSpreads.delete(scopeKey)
+    if (nodeSpreads.size === 0) spreads.delete(node)
   }
 }

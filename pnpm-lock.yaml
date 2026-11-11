@@ -496,9 +496,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -818,9 +815,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -1140,9 +1134,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -1462,9 +1453,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -1763,9 +1751,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -2073,9 +2058,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
@@ -2199,9 +2181,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2227,9 +2206,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2276,9 +2252,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2347,9 +2320,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2375,9 +2345,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3978,16 +3945,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/store:
-    dependencies:
-      proxy-compare:
-        specifier: 3.0.1
-        version: 3.0.1
     devDependencies:
       clean-package:
         specifier: 2.2.0

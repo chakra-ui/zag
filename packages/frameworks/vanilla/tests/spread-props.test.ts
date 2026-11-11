@@ -96,6 +96,33 @@ describe("spreadProps", () => {
       expect(newClick).toHaveBeenCalledOnce()
     })
 
+    test("calls handlers with the element as this", () => {
+      const div = document.createElement("div")
+      let self: unknown
+      spreadProps(div, {
+        onClick: function (this: unknown) {
+          self = this
+        },
+      })
+      div.click()
+      expect(self).toBe(div)
+    })
+
+    test("keeps one listener across re-spreads and removes it when the handler goes away", () => {
+      const div = document.createElement("div")
+      const add = vi.spyOn(div, "addEventListener")
+      const remove = vi.spyOn(div, "removeEventListener")
+
+      spreadProps(div, { onClick: vi.fn() })
+      spreadProps(div, { onClick: vi.fn() })
+      spreadProps(div, { onClick: vi.fn() })
+      expect(add).toHaveBeenCalledTimes(1)
+      expect(remove).not.toHaveBeenCalled()
+
+      spreadProps(div, {})
+      expect(remove).toHaveBeenCalledTimes(1)
+    })
+
     test("cleanup function removes event handlers", () => {
       const div = document.createElement("div")
       const onClick = vi.fn()

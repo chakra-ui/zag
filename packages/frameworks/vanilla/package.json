@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@zag-js/core": "workspace:*",
-    "@zag-js/store": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
