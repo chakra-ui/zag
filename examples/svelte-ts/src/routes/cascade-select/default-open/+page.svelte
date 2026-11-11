@@ -7,7 +7,7 @@
   import * as cascadeSelect from "@zag-js/cascade-select"
   import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { XIcon } from "lucide-svelte"
+  import { ChevronsUpDownIcon, XIcon } from "lucide-svelte"
   import serialize from "form-serialize"
   import "@styles/cascade-select.css"
 
@@ -51,7 +51,7 @@
     <div {...api.getControlProps()}>
       <button {...api.getTriggerProps()}>
         <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
-        <span {...api.getIndicatorProps()}>▼</span>
+        <span {...api.getIndicatorProps()}><ChevronsUpDownIcon /></span>
       </button>
       <button {...api.getClearTriggerProps()}>
         <XIcon size={16} />

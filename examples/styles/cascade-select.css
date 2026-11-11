@@ -77,21 +77,19 @@
   }
 }
 
-/* The examples render a text glyph; swap it for select's up/down chevrons */
 [data-cascade-select-indicator] {
   position: absolute;
   inset-block: 0;
   inset-inline-end: 12px;
-  width: 16px;
-  height: 16px;
-  margin-block: auto;
-  overflow: hidden;
-  background: currentColor;
+  display: inline-flex;
+  align-items: center;
   color: var(--z-fg-muted);
-  font-size: 0;
   opacity: 0.7;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 [data-cascade-select-clear-trigger] {
