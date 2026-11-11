@@ -1,4 +1,5 @@
 import { createMachine, memo } from "@zag-js/core"
+import { getPercentFormatter } from "@zag-js/utils"
 import type { ProgressSchema } from "./progress.types"
 import { getClampedValue, getPercent, isFiniteNumber } from "./progress.utils"
 
@@ -43,6 +44,10 @@ export const machine = createMachine<ProgressSchema>({
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => new Intl.NumberFormat(locale, formatOptions),
+    ),
+    percentFormatter: memo(
+      ({ prop }) => [prop("locale"), prop("formatOptions")],
+      ([locale, formatOptions]) => getPercentFormatter(locale, formatOptions),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
   },

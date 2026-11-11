@@ -46,7 +46,7 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   /**
    * The initial value of the progress bar when rendered.
    * Use when you don't need to control the value of the progress bar.
-   * @default 0
+   * @default min
    */
   defaultValue?: number | null | undefined
   /**
@@ -89,6 +89,7 @@ type Computed = Readonly<{
   percent: number
   isHorizontal: boolean
   formatter: Intl.NumberFormat
+  percentFormatter: Intl.NumberFormat
 }>
 
 export interface ProgressSchema {

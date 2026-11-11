@@ -1,4 +1,4 @@
-import { clampValue, isNumber } from "@zag-js/utils"
+import { clampValue, getValuePercent, isNumber } from "@zag-js/utils"
 import type { MeterValueState } from "./meter.types"
 
 export interface MeterBounds {
@@ -23,8 +23,8 @@ export function validateMeterBounds(min: number, max: number, low?: number, high
   assertValidNumber("min", min)
   assertValidNumber("max", max)
 
-  if (min >= max) {
-    throw new Error(`[meter] The min value \`${min}\` must be less than the max value \`${max}\``)
+  if (min > max) {
+    throw new Error(`[meter] The min value \`${min}\` must not exceed the max value \`${max}\``)
   }
 
   if (low !== undefined) assertValidNumber("low", low)
@@ -76,4 +76,13 @@ export function getMeterValueState(value: number, bounds: MeterBounds): MeterVal
 
   if (value >= low && value <= high) return "optimal"
   return "suboptimal"
+}
+
+/** Clamp into `[min, max]`. A meter is always determinate, so `NaN` falls back to `min`. */
+export function getClampedValue(value: number, min: number, max: number) {
+  return clampValue(Number.isNaN(value) ? min : value, min, max)
+}
+
+export function getPercent(value: number, min: number, max: number) {
+  return max === min ? 0 : getValuePercent(value, min, max) * 100
 }

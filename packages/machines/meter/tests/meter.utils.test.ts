@@ -1,5 +1,11 @@
 import { describe, expect, test } from "vitest"
-import { getMeterValueState, resolveMeterBounds, validateMeterBounds } from "../src/meter.utils"
+import {
+  getClampedValue,
+  getMeterValueState,
+  getPercent,
+  resolveMeterBounds,
+  validateMeterBounds,
+} from "../src/meter.utils"
 
 describe("validateMeterBounds", () => {
   test("accepts valid min/max and optional low/high/optimum", () => {
@@ -15,9 +21,12 @@ describe("validateMeterBounds", () => {
     expect(() => validateMeterBounds(0, 100, 20, 80, Number.NaN)).toThrow(/optimum/)
   })
 
-  test("rejects min >= max", () => {
-    expect(() => validateMeterBounds(100, 100)).toThrow(/min value/)
+  test("rejects min > max", () => {
     expect(() => validateMeterBounds(120, 100)).toThrow(/min value/)
+  })
+
+  test("accepts min === max", () => {
+    expect(() => validateMeterBounds(5, 5)).not.toThrow()
   })
 })
 
@@ -64,5 +73,28 @@ describe("getMeterValueState", () => {
     expect(getMeterValueState(70, bounds)).toBe("optimal")
     expect(getMeterValueState(29, bounds)).toBe("suboptimal")
     expect(getMeterValueState(71, bounds)).toBe("suboptimal")
+  })
+})
+
+describe("getClampedValue", () => {
+  test("clamps values outside the range", () => {
+    expect(getClampedValue(150, 0, 100)).toBe(100)
+    expect(getClampedValue(-30, -20, 40)).toBe(-20)
+    expect(getClampedValue(10, -20, 40)).toBe(10)
+  })
+
+  test("falls back to min for NaN", () => {
+    expect(getClampedValue(Number.NaN, 20, 40)).toBe(20)
+  })
+})
+
+describe("getPercent", () => {
+  test("places the value within a custom range", () => {
+    expect(getPercent(30, 20, 40)).toBe(50)
+    expect(getPercent(10, -20, 40)).toBe(50)
+  })
+
+  test("returns 0 for an empty range", () => {
+    expect(getPercent(5, 5, 5)).toBe(0)
   })
 })

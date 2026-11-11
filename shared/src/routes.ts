@@ -296,6 +296,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Storage (low is better)" },
       { slug: "battery", title: "Battery (high is better)" },
+      { slug: "custom-range", title: "Custom Range" },
     ],
   },
   {

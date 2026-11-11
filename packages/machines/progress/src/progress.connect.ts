@@ -22,7 +22,7 @@ const defaultTranslations: Required<IntlTranslations> = {
 export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
   const { computed, prop, send, scope } = service
   const percent = computed("percent")
-  const percentAsString = computed("isIndeterminate") ? "" : computed("formatter").format(percent / 100)
+  const percentAsString = computed("isIndeterminate") ? "" : computed("percentFormatter").format(percent / 100)
 
   const max = prop("max")
   const min = prop("min")

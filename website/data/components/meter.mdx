@@ -42,7 +42,7 @@ is `aria-hidden` because assistive tech already reads `aria-valuetext`.
 ### Initial value
 
 Use `defaultValue` for uncontrolled state, or `value` for controlled state. When
-neither is passed, the value defaults to the midpoint of `min` and `max`.
+neither is passed, the value defaults to `min`.
 
 <Example id="MeterSetValue">
 
@@ -81,7 +81,8 @@ const service = useMachine(meter.machine, {
 
 ### Min and max
 
-By default the meter uses `min` `0` and `max` `100`.
+By default the meter uses `min` `0` and `max` `100`. Values outside the range
+are clamped.
 
 <Example id="MeterMinMax">
 
@@ -160,7 +161,8 @@ Render the `valueText` part if you also want that string on screen.
 ### Percent formatting
 
 `formatOptions` defaults to `{ style: "percent" }`. Pass a different
-`Intl.NumberFormat` style when the raw value should be shown.
+`Intl.NumberFormat` style when the raw value should be shown. `percentAsString`
+always shows a percent.
 
 <Example id="MeterLocale">
 

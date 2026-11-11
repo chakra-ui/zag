@@ -156,3 +156,7 @@ export const incrementValue = (v: number, s: number) => decimalOp(nan(v), "+", s
 export const decrementValue = (v: number, s: number) => decimalOp(nan(v), "-", s)
 
 export const toPx = (v: number | string | undefined) => (typeof v === "number" ? `${v}px` : v)
+
+// Percent text ignores value formats like currency or unit, but keeps the caller's percent options
+export const getPercentFormatter = (locale: string | undefined, options: Intl.NumberFormatOptions | undefined) =>
+  new Intl.NumberFormat(locale, options?.style === "percent" ? options : { style: "percent" })

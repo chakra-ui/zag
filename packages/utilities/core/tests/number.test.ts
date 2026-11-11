@@ -1,4 +1,4 @@
-import { decrementValue, incrementValue, snapValueToStep } from "../src"
+import { decrementValue, getPercentFormatter, incrementValue, snapValueToStep } from "../src"
 
 describe("number", () => {
   test("increment", () => {
@@ -27,5 +27,16 @@ describe("number", () => {
 
     // When step fits evenly in range
     expect(snapValueToStep(150, 0, 100, 25)).toBe(100)
+  })
+})
+
+describe("getPercentFormatter", () => {
+  test("formats a percent even when the value format is not a percent", () => {
+    expect(getPercentFormatter("en-US", { style: "currency", currency: "USD" }).format(0.5)).toBe("50%")
+    expect(getPercentFormatter("en-US", { style: "unit", unit: "celsius" }).format(0.5)).toBe("50%")
+  })
+
+  test("keeps percent options", () => {
+    expect(getPercentFormatter("en-US", { style: "percent", minimumFractionDigits: 1 }).format(0.5)).toBe("50.0%")
   })
 })

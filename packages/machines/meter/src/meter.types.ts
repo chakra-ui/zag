@@ -48,6 +48,7 @@ export interface MeterProps extends DirectionProperty, CommonProperties, Orienta
   /**
    * The initial value of the meter when rendered.
    * Use when you don't need to control the value of the meter.
+   * @default min
    */
   defaultValue?: number | undefined
   /**
@@ -98,9 +99,11 @@ export interface MeterProps extends DirectionProperty, CommonProperties, Orienta
 type PropsWithDefault = "orientation" | "min" | "max" | "low" | "high" | "optimum" | "formatOptions"
 
 type Computed = Readonly<{
+  clampedValue: number
   percent: number
   isHorizontal: boolean
   formatter: Intl.NumberFormat
+  percentFormatter: Intl.NumberFormat
   valueState: MeterValueState
 }>
 

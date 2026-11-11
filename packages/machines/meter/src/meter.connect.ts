@@ -15,9 +15,9 @@ const defaultTranslations: Required<IntlTranslations> = {
 }
 
 export function connect<T extends PropTypes>(service: MeterService, normalize: NormalizeProps<T>): MeterApi<T> {
-  const { context, computed, prop, send, scope } = service
+  const { computed, prop, send, scope } = service
   const percent = computed("percent")
-  const percentAsString = computed("formatter").format(percent / 100)
+  const percentAsString = computed("percentFormatter").format(percent / 100)
 
   const min = prop("min")
   const max = prop("max")
@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
   const orientation = prop("orientation")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
-  const value = context.get("value")
+  const value = computed("clampedValue")
   const valueAsString = translations.value({ value, max, percent, min, formatter: computed("formatter") })
   const valueState = computed("valueState")
   const labelId = scope.ids?.label ?? `${scope.id}:label`
