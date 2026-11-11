@@ -46,7 +46,7 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   /**
    * The initial value of the progress bar when rendered.
    * Use when you don't need to control the value of the progress bar.
-   * @default 50
+   * @default 0
    */
   defaultValue?: number | null | undefined
   /**
@@ -85,6 +85,7 @@ type PropsWithDefault = "orientation" | "min" | "max" | "formatOptions"
 
 type Computed = Readonly<{
   isIndeterminate: boolean
+  clampedValue: number | null
   percent: number
   isHorizontal: boolean
   formatter: Intl.NumberFormat

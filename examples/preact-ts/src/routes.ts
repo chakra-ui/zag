@@ -364,6 +364,7 @@ export const routes: RouteDefinition[] = [
   { path: "/progress/indeterminate", component: lazy(() => import("./pages/progress/indeterminate")) },
   { path: "/progress/simulated", component: lazy(() => import("./pages/progress/simulated")) },
   { path: "/progress/value-format", component: lazy(() => import("./pages/progress/value-format")) },
+  { path: "/progress/custom-range", component: lazy(() => import("./pages/progress/custom-range")) },
   { path: "/progress/vertical", component: lazy(() => import("./pages/progress/vertical")) },
   { path: "/qr-code/basic", component: lazy(() => import("./pages/qr-code/basic")) },
   { path: "/qr-code/download", component: lazy(() => import("./pages/qr-code/download")) },

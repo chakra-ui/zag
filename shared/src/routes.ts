@@ -286,6 +286,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "indeterminate", title: "Indeterminate" },
       { slug: "vertical", title: "Vertical" },
       { slug: "value-format", title: "Value Format" },
+      { slug: "custom-range", title: "Custom Range" },
       { slug: "simulated", title: "Simulated Upload" },
     ],
   },
