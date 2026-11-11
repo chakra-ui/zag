@@ -1,7 +1,6 @@
 import { clampValue, getValuePercent } from "@zag-js/utils"
 import type { ProgressState } from "./progress.types"
 
-// NaN and Infinity have no position on the bar, so they read as indeterminate
 export const isFiniteNumber = (value: number | null | undefined): value is number =>
   value != null && Number.isFinite(value)
 

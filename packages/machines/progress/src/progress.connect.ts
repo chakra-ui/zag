@@ -49,17 +49,9 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
 
   const circleProps = getCircleProps(service)
 
-  // -----------------------------------------------------------------------------
-  // State getters: pure, serializable per-part state, independent of `normalize`
-  // -----------------------------------------------------------------------------
-
   function getViewState(props: ViewProps): ViewState {
     return { state: props.state, visible: props.state === progressState }
   }
-
-  // -----------------------------------------------------------------------------
-  // Prop getters
-  // -----------------------------------------------------------------------------
 
   return {
     value,

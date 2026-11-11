@@ -1,5 +1,4 @@
 import { createMachine, memo } from "@zag-js/core"
-import { getPercentFormatter } from "@zag-js/utils"
 import type { MeterSchema } from "./meter.types"
 import { getClampedValue, getMeterValueState, getPercent, resolveMeterBounds, validateMeterBounds } from "./meter.utils"
 
@@ -42,7 +41,6 @@ export const machine = createMachine<MeterSchema>({
   },
 
   computed: {
-    // controlled values can be out of range too, so clamp on read
     clampedValue: ({ context, prop }) => getClampedValue(context.get("value"), prop("min"), prop("max")),
     percent: ({ computed, prop }) => getPercent(computed("clampedValue"), prop("min"), prop("max")),
     formatter: memo(
@@ -51,7 +49,8 @@ export const machine = createMachine<MeterSchema>({
     ),
     percentFormatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      ([locale, formatOptions]) => getPercentFormatter(locale, formatOptions),
+      ([locale, formatOptions]) =>
+        new Intl.NumberFormat(locale, formatOptions.style === "percent" ? formatOptions : { style: "percent" }),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
     valueState: ({ computed, prop }) =>

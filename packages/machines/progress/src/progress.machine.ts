@@ -1,5 +1,4 @@
 import { createMachine, memo } from "@zag-js/core"
-import { getPercentFormatter } from "@zag-js/utils"
 import type { ProgressSchema } from "./progress.types"
 import { getClampedValue, getPercent, isFiniteNumber } from "./progress.utils"
 
@@ -38,7 +37,6 @@ export const machine = createMachine<ProgressSchema>({
 
   computed: {
     isIndeterminate: ({ context }) => !isFiniteNumber(context.get("value")),
-    // controlled values can be out of range too, so clamp on read
     clampedValue: ({ context, prop }) => getClampedValue(context.get("value"), prop("min"), prop("max")),
     percent: ({ computed, prop }) => getPercent(computed("clampedValue"), prop("min"), prop("max")),
     formatter: memo(
@@ -47,7 +45,8 @@ export const machine = createMachine<ProgressSchema>({
     ),
     percentFormatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      ([locale, formatOptions]) => getPercentFormatter(locale, formatOptions),
+      ([locale, formatOptions]) =>
+        new Intl.NumberFormat(locale, formatOptions.style === "percent" ? formatOptions : { style: "percent" }),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
   },
