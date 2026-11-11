@@ -364,6 +364,19 @@ const service = useMachine(tour.machine, {
 })
 ```
 
+### Waiting for targets
+
+When a step's target isn't in the DOM yet, the tour waits for it. If it doesn't
+appear within `targetTimeout` (3000ms by default), the tour ends and
+`onStatusChange` reports `not-found`. Raise it for targets that render after a
+slow fetch or a route change, or pass `Infinity` to wait indefinitely.
+
+```tsx
+const service = useMachine(tour.machine, {
+  targetTimeout: 10000,
+})
+```
+
 ### Exit animations (Presence)
 
 After the tour closes, `api.step` still references the last step so exit

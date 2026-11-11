@@ -29,6 +29,7 @@ export const machine = createMachine<TourSchema>({
       keyboardNavigation: true,
       spotlightOffset: { x: 10, y: 10 },
       spotlightRadius: 4,
+      targetTimeout: 3000,
       ...props,
     }
   },
@@ -419,10 +420,12 @@ export const machine = createMachine<TourSchema>({
         return () => clearTimeout(id)
       },
 
-      waitForTargetTimeout({ send }) {
+      waitForTargetTimeout({ send, prop }) {
+        const timeout = prop("targetTimeout")
+        if (!(timeout < 2 ** 31)) return
         const id = setTimeout(() => {
           send({ type: "TARGET.NOT_FOUND" })
-        }, 3000)
+        }, timeout)
         return () => clearTimeout(id)
       },
 

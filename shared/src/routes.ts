@@ -153,6 +153,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "conditional", title: "Conditional" },
       { slug: "layout-shift", title: "Layout Shift" },
       { slug: "replaced-target", title: "Replaced Target" },
+      { slug: "late-target", title: "Late Target" },
     ],
   },
   {

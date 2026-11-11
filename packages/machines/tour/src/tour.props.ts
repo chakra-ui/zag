@@ -22,6 +22,7 @@ export const props = createProps<TourProps>()([
   "spotlightRadius",
   "stepId",
   "steps",
+  "targetTimeout",
   "translations",
 ])
 
