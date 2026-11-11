@@ -232,3 +232,35 @@ test.describe("tour / replaced target", () => {
       .toBe(true)
   })
 })
+
+test.describe("tour / late target", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TourModel(page)
+    await page.clock.install()
+    await page.goto("/tour/late-target")
+  })
+
+  test("should wait for a late target up to targetTimeout", async ({ page }) => {
+    await I.clickStart()
+
+    // past the 3s default, still within the page's targetTimeout of 5s
+    await page.clock.runFor(4000)
+    await I.dontSeeContent()
+
+    await page.getByRole("button", { name: "Show target" }).click()
+
+    await I.seeContent()
+    await I.seeTitle("Late target")
+  })
+
+  test("should end the tour when the target misses targetTimeout", async ({ page }) => {
+    await I.clickStart()
+    await page.clock.runFor(5100)
+    await expect(page.getByText('"TARGET.NOT_FOUND"')).toBeVisible()
+
+    await page.getByRole("button", { name: "Show target" }).click()
+    await page.clock.runFor(500)
+
+    await I.dontSeeContent()
+  })
+})

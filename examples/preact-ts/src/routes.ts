@@ -536,6 +536,7 @@ export const routes: RouteDefinition[] = [
   { path: "/tour/conditional", component: lazy(() => import("./pages/tour/conditional")) },
   { path: "/tour/layout-shift", component: lazy(() => import("./pages/tour/layout-shift")) },
   { path: "/tour/replaced-target", component: lazy(() => import("./pages/tour/replaced-target")) },
+  { path: "/tour/late-target", component: lazy(() => import("./pages/tour/late-target")) },
   { path: "/tour/step-types", component: lazy(() => import("./pages/tour/step-types")) },
   { path: "/tour/wait-for-input-event", component: lazy(() => import("./pages/tour/wait-for-input-event")) },
   { path: "/tour/wait-step", component: lazy(() => import("./pages/tour/wait-step")) },

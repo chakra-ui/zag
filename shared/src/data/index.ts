@@ -533,3 +533,14 @@ export const tourReplacedTargetData: StepDetails[] = [
     actions: [{ label: "Done", action: "dismiss" }],
   },
 ]
+
+export const tourLateTargetData: StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    title: "Late target",
+    description: "This step waits for its target, which renders after the default 3s timeout.",
+    target: () => document.querySelector<HTMLElement>("#late-target"),
+    actions: [{ label: "Done", action: "dismiss" }],
+  },
+]
