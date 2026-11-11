@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react"
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, MachineStatus } from "@zag-js/core"
 import { useMachine } from "../src"
 import { renderMachine } from "./render"
 
@@ -1111,5 +1111,41 @@ describe("uniform coverage", () => {
 
     expect(result.current.state.get()).toBe("c")
     expect(seen).toEqual(["GO_B", "GO_C"])
+  })
+})
+
+describe("unmount before start", () => {
+  test("does not start a machine whose component unmounts before the start runs", async () => {
+    const rootEntry = vi.fn()
+    const openEntry = vi.fn()
+    const lockCleanup = vi.fn()
+    const lock = vi.fn(() => lockCleanup)
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "open"
+      },
+      entry: ["rootEntry"],
+      states: {
+        open: {
+          entry: ["openEntry"],
+          effects: ["lock"],
+        },
+      },
+      implementations: {
+        actions: { rootEntry, openEntry },
+        effects: { lock },
+      },
+    })
+
+    const { result, unmount } = renderHook(() => useMachine<any>(machine))
+    // Unmount in the same tick, before the queued start has run
+    unmount()
+    await act(async () => {})
+
+    expect(rootEntry).not.toHaveBeenCalled()
+    expect(openEntry).not.toHaveBeenCalled()
+    expect(lock).not.toHaveBeenCalled()
+    expect(result.current.getStatus()).not.toBe(MachineStatus.Started)
   })
 })

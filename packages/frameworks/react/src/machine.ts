@@ -284,11 +284,18 @@ export function useMachine<T extends MachineSchema>(
   // improve HMR (to restart effects)
   const hydratedStateRef = useRef<string | undefined>(undefined)
   const statusRef = useRef(MachineStatus.NotStarted)
+  const mountedRef = useRef(false)
 
   const getStatus = useStableFn(() => statusRef.current)
 
   useSafeLayoutEffect(() => {
+    mountedRef.current = true
+
     queueMicrotask(() => {
+      // The component can unmount before this runs (e.g. mount and unmount in the same tick).
+      // Starting then would run entry effects that nothing cleans up.
+      if (!mountedRef.current) return
+
       const started = statusRef.current === MachineStatus.Started
       statusRef.current = MachineStatus.Started
       debug(started ? "rehydrating..." : "initializing...")
@@ -300,6 +307,7 @@ export function useMachine<T extends MachineSchema>(
 
     const fns = effects.current
     return () => {
+      mountedRef.current = false
       const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState

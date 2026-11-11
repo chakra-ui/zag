@@ -202,6 +202,37 @@ describe("React Strict Mode", () => {
     expect(cleanupSpy).toHaveBeenCalledTimes(2)
   })
 
+  test("unmounting before the machine starts leaves no entry-effect mutations behind", async () => {
+    // Regression test for #3631: a dialog that mounts and unmounts in the same tick must not
+    // apply its scroll lock after it is gone.
+    const ATTR = "data-test-lock"
+    const lockScroll = vi.fn(() => {
+      document.body.setAttribute(ATTR, "")
+      return () => document.body.removeAttribute(ATTR)
+    })
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "open"
+      },
+      states: {
+        open: {
+          effects: ["lockScroll"],
+        },
+      },
+      implementations: {
+        effects: { lockScroll },
+      },
+    })
+
+    const { unmount } = renderStrict(machine)
+    unmount()
+    await flushMicrotasks()
+
+    expect(lockScroll).not.toHaveBeenCalled()
+    expect(document.body.hasAttribute(ATTR)).toBe(false)
+  })
+
   test("watch does not track the double mount as a change", async () => {
     const notify = vi.fn()
 
