@@ -59,11 +59,15 @@ const onFormChange = (e: Event) => {
       <div v-bind="api.getControlProps()">
         <button v-bind="api.getTriggerProps()">
           <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select a location" }}</span>
-          <span v-bind="api.getIndicatorProps()"><ChevronsUpDownIcon /></span>
         </button>
-        <button v-bind="api.getClearTriggerProps()">
-          <XIcon :size="16" />
-        </button>
+        <div class="cascade-select-indicator-group">
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon :size="16" />
+          </button>
+          <span v-bind="api.getIndicatorProps()">
+            <ChevronsUpDownIcon />
+          </span>
+        </div>
       </div>
 
       <form @change="onFormChange">

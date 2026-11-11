@@ -51,11 +51,15 @@
     <div {...api.getControlProps()}>
       <button {...api.getTriggerProps()}>
         <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
-        <span {...api.getIndicatorProps()}><ChevronsUpDownIcon /></span>
       </button>
-      <button {...api.getClearTriggerProps()}>
-        <XIcon size={16} />
-      </button>
+      <div class="cascade-select-indicator-group">
+        <button {...api.getClearTriggerProps()}>
+          <XIcon size={16} />
+        </button>
+        <span {...api.getIndicatorProps()}>
+          <ChevronsUpDownIcon />
+        </span>
+      </div>
     </div>
 
     <form

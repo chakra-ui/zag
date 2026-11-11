@@ -8,7 +8,7 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
 import "@styles/cascade-select.css"
-import { ChevronsUpDownIcon } from "lucide-solid"
+import { ChevronsUpDownIcon, XIcon } from "lucide-solid"
 
 interface Node {
   label: string
@@ -107,9 +107,15 @@ export default function Page() {
             <button onClick={() => setOpen((o) => !o)}>Toggle (external)</button>
             <button {...api().getTriggerProps()}>
               <span {...api().getValueTextProps()}>{api().valueAsString || "Select a location"}</span>
-              <span {...api().getIndicatorProps()}><ChevronsUpDownIcon /></span>
             </button>
-            <button {...api().getClearTriggerProps()}>X</button>
+            <div class="cascade-select-indicator-group">
+              <button {...api().getClearTriggerProps()}>
+                <XIcon />
+              </button>
+              <span {...api().getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           {/* Hidden input */}
