@@ -1,4 +1,7 @@
-[data-cascade-select-control] {
+/* Mirrors select.css. The markup differs (indicator inside the trigger, clear button beside it), so both are
+   overlaid on the trigger's end the way select's indicator group is. */
+
+[data-cascade-select-root] {
   display: flex;
   flex-direction: column;
   row-gap: 6px;
@@ -6,61 +9,113 @@
 }
 
 [data-cascade-select-label] {
-  font-size: 14px;
+  font-size: var(--z-text-md);
+  font-weight: 500;
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
+
+  &[data-invalid] {
+    color: var(--z-danger-fg);
+  }
 }
 
-[data-cascade-select-label][data-disabled] {
-  cursor: default;
-  color: gray;
-}
+[data-cascade-select-control] {
+  position: relative;
+  display: flex;
+  width: fit-content;
 
-[data-cascade-select-label][data-invalid] {
-  color: red;
+  &:has([data-cascade-select-clear-trigger]:not([hidden])) > [data-cascade-select-trigger] {
+    padding-inline-end: 64px;
+  }
 }
 
 [data-cascade-select-trigger] {
-  padding: 4px 12px;
-  border-radius: 4px;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: 6px;
-  cursor: default;
-  background: #eeeeee;
-  font-size: 14px;
-  border: 1px solid slategray;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 200px;
+  height: var(--z-control-h);
+  padding-block: 0;
+  padding-inline: 12px 36px;
+  border: 1px solid var(--z-border);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-xs);
+  font-size: var(--z-text-md);
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg);
+    border-color: var(--z-border-emphasis);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--z-accent);
+    box-shadow: 0 0 0 3px var(--z-ring);
+  }
+
+  &:disabled {
+    opacity: var(--z-disabled-opacity);
+  }
+
+  &[data-invalid] {
+    border-color: var(--z-danger);
+  }
+}
+
+[data-cascade-select-value-text] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* The placeholder is rendered as the value text when nothing is selected */
+  [data-cascade-select-control]:has([data-cascade-select-clear-trigger][hidden]) & {
+    color: var(--z-fg-muted);
+  }
+}
+
+/* The examples render a text glyph; swap it for select's up/down chevrons */
+[data-cascade-select-indicator] {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 12px;
+  width: 16px;
+  height: 16px;
+  margin-block: auto;
+  overflow: hidden;
+  background: currentColor;
+  color: var(--z-fg-muted);
+  font-size: 0;
+  opacity: 0.7;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+[data-cascade-select-clear-trigger] {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 34px;
+  width: 24px;
+  height: 24px;
+  margin-block: auto;
+  padding: 0;
+  border-radius: var(--z-radius-xs);
+  background: transparent;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+
+  &:hover:not(:disabled) {
+    background: var(--z-bg-muted);
+    color: var(--z-fg);
+  }
 
   & svg {
     width: 14px;
     height: 14px;
   }
-}
-
-.cascade-select svg {
-  position: relative;
-  top: 1px;
-}
-
-[data-cascade-select-trigger]:disabled {
-  cursor: default;
-}
-
-[data-cascade-select-trigger][data-invalid] {
-  border: 2px solid red;
-}
-
-[data-cascade-select-clear-trigger] {
-  padding: 4px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.15s ease;
-}
-
-[data-cascade-select-clear-trigger]:hover {
-  background: #f0f0f0;
 }
 
 [data-cascade-select-positioner] {
@@ -70,61 +125,79 @@
 
 [data-cascade-select-content] {
   display: flex;
-  margin-top: 4px;
-  background: #efefef;
-  max-height: min(var(--available-height), 200px);
+  max-height: min(var(--available-height), 320px);
+  overflow: hidden;
+  border-radius: var(--z-radius);
+  background: var(--z-bg);
+  box-shadow: var(--z-shadow-popover);
+  font-size: var(--z-text-md);
+
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 [data-cascade-select-list] {
-  width: 200px;
-  list-style: none;
-  padding: 4px;
+  width: 220px;
+  min-height: 0;
   margin: 0;
-  position: relative;
+  padding: 4px;
+  list-style: none;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  overflow-x: hidden;
-}
+  scroll-padding-block: 4px;
 
-/* Add a subtle separator line between levels */
-[data-cascade-select-list]:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  right: 0px;
-  top: 6px;
-  bottom: 6px;
-  width: 1px;
-  background: #d4d5d8;
-  opacity: 0.6;
+  &:not(:last-child) {
+    border-inline-end: 1px solid var(--z-border);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 [data-cascade-select-item] {
-  padding: 4px 8px;
-  cursor: default;
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  gap: 8px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border-radius: var(--z-radius-sm);
+  line-height: 20px;
+  cursor: default;
+
+  /* With highlightTrigger "click", hovering doesn't highlight, so show a lighter hover tint */
+  &:hover:not([data-highlighted], [data-disabled]) {
+    background: color-mix(in oklab, var(--z-highlight) 55%, transparent);
+  }
+
+  &[data-highlighted] {
+    background: var(--z-highlight);
+  }
+
+  &[data-disabled] {
+    opacity: var(--z-disabled-opacity);
+  }
+
+  /* Branch chevron */
+  & svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--z-fg-muted);
+  }
 }
 
 [data-cascade-select-item-text] {
-  margin-right: auto;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-[data-cascade-select-item][data-disabled] {
-  color: #777;
-}
-
-[data-cascade-select-item][data-state="checked"] {
-  background: blue;
-  color: white;
-}
-
-[data-cascade-select-item]:hover {
-  background: #e2e8f0;
-  border-color: #cbd5e1;
-}
-
-[data-cascade-select-item][data-highlighted] {
-  background: rgb(0, 0, 195);
-  color: white;
+[data-cascade-select-item-indicator] {
+  display: inline-flex;
+  color: var(--z-accent-fg);
 }

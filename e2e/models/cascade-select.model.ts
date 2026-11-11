@@ -80,7 +80,8 @@ export class CascadeSelectModel extends Model {
   }
 
   hoverOut = async () => {
-    await this.content.hover({ position: { x: 0, y: 0 } })
+    // Inside the list padding, clear of the rounded corner and of every item
+    await this.content.hover({ position: { x: 2, y: 20 } })
   }
 
   seeContentIsFocused = async () => {
