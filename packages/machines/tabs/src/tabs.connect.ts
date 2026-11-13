@@ -7,6 +7,7 @@ import {
   isAnchorElement,
   isComposingEvent,
   isModifierKey,
+  isDownloadingEvent,
   isOpeningInNewTab,
   isSafari,
 } from "@zag-js/dom-query"
@@ -209,7 +210,9 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         },
         onClick(event) {
           if (event.defaultPrevented) return
+          if (isDownloadingEvent(event)) return
           if (isOpeningInNewTab(event)) return
+          if (event.shiftKey && isAnchorElement(event.currentTarget)) return
           if (disabled) return
           if (isSafari()) {
             event.currentTarget.focus()

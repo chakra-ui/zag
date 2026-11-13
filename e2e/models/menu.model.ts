@@ -95,6 +95,19 @@ export class MenuModel extends Model {
     await this.contextTrigger.click(options)
   }
 
+  // Shift+F10 doesn't fire `contextmenu` on every platform, so dispatch it on the focused trigger
+  openContextMenuWithKeyboard = async () => {
+    await this.contextTrigger.evaluate((el) => {
+      el.tabIndex = 0
+      el.focus()
+    })
+    await this.contextTrigger.dispatchEvent("contextmenu", { button: -1 })
+  }
+
+  seeContextTriggerIsFocused = async () => {
+    await expect(this.contextTrigger).toBeFocused()
+  }
+
   clickItem = async (text: string) => {
     await this.getItem(text).click()
   }

@@ -14,6 +14,7 @@ For detailed information on specific topics, see:
 - `@.claude/docs/playwright-testing-guide.md` - E2E testing with Playwright
 - `@.claude/docs/documentation-structure-guide.md` - Documentation standards
 - `@.claude/docs/changelog-guide.md` - Changelog and changeset writing
+- `@.claude/docs/dismissable-layers.md` - Layer nesting decisions in the dismissable layer stack
 
 ## Project Overview
 
@@ -51,7 +52,7 @@ pnpm build              # Build all packages
 pnpm start-react        # Start React example
 pnpm test               # Run all tests
 pnpm e2e-react          # E2E tests for React
-pnpm lint               # Lint all packages
+pnpm lint               # Lint all packages (oxlint)
 pnpm typecheck          # TypeScript type checking
 ```
 

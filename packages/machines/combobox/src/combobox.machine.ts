@@ -14,7 +14,7 @@ import {
   isApple,
   nextTick,
   raf,
-  scrollIntoView,
+  scrollToNearest,
   setCaretToEnd,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -794,7 +794,7 @@ export const machine = createMachine({
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
-            scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
+            scrollToNearest(itemEl, { rootEl: listEl })
           })
           cleanups.push(raf_cleanup)
         }
@@ -883,7 +883,7 @@ export const machine = createMachine({
             return
           }
 
-          scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
+          scrollToNearest(itemEl, { rootEl: listEl })
         })
       },
       selectItem(params) {

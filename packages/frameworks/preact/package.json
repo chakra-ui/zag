@@ -32,14 +32,14 @@
   "devDependencies": {
     "@testing-library/preact": "^3.2.6",
     "clean-package": "2.2.0",
-    "preact": "11.1.1",
+    "preact": "11.2.0",
     "preact-render-to-string": "6.8.2"
   },
   "peerDependencies": {
     "preact": ">=11.0.0"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

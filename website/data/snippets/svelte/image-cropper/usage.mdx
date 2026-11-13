@@ -12,7 +12,11 @@
 
 <div {...api.getRootProps()}>
   <div {...api.getViewportProps()}>
-    <img src="https://picsum.photos/seed/crop/640/400" crossorigin="anonymous" {...api.getImageProps()} />
+    <img
+      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=640&h=400&fit=crop"
+      crossorigin="anonymous"
+      {...api.getImageProps()}
+    />
 
     <div {...api.getSelectionProps()}>
       {#each imageCropper.handles as placement}

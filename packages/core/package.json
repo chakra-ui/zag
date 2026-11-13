@@ -19,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest --passWithNoTests",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",

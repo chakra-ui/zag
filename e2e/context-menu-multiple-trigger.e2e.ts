@@ -78,4 +78,18 @@ test.describe("context menu / multiple triggers", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(menu)).toBeHidden()
   })
+
+  test("should return focus to the trigger that opened the menu", async ({ page }) => {
+    const trigger = page.locator(contextTrigger(2))
+    await trigger.evaluate((el) => {
+      el.tabIndex = 0
+      el.focus()
+    })
+    await trigger.dispatchEvent("contextmenu", { button: -1 })
+    await expect(page.locator(menu)).toBeFocused()
+
+    await page.keyboard.press("Escape")
+    await expect(page.locator(menu)).toBeHidden()
+    await expect(trigger).toBeFocused()
+  })
 })

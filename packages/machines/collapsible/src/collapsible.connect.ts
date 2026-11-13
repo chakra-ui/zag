@@ -100,13 +100,14 @@ export function connect<T extends PropTypes>(
 
     getTriggerProps() {
       const rootState = getRootState()
-      return normalize.element({
+      return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
         "data-state": rootState.open ? "open" : "closed",
         "data-disabled": dataAttr(rootState.disabled),
+        disabled: rootState.disabled,
         "aria-controls": dom.getContentId(scope),
         "aria-expanded": rootState.visible || false,
         onClick(event) {

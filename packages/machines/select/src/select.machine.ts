@@ -15,6 +15,7 @@ import {
   raf,
   resizeObserverContentBox,
   scrollIntoView,
+  scrollToNearest,
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -736,7 +737,8 @@ export const machine = createMachine<SelectSchema>({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          scrollIntoView(itemEl, { rootEl: listEl, block: immediate ? "center" : "nearest" })
+          if (immediate) scrollIntoView(itemEl, { rootEl: listEl, block: "center" })
+          else scrollToNearest(itemEl, { rootEl: listEl })
         }
 
         // The positioner's max-height lands a frame or two after the content mounts. Until it does the

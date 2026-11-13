@@ -227,6 +227,19 @@ const service = useMachine(menu.machine, {
 
 </Example>
 
+### Managing focus
+
+Set `initialFocusEl` to choose the element focused when the menu opens, and
+`finalFocusEl` for when it closes. Return `false` from `initialFocusEl` to leave
+focus where it is.
+
+```tsx
+const service = useMachine(menu.machine, {
+  initialFocusEl: () => document.getElementById("menu-search"),
+  finalFocusEl: () => document.getElementById("editor"),
+})
+```
+
 ### Positioning
 
 Use `positioning` to configure menu placement.

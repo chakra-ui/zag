@@ -237,7 +237,7 @@ function generate(name: string, machine: MachineConfig) {
   const json: MachineJson = {
     id: name,
     initial: initialTop,
-    states: [...states].map(([path, state]) => {
+    states: [...states].map(([path, _state]) => {
       const parent = parents.get(path)
       const isInitial = parent
         ? states.get(parent)!.initial === path.slice(parent.length + 1)

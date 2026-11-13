@@ -4,7 +4,13 @@ import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissa
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PopupActivationDirection, PropTypes } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  MaybeElement,
+  PopupActivationDirection,
+  PropTypes,
+} from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -155,6 +161,16 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   loopFocus?: boolean | undefined
   /**
+   * The element to focus when the menu opens.
+   * Return `false` to skip moving focus, or `null` to use the default.
+   */
+  initialFocusEl?: (() => MaybeElement | false) | undefined
+  /**
+   * The element to focus when the menu closes.
+   * Return `null` to use the default (the trigger, or the element focused before a context menu opened).
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
+  /**
    * The options used to dynamically position the menu
    */
   positioning?: PositioningOptions | undefined
@@ -292,6 +308,8 @@ export interface MenuSchema {
     menubarCloseReason: string | null
     pointerType: string | null
     focusMenuFrame: AnimationFrame
+    returnFocusFrame: AnimationFrame
+    returnFocusEl: HTMLElement | null
     autoHighlightFrame: AnimationFrame
     syncHighlightFrame: AnimationFrame
     cancelTriggerSwitch: VoidFunction | null

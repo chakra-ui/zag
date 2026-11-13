@@ -96,6 +96,9 @@ export function contains(parent: Target, child: Target) {
       next = next.parentNode || next.host
     }
   }
+  // Same-origin iframe inside the parent
+  const frameEl = child.ownerDocument?.defaultView?.frameElement
+  if (frameEl && child.ownerDocument !== parent.ownerDocument) return contains(parent, frameEl)
   return false
 }
 

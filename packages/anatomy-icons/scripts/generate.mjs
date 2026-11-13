@@ -1,6 +1,6 @@
 import { transform } from "@svgr/core"
 import { readFileSync, writeFileSync } from "fs"
-import { format } from "prettier"
+import { format } from "oxfmt"
 
 const html = String.raw
 
@@ -115,7 +115,7 @@ export const ${name}Anatomy = createComponent((props) => {
 })
 `
 
-template = await format(replaceColors(template), { parser: "typescript" })
+template = (await format(`${dashName}.tsx`, replaceColors(template), { semi: false, printWidth: 120 })).code
 
 if (process.argv.includes("--dry-run")) {
   console.log(template)

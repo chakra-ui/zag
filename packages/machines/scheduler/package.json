@@ -41,7 +41,7 @@
     "clean-package": "2.2.0"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
