@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@testing-library/preact": "^3.2.4",
-    "preact": "10.29.8",
+    "preact": "11.2.0",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {
