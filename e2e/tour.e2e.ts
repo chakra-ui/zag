@@ -170,6 +170,36 @@ test.describe("tour", () => {
     await I.seeContentIsCentered() // stay on the first step
   })
 
+  test("[preventInteraction] restores the target's own inert state when the tour leaves it", async () => {
+    await I.mockStepRequest()
+    await I.makeInert("#step-1")
+
+    await I.clickStart()
+    await I.seeStep("step-0")
+    await I.clickNext()
+    await I.seeStep("step-1")
+
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeInert("#step-1")
+  })
+
+  test("[preventInteraction] follows changes while a step is open", async () => {
+    await I.mockStepRequest()
+
+    await I.clickStart()
+    await I.seeStep("step-0")
+    await I.clickNext()
+    await I.seeStep("step-1")
+    await I.seeInert("#step-1")
+
+    await I.controls.bool("preventInteraction", false)
+    await I.seeInert("#step-1", false)
+
+    await I.controls.bool("preventInteraction", true)
+    await I.seeInert("#step-1")
+  })
+
   test.fixme("[preventInteraction=true] should not allow interacting with target", async () => {
     await I.clickStart()
     await I.pressKey("ArrowRight")
@@ -230,5 +260,13 @@ test.describe("tour / replaced target", () => {
         )
       })
       .toBe(true)
+  })
+
+  test("keeps the highlight when the next step has the same target", async () => {
+    await I.clickStart()
+    await I.seeStep("step-1")
+    await I.clickNext()
+    await I.seeStep("step-2")
+    await I.seeHighlighted("Original target")
   })
 })
