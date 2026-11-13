@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { match } from "@zag-js/utils"
 import { parts } from "./field.anatomy"
 import * as dom from "./field.dom"
-import type { ErrorTextProps, FieldApi, FieldSchema, FieldState, IndicatorProps, ItemProps } from "./field.types"
+import type { ErrorTextProps, FieldApi, FieldSchema, IndicatorProps, ItemProps, RootState } from "./field.types"
 import { composeDescribedBy, isErrorMatch } from "./field.utils"
 
 export function connect<T extends PropTypes>(service: Service<FieldSchema>, normalize: NormalizeProps<T>): FieldApi<T> {
@@ -41,7 +41,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getFieldState(): FieldState {
+  function getRootState(): RootState {
     return {
       disabled,
       invalid,
@@ -62,18 +62,18 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
       invalid,
       disabled,
     })
-    return { ...getFieldState(), hidden: !shown }
+    return { ...getRootState(), hidden: !shown }
   }
 
   function getIndicatorState(props: IndicatorProps) {
-    const fieldState = getFieldState()
+    const rootState = getRootState()
     const shown = match(props.type, {
-      required: () => fieldState.required,
-      invalid: () => fieldState.invalid,
-      valid: () => fieldState.valid === true,
-      validating: () => fieldState.validating,
+      required: () => rootState.required,
+      invalid: () => rootState.invalid,
+      valid: () => rootState.valid === true,
+      validating: () => rootState.validating,
     })
-    return { ...fieldState, type: props.type, hidden: !shown }
+    return { ...rootState, type: props.type, hidden: !shown }
   }
 
   function getItemControlId(item: string) {
@@ -85,18 +85,18 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
   }
 
   function getControlBaseProps(props: ItemProps = {}) {
-    const fieldState = getFieldState()
+    const rootState = getRootState()
     const controlId = resolveControlId(props.item)
     const tracked = controlId === ids.control
     return {
       ...parts.control.attrs(scope.id),
       id: controlId,
       dir: prop("dir"),
-      disabled: fieldState.disabled,
-      required: fieldState.required,
-      "aria-invalid": fieldState.invalid || undefined,
+      disabled: rootState.disabled,
+      required: rootState.required,
+      "aria-invalid": rootState.invalid || undefined,
       "aria-describedby": ariaDescribedby,
-      ...getDataAttrs(fieldState),
+      ...getDataAttrs(rootState),
       ...(tracked
         ? {
             onFocus() {
@@ -153,28 +153,26 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
 
     getItemControlId,
 
-    getRootState: getFieldState,
+    getRootState,
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs(scope.id),
         id: ids.root,
         dir: prop("dir"),
-        ...getDataAttrs(getFieldState()),
+        ...getDataAttrs(getRootState()),
       })
     },
 
-    getLabelState: getFieldState,
     getLabelProps(props: ItemProps = {}) {
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: ids.label,
         dir: prop("dir"),
         htmlFor: resolveControlId(props.item),
-        ...getDataAttrs(getFieldState()),
+        ...getDataAttrs(getRootState()),
       })
     },
 
-    getControlState: getFieldState,
     getControlProps(props: ItemProps = {}) {
       const { disabled, required, ...baseProps } = getControlBaseProps(props)
       return normalize.element({
@@ -189,14 +187,14 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
     getInputProps(props: ItemProps = {}) {
       return normalize.input({
         ...getControlBaseProps(props),
-        readOnly: getFieldState().readOnly,
+        readOnly: getRootState().readOnly,
       })
     },
 
     getTextareaProps(props: ItemProps = {}) {
       return normalize.textarea({
         ...getControlBaseProps(props),
-        readOnly: getFieldState().readOnly,
+        readOnly: getRootState().readOnly,
       })
     },
 
@@ -206,13 +204,12 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
       })
     },
 
-    getHelperTextState: getFieldState,
     getHelperTextProps() {
       return normalize.element({
         ...parts.helperText.attrs(scope.id),
         id: ids.helperText,
         dir: prop("dir"),
-        ...getDataAttrs(getFieldState()),
+        ...getDataAttrs(getRootState()),
       })
     },
 
@@ -250,7 +247,7 @@ function getEventValue(event: { currentTarget: EventTarget | null }) {
   return target && "value" in target && typeof target.value === "string" ? target.value : ""
 }
 
-function getDataAttrs(state: FieldState) {
+function getDataAttrs(state: RootState) {
   return {
     "data-disabled": dataAttr(state.disabled),
     "data-invalid": dataAttr(state.invalid),
