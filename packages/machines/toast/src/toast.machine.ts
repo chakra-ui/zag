@@ -1,6 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, contains, raf } from "@zag-js/dom-query"
-import { callAll, ensureProps, setRafTimeout, warn } from "@zag-js/utils"
+import { addDomEvent, AnimationFrame, AnimationFrameTimeout, contains, raf } from "@zag-js/dom-query"
+import { callAll, ensureProps, warn } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastSchema } from "./toast.types"
 import { getToastDuration, setHeight } from "./toast.utils"
@@ -249,22 +249,20 @@ export const machine = createMachine<ToastSchema>({
   implementations: {
     effects: {
       waitForRemoveDelay({ prop, send }) {
-        return setRafTimeout(() => {
-          send({ type: "REMOVE", src: "timer" })
-        }, prop("removeDelay"))
+        const timeout = AnimationFrameTimeout.create()
+        timeout.start(prop("removeDelay"), () => send({ type: "REMOVE", src: "timer" }))
+        return timeout.cancel
       },
 
       waitForDuration({ send, context, computed }) {
         if (computed("shouldPersist")) return
-        return setRafTimeout(() => {
-          send({ type: "DISMISS", src: "timer" })
-        }, context.get("remainingTime"))
+        const timeout = AnimationFrameTimeout.create()
+        timeout.start(context.get("remainingTime"), () => send({ type: "DISMISS", src: "timer" }))
+        return timeout.cancel
       },
 
       waitForNextTick({ send }) {
-        return setRafTimeout(() => {
-          send({ type: "SHOW", src: "timer" })
-        }, 0)
+        return raf(() => send({ type: "SHOW", src: "timer" }))
       },
 
       trackContent({ scope, prop, context, state }) {

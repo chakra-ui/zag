@@ -18,7 +18,7 @@ export function ContextMenu(props: ContextMenuProps) {
       <div className={styles.ContextTrigger} {...api.getContextTriggerProps()}>
         <div>Open context menu</div>
       </div>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <ul className={styles.Content} {...api.getContentProps()}>
           {data.map((item) => (
             <li

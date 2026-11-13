@@ -2,6 +2,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type {
+  ActivationDirection,
   CommonProperties,
   DirectionProperty,
   Orientation,
@@ -16,8 +17,33 @@ import type {
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened, switched or closed the menu:
+ * - `trigger-click`: a trigger was pressed
+ * - `trigger-hover`: the pointer rested on a trigger
+ * - `pointer-leave`: the pointer left the triggers and content
+ * - `item-select`: a link was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setValue` was called
+ */
+export type ValueChangeReason =
+  | "trigger-click"
+  | "trigger-hover"
+  | "pointer-leave"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface ValueChangeDetails {
   value: string
+  /**
+   * What caused the change
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface ElementIds {
@@ -101,6 +127,7 @@ export interface NavigationMenuSchema {
 
     closeTimeoutId: number | null
     openTimeoutIds: Record<string, number>
+    valueChangeReason: ValueChangeReason | undefined
     focusFrame: AnimationFrame
   }
   context: {
@@ -110,6 +137,10 @@ export interface NavigationMenuSchema {
     layer: LayerSnapshot | null
     value: string
     previousValue: string
+    /**
+     * Where the open item's trigger sits relative to the previous one
+     */
+    activationDirection: ActivationDirection
 
     viewportSize: Size | null
     viewportPosition: Point | null
@@ -144,23 +175,25 @@ export interface ItemProps {
   disabled?: boolean | undefined
 }
 
+export interface RootState {
+  /**
+   * Whether any item's content is open
+   */
+  open: boolean
+  /**
+   * The orientation of the menu
+   */
+  orientation: Orientation
+}
+
+export interface ViewportState extends RootState {
+  /**
+   * Where the open item's trigger sits relative to the previous one. `null` when opened from closed.
+   */
+  activationDirection: Exclude<ActivationDirection, "none"> | null
+}
+
 export interface ItemState {
-  /**
-   * The id of the item element
-   */
-  itemId: string
-  /**
-   * The id of the trigger element
-   */
-  triggerId: string
-  /**
-   * The id of the trigger proxy element
-   */
-  triggerProxyId: string
-  /**
-   * The id of the content element
-   */
-  contentId: string
   /**
    * Whether the item is currently selected
    */
@@ -223,10 +256,6 @@ export interface ViewportProps {
 
 export interface TriggerState {
   /**
-   * The value of the item
-   */
-  value: string
-  /**
    * Whether the trigger is disabled
    */
   disabled: boolean
@@ -236,11 +265,9 @@ export interface TriggerState {
   open: boolean
 }
 
+export type ContentMotion = "from-start" | "from-end" | "to-start" | "to-end"
+
 export interface ContentState {
-  /**
-   * The value of the item this content belongs to
-   */
-  value: string
   /**
    * Whether the content is open
    */
@@ -253,6 +280,14 @@ export interface ContentState {
    * Whether the content has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Where the open item's trigger sits relative to the previous one. `null` when opened from closed.
+   */
+  activationDirection: Exclude<ActivationDirection, "none"> | null
+  /**
+   * Which way the content slides when the viewport switches items. `null` outside a viewport switch.
+   */
+  motion: ContentMotion | null
 }
 
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
@@ -263,7 +298,7 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the menu
    */
-  setValue: (value: string) => void
+  setValue: (value: string, reason?: ValueChangeReason) => void
   /**
    * Whether the menu is open
    */
@@ -272,6 +307,11 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    * Whether the viewport is rendered
    */
   isViewportRendered: boolean
+  /**
+   * Where the open item's trigger sits relative to the previous one: `left`, `right`, `up` or `down`.
+   * `null` when opened from closed.
+   */
+  activationDirection: Exclude<ActivationDirection, "none"> | null
   /**
    * Gets the viewport node element
    */
@@ -285,6 +325,10 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    */
   reposition: VoidFunction
 
+  /**
+   * Returns the state of the root. The list, indicator, arrow and viewport positioner share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
@@ -307,7 +351,13 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getContentState: (props: ContentProps) => ContentState
   getContentProps: (props: ContentProps) => T["element"]
   getViewportPositionerProps: (props?: ViewportProps) => T["element"]
+  /**
+   * Returns the state of the viewport
+   */
+  getViewportState: () => ViewportState
   getViewportProps: (props?: ViewportProps) => T["element"]
-
+  /**
+   * Returns the state of a specific item
+   */
   getItemState: (props: ItemProps) => ItemState
 }

@@ -137,14 +137,15 @@ const service = useMachine(splitter.machine, {
 
 ### Keyboard step
 
-Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
+Use `keyboardResizeBy` to set how much each arrow key press resizes, as a
+percentage of the group.
 
 <Example id="SplitterKeyboard">
 
 ```tsx
 const service = useMachine(splitter.machine, {
   panels,
-  keyboardResizeBy: 16,
+  keyboardResizeBy: 5,
 })
 ```
 
@@ -172,7 +173,47 @@ const service = useMachine(splitter.machine, {
 </Example>
 
 This allows the user to drag the splitter to collapse the panel to the
-`collapsedSize`.
+`collapsedSize`. `Enter` on the handle collapses the panel, and pressing it
+again restores its earlier size.
+
+### Collapse threshold
+
+A drag collapses or expands a panel once it passes halfway between
+`collapsedSize` and `minSize`. Set `collapsedThreshold` to change the distance.
+
+```tsx
+panels: [
+  {
+    id: "a",
+    collapsible: true,
+    collapsedSize: 5,
+    minSize: 15,
+    collapsedThreshold: 2,
+  },
+]
+```
+
+### Reset with double-click
+
+Double-clicking a handle resets the panel before it to its default size.
+
+### Disabling resize
+
+Set `disabled` on the machine, a panel, or a handle.
+
+- **Machine**: turns off every handle. The API still works.
+- **Panel**: locks its size, including from the API.
+- **Handle**: turns off that handle. Its panels can still change through others.
+
+Disabled handles can't be focused or dragged, and get `aria-disabled`.
+
+```tsx
+const service = useMachine(splitter.machine, {
+  panels: [{ id: "a", disabled: true }, { id: "b" }],
+})
+
+<div {...api.getResizeTriggerProps({ id: "a:b", disabled: true })} />
+```
 
 ### Collapse events
 
@@ -204,6 +245,7 @@ Use the connected API to resize, collapse, or expand panels from code.
 ```tsx
 api.setSizes([30, 70])
 api.resizePanel("a", 40)
+api.resizePanel("a", "200px")
 api.collapsePanel("a")
 api.expandPanel("a")
 api.resetSizes()

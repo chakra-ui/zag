@@ -51,6 +51,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "default-value", title: "Default Value" },
     ],
   },
   {
@@ -181,6 +182,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "viewport", title: "Viewport" },
+      { slug: "default-value", title: "Default Value" },
     ],
   },
   {
@@ -208,6 +210,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "async-items", title: "Async Items" },
       { slug: "validation", title: "Validation: Create Project" },
+      { slug: "async-validation", title: "Async Validation: Sign Up" },
       { slug: "conditional-steps", title: "Conditional & Optional Steps: Onboarding" },
       { slug: "url-sync", title: "URL Sync: Checkout" },
       { slug: "locked-steps", title: "Locked Steps: 2FA Setup" },
@@ -293,6 +296,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "expand-trigger", title: "Expand Trigger" },
       { slug: "actions", title: "Actions" },
       { slug: "in-dialog", title: "Dialog" },
+      { slug: "list-view", title: "List and Tree View" },
     ],
   },
   {
@@ -304,6 +308,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "indeterminate", title: "Indeterminate" },
       { slug: "vertical", title: "Vertical" },
       { slug: "value-format", title: "Value Format" },
+      { slug: "custom-range", title: "Custom Range" },
       { slug: "simulated", title: "Simulated Upload" },
     ],
   },
@@ -313,6 +318,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Storage (low is better)" },
       { slug: "battery", title: "Battery (high is better)" },
+      { slug: "custom-range", title: "Custom Range" },
     ],
   },
   {
@@ -323,6 +329,10 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "validation", title: "Validation" },
       { slug: "debounced-validation", title: "Debounced Validation" },
+      { slug: "form", title: "Form" },
+      { slug: "constraints", title: "Native Constraints" },
+      { slug: "schema", title: "Schema Validation" },
+      { slug: "custom-control", title: "Custom Control" },
       { slug: "custom-messages", title: "Custom Messages" },
       { slug: "select", title: "Select" },
       { slug: "item", title: "Item" },
@@ -338,6 +348,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "shipping-address", title: "Shipping Address" },
       { slug: "notification-preferences", title: "Notification Preferences" },
       { slug: "server-errors", title: "Server Errors" },
+      { slug: "groups", title: "Checkbox and Radio Groups" },
+      { slug: "nested", title: "Nested" },
     ],
   },
   {
@@ -366,6 +378,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "with-menu", title: "With Menu" },
       { slug: "with-tooltip", title: "With Tooltip" },
+      { slug: "status", title: "Load Status" },
     ],
   },
   {
@@ -379,6 +392,16 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "in-dialog", title: "Dialog" },
       { slug: "oklch", title: "OKLCH + gamut overlay" },
       { slug: "oklab", title: "OKLab + gamut overlay" },
+      { slug: "channel-sliders", title: "Hue & Alpha Sliders" },
+      { slug: "swatches", title: "Swatches" },
+      { slug: "swatch-only", title: "Swatch Only" },
+      { slug: "swatches-with-trigger", title: "Swatches + Custom" },
+      { slug: "input-only", title: "Input Only" },
+      { slug: "channel-inputs", title: "Channel Inputs" },
+      { slug: "form", title: "Form" },
+      { slug: "disabled-readonly", title: "Disabled & Read-only" },
+      { slug: "change-end", title: "Change End" },
+      { slug: "open-controlled", title: "Controlled Open" },
     ],
   },
   {
@@ -511,6 +534,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "rehydrate", title: "Rehydrate" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "emoji-picker", title: "Emoji Picker" },
+      { slug: "creatable", title: "Creatable" },
     ],
   },
   {
@@ -546,6 +570,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Hover Card",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "hovercard-in-dialog", title: "With Dialog" },
@@ -559,6 +584,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Menu",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "overflow", title: "Overflow" },
@@ -575,6 +601,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-nested", title: "Multiple Nested" },
       { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
+      { slug: "virtualized", title: "Virtualized" },
     ],
   },
   {
@@ -673,6 +700,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Popover",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "composition-controlled", title: "Controlled" },
       { slug: "in-dialog", title: "With Dialog" },
@@ -735,7 +763,9 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "with-link", title: "With Links" },
+      { slug: "animated-panels", title: "Animated Panels" },
       { slug: "disabled", title: "Disabled Tab" },
+      { slug: "reorder", title: "Reorder" },
     ],
   },
   {
@@ -812,6 +842,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "scroll-element", title: "Scroll Element" },
       { slug: "nested-nav", title: "Nav Inside Scroll Container" },
       { slug: "long-sections", title: "Long Sections" },
+      { slug: "late-content", title: "Content Mounts Later" },
     ],
   },
   {
@@ -819,6 +850,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Tooltip",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "animated-triggers", title: "Animated Triggers" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-multiple", title: "Controlled Multiple" },
@@ -855,6 +887,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "persistent-layout", title: "Persistent Layout" },
       { slug: "pixel-constraints", title: "Pixel Constraints" },
       { slug: "relative-units", title: "Relative Units" },
+      { slug: "events", title: "Events & Disabled Handle" },
     ],
   },
   {

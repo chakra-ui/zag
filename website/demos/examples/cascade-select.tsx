@@ -163,7 +163,7 @@ function Field(props: { api: cascadeSelect.Api }) {
         </button>
       </div>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <Level api={api} node={collection.rootNode} />
           </div>

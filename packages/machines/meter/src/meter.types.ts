@@ -48,6 +48,7 @@ export interface MeterProps extends DirectionProperty, CommonProperties, Orienta
   /**
    * The initial value of the meter when rendered.
    * Use when you don't need to control the value of the meter.
+   * @default min
    */
   defaultValue?: number | undefined
   /**
@@ -98,9 +99,11 @@ export interface MeterProps extends DirectionProperty, CommonProperties, Orienta
 type PropsWithDefault = "orientation" | "min" | "max" | "low" | "high" | "optimum" | "formatOptions"
 
 type Computed = Readonly<{
+  clampedValue: number
   percent: number
   isHorizontal: boolean
   formatter: Intl.NumberFormat
+  percentFormatter: Intl.NumberFormat
   valueState: MeterValueState
 }>
 
@@ -125,6 +128,17 @@ export type MeterMachine = Machine<MeterSchema>
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * Which region of the range the value falls in
+   */
+  valueState: MeterValueState
+  /**
+   * The orientation of the meter
+   */
+  orientation: Orientation
+}
 
 export interface MeterApi<T extends PropTypes = PropTypes> {
   /**
@@ -180,6 +194,10 @@ export interface MeterApi<T extends PropTypes = PropTypes> {
    */
   valueState: MeterValueState
 
+  /**
+   * Returns the state of the root. The label, track and indicator share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
   getTrackProps: () => T["element"]

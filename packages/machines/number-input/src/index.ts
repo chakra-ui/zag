@@ -16,7 +16,7 @@ export type {
   RootState,
   ValueChangeDetails,
   ValueInvalidDetails,
-  HintValue,
+  StepDirection,
   InputMode,
   ValidityState,
 } from "./number-input.types"

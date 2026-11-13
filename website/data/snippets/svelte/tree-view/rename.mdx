@@ -63,10 +63,7 @@
     <div {...api.getNodeGroupProps({ indexPath, node })}>
       <div {...api.getNodeProps({ indexPath, node })}>
         <FolderIcon />
-        <span
-          {...api.getNodeTextProps({ indexPath, node })}
-          style:display={nodeState.renaming ? "none" : "inline"}
-        >
+        <span {...api.getNodeTextProps({ indexPath, node })} style:display={nodeState.renaming ? "none" : "inline"}>
           {node.name}
         </span>
         <input {...api.getNodeRenameInputProps({ indexPath, node })} />
@@ -84,10 +81,7 @@
   {:else}
     <div {...api.getNodeProps({ indexPath, node })}>
       <FileIcon />
-      <span
-        {...api.getNodeTextProps({ indexPath, node })}
-        style:display={nodeState.renaming ? "none" : "inline"}
-      >
+      <span {...api.getNodeTextProps({ indexPath, node })} style:display={nodeState.renaming ? "none" : "inline"}>
         {node.name}
       </span>
       <input {...api.getNodeRenameInputProps({ indexPath, node })} />

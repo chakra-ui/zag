@@ -31,6 +31,77 @@ export class TabsModel extends Model {
     return this.page.locator("[data-tabs-indicator]")
   }
 
+  private getPanelByName = (name: string) => {
+    return this.page.getByRole("tabpanel", { name, includeHidden: true })
+  }
+
+  clickButton = async (name: string) => {
+    await this.page.getByRole("button", { name }).click()
+  }
+
+  seeTabIsSelected = async (name: string) => {
+    await expect(this.page.getByRole("tab", { name })).toHaveAttribute("aria-selected", "true")
+  }
+
+  clickTabByName = async (name: string) => {
+    await this.page.getByRole("tab", { name }).click()
+  }
+
+  focusTabByName = async (name: string) => {
+    await this.page.getByRole("tab", { name, exact: true }).focus()
+  }
+
+  seeTabOrder = async (names: string[]) => {
+    await expect(this.page.getByRole("tab")).toHaveText(names)
+  }
+
+  dragTab = async (from: string, to: string) => {
+    const source = await rect(this.page.getByRole("tab", { name: from, exact: true }))
+    const target = await rect(this.page.getByRole("tab", { name: to, exact: true }))
+    const y = source.y + source.height / 2
+    await this.page.mouse.move(source.x + source.width / 2, y)
+    await this.page.mouse.down()
+    await this.page.mouse.move(source.x + source.width / 2 + 10, y, { steps: 3 })
+    // Past the target's midpoint, so it drops after the target when moving right
+    const x = target.x > source.x ? target.x + target.width - 4 : target.x + 4
+    await this.page.mouse.move(x, y, { steps: 10 })
+    await this.page.mouse.up()
+  }
+
+  seeIndicatorOnSelectedTab = async () => {
+    await expect
+      .poll(() =>
+        this.page.evaluate(() => {
+          const indicator = document.querySelector("[data-tabs-indicator]")?.getBoundingClientRect()
+          const tab = document.querySelector("[role=tab][aria-selected=true]")?.getBoundingClientRect()
+          return !!indicator && !!tab && Math.abs(indicator.x - tab.x) < 2
+        }),
+      )
+      .toBe(true)
+  }
+
+  seeAnnouncement = async (text: string) => {
+    await expect(this.liveRegion("assertive")).toHaveText(text)
+  }
+
+  seePanelState = async (name: string, state: string | null) => {
+    const panel = this.getPanelByName(name)
+    if (state == null) await expect(panel).not.toHaveAttribute("data-state")
+    else await expect(panel).toHaveAttribute("data-state", state)
+  }
+
+  seePanelIsVisible = async (name: string) => {
+    await expect(this.getPanelByName(name)).toBeVisible()
+  }
+
+  seePanelIsHidden = async (name: string) => {
+    await expect(this.getPanelByName(name)).toBeHidden()
+  }
+
+  seeActivationDirection = async (direction: string) => {
+    await expect(this.page.locator("[data-tabs-root]")).toHaveAttribute("data-activation-direction", direction)
+  }
+
   clickTab = async (id: string) => {
     await this.getTabTrigger(id).click()
   }

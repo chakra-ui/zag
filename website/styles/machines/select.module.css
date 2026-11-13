@@ -74,6 +74,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     width: var(--reference-width, 14rem);
     max-height: 18rem;
@@ -87,7 +91,6 @@
     list-style-type: none;
     isolation: isolate;
     transform-origin: var(--transform-origin);
-    z-index: calc(var(--layer-index) + 50);
 
     &[data-state="open"] {
       animation: select-in 140ms ease-out;

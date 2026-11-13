@@ -10,6 +10,8 @@ import "@styles/tabs.css"
 
 export default function Page() {
   const [disabled, setDisabled] = useState(false)
+  const [addedTabs, setAddedTabs] = useState<typeof tabsData>([])
+  const items = [...tabsData, ...addedTabs]
 
   const service = useMachine(tabs.machine, {
     id: useId(),
@@ -18,13 +20,20 @@ export default function Page() {
 
   const api = tabs.connect(service, normalizeProps)
 
+  const addTab = () => {
+    const n = addedTabs.length + 1
+    const tab = { id: `tab-${n}`, label: `Tab ${n}`, content: `Content of tab ${n}` }
+    setAddedTabs([...addedTabs, tab])
+    api.setValue(tab.id)
+  }
+
   return (
     <>
       <main className="tabs">
         <div {...api.getRootProps()}>
           <div {...api.getIndicatorProps()} />
           <div {...api.getListProps()}>
-            {tabsData.map((data) => (
+            {items.map((data) => (
               <button
                 key={data.id}
                 {...api.getTriggerProps({ value: data.id, disabled: data.id === "nils" && disabled })}
@@ -34,7 +43,7 @@ export default function Page() {
               </button>
             ))}
           </div>
-          {tabsData.map((data) => (
+          {items.map((data) => (
             <div key={data.id} {...api.getContentProps({ value: data.id })} data-testid={`${data.id}-tab-panel`}>
               <p>{data.content}</p>
             </div>
@@ -49,6 +58,7 @@ export default function Page() {
           />
           Disable the selected tab
         </label>
+        <button onClick={addTab}>Add a tab</button>
       </main>
       <Toolbar>
         <StateVisualizer state={service} context={["value", "tabStopValue"]} />

@@ -36,7 +36,7 @@ export function CascadeSelect(props: CascadeSelectProps) {
       </div>
 
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <TreeNode node={collection.rootNode} api={api} />
           </div>

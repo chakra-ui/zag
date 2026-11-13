@@ -1,11 +1,13 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
-import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
+import { getPlacementSide, getPlacementStyles, type PlacementSide } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
+import { getViewportSizeStyle } from "./popover.style"
 import type {
+  ContentProps,
   ContentState,
   IntlTranslations,
   PopoverApi,
@@ -13,6 +15,7 @@ import type {
   PositionerState,
   TriggerProps,
   TriggerState,
+  ViewportState,
 } from "./popover.types"
 
 const defaultTranslations: Required<IntlTranslations> = {
@@ -29,6 +32,10 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
   const rendered = context.get("renderedElements")
   const triggerValue = context.get("triggerValue")
+  const transitioning = context.get("transitioning")
+  const instant = context.get("instant")
+  const activationDirection = context.get("activationDirection")
+  const viewportRendered = rendered.viewport
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -46,18 +53,25 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
   }
 
   function getPositionerState(): PositionerState {
-    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested, transitioning, instant }
   }
 
-  function getContentState(): ContentState {
+  function getContentState(props: ContentProps = {}): ContentState {
+    const { value } = props
     return {
-      open,
+      open: value == null ? open : triggerValue === value,
       modal: !!prop("modal"),
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
       side: currentPlacementSide,
+      activationDirection,
+      instant,
     }
+  }
+
+  function getViewportState(): ViewportState {
+    return { open, instant, side: currentPlacementSide, activationDirection, transitioning }
   }
 
   // -----------------------------------------------------------------------------
@@ -66,10 +80,18 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
   return {
     open: open,
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     triggerValue,
+    activationDirection,
+    getContentValues() {
+      const previousValue = context.get("previousTriggerValue")
+      const values: string[] = []
+      if (previousValue != null && previousValue !== triggerValue) values.push(previousValue)
+      if (triggerValue != null) values.push(triggerValue)
+      return values
+    },
     setTriggerValue(value) {
       send({ type: "TRIGGER_VALUE.SET", value })
     },
@@ -81,6 +103,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
+        hidden: viewportRendered ? !open : undefined,
+        "data-state": open ? "open" : "closed",
         style: popperStyles.arrow,
       })
     },
@@ -117,7 +141,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "aria-haspopup": "dialog",
         "aria-expanded": triggerState.open,
         "data-state": open ? "open" : "closed",
-        "aria-controls": dom.getContentId(scope),
+        "aria-controls": dom.getContentId(scope, viewportRendered ? value : null),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if (isSafari()) {
@@ -127,7 +151,8 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         onClick(event) {
           if (event.defaultPrevented) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
+          const instant = event.detail === 0 ? "click" : null
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value, instant, src: "trigger-click" })
         },
         onBlur(event) {
           send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
@@ -145,51 +170,80 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
 
     getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
+        "data-transitioning": dataAttr(positionerState.transitioning),
+        "data-instant": positionerState.instant ?? undefined,
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
+          ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
         },
       })
     },
 
     getContentState,
-    getContentProps() {
-      const contentState = getContentState()
+    getContentProps(props = {}) {
+      const { value } = props
+      const contentState = getContentState(props)
+      const contentLayer = viewportRendered ? null : layer
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
-        id: dom.getContentId(scope),
+        id: dom.getContentId(scope, value),
         tabIndex: -1,
         role: "dialog",
         "aria-modal": ariaAttr(contentState.modal),
         hidden: !contentState.open,
+        "data-value": value,
         "data-state": contentState.open ? "open" : "closed",
         "data-expanded": dataAttr(contentState.open),
-        "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
-        "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
+        "aria-labelledby": rendered.title ? dom.getTitleId(scope, value) : undefined,
+        "aria-describedby": rendered.description ? dom.getDescriptionId(scope, value) : undefined,
         "data-placement": contentState.placement,
         "data-side": contentState.side,
-        ...getDismissableLayerAttrs(layer),
-        style: getDismissableLayerStyle(layer, { pointerEvents: true }),
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        "data-instant": contentState.instant ?? undefined,
+        ...getDismissableLayerAttrs(contentLayer),
+        style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
       })
     },
 
-    getTitleProps() {
+    getViewportState,
+    getViewportProps() {
+      const viewportState = getViewportState()
+      return normalize.element({
+        ...parts.viewport.attrs(scope.id),
+        dir: prop("dir"),
+        hidden: !viewportState.open,
+        "data-state": viewportState.open ? "open" : "closed",
+        "data-side": viewportState.side,
+        "data-instant": viewportState.instant ?? undefined,
+        "data-activation-direction": viewportState.activationDirection ?? undefined,
+        "data-transitioning": dataAttr(viewportState.transitioning),
+        ...getDismissableLayerAttrs(layer),
+        style: {
+          ...getDismissableLayerStyle(layer, { pointerEvents: true }),
+          ...getViewportStyle(viewportState.side),
+        },
+      })
+    },
+
+    getTitleProps(props = {}) {
       return normalize.element({
         ...parts.title.attrs(scope.id),
-        id: dom.getTitleId(scope),
+        id: dom.getTitleId(scope, props.value),
         dir: prop("dir"),
       })
     },
 
-    getDescriptionProps() {
+    getDescriptionProps(props = {}) {
       return normalize.element({
         ...parts.description.attrs(scope.id),
-        id: dom.getDescriptionId(scope),
+        id: dom.getDescriptionId(scope, props.value),
         dir: prop("dir"),
       })
     },
@@ -203,9 +257,21 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         onClick(event) {
           if (event.defaultPrevented) return
           event.stopPropagation()
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "close-trigger" })
         },
       })
     },
   }
+}
+
+function getViewportStyle(side: PlacementSide | undefined) {
+  return {
+    position: "absolute",
+    width: "var(--viewport-width)",
+    height: "var(--viewport-height)",
+    top: side === "top" ? undefined : "0px",
+    bottom: side === "top" ? "0px" : undefined,
+    left: side === "left" ? undefined : "0px",
+    right: side === "left" ? "0px" : undefined,
+  } as const
 }

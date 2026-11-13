@@ -2,14 +2,8 @@ import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./progress.anatomy"
 import * as dom from "./progress.dom"
-import type {
-  IntlTranslations,
-  ProgressApi,
-  ProgressService,
-  ProgressState,
-  ViewProps,
-  ViewState,
-} from "./progress.types"
+import type { IntlTranslations, ProgressApi, ProgressService, RootState, ViewProps, ViewState } from "./progress.types"
+import { getProgressState } from "./progress.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
   value: ({ value, percent, formatter }) => {
@@ -26,9 +20,9 @@ const defaultTranslations: Required<IntlTranslations> = {
 }
 
 export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
-  const { context, computed, prop, send, scope } = service
+  const { computed, prop, send, scope } = service
   const percent = computed("percent")
-  const percentAsString = computed("isIndeterminate") ? "" : computed("formatter").format(percent / 100)
+  const percentAsString = computed("isIndeterminate") ? "" : computed("percentFormatter").format(percent / 100)
 
   const max = prop("max")
   const min = prop("min")
@@ -37,34 +31,41 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const indeterminate = computed("isIndeterminate")
 
-  const value = context.get("value")
+  const value = computed("clampedValue")
   const valueAsString = translations.value({ value, max, percent, min, formatter: computed("formatter") })
   const progressState = getProgressState(value, max)
-
-  const progressbarProps = {
-    role: "progressbar",
-    "aria-label": valueAsString,
-    "data-max": max,
-    "aria-valuemin": min,
-    "aria-valuemax": max,
-    "aria-valuenow": value ?? undefined,
-    "data-orientation": orientation,
-    "data-state": progressState,
-  }
-
-  const circleProps = getCircleProps(service)
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getViewState(props: ViewProps): ViewState {
-    return { state: props.state, visible: props.state === progressState }
+  function getRootState(): RootState {
+    return { state: progressState, orientation }
   }
+
+  function getViewState(props: ViewProps): ViewState {
+    return { visible: props.state === progressState }
+  }
+
+  const rootState = getRootState()
 
   // -----------------------------------------------------------------------------
   // Prop getters
   // -----------------------------------------------------------------------------
+
+  const progressbarProps = {
+    role: "progressbar",
+    "aria-labelledby": dom.getLabelId(scope),
+    "data-max": max,
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    "aria-valuenow": value ?? undefined,
+    "aria-valuetext": indeterminate ? undefined : valueAsString,
+    "data-orientation": rootState.orientation,
+    "data-state": rootState.state,
+  }
+
+  const circleProps = getCircleProps(service)
 
   return {
     value,
@@ -84,14 +85,15 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       send({ type: "VALUE.SET", value: min })
     },
 
+    getRootState,
     getRootProps() {
       return normalize.element({
         dir: prop("dir"),
         ...parts.root.attrs(scope.id),
         "data-max": max,
         "data-value": value ?? undefined,
-        "data-state": progressState,
-        "data-orientation": orientation,
+        "data-state": rootState.state,
+        "data-orientation": rootState.orientation,
         style: {
           "--percent": indeterminate ? undefined : percent,
         },
@@ -103,14 +105,13 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         ...parts.label.attrs(scope.id),
-        "data-orientation": orientation,
+        "data-orientation": rootState.orientation,
       })
     },
 
     getValueTextProps() {
       return normalize.element({
         dir: prop("dir"),
-        "aria-live": "polite",
         ...parts.valueText.attrs(scope.id),
       })
     },
@@ -127,8 +128,8 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         ...parts.range.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-state": progressState,
+        "data-orientation": rootState.orientation,
+        "data-state": rootState.state,
         style: {
           [computed("isHorizontal") ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
         },
@@ -147,7 +148,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getCircleTrackProps() {
       return normalize.element({
         dir: prop("dir"),
-        "data-orientation": orientation,
+        "data-orientation": rootState.orientation,
         ...parts.circleTrack.attrs(scope.id),
         ...circleProps.track,
       })
@@ -158,7 +159,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
         dir: prop("dir"),
         ...parts.circleRange.attrs(scope.id),
         ...circleProps.range,
-        "data-state": progressState,
+        "data-state": rootState.state,
       })
     },
 
@@ -168,15 +169,11 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         ...parts.view.attrs(scope.id),
-        "data-state": viewState.state,
+        "data-state": props.state,
         hidden: !viewState.visible,
       })
     },
   }
-}
-
-function getProgressState(value: number | null, maxValue: number): ProgressState {
-  return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading"
 }
 
 const circleProps = {
@@ -198,12 +195,12 @@ const rootProps = {
 }
 
 function getCircleProps(service: ProgressService) {
-  const { context, computed } = service
+  const { computed } = service
   return {
     root: rootProps,
     track: circleProps,
     range: {
-      opacity: context.get("value") === 0 ? 0 : undefined,
+      opacity: !computed("isIndeterminate") && computed("percent") === 0 ? 0 : undefined,
       style: {
         ...circleProps.style,
         "--percent": computed("percent"),

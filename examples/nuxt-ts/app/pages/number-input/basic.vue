@@ -11,6 +11,7 @@ const service = useMachine(
   numberInput.machine,
   controls.mergeProps<numberInput.Props>({
     id: useId(),
+    name: "amount",
   }),
 )
 
@@ -26,6 +27,7 @@ const api = computed(() => numberInput.connect(service, normalizeProps))
           <MinusIcon />
         </button>
         <input data-testid="input" v-bind="api.getInputProps()" />
+        <input data-testid="hidden-input" v-bind="api.getHiddenInputProps()" />
         <button data-testid="inc-button" v-bind="api.getIncrementTriggerProps()">
           <PlusIcon />
         </button>

@@ -44,6 +44,10 @@ textarea[data-field-control] {
   min-height: 3rem;
 }
 
+div[data-field-control] {
+  min-height: 3rem;
+}
+
 [data-field-helper-text] {
   font-size: 0.8125rem;
   color: hsl(219, 1%, 42%);
@@ -52,6 +56,11 @@ textarea[data-field-control] {
 [data-field-error-text] {
   font-size: 0.8125rem;
   color: hsl(0, 72%, 51%);
+
+  & ul {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
 }
 
 [data-field-indicator][data-type="required"] {
@@ -126,4 +135,18 @@ textarea[data-field-control] {
 
 .field-page .field-item-row input[data-field-control] {
   flex: 1;
+}
+
+.field-page .field-option {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  & input[data-field-control] {
+    padding: 0;
+  }
+
+  & [data-field-label] {
+    font-weight: 400;
+  }
 }

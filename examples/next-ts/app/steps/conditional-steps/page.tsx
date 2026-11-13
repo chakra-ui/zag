@@ -82,7 +82,7 @@ export default function Page() {
             <button>Connect Google Calendar</button>
           </div>
 
-          <div {...api.getContentProps({ value: steps.COMPLETE })}>
+          <div {...api.getCompletedContentProps()}>
             <p>Welcome aboard, {name}!</p>
             <button onClick={() => api.resetStep()}>Start over</button>
           </div>

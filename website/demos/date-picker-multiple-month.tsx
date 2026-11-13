@@ -27,7 +27,7 @@ export function DatePickerMultipleMonths(props: DatePickerMultipleMonthsProps) {
           </button>
         </div>
 
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <div {...api.getViewProps({ view: "day" })}>
               <Header api={api} />

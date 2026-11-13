@@ -421,7 +421,7 @@ export const machine = createMachine<CarouselSchema>({
 
     actions: {
       clearScrollEndTimer({ refs }) {
-        refs.get("scrollEndTimeout").clear()
+        refs.get("scrollEndTimeout").cancel()
       },
       cancelFrames({ refs }) {
         refs.get("scrollFrame").cancel()

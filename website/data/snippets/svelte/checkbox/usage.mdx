@@ -4,7 +4,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(checkbox.machine, ({ id }))
+  const service = useMachine(checkbox.machine, { id })
   const api = $derived(checkbox.connect(service, normalizeProps))
 </script>
 

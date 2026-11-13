@@ -79,6 +79,10 @@ export const machine = createMachine<RatingGroupSchema>({
         GROUP_POINTER_OVER: {
           target: "hover",
         },
+        POINTER_OVER: {
+          target: "hover",
+          actions: ["setHoveredValue"],
+        },
         FOCUS: {
           target: "focus",
         },

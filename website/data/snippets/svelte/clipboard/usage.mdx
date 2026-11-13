@@ -5,12 +5,10 @@
   import { ClipboardCheck, ClipboardCopyIcon } from "lucide-svelte"
 
   const id = $props.id()
-  const service = useMachine(
-    clipboard.machine, ({
-      id: id,
-      value: "https://github/com/chakra-ui/zag",
-    }),
-  )
+  const service = useMachine(clipboard.machine, {
+    id: id,
+    value: "https://github/com/chakra-ui/zag",
+  })
 
   const api = $derived(clipboard.connect(service, normalizeProps))
 </script>

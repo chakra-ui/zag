@@ -72,14 +72,17 @@ const service = useMachine(clipboard.machine, {
 
 ### Copy events
 
-When the value is copied, `onStatusChange` is fired.
+`onStatusChange` reports `copied: true` on copy and `copied: false` when the
+`timeout` ends. A failed copy reports an `error`, such as on a page not served
+over https.
 
 <Example id="ClipboardStatus">
 
-```tsx {2}
+```tsx {2-5}
 const service = useMachine(clipboard.machine, {
-  onStatusChange: (details) => {
-    console.log("Copy status changed to", details.copied)
+  onStatusChange(details) {
+    if (details.error) console.error("Copy failed", details.error)
+    else console.log("Copied:", details.copied)
   },
 })
 ```

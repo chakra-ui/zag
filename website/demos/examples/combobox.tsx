@@ -126,7 +126,7 @@ function Field(props: {
       <Control api={api} label={props.label} />
       {props.children}
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <Items api={api} />
           </div>

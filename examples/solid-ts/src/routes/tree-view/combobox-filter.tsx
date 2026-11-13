@@ -278,7 +278,7 @@ export default function Page() {
           </p>
 
           <Portal>
-            <div {...comboboxApi().getPositionerProps()}>
+            <div {...comboboxApi().getPositionerProps()} class={styles.positioner}>
               <div {...mergeProps(comboboxApi().getContentProps(), { class: styles.content })}>
                 <div class={styles.treePanel}>
                   <Show

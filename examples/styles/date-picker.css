@@ -1,3 +1,7 @@
+[data-date-picker-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+}
+
 [data-date-picker-trigger] {
   display: flex;
   align-items: center;
@@ -82,7 +86,6 @@
   background: white;
   border-radius: 8px;
   position: relative;
-  z-index: calc(var(--layer-index) * 2 + 1);
 
   &[data-inline] {
     border: 0;

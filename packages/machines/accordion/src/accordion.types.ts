@@ -6,8 +6,20 @@ import type { AnimationFrame } from "@zag-js/dom-query"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What expanded or collapsed the items:
+ * - `trigger-click`: an item trigger was pressed
+ * - `find-in-page`: the browser's find-in-page revealed a match in a closed item
+ * - `script`: `setValue` was called
+ */
+export type ValueChangeReason = "trigger-click" | "find-in-page" | "script"
+
 export interface ValueChangeDetails {
   value: string[]
+  /**
+   * What expanded or collapsed the items
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface FocusChangeDetails {
@@ -138,7 +150,7 @@ export interface AccordionApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the accordion
    */
-  setValue: (value: string[]) => void
+  setValue: (value: string[], reason?: ValueChangeReason) => void
   /**
    * Returns the state of an accordion item.
    */

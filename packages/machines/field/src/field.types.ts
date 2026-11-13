@@ -35,7 +35,13 @@ export interface ValidateDetails {
    * Snapshot of the control's native validity, taken before custom validation runs.
    */
   validity: ValiditySnapshot
+  /**
+   * The values of the control's form, keyed by name. Empty when the control has no form.
+   */
+  formValues: FormValues
 }
+
+export type FormValues = Record<string, FormDataEntryValue | FormDataEntryValue[]>
 
 /**
  * Return a string or list of strings to mark the field invalid; anything else means valid.
@@ -84,6 +90,11 @@ export interface FieldProps extends DirectionProperty, CommonProperties {
    * Use for app-level errors (e.g. server errors) the machine cannot compute itself.
    */
   invalid?: boolean | undefined
+  /**
+   * Errors from outside the field, such as a server response. They mark the field invalid
+   * until the user changes the value, and show again when different errors are passed or the form is submitted.
+   */
+  errors?: string | string[] | undefined
   /**
    * Whether the field's value has been changed from its initial value.
    * Useful when the field state is controlled by an external library.
@@ -142,10 +153,13 @@ export interface FieldSchema {
     validity: ValiditySnapshot | null
     errorTextIds: string[]
     hasHelperText: boolean
+    fieldsetErrorTextId: string | null
     fieldsetDisabled: boolean
     submitAttempted: boolean
+    dismissedErrorsKey: string | null
   }
   computed: {
+    externalErrors: string[]
     disabled: boolean
     /**
      * `null` until validation has run — the field is neither valid nor invalid.
@@ -235,7 +249,7 @@ export interface ResolvedElementIds {
 /**
  * Shared interaction and validity state, mirrored onto every field part.
  */
-export interface FieldState {
+export interface RootState {
   /**
    * Whether the field is disabled (including inherited fieldset disabled state).
    */
@@ -278,22 +292,14 @@ export interface FieldState {
   validating: boolean
 }
 
-export interface RootState extends FieldState {}
-
-export interface LabelState extends FieldState {}
-
-export interface ControlState extends FieldState {}
-
-export interface HelperTextState extends FieldState {}
-
-export interface ErrorTextState extends FieldState {
+export interface ErrorTextState extends RootState {
   /**
    * Whether the error text is hidden.
    */
   hidden: boolean
 }
 
-export interface IndicatorState extends FieldState {
+export interface IndicatorState extends RootState {
   /**
    * The state this indicator reflects.
    */
@@ -382,23 +388,11 @@ export interface FieldApi<T extends PropTypes = PropTypes> {
    */
   getRootState: () => RootState
   getRootProps: () => T["element"]
-  /**
-   * Returns the state of the label.
-   */
-  getLabelState: () => LabelState
   getLabelProps: (props?: ItemProps) => T["label"]
-  /**
-   * Returns the state of the control (input, textarea, select, or a custom host).
-   */
-  getControlState: () => ControlState
   getControlProps: (props?: ItemProps) => T["element"]
   getInputProps: (props?: ItemProps) => T["input"]
   getTextareaProps: (props?: ItemProps) => T["textarea"]
   getSelectProps: (props?: ItemProps) => T["select"]
-  /**
-   * Returns the state of the helper text.
-   */
-  getHelperTextState: () => HelperTextState
   getHelperTextProps: () => T["element"]
   /**
    * Returns the state of the error text.

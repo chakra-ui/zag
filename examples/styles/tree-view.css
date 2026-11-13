@@ -1,6 +1,5 @@
 [data-tree-view-tree] {
   --tree-indent: 16px;
-  /* Chevron width + gap; leaves indent by it so their icons line up with branches' */
   --tree-chevron-space: 24px;
   width: 280px;
   margin-top: 8px;
@@ -46,7 +45,8 @@
     cursor: wait;
   }
 
-  &:not([data-branch]) {
+  /* Leaves line up with branch icons, but a flat list has no chevrons to line up with */
+  [data-tree-view-tree]:has([data-branch]) &:not([data-branch]) {
     padding-inline-start: calc(var(--node-start) + var(--tree-chevron-space));
   }
 }

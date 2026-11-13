@@ -11,6 +11,7 @@ export type {
   IntlTranslations,
   Orientation,
   ProgressState,
+  RootState,
   ValueChangeDetails,
   ValueTranslationDetails,
   ViewProps,

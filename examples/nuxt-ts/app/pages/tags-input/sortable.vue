@@ -9,7 +9,6 @@ const hint = "Drag to reorder, or highlight a tag with the arrow keys and press 
 
 const id = useId()
 const value = ref(["Design", "Build", "Test", "Ship"])
-const announcement = ref("")
 
 const tagsService = useMachine(
   tagsInput.machine,
@@ -40,19 +39,9 @@ const dndApi = computed(() => dnd.connect(dndService, normalizeProps))
 function onInputKeyDown(event: KeyboardEvent) {
   const source = tagsApi.value.highlightedValue
   if (!event.altKey || !source) return
-  const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0
-  const target = value.value[value.value.indexOf(source) + step]
-  if (!step || !target) return
-
+  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
   event.preventDefault()
-  const next = dnd.reorder(value.value, {
-    source,
-    target,
-    placement: step < 0 ? "before" : "after",
-    itemToValue: (item) => item,
-  })
-  value.value = next
-  announcement.value = `${source} moved to position ${next.indexOf(source) + 1} of ${next.length}`
+  dndApi.value.move({ value: source, to: event.key === "ArrowLeft" ? "prev" : "next" })
 }
 </script>
 
@@ -96,7 +85,6 @@ function onInputKeyDown(event: KeyboardEvent) {
       </div>
       <input v-bind="tagsApi.getHiddenInputProps()" />
       <p :id="`${id}:hint`" class="tags-input-hint">{{ hint }}</p>
-      <span class="sr-only" aria-live="polite">{{ announcement }}</span>
     </div>
   </main>
 

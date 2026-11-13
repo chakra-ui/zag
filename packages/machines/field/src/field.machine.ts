@@ -3,7 +3,15 @@ import { AnimationFrame, observeChildren, trackFormControl } from "@zag-js/dom-q
 import { isEqual } from "@zag-js/utils"
 import * as dom from "./field.dom"
 import type { FieldParams, FieldSchema, ValidateResult, ValiditySnapshot } from "./field.types"
-import { getValiditySnapshot, resolveValidation, shouldCommit, suppressValueMissing, toErrorArray } from "./field.utils"
+import {
+  getFirstInvalidControl,
+  getFormValues,
+  getValiditySnapshot,
+  resolveValidation,
+  shouldCommit,
+  suppressValueMissing,
+  toErrorArray,
+} from "./field.utils"
 
 const { createMachine } = setup<FieldSchema>()
 
@@ -40,8 +48,10 @@ export const machine = createMachine({
       validity: bindable<ValiditySnapshot | null>(() => ({ defaultValue: null })),
       errorTextIds: bindable<string[]>(() => ({ defaultValue: [] })),
       hasHelperText: bindable<boolean>(() => ({ defaultValue: false })),
+      fieldsetErrorTextId: bindable<string | null>(() => ({ defaultValue: null })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       submitAttempted: bindable<boolean>(() => ({ defaultValue: false })),
+      dismissedErrorsKey: bindable<string | null>(() => ({ defaultValue: null })),
     }
   },
 
@@ -55,14 +65,18 @@ export const machine = createMachine({
   },
 
   computed: {
+    externalErrors: ({ prop, context }) => {
+      const errors = toErrorArray(prop("errors"))
+      return errors.join("\n") === context.get("dismissedErrorsKey") ? [] : errors
+    },
     disabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
-    valid: ({ prop, context }) => {
-      if (prop("invalid")) return false
+    valid: ({ prop, context, computed }) => {
+      if (prop("invalid") || computed("externalErrors").length > 0) return false
       if (prop("disabled") || context.get("fieldsetDisabled")) return null
       return context.get("validity")?.valid ?? null
     },
-    invalid: ({ prop, context }) => {
-      if (prop("invalid")) return true
+    invalid: ({ prop, context, computed }) => {
+      if (prop("invalid") || computed("externalErrors").length > 0) return true
       if (prop("disabled") || context.get("fieldsetDisabled")) return false
       return context.get("validity")?.valid === false
     },
@@ -79,7 +93,7 @@ export const machine = createMachine({
     })
   },
 
-  effects: ["trackControlState", "trackTextParts"],
+  effects: ["trackControlState", "trackTextParts", "trackFieldsetError"],
 
   exit: ["cancelResetFrame"],
 
@@ -92,12 +106,12 @@ export const machine = createMachine({
       { actions: ["setBlurred"] },
     ],
     "CONTROL.CHANGE": [
-      { guard: "shouldCommit", actions: ["trackValueState", "commitValidation"] },
-      { actions: ["trackValueState", "silentValidate", "recoverValueMissing"] },
+      { guard: "shouldCommit", actions: ["dismissExternalErrors", "trackValueState", "commitValidation"] },
+      { actions: ["dismissExternalErrors", "trackValueState", "silentValidate", "recoverValueMissing"] },
     ],
     // Native `invalid` event fired at submit time (bubble suppressed in connect)
     "SUBMIT.INVALID": {
-      actions: ["markSubmitAttempted", "commitValidation"],
+      actions: ["markSubmitAttempted", "commitValidation", "focusIfFirstInvalid"],
     },
     VALIDATE: {
       actions: ["forceDirty", "commitValidation"],
@@ -111,6 +125,9 @@ export const machine = createMachine({
     },
     RESET: {
       actions: ["resetField"],
+    },
+    "FORM.SUBMIT": {
+      actions: ["restoreExternalErrors"],
     },
   },
 
@@ -131,13 +148,17 @@ export const machine = createMachine({
 
     effects: {
       trackControlState({ context, refs, scope, send, prop }) {
-        const controlEl = getTrackedControlEl({ scope, prop })
-        if (!controlEl) return
-        if (refs.get("initialValue") == null) {
+        const el = dom.getControlEl(scope, prop("target"))
+        if (!el) return
+        const controlEl = isFormControl(el) ? el : null
+        if (controlEl && refs.get("initialValue") == null) {
           refs.set("initialValue", controlEl.value)
           context.set("filled", controlEl.value.length > 0)
         }
-        return trackFormControl(controlEl, {
+        const form = controlEl?.form
+        const onSubmit = () => send({ type: "FORM.SUBMIT" })
+        form?.addEventListener("submit", onSubmit)
+        const untrack = trackFormControl(el, {
           onFieldsetDisabledChange(disabled) {
             context.set("fieldsetDisabled", disabled)
           },
@@ -145,6 +166,10 @@ export const machine = createMachine({
             send({ type: "RESET" })
           },
         })
+        return () => {
+          form?.removeEventListener("submit", onSubmit)
+          untrack?.()
+        }
       },
 
       trackTextParts({ context, scope }) {
@@ -157,6 +182,21 @@ export const machine = createMachine({
         }
         sync()
         return observeChildren(() => dom.getRootEl(scope), {
+          defer: true,
+          callback: sync,
+          attributes: true,
+          attributeFilter: ["hidden"],
+        })
+      },
+
+      trackFieldsetError({ context, scope }) {
+        const getFieldsetEl = () => dom.getFieldsetEl(scope)
+        const sync = () => {
+          const fieldsetEl = getFieldsetEl()
+          context.set("fieldsetErrorTextId", fieldsetEl ? dom.getFieldsetErrorTextId(fieldsetEl) : null)
+        }
+        sync()
+        return observeChildren(getFieldsetEl, {
           defer: true,
           callback: sync,
           attributes: true,
@@ -202,6 +242,23 @@ export const machine = createMachine({
         if (!nextValidity.valid) return
 
         applyValidation(params, { customErrors: [], validity: nextValidity, value: event.value, nativeMessage: "" })
+      },
+
+      dismissExternalErrors({ context, prop }) {
+        const errors = toErrorArray(prop("errors"))
+        if (errors.length > 0) context.set("dismissedErrorsKey", errors.join("\n"))
+      },
+
+      restoreExternalErrors({ context }) {
+        context.set("dismissedErrorsKey", null)
+      },
+
+      focusIfFirstInvalid(params) {
+        if (!params.event.focus) return
+        const controlEl = getTrackedControlEl(params)
+        if (!controlEl?.form || getFirstInvalidControl(controlEl.form) !== controlEl) return
+        controlEl.focus()
+        if (controlEl instanceof HTMLInputElement) controlEl.select()
       },
 
       markSubmitAttempted({ context, refs }) {
@@ -275,7 +332,7 @@ function commitValidation(params: FieldParams, options: CommitOptions = {}) {
   const seq = refs.get("seq") + 1
   refs.set("seq", seq)
 
-  const result = prop("validate")?.({ value, validity })
+  const result = prop("validate")?.({ value, validity, formValues: getFormValues(controlEl) })
 
   if (isPromise(result)) {
     context.set("validating", true)
@@ -345,7 +402,7 @@ function silentValidate(params: FieldParams, value: string) {
     controlEl.setCustomValidity(toErrorArray(result).join(" "))
   }
 
-  const result = validate({ value, validity })
+  const result = validate({ value, validity, formValues: getFormValues(controlEl) })
   if (isPromise(result)) {
     result.then(apply, () => apply(null))
   } else {
@@ -363,8 +420,14 @@ function clearValidation(params: FieldParams) {
   getTrackedControlEl(params)?.setCustomValidity("")
 }
 
+// custom controls from `getControlProps` have no value or constraint validation
 function getTrackedControlEl(params: Pick<FieldParams, "scope" | "prop">) {
-  return dom.getControlEl(params.scope, params.prop("target"))
+  const el = dom.getControlEl(params.scope, params.prop("target"))
+  return el && isFormControl(el) ? el : null
+}
+
+function isFormControl(el: Element): el is dom.FieldControlElement {
+  return "validity" in el && "value" in el
 }
 
 function isPromise(value: unknown): value is Promise<ValidateResult> {

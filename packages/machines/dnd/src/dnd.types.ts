@@ -67,6 +67,17 @@ export interface DragEndDetails {
   dropped: boolean
 }
 
+export interface MoveDetails {
+  /**
+   * The value of the item to move
+   */
+  value: string
+  /**
+   * Where to move it: one step back or forward, or to the start or end
+   */
+  to: "prev" | "next" | "first" | "last"
+}
+
 /* -----------------------------------------------------------------------------
  * Translations
  * -----------------------------------------------------------------------------*/
@@ -77,6 +88,11 @@ export interface IntlTranslations {
   drop: (source: string, target: string, placement: DropPlacement) => string
   cancel: (source: string) => string
   instructions: string
+  /**
+   * The `aria-roledescription` of draggables. Set to `null` to keep the element's own role, like a tab.
+   * @default "draggable"
+   */
+  roleDescription: string | null
 }
 
 /* -----------------------------------------------------------------------------
@@ -114,11 +130,48 @@ export interface DragHandleProps {
   disabled?: boolean | undefined
 }
 
-export interface ItemState {
-  isDragging: boolean
-  isOver: boolean
-  dropPlacement: DropPlacement | null
-  isDisabled: boolean
+export interface RootState {
+  /**
+   * Whether a drag is in progress
+   */
+  dragging: boolean
+}
+
+export interface DraggableState {
+  /**
+   * Whether this item is the one being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether this item is dragged along with the source, as part of the selection
+   */
+  selectedDragging: boolean
+  /**
+   * Whether this item can't be dragged
+   */
+  disabled: boolean
+}
+
+export interface DropTargetState {
+  /**
+   * Whether the dragged item is over this target
+   */
+  over: boolean
+  /**
+   * Where the item would drop relative to this target, while it's over it
+   */
+  placement: DropPlacement | null
+  /**
+   * Whether this target is disabled
+   */
+  disabled: boolean
+}
+
+export interface DropIndicatorState {
+  /**
+   * Whether the item would drop at this indicator
+   */
+  active: boolean
 }
 
 export interface DragPreviewState {
@@ -195,6 +248,13 @@ export interface DndProps extends DirectionProperty, CommonProperties {
    */
   activationConstraint?: { distance?: number | undefined; delay?: number | undefined } | undefined
   /**
+   * Whether the key press starts a keyboard drag on a draggable or drag handle.
+   * Return `false` for items that use Enter or Space for their own action, and reorder with `api.move`.
+   * Update `translations.instructions` to match.
+   * @default (event) => event.key === "Enter" || event.key === " "
+   */
+  isActivationKey?: ((event: KeyboardEvent) => boolean) | undefined
+  /**
    * Whether the given item value can be dragged.
    */
   canDrag?: ((value: string) => boolean) | undefined
@@ -236,6 +296,7 @@ export interface DndProps extends DirectionProperty, CommonProperties {
 
 type PropsWithDefault =
   | "orientation"
+  | "isActivationKey"
   | "dropPlacements"
   | "edgeThreshold"
   | "stickyDelay"
@@ -318,13 +379,14 @@ export interface DndApi<T extends PropTypes = PropTypes> {
    */
   dropPlacement: DropPlacement | null
   /**
-   * Get the drag/drop state for a specific item.
-   */
-  getItemState(value: string): ItemState
-  /**
    * Programmatically cancel the current drag.
    */
   cancelDrag(): void
+  /**
+   * Moves an item one step, or to the start or end, without dragging.
+   * Calls `onDrop`, announces the move and keeps focus on the item.
+   */
+  move(details: MoveDetails): void
 
   /**
    * The current pointer position during drag. Null when not dragging.
@@ -336,10 +398,26 @@ export interface DndApi<T extends PropTypes = PropTypes> {
    */
   instructions: string
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState(): RootState
   getRootProps(): T["element"]
+  /**
+   * Returns the state of a draggable item. Its drag handle shares it.
+   */
+  getDraggableState(props: DraggableProps): DraggableState
   getDraggableProps(props: DraggableProps): T["element"]
   getDragHandleProps(props: DragHandleProps): T["element"]
+  /**
+   * Returns the state of a drop target
+   */
+  getDropTargetState(props: DropTargetProps): DropTargetState
   getDropTargetProps(props: DropTargetProps): T["element"]
+  /**
+   * Returns the state of a drop indicator
+   */
+  getDropIndicatorState(props: DropIndicatorProps): DropIndicatorState
   getDropIndicatorProps(props: DropIndicatorProps): T["element"]
   /**
    * Returns the state of the drag preview

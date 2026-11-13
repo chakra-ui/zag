@@ -1,5 +1,6 @@
+import type { TreeCollection } from "@zag-js/collection"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   raf,
@@ -16,7 +17,7 @@ import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
 import { dom } from "./cascade-select.dom"
 import { createGraceArea, isPointerInGraceArea } from "./cascade-select.utils"
-import type { CascadeSelectSchema, IndexPath, TreeNode } from "./cascade-select.types"
+import type { CascadeSelectSchema, IndexPath, OpenChangeReason, TreeNode } from "./cascade-select.types"
 import { collection as cascadeSelectCollection } from "./cascade-select.collection"
 
 const { or, and, not } = createGuards<CascadeSelectSchema>()
@@ -60,25 +61,6 @@ export const machine = createMachine<CascadeSelectSchema>({
         value: prop("highlightedValue"),
         isEqual: isEqual,
       })),
-      valueIndexPath: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const paths = value.map((v) => prop("collection").getIndexPath(v))
-        return {
-          defaultValue: paths,
-        }
-      }),
-      highlightedIndexPath: bindable(() => {
-        const value = prop("highlightedValue") ?? prop("defaultHighlightedValue") ?? null
-        return {
-          defaultValue: value ? prop("collection").getIndexPath(value) : [],
-        }
-      }),
-      highlightedItems: bindable<TreeNode[]>(() => ({
-        defaultValue: [],
-      })),
-      selectedItems: bindable<TreeNode[][]>(() => ({
-        defaultValue: [],
-      })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -97,9 +79,13 @@ export const machine = createMachine<CascadeSelectSchema>({
   computed: {
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
 
-    valueAsString: ({ prop, context }) => {
+    selectedItems: ({ prop, context }) => getSelectedItems(prop("collection"), context.get("value")),
+    highlightedIndexPath: ({ prop, context }) => prop("collection").getIndexPath(context.get("highlightedValue")),
+    highlightedItems: ({ prop, computed }) => getPathItems(prop("collection"), computed("highlightedIndexPath")),
+
+    valueAsString: ({ prop, computed }) => {
       const collection = prop("collection")
-      const items = context.get("selectedItems")
+      const items = computed("selectedItems")
       const multiple = prop("multiple")
 
       const formatMultipleMode = (items: TreeNode[]) =>
@@ -487,9 +473,9 @@ export const machine = createMachine<CascadeSelectSchema>({
       isTriggerEnterEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ENTER",
       isTriggerArrowRightEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_RIGHT",
       hasHighlightedValue: ({ context }) => context.get("highlightedValue").length > 0,
-      isHighlightedFirstItem: ({ context }) => context.get("highlightedIndexPath").at(-1) === 0,
-      isHighlightedLastItem: ({ prop, context }) => {
-        const path = context.get("highlightedIndexPath")
+      isHighlightedFirstItem: ({ computed }) => computed("highlightedIndexPath").at(-1) === 0,
+      isHighlightedLastItem: ({ prop, computed }) => {
+        const path = computed("highlightedIndexPath")
         const itemIndex = path.at(-1)
         if (!itemIndex && itemIndex !== 0) return false
 
@@ -504,9 +490,9 @@ export const machine = createMachine<CascadeSelectSchema>({
         const node = collection.at(event.indexPath)
         return prop("closeOnSelect") && node && !collection.isBranchNode(node)
       },
-      shouldCloseOnSelectHighlighted: ({ prop, context }) => {
+      shouldCloseOnSelectHighlighted: ({ prop, computed }) => {
         const collection = prop("collection")
-        const items = context.get("highlightedItems")
+        const items = computed("highlightedItems")
         const node = last(items)
         return prop("closeOnSelect") && node != null && !collection.isBranchNode(node)
       },
@@ -517,14 +503,14 @@ export const machine = createMachine<CascadeSelectSchema>({
         if (!node) return false
         return prop("allowParentSelection") || !collection.isBranchNode(node)
       },
-      canSelectHighlightedItem: ({ prop, context }) => {
+      canSelectHighlightedItem: ({ prop, computed }) => {
         const collection = prop("collection")
-        const node = collection.at(context.get("highlightedIndexPath"))
+        const node = collection.at(computed("highlightedIndexPath"))
         if (!node) return false
         return prop("allowParentSelection") || !collection.isBranchNode(node)
       },
-      canNavigateToChild: ({ prop, context }) => {
-        const highlightedIndexPath = context.get("highlightedIndexPath")
+      canNavigateToChild: ({ prop, computed }) => {
+        const highlightedIndexPath = computed("highlightedIndexPath")
         if (!highlightedIndexPath.length) return false
 
         const collection = prop("collection")
@@ -532,8 +518,8 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         return node && collection.isBranchNode(node)
       },
-      canNavigateToParent: ({ context }) => context.get("highlightedIndexPath").length > 1,
-      isAtRootLevel: ({ context }) => context.get("highlightedIndexPath").length <= 1,
+      canNavigateToParent: ({ computed }) => computed("highlightedIndexPath").length > 1,
+      isAtRootLevel: ({ computed }) => computed("highlightedIndexPath").length <= 1,
       isHoverHighlight: ({ prop }) => prop("highlightTrigger") === "hover",
       shouldHighlightOnHover: ({ prop, event }) => {
         const collection = prop("collection")
@@ -541,9 +527,9 @@ export const machine = createMachine<CascadeSelectSchema>({
         // Only highlight on hover if the item has children (is a parent)
         return node && collection.isBranchNode(node)
       },
-      shouldUpdateHighlightedIndexPath: ({ prop, context, event }) => {
+      shouldUpdateHighlightedIndexPath: ({ prop, computed, event }) => {
         const collection = prop("collection")
-        const currentHighlightedIndexPath = context.get("highlightedIndexPath")
+        const currentHighlightedIndexPath = computed("highlightedIndexPath")
 
         if (!currentHighlightedIndexPath || currentHighlightedIndexPath.length === 0) {
           return false // No current highlighting
@@ -631,7 +617,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
           },
           onDismiss(event) {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus, focusVisible: event?.type === "keydown" })
+            send({ type: "CLOSE", src: getDismissReason(event), restoreFocus, focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -648,12 +634,12 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
-      scrollToHighlightedItems({ context, prop, scope }) {
+      scrollToHighlightedItems({ context, prop, computed, scope }) {
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
           const highlightedValue = context.get("highlightedValue")
-          const highlightedIndexPath = context.get("highlightedIndexPath")
+          const highlightedIndexPath = computed("highlightedIndexPath")
           if (!highlightedIndexPath.length) return
 
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
@@ -662,16 +648,16 @@ export const machine = createMachine<CascadeSelectSchema>({
 
           const listEls = dom.getListEls(scope)
           listEls.forEach((listEl, index) => {
-            const itemPath = highlightedIndexPath.slice(0, index + 1)
-
-            const itemEl = dom.getItemEl(scope, highlightedValue.toString())
+            // The list of a highlighted branch's children has no highlighted item yet
+            if (index >= highlightedIndexPath.length) return
 
             const scrollToIndexFn = prop("scrollToIndexFn")
             if (scrollToIndexFn) {
-              const itemIndexInList = itemPath[itemPath.length - 1]
-              scrollToIndexFn({ index: itemIndexInList, immediate, depth: index })
+              scrollToIndexFn({ index: highlightedIndexPath[index], immediate, depth: index })
               return
             }
+
+            const itemEl = dom.getItemEl(scope, highlightedValue.slice(0, index + 1).toString())
 
             const raf_cleanup = raf(() => {
               scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
@@ -803,8 +789,8 @@ export const machine = createMachine<CascadeSelectSchema>({
         const newValue = value.filter((v) => !isEqual(v, event.value))
         set.value(params, newValue)
       },
-      selectHighlightedItem({ context, send }) {
-        const indexPath = context.get("highlightedIndexPath")
+      selectHighlightedItem({ context, computed, send }) {
+        const indexPath = computed("highlightedIndexPath")
         const value = context.get("highlightedValue")
         if (value) {
           send({ type: "ITEM.SELECT", value, indexPath })
@@ -812,7 +798,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
 
       highlightFirstItem(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
 
@@ -821,7 +807,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         if (!highlightedValue.length) {
           parentNode = collection.rootNode
         } else {
-          const indexPath = context.get("highlightedIndexPath")
+          const indexPath = computed("highlightedIndexPath")
           parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
         }
 
@@ -843,7 +829,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
       highlightLastItem(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
 
@@ -852,7 +838,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         if (!highlightedValue.length) {
           parentNode = collection.rootNode
         } else {
-          const indexPath = context.get("highlightedIndexPath")
+          const indexPath = computed("highlightedIndexPath")
           parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
         }
 
@@ -874,12 +860,12 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
       highlightNextItem(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
         if (!highlightedValue.length) return
 
-        const indexPath = context.get("highlightedIndexPath")
+        const indexPath = computed("highlightedIndexPath")
         const nextSibling = collection.getNextSibling(indexPath)
         if (!nextSibling) return
 
@@ -895,13 +881,13 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
       highlightPreviousItem(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const collection = prop("collection")
 
         const highlightedValue = context.get("highlightedValue")
         if (!highlightedValue.length) return
 
-        const indexPath = context.get("highlightedIndexPath")
+        const indexPath = computed("highlightedIndexPath")
         const previousSibling = collection.getPreviousSibling(indexPath)
         if (!previousSibling) return
 
@@ -917,13 +903,13 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
       highlightFirstChild(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const collection = prop("collection")
 
         const highlightedValue = context.get("highlightedValue")
         if (!highlightedValue.length) return
 
-        const indexPath = context.get("highlightedIndexPath")
+        const indexPath = computed("highlightedIndexPath")
         const node = collection.getFirstNode(collection.at(indexPath))
         if (!node) return
 
@@ -960,11 +946,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           triggerEl?.focus(focusOptions)
         })
       },
-      invokeOnOpen({ prop, context }) {
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+      invokeOnOpen({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop, context }) {
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      invokeOnClose({ prop, context, event }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
       toggleVisibility({ send, prop }) {
         if (prop("open") != null) {
@@ -1010,11 +996,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         })
       },
       clearGraceArea({ context, refs }) {
-        refs.get("graceAreaTimeout").clear()
+        refs.get("graceAreaTimeout").cancel()
         context.set("graceArea", null)
       },
       cancelGraceAreaTimeout({ refs }) {
-        refs.get("graceAreaTimeout").clear()
+        refs.get("graceAreaTimeout").cancel()
       },
       setHighlightingForHoveredItem(params) {
         const { prop, event } = params
@@ -1068,22 +1054,8 @@ const set = {
     // Set Value
     context.set("value", value)
 
-    // Set Index Path
-    const valueIndexPath = value.map((v) => collection.getIndexPath(v))
-    context.set("valueIndexPath", valueIndexPath)
-
-    // Set Items
-    const selectedItems = valueIndexPath.map((indexPath) => {
-      // For each selected path, return all nodes that make up that path
-      return indexPath.map((_, index) => {
-        const partialPath = indexPath.slice(0, index + 1)
-        return collection.at(partialPath)
-      })
-    })
-    context.set("selectedItems", selectedItems)
-
     // Invoke onValueChange
-    prop("onValueChange")?.({ value, items: selectedItems })
+    prop("onValueChange")?.({ value, items: getSelectedItems(collection, value) })
   },
 
   highlightedValue(
@@ -1092,24 +1064,14 @@ const set = {
   ) {
     const collection = prop("collection")
 
-    // Set Value
     context.set("highlightedValue", value)
-
-    // Set Index Path (getIndexPath returns undefined for single string when not found)
-    const rawPath = value == null ? [] : collection.getIndexPath(value)
-    const highlightedIndexPath = rawPath ?? []
-    context.set("highlightedIndexPath", highlightedIndexPath)
-
-    // Set Items
-    const highlightedItems = highlightedIndexPath.map((_, index) => {
-      const partialPath = highlightedIndexPath.slice(0, index + 1)
-      return collection.at(partialPath)
-    })
-    context.set("highlightedItems", highlightedItems)
-
-    // Invoke onHighlightChange
+    const highlightedItems = getPathItems(collection, collection.getIndexPath(value))
     prop("onHighlightChange")?.({ highlightedValue: value, highlightedItems })
   },
+}
+
+function getOpenChangeReason(event: Params<CascadeSelectSchema>["event"]) {
+  return event.src as OpenChangeReason | undefined
 }
 
 function restoreFocusFn(event: Record<string, any>) {
@@ -1121,4 +1083,16 @@ function restoreFocusFn(event: Record<string, any>) {
 function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
   const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
   return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
+}
+
+function getPathItems(collection: TreeCollection<TreeNode>, indexPath: IndexPath): TreeNode[] {
+  return indexPath.map((_, index) => collection.at(indexPath.slice(0, index + 1)))
+}
+
+function getSelectedItems(collection: TreeCollection<TreeNode>, value: string[][]): TreeNode[][] {
+  return value.flatMap((valuePath) => {
+    const indexPath = collection.getIndexPath(valuePath)
+    if (indexPath.length !== valuePath.length) return []
+    return [getPathItems(collection, indexPath)]
+  })
 }

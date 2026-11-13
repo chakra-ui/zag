@@ -6,6 +6,7 @@ import {
   getEventTarget,
   isAnchorElement,
   isComposingEvent,
+  isModifierKey,
   isOpeningInNewTab,
   isSafari,
 } from "@zag-js/dom-query"
@@ -13,10 +14,19 @@ import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types
 import { toPx } from "@zag-js/utils"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
-import type { ContentProps, ContentState, TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
+import type {
+  ContentProps,
+  ContentState,
+  IndicatorState,
+  RootState,
+  TabsApi,
+  TabsSchema,
+  TriggerProps,
+  TriggerState,
+} from "./tabs.types"
 
 export function connect<T extends PropTypes>(service: Service<TabsSchema>, normalize: NormalizeProps<T>): TabsApi<T> {
-  const { state, send, context, prop, scope } = service
+  const { state, send, context, prop, scope, computed } = service
 
   const translations = prop("translations")
   const focused = state.matches("focused")
@@ -25,6 +35,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   const isHorizontal = prop("orientation") === "horizontal"
   const virtualFocus = prop("virtualFocus")
   const tabStopValue = context.get("tabStopValue") ?? context.get("value")
+  const activationDirection = computed("activationDirection")
 
   // Server render, or the indicator hasn't been measured yet (e.g. inside a hidden panel)
   const indicatorRect = context.get("indicatorRect")
@@ -34,8 +45,12 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function sendKeyboardEvent(type: string, key?: string) {
-    send({ type, key, src: "keyboard" })
+  function moveFocus(to: "next" | "prev" | "first" | "last") {
+    send({ type: "FOCUS.MOVE", to, src: "keyboard" })
+  }
+
+  function getRootState(): RootState {
+    return { focused, orientation: prop("orientation"), activationDirection }
   }
 
   function getTriggerState(props: TriggerProps): TriggerState {
@@ -47,7 +62,16 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   }
 
   function getContentState(props: ContentProps): ContentState {
-    return { selected: context.get("value") === props.value }
+    return { ...getRootState(), selected: context.get("value") === props.value }
+  }
+
+  function getIndicatorState(): IndicatorState {
+    const rect = context.get("indicatorRect")
+    return {
+      ...getRootState(),
+      visible: !isRectEmpty(rect),
+      instant: context.get("indicatorInstant"),
+    }
   }
 
   // -----------------------------------------------------------------------------
@@ -57,26 +81,24 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   return {
     value: context.get("value"),
     focusedValue: context.get("focusedValue"),
-    setValue(value) {
-      send({ type: "SET_VALUE", value })
+    activationDirection,
+    setValue(value, reason = "script") {
+      send({ type: "VALUE.SET", value, src: reason })
     },
     clearValue() {
-      send({ type: "CLEAR_VALUE" })
+      send({ type: "VALUE.SET", value: null, src: "script" })
     },
     setIndicatorRect(value) {
-      const id = dom.getTriggerId(scope, value)
-      send({ type: "SET_INDICATOR_RECT", id })
+      send({ type: "INDICATOR.SET", value })
     },
     syncTabIndex() {
-      send({ type: "SYNC_TAB_INDEX" })
+      send({ type: "CONTENT.SYNC" })
     },
     selectNext(fromValue) {
-      send({ type: "TAB_FOCUS", value: fromValue, src: "selectNext" })
-      send({ type: "ARROW_NEXT", src: "selectNext" })
+      send({ type: "VALUE.STEP", step: 1, from: fromValue, src: "script" })
     },
     selectPrevious(fromValue) {
-      send({ type: "TAB_FOCUS", value: fromValue, src: "selectPrevious" })
-      send({ type: "ARROW_PREV", src: "selectPrevious" })
+      send({ type: "VALUE.STEP", step: -1, from: fromValue, src: "script" })
     },
     focus() {
       const value = context.get("value")
@@ -84,51 +106,57 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       dom.getTriggerEl(scope, value)?.focus()
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-orientation": prop("orientation"),
-        "data-focus": dataAttr(focused),
+        "data-orientation": rootState.orientation,
+        "data-focus": dataAttr(rootState.focused),
+        "data-activation-direction": rootState.activationDirection,
         dir: prop("dir"),
       })
     },
 
     getListProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.list.attrs(scope.id),
         role: "tablist",
         dir: prop("dir"),
-        "data-focus": dataAttr(focused),
-        "aria-orientation": prop("orientation"),
-        "data-orientation": prop("orientation"),
+        "data-focus": dataAttr(rootState.focused),
+        "aria-orientation": rootState.orientation,
+        "data-orientation": rootState.orientation,
+        "data-activation-direction": rootState.activationDirection,
         "aria-label": translations?.listLabel,
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (isComposingEvent(event)) return
+          if (isModifierKey(event) || event.shiftKey) return
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
               if (isHorizontal) return
-              sendKeyboardEvent("ARROW_NEXT", "ArrowDown")
+              moveFocus("next")
             },
             ArrowUp() {
               if (isHorizontal) return
-              sendKeyboardEvent("ARROW_PREV", "ArrowUp")
+              moveFocus("prev")
             },
             ArrowLeft() {
               if (isVertical) return
-              sendKeyboardEvent("ARROW_PREV", "ArrowLeft")
+              moveFocus("prev")
             },
             ArrowRight() {
               if (isVertical) return
-              sendKeyboardEvent("ARROW_NEXT", "ArrowRight")
+              moveFocus("next")
             },
             Home() {
-              sendKeyboardEvent("HOME")
+              moveFocus("first")
             },
             End() {
-              sendKeyboardEvent("END")
+              moveFocus("last")
             },
           }
 
@@ -169,16 +197,15 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "data-focus": dataAttr(triggerState.focused),
         "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
         "data-indicator-pending": dataAttr(indicatorPending),
+        "data-activation-direction": activationDirection,
         id: dom.getTriggerId(scope, value),
         tabIndex: !virtualFocus && tabStopValue === value ? 0 : -1,
         onFocus() {
-          send({ type: "TAB_FOCUS", value })
+          send({ type: "TRIGGER.FOCUS", value })
         },
         onBlur(event) {
-          const target = event.relatedTarget as HTMLElement | null
-          if (target?.getAttribute("role") !== "tab") {
-            send({ type: "TAB_BLUR" })
-          }
+          if (contains(dom.getListEl(scope), event.relatedTarget)) return
+          send({ type: "TRIGGER.BLUR" })
         },
         onClick(event) {
           if (event.defaultPrevented) return
@@ -191,7 +218,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           const shouldNavigate = prop("navigate") != null && isAnchorElement(node)
 
           if (shouldNavigate) event.preventDefault()
-          send({ type: "TAB_CLICK", value })
+          send({ type: "TRIGGER.CLICK", value, src: "trigger-click" })
         },
       })
     },
@@ -204,24 +231,28 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope, value),
-        tabIndex: !virtualFocus ? 0 : -1,
+        tabIndex: virtualFocus ? -1 : contentState.selected && context.get("hasFocusableContent") ? undefined : 0,
         "aria-labelledby": dom.getTriggerId(scope, value),
         role: "tabpanel",
         "data-selected": dataAttr(contentState.selected),
-        "data-orientation": prop("orientation"),
+        "data-orientation": contentState.orientation,
+        "data-activation-direction": contentState.activationDirection,
         hidden: !contentState.selected,
       })
     },
 
+    getIndicatorState,
     getIndicatorProps() {
+      const indicatorState = getIndicatorState()
       const rect = context.get("indicatorRect")
 
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
-        "data-instant": dataAttr(context.get("indicatorInstant")),
-        hidden: isRectEmpty(rect),
+        "data-orientation": indicatorState.orientation,
+        "data-instant": dataAttr(indicatorState.instant),
+        "data-activation-direction": indicatorState.activationDirection,
+        hidden: !indicatorState.visible,
         style: {
           "--left": toPx(rect?.x),
           "--top": toPx(rect?.y),

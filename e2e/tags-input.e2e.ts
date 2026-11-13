@@ -193,6 +193,26 @@ test.describe("tags-input", () => {
     await I.seeTag("Jenkins")
   })
 
+  test("[addOnPaste: true] pasting skips empty segments and duplicates", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("Svelte,, ,Vue,")
+    await I.seeTag("Svelte")
+    await expect(I.getTag("Vue")).toHaveCount(1)
+    await expect(I.getTagElements()).toHaveCount(3)
+    await I.seeInputHasValue("")
+  })
+
+  test("[addOnPaste: true] pasting stops at max", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    // max is 6 and two tags exist
+    await I.paste("Svelte,Solid,Angular,Ember,Lit")
+    await I.seeTag("Ember")
+    await I.dontSeeTag("Lit")
+    await expect(I.getTagElements()).toHaveCount(6)
+  })
+
   test("[addOnPaste: true] when input is empty, should work", async () => {
     await I.controls.bool("addOnPaste", true)
 
@@ -403,5 +423,45 @@ test.describe("tags-input / editable [highlight frame]", () => {
     await page.clock.runFor(32)
     await I.seeTag("ReactJS")
     await expect(page.locator("[data-testid=input]")).not.toBeFocused()
+  })
+})
+
+test.describe("tags-input / validate", () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/validate")
+  })
+
+  test("pasting validates each tag", async () => {
+    await I.paste("svelte,React,solid")
+    await expect(I.getTagElements()).toHaveText(["react", "vue", "svelte", "solid"])
+    await I.seeInputHasValue("")
+    await I.see("Invalid: React")
+  })
+
+  test("pasting only invalid tags keeps the text", async () => {
+    await I.paste("React,Vue")
+    await expect(I.getTagElements()).toHaveText(["react", "vue"])
+    await I.seeInputHasValue("React,Vue")
+    await I.see("Invalid: React, Vue")
+  })
+})
+
+test.describe("tags-input / sortable", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TagsInputModel(page)
+    await I.goto("/tags-input/sortable")
+  })
+
+  test("moves the highlighted tag with alt + arrow keys and keeps focus in the input", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeHighlightedTagText("Ship")
+
+    await I.pressKey("Alt+ArrowLeft")
+    await I.seeTagOrder(["Design", "Build", "Ship", "Test"])
+    await I.seeHighlightedTagText("Ship")
+    await I.seeInputIsFocused()
   })
 })

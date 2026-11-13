@@ -15,7 +15,7 @@ export function connect<T extends PropTypes>(
   const { state, send, computed, prop, scope, context } = service
 
   const interactive = computed("isInteractive")
-  const disabled = !!prop("disabled")
+  const disabled = computed("isDisabled")
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const invalid = prop("invalid") || computed("isOverflowing")

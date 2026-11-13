@@ -15,8 +15,21 @@ export interface SizeChangeDetails {
   size: Size
 }
 
+/**
+ * What opened or closed the panel:
+ * - `trigger-click`: the trigger was pressed
+ * - `close-trigger`: the close trigger was pressed
+ * - `escape-key`: Escape was pressed
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason = "trigger-click" | "close-trigger" | "escape-key" | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the panel
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export type Stage = "minimized" | "maximized" | "default"
@@ -373,7 +386,7 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the panel
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Whether the panel is being dragged
    */

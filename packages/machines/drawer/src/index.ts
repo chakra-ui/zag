@@ -15,6 +15,7 @@ export type {
   ElementIds,
   DrawerMachine as Machine,
   OpenChangeDetails,
+  OpenChangeReason,
   PositionerState,
   DrawerProps as Props,
   ResolvedSnapPoint,

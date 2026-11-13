@@ -17,7 +17,7 @@ import {
   snapValueToStep,
 } from "@zag-js/utils"
 import * as dom from "./slider.dom"
-import type { SliderSchema } from "./slider.types"
+import type { SliderSchema, ValueChangeReason } from "./slider.types"
 import {
   constrainValue,
   getClosestIndex,
@@ -72,7 +72,7 @@ export const machine = createMachine<SliderSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, getEvent }) {
     return {
       thumbSize: bindable(() => ({
         defaultValue: toThumbSize(prop("thumbSize")),
@@ -85,7 +85,7 @@ export const machine = createMachine<SliderSchema>({
           return a.join(",")
         },
         onChange(value) {
-          prop("onValueChange")?.({ value })
+          prop("onValueChange")?.({ value, reason: getEvent().src as ValueChangeReason | undefined })
         },
       })),
       focusedIndex: bindable(() => ({
@@ -105,6 +105,7 @@ export const machine = createMachine<SliderSchema>({
     return {
       thumbDragOffset: null,
       startValue: null,
+      pointerReason: undefined,
       focusFrame: AnimationFrame.create(),
     }
   },
@@ -243,7 +244,7 @@ export const machine = createMachine<SliderSchema>({
       trackPointerMove({ scope, send }) {
         return trackPointerMove(scope.getDoc(), {
           onPointerMove(info) {
-            send({ type: "POINTER_MOVE", point: info.point })
+            send({ type: "POINTER_MOVE", point: info.point, src: "drag" })
           },
           onPointerUp() {
             send({ type: "POINTER_UP" })
@@ -279,12 +280,15 @@ export const machine = createMachine<SliderSchema>({
           setElementValue(inputEl, value.toString())
         })
       },
-      invokeOnChangeEnd({ prop, context, refs }) {
+      invokeOnChangeEnd({ prop, context, refs, event }) {
         const startValue = refs.get("startValue")
+        const reason = (event.type === "POINTER_UP" ? refs.get("pointerReason") : event.src) as
+          | ValueChangeReason
+          | undefined
         queueMicrotask(() => {
           const value = context.get("value")
           if (startValue && isEqual(startValue, value)) return
-          prop("onValueChangeEnd")?.({ value })
+          prop("onValueChangeEnd")?.({ value, reason })
         })
       },
       setStartValue({ refs, context }) {
@@ -292,6 +296,7 @@ export const machine = createMachine<SliderSchema>({
       },
       clearDragState({ refs }) {
         refs.set("thumbDragOffset", null)
+        refs.set("pointerReason", undefined)
       },
       setClosestThumbIndex(params) {
         const { context, event } = params
@@ -324,13 +329,15 @@ export const machine = createMachine<SliderSchema>({
           if (focusedIndex < 0) return
           const startValues = refs.get("startValue")
           const disabledIndices = dom.getDisabledThumbIndices(scope)
+          refs.set("pointerReason", event.src as ValueChangeReason)
 
+          let stackedIndex: number | undefined
           if (prop("thumbCollisionBehavior") === "none") {
             const index = resolveStackedThumb(context.get("value"), focusedIndex, pointValue, disabledIndices)
             if (index !== focusedIndex) {
               focusedIndex = index
+              stackedIndex = index
               context.set("focusedIndex", index)
-              dom.getThumbEl(scope, index)?.focus({ preventScroll: true })
             }
           }
 
@@ -352,6 +359,9 @@ export const machine = createMachine<SliderSchema>({
           }
 
           context.set("value", result.values)
+
+          // focus after the value is set: the thumb's FOCUS event would replace the current event's `src`
+          if (stackedIndex != null) dom.getThumbEl(scope, stackedIndex)?.focus({ preventScroll: true })
         })
       },
       focusActiveThumb({ scope, context, refs }) {

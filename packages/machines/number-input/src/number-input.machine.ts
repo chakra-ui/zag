@@ -1,8 +1,10 @@
-import { memo, setup } from "@zag-js/core"
+import { memo, setup, type Params } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
   isFirefox,
+  isIPhone,
+  isIos,
   isSafari,
   observeAttributes,
   recordCursor,
@@ -12,21 +14,18 @@ import {
   trackFormControl,
 } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
-import {
-  callAll,
-  clampValue,
-  decrementValue,
-  incrementValue,
-  isValueAtMax,
-  isValueAtMin,
-  isValueWithinRange,
-  snapValueToStep,
-  mergeWithDefault,
-} from "@zag-js/utils"
+import { callAll, clampValue, decrementValue, incrementValue, isValueWithinRange } from "@zag-js/utils"
 import * as dom from "./number-input.dom"
-import { defaultTranslations } from "./number-input.translations"
-import type { HintValue, NumberInputSchema, ValueChangeReason } from "./number-input.types"
-import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
+import type { NumberInputSchema, Platform, StepDirection, ValueChangeReason } from "./number-input.types"
+import {
+  createFormatter,
+  createParser,
+  formatNumber,
+  formatValue,
+  getDefaultStep,
+  parseValue,
+  snapToStep,
+} from "./number-input.utils"
 
 const { choose, guards, createMachine } = setup<NumberInputSchema>()
 
@@ -39,14 +38,10 @@ export const machine = createMachine({
       dir: "ltr",
       locale: "en-US",
       focusInputOnChange: true,
-      clampValueOnBlur: !props.allowOverflow,
-      allowOverflow: false,
-      inputMode: "decimal",
+      allowOutOfRange: false,
       pattern: "-?[0-9]*(.[0-9]+)?",
-      defaultValue: "",
+      defaultValue: null,
       step,
-      min: Number.MIN_SAFE_INTEGER,
-      max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,
       scrubberPixelSensitivity: 2,
       scrubberDirection: "horizontal",
@@ -61,10 +56,12 @@ export const machine = createMachine({
     return "idle"
   },
 
-  refs() {
+  refs({ prop }) {
     return {
       syncFrame: AnimationFrame.create(),
+      pressDirection: 1,
       focusFrame: AnimationFrame.create(),
+      committedValue: prop("value") ?? prop("defaultValue") ?? null,
     }
   },
 
@@ -72,16 +69,21 @@ export const machine = createMachine({
 
   context({ prop, bindable, getComputed, getEvent }) {
     return {
-      value: bindable<string>(() => ({
+      value: bindable<number | null>(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value) {
-          const computed = getComputed()
-          const valueAsNumber = parseValue(value, { computed, prop })
-          prop("onValueChange")?.({ value, valueAsNumber, reason: getEvent().src as ValueChangeReason })
+          const formattedValue = formatValue(value, { computed: getComputed(), prop })
+          prop("onValueChange")?.({ value, formattedValue, reason: getEvent().src as ValueChangeReason })
         },
       })),
-      hint: bindable<HintValue | null>(() => ({ defaultValue: null })),
+      inputValue: bindable<string>(() => ({
+        defaultValue: formatNumber(
+          prop("value") ?? prop("defaultValue"),
+          createFormatter(prop("locale"), prop("formatOptions")),
+          prop("formatOptions"),
+        ),
+      })),
       scrubberCursorPoint: bindable<Point | null>(() => ({
         defaultValue: null,
         hash(value) {
@@ -90,31 +92,34 @@ export const machine = createMachine({
       })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       cumulativeDelta: bindable<number>(() => ({ defaultValue: 0 })),
-      isPointerLockSupported: bindable<boolean>(() => ({ defaultValue: false })),
+      platform: bindable<Platform>(() => ({
+        defaultValue: { iPhone: false, ios: false, supportsPointerLock: false },
+      })),
       visualScale: bindable<number>(() => ({ defaultValue: 1 })),
     }
   },
 
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
-    valueAsNumber: ({ context, computed, prop }) => parseValue(context.get("value"), { computed, prop }),
-    formattedValue: ({ computed, prop }) => formatValue(computed("valueAsNumber"), { computed, prop }),
-    isAtMin: ({ computed, prop }) => isValueAtMin(computed("valueAsNumber"), prop("min")),
-    isAtMax: ({ computed, prop }) => isValueAtMax(computed("valueAsNumber"), prop("max")),
-    isOutOfRange: ({ computed, prop }) => !isValueWithinRange(computed("valueAsNumber"), prop("min"), prop("max")),
-    isValueEmpty: ({ context }) => context.get("value") === "",
-    isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
-    canIncrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMax"),
-    canDecrement: ({ prop, computed }) => prop("allowOverflow") || !computed("isAtMin"),
-    // Only useful when the display differs from `aria-valuenow`, as with currency or percent.
-    valueText: ({ prop, context, computed }) => {
-      const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-      const custom = translations.valueText?.(context.get("value"))
-      if (custom) return custom
-      if (computed("isValueEmpty")) return undefined
-      const formatted = computed("formattedValue")
-      return formatted === String(computed("valueAsNumber")) ? undefined : formatted
+    min: ({ prop }) => prop("min") ?? -Infinity,
+    max: ({ prop }) => prop("max") ?? Infinity,
+    formattedValue: ({ context, computed, prop }) => formatValue(context.get("value"), { computed, prop }),
+    isAtMin: ({ context, computed }) => {
+      const value = context.get("value")
+      return value != null && value <= computed("min")
     },
+    isAtMax: ({ context, computed }) => {
+      const value = context.get("value")
+      return value != null && value >= computed("max")
+    },
+    isOutOfRange: ({ context, prop }) => {
+      const value = context.get("value")
+      return value != null && !isValueWithinRange(value, prop("min"), prop("max"))
+    },
+    isValueEmpty: ({ context }) => context.get("value") == null,
+    isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
+    canIncrement: ({ computed }) => !computed("isAtMax"),
+    canDecrement: ({ computed }) => !computed("isAtMin"),
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => createFormatter(locale, formatOptions),
@@ -127,7 +132,11 @@ export const machine = createMachine({
 
   watch({ track, action, context, computed, prop }) {
     track([() => context.get("value"), () => prop("locale"), () => JSON.stringify(prop("formatOptions"))], () => {
-      action(["syncInputElement"])
+      action(["syncInputValue", "syncHiddenInput"])
+    })
+
+    track([() => context.get("inputValue")], () => {
+      action(["syncInputValue", "syncInputElement"])
     })
 
     track([() => computed("isOutOfRange")], () => {
@@ -140,7 +149,7 @@ export const machine = createMachine({
     })
   },
 
-  effects: ["trackFormControl", "detectPointerLock"],
+  effects: ["trackFormControl", "detectPlatform"],
 
   on: {
     "INPUT.FOCUS": {
@@ -164,15 +173,12 @@ export const machine = createMachine({
     idle: {
       on: {
         "TRIGGER.PRESS_DOWN": [
-          { guard: "isTouchPointer", target: "pressed", actions: ["setHint"] },
-          {
-            target: "pressed",
-            actions: ["focusInput", "setHint"],
-          },
+          { guard: "isTouchPointer", target: "pressed", actions: ["setPressDirection"] },
+          { target: "pressed", actions: ["focusInput", "setPressDirection"] },
         ],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"],
+          actions: ["focusInput", "setCursorPoint"],
         },
         "INPUT.FOCUS": {
           target: "focused",
@@ -186,12 +192,12 @@ export const machine = createMachine({
       effects: ["attachWheelListener"],
       on: {
         "TRIGGER.PRESS_DOWN": [
-          { guard: "isTouchPointer", target: "pressed", actions: ["setHint"] },
-          { target: "pressed", actions: ["focusInput", "setHint"] },
+          { guard: "isTouchPointer", target: "pressed", actions: ["setPressDirection"] },
+          { target: "pressed", actions: ["focusInput", "setPressDirection"] },
         ],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
-          actions: ["focusInput", "setHint", "setCursorPoint"],
+          actions: ["focusInput", "setCursorPoint"],
         },
         "INPUT.ARROW_UP": {
           actions: ["increment", "invokeOnValueCommit"],
@@ -206,28 +212,29 @@ export const machine = createMachine({
           actions: ["incrementToMax", "invokeOnValueCommit"],
         },
         "INPUT.CHANGE": {
-          actions: ["setValue", "setHint"],
+          actions: ["setInputValue"],
         },
         "INPUT.BLUR": [
           {
-            guard: and("clampValueOnBlur", not("isValueEmpty"), not("isInRange")),
+            guard: and(not("allowOutOfRange"), not("isInRange")),
             target: "idle",
-            actions: ["setClampedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
-          },
-          {
-            guard: not("isInRange"),
-            target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
+            actions: ["setClampedValue", "invokeOnBlur", "invokeOnValueCommit"],
           },
           {
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
+            actions: ["setFormattedValue", "invokeOnBlur", "invokeOnValueCommit"],
           },
         ],
         // No target, so the input stays focused. It must not report a blur.
-        "INPUT.ENTER": {
-          actions: ["setFormattedValue", "clearHint", "invokeOnValueCommit"],
-        },
+        "INPUT.ENTER": [
+          {
+            guard: and(not("allowOutOfRange"), not("isInRange")),
+            actions: ["setClampedValue", "invokeOnValueCommit"],
+          },
+          {
+            actions: ["setFormattedValue", "invokeOnValueCommit"],
+          },
+        ],
       },
     },
 
@@ -237,18 +244,24 @@ export const machine = createMachine({
       effects: ["trackButtonDisabled", "preventContextMenu"],
       on: {
         "TRIGGER.PRESS_UP": [
-          { guard: "isTouchPointer", target: "focused", actions: ["clearHint", "invokeOnValueCommit"] },
-          { target: "focused", actions: ["focusInput", "clearHint", "invokeOnValueCommit"] },
+          { guard: "isTouchPointer", target: "focused", actions: ["invokeOnValueCommit"] },
+          { target: "focused", actions: ["focusInput", "invokeOnValueCommit"] },
         ],
       },
       states: {
         waiting: {
           effects: ["waitForChangeDelay"],
-          entry: choose([
-            { guard: "isIncrementHint", actions: ["increment"] },
-            { guard: "isDecrementHint", actions: ["decrement"] },
-          ]),
+          entry: choose([{ guard: not("isTouchPointer"), actions: ["step"] }]),
           on: {
+            "TRIGGER.PRESS_UP": [
+              {
+                guard: and("isTouchPointer", "isTouchTap"),
+                target: "focused",
+                actions: ["step", "invokeOnValueCommit"],
+              },
+              { guard: "isTouchPointer", target: "focused" },
+              { target: "focused", actions: ["focusInput", "invokeOnValueCommit"] },
+            ],
             CHANGE_DELAY: {
               target: "repeating",
               guard: and("isInRange", "spinOnPress"),
@@ -259,16 +272,9 @@ export const machine = createMachine({
         repeating: {
           effects: ["spinValue"],
           on: {
-            SPIN: [
-              {
-                guard: "isIncrementHint",
-                actions: ["increment"],
-              },
-              {
-                guard: "isDecrementHint",
-                actions: ["decrement"],
-              },
-            ],
+            SPIN: {
+              actions: ["step"],
+            },
           },
         },
       },
@@ -279,22 +285,16 @@ export const machine = createMachine({
       effects: ["activatePointerLock", "trackMousemove", "preventTextSelection", "trackVisualViewport"],
       entry: ["clearCumulativeDelta"],
       on: {
-        "SCRUBBER.STEP": [
-          {
-            guard: "isIncrementHint",
-            actions: ["increment"],
-          },
-          {
-            guard: "isDecrementHint",
-            actions: ["decrement"],
-          },
-        ],
+        "SCRUBBER.STEP": {
+          actions: ["step"],
+        },
         "SCRUBBER.POINTER_UP": {
           target: "focused",
           actions: ["focusInput", "clearCursorPoint", "clearCumulativeDelta", "invokeOnValueCommit"],
         },
         "SCRUBBER.POINTER_MOVE": {
-          actions: ["accumulateDelta", "setCursorPoint"],
+          // accumulateDelta sends a step, which some frameworks run before the next action reads this event
+          actions: ["setCursorPoint", "accumulateDelta"],
         },
       },
     },
@@ -302,20 +302,18 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      clampValueOnBlur: ({ prop }) => prop("clampValueOnBlur"),
+      allowOutOfRange: ({ prop }) => !!prop("allowOutOfRange"),
       spinOnPress: ({ prop }) => !!prop("spinOnPress"),
       isInRange: ({ computed }) => !computed("isOutOfRange"),
-      isValueEmpty: ({ computed }) => computed("isValueEmpty"),
-      isDecrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "decrement",
-      isIncrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "increment",
       isTouchPointer: ({ event }) => event.pointerType === "touch",
+      isTouchTap: ({ event }) => !event.cancelled,
     },
 
     effects: {
       waitForChangeDelay({ send }) {
         const id = setTimeout(() => {
           send({ type: "CHANGE_DELAY" })
-        }, 300)
+        }, 400)
         return () => clearTimeout(id)
       },
 
@@ -324,39 +322,37 @@ export const machine = createMachine({
         return addDomEvent(scope.getWin(), "contextmenu", (event) => event.preventDefault())
       },
 
-      spinValue({ send, context }) {
+      spinValue({ send, refs }) {
         const id = setInterval(() => {
-          const src = context.get("hint") === "increment" ? "increment-press" : "decrement-press"
-          send({ type: "SPIN", src })
-        }, 50)
+          send({ type: "SPIN", src: getPressSource(refs.get("pressDirection")) })
+        }, 60)
         return () => clearInterval(id)
       },
 
-      detectPointerLock({ context }) {
-        context.set("isPointerLockSupported", !isSafari())
+      detectPlatform({ context }) {
+        context.set("platform", { iPhone: isIPhone(), ios: isIos(), supportsPointerLock: !isSafari() })
       },
       trackFormControl({ context, scope }) {
-        const inputEl = dom.getInputEl(scope)
+        const inputEl = dom.getHiddenInputEl(scope) ?? dom.getInputEl(scope)
         return trackFormControl(inputEl, {
           onFieldsetDisabledChange(disabled) {
             context.set("fieldsetDisabled", disabled)
           },
           onFormReset() {
-            context.set("value", context.initial("value"))
+            context.set("value", context.initial("value") ?? null)
           },
         })
       },
       preventTextSelection({ scope, prop }) {
         return dom.preventTextSelection(scope, prop("scrubberDirection"))
       },
-      trackButtonDisabled({ context, scope, send }) {
-        const hint = context.get("hint")
-        const btn = dom.getPressedTriggerEl(scope, hint)
+      trackButtonDisabled({ refs, scope, send }) {
+        const direction = refs.get("pressDirection")
+        const btn = dom.getTriggerEl(scope, direction)
         return observeAttributes(btn, {
           attributes: ["disabled"],
           callback() {
-            const src = hint === "increment" ? "increment-press" : "decrement-press"
-            send({ type: "TRIGGER.PRESS_UP", src })
+            send({ type: "TRIGGER.PRESS_UP", src: getPressSource(direction) })
           },
         })
       },
@@ -365,13 +361,16 @@ export const machine = createMachine({
         if (!inputEl || !scope.isActiveElement(inputEl) || !prop("allowMouseWheel")) return
 
         function onWheel(event: WheelEvent) {
+          if (prop("readOnly")) return
+          if (event.ctrlKey) return
+          // Some browsers turn shift + wheel into a horizontal scroll
+          const isHorizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          const delta = event.shiftKey && isHorizontal ? event.deltaX : event.deltaY
+          // Leave horizontal gestures to the page
+          if (delta === 0 || (isHorizontal && !event.shiftKey)) return
           event.preventDefault()
-          const dir = Math.sign(event.deltaY) * -1
-          if (dir === 1) {
-            send({ type: "VALUE.INCREMENT", src: "wheel" })
-          } else if (dir === -1) {
-            send({ type: "VALUE.DECREMENT", src: "wheel" })
-          }
+          const step = event.altKey ? prop("smallStep") : event.shiftKey ? prop("largeStep") : prop("step")
+          send({ type: delta < 0 ? "VALUE.INCREMENT" : "VALUE.DECREMENT", step, src: "wheel" })
         }
 
         return addDomEvent(inputEl, "wheel", onWheel, { passive: false })
@@ -404,12 +403,12 @@ export const machine = createMachine({
         function onMousemove(event: MouseEvent) {
           const point = context.get("scrubberCursorPoint")
           const isRtl = computed("isRtl")
-          const direction = prop("scrubberDirection")
+          const axis = prop("scrubberDirection")
           const teleportDistance = prop("scrubberTeleportDistance")
-          const value = dom.getMousemoveValue(scope, { point, isRtl, event, direction, teleportDistance })
+          const value = dom.getMousemoveValue(scope, { point, isRtl, event, axis, teleportDistance })
           send({
             type: "SCRUBBER.POINTER_MOVE",
-            hint: value.hint,
+            direction: value.direction,
             point: value.point,
             delta: value.delta,
           })
@@ -434,81 +433,102 @@ export const machine = createMachine({
         refs.get("syncFrame").cancel()
         refs.get("focusFrame").cancel()
       },
-      increment({ context, event, prop, computed }) {
-        let nextValue = incrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
-        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
-        if (prop("snapOnStep"))
-          nextValue = snapValueToStep(nextValue, prop("min"), prop("max"), event.step ?? prop("step"))
-        context.set("value", formatValue(nextValue, { computed, prop }))
+      increment({ event, prop, computed, context }) {
+        const value = context.get("value")
+        const step = event.step ?? prop("step")
+        const next = value == null ? 0 : incrementValue(value, step)
+        setNumber({ context, prop, computed }, getStepValue(next, step, 1, { prop, computed }))
       },
-      decrement({ context, event, prop, computed }) {
-        let nextValue = decrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
-        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
-        if (prop("snapOnStep"))
-          nextValue = snapValueToStep(nextValue, prop("min"), prop("max"), event.step ?? prop("step"))
-        context.set("value", formatValue(nextValue, { computed, prop }))
+      decrement({ event, prop, computed, context }) {
+        const value = context.get("value")
+        const step = event.step ?? prop("step")
+        const next = value == null ? 0 : decrementValue(value, step)
+        setNumber({ context, prop, computed }, getStepValue(next, step, -1, { prop, computed }))
       },
       setClampedValue({ context, prop, computed }) {
-        const nextValue = clampValue(computed("valueAsNumber"), prop("min"), prop("max"))
-        context.set("value", formatValue(nextValue, { computed, prop }))
+        const value = context.get("value")
+        setNumber(
+          { context, prop, computed },
+          value == null ? null : clampValue(value, computed("min"), computed("max")),
+        )
       },
       setRawValue({ context, event, prop, computed }) {
-        let nextValue = typeof event.value === "number" ? event.value : parseValue(event.value, { computed, prop })
-        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
-        context.set("value", formatValue(nextValue, { computed, prop }))
+        let value: number = event.value
+        if (!prop("allowOutOfRange")) value = clampValue(value, computed("min"), computed("max"))
+        setNumber({ context, prop, computed }, value)
       },
-      setValue({ context, event }) {
-        const value = event.target?.value ?? event.value
-        context.set("value", value)
+      setInputValue({ context, event, computed, prop }) {
+        const text: string = event.value
+        context.set("inputValue", text)
+        if (text.trim() === "") {
+          context.set("value", null)
+          return
+        }
+        const value = parseValue(text, { computed, prop })
+        // A partial number like "-" or "1." keeps the last value
+        if (!Number.isNaN(value)) context.set("value", normalizeZero(value))
       },
       clearValue({ context }) {
-        context.set("value", "")
+        context.set("value", null)
+        context.set("inputValue", "")
       },
       incrementToMax({ context, prop, computed }) {
-        const value = formatValue(prop("max"), { computed, prop })
-        context.set("value", value)
+        setNumber({ context, prop, computed }, computed("max"))
       },
       decrementToMin({ context, prop, computed }) {
-        const value = formatValue(prop("min"), { computed, prop })
-        context.set("value", value)
+        setNumber({ context, prop, computed }, computed("min"))
       },
-      setHint({ context, event }) {
-        context.set("hint", event.hint)
+      setPressDirection({ refs, event }) {
+        refs.set("pressDirection", event.direction)
       },
-      clearHint({ context }) {
-        context.set("hint", null)
+      step({ event, refs, action }) {
+        const direction = event.direction ?? refs.get("pressDirection")
+        action([direction > 0 ? "increment" : "decrement"])
       },
-      invokeOnFocus({ computed, prop }) {
+      invokeOnFocus({ context, computed, prop }) {
         prop("onFocusChange")?.({
           focused: true,
-          value: computed("formattedValue"),
-          valueAsNumber: computed("valueAsNumber"),
+          value: context.get("value"),
+          formattedValue: computed("formattedValue"),
         })
       },
-      invokeOnBlur({ computed, prop }) {
+      invokeOnBlur({ context, computed, prop }) {
         prop("onFocusChange")?.({
           focused: false,
-          value: computed("formattedValue"),
-          valueAsNumber: computed("valueAsNumber"),
+          value: context.get("value"),
+          formattedValue: computed("formattedValue"),
         })
       },
-      invokeOnInvalid({ computed, prop }) {
-        const reason = computed("valueAsNumber") > prop("max") ? "rangeOverflow" : "rangeUnderflow"
+      invokeOnInvalid({ context, computed, prop }) {
+        const value = context.get("value")
+        if (value == null) return
         prop("onValueInvalid")?.({
-          reason,
-          value: computed("formattedValue"),
-          valueAsNumber: computed("valueAsNumber"),
+          reason: value > computed("max") ? "rangeOverflow" : "rangeUnderflow",
+          value,
+          formattedValue: computed("formattedValue"),
         })
       },
-      invokeOnValueCommit({ computed, prop, event }) {
-        prop("onValueCommit")?.({
-          value: computed("formattedValue"),
-          valueAsNumber: computed("valueAsNumber"),
-          reason: event.src as ValueChangeReason,
+      invokeOnValueCommit({ context, computed, prop, event, refs }) {
+        const reason = event.src as ValueChangeReason
+        // Wait for a controlled parent to apply (or refuse) the change
+        queueMicrotask(() => {
+          const value = context.get("value")
+          // A blur or step that changes nothing has nothing to commit
+          if (value === refs.get("committedValue")) return
+          refs.set("committedValue", value)
+          prop("onValueCommit")?.({ value, formattedValue: computed("formattedValue"), reason })
         })
       },
-      syncInputElement({ context, event, computed, scope, refs }) {
-        const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
+      syncInputValue({ context, computed, prop, state }) {
+        const text = context.get("inputValue")
+        const formatted = computed("formattedValue")
+        if (text === formatted) return
+        // While typing, keep the text as long as it still reads as the value
+        if (state.hasTag("focus") && representsValue(text, context.get("value"), { computed, prop })) return
+        context.set("inputValue", formatted)
+      },
+      syncInputElement({ context, event, scope, refs }) {
+        const value = context.get("inputValue")
         const inputEl = dom.getInputEl(scope)
         // Record cursor position before sync if not provided in event
         // This handles external value changes while user is typing
@@ -521,9 +541,12 @@ export const machine = createMachine({
           if (!unchanged) restoreCursor(inputEl, sel)
         })
       },
-      setFormattedValue({ context, computed, action }) {
-        context.set("value", computed("formattedValue"))
-        action(["syncInputElement"])
+      syncHiddenInput({ scope, context }) {
+        const value = context.get("value")
+        dom.dispatchHiddenInputValue(scope, value == null ? "" : String(value))
+      },
+      setFormattedValue({ context, computed }) {
+        context.set("inputValue", computed("formattedValue"))
       },
       setCursorPoint({ context, event }) {
         context.set("scrubberCursorPoint", event.point)
@@ -541,14 +564,15 @@ export const machine = createMachine({
       accumulateDelta({ context, event, prop, send }) {
         const delta = event.delta ?? 0
         const newDelta = context.get("cumulativeDelta") + delta
-        const sensitivity = prop("scrubberPixelSensitivity")
+        const pixels = prop("scrubberPixelSensitivity")
+        // 0 or less would divide by zero, so step on every pixel instead
+        const sensitivity = pixels > 0 ? pixels : 1
 
         if (Math.abs(newDelta) >= sensitivity) {
           // Determine step based on modifier keys
           const step = prop("step")
-          const hint = event.hint
-          if (hint === "increment" || hint === "decrement") {
-            send({ type: "SCRUBBER.STEP", step, hint, src: "scrub" })
+          if (event.direction) {
+            send({ type: "SCRUBBER.STEP", step, direction: event.direction, src: "scrub" })
           }
           // Reset the accumulator (keep remainder for sub-pixel accuracy)
           context.set("cumulativeDelta", newDelta % sensitivity)
@@ -562,3 +586,36 @@ export const machine = createMachine({
     },
   },
 })
+
+const getPressSource = (direction: StepDirection): ValueChangeReason =>
+  direction > 0 ? "increment-press" : "decrement-press"
+
+type NumberParams = Pick<Params<NumberInputSchema>, "context" | "prop" | "computed">
+
+/** Sets the number and shows it formatted */
+function setNumber({ context, prop, computed }: NumberParams, value: number | null) {
+  value = value == null ? null : normalizeZero(value)
+  context.set("value", value)
+  context.set("inputValue", formatValue(value, { computed, prop }))
+}
+
+function getStepValue(
+  value: number,
+  step: number,
+  direction: number,
+  { prop, computed }: Omit<NumberParams, "context">,
+) {
+  // Snap before clamping, so a min or max off the step grid stays reachable
+  if (prop("snapOnStep")) value = snapToStep(value, prop("min") ?? 0, step, direction)
+  return clampValue(value, computed("min"), computed("max"))
+}
+
+function representsValue(text: string, value: number | null, params: Omit<NumberParams, "context">) {
+  if (text.trim() === "") return value == null
+  const parsed = parseValue(text, params)
+  // A partial number like "-" can't be compared yet
+  return Number.isNaN(parsed) || parsed === value
+}
+
+// -0 is the same number to a person, and some frameworks don't see 0 and -0 as different
+const normalizeZero = (value: number) => (value === 0 ? 0 : value)

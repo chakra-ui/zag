@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./meter.anatomy"
-import type { IntlTranslations, MeterApi, MeterService } from "./meter.types"
+import type { IntlTranslations, MeterApi, MeterService, RootState } from "./meter.types"
 
 const defaultTranslations: Required<IntlTranslations> = {
   value: ({ value, percent, formatter }) => {
@@ -15,9 +15,9 @@ const defaultTranslations: Required<IntlTranslations> = {
 }
 
 export function connect<T extends PropTypes>(service: MeterService, normalize: NormalizeProps<T>): MeterApi<T> {
-  const { context, computed, prop, send, scope } = service
+  const { computed, prop, send, scope } = service
   const percent = computed("percent")
-  const percentAsString = computed("formatter").format(percent / 100)
+  const percentAsString = computed("percentFormatter").format(percent / 100)
 
   const min = prop("min")
   const max = prop("max")
@@ -27,10 +27,22 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
   const orientation = prop("orientation")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
-  const value = context.get("value")
+  const value = computed("clampedValue")
   const valueAsString = translations.value({ value, max, percent, min, formatter: computed("formatter") })
   const valueState = computed("valueState")
   const labelId = scope.ids?.label ?? `${scope.id}:label`
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { valueState, orientation }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
 
   return {
     value,
@@ -53,7 +65,9 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
       send({ type: "VALUE.SET", value: min })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         ...parts.root.attrs(scope.id),
@@ -64,8 +78,8 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
         "aria-valuenow": value,
         "aria-valuetext": valueAsString,
         "data-value": value,
-        "data-state": valueState,
-        "data-orientation": orientation,
+        "data-state": rootState.valueState,
+        "data-orientation": rootState.orientation,
         style: {
           "--percent": percent,
         },
@@ -73,11 +87,12 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         id: labelId,
         ...parts.label.attrs(scope.id),
-        "data-orientation": orientation,
+        "data-orientation": rootState.orientation,
       })
     },
 
@@ -90,20 +105,22 @@ export function connect<T extends PropTypes>(service: MeterService, normalize: N
     },
 
     getTrackProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         ...parts.track.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-state": valueState,
+        "data-orientation": rootState.orientation,
+        "data-state": rootState.valueState,
       })
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         dir: prop("dir"),
         ...parts.indicator.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-state": valueState,
+        "data-orientation": rootState.orientation,
+        "data-state": rootState.valueState,
         style: {
           [computed("isHorizontal") ? "width" : "height"]: `${percent}%`,
         },

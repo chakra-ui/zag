@@ -2,7 +2,8 @@ import type { Scope } from "@zag-js/core"
 import { isHTMLElement } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
-import type { CursorState, ResizeTriggerId } from "./splitter.types"
+import type { CursorState, PanelData, ResizeTriggerId } from "./splitter.types"
+import { splitResizeTriggerId } from "./utils/panel"
 
 // ID generators — kept for ARIA attributes in connect
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
@@ -20,7 +21,7 @@ export const getPanelEl = (ctx: Scope, id: string | number) =>
   ctx.query(`${ctx.selector(parts.panel)}[data-id="${id}"]`)
 
 const getPanelIdFromEl = (el: Element | null) => {
-  return isHTMLElement(el) && el.dataset.part === "panel" ? el.dataset.id : undefined
+  return isHTMLElement(el) && el.hasAttribute(parts.panel.attr) ? el.dataset.id : undefined
 }
 
 const getPrevPanelId = (el: HTMLElement | null) => {
@@ -41,8 +42,12 @@ const getNextPanelId = (el: HTMLElement | null) => {
   }
 }
 
-export const resolveResizeTriggerId = (ctx: Scope, id: ResizeTriggerId): `${string}:${string}` | null => {
-  const [beforeId, afterId] = id.split(":")
+export const resolveResizeTriggerId = (
+  ctx: Scope,
+  id: ResizeTriggerId,
+  panels: Pick<PanelData, "id">[],
+): `${string}:${string}` | null => {
+  const [beforeId, afterId] = splitResizeTriggerId(id, panels)
   if (beforeId && afterId) return id as `${string}:${string}`
 
   const triggerEl = getResizeTriggerEl(ctx, id)

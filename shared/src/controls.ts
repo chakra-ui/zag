@@ -119,7 +119,8 @@ export const tooltipControls = defineControls({
 export const numberInputControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
-  clampValueOnBlur: { type: "boolean", defaultValue: true },
+  readOnly: { type: "boolean", defaultValue: false },
+  allowOutOfRange: { type: "boolean", defaultValue: false },
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
   focusInputOnChange: { type: "boolean", defaultValue: true },
@@ -445,6 +446,11 @@ export const stepsControls = defineControls({
 export const tocControls = defineControls({
   autoScroll: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
+  rootMargin: {
+    type: "select",
+    options: ["-20px 0% -40% 0%", "0px", "0px 0px -80% 0px", "-50% 0px -50% 0px"] as const,
+    defaultValue: "-20px 0% -40% 0%",
+  },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 

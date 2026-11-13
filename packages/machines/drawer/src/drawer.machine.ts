@@ -1,6 +1,6 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   addDomEvent,
@@ -9,14 +9,14 @@ import {
   isFocusOutside,
   raf,
   resizeObserverBorderBox,
-  waitForElement,
+  whenNode,
 } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { isEqual, noop } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils"
 import * as dom from "./drawer.dom"
 import { drawerRegistry } from "./drawer.registry"
-import type { DrawerSchema, NestedDrawerMetrics, ResolvedSnapPoint } from "./drawer.types"
+import type { DrawerSchema, NestedDrawerMetrics, OpenChangeReason, ResolvedSnapPoint } from "./drawer.types"
 import {
   DrawerSwipeSession,
   getSwipeDirectionSize,
@@ -276,7 +276,13 @@ export const machine = createMachine<DrawerSchema>({
           {
             guard: "shouldCloseOnSwipe",
             target: "closing",
-            actions: ["clearSwipeOpenAnimation", "clearRegistrySwiping", "setDismissSwipeStrength", "setFinalFocus"],
+            actions: [
+              "clearSwipeOpenAnimation",
+              "clearRegistrySwiping",
+              "setDismissSwipeStrength",
+              "invokeOnClose",
+              "setFinalFocus",
+            ],
           },
           {
             guard: "isDragging",
@@ -340,7 +346,6 @@ export const machine = createMachine<DrawerSchema>({
         ANIMATION_END: {
           target: "closed",
           actions: [
-            "invokeOnClose",
             "clearPointerStart",
             "clearDragOffset",
             "clearActiveSnapPoint",
@@ -564,12 +569,12 @@ export const machine = createMachine<DrawerSchema>({
         context.set("triggerValue", event.value)
       },
 
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
 
       setSnapPoint({ context, event }) {
@@ -613,7 +618,7 @@ export const machine = createMachine<DrawerSchema>({
 
         // null means dismiss (sequential mode determined closing is closer)
         if (closestSnapPoint === null) {
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "swipe" })
           return
         }
 
@@ -798,8 +803,8 @@ export const machine = createMachine<DrawerSchema>({
             },
             onPointerDownOutside: prop("onPointerDownOutside"),
             onRequestDismiss: prop("onRequestDismiss"),
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+            onDismiss(event) {
+              send({ type: "CLOSE", src: getDismissReason(event), restoreFocus })
             },
           })
         })
@@ -854,7 +859,7 @@ export const machine = createMachine<DrawerSchema>({
             send({ type: "POINTER_MOVE", ...details })
           },
           onEnd(details) {
-            send({ type: "POINTER_UP", ...details })
+            send({ type: "POINTER_UP", ...details, src: "swipe" })
           },
           onCancel() {
             send({ type: "POINTER_CANCEL" })
@@ -867,70 +872,80 @@ export const machine = createMachine<DrawerSchema>({
         const html = doc.documentElement
         const shouldMeasureRootFontSize = hasRemSnapPoints(prop("snapPoints"))
 
-        return waitForContentEl(scope, (contentEl) => {
-          const updateSize = () => {
-            const direction = computed("physicalSwipeDirection")
-            const rect = contentEl.getBoundingClientRect()
-            const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
+        // The content may mount after the drawer opens
+        return whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const updateSize = () => {
+              const direction = computed("physicalSwipeDirection")
+              const rect = contentEl.getBoundingClientRect()
+              const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
 
-            context.set("contentSize", getSwipeDirectionSize(rect, direction))
-            context.set("viewportSize", viewportSize)
-            if (shouldMeasureRootFontSize) {
-              const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
-              if (Number.isFinite(rootFontSize)) {
-                context.set("rootFontSize", rootFontSize)
+              context.set("contentSize", getSwipeDirectionSize(rect, direction))
+              context.set("viewportSize", viewportSize)
+              if (shouldMeasureRootFontSize) {
+                const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
+                if (Number.isFinite(rootFontSize)) {
+                  context.set("rootFontSize", rootFontSize)
+                }
               }
             }
-          }
 
-          updateSize()
+            updateSize()
 
-          const cleanups = [
-            resizeObserverBorderBox.observe(contentEl, updateSize),
-            addDomEvent(scope.getWin(), "resize", updateSize),
-          ]
-          return () => cleanups.forEach((cleanup) => cleanup?.())
-        })
+            const cleanups = [
+              resizeObserverBorderBox.observe(contentEl, updateSize),
+              addDomEvent(scope.getWin(), "resize", updateSize),
+            ]
+            return () => cleanups.forEach((cleanup) => cleanup?.())
+          },
+          { defer: true, getRootNode: scope.getRootNode },
+        )
       },
 
       trackNestedDrawerMetrics({ scope, computed, context }) {
-        return waitForContentEl(scope, (contentEl) => {
-          const id = computed("drawerId")
+        // The content may mount after the drawer opens
+        return whenNode(
+          () => dom.getContentEl(scope),
+          (contentEl) => {
+            const id = computed("drawerId")
 
-          drawerRegistry.register(id, contentEl)
+            drawerRegistry.register(id, contentEl)
 
-          const sync = () => {
-            const entries = [...drawerRegistry.getEntries().entries()]
-            const myIndex = entries.findIndex(([entryId]) => entryId === id)
-            if (myIndex === -1) return
+            const sync = () => {
+              const entries = [...drawerRegistry.getEntries().entries()]
+              const myIndex = entries.findIndex(([entryId]) => entryId === id)
+              if (myIndex === -1) return
 
-            const count = entries.length - 1 - myIndex
-            const frontmostEl = entries[entries.length - 1]?.[1]
-            const frontmostHeight = frontmostEl?.getBoundingClientRect().height ?? 0
-            const height = contentEl.getBoundingClientRect().height
+              const count = entries.length - 1 - myIndex
+              const frontmostEl = entries[entries.length - 1]?.[1]
+              const frontmostHeight = frontmostEl?.getBoundingClientRect().height ?? 0
+              const height = contentEl.getBoundingClientRect().height
 
-            context.set("nestedMetrics", {
-              count,
-              height,
-              frontmostHeight,
-              open: count > 0 && frontmostHeight > 0,
-              swiping: drawerRegistry.hasSwipingAfter(id),
-            })
-          }
+              context.set("nestedMetrics", {
+                count,
+                height,
+                frontmostHeight,
+                open: count > 0 && frontmostHeight > 0,
+                swiping: drawerRegistry.hasSwipingAfter(id),
+              })
+            }
 
-          sync()
+            sync()
 
-          const cleanups = [
-            drawerRegistry.subscribe(sync),
-            resizeObserverBorderBox.observe(contentEl, () => drawerRegistry.notify()),
-            addDomEvent(scope.getWin(), "resize", () => drawerRegistry.notify()),
-          ]
+            const cleanups = [
+              drawerRegistry.subscribe(sync),
+              resizeObserverBorderBox.observe(contentEl, () => drawerRegistry.notify()),
+              addDomEvent(scope.getWin(), "resize", () => drawerRegistry.notify()),
+            ]
 
-          return () => {
-            cleanups.forEach((cleanup) => cleanup?.())
-            drawerRegistry.unregister(id)
-          }
-        })
+            return () => {
+              cleanups.forEach((cleanup) => cleanup?.())
+              drawerRegistry.unregister(id)
+            }
+          },
+          { defer: true, getRootNode: scope.getRootNode },
+        )
       },
 
       trackSwipeOpenPointerMove({ scope, send, refs, computed }) {
@@ -943,7 +958,7 @@ export const machine = createMachine<DrawerSchema>({
             send({ type: "POINTER_MOVE", ...details })
           },
           onEnd(details) {
-            send({ type: "POINTER_UP", ...details })
+            send({ type: "POINTER_UP", ...details, src: "swipe" })
           },
           onCancel() {
             send({ type: "POINTER_CANCEL" })
@@ -962,32 +977,6 @@ export const machine = createMachine<DrawerSchema>({
   },
 })
 
-function waitForContentEl(
-  scope: Params<DrawerSchema>["scope"],
-  setup: (contentEl: HTMLElement) => VoidFunction | undefined,
-): VoidFunction {
-  const contentEl = dom.getContentEl(scope)
-  let cleanup = contentEl ? setup(contentEl) : undefined
-  let abort: VoidFunction | undefined
-  let disposed = false
-
-  if (!cleanup) {
-    const [promise, cancel] = waitForElement(() => dom.getContentEl(scope), {
-      timeout: 1000,
-      rootNode: scope.getDoc(),
-    })
-    abort = cancel
-    promise
-      .then((el) => {
-        if (disposed) return
-        cleanup = setup(el)
-      })
-      .catch(noop)
-  }
-
-  return () => {
-    disposed = true
-    abort?.()
-    cleanup?.()
-  }
+function getOpenChangeReason(event: DrawerSchema["event"]) {
+  return (event.previousEvent ?? event).src as OpenChangeReason | undefined
 }

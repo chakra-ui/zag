@@ -3,7 +3,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import * as cascadeSelect from "@zag-js/cascade-select"
-import { ChevronRightIcon, XIcon } from "lucide-react"
+import { ChevronRightIcon, ChevronsUpDownIcon, XIcon } from "lucide-react"
 import serialize from "form-serialize"
 import { JSX, useId, useState } from "react"
 import { StateVisualizer } from "@/components/state-visualizer"
@@ -82,18 +82,22 @@ export default function Page() {
   const controls = useControls(cascadeSelectControls)
 
   const [open, setOpen] = useState(false)
+  const [value, setValue] = useState<string[][]>([["asia", "india", "haryana:HR"]])
+  const [highlightedValue, setHighlightedValue] = useState<string[]>([])
 
   const service = useMachine(cascadeSelect.machine, {
     id: useId(),
     collection,
     name: "location",
     open,
-    // value: [["asia", "india", "haryana:HR"]],
-    // highlightedValue: ["asia", "india", "haryana:HR"],
+    value,
+    highlightedValue,
     onHighlightChange(details) {
+      setHighlightedValue(details.highlightedValue)
       console.log("onHighlightChange", details)
     },
     onValueChange(details) {
+      setValue(details.value)
       console.log("onChange", details)
     },
     onOpenChange(details) {
@@ -112,16 +116,26 @@ export default function Page() {
           <label {...api.getLabelProps()}>Select a location</label>
 
           <button onClick={() => setOpen((o) => !o)}>Toggle (external)</button>
+          <button onClick={() => setValue([["north-america", "united-states", "new-york:NY"]])}>
+            Set value (external)
+          </button>
+          <button onClick={() => setHighlightedValue(["north-america", "united-states", "new-york:NY"])}>
+            Highlight (external)
+          </button>
 
           {/* control */}
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
-              <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>
-              <XIcon size={16} />
-            </button>
+            <div className="cascade-select-indicator-group">
+              <button {...api.getClearTriggerProps()}>
+                <XIcon size={16} />
+              </button>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           <form

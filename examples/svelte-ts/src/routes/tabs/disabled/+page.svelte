@@ -7,6 +7,8 @@
   import "@styles/tabs.css"
 
   let disabled = $state(false)
+  let addedTabs = $state<typeof tabsData>([])
+  const items = $derived([...tabsData, ...addedTabs])
 
   const id = $props.id()
   const service = useMachine(tabs.machine, {
@@ -15,13 +17,20 @@
   })
 
   const api = $derived(tabs.connect(service, normalizeProps))
+
+  function addTab() {
+    const n = addedTabs.length + 1
+    const tab = { id: `tab-${n}`, label: `Tab ${n}`, content: `Content of tab ${n}` }
+    addedTabs = [...addedTabs, tab]
+    api.setValue(tab.id)
+  }
 </script>
 
 <main class="tabs">
   <div {...api.getRootProps()}>
     <div {...api.getIndicatorProps()}></div>
     <div {...api.getListProps()}>
-      {#each tabsData as data}
+      {#each items as data (data.id)}
         <button
           {...api.getTriggerProps({ value: data.id, disabled: data.id === "nils" && disabled })}
           data-testid={`${data.id}-tab`}
@@ -31,7 +40,7 @@
       {/each}
     </div>
 
-    {#each tabsData as data}
+    {#each items as data (data.id)}
       <div {...api.getContentProps({ value: data.id })} data-testid={`${data.id}-tab-panel`}>
         <p>{data.content}</p>
       </div>
@@ -41,6 +50,7 @@
     <input type="checkbox" data-testid="disable-selected" bind:checked={disabled} />
     Disable the selected tab
   </label>
+  <button onclick={addTab}>Add a tab</button>
 </main>
 
 <Toolbar>

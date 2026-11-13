@@ -4,10 +4,10 @@ import { mergeWithDefault } from "@zag-js/utils"
 import * as dom from "./rating-group.dom"
 import { parts } from "./rating-group.anatomy"
 import type {
-  ControlState,
   IntlTranslations,
   ItemProps,
   ItemState,
+  RootState,
   RatingGroupApi,
   RatingGroupService,
 } from "./rating-group.types"
@@ -34,8 +34,8 @@ export function connect<T extends PropTypes>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getControlState(): ControlState {
-    return { disabled, readOnly }
+  function getRootState(): RootState {
+    return { disabled, readOnly, required }
   }
 
   function getItemState(props: ItemProps): ItemState {
@@ -45,6 +45,7 @@ export function connect<T extends PropTypes>(
     const half = equal && Math.abs(currentValue - props.index) === 0.5
 
     return {
+      ...getRootState(),
       highlighted,
       half,
       checked: equal || (value <= 0 && props.index === 1),
@@ -69,34 +70,40 @@ export function connect<T extends PropTypes>(
       send({ type: "CLEAR_VALUE" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
     getHiddenInputProps() {
+      const rootState = getRootState()
       return normalize.input({
         name: prop("name"),
         form: prop("form"),
         type: "text",
         hidden: true,
-        disabled,
-        readOnly,
-        required: prop("required"),
+        disabled: rootState.disabled,
+        readOnly: rootState.readOnly,
+        required: rootState.required,
         id: dom.getHiddenInputId(scope),
         defaultValue: value,
       })
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getLabelId(scope),
-        "data-disabled": dataAttr(disabled),
-        "data-required": dataAttr(required),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-required": dataAttr(rootState.required),
         htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
@@ -108,18 +115,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getControlState,
     getControlProps() {
-      const controlState = getControlState()
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
         role: "radiogroup",
         "aria-orientation": "horizontal",
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-readonly": ariaAttr(controlState.readOnly),
-        "data-readonly": dataAttr(controlState.readOnly),
-        "data-disabled": dataAttr(controlState.disabled),
+        "aria-readonly": ariaAttr(rootState.readOnly),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
         onPointerMove(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
@@ -147,15 +153,15 @@ export function connect<T extends PropTypes>(
         id: dom.getItemId(scope, index.toString()),
         role: "radio",
         tabIndex: (() => {
-          if (readOnly) return itemState.checked ? 0 : undefined
-          if (disabled) return undefined
+          if (itemState.readOnly) return itemState.checked ? 0 : undefined
+          if (itemState.disabled) return undefined
           return itemState.checked ? 0 : -1
         })(),
         "aria-roledescription": "rating",
         "aria-label": valueText,
-        "aria-disabled": disabled,
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
+        "aria-disabled": itemState.disabled,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-readonly": dataAttr(itemState.readOnly),
         "aria-setsize": prop("count"),
         "aria-checked": checked,
         "data-checked": dataAttr(itemState.checked),
@@ -169,6 +175,7 @@ export function connect<T extends PropTypes>(
         },
         onPointerMove(event) {
           if (!interactive) return
+          if (event.pointerType === "touch") return
           const point = getEventPoint(event)
           const relativePoint = getRelativePoint(point, event.currentTarget)
           const percentX = relativePoint.getPercentValue({

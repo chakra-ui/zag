@@ -30,9 +30,7 @@ function insertAt<T extends { id: string }>(items: T[], targetId: string, placem
 }
 
 function reorderWithin(items: Item[], source: string, target: string, placement: "before" | "after") {
-  const fromIndex = items.findIndex((i) => i.id === source)
-  const toIndex = items.findIndex((i) => i.id === target)
-  return dnd.move(items, fromIndex, dnd.getDestinationIndex(items.length, fromIndex, toIndex, placement))
+  return dnd.reorder(items, { source, target, placement, itemToValue: (i) => i.id })
 }
 
 const fruits = ref(fruitsData)

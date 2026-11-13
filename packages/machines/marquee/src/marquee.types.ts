@@ -178,11 +178,18 @@ export interface ContentProps {
   index: number
 }
 
-export interface ContentState {
+export interface RootState {
   /**
-   * The index of the content instance
+   * Whether the marquee is paused
    */
-  index: number
+  paused: boolean
+  /**
+   * The orientation of the marquee
+   */
+  orientation: "horizontal" | "vertical"
+}
+
+export interface ContentState extends RootState {
   /**
    * Whether this content instance is a clone (duplicate)
    */
@@ -242,6 +249,10 @@ export interface MarqueeApi<T extends PropTypes = PropTypes> {
    */
   restart: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
   /**

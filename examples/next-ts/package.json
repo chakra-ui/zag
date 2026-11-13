@@ -47,8 +47,8 @@
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-trap": "workspace:*",
-    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
+    "@zag-js/fuzzy": "workspace:*",
     "@zag-js/gridlist": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
     "@zag-js/hotkeys": "workspace:*",
@@ -89,7 +89,6 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/steps": "workspace:*",
-    "@zag-js/store": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
@@ -113,7 +112,8 @@
     "next-cloudinary": "6.17.5",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-hook-form": "7.72.0"
+    "react-hook-form": "7.72.0",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",

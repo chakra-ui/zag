@@ -43,6 +43,7 @@ import type {
   DatePickerService,
   DayTableCellProps,
   DayTableCellState,
+  InputProps,
   InputState,
   RootState,
   TableCellProps,
@@ -291,17 +292,11 @@ export function connect<T extends PropTypes>(
   }
 
   function getRootState(): RootState {
-    return { open, disabled, readOnly, empty }
+    return { open, disabled, readOnly, invalid, empty }
   }
 
   function getTriggerState(): TriggerState {
-    return {
-      open,
-      disabled,
-      placeholderShown: empty,
-      placement: currentPlacement,
-      side: currentPlacementSide,
-    }
+    return { ...getRootState(), placement: currentPlacement, side: currentPlacementSide }
   }
 
   function getContentState(): ContentState {
@@ -315,8 +310,9 @@ export function connect<T extends PropTypes>(
     }
   }
 
-  function getInputState(): InputState {
-    return { open, disabled, readOnly, invalid, placeholderShown: empty }
+  function getInputState(props: InputProps = {}): InputState {
+    const { index = 0 } = props
+    return { ...getRootState(), placeholderShown: selectedValue[index] == null }
   }
 
   // -----------------------------------------------------------------------------
@@ -409,9 +405,9 @@ export function connect<T extends PropTypes>(
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
     },
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       if (prop("inline")) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     focusMonth,
     focusYear,
@@ -459,32 +455,35 @@ export function connect<T extends PropTypes>(
         "data-state": rootState.open ? "open" : "closed",
         "data-disabled": dataAttr(rootState.disabled),
         "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
         "data-empty": dataAttr(rootState.empty),
       })
     },
 
     getLabelProps(props = {}) {
       const { index = 0 } = props
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope, index),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope, index),
-        "data-state": open ? "open" : "closed",
+        "data-state": rootState.open ? "open" : "closed",
         "data-index": index,
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-placeholder-shown": dataAttr(empty),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-placeholder-shown": dataAttr(rootState.empty),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
@@ -547,7 +546,7 @@ export function connect<T extends PropTypes>(
                 const cellState = getYearTableCellState({ value: focusedValue.year })
                 if (!cellState.selectable) return
               }
-              send({ type: "TABLE.ENTER", view, columns, focus: true })
+              send({ type: "TABLE.ENTER", view, columns, focus: true, src: "item-select" })
             },
             Space(event) {
               keyMap.Enter?.(event)
@@ -717,7 +716,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "day", value })
+          send({ type: "CELL.CLICK", cell: "day", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -782,7 +781,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "month", value })
+          send({ type: "CELL.CLICK", cell: "month", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -841,7 +840,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!cellState.selectable) return
-          send({ type: "CELL.CLICK", cell: "year", value })
+          send({ type: "CELL.CLICK", cell: "year", value, src: "item-select" })
         },
         onPointerMove: isRangePicker
           ? (event) => {
@@ -920,13 +919,13 @@ export function connect<T extends PropTypes>(
         "aria-controls": dom.getContentId(scope),
         "aria-expanded": triggerState.open,
         "data-state": triggerState.open ? "open" : "closed",
-        "data-placeholder-shown": dataAttr(triggerState.placeholderShown),
+        "data-placeholder-shown": dataAttr(triggerState.empty),
         "aria-haspopup": "grid",
         disabled: triggerState.disabled,
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
       })
     },
@@ -974,7 +973,7 @@ export function connect<T extends PropTypes>(
     getInputState,
     getInputProps(props = {}) {
       const { index = 0, fixOnBlur = true } = props
-      const inputState = getInputState()
+      const inputState = getInputState({ index })
 
       return normalize.input({
         ...parts.input.attrs(scope.id),
@@ -1004,7 +1003,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!prop("openOnClick")) return
           if (!interactive) return
-          send({ type: "OPEN", src: "input.click" })
+          send({ type: "OPEN", src: "input-click" })
         },
         onFocus() {
           send({ type: "INPUT.FOCUS", index })
@@ -1074,7 +1073,7 @@ export function connect<T extends PropTypes>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },
@@ -1089,7 +1088,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "PRESET.CLICK", value })
+          send({ type: "PRESET.CLICK", value, src: "item-select" })
         },
       })
     },

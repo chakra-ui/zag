@@ -51,7 +51,7 @@ export function NestedMenu() {
       </button>
 
       <Portal>
-        <div {...fileMenu.getPositionerProps()}>
+        <div className={styles.Positioner} {...fileMenu.getPositionerProps()}>
           <ul className={styles.Content} {...fileMenu.getContentProps()}>
             {data.map((item) => (
               <li
@@ -71,7 +71,7 @@ export function NestedMenu() {
       </Portal>
 
       <Portal>
-        <div {...shareMenu.getPositionerProps()}>
+        <div className={styles.Positioner} {...shareMenu.getPositionerProps()}>
           <ul className={styles.Content} {...shareMenu.getContentProps()}>
             {shareMenuData.map((item) => (
               <li

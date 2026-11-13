@@ -2,7 +2,7 @@
 import { useState } from "react"
 
 export function ControlledNumberInput() {
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState<number | null>(null)
 
   const service = useMachine(numberInput.machine, {
     value,

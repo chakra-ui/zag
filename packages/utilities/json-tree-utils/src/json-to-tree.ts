@@ -1,4 +1,4 @@
-import { dataTypes, PrimitiveType } from "./data-type"
+import { getDataType, PrimitiveType } from "./data-type"
 import { getPreviewOptions, ROOT_KEY } from "./node-conversion"
 import type { JsonNode, JsonNodePreviewOptions } from "./types"
 
@@ -13,8 +13,16 @@ const MAX_DEPTH = 20
 
 export const jsonToTree = (data: unknown, props: JsonToTreeOptions = {}): JsonNode => {
   const { visited = new WeakSet(), keyPath = [ROOT_KEY], depth = 0 } = props
-  const options = getPreviewOptions(props.options)
+  return createNode(data, visited, keyPath, getPreviewOptions(props.options), depth)
+}
 
+const createNode = (
+  data: unknown,
+  visited: WeakSet<WeakKey>,
+  keyPath: (string | number)[],
+  options: JsonNodePreviewOptions,
+  depth: number,
+): JsonNode => {
   // Prevent infinite recursion by limiting depth
   if (depth > MAX_DEPTH) {
     return {
@@ -35,16 +43,11 @@ export const jsonToTree = (data: unknown, props: JsonToTreeOptions = {}): JsonNo
     visited.add(data)
   }
 
-  const dataType = dataTypes.find((dataType) => dataType.check(data)) || PrimitiveType
+  const dataType = getDataType(data) || PrimitiveType
   return dataType.node({
     value: data,
     createNode: (nestedKeyPath, value) =>
-      jsonToTree(value, {
-        visited,
-        keyPath: [...keyPath, ...nestedKeyPath],
-        options,
-        depth: depth + 1,
-      }),
+      createNode(value, visited, [...keyPath, ...nestedKeyPath], options, depth + 1),
     keyPath,
     options,
   })

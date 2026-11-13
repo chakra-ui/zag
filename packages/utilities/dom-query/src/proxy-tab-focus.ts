@@ -1,5 +1,5 @@
 import { addDomEvent } from "./event"
-import { isActiveElement } from "./node"
+import { contains, getActiveElement, isActiveElement } from "./node"
 import { raf } from "./raf"
 import { getAdjacentTabbable, getTabbableEdges, type GetShadowRootOption } from "./tabbable"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
@@ -32,19 +32,19 @@ function proxyTabFocusImpl(container: MaybeElementOrFn, options: ProxyTabFocusOp
     if (!content) return
 
     const [firstTabbable, lastTabbable] = getTabbableEdges(content, { includeContainer: true, getShadowRoot })
-    const noTabbableElements = !firstTabbable && !lastTabbable
+    const isEmptyAndFocused = !firstTabbable && !lastTabbable && contains(content, getActiveElement(doc))
 
     let elementToFocus: MaybeElement | undefined = null
 
     // Cheap paths first — avoid scanning body tabbables unless exiting/re-entering content
-    if (event.shiftKey && (isActiveElement(firstTabbable) || noTabbableElements)) {
+    if (event.shiftKey && (isActiveElement(firstTabbable) || isEmptyAndFocused)) {
       // Shift+Tab from first item → trigger
       elementToFocus = trigger
     } else if (!event.shiftKey && isActiveElement(trigger)) {
       // Tab from trigger → first item
       onFocusEnter?.()
       elementToFocus = firstTabbable
-    } else if (!event.shiftKey && (isActiveElement(lastTabbable) || noTabbableElements)) {
+    } else if (!event.shiftKey && (isActiveElement(lastTabbable) || isEmptyAndFocused)) {
       // Tab from last item → next after trigger (outside content)
       elementToFocus = getAdjacentTabbable(trigger ?? null, { exclude: content, getShadowRoot })
     } else if (event.shiftKey) {

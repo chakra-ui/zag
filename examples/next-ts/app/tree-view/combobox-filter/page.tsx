@@ -268,7 +268,7 @@ export default function Page() {
           </p>
 
           <Portal>
-            <div {...comboboxApi.getPositionerProps()}>
+            <div {...comboboxApi.getPositionerProps()} className={styles.positioner}>
               <div {...mergeProps(comboboxApi.getContentProps(), { className: styles.content })}>
                 <div className={styles.treePanel}>
                   {visibleCount === 0 ? (

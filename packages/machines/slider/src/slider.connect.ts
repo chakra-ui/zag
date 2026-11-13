@@ -108,13 +108,13 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     dragging,
     focused,
     setValue(value) {
-      send({ type: "SET_VALUE", value: value })
+      send({ type: "SET_VALUE", value, src: "script" })
     },
     getThumbValue(index) {
       return sliderValue[index]
     },
     setThumbValue(index, value) {
-      send({ type: "SET_VALUE", index, value })
+      send({ type: "SET_VALUE", index, value, src: "script" })
     },
     getValuePercent: getValuePercentFn,
     getPercentValue: getPercentValueFn,
@@ -123,7 +123,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
     },
     setThumbPercent(index, percent) {
       const value = getPercentValueFn(percent)
-      send({ type: "SET_VALUE", index, value })
+      send({ type: "SET_VALUE", index, value, src: "script" })
     },
     getThumbMin(index) {
       return getRangeAtIndex(service, index).min
@@ -132,10 +132,10 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
       return getRangeAtIndex(service, index).max
     },
     increment(index) {
-      send({ type: "INCREMENT", index })
+      send({ type: "INCREMENT", index, src: "script" })
     },
     decrement(index) {
-      send({ type: "DECREMENT", index })
+      send({ type: "DECREMENT", index, src: "script" })
     },
     focus() {
       if (!interactive) return
@@ -259,31 +259,31 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           const keyMap: EventKeyMap = {
             ArrowUp() {
               if (isHorizontal) return
-              send({ type: "ARROW_INC", step, src: "ArrowUp" })
+              send({ type: "ARROW_INC", step, src: "keyboard" })
             },
             ArrowDown() {
               if (isHorizontal) return
-              send({ type: "ARROW_DEC", step, src: "ArrowDown" })
+              send({ type: "ARROW_DEC", step, src: "keyboard" })
             },
             ArrowLeft() {
               if (isVertical) return
-              send({ type: "ARROW_DEC", step, src: "ArrowLeft" })
+              send({ type: "ARROW_DEC", step, src: "keyboard" })
             },
             ArrowRight() {
               if (isVertical) return
-              send({ type: "ARROW_INC", step, src: "ArrowRight" })
+              send({ type: "ARROW_INC", step, src: "keyboard" })
             },
             PageUp() {
-              send({ type: "ARROW_INC", step, src: "PageUp" })
+              send({ type: "ARROW_INC", step, src: "keyboard" })
             },
             PageDown() {
-              send({ type: "ARROW_DEC", step, src: "PageDown" })
+              send({ type: "ARROW_DEC", step, src: "keyboard" })
             },
             Home() {
-              send({ type: "HOME" })
+              send({ type: "HOME", src: "keyboard" })
             },
             End() {
-              send({ type: "END" })
+              send({ type: "END", src: "keyboard" })
             },
           }
 
@@ -338,7 +338,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (!dom.getFirstEnabledThumbEl(scope)) return
 
           const point = getEventPoint(event)
-          send({ type: "POINTER_DOWN", point })
+          send({ type: "POINTER_DOWN", point, src: "track-click" })
 
           event.preventDefault()
           event.stopPropagation()

@@ -130,6 +130,17 @@ test.describe("accordion", () => {
       await expect(I.getContentByValue("payment")).not.toHaveAttribute("hidden")
     })
 
+    test("a match on a disabled item hides it again", async () => {
+      await I.revealByFind("support")
+      await expect(I.getContentByValue("support")).toHaveAttribute("hidden", "until-found")
+    })
+
+    test("back-to-back matches open the enabled item and re-hide the disabled one", async () => {
+      await I.revealByFind("support", "payment")
+      await expect(I.getContentByValue("payment")).toBeVisible()
+      await expect(I.getContentByValue("support")).toHaveAttribute("hidden", "until-found")
+    })
+
     test("closing a found item makes it searchable again", async () => {
       await I.revealByFind("payment")
       await I.getTriggerByLabel("Which payment methods do you accept?").click()

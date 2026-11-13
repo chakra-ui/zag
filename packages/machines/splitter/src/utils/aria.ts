@@ -1,10 +1,6 @@
-/**
- * This code was modified from react-resizable-panels by Brian Vaughn
- * @see https://github.com/bvaughn/react-resizable-panels
- */
-
 import { ensure } from "@zag-js/utils"
 import type { NormalizedPanelData } from "../splitter.types"
+import { splitResizeTriggerId } from "./panel"
 
 export function calculateAriaValues({
   size,
@@ -24,7 +20,8 @@ export function calculateAriaValues({
   ensure(firstIndex, () => "No pivot index found")
 
   panels.forEach((panel, index) => {
-    const { maxSize = 100, minSize = 0 } = panel
+    const { maxSize = 100, collapsible, collapsedSize = 0 } = panel
+    const minSize = collapsible ? collapsedSize : (panel.minSize ?? 0)
 
     if (index === firstIndex) {
       currentMinSize = minSize
@@ -47,7 +44,7 @@ export function calculateAriaValues({
 }
 
 export function getAriaValue(size: number[], panels: NormalizedPanelData[], handleId: string) {
-  const [beforeId, afterId] = handleId.split(":")
+  const [beforeId, afterId] = splitResizeTriggerId(handleId, panels)
   const beforeIndex = panels.findIndex((panel) => panel.id === beforeId)
   const afterIndex = panels.findIndex((panel) => panel.id === afterId)
 

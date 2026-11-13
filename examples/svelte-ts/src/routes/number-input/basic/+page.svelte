@@ -11,7 +11,7 @@
   const controls = useControls(numberInputControls)
 
   const id = $props.id()
-  const service = useMachine(numberInput.machine, controls.mergeProps<numberInput.Props>({ id }))
+  const service = useMachine(numberInput.machine, controls.mergeProps<numberInput.Props>({ id, name: "amount" }))
 
   const api = $derived(numberInput.connect(service, normalizeProps))
 </script>
@@ -25,6 +25,7 @@
         <MinusIcon />
       </button>
       <input data-testid="input" {...api.getInputProps()} />
+      <input data-testid="hidden-input" {...api.getHiddenInputProps()} />
       <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
         <PlusIcon />
       </button>

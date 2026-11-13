@@ -273,14 +273,14 @@ watch({ track, prop, action }) {
 Deps return primitives, so a shallow comparison is enough. Each adapter maps the
 three reactive pieces to its own primitives:
 
-| Adapter | Bindable storage             | `track`                  | Re-render trigger     |
-| ------- | ---------------------------- | ------------------------ | --------------------- |
-| React   | `useState` + `useRef`        | `useEffect` with deps    | state setter          |
-| Preact  | `useState` + `useRef`        | `useEffect` with deps    | state setter          |
-| Solid   | `createSignal`               | `createEffect`           | signal reads          |
-| Vue     | `shallowRef`                 | `watch`                  | ref reads             |
-| Svelte  | `$state`                     | `$effect`                | rune reads            |
-| Vanilla | `proxy` from `@zag-js/store` | dep check on each notify | `subscribe` callbacks |
+| Adapter | Bindable storage      | `track`                   | Re-render trigger               |
+| ------- | --------------------- | ------------------------- | ------------------------------- |
+| React   | `useState` + `useRef` | `useEffect` with deps     | state setter                    |
+| Preact  | `useState` + `useRef` | `useEffect` with deps     | state setter                    |
+| Solid   | `createSignal`        | `createEffect`            | signal reads                    |
+| Vue     | `shallowRef`          | `watch`                   | ref reads                       |
+| Svelte  | `$state`              | `$effect`                 | rune reads                      |
+| Vanilla | plain value cells     | dep check on each publish | `subscribe` callbacks, per tick |
 
 `flush(fn)` lets a machine apply an update synchronously. React wraps it in
 `flushSync`, Svelte in `flushSync`, Vue waits for `nextTick`. If your framework

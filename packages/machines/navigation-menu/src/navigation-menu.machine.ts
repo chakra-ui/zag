@@ -1,10 +1,10 @@
-import { setup } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { setup, type Params, type Scope } from "@zag-js/core"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { addDomEvent, AnimationFrame, contains, navigate } from "@zag-js/dom-query"
-import type { Point, Rect, Size } from "@zag-js/types"
+import type { ActivationDirection, Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
-import type { NavigationMenuSchema } from "./navigation-menu.types"
+import type { NavigationMenuSchema, ValueChangeReason } from "./navigation-menu.types"
 import {
   clearAllOpenTimeouts,
   clearCloseTimeout,
@@ -28,7 +28,7 @@ export const machine = createMachine({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getRefs }) {
     return {
       layer: bindable<LayerSnapshot | null>(() => ({
         defaultValue: null,
@@ -39,11 +39,16 @@ export const machine = createMachine({
         value: prop("value"),
         sync: true,
         onChange(value) {
-          prop("onValueChange")?.({ value })
+          // Timers change the value outside an event, so the reason is kept in a ref
+          prop("onValueChange")?.({ value, reason: getRefs().get("valueChangeReason") })
         },
       })),
       previousValue: bindable<string>(() => ({
         defaultValue: "",
+        sync: true,
+      })),
+      activationDirection: bindable<ActivationDirection>(() => ({
+        defaultValue: "none",
         sync: true,
       })),
 
@@ -79,7 +84,7 @@ export const machine = createMachine({
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["restoreTabOrder", "setTriggerNode", "syncContentNode", "syncMotionAttribute"])
+      action(["restoreTabOrder", "setTriggerNode", "syncContentNode"])
     })
   },
 
@@ -92,11 +97,12 @@ export const machine = createMachine({
       triggerResizeObserverCleanup: undefined,
       closeTimeoutId: null,
       openTimeoutIds: {},
+      valueChangeReason: undefined,
       focusFrame: AnimationFrame.create(),
     }
   },
 
-  entry: ["checkViewportNode"],
+  entry: ["checkViewportNode", "setTriggerNode", "syncContentNode"],
 
   exit: ["cleanupObservers", "clearAllTimeouts", "cancelFocusFrame"],
 
@@ -173,7 +179,10 @@ export const machine = createMachine({
     },
 
     actions: {
-      setValue({ context, event }) {
+      setValue({ context, event, scope, prop, refs }) {
+        refs.set("valueChangeReason", (event.src as ValueChangeReason | undefined) ?? "script")
+        const direction = dom.getActivationDirection(scope, context.get("value"), event.value, prop("orientation"))
+        context.set("activationDirection", direction)
         context.set("value", event.value)
       },
       clearCloseTimeout({ refs }) {
@@ -188,7 +197,7 @@ export const machine = createMachine({
       resetValueWithDelay({ event, refs }) {
         clearOpenTimeout(refs, event.value)
       },
-      setValueWithDelay({ event, prop, context, refs }) {
+      setValueWithDelay({ event, prop, context, refs, scope }) {
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
@@ -198,8 +207,8 @@ export const machine = createMachine({
           () => {
             const innerTimeoutId = window.setTimeout(() => {
               clearOpenTimeout(refs, event.value)
-              context.set("previousValue", context.get("value"))
-              context.set("value", event.value)
+              refs.set("valueChangeReason", "trigger-hover")
+              changeValue(context, scope, prop, event.value)
             })
             setOpenTimeout(refs, event.value, innerTimeoutId)
           },
@@ -208,15 +217,17 @@ export const machine = createMachine({
 
         setOpenTimeout(refs, event.value, openTimeoutId)
       },
-      selectValue: ({ context, event }) => {
+      selectValue: ({ context, event, scope, prop, refs }) => {
         // When selecting item we trigger update immediately
-        context.set("previousValue", context.get("value"))
-        context.set("value", event.value)
+        refs.set("valueChangeReason", event.src as ValueChangeReason | undefined)
+        changeValue(context, scope, prop, event.value)
       },
-      deselectValue: ({ context }) => {
+      deselectValue: ({ context, event, refs }) => {
         // When deselecting, clear immediately to prevent overlap
+        refs.set("valueChangeReason", event.src as ValueChangeReason | undefined)
         context.set("value", "")
         context.set("previousValue", "")
+        context.set("activationDirection", "none")
       },
 
       syncContentNode({ context, scope, refs, send }) {
@@ -296,8 +307,8 @@ export const machine = createMachine({
               }
             }
           },
-          onDismiss() {
-            send({ type: "CLOSE", value: context.get("value") })
+          onDismiss(event) {
+            send({ type: "CLOSE", value: context.get("value"), src: getDismissReason(event) })
           },
         })
 
@@ -320,10 +331,6 @@ export const machine = createMachine({
         const listEl = dom.getListEl(scope)
         const triggerResizeObserver = dom.trackResizeObserver([node, listEl], exec)
         refs.set("triggerResizeObserverCleanup", triggerResizeObserver)
-      },
-      syncMotionAttribute({ context, scope }) {
-        if (!context.get("isViewportRendered")) return
-        dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
 
       focusFirstTabbableEl({ event, scope, context, refs }) {
@@ -469,3 +476,15 @@ export const machine = createMachine({
     },
   },
 })
+
+function changeValue(
+  context: Params<NavigationMenuSchema>["context"],
+  scope: Scope,
+  prop: Params<NavigationMenuSchema>["prop"],
+  value: string,
+) {
+  const previousValue = context.get("value")
+  context.set("activationDirection", dom.getActivationDirection(scope, previousValue, value, prop("orientation")))
+  context.set("previousValue", previousValue)
+  context.set("value", value)
+}

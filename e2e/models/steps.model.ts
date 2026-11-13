@@ -30,7 +30,7 @@ export class StepsModel extends Model {
   }
 
   getCompletedContent() {
-    return this.page.locator(`${part("steps", "content")}[data-value="__complete__"]`)
+    return this.page.locator(`${part("steps", "content")}[data-type="complete"]`)
   }
 
   get nextTrigger() {

@@ -46,7 +46,7 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   /**
    * The initial value of the progress bar when rendered.
    * Use when you don't need to control the value of the progress bar.
-   * @default 50
+   * @default min
    */
   defaultValue?: number | null | undefined
   /**
@@ -85,9 +85,11 @@ type PropsWithDefault = "orientation" | "min" | "max" | "formatOptions"
 
 type Computed = Readonly<{
   isIndeterminate: boolean
+  clampedValue: number | null
   percent: number
   isHorizontal: boolean
   formatter: Intl.NumberFormat
+  percentFormatter: Intl.NumberFormat
 }>
 
 export interface ProgressSchema {
@@ -116,11 +118,18 @@ export interface ViewProps {
   state: ProgressState
 }
 
-export interface ViewState {
+export interface RootState {
   /**
-   * The progress state this view represents
+   * The progress state: `indeterminate`, `loading`, or `complete`
    */
   state: ProgressState
+  /**
+   * The orientation of the progress bar
+   */
+  orientation: Orientation
+}
+
+export interface ViewState {
   /**
    * Whether this view matches the current progress state
    */
@@ -169,6 +178,10 @@ export interface ProgressApi<T extends PropTypes = PropTypes> {
    */
   indeterminate: boolean
 
+  /**
+   * Returns the state of the root. The label, track, range and circle parts share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
   getTrackProps: () => T["element"]

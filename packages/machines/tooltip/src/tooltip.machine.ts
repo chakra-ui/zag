@@ -1,12 +1,23 @@
-import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
+import {
+  addDomEvent,
+  AnimationFrame,
+  getOverflowAncestors,
+  getPopupActivationDirection,
+  isComposingEvent,
+  waitForAnimationEnd,
+  raf,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
 import { ensureProps } from "@zag-js/utils"
 import * as dom from "./tooltip.dom"
 import { isWarm, store } from "./tooltip.store"
-import type { Placement, TooltipSchema } from "./tooltip.types"
+import { getViewportSizeStyle } from "./tooltip.style"
+import type { PopupActivationDirection } from "@zag-js/types"
+import type { OpenChangeReason, Placement, TooltipSchema, ViewportSize } from "./tooltip.types"
 
 const { and, not } = createGuards<TooltipSchema>()
 
@@ -40,7 +51,7 @@ export const machine = createMachine<TooltipSchema>({
 
   effects: ["trackFocusVisible", "trackStore"],
 
-  exit: ["clearGlobalId"],
+  exit: ["clearGlobalId", "endTriggerSwitch"],
 
   context: ({ bindable, prop, scope }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
@@ -52,10 +63,20 @@ export const machine = createMachine<TooltipSchema>({
       onChange(value) {
         const onTriggerValueChange = prop("onTriggerValueChange")
         if (!onTriggerValueChange) return
-        const triggerElement = dom.getActiveTriggerEl(scope, value)
+        const triggerElement = dom.getTriggerEl(scope, value)
         onTriggerValueChange({ value, triggerElement })
       },
     })),
+    activationDirection: bindable<PopupActivationDirection | null>(() => ({ defaultValue: null })),
+    previousTriggerValue: bindable<string | null>(() => ({ defaultValue: null })),
+    transitioning: bindable<boolean>(() => ({ defaultValue: false })),
+    viewportRendered: bindable<boolean>(() => ({ defaultValue: false })),
+    viewportSize: bindable<ViewportSize | null>(() => ({ defaultValue: null })),
+  }),
+
+  refs: () => ({
+    cancelTriggerSwitch: null,
+    awaitingViewportSize: false,
   }),
 
   watch({ track, action, prop }) {
@@ -76,11 +97,14 @@ export const machine = createMachine<TooltipSchema>({
     "TRIGGER_VALUE.SET": {
       actions: ["setTriggerValue", "repositionImmediate"],
     },
+    "TRIGGER_SWITCH.END": {
+      actions: ["endTriggerSwitch"],
+    },
   },
 
   states: {
     closed: {
-      entry: ["clearGlobalId", "clearIsPointer"],
+      entry: ["clearGlobalId", "clearIsPointer", "endTriggerSwitch", "clearActivationDirection"],
       on: {
         "CONTROLLED.OPEN": {
           target: "open",
@@ -172,7 +196,14 @@ export const machine = createMachine<TooltipSchema>({
     },
 
     open: {
-      effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning", "trackSafeArea"],
+      effects: [
+        "trackEscapeKey",
+        "trackScroll",
+        "trackPointerlockChange",
+        "trackPositioning",
+        "trackViewportSize",
+        "trackSafeArea",
+      ],
       entry: ["setGlobalId"],
       on: {
         "CONTROLLED.CLOSE": {
@@ -224,13 +255,19 @@ export const machine = createMachine<TooltipSchema>({
           // Transition to closing (which cleans up trackPositioning) then immediately back to open
           // This re-creates the positioning effect with the new trigger
           target: "closing",
-          actions: ["setTriggerValue", "immediateReopen"],
+          actions: [
+            "setActivationDirection",
+            "setPreviousTriggerValue",
+            "setTriggerValue",
+            "startTriggerSwitch",
+            "immediateReopen",
+          ],
         },
       },
     },
 
     closing: {
-      effects: ["trackPositioning", "waitForCloseDelay"],
+      effects: ["trackPositioning", "trackViewportSize", "waitForCloseDelay"],
       on: {
         CLOSE_DELAY: [
           {
@@ -260,9 +297,35 @@ export const machine = createMachine<TooltipSchema>({
         ],
         POINTER_MOVE: [
           {
+            guard: and("isOpenControlled", "isNewTriggerValue"),
+            actions: [
+              "setPointerMoveOpened",
+              "setIsPointer",
+              "setActivationDirection",
+              "setPreviousTriggerValue",
+              "setTriggerValue",
+              "startTriggerSwitch",
+              "invokeOnOpen",
+              "toggleVisibility",
+            ],
+          },
+          {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
             actions: ["setPointerMoveOpened", "setIsPointer", "setTriggerValue", "invokeOnOpen", "toggleVisibility"],
+          },
+          {
+            guard: "isNewTriggerValue",
+            target: "open",
+            actions: [
+              "setPointerMoveOpened",
+              "setIsPointer",
+              "setActivationDirection",
+              "setPreviousTriggerValue",
+              "setTriggerValue",
+              "startTriggerSwitch",
+              "invokeOnOpen",
+            ],
           },
           {
             target: "open",
@@ -271,7 +334,13 @@ export const machine = createMachine<TooltipSchema>({
         ],
         "TRIGGER_VALUE.SET": {
           target: "open",
-          actions: ["setTriggerValue", "repositionImmediate"],
+          actions: [
+            "setActivationDirection",
+            "setPreviousTriggerValue",
+            "setTriggerValue",
+            "startTriggerSwitch",
+            "repositionImmediate",
+          ],
         },
         REOPEN: {
           target: "open",
@@ -295,13 +364,14 @@ export const machine = createMachine<TooltipSchema>({
       hasPointerMoveOpened: ({ context }) => !!context.get("hasPointerMoveOpened"),
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
       isDisabled: ({ prop }) => !!prop("disabled"),
+      isNewTriggerValue: ({ context, event }) => event.value != null && event.value !== context.get("triggerValue"),
     },
 
     actions: {
       setGlobalId: ({ prop, event }) => {
         const prevId = store.get("id")
         const switching = prevId !== null && prevId !== prop("id")
-        const isInstant = event.src === "trigger.focus" || switching || isWarm()
+        const isInstant = event.src === "trigger-focus" || switching || isWarm()
         store.update({ id: prop("id"), prevId: switching ? prevId : null, instant: isInstant })
       },
 
@@ -311,23 +381,24 @@ export const machine = createMachine<TooltipSchema>({
         }
       },
 
-      invokeOnOpen: ({ prop }) => {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose: ({ prop }) => {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
 
       closeIfDisabled: ({ prop, send }) => {
         if (!prop("disabled")) return
-        send({ type: "CLOSE", src: "disabled.change" })
+        send({ type: "CLOSE", src: "disabled" })
       },
 
-      reposition: ({ context, event, prop, scope }) => {
+      reposition: ({ context, event, prop, scope, refs }) => {
         if (event.type !== "POSITIONING.SET") return
+        if (refs.get("awaitingViewportSize")) return
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
         getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
@@ -339,11 +410,12 @@ export const machine = createMachine<TooltipSchema>({
         })
       },
 
-      repositionImmediate: ({ context, event, prop, scope }) => {
+      repositionImmediate: ({ context, event, prop, scope, refs }) => {
+        if (refs.get("awaitingViewportSize")) return
         // Use event.value (new trigger) instead of context (might still have old value)
         const triggerValue = event.value ?? context.get("triggerValue")
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
+        const getTriggerEl = () => dom.getTriggerEl(scope, triggerValue)
         return getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
           ...prop("positioning"),
@@ -384,6 +456,39 @@ export const machine = createMachine<TooltipSchema>({
         context.set("triggerValue", event.value)
       },
 
+      setActivationDirection: ({ context, event, scope }) => {
+        const fromEl = dom.getTriggerEl(scope, context.get("triggerValue"))
+        const toEl = dom.getTriggerEl(scope, event.value)
+        context.set("activationDirection", getPopupActivationDirection(fromEl, toEl))
+      },
+
+      clearActivationDirection: ({ context }) => {
+        context.set("activationDirection", null)
+      },
+
+      setPreviousTriggerValue: ({ context }) => {
+        context.set("previousTriggerValue", context.get("triggerValue"))
+      },
+
+      startTriggerSwitch: ({ context, refs, scope, send }) => {
+        refs.get("cancelTriggerSwitch")?.()
+        context.set("transitioning", true)
+        const positionerEl = dom.getPositionerEl(scope)
+        if (!positionerEl) return
+        positionerEl.setAttribute("data-transitioning", "")
+        refs.set("awaitingViewportSize", !!dom.getViewportEl(scope))
+        const cancel = waitForAnimationEnd(positionerEl, () => send({ type: "TRIGGER_SWITCH.END" }))
+        refs.set("cancelTriggerSwitch", cancel)
+      },
+
+      endTriggerSwitch: ({ context, refs }) => {
+        context.set("previousTriggerValue", null)
+        refs.get("cancelTriggerSwitch")?.()
+        refs.set("cancelTriggerSwitch", null)
+        refs.set("awaitingViewportSize", false)
+        context.set("transitioning", false)
+      },
+
       immediateReopen: ({ send }) => {
         // Immediately transition back to open to re-create the positioning effect
         queueMicrotask(() => {
@@ -401,26 +506,31 @@ export const machine = createMachine<TooltipSchema>({
       trackSafeArea: ({ send, prop, scope, context }) => {
         if (!prop("interactive")) return
         return trackSafeArea({
-          getTriggerEl: () => dom.getActiveTriggerEl(scope, context.get("triggerValue")),
-          getContentEl: () => dom.getContentEl(scope),
+          getTriggerEl: () => dom.getTriggerEl(scope, context.get("triggerValue")),
+          getContentEl: () => dom.getPopupEl(scope, context.get("triggerValue")),
           openedByPointer: () => context.get("isPointer"),
           defer: true,
           onLeave() {
-            send({ type: "SAFE_AREA.EXIT" })
+            send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
           },
         })
       },
 
-      trackPositioning: ({ context, prop, scope }) => {
+      trackPositioning: ({ context, prop, scope, refs }) => {
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning").placement)
         }
 
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
+        const positioning = prop("positioning")
         return getPlacement(getTriggerEl, getPositionerEl, {
           getArrowElement: () => dom.getArrowEl(scope),
-          ...prop("positioning"),
+          ...positioning,
+          updatePosition(data) {
+            if (refs.get("awaitingViewportSize")) return
+            return positioning.updatePosition ? positioning.updatePosition(data) : data.updatePosition()
+          },
           defer: true,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -428,9 +538,31 @@ export const machine = createMachine<TooltipSchema>({
         })
       },
 
+      trackViewportSize: (params) => {
+        const { context, scope, watchEffect } = params
+        return watchEffect([() => context.get("triggerValue")], () => {
+          const frame = AnimationFrame.create()
+          const stopObserving = raf(() => {
+            const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+            const viewportRendered = !!dom.getViewportEl(scope)
+            context.set("viewportRendered", viewportRendered)
+            if (!viewportRendered || !contentEl) return
+
+            return resizeObserverBorderBox.observe(contentEl, (entry) => {
+              const [{ inlineSize, blockSize }] = entry.borderBoxSize
+              frame.request(() => setViewportSize(params, { width: inlineSize, height: blockSize }))
+            })
+          })
+          return () => {
+            stopObserving()
+            frame.cancel()
+          }
+        })
+      },
+
       trackPointerlockChange: ({ send, scope }) => {
         const doc = scope.getDoc()
-        const onChange = () => send({ type: "CLOSE", src: "pointerlock:change" })
+        const onChange = () => send({ type: "CLOSE", src: "interact-outside" })
         return addDomEvent(doc, "pointerlockchange", onChange, false)
       },
 
@@ -438,7 +570,7 @@ export const machine = createMachine<TooltipSchema>({
         if (!prop("closeOnScroll")) return
 
         const triggerValue = context.get("triggerValue")
-        const triggerEl = dom.getActiveTriggerEl(scope, triggerValue)
+        const triggerEl = dom.getTriggerEl(scope, triggerValue)
         if (!triggerEl) return
 
         const overflowParents = getOverflowAncestors(triggerEl)
@@ -466,7 +598,7 @@ export const machine = createMachine<TooltipSchema>({
           cleanup = store.subscribe(() => {
             const id = store.get("id")
             if (id !== null && id !== prop("id")) {
-              send({ type: "CLOSE", src: "id.change" })
+              send({ type: "CLOSE", src: "sibling-open" })
             }
           })
         })
@@ -483,7 +615,7 @@ export const machine = createMachine<TooltipSchema>({
           if (isComposingEvent(event)) return
           if (event.key !== "Escape") return
           event.stopPropagation()
-          send({ type: "CLOSE", src: "keydown.escape" })
+          send({ type: "CLOSE", src: "escape-key" })
         }
 
         return addDomEvent(scope.getDoc(), "keydown", onKeyDown, true)
@@ -505,3 +637,19 @@ export const machine = createMachine<TooltipSchema>({
     },
   },
 })
+
+function setViewportSize(params: Params<TooltipSchema>, size: ViewportSize) {
+  const { context, scope, refs, send } = params
+  context.set("viewportSize", size)
+  const positionerEl = dom.getPositionerEl(scope)
+  for (const [key, value] of Object.entries(getViewportSizeStyle(size))) {
+    positionerEl?.style.setProperty(key, value)
+  }
+  if (!refs.get("awaitingViewportSize")) return
+  refs.set("awaitingViewportSize", false)
+  send({ type: "POSITIONING.SET" })
+}
+
+function getOpenChangeReason(event: TooltipSchema["event"]) {
+  return (event.previousEvent ?? event).src as OpenChangeReason | undefined
+}

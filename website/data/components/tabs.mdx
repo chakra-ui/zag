@@ -131,13 +131,21 @@ const service = useMachine(tabs.machine, {
     console.log("focused tab:", details.focusedValue)
   },
   onValueChange(details) {
-    // details => { value: string | null }
+    // details => { value: string | null, reason?: ValueChangeReason }
     console.log("selected tab:", details.value)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason          | Meaning                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `trigger-click` | A tab trigger was pressed                                             |
+| `keyboard`      | An arrow, `Home` or `End` key selected the tab (automatic activation) |
+| `script`        | Changed programmatically, such as `setValue` or `selectNext`          |
 
 ### Deselection
 
@@ -258,6 +266,50 @@ the triggers get `data-indicator-pending` until it's measured.
 /* Server render or hidden container: style the selected trigger instead */
 [data-tabs-trigger][data-selected][data-indicator-pending] {
   background: white;
+}
+```
+
+### Animated panels
+
+Every part gets `data-activation-direction`: where the selected tab sits
+relative to the previous one (`left`, `right`, `up`, `down` or `none`). It's
+also available as `api.activationDirection`, in `onValueChange`, and in
+`api.getContentState()` and `api.getIndicatorState()`.
+
+To animate panels in and out, keep the previous panel mounted while it exits
+(for example with [Presence](/components/presence)) and slide panels based on
+the direction.
+
+```css
+[data-tabs-content] {
+  --slide: 50%;
+  grid-area: 1 / 1;
+}
+
+[data-tabs-content][data-activation-direction="left"] {
+  --slide: -50%;
+}
+
+[data-tabs-content][data-state="open"] {
+  animation: slide-in 300ms ease-out;
+}
+
+[data-tabs-content][data-state="closed"] {
+  animation: slide-out 300ms ease-out forwards;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--slide));
+  }
+}
+
+@keyframes slide-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--slide) * -1));
+  }
 }
 ```
 

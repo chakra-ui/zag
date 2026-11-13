@@ -102,7 +102,7 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
         <HiChevronDown aria-hidden />
       </button>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.positioner} {...api.getPositionerProps()}>
           <div className={styles.content} {...api.getContentProps()}>
             {menuItems.map((item) => {
               const IconComponent = item.icon

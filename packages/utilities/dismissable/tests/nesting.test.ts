@@ -111,6 +111,40 @@ describe("layer nesting", () => {
       expect(childDismiss).not.toHaveBeenCalled()
     })
 
+    test("a layer opened from a descendant that is closing does not nest in it", async () => {
+      // A menubar switch: the menu closes, its submenu is queued to close, and the next menu
+      // opens while focus is still in the submenu
+      const menu = el("menu")
+      const submenu = el("submenu")
+      const nextMenu = el("next-menu")
+      const nextMenuDismiss = vi.fn()
+      layerStack.add(createLayer(menu))
+      layerStack.add({ ...createLayer(submenu), origins: [submenu, menu] })
+
+      layerStack.remove(menu)
+      layerStack.add({ ...createLayer(nextMenu, { dismiss: nextMenuDismiss }), origins: [nextMenu, submenu] })
+      expect(layerStack.layerFor(nextMenu)?.parentId).toBeUndefined()
+
+      await Promise.resolve()
+      layerStack.remove(submenu)
+      await Promise.resolve()
+      expect(nextMenuDismiss).not.toHaveBeenCalled()
+    })
+
+    test("a descendant that refuses to close can still hold new layers", async () => {
+      const parent = el("parent")
+      const child = el("child")
+      layerStack.add(createLayer(parent))
+      layerStack.add({ ...createLayer(child), requestDismiss: (event) => event.preventDefault() })
+
+      layerStack.remove(parent)
+      await Promise.resolve()
+
+      const grandchild = el("grandchild")
+      layerStack.add({ ...createLayer(grandchild), origins: [grandchild, child] })
+      expect(layerStack.getNestedLayers(child).map((l) => l.node)).toEqual([grandchild])
+    })
+
     test("removing the topmost layer dismisses nothing", () => {
       const parentDismiss = vi.fn()
       const childDismiss = vi.fn()

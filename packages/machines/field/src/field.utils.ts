@@ -1,4 +1,4 @@
-import type { ValidateResult, ValidationMode, ValidityMatch, ValiditySnapshot } from "./field.types"
+import type { FormValues, ValidateResult, ValidationMode, ValidityMatch, ValiditySnapshot } from "./field.types"
 
 const VALIDITY_KEYS = [
   "badInput",
@@ -46,6 +46,24 @@ export function suppressValueMissing(validity: ValiditySnapshot): ValiditySnapsh
   return { ...validity, valueMissing: false, valid: true }
 }
 
+export function getFormValues(el: { form: HTMLFormElement | null }): FormValues {
+  const values: FormValues = {}
+  if (!el.form) return values
+  for (const [name, value] of new FormData(el.form)) {
+    const prev = values[name]
+    values[name] = prev === undefined ? value : Array.isArray(prev) ? [...prev, value] : [prev, value]
+  }
+  return values
+}
+
+export function getFirstInvalidControl(form: HTMLFormElement) {
+  for (const el of Array.from(form.elements)) {
+    const control = el as HTMLInputElement
+    if (control.willValidate && !control.validity.valid) return control
+  }
+  return null
+}
+
 export function toErrorArray(result: ValidateResult): string[] {
   if (result == null) return []
   const errors = Array.isArray(result) ? result : [result]
@@ -85,16 +103,18 @@ export interface DescribedByOptions {
   helperTextId: string
   hasHelperText: boolean
   errorTextIds: string[]
+  fieldsetErrorTextId?: string | null | undefined
 }
 
 /**
- * Description first, then visible error ids in DOM order.
+ * Description first, then visible error ids in DOM order, then the enclosing fieldset's error.
  * Hidden error texts must not be referenced — screen readers still announce them.
  */
 export function composeDescribedBy(options: DescribedByOptions): string | undefined {
   const ids: string[] = []
   if (options.hasHelperText) ids.push(options.helperTextId)
   ids.push(...options.errorTextIds)
+  if (options.fieldsetErrorTextId) ids.push(options.fieldsetErrorTextId)
   return ids.length > 0 ? ids.join(" ") : undefined
 }
 

@@ -1,5 +1,6 @@
 import type { Scope } from "@zag-js/core"
-import { getTabbables, getWindow } from "@zag-js/dom-query"
+import { getRelativeDirection, getTabbables, getWindow } from "@zag-js/dom-query"
+import type { ActivationDirection, Orientation } from "@zag-js/types"
 import { parts } from "./navigation-menu.anatomy"
 
 // ID generators — only for parts referenced by ARIA attributes
@@ -31,8 +32,6 @@ export const getContentEl = (ctx: Scope, value: string | null) => {
   if (!value) return null
   return ctx.query(`${ctx.selector(parts.content)}[data-value="${value}"]`)
 }
-
-export const getContentEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.content))
 
 export const getTabbableEls = (ctx: Scope, value: string) => {
   return getTabbables(getContentEl(ctx, value))
@@ -74,48 +73,6 @@ export function trackResizeObserver(element: Array<HTMLElement | null>, onResize
   }
 }
 
-export function setMotionAttr(scope: Scope, value: string | null, previousValue: string | null) {
-  const triggers = getTriggerEls(scope)
-  const dir = triggers[0].dir
-
-  let values = triggers.map((trigger) => trigger.getAttribute("data-value"))
-  if (dir === "rtl") values.reverse()
-
-  const index = values.indexOf(value)
-  const prevIndex = values.indexOf(previousValue)
-
-  const contentEls = getContentEls(scope)
-  contentEls.forEach((contentEl) => {
-    const itemValue = contentEl.dataset.value!
-    const selected = value === itemValue
-    const prevSelected = prevIndex === values.indexOf(itemValue)
-
-    if (!selected && !prevSelected) {
-      delete contentEl.dataset.motion
-      return
-    }
-
-    const attribute = (() => {
-      // Don't provide a direction on the initial open
-      if (index !== prevIndex) {
-        // If we're moving to this item from another
-        if (selected && prevIndex !== -1) return index > prevIndex ? "from-end" : "from-start"
-        // If we're leaving this item for another
-        if (prevSelected && index !== -1) return index > prevIndex ? "to-start" : "to-end"
-      }
-      // Otherwise we're entering from closed or leaving the list
-      // entirely and should not animate in any direction
-      return null
-    })()
-
-    if (attribute) {
-      contentEl.dataset.motion = attribute
-    } else {
-      delete contentEl.dataset.motion
-    }
-  })
-}
-
 export function focusFirst(scope: Scope, candidates: HTMLElement[]) {
   const previouslyFocusedElement = scope.getActiveElement()
   return candidates.some((candidate) => {
@@ -136,4 +93,14 @@ export function removeFromTabOrder(candidates: HTMLElement[]) {
       candidate.setAttribute("tabindex", prevTabIndex)
     })
   }
+}
+
+export function getActivationDirection(
+  scope: Scope,
+  from: string | null,
+  to: string | null,
+  orientation: Orientation,
+): ActivationDirection {
+  if (!from || !to) return "none"
+  return getRelativeDirection(getTriggerEl(scope, from), getTriggerEl(scope, to), { orientation })
 }

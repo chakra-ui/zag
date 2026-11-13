@@ -24,7 +24,13 @@ import { addOrRemove, isBoolean, isEqual, match, mergeWithDefault, remove } from
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import { defaultTranslations } from "./combobox.translations"
-import type { ComboboxSchema, InputValueChangeReason, OpenChangeReason, Placement } from "./combobox.types"
+import type {
+  ComboboxSchema,
+  InputValueChangeReason,
+  OpenChangeReason,
+  Placement,
+  ValueChangeReason,
+} from "./combobox.types"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
@@ -129,7 +135,9 @@ export const machine = createMachine({
 
           context.set("selectedItemMap", effective.nextSelectedItemMap)
 
-          prop("onValueChange")?.({ value, items: proposed.selectedItems })
+          const event = getEvent()
+          const reason = (event.previousEvent || event).src as ValueChangeReason | undefined
+          prop("onValueChange")?.({ value, items: proposed.selectedItems, reason })
         },
       })),
       highlightedValue: bindable<string | null>(() => ({

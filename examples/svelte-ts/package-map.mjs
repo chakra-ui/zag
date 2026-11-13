@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from "fs"
+import { existsSync, readFileSync, writeFileSync } from "fs"
 import { resolve, dirname } from "path"
 import { fileURLToPath } from "url"
 import { createRequire } from "module"
@@ -29,6 +29,8 @@ for (const pkg of zagPackages) {
   }
 }
 
-// Write the package map to JSON file
+// Match the repo formatter (trailing newline) and skip unchanged writes, so runs leave no diff
 const outputPath = resolve(__dirname, "package-map.json")
-writeFileSync(outputPath, JSON.stringify(packageMap, null, 2))
+const output = JSON.stringify(packageMap, null, 2) + "\n"
+const current = existsSync(outputPath) ? readFileSync(outputPath, "utf8") : ""
+if (current !== output) writeFileSync(outputPath, output)

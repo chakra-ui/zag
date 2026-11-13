@@ -14,12 +14,15 @@ import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
 import type {
   ContentProps,
+  ContentMotion,
   ContentState,
   ItemProps,
   ItemState,
   NavigationMenuApi,
   NavigationMenuService,
+  RootState,
   TriggerState,
+  ViewportState,
 } from "./navigation-menu.types"
 
 export function connect<T extends PropTypes>(
@@ -40,30 +43,31 @@ export function connect<T extends PropTypes>(
   const open = Boolean(value)
 
   const isViewportRendered = context.get("isViewportRendered")
+  const direction = context.get("activationDirection")
+  const activationDirection = direction === "none" ? null : direction
   const preventTransition = value && !previousValue
-
-  function getItemState(props: ItemProps): ItemState {
-    const selected = value === props.value
-    const wasSelected = !value && previousValue === props.value
-    return {
-      itemId: dom.getItemId(scope, props.value),
-      triggerId: dom.getTriggerId(scope, props.value),
-      triggerProxyId: dom.getTriggerProxyId(scope, props.value),
-      contentId: dom.getContentId(scope, props.value),
-      selected,
-      wasSelected,
-      open: selected || wasSelected,
-      disabled: !!props.disabled,
-    }
-  }
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  function getRootState(): RootState {
+    return { open, orientation: prop("orientation") }
+  }
+
+  function getViewportState(): ViewportState {
+    return { ...getRootState(), activationDirection }
+  }
+
+  function getItemState(props: ItemProps): ItemState {
+    const selected = value === props.value
+    const wasSelected = !value && previousValue === props.value
+    return { selected, wasSelected, open: selected || wasSelected, disabled: !!props.disabled }
+  }
+
   function getTriggerState(props: ItemProps): TriggerState {
     const itemState = getItemState(props)
-    return { value: props.value, disabled: itemState.disabled, open: itemState.selected }
+    return { disabled: itemState.disabled, open: itemState.selected }
   }
 
   function getContentState(props: ContentProps): ContentState {
@@ -72,10 +76,13 @@ export function connect<T extends PropTypes>(
     const selected = isViewportRendered ? currentValue === props.value : itemState.selected
     const contentLayer = !isViewportRendered && selected ? layer : null
     return {
-      value: props.value,
       open: selected,
       nested: !!contentLayer?.nested,
       hasNested: !!contentLayer?.hasNested,
+      activationDirection,
+      motion: isViewportRendered
+        ? getContentMotion({ value: props.value, selectedValue: value, previousValue, activationDirection })
+        : null,
     }
   }
 
@@ -88,21 +95,24 @@ export function connect<T extends PropTypes>(
     value,
     orientation: prop("orientation"),
     isViewportRendered,
+    activationDirection,
     getViewportNode() {
       return dom.getViewportEl(scope)
     },
-    setValue(value) {
-      send({ type: "VALUE.SET", value })
+    setValue(value, reason = "script") {
+      send({ type: "VALUE.SET", value, src: reason })
     },
     reposition() {
       send({ type: "VIEWPORT.POSITION" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         "aria-label": translations?.rootLabel,
-        "data-orientation": prop("orientation"),
+        "data-orientation": rootState.orientation,
         dir: prop("dir"),
         style: {
           "--trigger-width": toPx(triggerRect?.width),
@@ -118,10 +128,11 @@ export function connect<T extends PropTypes>(
     },
 
     getListProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.list.attrs(scope.id),
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
+        "data-orientation": rootState.orientation,
         style: { position: "relative" },
       })
     },
@@ -130,7 +141,7 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs(scope.id),
-        id: itemState.itemId,
+        id: dom.getItemId(scope, props.value),
         dir: prop("dir"),
         "data-value": props.value,
         "data-state": itemState.open ? "open" : "closed",
@@ -157,13 +168,14 @@ export function connect<T extends PropTypes>(
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         "aria-hidden": true,
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-orientation": prop("orientation"),
+        hidden: !rootState.open,
+        "data-state": rootState.open ? "open" : "closed",
+        "data-orientation": rootState.orientation,
         style: {
           position: "absolute",
           transition: preventTransition ? "none" : undefined,
@@ -172,11 +184,12 @@ export function connect<T extends PropTypes>(
     },
 
     getArrowProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         "aria-hidden": true,
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
+        "data-orientation": rootState.orientation,
       })
     },
 
@@ -186,7 +199,7 @@ export function connect<T extends PropTypes>(
       const triggerState = getTriggerState(props)
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
-        id: itemState.triggerId,
+        id: dom.getTriggerId(scope, props.value),
         type: "button",
         "data-uid": prop("id"),
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
@@ -195,7 +208,7 @@ export function connect<T extends PropTypes>(
         "data-value": props.value,
         "data-state": triggerState.open ? "open" : "closed",
         "data-disabled": dataAttr(triggerState.disabled),
-        "aria-controls": itemState.contentId,
+        "aria-controls": dom.getContentId(scope, props.value),
         "aria-expanded": triggerState.open,
         onPointerEnter(event) {
           if (prop("disableHoverTrigger")) return
@@ -211,7 +224,7 @@ export function connect<T extends PropTypes>(
         },
         onClick() {
           if (prop("disableClickTrigger")) return
-          send({ type: "TRIGGER.CLICK", value: props.value })
+          send({ type: "TRIGGER.CLICK", value: props.value, src: "trigger-click" })
         },
         onKeyDown(event) {
           const verticalEntryKey = prop("dir") === "rtl" ? "ArrowLeft" : "ArrowRight"
@@ -255,8 +268,8 @@ export function connect<T extends PropTypes>(
         "aria-hidden": true,
         tabIndex: 0,
         "data-trigger-proxy": "",
-        id: itemState.triggerProxyId,
-        "data-trigger-id": itemState.triggerId,
+        id: dom.getTriggerProxyId(scope, props.value),
+        "data-trigger-id": dom.getTriggerId(scope, props.value),
         hidden: !itemState.selected,
         style: visuallyHiddenStyle,
         onFocus(event) {
@@ -311,7 +324,7 @@ export function connect<T extends PropTypes>(
           target.dispatchEvent(linkSelectEvent)
 
           if (closeOnClick && !linkSelectEvent.defaultPrevented && !event.metaKey) {
-            send({ type: "CLOSE" })
+            send({ type: "CLOSE", src: "item-select" })
           }
         },
         onKeyDown(event) {
@@ -343,19 +356,20 @@ export function connect<T extends PropTypes>(
 
     getContentState,
     getContentProps(props) {
-      const itemState = getItemState(props)
       const contentState = getContentState(props)
 
       const contentLayer = !isViewportRendered && contentState.open ? layer : null
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
-        id: itemState.contentId,
+        id: dom.getContentId(scope, props.value),
         dir: prop("dir"),
         hidden: !contentState.open,
-        "aria-labelledby": itemState.triggerId,
+        "aria-labelledby": dom.getTriggerId(scope, props.value),
         "data-state": contentState.open ? "open" : "closed",
         "data-orientation": prop("orientation"),
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        "data-motion": contentState.motion ?? undefined,
         "data-value": props.value,
         ...getDismissableLayerAttrs(contentLayer),
         style: getDismissableLayerStyle(contentLayer, { pointerEvents: true }),
@@ -416,24 +430,27 @@ export function connect<T extends PropTypes>(
 
     getViewportPositionerProps(props = {}) {
       const { align = "center" } = props
+      const rootState = getRootState()
       return normalize.element({
         ...parts.viewportPositioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-orientation": prop("orientation"),
+        "data-orientation": rootState.orientation,
         "data-align": align,
       })
     },
 
+    getViewportState,
     getViewportProps(props = {}) {
       const { align = "center" } = props
-      const open = Boolean(value)
+      const viewportState = getViewportState()
       const viewportLayer = isViewportRendered ? layer : null
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
         dir: prop("dir"),
-        hidden: !open,
-        "data-state": open ? "open" : "closed",
-        "data-orientation": prop("orientation"),
+        hidden: !viewportState.open,
+        "data-state": viewportState.open ? "open" : "closed",
+        "data-orientation": viewportState.orientation,
+        "data-activation-direction": viewportState.activationDirection ?? undefined,
         "data-align": align,
         ...getDismissableLayerAttrs(viewportLayer),
         style: {
@@ -443,7 +460,13 @@ export function connect<T extends PropTypes>(
           "--viewport-height": toPx(viewportSize?.height),
           "--viewport-x": toPx(viewportPosition?.x),
           "--viewport-y": toPx(viewportPosition?.y),
-          pointerEvents: !open ? "none" : viewportLayer?.active ? (viewportLayer.blocked ? "none" : "auto") : undefined,
+          pointerEvents: !viewportState.open
+            ? "none"
+            : viewportLayer?.active
+              ? viewportLayer.blocked
+                ? "none"
+                : "auto"
+              : undefined,
         },
         onPointerEnter() {
           send({ type: "CONTENT.POINTERENTER" })
@@ -471,4 +494,20 @@ export function connect<T extends PropTypes>(
       })
     },
   }
+}
+
+interface ContentMotionParams {
+  value: string
+  selectedValue: string | null
+  previousValue: string | null
+  activationDirection: ContentState["activationDirection"]
+}
+
+function getContentMotion(params: ContentMotionParams): ContentMotion | null {
+  const { value, selectedValue, previousValue, activationDirection } = params
+  if (!activationDirection) return null
+  const forward = activationDirection === "right" || activationDirection === "down"
+  if (value === selectedValue) return forward ? "from-end" : "from-start"
+  if (value === previousValue) return forward ? "to-start" : "to-end"
+  return null
 }

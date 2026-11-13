@@ -216,12 +216,23 @@ Use `open` and `onOpenChange` to control whether the picker is visible.
 const [current, send] = useMachine(colorPicker.machine, {
   open: true,
   onOpenChange: (details) => {
-    // details => { open: boolean, value: Color }
+    // details => { open: boolean, value: Color, reason?: OpenChangeReason }
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `trigger-click`    | The trigger was pressed                     |
+| `item-select`      | A swatch was selected                       |
+| `escape-key`       | The user pressed `Esc`                      |
+| `interact-outside` | The user pressed outside the color picker   |
+| `focus-outside`    | Focus moved outside                         |
+| `script`           | Changed programmatically, such as `setOpen` |
 
 You can also leverage the `api.setOpen(...)` method to control the open and
 closed state of the color picker.
@@ -285,6 +296,20 @@ To support this, use the `getChannelInputProps(...)` to show the channel inputs.
 <CodeSnippet id="color-picker/with-channel-inputs.mdx" />
 
 </Example>
+
+### Localized channel values
+
+Set `locale` to format the channel values that screen readers announce on the
+area and sliders. It defaults to `"en-US"`.
+
+```tsx
+const service = useMachine(colorPicker.machine, {
+  locale: "de-DE",
+})
+```
+
+Use `api.getChannelValueText(channel)` to show the same formatted value, like
+`80 %` for alpha in German.
 
 ### Color preview
 

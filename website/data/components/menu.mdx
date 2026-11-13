@@ -61,13 +61,30 @@ When a menu is opened or closed, the `onOpenChange` callback is invoked.
 ```tsx {3-6}
 const service = useMachine(menu.machine, {
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, reason?: OpenChangeReason }
     console.log("open state is ", details.open)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                               |
+| ------------------ | ----------------------------------------------------- |
+| `trigger-click`    | The trigger was pressed by pointer or `Enter`/`Space` |
+| `arrow-key`        | An arrow key opened or closed the menu                |
+| `context-menu`     | The context trigger was right-clicked or long-pressed |
+| `trigger-hover`    | The pointer hovered the trigger (submenu or menubar)  |
+| `pointer-leave`    | The pointer left a submenu or its trigger             |
+| `sibling-open`     | Another menu in the menubar opened                    |
+| `item-select`      | An item was selected                                  |
+| `escape-key`       | The user pressed `Esc`                                |
+| `interact-outside` | The user pressed outside the menu                     |
+| `focus-outside`    | Focus moved outside                                   |
+| `tab-key`          | `Tab` moved focus out of the menu                     |
+| `script`           | Changed programmatically, such as `setOpen`           |
 
 ### Controlled open
 
@@ -279,6 +296,23 @@ npm install @zag-js/async-list @zag-js/infinite-scroll
 <Showcase id="MenuAsync" />
 
 <CodeSnippet id="menu/async.mdx" />
+
+### Virtualized items
+
+When only some items are rendered, pass the full list as a `collection` so the
+arrow keys, `Home`, `End`, and typeahead can reach the rest. `scrollToIndexFn`
+scrolls the highlighted item into view.
+
+```tsx
+const collection = menu.collection({ items })
+
+const service = useMachine(menu.machine, {
+  collection,
+  scrollToIndexFn(details) {
+    virtualizer.scrollToIndex(details.index)
+  },
+})
+```
 
 ### Nested menus
 

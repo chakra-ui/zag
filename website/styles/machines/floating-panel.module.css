@@ -27,7 +27,7 @@
   }
 
   .Positioner {
-    z-index: 999999;
+    z-index: calc(var(--layer-index, 0) + 50);
   }
 
   .Content {
@@ -43,10 +43,6 @@
 
     &[data-state="open"] {
       animation: floating-panel-in 140ms ease-out;
-    }
-
-    &[data-topmost] {
-      z-index: 999999;
     }
 
     &[data-behind] {

@@ -26,6 +26,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     --background: var(--colors-bg-raised);
     background: var(--background);
@@ -35,7 +39,6 @@
     border-radius: 10px;
     box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.25);
     font-size: 0.875rem;
-    z-index: calc(var(--layer-index) + 50);
     position: relative;
     max-width: min(calc(100vw - 16px), 320px);
     width: 100%;

@@ -60,10 +60,12 @@ export const VersionSelect = () => {
 
       {api.open && (
         <Portal>
-          <div {...api.getPositionerProps()}>
+          <div
+            className={css({ zIndex: "1000" })}
+            {...api.getPositionerProps()}
+          >
             <Box
               width="220px"
-              zIndex="1000"
               fontSize="14px"
               bg="bg.popover"
               isolation="isolate"

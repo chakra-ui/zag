@@ -11,6 +11,10 @@ type Route =
   | "select"
   | "item"
   | "textarea-autoresize"
+  | "form"
+  | "constraints"
+  | "schema"
+  | "custom-control"
 
 type DataAttr =
   | "data-touched"
@@ -198,5 +202,37 @@ export class FieldModel extends Model {
     await this.dontSeeControlAttr("data-invalid")
     await this.dontSeeControlAttr("data-valid")
     await this.dontSeeError()
+  }
+
+  getByLabel(label: string) {
+    return this.page.getByLabel(label, { exact: true })
+  }
+
+  fillByLabel(label: string, value: string) {
+    return this.getByLabel(label).fill(value)
+  }
+
+  clickButton(name: string) {
+    return this.page.getByRole("button", { name, exact: true }).click()
+  }
+
+  async seeFocusedByLabel(label: string) {
+    await expect(this.getByLabel(label)).toBeFocused()
+  }
+
+  async seeInvalidByLabel(label: string) {
+    await expect(this.getByLabel(label)).toHaveAttribute("aria-invalid", "true")
+  }
+
+  async dontSeeInvalidByLabel(label: string) {
+    await expect(this.getByLabel(label)).not.toHaveAttribute("aria-invalid")
+  }
+
+  async seeVisibleErrors(texts: string[]) {
+    await expect(this.getErrorText()).toHaveText(texts)
+  }
+
+  async seeStatus(text: string) {
+    await expect(this.testId("status")).toHaveText(text)
   }
 }

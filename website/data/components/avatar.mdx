@@ -47,6 +47,15 @@ const service = useMachine(avatar.machine, {
 
 </Example>
 
+The root carries the status as `data-status`, so you can style the whole avatar
+by it:
+
+```css
+[data-avatar-root][data-status="error"] {
+  border-color: red;
+}
+```
+
 ### Image source
 
 You own the image `src`; the machine observes the rendered image and owns its

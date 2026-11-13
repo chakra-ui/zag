@@ -10,5 +10,6 @@ export type {
   ContentState,
   ElementIds,
   OpenChangeDetails,
-  TriggerState,
+  OpenChangeReason,
+  RootState,
 } from "./collapsible.types"

@@ -50,7 +50,7 @@
       <div {...api.getContentProps({ value: item.value })}>{item.title} content</div>
     {/each}
 
-    <div {...api.getContentProps({ value: steps.COMPLETE })}>All set 🎉</div>
+    <div {...api.getCompletedContentProps()}>All set 🎉</div>
 
     <div style="display: flex; gap: 0.5rem; margin-top: 1rem">
       <button {...api.getPreviousTriggerProps()}>Back</button>

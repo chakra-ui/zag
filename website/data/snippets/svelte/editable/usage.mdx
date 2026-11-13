@@ -4,7 +4,7 @@
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(editable.machine, ({ id }))
+  const service = useMachine(editable.machine, { id })
   const api = $derived(editable.connect(service, normalizeProps))
 </script>
 

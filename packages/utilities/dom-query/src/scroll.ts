@@ -155,6 +155,6 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
   const cleanup = addDomEvent(target, "scroll", restart, { capture, passive: true })
   return () => {
     cleanup()
-    timeout.clear()
+    timeout.cancel()
   }
 }

@@ -15,7 +15,6 @@ numeric values using the keyboard or pointer
 
 **Features**
 
-- Based on the spinbutton pattern
 - Supports using the scroll wheel to increment and decrement the value
 - Handles floating point rounding errors when incrementing, decrementing, and
   snapping to step
@@ -43,13 +42,13 @@ how we name its parts.
 
 ### Initial value
 
-Set `defaultValue` to define the initial value. The value must be a `string`.
+Set `defaultValue` to define the initial value.
 
 <Example id="NumberInputDefaultValue">
 
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
-  defaultValue: "13",
+  defaultValue: 13,
 })
 ```
 
@@ -57,10 +56,9 @@ const service = useMachine(numberInput.machine, {
 
 ### Controlled value
 
-Use `value` and `onValueChange` to control the value externally.
-
-> **Note:** Since the value can be formatted, it's important to preserve the
-> value as a string.
+Use `value` and `onValueChange` to control the value externally. The value is a
+`number`, or `null` when the input is empty. Use `formattedValue` for the text
+shown in the input.
 
 <Example id="NumberInputControlled">
 
@@ -85,12 +83,13 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-> To allow the value overflow the specified min or max, set the
-> `allowOverflow: true` in the context.
+> Stepping with the buttons, arrow keys, wheel or scrubber always stays within
+> the min and max.
 
 ### Overflow and underflow
 
-Use `onValueInvalid` to react when the value goes below `min` or above `max`.
+Use `onValueInvalid` to react when a typed value goes below `min` or above
+`max`.
 
 <Example id="NumberInputValueInvalid">
 
@@ -98,9 +97,9 @@ Use `onValueInvalid` to react when the value goes below `min` or above `max`.
 const service = useMachine(numberInput.machine, {
   min: 0,
   max: 10,
-  allowOverflow: true,
+  allowOutOfRange: true,
   onValueInvalid(details) {
-    // details => { value: string, valueAsNumber: number, reason: "rangeUnderflow" | "rangeOverflow" }
+    // details => { value: number, formattedValue: string, reason: "rangeUnderflow" | "rangeOverflow" }
     console.log(details.reason)
   },
 })
@@ -126,7 +125,8 @@ virtual cursor which mimics the real cursor's pointer.
 
 The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
-the machine's context.
+the machine's context. Hold `Shift` to step by `largeStep`, or `Alt` to step by
+`smallStep`. Horizontal scrolling is left to the page.
 
 <Example id="NumberInputMouseWheel">
 
@@ -138,19 +138,19 @@ const service = useMachine(numberInput.machine, {
 
 </Example>
 
-### Clamp on blur
+### Out-of-range values
 
-In most cases, users can type custom values in the input field. If the typed
-value is greater than the max, the value is reset to max when the user blurs the
-input.
+A typed value outside the min or max is clamped when the input is blurred or
+`Enter` is pressed.
 
-To disable this behavior, pass `clampValueOnBlur` and set to `false`.
+To keep the typed value and report it as invalid instead, set `allowOutOfRange`
+to `true`.
 
 <Example id="NumberInputNoClamp">
 
 ```tsx {2}
 const service = useMachine(numberInput.machine, {
-  clampValueOnBlur: false,
+  allowOutOfRange: true,
 })
 ```
 
@@ -165,7 +165,7 @@ When the value changes, the `onValueChange` callback is invoked.
 ```tsx {2-7}
 const service = useMachine(numberInput.machine, {
   onValueChange(details) {
-    // details => { value: string, valueAsNumber: number, reason?: ValueChangeReason }
+    // details => { value: number | null, formattedValue: string, reason?: ValueChangeReason }
     console.log("value is:", details.value)
   },
 })
@@ -201,7 +201,7 @@ streams a hundred steps commits once.
 ```tsx
 const service = useMachine(numberInput.machine, {
   onValueCommit(details) {
-    // details => { value: string, valueAsNumber: number, reason?: ValueChangeReason }
+    // details => { value: number | null, formattedValue: string, reason?: ValueChangeReason }
     console.log("committed:", details.value, "via", details.reason)
   },
 })
@@ -218,7 +218,7 @@ Use `onFocusChange` to react to focus and blur transitions.
 ```tsx
 const service = useMachine(numberInput.machine, {
   onFocusChange(details) {
-    // details => { focused: boolean, value: string, valueAsNumber: number }
+    // details => { focused: boolean, value: number | null, formattedValue: string }
     console.log("focused:", details.focused)
   },
 })
@@ -228,15 +228,20 @@ const service = useMachine(numberInput.machine, {
 
 ### Form usage
 
-To use the number input within forms, set the `name` property in the machine's
-context.
+To use the number input within forms, set `name` and render the hidden input.
+The form submits the raw number, such as `1234.5`, while the visible input shows
+the formatted text. The hidden input also lets the browser validate `min` and
+`max` and autofill the value.
 
 <Example>
 
-```tsx {2}
+```tsx {2,6}
 const service = useMachine(numberInput.machine, {
   name: "quantity",
 })
+
+// inside the root
+<input {...api.getHiddenInputProps()} />
 ```
 
 </Example>
@@ -276,7 +281,9 @@ const service = useMachine(numberInput.machine, {
 
 ### Mobile keyboard
 
-Set `inputMode` to hint the keyboard type on mobile.
+Set `inputMode` to hint the keyboard type on mobile. By default, iPhone gets a
+text keyboard when negative values are allowed, since its decimal keyboard has
+no minus key.
 
 <Example>
 
@@ -308,7 +315,8 @@ const service = useMachine(numberInput.machine, {
 
 ### Accessibility labels
 
-Use `translations` to customize increment/decrement labels and value text.
+Use `translations` to customize the increment/decrement labels and how screen
+readers describe the input.
 
 <Example>
 
@@ -317,7 +325,7 @@ const service = useMachine(numberInput.machine, {
   translations: {
     incrementLabel: "Increase quantity",
     decrementLabel: "Decrease quantity",
-    valueText: (value) => `${value} units`,
+    roleDescription: "Mengenfeld",
   },
 })
 ```
@@ -361,8 +369,8 @@ attributes below to style each state.
 
 The increment and decrement triggers get `data-disabled` when the input is
 disabled or the min or max is reached. `data-invalid` is also set when the value
-exceeds the max and `allowOverflow` is `true`. The input gets `data-readonly`
-when read-only.
+is typed outside the range and `allowOutOfRange` is `true`. The input gets
+`data-readonly` when read-only.
 
 <DataAttrTable name="number-input" />
 

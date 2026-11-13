@@ -76,17 +76,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   }
 
   function getRootState(): RootState {
-    return { invalid, readOnly }
+    return { open, disabled, invalid, readOnly, required, focused }
   }
 
   function getTriggerState(props: TriggerProps = {}): TriggerState {
-    return {
-      open,
-      disabled,
-      invalid,
-      readOnly,
-      focusable: props.focusable ?? isDialogPopup,
-    }
+    return { ...getRootState(), focusable: props.focusable ?? isDialogPopup }
   }
 
   function getContentState(): ContentState {
@@ -98,6 +92,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       placement: currentPlacement,
       side: currentPlacementSide,
       empty: collection.size === 0,
+      loading,
     }
   }
 
@@ -130,19 +125,19 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     selectValue(value) {
-      send({ type: "ITEM.SELECT", value })
+      send({ type: "ITEM.SELECT", value, src: "script" })
     },
     setValue(value) {
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "script" })
     },
     setInputValue(value, reason = "script") {
       send({ type: "INPUT_VALUE.SET", value, src: reason })
     },
     clearValue(value) {
       if (value != null) {
-        send({ type: "ITEM.CLEAR", value })
+        send({ type: "ITEM.CLEAR", value, src: "script" })
       } else {
-        send({ type: "VALUE.CLEAR" })
+        send({ type: "VALUE.CLEAR", src: "script" })
       }
     },
     focus() {
@@ -159,22 +154,25 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
         "data-invalid": dataAttr(rootState.invalid),
         "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
         id: dom.getLabelId(scope),
-        "data-readonly": dataAttr(readOnly),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-required": dataAttr(required),
-        "data-focus": dataAttr(focused),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-required": dataAttr(rootState.required),
+        "data-focus": dataAttr(rootState.focused),
         onClick(event) {
           if (!isDialogPopup) return
           event.preventDefault()
@@ -184,13 +182,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-focus": dataAttr(focused),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-focus": dataAttr(rootState.focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
@@ -201,7 +200,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...(prop("inline") ? undefined : popperStyles.floating),
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },
@@ -399,7 +398,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(contentState.empty),
         "data-inline": dataAttr(contentState.inline),
-        "data-loading": dataAttr(loading),
+        "data-loading": dataAttr(contentState.loading),
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onPointerDown(event) {
@@ -421,15 +420,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     },
 
     getListProps() {
+      const contentState = getContentState()
       return normalize.element({
         ...parts.list.attrs(scope.id),
         id: dom.getListId(scope),
         role: "listbox",
-        "data-empty": dataAttr(collection.size === 0),
+        "data-empty": dataAttr(contentState.empty),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") ? true : undefined,
-        "aria-busy": ariaAttr(loading),
-        "data-loading": dataAttr(loading),
+        "aria-busy": ariaAttr(contentState.loading),
+        "data-loading": dataAttr(contentState.loading),
       })
     },
 

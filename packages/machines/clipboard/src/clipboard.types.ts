@@ -6,7 +6,14 @@ import type { CommonProperties, PropTypes } from "@zag-js/types"
  * -----------------------------------------------------------------------------*/
 
 export interface CopyStatusDetails {
+  /**
+   * Whether the value is copied. Turns `false` once the `timeout` ends, or when copying fails.
+   */
   copied: boolean
+  /**
+   * Why copying failed, such as a denied permission or a page not served over https
+   */
+  error?: unknown
 }
 
 export interface ValueChangeDetails {
@@ -50,7 +57,7 @@ export interface ClipboardProps extends CommonProperties {
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
-   * The function to be called when the value is copied to the clipboard
+   * The function to be called when the copied status changes, or copying fails
    */
   onStatusChange?: ((details: CopyStatusDetails) => void) | undefined
   /**
@@ -67,9 +74,9 @@ export interface ClipboardSchema {
   context: {
     value: string
   }
-  effect: string
-  action: string
-  guard: string
+  effect: "waitForTimeout"
+  action: "setValue" | "copyToClipboard" | "invokeOnCopy" | "invokeOnCopyEnd" | "invokeOnCopyError" | "syncInputElement"
+  guard: never
 }
 
 export type ClipboardService = Service<ClipboardSchema>
@@ -81,6 +88,13 @@ export type ClipboardMachine = Machine<ClipboardSchema>
  * -----------------------------------------------------------------------------*/
 
 export interface IndicatorProps {
+  copied: boolean
+}
+
+export interface RootState {
+  /**
+   * Whether the value has been copied to the clipboard
+   */
   copied: boolean
 }
 
@@ -113,6 +127,10 @@ export interface ClipboardApi<T extends PropTypes = PropTypes> {
    */
   copy: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]

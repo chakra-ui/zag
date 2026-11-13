@@ -219,6 +219,12 @@ test.describe("floating-panel", () => {
     await expect(page.getByTestId("content-B")).not.toHaveAttribute("data-topmost", "")
   })
 
+  test("the positioner's z-index comes from css", async () => {
+    await I.setPositionerZIndex("calc(1400 + var(--layer-index))")
+    await I.clickTrigger()
+    await I.seePositionerZIndex(1400)
+  })
+
   test("focusing a panel raises its positioner above the other panels", async ({ page }) => {
     await I.goto("/floating-panel/stacking")
 

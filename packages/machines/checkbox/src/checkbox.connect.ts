@@ -11,7 +11,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): CheckboxApi<T> {
   const { send, context, prop, computed, scope } = service
-  const disabled = !!prop("disabled")
+  const disabled = computed("disabled")
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const invalid = !!prop("invalid")

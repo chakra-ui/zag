@@ -4,7 +4,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(angleSlider.machine, ({ id }))
+  const service = useMachine(angleSlider.machine, { id })
   const api = $derived(angleSlider.connect(service, normalizeProps))
 </script>
 

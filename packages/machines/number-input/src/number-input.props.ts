@@ -4,8 +4,7 @@ import type { NumberInputProps } from "./number-input.types"
 
 export const props = createProps<NumberInputProps>()([
   "allowMouseWheel",
-  "allowOverflow",
-  "clampValueOnBlur",
+  "allowOutOfRange",
   "dir",
   "disabled",
   "focusInputOnChange",

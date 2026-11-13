@@ -101,13 +101,25 @@ Use `open` and `onOpenChange` to control the popup state.
 const service = useMachine(datepicker.machine, {
   open: true,
   onOpenChange(details) {
-    // details => { open: boolean, value: DateValue[] }
+    // details => { open: boolean, value: DateValue[], reason?: OpenChangeReason }
     console.log("open state changed to:", details.open)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `trigger-click`    | The trigger was pressed                     |
+| `input-click`      | The input was clicked (with `openOnClick`)  |
+| `item-select`      | A date or preset was selected               |
+| `escape-key`       | The user pressed `Esc`                      |
+| `interact-outside` | The user pressed outside the date picker    |
+| `focus-outside`    | Focus moved outside                         |
+| `script`           | Changed programmatically, such as `setOpen` |
 
 You can also manage it with `api.setOpen`.
 

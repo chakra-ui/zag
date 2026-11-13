@@ -62,13 +62,25 @@ When the drawer state changes, the `onOpenChange` callback is invoked.
 const service = useMachine(drawer.machine, {
   id: useId(),
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, reason?: OpenChangeReason }
     console.log("drawer open:", details.open)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                     |
+| ------------------ | ------------------------------------------- |
+| `trigger-click`    | The trigger was pressed                     |
+| `close-trigger`    | The close trigger was pressed               |
+| `escape-key`       | The user pressed `Esc`                      |
+| `interact-outside` | The user pressed outside the drawer         |
+| `focus-outside`    | Focus moved outside                         |
+| `swipe`            | The drawer was swiped open or closed        |
+| `script`           | Changed programmatically, such as `setOpen` |
 
 ### Snap points
 

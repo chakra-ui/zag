@@ -23,12 +23,7 @@ export default function Page() {
     onDrop(details) {
       const { source, target, placement } = details
       if (placement === "on") return
-      setItems((prev) => {
-        const fromIndex = prev.findIndex((item) => item.id === source)
-        const toIndex = prev.findIndex((item) => item.id === target)
-        if (fromIndex === -1 || toIndex === -1) return prev
-        return dnd.move(prev, fromIndex, dnd.getDestinationIndex(prev.length, fromIndex, toIndex, placement))
-      })
+      setItems((prev) => dnd.reorder(prev, { source, target, placement, itemToValue: (item) => item.id }))
     },
   })
 

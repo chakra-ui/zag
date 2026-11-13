@@ -3,10 +3,17 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
+import type { ResizeTriggerProps, ResizeTriggerState, RootState, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
-import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
+import {
+  findPanelIndex,
+  getPanelById,
+  getPanelFlexBoxStyle,
+  getPanelLayout,
+  panelDataHelper,
+  splitResizeTriggerId,
+} from "./utils/panel"
 import { resolvePanelSizes } from "./utils/size"
 
 export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>): SplitterApi<T> {
@@ -55,7 +62,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
   }
 
   const resolveResizeTriggerId = (id: string) => {
-    const [beforeId, afterId] = id.split(":")
+    const [beforeId, afterId] = splitResizeTriggerId(id, rawPanels)
     if (beforeId && afterId) return id
 
     if (beforeId) {
@@ -73,14 +80,29 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     return id
   }
 
+  const isNextToDisabledPanel = (id: string) => {
+    return splitResizeTriggerId(resolveResizeTriggerId(id), rawPanels).some(
+      (panelId) => rawPanels.find((panel) => panel.id === panelId)?.disabled,
+    )
+  }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  const getRootState = (): RootState => {
+    return { dragging, orientation }
+  }
+
   const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
-    const { id, disabled } = props
+    const { id } = props
+    const disabled = !!props.disabled || !!prop("disabled") || isNextToDisabledPanel(id)
     const dragging = context.get("dragState")?.resizeTriggerId === id
     const focused = dragging || (state.matches("focused") && context.get("keyboardState")?.resizeTriggerId === id)
     return {
       dragging,
       focused,
-      disabled: !!disabled,
+      disabled,
     }
   }
 
@@ -120,8 +142,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     expandPanel(id, minSize) {
       send({ type: "PANEL.EXPAND", id, minSize })
     },
-    resizePanel(id, unsafePanelSize) {
-      send({ type: "PANEL.RESIZE", id, size: unsafePanelSize })
+    resizePanel(id, size) {
+      send({ type: "PANEL.RESIZE", id, size })
     },
     getPanelSize(id) {
       const panels = context.get("panels")
@@ -156,11 +178,13 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       return getPanelLayout(prop("panels"))
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-dragging": dataAttr(dragging),
+        "data-orientation": rootState.orientation,
+        "data-dragging": dataAttr(rootState.dragging),
         dir: prop("dir"),
         style: {
           display: "flex",
@@ -174,10 +198,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
     getPanelProps(props) {
       const { id } = props
+      const rootState = getRootState()
       return normalize.element({
         ...parts.panel.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-dragging": dataAttr(dragging),
+        "data-orientation": rootState.orientation,
+        "data-dragging": dataAttr(rootState.dragging),
         dir: prop("dir"),
         "data-id": id,
         "data-index": findPanelIndex(prop("panels"), id),
@@ -212,6 +237,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         role: "separator",
         "data-id": id,
         tabIndex: triggerState.disabled ? undefined : 0,
+        "aria-disabled": triggerState.disabled || undefined,
         "aria-valuenow": aria.valueNow,
         "aria-valuemin": aria.valueMin,
         "aria-valuemax": aria.valueMax,
@@ -260,6 +286,10 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
           event.preventDefault()
           event.stopPropagation()
+        },
+        onDoubleClick(event) {
+          if (event.defaultPrevented || triggerState.disabled) return
+          send({ type: "PANEL.RESET", id })
         },
         onPointerUp(event) {
           if (triggerState.disabled) return

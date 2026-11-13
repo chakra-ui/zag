@@ -1,4 +1,4 @@
-import { test } from "./_test"
+import { expect, test } from "./_test"
 import { FieldModel } from "./models/field.model"
 
 let I: FieldModel
@@ -293,6 +293,116 @@ test.describe("field", () => {
       await I.fillControl("short bio")
       await I.dontSeeError()
       await I.seeControlAttr("data-valid")
+    })
+  })
+
+  test.describe("form", () => {
+    test.beforeEach(async () => {
+      await I.goto("form")
+    })
+
+    test("should have no accessibility violations", async () => {
+      await I.checkAccessibility()
+    })
+
+    test("submit focuses the first invalid field", async () => {
+      await I.clickButton("Create account")
+      await I.seeFocusedByLabel("Email")
+      await I.seeInvalidByLabel("Email")
+    })
+
+    test("validate receives form values", async () => {
+      await I.fillByLabel("Email", "sage@example.com")
+      await I.fillByLabel("Password", "abcdefgh")
+      await I.fillByLabel("Confirm password", "abcdefgx")
+      await I.clickButton("Create account")
+      await I.seeFocusedByLabel("Confirm password")
+      await I.seeVisibleErrors(["Passwords don't match"])
+    })
+
+    test("server errors show until the value changes", async () => {
+      await I.fillByLabel("Email", "taken@example.com")
+      await I.fillByLabel("Password", "abcdefgh")
+      await I.fillByLabel("Confirm password", "abcdefgh")
+      await I.clickButton("Create account")
+      await I.seeInvalidByLabel("Email")
+      await I.seeVisibleErrors(["This email is already taken"])
+
+      await I.fillByLabel("Email", "sage@example.com")
+      await I.dontSeeInvalidByLabel("Email")
+
+      await I.clickButton("Create account")
+      await I.seeStatus("Submitted!")
+    })
+
+    test("server errors show again when the same error returns", async () => {
+      await I.fillByLabel("Email", "taken@example.com")
+      await I.fillByLabel("Password", "abcdefgh")
+      await I.fillByLabel("Confirm password", "abcdefgh")
+      await I.clickButton("Create account")
+      await I.seeInvalidByLabel("Email")
+
+      await I.fillByLabel("Email", "taken@example.co")
+      await I.fillByLabel("Email", "taken@example.com")
+      await I.dontSeeInvalidByLabel("Email")
+
+      await I.clickButton("Create account")
+      await I.seeInvalidByLabel("Email")
+    })
+  })
+
+  test.describe("constraints", () => {
+    test.beforeEach(async () => {
+      await I.goto("constraints")
+    })
+
+    test("shows the message that matches each native constraint", async () => {
+      await I.fillByLabel("Age", "5")
+      await I.fillByLabel("Website", "nope")
+      await I.fillByLabel("Username", "Ab!")
+      await I.getByLabel("Age").focus()
+      await I.seeVisibleErrors([
+        "Use lowercase letters, numbers, or underscores.",
+        "You must be at least 13.",
+        "Enter a full URL, like https://example.com",
+      ])
+    })
+  })
+
+  test.describe("schema", () => {
+    test.beforeEach(async () => {
+      await I.goto("schema")
+    })
+
+    test("lists every schema error", async () => {
+      await I.fillByLabel("Password", "abc")
+      await expect(I.page.locator("[data-field-error-text] li")).toHaveText([
+        "At least 8 characters",
+        "One uppercase letter",
+        "One number",
+      ])
+
+      await I.fillByLabel("Password", "Abcdefg1")
+      await I.dontSeeInvalidByLabel("Password")
+    })
+  })
+
+  test.describe("custom control", () => {
+    test.beforeEach(async () => {
+      await I.goto("custom-control")
+    })
+
+    test("labels the control and uses aria state", async ({ page }) => {
+      const control = page.getByRole("textbox", { name: "Bio" })
+      await expect(control).toHaveAttribute("aria-describedby", /helper-text/)
+
+      await control.click()
+      await I.type("x".repeat(45))
+      await expect(control).toHaveAttribute("aria-invalid", "true")
+
+      await I.getByLabel("Disabled").check()
+      await expect(control).toHaveAttribute("aria-disabled", "true")
+      await expect(control).not.toHaveAttribute("disabled")
     })
   })
 })

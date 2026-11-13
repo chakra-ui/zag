@@ -26,7 +26,7 @@ import {
   parseDateString,
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   disableTextSelection,
@@ -37,7 +37,7 @@ import {
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
-import type { DatePickerSchema, DateValue, DateView } from "./date-picker.types"
+import type { DatePickerSchema, DateValue, DateView, OpenChangeReason } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   clampView,
@@ -194,8 +194,10 @@ export const machine = createMachine<DatePickerSchema>({
           prop("onValueChange")?.({ value, valueAsString, view: context.get("view") })
         },
       })),
-      inputValue: bindable(() => ({
-        defaultValue: "",
+      inputValue: bindable<DatePickerSchema["context"]["inputValue"]>(() => ({
+        defaultValue: { index: 0, value: "" },
+        isEqual: (a, b) => a.index === b?.index && a.value === b?.value,
+        hash: (a) => `${a.index}:${a.value}`,
       })),
       activeIndex: bindable(() => ({
         defaultValue: 0,
@@ -268,7 +270,7 @@ export const machine = createMachine<DatePickerSchema>({
       action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
-    track([() => context.get("inputValue")], () => {
+    track([() => context.hash("inputValue")], () => {
       action(["syncInputValue"])
     })
 
@@ -332,10 +334,11 @@ export const machine = createMachine<DatePickerSchema>({
         actions: ["setActiveIndexToStart"],
       },
     ],
+    // A preset outside the open popover only sets the value
     "PRESET.CLICK": [
       {
         guard: "isOpenControlled",
-        actions: ["setDateValue", "setFocusedDate", "invokeOnClose"],
+        actions: ["setDateValue", "setFocusedDate"],
       },
       {
         target: "focused",
@@ -450,6 +453,20 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             target: "idle",
+          },
+        ],
+        "PRESET.CLICK": [
+          {
+            guard: "isInline",
+            actions: ["setDateValue", "setFocusedDate"],
+          },
+          {
+            guard: "isOpenControlled",
+            actions: ["setDateValue", "setFocusedDate", "invokeOnClose"],
+          },
+          {
+            target: "focused",
+            actions: ["setDateValue", "setFocusedDate", "invokeOnClose", "focusInputElement"],
           },
         ],
         "CELL.CLICK": [
@@ -755,6 +772,7 @@ export const machine = createMachine<DatePickerSchema>({
       isSelectingEndDate: ({ context }) => context.get("activeIndex") === 1,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
       isOpenControlled: ({ prop }) => prop("open") != undefined || !!prop("inline"),
+      isInline: ({ prop }) => !!prop("inline"),
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
@@ -800,12 +818,12 @@ export const machine = createMachine<DatePickerSchema>({
           onInteractOutside(event) {
             context.set("restoreFocus", !event.detail.focusable)
           },
-          onDismiss() {
-            send({ type: "INTERACT_OUTSIDE" })
+          onDismiss(event) {
+            send({ type: "INTERACT_OUTSIDE", src: getDismissReason(event) })
           },
           onEscapeKeyDown(event) {
             event.preventDefault()
-            send({ type: "TABLE.ESCAPE", src: "dismissable", focusVisible: true })
+            send({ type: "TABLE.ESCAPE", src: "escape-key", focusVisible: true })
           },
         })
       },
@@ -948,7 +966,7 @@ export const machine = createMachine<DatePickerSchema>({
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = computed("valueAsString")
-        context.set("inputValue", valueAsString[activeIndex])
+        context.set("inputValue", { index: activeIndex, value: valueAsString[activeIndex] })
       },
       focusPreviousDay(params) {
         const { context } = params
@@ -1118,7 +1136,7 @@ export const machine = createMachine<DatePickerSchema>({
         }
       },
       focusActiveCell({ scope, context, event, refs }) {
-        if (event.src === "input.click") return
+        if (event.src === "input-click") return
         refs.get("cellFocusFrame").request(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })
@@ -1185,14 +1203,13 @@ export const machine = createMachine<DatePickerSchema>({
 
       setInputValue({ context, event }) {
         if (context.get("activeIndex") !== event.index) return
-        context.set("inputValue", event.value)
+        context.set("inputValue", { index: event.index, value: event.value })
       },
 
-      syncInputValue({ scope, context, event }) {
+      syncInputValue({ scope, context }) {
+        const { index, value } = context.get("inputValue")
         queueMicrotask(() => {
-          const inputEls = dom.getInputEls(scope)
-          const idx = event.index ?? context.get("activeIndex")
-          setElementValue(inputEls[idx], context.get("inputValue"))
+          setElementValue(dom.getInputEls(scope)[index], value)
         })
       },
 
@@ -1235,7 +1252,7 @@ export const machine = createMachine<DatePickerSchema>({
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = getValueAsString(adjustedValues, prop)
-        context.set("inputValue", valueAsString[event.index])
+        context.set("inputValue", { index: event.index, value: valueAsString[event.index] })
       },
 
       resetView({ context }) {
@@ -1252,14 +1269,14 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("startValue", startValue)
       },
 
-      invokeOnOpen({ prop, context }) {
+      invokeOnOpen({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose({ prop, context }) {
+      invokeOnClose({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
       invokeOnVisibleRangeChange({ prop, context, computed }) {
         prop("onVisibleRangeChange")?.({
@@ -1274,6 +1291,10 @@ export const machine = createMachine<DatePickerSchema>({
     },
   },
 })
+
+function getOpenChangeReason(event: Params<DatePickerSchema>["event"]) {
+  return event.src as OpenChangeReason | undefined
+}
 
 const normalizeValue = (ctx: Params<DatePickerSchema>, value: number | DateValue) => {
   const { context, prop } = ctx

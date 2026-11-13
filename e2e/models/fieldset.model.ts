@@ -12,8 +12,8 @@ export class FieldsetModel extends Model {
     super(page)
   }
 
-  goto() {
-    return this.page.goto(`/fieldset/basic`)
+  goto(example: "basic" | "groups" | "nested" = "basic") {
+    return this.page.goto(`/fieldset/${example}`)
   }
 
   getRoot() {
@@ -32,8 +32,54 @@ export class FieldsetModel extends Model {
     return this.page.locator(fieldInput)
   }
 
-  toggleOption(name: "Disabled" | "Invalid") {
+  toggleOption(name: string) {
     return this.page.getByRole("checkbox", { name }).click()
+  }
+
+  getFieldset(legend: string) {
+    return this.page.getByRole("group", { name: legend, exact: true })
+  }
+
+  clickButton(name: string) {
+    return this.page.getByRole("button", { name }).click()
+  }
+
+  clickOption(label: string) {
+    return this.page.getByLabel(label, { exact: true }).click()
+  }
+
+  async seeFieldsetInvalid(legend: string, invalid: boolean) {
+    const fieldset = this.getFieldset(legend)
+    if (invalid) await expect(fieldset).toHaveAttribute("data-invalid", "")
+    else await expect(fieldset).not.toHaveAttribute("data-invalid")
+    await expect(fieldset).not.toHaveAttribute("aria-invalid")
+  }
+
+  /** Every control in the fieldset is described by its error text only while invalid. */
+  async seeOptionsDescribedByError(legend: string, described: boolean) {
+    const fieldset = this.getFieldset(legend)
+    const errorId = await fieldset.locator(errorText).first().getAttribute("id")
+    const controls = fieldset.locator("input")
+    for (let i = 0; i < (await controls.count()); i++) {
+      const describedBy = (await controls.nth(i).getAttribute("aria-describedby")) ?? ""
+      expect(describedBy.split(" ").includes(errorId!)).toBe(described)
+    }
+  }
+
+  async seeFocusedOption(label: string) {
+    await expect(this.page.getByLabel(label, { exact: true })).toBeFocused()
+  }
+
+  async seeInputDisabled(name: string, disabled: boolean) {
+    const input = this.page.locator(`input[name="${name}"]`).first()
+    if (disabled) await expect(input).toHaveAttribute("data-disabled", "")
+    else await expect(input).not.toHaveAttribute("data-disabled")
+  }
+
+  async seeCheckboxDisabled(disabled: boolean) {
+    const root = this.page.locator(part("checkbox", "root"))
+    if (disabled) await expect(root).toHaveAttribute("data-disabled", "")
+    else await expect(root).not.toHaveAttribute("data-disabled")
   }
 
   async seeLegendLinked() {

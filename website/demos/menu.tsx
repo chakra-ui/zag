@@ -22,7 +22,7 @@ export function Menu(props: MenuProps) {
         </span>
       </button>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             {data.map((item) => (
               <div

@@ -1,19 +1,58 @@
+import type { ListCollection } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PopupActivationDirection, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
+
+export interface ScrollToIndexDetails {
+  index: number
+  getElement: () => HTMLElement | null
+}
+
+/**
+ * What opened or closed the menu:
+ * - `trigger-click`: the trigger was pressed by pointer or Enter/Space
+ * - `arrow-key`: an arrow key opened or closed the menu
+ * - `context-menu`: the context trigger was right-clicked or long-pressed
+ * - `trigger-hover`: the pointer hovered the trigger (submenu or menubar)
+ * - `pointer-leave`: the pointer left a submenu or its trigger
+ * - `sibling-open`: another menu in the menubar opened
+ * - `item-select`: an item was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `tab-key`: Tab moved focus out of the menu
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "arrow-key"
+  | "context-menu"
+  | "trigger-hover"
+  | "pointer-leave"
+  | "sibling-open"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "tab-key"
+  | "script"
 
 export interface OpenChangeDetails {
   /**
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * What opened or closed the menu
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface TriggerValueChangeDetails {
@@ -91,6 +130,15 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * The controlled highlighted value of the menu item.
    */
   highlightedValue?: string | null | undefined
+  /**
+   * The menu's items, in order. Set it when the items are virtualized, so the keyboard
+   * and typeahead can reach items that aren't rendered.
+   */
+  collection?: ListCollection<any> | undefined
+  /**
+   * Scrolls the item at an index into view, for virtualized items. Used with `collection`.
+   */
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
    * Function called when the highlighted menu item changes.
    */
@@ -219,6 +267,16 @@ export interface MenuSchema {
     pointerRoutingMode: "interactive" | "locked"
     /** Whether the open/close came from swapping between menubar menus. Exposed as `data-instant`. */
     instant: boolean
+    /** Where the current trigger sits relative to the previous one, after switching triggers while open */
+    activationDirection: PopupActivationDirection | null
+    /** The trigger value before the last switch, kept until the switch ends */
+    previousTriggerValue: string | null
+    /** Whether the menu is moving between triggers */
+    transitioning: boolean
+    /** Whether a viewport is rendered, with one content per trigger */
+    viewportRendered: boolean
+    /** The size of the current content, when the viewport is rendered */
+    viewportSize: ViewportSize | null
   }
   computed: {
     isRtl: boolean
@@ -238,6 +296,8 @@ export interface MenuSchema {
     focusMenuFrame: AnimationFrame
     autoHighlightFrame: AnimationFrame
     syncHighlightFrame: AnimationFrame
+    cancelTriggerSwitch: VoidFunction | null
+    awaitingViewportSize: boolean
   }
 
   action: string
@@ -381,11 +441,31 @@ export interface PositionerState {
    * Whether the menu has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Whether the menu is moving between triggers
+   */
+  transitioning: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
+}
+
+export interface ViewportSize {
+  width: number
+  height: number
+}
+
+export interface ContentProps {
+  /**
+   * The trigger value this content belongs to. Use one content per trigger inside the viewport.
+   */
+  value?: string | undefined
 }
 
 export interface ContentState {
   /**
-   * Whether the menu is open
+   * Whether the content is shown. For a content with a `value`, whether its trigger is the current one.
    */
   open: boolean
   /**
@@ -404,6 +484,39 @@ export interface ContentState {
    * The side of the trigger the content is placed on
    */
   side: PlacementSide | undefined
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the menu switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+}
+
+export interface ViewportState {
+  /**
+   * Whether the menu is open
+   */
+  open: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
+  /**
+   * The side of the trigger the viewport is placed on
+   */
+  side: PlacementSide | undefined
+  /**
+   * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
+   * `null` until the menu switches triggers while open.
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Whether the menu is moving between triggers
+   */
+  transitioning: boolean
 }
 
 export interface ItemGroupProps {
@@ -435,7 +548,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the menu
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * The trigger value
    */
@@ -444,6 +557,15 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    * Function to set the trigger value
    */
   setTriggerValue: (value: string | null) => void
+  /**
+   * Where the current trigger sits relative to the previous one, after switching triggers while open
+   */
+  activationDirection: PopupActivationDirection | null
+  /**
+   * Returns the trigger values whose content to render: the current one, plus the previous one while
+   * it animates out after a switch. Oldest first.
+   */
+  getContentValues: () => string[]
   /**
    * The id of the currently highlighted menuitem
    */
@@ -495,8 +617,13 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of the content
    */
-  getContentState: () => ContentState
-  getContentProps: () => T["element"]
+  getContentState: (props?: ContentProps) => ContentState
+  getContentProps: (props?: ContentProps) => T["element"]
+  /**
+   * Returns the state of the viewport
+   */
+  getViewportState: () => ViewportState
+  getViewportProps: () => T["element"]
   getSeparatorProps: () => T["element"]
   getInputProps: () => T["input"]
   getListProps: () => T["element"]

@@ -15,6 +15,7 @@ export const props = createProps<DndProps>()([
   "getRootNode",
   "id",
   "ids",
+  "isActivationKey",
   "onDragEnd",
   "onDragOver",
   "onDragStart",

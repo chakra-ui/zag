@@ -1,6 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
-import { getValuePercent, isNumber } from "@zag-js/utils"
 import type { ProgressSchema } from "./progress.types"
+import { getClampedValue, getPercent, isFiniteNumber } from "./progress.utils"
 
 export const machine = createMachine<ProgressSchema>({
   props({ props }) {
@@ -11,7 +11,7 @@ export const machine = createMachine<ProgressSchema>({
       ...props,
       max,
       min,
-      defaultValue: props.defaultValue !== undefined ? props.defaultValue : midValue(min, max),
+      defaultValue: props.defaultValue !== undefined ? props.defaultValue : min,
       formatOptions: {
         style: "percent",
         ...props.formatOptions,
@@ -22,8 +22,6 @@ export const machine = createMachine<ProgressSchema>({
   initialState() {
     return "idle"
   },
-
-  entry: ["validateContext"],
 
   context({ bindable, prop }) {
     return {
@@ -38,15 +36,17 @@ export const machine = createMachine<ProgressSchema>({
   },
 
   computed: {
-    isIndeterminate: ({ context }) => context.get("value") === null,
-    percent({ context, prop }) {
-      const value = context.get("value")
-      if (!isNumber(value)) return -1
-      return getValuePercent(value, prop("min"), prop("max")) * 100
-    },
+    isIndeterminate: ({ context }) => !isFiniteNumber(context.get("value")),
+    clampedValue: ({ context, prop }) => getClampedValue(context.get("value"), prop("min"), prop("max")),
+    percent: ({ computed, prop }) => getPercent(computed("clampedValue"), prop("min"), prop("max")),
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => new Intl.NumberFormat(locale, formatOptions),
+    ),
+    percentFormatter: memo(
+      ({ prop }) => [prop("locale"), prop("formatOptions")],
+      ([locale, formatOptions]) =>
+        new Intl.NumberFormat(locale, formatOptions.style === "percent" ? formatOptions : { style: "percent" }),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
   },
@@ -64,34 +64,9 @@ export const machine = createMachine<ProgressSchema>({
   implementations: {
     actions: {
       setValue: ({ context, event, prop }) => {
-        const value = event.value === null ? null : Math.max(0, Math.min(event.value, prop("max")))
+        const value = getClampedValue(event.value, prop("min"), prop("max"))
         context.set("value", value)
-      },
-      validateContext: ({ context, prop }) => {
-        const max = prop("max")
-        const min = prop("min")
-
-        const value = context.get("value")
-        if (value == null) return
-
-        if (!isValidNumber(max)) {
-          throw new Error(`[progress] The max value passed \`${max}\` is not a valid number`)
-        }
-
-        if (!isValidMax(value, max)) {
-          throw new Error(`[progress] The value passed \`${value}\` exceeds the max value \`${max}\``)
-        }
-
-        if (!isValidMin(value, min)) {
-          throw new Error(`[progress] The value passed \`${value}\` exceeds the min value \`${min}\``)
-        }
       },
     },
   },
 })
-
-const isValidNumber = (max: any) => isNumber(max) && !isNaN(max)
-const isValidMax = (value: number, max: number) => isValidNumber(value) && value <= max
-const isValidMin = (value: number, min: number) => isValidNumber(value) && value >= min
-
-const midValue = (min: number, max: number) => min + (max - min) / 2

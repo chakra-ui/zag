@@ -84,7 +84,7 @@ const api = computed(() => steps.connect(service, normalizeProps))
           <p>{{ item.description }}. Your progress is saved, so you can leave and pick up here later.</p>
         </div>
 
-        <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+        <div v-bind="api.getCompletedContentProps()">
           <h3>Your store is live</h3>
         </div>
 

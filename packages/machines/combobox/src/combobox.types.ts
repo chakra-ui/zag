@@ -10,9 +10,21 @@ import type { LiveRegion } from "@zag-js/live-region"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What changed the combobox value:
+ * - `item-select`: an item was clicked or selected with Enter
+ * - `clear-trigger`: the clear trigger was pressed
+ * - `script`: `setValue`, `selectValue` or `clearValue` was called
+ */
+export type ValueChangeReason = "item-select" | "clear-trigger" | "script"
+
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
   items: T[]
+  /**
+   * What changed the value
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
@@ -427,22 +439,11 @@ export interface ItemState {
 
 export interface RootState {
   /**
-   * Whether the combobox is invalid
-   */
-  invalid: boolean
-  /**
-   * Whether the combobox is read-only
-   */
-  readOnly: boolean
-}
-
-export interface TriggerState {
-  /**
    * Whether the combobox is open
    */
   open: boolean
   /**
-   * Whether the trigger is disabled
+   * Whether the combobox is disabled
    */
   disabled: boolean
   /**
@@ -453,6 +454,17 @@ export interface TriggerState {
    * Whether the combobox is read-only
    */
   readOnly: boolean
+  /**
+   * Whether the combobox is required
+   */
+  required: boolean
+  /**
+   * Whether the combobox is focused
+   */
+  focused: boolean
+}
+
+export interface TriggerState extends RootState {
   /**
    * Whether the trigger is focusable
    */
@@ -488,6 +500,10 @@ export interface ContentState {
    * Whether the combobox has no items to show
    */
   empty: boolean
+  /**
+   * Whether the items are loading
+   */
+  loading: boolean
 }
 
 export interface ItemGroupProps {

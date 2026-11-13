@@ -30,7 +30,7 @@ function useBarMenu(placement: "bottom-start" | "right-start") {
 function Content(props: { api: menu.Api; children: React.ReactNode }) {
   return (
     <Portal>
-      <div {...props.api.getPositionerProps()}>
+      <div className={styles.Positioner} {...props.api.getPositionerProps()}>
         <ul className={menuStyles.Content} {...props.api.getContentProps()}>
           {props.children}
         </ul>

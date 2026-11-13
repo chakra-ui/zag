@@ -1,8 +1,3 @@
-/**
- * This code was modified from react-resizable-panels by Brian Vaughn
- * @see https://github.com/bvaughn/react-resizable-panels
- */
-
 import type { Style } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import type { DragState, PanelData, PanelSize } from "../splitter.types"
@@ -188,4 +183,15 @@ export function getUnsafeDefaultSize({ panels, size: sizes }: { panels: PanelDat
   }
 
   return finalSizes
+}
+
+export function splitResizeTriggerId(id: string, panels: Pick<PanelData, "id">[]): [string, string] {
+  const ids = panels.map((panel) => panel.id)
+  for (const before of [...ids, ""]) {
+    if (!id.startsWith(`${before}:`)) continue
+    const after = id.slice(before.length + 1)
+    if (after === "" || ids.includes(after)) return [before, after]
+  }
+  const index = id.indexOf(":")
+  return [id.slice(0, index), id.slice(index + 1)]
 }

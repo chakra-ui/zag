@@ -22,6 +22,7 @@ export type {
   ElementIds,
   FormatChangeDetails,
   OpenChangeDetails,
+  OpenChangeReason,
   PositioningOptions,
   RootState,
   SwatchProps,

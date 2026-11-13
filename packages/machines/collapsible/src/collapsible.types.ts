@@ -5,8 +5,20 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What opened or closed the collapsible:
+ * - `trigger-click`: the trigger was pressed
+ * - `find-in-page`: the browser's find-in-page revealed a match in the content
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason = "trigger-click" | "find-in-page" | "script"
+
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * What opened or closed the collapsible
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ElementIds {
@@ -79,8 +91,8 @@ export interface CollapsibleSchema {
   event:
     | { type: "controlled.open" }
     | { type: "controlled.close" }
-    | { type: "open" }
-    | { type: "close" }
+    | { type: "open"; src?: OpenChangeReason }
+    | { type: "close"; src?: OpenChangeReason }
     | { type: "size.measure" }
     | { type: "animation.end" }
 
@@ -106,7 +118,7 @@ export type CollapsibleMachine = Machine<CollapsibleSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface TriggerState {
+export interface RootState {
   /**
    * Whether the collapsible is open
    */
@@ -121,19 +133,11 @@ export interface TriggerState {
   disabled: boolean
 }
 
-export interface ContentState {
+export interface ContentState extends RootState {
   /**
-   * Whether the collapsible is open
+   * Whether the content is open without animating, such as when it starts open. `data-state` is omitted.
    */
-  open: boolean
-  /**
-   * Whether the collapsible is visible (open or closing)
-   */
-  visible: boolean
-  /**
-   * Whether the collapsible is disabled
-   */
-  disabled: boolean
+  instant: boolean
   /**
    * Whether the content has a collapsed height or width
    */
@@ -156,17 +160,17 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the collapsible.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to measure the size of the content.
    */
   measureSize: VoidFunction
 
-  getRootProps: () => T["element"]
   /**
-   * Returns the state of the trigger
+   * Returns the state of the root
    */
-  getTriggerState: () => TriggerState
+  getRootState: () => RootState
+  getRootProps: () => T["element"]
   getTriggerProps: () => T["button"]
   /**
    * Returns the state of the content

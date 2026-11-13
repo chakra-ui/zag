@@ -4,17 +4,18 @@
   import { MinusIcon, PlusIcon } from "lucide-svelte"
   import "@styles/number-input.css"
 
-  let value = $state("")
+  let value = $state<number | null>(null)
   let formatOptions = $state<Intl.NumberFormatOptions | undefined>(undefined)
   let maxFractionDigits = $state<number | undefined>(undefined)
   let reason = $state("-")
   let commits = $state(0)
   let commitReason = $state("-")
+  let commitValue = $state("-")
   let focusReports = $state<string[]>([])
   let invalids = $state(0)
   let invalidReport = $state("-")
   let focusInputOnChange = $state(true)
-  let clampValueOnBlur = $state(true)
+  let allowOutOfRange = $state(false)
 
   const id = $props.id()
   const service = useMachine(numberInput.machine, () => ({
@@ -23,7 +24,7 @@
     max: 1000,
     min: 0,
     focusInputOnChange,
-    clampValueOnBlur,
+    allowOutOfRange,
     formatOptions:
       maxFractionDigits !== undefined ? { ...formatOptions, maximumFractionDigits: maxFractionDigits } : formatOptions,
     onValueChange(details) {
@@ -40,6 +41,7 @@
     onValueCommit(details) {
       commits++
       commitReason = details.reason ?? "-"
+      commitValue = String(details.value)
     },
   }))
 
@@ -51,18 +53,18 @@
 
   <!-- Test buttons for external value changes -->
   <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap">
-    <button data-testid="set-decimal" onclick={() => (value = "123.456789012345")}>
+    <button data-testid="set-decimal" onclick={() => (value = 123.456789012345)}>
       Set High Precision (123.456789012345)
     </button>
-    <button data-testid="set-simple" onclick={() => (value = "50.25")}>Set Simple (50.25)</button>
-    <button data-testid="set-zero" onclick={() => (value = "0")}>Set Zero</button>
-    <button data-testid="clear-value" onclick={() => (value = "")}>Clear (Uncontrolled)</button>
+    <button data-testid="set-simple" onclick={() => (value = 50.25)}>Set Simple (50.25)</button>
+    <button data-testid="set-zero" onclick={() => (value = 0)}>Set Zero</button>
+    <button data-testid="clear-value" onclick={() => (value = null)}>Clear</button>
     <button data-testid="api-set-value" onclick={() => api.setValue(42)}>api.setValue(42)</button>
     <button data-testid="toggle-focus-on-change" onclick={() => (focusInputOnChange = !focusInputOnChange)}>
       focusInputOnChange: {String(focusInputOnChange)}
     </button>
-    <button data-testid="toggle-clamp-on-blur" onclick={() => (clampValueOnBlur = !clampValueOnBlur)}>
-      clampValueOnBlur: {String(clampValueOnBlur)}
+    <button data-testid="toggle-allow-out-of-range" onclick={() => (allowOutOfRange = !allowOutOfRange)}>
+      allowOutOfRange: {String(allowOutOfRange)}
     </button>
   </div>
 
@@ -133,12 +135,14 @@
       <br />
       <strong>Commits:</strong> <span data-testid="commits">{commits}</span>
       <span data-testid="commit-reason">{commitReason}</span>
+      <span data-testid="commit-value">{commitValue}</span>
       <br />
-      <strong>Controlled Value:</strong> "{value}"
+      <strong>Controlled Value:</strong>
+      {String(value)}
     </div>
     <div>
       <strong>Is Controlled:</strong>
-      {value !== "" ? "Yes" : "No"}
+      {value != null ? "Yes" : "No"}
     </div>
     <div>
       <strong>Format Options:</strong>
@@ -149,8 +153,8 @@
       {maxFractionDigits ?? "None"}
     </div>
     <div>
-      <strong>Value As Number:</strong>
-      {api.valueAsNumber}
+      <strong>Formatted Value:</strong>
+      {api.formattedValue}
     </div>
   </div>
 

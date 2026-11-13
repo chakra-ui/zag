@@ -1,130 +1,410 @@
-import { test, expect } from "./_test"
-import { a11y, controls, testid, part } from "./_utils"
+import { expect, test } from "./_test"
+import { SplitterModel } from "./models/splitter.model"
+
+let I: SplitterModel
 
 test.describe("splitter", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/splitter/basic")
+    I = new SplitterModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violations", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
   })
 
-  test("should be focused on next splitter when tabbed", async ({ page }) => {
-    await page.click(part("splitter", "root"))
-    await page.keyboard.press("Tab")
-
-    expect(page.locator(testid("trigger-b:c"))).toHaveAttribute("data-focus", "")
+  test("should move focus to the next handle with Tab", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("Tab")
+    await I.seeHandleIsFocused(1)
   })
 
-  test("should increase panel when arrow right pressed", async ({ page }) => {
-    await page.click("main")
-
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("ArrowRight")
-    await page.keyboard.press("ArrowRight")
-    await page.keyboard.press("ArrowRight")
-
-    expect(page.locator(part("splitter", "resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "36")
+  test("should grow the panel with ArrowRight", async () => {
+    await I.focusHandle(1)
+    await I.pressKey("ArrowRight", 3)
+    await I.seeHandleValue(1, 36)
   })
 
-  test("should resize with keyboard when focused after hover", async ({ page }) => {
-    const trigger = page.locator(part("splitter", "resize-trigger")).first()
-
-    await page.locator("main").evaluate((main) => {
-      const button = document.createElement("button")
-      button.textContent = "Before splitter"
-      main.prepend(button)
-      button.focus()
-    })
-
-    await trigger.hover()
-    await page.keyboard.press("Tab")
-
-    await expect(trigger).toBeFocused()
-    const value = Number(await trigger.getAttribute("aria-valuenow"))
-
-    await page.keyboard.press("ArrowRight")
-
-    await expect(trigger).toHaveAttribute("aria-valuenow", String(value + 1))
+  test("should shrink the panel with ArrowLeft", async () => {
+    await I.focusHandle(1)
+    await I.pressKey("ArrowLeft", 3)
+    await I.seeHandleValue(1, 30)
   })
 
-  test("should keep pointer focus without showing keyboard focus styles", async ({ page }) => {
-    const trigger = page.locator(part("splitter", "resize-trigger")).first()
-    const box = await trigger.boundingBox()
-    if (!box) throw new Error("Resize trigger is not visible")
+  test("should resize with the keyboard when focused after hover", async () => {
+    await I.focusButtonBeforeSplitter()
+    await I.hoverHandle(0)
+    await I.pressKey("Tab")
+    await I.seeHandleIsFocused(0)
 
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-    await page.mouse.down()
-    await page.mouse.move(box.x + box.width / 2 + 20, box.y + box.height / 2)
-    await page.mouse.up()
-
-    await expect(trigger).toBeFocused()
-    expect(await trigger.evaluate((element) => element.matches(":focus-visible"))).toBe(false)
-
-    const value = Number(await trigger.getAttribute("aria-valuenow"))
-    await page.keyboard.press("ArrowRight")
-
-    await expect(trigger).toHaveAttribute("aria-valuenow", String(value + 1))
+    const value = await I.getHandleValue(0)
+    await I.pressKey("ArrowRight")
+    await I.seeHandleValue(0, value + 1)
   })
 
-  test("should decrease panel when arrow left pressed", async ({ page }) => {
-    await page.click("main")
+  test("should keep pointer focus without showing the focus ring", async () => {
+    await I.drag(0, 20)
+    await I.seeHandleIsFocused(0)
+    await I.dontSeeFocusRing(0)
 
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("ArrowLeft")
-    await page.keyboard.press("ArrowLeft")
-    await page.keyboard.press("ArrowLeft")
-
-    expect(page.locator(part("splitter", "resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "30")
+    const value = await I.getHandleValue(0)
+    await I.pressKey("ArrowRight")
+    await I.seeHandleValue(0, value + 1)
   })
 
-  test("should expose the separator orientation, perpendicular to the panel layout", async ({ page }) => {
-    const trigger = page.locator(part("splitter", "resize-trigger")).first()
-    await expect(trigger).toHaveAttribute("aria-orientation", "vertical")
-
-    await controls(page).select("orientation", "vertical")
-    await expect(trigger).toHaveAttribute("aria-orientation", "horizontal")
+  test("should expose the separator orientation, perpendicular to the panel layout", async () => {
+    await I.seeHandleOrientation(0, "vertical")
+    await I.controls.select("orientation", "vertical")
+    await I.seeHandleOrientation(0, "horizontal")
   })
 
-  test("should manage splitter panels when vertical orientation", async ({ page }) => {
-    await controls(page).select("orientation", "vertical")
-
-    expect(page.locator(part("splitter", "root"))).toHaveAttribute("data-orientation", "vertical")
-    expect(page.locator(part("splitter", "panel")).first()).toHaveAttribute("data-orientation", "vertical")
-    expect(page.locator(part("splitter", "resize-trigger")).first()).toHaveAttribute("data-orientation", "vertical")
+  test("should lay out vertically", async () => {
+    await I.controls.select("orientation", "vertical")
+    await I.seeLayoutOrientation("vertical")
   })
 })
 
 test.describe("splitter / nested", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/splitter/nested")
+    I = new SplitterModel(page)
+    await I.goto("nested")
   })
 
-  test("should keep the inner layout when the outer splitter resizes", async ({ page }) => {
-    const innerTrigger = page.locator(part("splitter", "resize-trigger")).and(page.locator('[data-id="top:middle"]'))
-    const outerTrigger = page.locator(part("splitter", "resize-trigger")).and(page.locator('[data-id="left:center"]'))
+  test("should keep the inner layout when the outer splitter resizes", async () => {
+    const initial = await I.getHandleValue("top:middle")
+    await I.dragVertically("top:middle", 40)
+    const resized = await I.getHandleValue("top:middle")
+    expect(resized).not.toBe(initial)
 
-    const initialValue = await innerTrigger.getAttribute("aria-valuenow")
-    const innerBox = await innerTrigger.boundingBox()
-    if (!innerBox) throw new Error("Inner resize trigger is not visible")
+    await I.drag("left:center", 40)
+    await I.seeHandleValue("top:middle", resized)
+  })
+})
 
-    await page.mouse.move(innerBox.x + innerBox.width / 2, innerBox.y + innerBox.height / 2)
-    await page.mouse.down()
-    await page.mouse.move(innerBox.x + innerBox.width / 2, innerBox.y + innerBox.height / 2 + 40, { steps: 5 })
-    await page.mouse.up()
+test.describe("splitter / keyboard", () => {
+  test.beforeEach(({ page }) => {
+    I = new SplitterModel(page)
+  })
 
-    const value = await innerTrigger.getAttribute("aria-valuenow")
-    expect(value).not.toBe(initialValue)
+  test("Home and End move the handle to its limits", async () => {
+    await I.goto("events")
+    await I.focusHandle(0)
+    await I.pressKey("End")
+    await I.seeHandleValue(0, 40)
+    await I.pressKey("Home")
+    await I.seeHandleValue(0, 5)
+  })
 
-    const outerBox = await outerTrigger.boundingBox()
-    if (!outerBox) throw new Error("Outer resize trigger is not visible")
+  test("double-click resets the panel before the handle", async () => {
+    await I.goto("basic")
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 2)
+    await I.seeSizes([35, 31, 33])
+    await I.doubleClickHandle(0)
+    await I.seeSizes([33, 33, 33])
+  })
+})
 
-    await page.mouse.move(outerBox.x + outerBox.width / 2, outerBox.y + 10)
-    await page.mouse.down()
-    await page.mouse.move(outerBox.x + outerBox.width / 2 + 40, outerBox.y + 10, { steps: 5 })
-    await page.mouse.up()
+test.describe("splitter / pointer", () => {
+  test.beforeEach(({ page }) => {
+    I = new SplitterModel(page)
+  })
 
-    await expect(innerTrigger).toHaveAttribute("aria-valuenow", value!)
+  test("the handle follows the pointer", async () => {
+    await I.goto("basic")
+    const startX = await I.handleX(0)
+    await I.drag(0, 200)
+    await I.seeHandleMovedBy(0, startX, 200)
+  })
+
+  test("the handle follows the pointer with fixed-size content beside it", async () => {
+    await I.goto("fixed-size")
+    const startX = await I.handleX(0)
+    await I.drag(0, 120)
+    await I.seeHandleMovedBy(0, startX, 120)
+  })
+
+  test("dragging right in RTL moves the handle right", async () => {
+    await I.goto("basic")
+    await I.controls.select("dir", "rtl")
+    const startX = await I.handleX(0)
+    await I.drag(0, 100)
+    await I.seeHandleMovedBy(0, startX, 100)
+  })
+
+  test("stops at a panel's max and follows the pointer back", async () => {
+    await I.goto("events")
+    // A's max is 40%, so dragging far right stops there, then dragging back works in the same gesture
+    await I.drag(0, -50, 600)
+    await I.seeHandleValueBelow(0, 25)
+  })
+
+  test("takes space from the next panels once the neighbour reaches its min", async () => {
+    await I.goto("events")
+    await I.drag(1, -800)
+    const [a, b] = await I.getOutputSizes()
+    expect(b).toBe(20)
+    expect(a).toBeLessThan(25)
+  })
+
+  test("a context menu during a drag ends the drag", async () => {
+    await I.goto("events")
+    await I.startDrag(0, 40)
+    const sizes = await I.output("Sizes").textContent()
+    await I.openContextMenu()
+    await I.moveDrag(200)
+    await I.seeOutput("Sizes", sizes!)
+    await I.mouseup()
+  })
+
+  test("one-sided handles resize with the keyboard and the pointer", async () => {
+    await I.goto("fixed-size")
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 2)
+    await I.seeSizes([52, 48])
+    await I.drag(1, -100)
+    expect((await I.getSizes())[0]).toBeLessThan(52)
+  })
+})
+
+test.describe("splitter / collapsible", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("collapsible")
+    await I.focusHandle(0)
+  })
+
+  test("Enter collapses from the current size", async () => {
+    await I.pressKey("ArrowLeft", 3)
+    await I.seeHandleValue(0, 12)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 5)
+  })
+
+  test("Enter expands back to the size before the collapse", async () => {
+    await I.pressKey("ArrowRight", 3)
+    await I.seeHandleValue(0, 18)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 5)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 18)
+  })
+
+  test("expands back to the size before a drag collapsed it", async () => {
+    await I.drag(0, -300)
+    await I.seeHandleValue(0, 5)
+    await I.focusHandle(0)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 15)
+  })
+
+  test("the value never drops below aria-valuemin when collapsed", async () => {
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 5)
+    await I.seeHandleMin(0, 5)
+  })
+})
+
+test.describe("splitter / layout changes", () => {
+  test.beforeEach(({ page }) => {
+    I = new SplitterModel(page)
+  })
+
+  test("a pixel min applies when narrow and the size comes back when wide", async () => {
+    await I.goto("pixel-constraints")
+    const wide = await I.panelWidth(0)
+    await I.resizeWindow({ width: 500, height: 800 })
+    await I.seePanelWidth(0, 240)
+    await I.resizeWindow({ width: 1280, height: 720 })
+    await I.seePanelWidth(0, wide)
+  })
+
+  test("hiding and showing a panel keeps the layout", async () => {
+    await I.goto("conditional")
+    await I.drag(0, 150)
+    const widths = await I.panelWidths()
+    await I.clickButton("Hide Right")
+    await I.clickButton("Show Right")
+    await I.seePanelWidths(widths)
+  })
+})
+
+test.describe("splitter / events", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+  })
+
+  test("reports each keyboard step and one resize end per drag", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 3)
+    await I.seeOutput("Resize count", "3")
+
+    await I.drag(0, 60)
+    // three keyboard steps, then one drag
+    await I.seeOutput("Resize end reports", /^(\d+\/\d+\/\d+,){3}\d+\/\d+\/\d+$/)
+  })
+
+  test("reports collapse and expand", async () => {
+    await I.clickButton("Collapse A")
+    await I.seeOutput("Collapse reports", "collapse:a")
+    await I.clickButton("Expand A")
+    await I.seeOutput("Collapse reports", "collapse:a,expand:a")
+  })
+})
+
+test.describe("splitter / disabled handle", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+    await I.clickButton("Disable second handle")
+  })
+
+  test("is marked disabled and can't be focused", async () => {
+    await I.seeHandleIsDisabled(1)
+  })
+
+  test("F6 skips it", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("F6")
+    await I.seeHandleIsFocused(0)
+  })
+
+  test("can't be dragged", async () => {
+    const sizes = await I.output("Sizes").textContent()
+    await I.drag(1, -100)
+    await I.seeOutput("Sizes", sizes!)
+  })
+})
+
+test.describe("splitter / collapse threshold", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("collapsible")
+    await I.focusHandle(0)
+    await I.pressKey("Enter")
+    await I.seeHandleValue(0, 5)
+  })
+
+  test("a short drag leaves a collapsed panel shut", async () => {
+    // collapsed at 5 with a min of 10, so it opens past 2.5
+    await I.dragByPercent(0, 2)
+    await I.seeHandleValue(0, 5)
+  })
+
+  test("a drag past half the gap opens it to its min", async () => {
+    await I.dragByPercent(0, 3)
+    await I.seeHandleValue(0, 10)
+  })
+})
+
+test.describe("splitter / disabled panel", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+    await I.clickButton("Lock A")
+  })
+
+  test("disables the handles next to it", async () => {
+    await I.seeHandleIsDisabled(0)
+    await I.seeHandleEnabled(1)
+  })
+
+  test("other handles can't push into it", async () => {
+    await I.drag(1, -800)
+    await I.seeOutput("Sizes", "25/20/55")
+  })
+
+  test("the API can't resize it", async () => {
+    await I.clickButton("Resize A to 200px")
+    await I.clickButton("Collapse A")
+    await I.seeOutput("Sizes", "25/50/25")
+  })
+})
+
+test.describe("splitter / disabled splitter", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("events")
+    await I.clickButton("Disable splitter")
+  })
+
+  test("disables every handle", async () => {
+    await I.seeHandleIsDisabled(0)
+    await I.seeHandleIsDisabled(1)
+    await I.drag(0, 100)
+    await I.seeOutput("Sizes", "25/50/25")
+  })
+
+  test("the API still works", async () => {
+    await I.clickButton("Resize A to 200px")
+    await I.seePanelWidthNear(0, 200)
+  })
+})
+
+test.describe("splitter / api", () => {
+  test.beforeEach(({ page }) => {
+    I = new SplitterModel(page)
+  })
+
+  test("resizePanel takes a size with a unit", async () => {
+    await I.goto("events")
+    await I.clickButton("Resize A to 200px")
+    await I.seePanelWidthNear(0, 200)
+  })
+
+  test("onResize doesn't fire on mount", async () => {
+    await I.goto("events")
+    await I.seeOutput("Resize count", "0")
+  })
+})
+
+test.describe("splitter / group resize behavior", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("group-resize-behavior")
+  })
+
+  test("a preserve-pixel-size panel keeps its width when the window resizes", async () => {
+    const width = await I.panelWidth(0)
+    await I.resizeWindow({ width: 900, height: 720 })
+    await I.seePanelWidthNear(0, width)
+    await I.resizeWindow({ width: 1280, height: 720 })
+    await I.seePanelWidthNear(0, width)
+  })
+})
+
+test.describe("splitter / controlled", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("controlled")
+  })
+
+  test("follows sizes set by the parent", async () => {
+    await I.clickButton("Left wide")
+    await I.seeHandleValue(0, 50)
+    await I.clickButton("Center wide")
+    await I.seeHandleValue(0, 15)
+  })
+
+  test("reports drags back to the parent", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 2)
+    await I.seeSizes([27, 48, 25])
+  })
+})
+
+test.describe("splitter / persistent layout", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SplitterModel(page)
+    await I.goto("persistent-layout")
+  })
+
+  test("keeps the layout after a reload", async () => {
+    await I.focusHandle(0)
+    await I.pressKey("ArrowRight", 5)
+    const sizes = await I.getSizes()
+    await I.reload()
+    await I.seeSizes(sizes)
   })
 })

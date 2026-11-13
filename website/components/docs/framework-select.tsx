@@ -40,7 +40,7 @@ export function FrameworkSelect(props: { id?: string }) {
 
       {api.open && (
         <Portal>
-          <div {...api.getPositionerProps()}>
+          <div className={styles.positioner} {...api.getPositionerProps()}>
             <div className={styles.content} {...api.getContentProps()}>
               {Object.entries(frameworks).map(([key, value]) => (
                 <div

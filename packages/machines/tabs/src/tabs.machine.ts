@@ -1,5 +1,6 @@
 import { setup } from "@zag-js/core"
 import {
+  addDomEvent,
   AnimationFrame,
   getFocusables,
   isAnchorElement,
@@ -9,7 +10,9 @@ import {
 import type { Rect } from "@zag-js/types"
 import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
-import type { TabsSchema } from "./tabs.types"
+import type { Params } from "@zag-js/core"
+import type { ActivationDirection } from "@zag-js/types"
+import type { TabsSchema, ValueChangeReason } from "./tabs.types"
 
 const { createMachine } = setup<TabsSchema>()
 
@@ -29,13 +32,15 @@ export const machine = createMachine({
     return "idle"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, scope, getEvent }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
-        onChange(value) {
-          prop("onValueChange")?.({ value })
+        onChange(value, prevValue) {
+          const activationDirection = dom.getActivationDirection(scope, prevValue ?? null, value, prop("orientation"))
+          const reason = getEvent().src as ValueChangeReason | undefined
+          prop("onValueChange")?.({ value, activationDirection, reason })
         },
       })),
       focusedValue: bindable(() => ({
@@ -55,22 +60,40 @@ export const machine = createMachine({
       tabStopValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
+      hasFocusableContent: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      activationDirection: bindable<ActivationDirection>(() => ({
+        defaultValue: "none",
+      })),
     }
   },
 
-  refs() {
+  refs({ prop }) {
     return {
+      previousValue: prop("value") ?? prop("defaultValue") ?? null,
       indicatorCleanup: null,
       indicatorFrame: AnimationFrame.create(),
       focusFrame: AnimationFrame.create(),
       selectFrame: AnimationFrame.create(),
       tabIndexFrame: AnimationFrame.create(),
+      directionFrame: AnimationFrame.create(),
     }
+  },
+
+  // Measured during render so panels see the direction on their first frame
+  computed: {
+    activationDirection({ context, refs, scope, prop }) {
+      const value = context.get("value")
+      const previousValue = refs.get("previousValue")
+      if (value === previousValue) return context.get("activationDirection")
+      return dom.getActivationDirection(scope, previousValue, value, prop("orientation"))
+    },
   },
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorRect", "syncTabIndex", "syncTabStopValue"])
+      action(["setActivationDirection", "syncIndicatorRect", "syncTabIndex", "syncTabStopValue"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["snapIndicator", "syncIndicatorRect"])
@@ -78,93 +101,56 @@ export const machine = createMachine({
   },
 
   on: {
-    SET_VALUE: {
-      actions: ["setValue"],
+    "TRIGGER.FOCUS": {
+      target: "focused",
+      actions: ["setFocusedValue"],
     },
-    CLEAR_VALUE: {
-      actions: ["clearValue"],
-    },
-    SET_INDICATOR_RECT: {
-      actions: ["setIndicatorRect"],
-    },
-    SYNC_TAB_INDEX: {
-      actions: ["syncTabIndex"],
+    "TRIGGER.CLICK": {
+      target: "focused",
+      actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
     },
     "TRIGGERS.CHANGE": {
-      actions: ["syncTabStopValue"],
+      actions: ["syncTabStopValue", "syncIndicatorRect"],
     },
-    INDICATOR_RESIZE: [
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+    "VALUE.STEP": [{ guard: "isVirtualFocus", target: "focused", actions: ["stepValue"] }, { actions: ["stepValue"] }],
+    "INDICATOR.SET": {
+      actions: ["setIndicatorRect"],
+    },
+    "INDICATOR.RESIZE": [
       // A running selection transition retargets to the new rect instead of snapping
-      { guard: "isIndicatorTransitioning", actions: ["setResizedIndicatorRect"] },
+      {
+        guard: "isIndicatorTransitioning",
+        actions: ["setResizedIndicatorRect"],
+      },
       { actions: ["snapIndicator", "setResizedIndicatorRect"] },
     ],
+    "CONTENT.SYNC": {
+      actions: ["syncTabIndex"],
+    },
   },
 
   effects: ["trackTriggers"],
 
   entry: ["syncIndicatorRect", "syncTabIndex", "syncTabStopValue", "syncSsr"],
 
-  exit: ["cleanupObserver", "cancelFocusFrame", "cancelIndicatorFrame", "cancelSelectFrame", "cancelTabIndexFrame"],
+  exit: ["cleanupObserver", "cancelFrames"],
 
   states: {
-    idle: {
-      on: {
-        TAB_FOCUS: {
-          target: "focused",
-          actions: ["setFocusedValue"],
-        },
-        TAB_CLICK: {
-          target: "focused",
-          actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
-        },
-      },
-    },
+    idle: {},
     focused: {
       exit: ["cancelFocusFrame"],
       on: {
-        TAB_CLICK: {
-          actions: ["setFocusedValue", "toggleValue", "requestNavigation"],
-        },
-        ARROW_PREV: [
+        "FOCUS.MOVE": [
           {
             guard: "selectOnFocus",
-            actions: ["focusPrevTab", "selectFocusedTab"],
+            actions: ["moveFocus", "selectFocusedTab"],
           },
-          {
-            actions: ["focusPrevTab"],
-          },
+          { actions: ["moveFocus"] },
         ],
-        ARROW_NEXT: [
-          {
-            guard: "selectOnFocus",
-            actions: ["focusNextTab", "selectFocusedTab"],
-          },
-          {
-            actions: ["focusNextTab"],
-          },
-        ],
-        HOME: [
-          {
-            guard: "selectOnFocus",
-            actions: ["focusFirstTab", "selectFocusedTab"],
-          },
-          {
-            actions: ["focusFirstTab"],
-          },
-        ],
-        END: [
-          {
-            guard: "selectOnFocus",
-            actions: ["focusLastTab", "selectFocusedTab"],
-          },
-          {
-            actions: ["focusLastTab"],
-          },
-        ],
-        TAB_FOCUS: {
-          actions: ["setFocusedValue"],
-        },
-        TAB_BLUR: {
+        "TRIGGER.BLUR": {
           target: "idle",
           actions: ["clearFocusedValue"],
         },
@@ -176,10 +162,11 @@ export const machine = createMachine({
     guards: {
       selectOnFocus: ({ prop }) => prop("activationMode") === "automatic",
       isIndicatorTransitioning: ({ event }) => !!event.transitioning,
+      isVirtualFocus: ({ prop }) => !!prop("virtualFocus"),
     },
 
     actions: {
-      selectFocusedTab({ context, prop, event, scope, refs }) {
+      selectFocusedTab({ context, prop, event, scope, refs, send }) {
         refs.get("selectFrame").request(() => {
           const value = context.get("focusedValue")
           if (!value || context.get("value") === value) return
@@ -192,7 +179,8 @@ export const machine = createMachine({
             }
           }
 
-          context.set("value", value)
+          // Sent so the change carries its reason; the frame runs after focus events
+          send({ type: "VALUE.SET", value, src: "keyboard" })
         })
       },
       setFocusedValue({ context, event, flush }) {
@@ -216,103 +204,72 @@ export const machine = createMachine({
         const reachable = selectedEl != null && !selectedEl.hasAttribute("disabled")
         context.set("tabStopValue", reachable ? null : (dom.getFirstTriggerEl(scope)?.dataset.value ?? null))
       },
-      clearValue({ context }) {
-        context.set("value", null)
-      },
 
-      focusFirstTab({ scope, refs }) {
-        refs.get("focusFrame").request(() => {
-          dom.getFirstTriggerEl(scope)?.focus()
+      moveFocus(params) {
+        const { context, prop, scope, event } = params
+        const focusedValue = context.get("focusedValue")
+        focusTrigger(params, () => {
+          if (event.to === "first") return dom.getFirstTriggerEl(scope)
+          if (event.to === "last") return dom.getLastTriggerEl(scope)
+          if (!focusedValue) return null
+          return dom.getSiblingTriggerEl(scope, focusedValue, event.to === "next" ? 1 : -1, prop("loopFocus"))
         })
       },
 
-      focusLastTab({ scope, refs }) {
-        refs.get("focusFrame").request(() => {
-          dom.getLastTriggerEl(scope)?.focus()
-        })
+      stepValue({ context, prop, scope, event }) {
+        const triggerEl = dom.getSiblingTriggerEl(
+          scope,
+          event.from ?? context.get("value"),
+          event.step,
+          prop("loopFocus"),
+        )
+        const value = triggerEl?.dataset.value
+        if (value == null) return
+        context.set("value", value)
+        if (prop("virtualFocus")) context.set("focusedValue", value)
       },
 
-      focusNextTab({ context, prop, scope, event, refs }) {
-        const focusedValue = event.value ?? context.get("focusedValue")
-        if (!focusedValue) return
+      setActivationDirection({ refs, computed, context, scope, prop }) {
+        const previousValue = refs.get("previousValue")
+        const value = context.get("value")
+        context.set("activationDirection", computed("activationDirection"))
+        refs.set("previousValue", value)
 
-        const triggerEl = dom.getNextTriggerEl(scope, {
-          value: focusedValue,
-          loopFocus: prop("loopFocus"),
-        })
-
-        refs.get("focusFrame").request(() => {
-          if (prop("virtualFocus")) {
-            if (triggerEl?.dataset.value != null) {
-              context.set("focusedValue", triggerEl.dataset.value)
-            }
-          } else {
-            triggerEl?.focus()
-          }
-        })
-      },
-
-      focusPrevTab({ context, prop, scope, event, refs }) {
-        const focusedValue = event.value ?? context.get("focusedValue")
-        if (!focusedValue) return
-
-        const triggerEl = dom.getPrevTriggerEl(scope, {
-          value: focusedValue,
-          loopFocus: prop("loopFocus"),
-        })
-
-        refs.get("focusFrame").request(() => {
-          if (prop("virtualFocus")) {
-            if (triggerEl?.dataset.value != null) {
-              context.set("focusedValue", triggerEl.dataset.value)
-            }
-          } else {
-            triggerEl?.focus()
-          }
+        // A tab added and selected in the same update may not be rendered yet
+        if (value == null || dom.getTriggerEl(scope, value)) return
+        refs.get("directionFrame").request(() => {
+          context.set(
+            "activationDirection",
+            dom.getActivationDirection(scope, previousValue, value, prop("orientation")),
+          )
         })
       },
 
       syncTabIndex({ context, scope, refs }) {
         refs.get("tabIndexFrame").request(() => {
-          const value = context.get("value")
-          if (!value) return
-
-          const contentEl = dom.getContentEl(scope, value)
-          if (!contentEl) return
-
-          const focusables = getFocusables(contentEl)
-          if (focusables.length > 0) {
-            contentEl.removeAttribute("tabindex")
-          } else {
-            contentEl.setAttribute("tabindex", "0")
-          }
+          const contentEl = dom.getContentEl(scope, context.get("value") ?? "")
+          context.set("hasFocusableContent", contentEl != null && getFocusables(contentEl).length > 0)
         })
       },
       cancelFocusFrame({ refs }) {
         refs.get("focusFrame").cancel()
       },
-      cancelSelectFrame({ refs }) {
+      cancelFrames({ refs }) {
+        refs.get("focusFrame").cancel()
+        refs.get("indicatorFrame").cancel()
         refs.get("selectFrame").cancel()
-      },
-      cancelTabIndexFrame({ refs }) {
         refs.get("tabIndexFrame").cancel()
+        refs.get("directionFrame").cancel()
       },
       cleanupObserver({ refs }) {
         const cleanup = refs.get("indicatorCleanup")
         if (cleanup) cleanup()
       },
       setIndicatorRect({ context, event, scope }) {
-        const value = event.id ?? context.get("value")
-
-        const indicatorEl = dom.getIndicatorEl(scope)
-        if (!indicatorEl) return
-
-        if (!value) return
-
-        const triggerEl = dom.getTriggerEl(scope, value)
+        if (!dom.getIndicatorEl(scope)) return
+        const triggerEl = dom.getTriggerEl(scope, event.value ?? context.get("value"))
         if (!triggerEl) return
-
-        context.set("indicatorRect", dom.getRectByValue(scope, value))
+        context.set("indicatorRect", dom.getTriggerRect(scope, triggerEl))
       },
       syncSsr({ context }) {
         context.set("ssr", false)
@@ -322,9 +279,6 @@ export const machine = createMachine({
         const frame = refs.get("indicatorFrame")
         context.set("indicatorInstant", true)
         frame.request(() => frame.request(() => context.set("indicatorInstant", false)))
-      },
-      cancelIndicatorFrame({ refs }) {
-        refs.get("indicatorFrame").cancel()
       },
       setResizedIndicatorRect({ context, event }) {
         context.set("indicatorRect", event.rect)
@@ -338,7 +292,7 @@ export const machine = createMachine({
 
         const getRect = () => {
           const triggerEl = dom.getTriggerEl(scope, context.get("value"))
-          return triggerEl ? dom.getOffsetRect(triggerEl) : null
+          return triggerEl ? dom.getTriggerRect(scope, triggerEl) : null
         }
 
         const rect = getRect()
@@ -348,14 +302,23 @@ export const machine = createMachine({
         const onResize = () => {
           const rect = getRect()
           if (!rect || isEqual(context.get("indicatorRect"), rect)) return
-          send({ type: "INDICATOR_RESIZE", rect, transitioning: indicatorEl.getAnimations?.().length > 0 })
+          send({
+            type: "INDICATOR.RESIZE",
+            rect,
+            transitioning: indicatorEl.getAnimations?.().length > 0,
+          })
         }
 
         const triggerEls = dom.getElements(scope)
         const listEl = dom.getListEl(scope)
         const indicatorCleanup = callAll(
           ...triggerEls.map((el) => resizeObserverBorderBox.observe(el, onResize)),
-          ...(listEl ? [resizeObserverBorderBox.observe(listEl, onResize)] : []),
+          ...(listEl
+            ? [
+                resizeObserverBorderBox.observe(listEl, onResize),
+                addDomEvent(listEl, "scroll", onResize, { passive: true }),
+              ]
+            : []),
         )
 
         refs.set("indicatorCleanup", indicatorCleanup)
@@ -384,3 +347,15 @@ export const machine = createMachine({
     },
   },
 })
+
+function focusTrigger(params: Params<TabsSchema>, getTriggerEl: () => HTMLElement | null | undefined) {
+  const { context, prop, refs } = params
+  refs.get("focusFrame").request(() => {
+    const triggerEl = getTriggerEl()
+    if (!prop("virtualFocus")) {
+      triggerEl?.focus()
+      return
+    }
+    if (triggerEl?.dataset.value != null) context.set("focusedValue", triggerEl.dataset.value)
+  })
+}

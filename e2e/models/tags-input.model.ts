@@ -11,7 +11,7 @@ export class TagsInputModel extends Model {
   }
 
   private get input() {
-    return this.page.locator("[data-testid=input]")
+    return this.page.locator("[data-tags-input-input]")
   }
 
   get clearTrigger() {
@@ -123,6 +123,14 @@ export class TagsInputModel extends Model {
 
   async seeTagInputHasValue(value: string) {
     await expect(this.getTagInput(value)).toHaveValue(value)
+  }
+
+  async seeHighlightedTagText(text: string) {
+    await expect(this.page.locator("[data-tags-input-item-preview][data-highlighted]")).toHaveText(text)
+  }
+
+  async seeTagOrder(values: string[]) {
+    await expect(this.page.locator("[data-tags-input-item-text]")).toHaveText(values)
   }
 
   async seeNoHighlightedTag() {

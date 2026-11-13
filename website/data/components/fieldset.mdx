@@ -64,8 +64,8 @@ const service = useMachine(fieldset.machine, {
 
 This uses the native `<fieldset disabled>` attribute. `@zag-js/field` (and other
 Zag controls that track form state) observe that attribute and mirror
-`data-disabled` on their own parts. Nested fieldsets also pick up an ancestor's
-disabled state for styling via `data-disabled`.
+`data-disabled` on their own parts. This works through nested fieldsets too:
+disabling an outer fieldset disables the controls in every fieldset inside it.
 
 ### Invalid state
 
@@ -95,6 +95,11 @@ Fieldset `invalid` does **not** mark nested fields invalid. Each `@zag-js/field`
 keeps its own validity. Use fieldset invalid for the group message, and field
 invalid for per-control messages.
 
+While the fieldset is invalid, every `@zag-js/field` inside it adds the
+fieldset's error text to its control's `aria-describedby`. Screen reader users
+hear the group message when they move to any option, not only when they enter
+the group.
+
 ### Helper text
 
 <Example id="FieldsetHelperText">
@@ -110,7 +115,8 @@ invalid for per-control messages.
 </Example>
 
 Helper text is always referenced from `aria-describedby`. Error text is only
-referenced while the fieldset is invalid.
+referenced while the fieldset is invalid. The legend names the fieldset through
+`aria-labelledby` only while it is rendered.
 
 ### Nesting fields
 
@@ -162,20 +168,36 @@ label next to the control.
   <legend {...api.getLegendProps()}>Backup schedule</legend>
   <span {...api.getHelperTextProps()}>Choose how often we save a copy</span>
 
-  <label>
-    <input type="radio" name="backup" value="daily" />
-    Daily
-  </label>
-  <label>
-    <input type="radio" name="backup" value="monthly" />
-    Monthly
-  </label>
+  {options.map((option) => (
+    <Option key={option.value} name="backup" {...option} />
+  ))}
 
   <span {...api.getErrorTextProps()}>Pick a schedule</span>
 </fieldset>
 ```
 
 </Example>
+
+Wrap each option in its own `@zag-js/field`, so the fieldset's error text
+reaches every option:
+
+```tsx
+function Option(props: { name: string; value: string; label: string }) {
+  const service = useMachine(field.machine, { id: useId() })
+  const api = field.connect(service, normalizeProps)
+  return (
+    <div {...api.getRootProps()}>
+      <input
+        {...api.getInputProps()}
+        type="radio"
+        name={props.name}
+        value={props.value}
+      />
+      <label {...api.getLabelProps()}>{props.label}</label>
+    </div>
+  )
+}
+```
 
 The same pattern works with `@zag-js/radio-group` or `@zag-js/checkbox` as the
 controls inside the fieldset. Put the group label on the legend, not on a field

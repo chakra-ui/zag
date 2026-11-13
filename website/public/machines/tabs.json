@@ -19,221 +19,95 @@
     {
       "from": "*",
       "to": null,
-      "event": "CLEAR_VALUE",
+      "event": "CONTENT.SYNC",
       "guard": null
     },
     {
       "from": "*",
       "to": null,
-      "event": "INDICATOR_RESIZE",
+      "event": "INDICATOR.RESIZE",
       "guard": "isIndicatorTransitioning"
     },
     {
       "from": "*",
       "to": null,
-      "event": "INDICATOR_RESIZE",
+      "event": "INDICATOR.RESIZE",
       "guard": null
     },
     {
       "from": "*",
       "to": null,
-      "event": "SET_INDICATOR_RECT",
+      "event": "INDICATOR.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "focused",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "focused",
+      "event": "TRIGGER.FOCUS",
       "guard": null
     },
     {
       "from": "*",
       "to": null,
-      "event": "SET_VALUE",
+      "event": "TRIGGERS.CHANGE",
       "guard": null
     },
     {
       "from": "*",
       "to": null,
-      "event": "SYNC_TAB_INDEX",
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": "focused",
+      "event": "VALUE.STEP",
+      "guard": "isVirtualFocus"
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.STEP",
       "guard": null
     },
     {
       "from": "focused",
       "to": null,
-      "event": "ARROW_NEXT",
+      "event": "FOCUS.MOVE",
       "guard": "selectOnFocus"
     },
     {
       "from": "focused",
       "to": null,
-      "event": "ARROW_NEXT",
-      "guard": null
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "ARROW_PREV",
-      "guard": "selectOnFocus"
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "ARROW_PREV",
-      "guard": null
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "END",
-      "guard": "selectOnFocus"
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "END",
-      "guard": null
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "HOME",
-      "guard": "selectOnFocus"
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "HOME",
+      "event": "FOCUS.MOVE",
       "guard": null
     },
     {
       "from": "focused",
       "to": "idle",
-      "event": "TAB_BLUR",
-      "guard": null
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "TAB_CLICK",
-      "guard": null
-    },
-    {
-      "from": "focused",
-      "to": null,
-      "event": "TAB_FOCUS",
-      "guard": null
-    },
-    {
-      "from": "idle",
-      "to": "focused",
-      "event": "TAB_CLICK",
-      "guard": null
-    },
-    {
-      "from": "idle",
-      "to": "focused",
-      "event": "TAB_FOCUS",
+      "event": "TRIGGER.BLUR",
       "guard": null
     }
   ],
   "layouts": {
     "right": {
-      "width": 554,
-      "height": 160,
+      "width": 574,
+      "height": 118,
       "states": {
         "idle": {
-          "x": 444,
-          "y": 48,
+          "x": 464,
+          "y": 32,
           "w": 78,
           "h": 44
         },
         "focused": {
           "x": 48,
-          "y": 48,
-          "w": 101,
-          "h": 44
-        }
-      },
-      "edges": [
-        {
-          "from": "focused",
-          "to": "idle",
-          "events": [
-            "TAB_BLUR"
-          ],
-          "lines": [
-            "TAB_BLUR"
-          ],
-          "points": [
-            [
-              149,
-              63
-            ],
-            [
-              444,
-              63
-            ]
-          ],
-          "label": {
-            "x": 262,
-            "y": 32,
-            "w": 69,
-            "h": 24
-          }
-        },
-        {
-          "from": "idle",
-          "to": "focused",
-          "events": [
-            "TAB_CLICK",
-            "TAB_FOCUS"
-          ],
-          "lines": [
-            "TAB_CLICK",
-            "TAB_FOCUS"
-          ],
-          "points": [
-            [
-              444,
-              77
-            ],
-            [
-              360,
-              77
-            ],
-            [
-              360,
-              80
-            ],
-            [
-              175,
-              80
-            ],
-            [
-              175,
-              77
-            ],
-            [
-              149,
-              77
-            ]
-          ],
-          "label": {
-            "x": 259,
-            "y": 87,
-            "w": 75,
-            "h": 40
-          }
-        }
-      ]
-    },
-    "down": {
-      "width": 263,
-      "height": 412,
-      "states": {
-        "idle": {
-          "x": 97,
-          "y": 336,
-          "w": 78,
-          "h": 44
-        },
-        "focused": {
-          "x": 89,
           "y": 32,
           "w": 101,
           "h": 44
@@ -243,63 +117,53 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "TAB_BLUR"
-          ],
-          "lines": [
-            "TAB_BLUR"
-          ],
+          "events": ["TRIGGER.BLUR"],
+          "lines": ["TRIGGER.BLUR"],
           "points": [
-            [
-              123,
-              76
-            ],
-            [
-              123,
-              336
-            ]
+            [149, 54],
+            [464, 54]
+          ],
+          "label": {
+            "x": 259,
+            "y": 61,
+            "w": 95,
+            "h": 24
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 231,
+      "height": 396,
+      "states": {
+        "idle": {
+          "x": 110,
+          "y": 320,
+          "w": 78,
+          "h": 44
+        },
+        "focused": {
+          "x": 98,
+          "y": 32,
+          "w": 101,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "focused",
+          "to": "idle",
+          "events": ["TRIGGER.BLUR"],
+          "lines": ["TRIGGER.BLUR"],
+          "points": [
+            [149, 76],
+            [149, 320]
           ],
           "label": {
             "x": 48,
-            "y": 194,
-            "w": 69,
-            "h": 24
-          }
-        },
-        {
-          "from": "idle",
-          "to": "focused",
-          "events": [
-            "TAB_CLICK",
-            "TAB_FOCUS"
-          ],
-          "lines": [
-            "TAB_CLICK",
-            "TAB_FOCUS"
-          ],
-          "points": [
-            [
-              149,
-              336
-            ],
-            [
-              149,
-              102
-            ],
-            [
-              156,
-              102
-            ],
-            [
-              156,
-              76
-            ]
-          ],
-          "label": {
-            "x": 156,
             "y": 186,
-            "w": 75,
-            "h": 40
+            "w": 95,
+            "h": 24
           }
         }
       ]

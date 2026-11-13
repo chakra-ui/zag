@@ -31,5 +31,6 @@ export type {
   TriggerProps,
   TriggerState,
   ValueChangeDetails,
+  ValueChangeReason,
   SelectionDetails,
 } from "./combobox.types"

@@ -1,6 +1,6 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createGuards, createMachine, type Scope } from "@zag-js/core"
-import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
+import { createGuards, createMachine, type Params, type Scope } from "@zag-js/core"
+import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
   disableTextSelection,
@@ -16,7 +16,7 @@ import type { Orientation } from "@zag-js/types"
 import { tryCatch } from "@zag-js/utils"
 import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
-import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
+import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel, OpenChangeReason } from "./color-picker.types"
 import { getAreaFormat } from "./utils/get-area-format"
 import { getChannelValue } from "./utils/get-channel-input-value"
 import { prefixHex } from "./utils/is-valid-hex"
@@ -36,6 +36,7 @@ export const machine = createMachine<ColorPickerSchema>({
     const color = props.value ?? props.defaultValue ?? DEFAULT_COLOR
     return {
       dir: "ltr",
+      locale: "en-US",
       defaultValue: DEFAULT_COLOR,
       defaultFormat: color.getFormat(),
       openAutoFocus: true,
@@ -92,7 +93,7 @@ export const machine = createMachine<ColorPickerSchema>({
       activeId: bindable<string | null>(() => ({ defaultValue: null })),
       activeChannel: bindable<any>(() => ({ defaultValue: null })),
       activeOrientation: bindable<Orientation | null>(() => ({ defaultValue: null })),
-      areaBaseColor: bindable<Color | null>(() => ({ defaultValue: null })),
+      editedColor: bindable<Color | null>(() => ({ defaultValue: null })),
       areaDragPosition: bindable<{ x: number; y: number } | null>(() => ({ defaultValue: null })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       restoreFocus: bindable<boolean>(() => ({ defaultValue: true })),
@@ -108,11 +109,17 @@ export const machine = createMachine<ColorPickerSchema>({
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
-      return context.get("value").toFormat(getAreaFormat(context.get("format")))
+      const value = context.get("value")
+      const format = context.get("format")
+      const editedColor = context.get("editedColor")
+      if (editedColor?.toFormat(format).isEqual(value)) return editedColor
+      return value.toFormat(getAreaFormat(format))
     },
   },
 
   effects: ["trackFormControl"],
+
+  entry: ["syncFormatSelectElement"],
 
   exit: ["cancelFrames"],
 
@@ -144,7 +151,7 @@ export const machine = createMachine<ColorPickerSchema>({
       actions: ["openEyeDropper"],
     },
     "SWATCH_TRIGGER.CLICK": {
-      actions: ["setValue"],
+      actions: ["setValue", "invokeOnChangeEnd"],
     },
   },
 
@@ -293,46 +300,52 @@ export const machine = createMachine<ColorPickerSchema>({
               actions: ["setActiveChannel"],
             },
             "AREA.ARROW_LEFT": {
-              actions: ["decrementAreaXChannel"],
+              actions: ["decrementAreaXChannel", "invokeOnChangeEnd"],
             },
             "AREA.ARROW_RIGHT": {
-              actions: ["incrementAreaXChannel"],
+              actions: ["incrementAreaXChannel", "invokeOnChangeEnd"],
             },
             "AREA.ARROW_UP": {
-              actions: ["incrementAreaYChannel"],
+              actions: ["incrementAreaYChannel", "invokeOnChangeEnd"],
             },
             "AREA.ARROW_DOWN": {
-              actions: ["decrementAreaYChannel"],
+              actions: ["decrementAreaYChannel", "invokeOnChangeEnd"],
             },
             "AREA.PAGE_UP": {
-              actions: ["incrementAreaXChannel"],
+              actions: ["incrementAreaYChannel", "invokeOnChangeEnd"],
             },
             "AREA.PAGE_DOWN": {
-              actions: ["decrementAreaXChannel"],
+              actions: ["decrementAreaYChannel", "invokeOnChangeEnd"],
+            },
+            "AREA.HOME": {
+              actions: ["decrementAreaXChannel", "invokeOnChangeEnd"],
+            },
+            "AREA.END": {
+              actions: ["incrementAreaXChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.ARROW_LEFT": {
-              actions: ["decrementChannel"],
+              actions: ["decrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.ARROW_RIGHT": {
-              actions: ["incrementChannel"],
+              actions: ["incrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.ARROW_UP": {
-              actions: ["incrementChannel"],
+              actions: ["incrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.ARROW_DOWN": {
-              actions: ["decrementChannel"],
+              actions: ["decrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.PAGE_UP": {
-              actions: ["incrementChannel"],
+              actions: ["incrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.PAGE_DOWN": {
-              actions: ["decrementChannel"],
+              actions: ["decrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.HOME": {
-              actions: ["setChannelToMin"],
+              actions: ["setChannelToMin", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.END": {
-              actions: ["setChannelToMax"],
+              actions: ["setChannelToMax", "invokeOnChangeEnd"],
             },
             "CHANNEL_INPUT.BLUR": {
               actions: ["setChannelColorFromInput"],
@@ -340,15 +353,15 @@ export const machine = createMachine<ColorPickerSchema>({
             "SWATCH_TRIGGER.CLICK": [
               {
                 guard: and("isOpenControlled", "closeOnSelect"),
-                actions: ["setValue", "invokeOnClose"],
+                actions: ["setValue", "invokeOnChangeEnd", "invokeOnClose"],
               },
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["setValue", "invokeOnClose", "setReturnFocus"],
+                actions: ["setValue", "invokeOnChangeEnd", "invokeOnClose", "setReturnFocus"],
               },
               {
-                actions: ["setValue"],
+                actions: ["setValue", "invokeOnChangeEnd"],
               },
             ],
           },
@@ -422,7 +435,7 @@ export const machine = createMachine<ColorPickerSchema>({
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
           onDismiss(event) {
-            send({ type: "INTERACT_OUTSIDE", focusVisible: event?.type === "keydown" })
+            send({ type: "INTERACT_OUTSIDE", src: getDismissReason(event), focusVisible: event?.type === "keydown" })
           },
         })
       },
@@ -478,27 +491,19 @@ export const machine = createMachine<ColorPickerSchema>({
           })
           .catch(() => void 0)
       },
-      setActiveChannel({ context, event, computed }) {
+      setActiveChannel({ context, event }) {
         context.set("activeId", event.id)
         if (event.channel) context.set("activeChannel", event.channel)
         if (event.orientation) context.set("activeOrientation", event.orientation)
-        const areaFormat = getAreaFormat(context.get("format"))
-        if (areaFormat !== context.get("format")) {
-          context.set("areaBaseColor", computed("areaValue"))
-        }
       },
       clearActiveChannel({ context }) {
         context.set("activeChannel", null)
         context.set("activeId", null)
         context.set("activeOrientation", null)
-        context.set("areaBaseColor", null)
         context.set("areaDragPosition", null)
       },
-      setAreaColorFromPoint({ context, event, computed, scope, prop }) {
-        const storeFormat = context.get("format")
-        const v = event.format
-          ? context.get("value").toFormat(event.format)
-          : (context.get("areaBaseColor") ?? computed("areaValue"))
+      setAreaColorFromPoint(params) {
+        const { context, event, scope, prop } = params
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
         const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
@@ -506,19 +511,15 @@ export const machine = createMachine<ColorPickerSchema>({
 
         context.set("areaDragPosition", { x: percent.x, y: percent.y })
 
-        const xValue = v.getChannelPercentValue(xChannel, percent.x)
-        const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
-
-        const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue).toFormat(storeFormat)
-        context.set("value", color)
+        editColor(params, event.format, (color) =>
+          color
+            .withChannelValue(xChannel, color.getChannelPercentValue(xChannel, percent.x))
+            .withChannelValue(yChannel, color.getChannelPercentValue(yChannel, 1 - percent.y)),
+        )
       },
-      setChannelColorFromPoint({ context, event, computed, scope, prop }) {
-        const storeFormat = context.get("format")
+      setChannelColorFromPoint(params) {
+        const { context, event, scope, prop } = params
         const channel = event.channel || context.get("activeId")
-        const baseColor = context.get("areaBaseColor")
-        const normalizedValue = event.format
-          ? context.get("value").toFormat(event.format)
-          : (baseColor ?? computed("areaValue"))
 
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
@@ -526,10 +527,9 @@ export const machine = createMachine<ColorPickerSchema>({
         const orientation = event.orientation || context.get("activeOrientation") || "horizontal"
         const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
-        const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
-        const updatedBase = normalizedValue.withChannelValue(channel, value)
-        context.set("areaBaseColor", updatedBase)
-        context.set("value", updatedBase.toFormat(storeFormat))
+        editColor(params, event.format, (color) =>
+          color.withChannelValue(channel, color.getChannelPercentValue(channel, channelPercent)),
+        )
       },
       setValue({ context, event }) {
         const format = context.get("format")
@@ -569,7 +569,7 @@ export const machine = createMachine<ColorPickerSchema>({
           color = tryCatch(
             () => {
               const parseValue = channel === "hex" ? prefixHex(value) : value
-              return parse(parseValue).withChannelValue("alpha", currentAlpha)
+              return parse(parseValue).withChannelValue("alpha", currentAlpha).toFormat(context.get("format"))
             },
             () => context.get("value"),
           )
@@ -594,53 +594,37 @@ export const machine = createMachine<ColorPickerSchema>({
           valueAsString: color.toString(context.get("format")),
         })
       },
-      incrementChannel({ context, event }) {
-        const color = context.get("value").incrementChannel(event.channel, event.step)
-        context.set("value", color)
+      incrementChannel(params) {
+        const { channel, format, step } = params.event
+        editColor(params, format, (color) => color.incrementChannel(channel, step))
       },
-      decrementChannel({ context, event }) {
-        const color = context.get("value").decrementChannel(event.channel, event.step)
-        context.set("value", color)
+      decrementChannel(params) {
+        const { channel, format, step } = params.event
+        editColor(params, format, (color) => color.decrementChannel(channel, step))
       },
-      incrementAreaXChannel({ context, event }) {
-        const { xChannel } = event.channel
-        const storeFormat = context.get("format")
-        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
-        const color = v.incrementChannel(xChannel, event.step).toFormat(storeFormat)
-        context.set("value", color)
+      incrementAreaXChannel(params) {
+        const { channel, step } = params.event
+        editColor(params, undefined, (color) => color.incrementChannel(channel.xChannel, step))
       },
-      decrementAreaXChannel({ context, event }) {
-        const { xChannel } = event.channel
-        const storeFormat = context.get("format")
-        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
-        const color = v.decrementChannel(xChannel, event.step).toFormat(storeFormat)
-        context.set("value", color)
+      decrementAreaXChannel(params) {
+        const { channel, step } = params.event
+        editColor(params, undefined, (color) => color.decrementChannel(channel.xChannel, step))
       },
-      incrementAreaYChannel({ context, event }) {
-        const { yChannel } = event.channel
-        const storeFormat = context.get("format")
-        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
-        const color = v.incrementChannel(yChannel, event.step).toFormat(storeFormat)
-        context.set("value", color)
+      incrementAreaYChannel(params) {
+        const { channel, step } = params.event
+        editColor(params, undefined, (color) => color.incrementChannel(channel.yChannel, step))
       },
-      decrementAreaYChannel({ context, event }) {
-        const { yChannel } = event.channel
-        const storeFormat = context.get("format")
-        const v = context.get("value").toFormat(getAreaFormat(storeFormat))
-        const color = v.decrementChannel(yChannel, event.step).toFormat(storeFormat)
-        context.set("value", color)
+      decrementAreaYChannel(params) {
+        const { channel, step } = params.event
+        editColor(params, undefined, (color) => color.decrementChannel(channel.yChannel, step))
       },
-      setChannelToMax({ context, event }) {
-        const value = context.get("value")
-        const range = value.getChannelRange(event.channel)
-        const color = value.withChannelValue(event.channel, range.maxValue)
-        context.set("value", color)
+      setChannelToMax(params) {
+        const { channel, format } = params.event
+        editColor(params, format, (color) => color.withChannelValue(channel, color.getChannelRange(channel).maxValue))
       },
-      setChannelToMin({ context, event }) {
-        const value = context.get("value")
-        const range = value.getChannelRange(event.channel)
-        const color = value.withChannelValue(event.channel, range.minValue)
-        context.set("value", color)
+      setChannelToMin(params) {
+        const { channel, format } = params.event
+        editColor(params, format, (color) => color.withChannelValue(channel, color.getChannelRange(channel).minValue))
       },
       focusAreaThumb({ scope, refs }) {
         refs.get("focusFrame").request(() => {
@@ -686,13 +670,13 @@ export const machine = createMachine<ColorPickerSchema>({
         if (newValue.isEqual(value)) return
         context.set("value", newValue)
       },
-      invokeOnOpen({ prop, context }) {
+      invokeOnOpen({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+        prop("onOpenChange")?.({ open: true, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
-      invokeOnClose({ prop, context }) {
+      invokeOnClose({ prop, context, event }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+        prop("onOpenChange")?.({ open: false, value: context.get("value"), reason: getOpenChangeReason(event) })
       },
       toggleVisibility({ prop, event, send }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
@@ -717,8 +701,23 @@ function syncFormatSelect(frame: AnimationFrame, scope: Scope, format: ColorForm
   frame.request(() => setElementValue(selectEl, format))
 }
 
+function getOpenChangeReason(event: Params<ColorPickerSchema>["event"]) {
+  return event.src as OpenChangeReason | undefined
+}
+
 // Show the focus ring when closed from the keyboard; leave it to the browser otherwise
 function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
   const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
   return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
+}
+
+function editColor(
+  { context, computed }: Pick<Params<ColorPickerSchema>, "context" | "computed">,
+  format: ColorFormat | undefined,
+  edit: (color: Color) => Color,
+) {
+  const color = format ? context.get("value").toFormat(format) : computed("areaValue")
+  const next = edit(color)
+  context.set("editedColor", next)
+  context.set("value", next.toFormat(context.get("format")))
 }

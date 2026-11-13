@@ -6,7 +6,16 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { ContentState, TooltipApi, TooltipSchema, TriggerProps, TriggerState } from "./tooltip.types"
+import { getViewportSizeStyle, getViewportStyle } from "./tooltip.style"
+import type {
+  ContentProps,
+  ContentState,
+  TooltipApi,
+  TooltipSchema,
+  TriggerProps,
+  TriggerState,
+  ViewportState,
+} from "./tooltip.types"
 
 export function connect<P extends PropTypes>(
   service: Service<TooltipSchema>,
@@ -20,7 +29,9 @@ export function connect<P extends PropTypes>(
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
 
-  const contentId = dom.getContentId(scope)
+  const activationDirection = context.get("activationDirection")
+  const transitioning = context.get("transitioning")
+  const viewportRendered = context.get("viewportRendered")
 
   const disabled = prop("disabled")
 
@@ -39,12 +50,33 @@ export function connect<P extends PropTypes>(
     return { value, current, open: value == null ? open : open && current }
   }
 
-  function getContentState(): ContentState {
-    const isCurrentTooltip = store.get("id") === id
-    const isPrevTooltip = store.get("prevId") === id
-    const instant = !!store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
-    return { open, instant, placement: currentPlacement, side: currentPlacementSide }
+  const isCurrentTooltip = store.get("id") === id
+  const isPrevTooltip = store.get("prevId") === id
+  const instant = !!store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+
+  function getContentState(props: ContentProps = {}): ContentState {
+    const { value } = props
+    return {
+      open: value == null ? open : triggerValue === value,
+      instant,
+      placement: currentPlacement,
+      side: currentPlacementSide,
+      activationDirection,
+    }
   }
+
+  function getViewportState(): ViewportState {
+    return { open, instant, side: currentPlacementSide, activationDirection, transitioning }
+  }
+
+  const popupPointerProps = {
+    onPointerEnter() {
+      send({ type: "CONTENT_POINTER_MOVE" })
+    },
+    style: {
+      pointerEvents: prop("interactive") ? "auto" : "none",
+    },
+  } as const
 
   // -----------------------------------------------------------------------------
   // Prop getters
@@ -52,11 +84,19 @@ export function connect<P extends PropTypes>(
 
   return {
     open: open,
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
 
     triggerValue,
+    activationDirection,
+    getContentValues() {
+      const previousValue = context.get("previousTriggerValue")
+      const values: string[] = []
+      if (previousValue != null && previousValue !== triggerValue) values.push(previousValue)
+      if (triggerValue != null) values.push(triggerValue)
+      return values
+    },
     setTriggerValue(value) {
       send({ type: "TRIGGER_VALUE.SET", value: value ?? undefined })
     },
@@ -79,20 +119,20 @@ export function connect<P extends PropTypes>(
         dir: prop("dir"),
         "data-expanded": dataAttr(open),
         "data-state": open ? "open" : "closed",
-        "aria-describedby": open ? contentId : undefined,
+        "aria-describedby": open ? dom.getContentId(scope, viewportRendered ? value : null) : undefined,
         onClick(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (!prop("closeOnClick")) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CLOSE", src: "trigger.click", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CLOSE", src: "trigger-click", value, triggerId })
         },
         onFocus(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (!isFocusVisible() || isFocusRestoredByWindow()) return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "OPEN", src: "trigger.focus", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "OPEN", src: "trigger-focus", value, triggerId })
         },
         onBlur(event) {
           if (event.defaultPrevented) return
@@ -103,7 +143,7 @@ export function connect<P extends PropTypes>(
           const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
           const focusedAnotherTrigger = activeEl?.closest(`[${parts.trigger.attr}="${scope.id}"]`) != null
           if (!focusedAnotherTrigger) {
-            send({ type: "CLOSE", src: "trigger.blur", value, triggerId })
+            send({ type: "CLOSE", src: "trigger-blur", value, triggerId })
           }
         },
         onPointerDown(event) {
@@ -111,26 +151,26 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
-          send({ type: "CLOSE", src: "trigger.pointerdown", value, triggerId })
+          send({ type: "CLOSE", src: "trigger-click", value, triggerId })
         },
         onPointerMove(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
           const shouldSwitch = open && value != null && !current
-          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_MOVE", value, triggerId })
+          send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "POINTER_MOVE", value, triggerId, src: "trigger-hover" })
         },
         onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "POINTER_MOVE", value, triggerId })
+          send({ type: "POINTER_MOVE", value, triggerId, src: "trigger-hover" })
         },
         onPointerLeave() {
-          send({ type: "POINTER_LEAVE" })
+          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
         },
         onPointerCancel() {
-          send({ type: "POINTER_LEAVE" })
+          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
         },
       })
     },
@@ -139,6 +179,8 @@ export function connect<P extends PropTypes>(
       return normalize.element({
         ...parts.arrow.attrs(scope.id),
         dir: prop("dir"),
+        hidden: viewportRendered ? !open : undefined,
+        "data-state": open ? "open" : "closed",
         style: popperStyles.arrow,
       })
     },
@@ -155,31 +197,53 @@ export function connect<P extends PropTypes>(
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        style: popperStyles.floating,
+        "data-transitioning": dataAttr(transitioning),
+        style: {
+          ...popperStyles.floating,
+          ...getViewportSizeStyle(viewportRendered ? context.get("viewportSize") : null),
+        },
+      })
+    },
+
+    getViewportState,
+    getViewportProps() {
+      const viewportState = getViewportState()
+      return normalize.element({
+        ...parts.viewport.attrs(scope.id),
+        dir: prop("dir"),
+        hidden: !viewportState.open,
+        "data-state": viewportState.open ? "open" : "closed",
+        "data-instant": dataAttr(viewportState.instant),
+        "data-side": viewportState.side,
+        "data-activation-direction": viewportState.activationDirection ?? undefined,
+        "data-transitioning": dataAttr(viewportState.transitioning),
+        onPointerEnter: popupPointerProps.onPointerEnter,
+        style: {
+          ...popupPointerProps.style,
+          ...getViewportStyle(viewportState.side),
+        },
       })
     },
 
     getContentState,
-    getContentProps() {
-      const contentState = getContentState()
+    getContentProps(props = {}) {
+      const { value } = props
+      const contentState = getContentState(props)
 
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         hidden: !contentState.open,
+        "data-value": value,
         "data-state": contentState.open ? "open" : "closed",
         "data-instant": dataAttr(contentState.instant),
         role: "tooltip",
-        id: contentId,
+        id: dom.getContentId(scope, value),
         "aria-label": prop("aria-label"),
         "data-placement": contentState.placement,
         "data-side": contentState.side,
-        onPointerEnter() {
-          send({ type: "CONTENT_POINTER_MOVE" })
-        },
-        style: {
-          pointerEvents: prop("interactive") ? "auto" : "none",
-        },
+        "data-activation-direction": contentState.activationDirection ?? undefined,
+        ...(viewportRendered ? { style: popupPointerProps.style } : popupPointerProps),
       })
     },
   }

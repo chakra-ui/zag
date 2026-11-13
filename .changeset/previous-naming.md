@@ -1,31 +1,25 @@
 ---
-"@zag-js/carousel": minor
-"@zag-js/date-picker": minor
-"@zag-js/pagination": minor
-"@zag-js/scheduler": minor
-"@zag-js/steps": minor
-"@zag-js/tabs": minor
-"@zag-js/tour": minor
+"@zag-js/carousel": major
+"@zag-js/date-picker": major
+"@zag-js/pagination": major
+"@zag-js/scheduler": major
+"@zag-js/steps": major
+"@zag-js/tabs": major
+"@zag-js/tour": major
 ---
 
-**Breaking:** "Prev" is now spelled out as "Previous" across the API.
+**Breaking:** Spell out "Prev" as "Previous" across the API.
 
-### Parts
-
-The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps. This renames
-its prop getter, data attribute, `ids` key and translation key.
+The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps, including its
+prop getter, data attribute, `ids` key and translation key.
 
 ```diff
 - <button {...api.getPrevTriggerProps()} />
 + <button {...api.getPreviousTriggerProps()} />
-```
 
-```diff
 - [data-carousel-prev-trigger] { ... }
 + [data-carousel-previous-trigger] { ... }
-```
 
-```diff
   carousel.machine({
 -   ids: { prevTrigger: "prev" },
 -   translations: { prevTrigger: "Previous slide" },
@@ -34,9 +28,7 @@ its prop getter, data attribute, `ids` key and translation key.
   })
 ```
 
-Pagination and scheduler: `translations.prevTriggerLabel` is now `translations.previousTriggerLabel`.
-
-### API
+Pagination and scheduler rename `translations.prevTriggerLabel` to `translations.previousTriggerLabel`.
 
 | Component              | Before                          | After                                   |
 | ---------------------- | ------------------------------- | --------------------------------------- |
@@ -47,20 +39,13 @@ Pagination and scheduler: `translations.prevTriggerLabel` is now `translations.p
 | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
 | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
 
-### Tour step actions
-
-The `"prev"` action is now `"previous"`, along with the action map method and translation key. The action trigger
-renders `data-type="previous"`.
+The tour's `"prev"` action is now `"previous"`, and its trigger renders `data-type="previous"`.
 
 ```diff
-  actions: [
--   { label: "Prev", action: "prev" },
-+   { label: "Previous", action: "previous" },
-  ]
-
+- actions: [{ label: "Prev", action: "prev" }],
++ actions: [{ label: "Previous", action: "previous" }],
 - action: (actions) => actions.prev()
 + action: (actions) => actions.previous()
-
 - translations: { prevStep: "Previous step" }
 + translations: { previousStep: "Previous step" }
 ```

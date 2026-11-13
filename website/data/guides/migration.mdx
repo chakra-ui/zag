@@ -24,6 +24,20 @@ Some adapters need a newer framework:
 - **Solid:** `solid-js` and `@solidjs/web` `>=2.0.0-rc.19`
 - **Preact:** `preact` `>=11`. `preact/compat` is no longer needed.
 
+## Run the codemod
+
+The codemod applies most of this guide for you: selectors in stylesheets,
+templates, Tailwind classes and tests, and prop and api renames. It lists what
+it can't rewrite with a file and line, including props whose default changed.
+
+```bash
+npx @zag-js/codemod@next v2 src
+```
+
+Add `--dry-run` to see the changes as a diff first. It won't overwrite files
+with uncommitted changes, so commit before you run it. Run your type checker
+afterwards; the remaining errors point at the sections below.
+
 ## Renames
 
 Search your code for each v1 name. Sections below cover changes that need more
@@ -59,14 +73,15 @@ than a rename.
 | Combobox, select, cascade select                    | `api.setHighlightValue(v)`                    | `api.setHighlightedValue(v)`                          |
 | Combobox, select, cascade select                    | `api.clearHighlightValue()`                   | `api.setHighlightedValue(null)`                       |
 | Date picker, scheduler                              | `api.goToPrev()`                              | `api.goToPrevious()`                                  |
-| Floating panel                                      | `resizeTriggerAxes`                           | `resizeTriggerPlacements`                             |
+| Floating panel                                      | `resizeTriggerAxes` (export)                  | `resizeTriggerPlacements`                             |
 | Floating panel                                      | `ResizeTriggerProps.axis`, `data-axis`        | `placement`, `data-placement`                         |
 | Floating panel                                      | `ResizeTriggerAxis`                           | `HandlePosition`                                      |
-| Image cropper                                       | `handles`                                     | `placements`                                          |
+| Image cropper                                       | `handles` (export)                            | `placements`                                          |
 | Image cropper                                       | `HandleProps.position`, `data-position`       | `placement`, `data-placement`                         |
 | Listbox                                             | `api.highlightValue(v)`                       | `api.setHighlightedValue(v)`                          |
 | Pagination                                          | `api.goToPrevPage()`                          | `api.goToPreviousPage()`                              |
 | Pagination, scheduler                               | `translations.prevTriggerLabel`               | `translations.previousTriggerLabel`                   |
+| Number input                                        | `allowOverflow`, `clampValueOnBlur: false`    | `allowOutOfRange`                                     |
 | Pin input                                           | `sanitizeValue`                               | `normalizeValue`                                      |
 | Radio group, tabs                                   | `data-ssr`                                    | `data-indicator-pending`                              |
 | Slider                                              | `aria-label` (array)                          | `getAriaLabel`                                        |
@@ -79,6 +94,14 @@ than a rename.
 | Tour                                                | `action: "prev"`, `actions.prev()`            | `action: "previous"`, `actions.previous()`            |
 | Tour                                                | `translations.prevStep`                       | `translations.previousStep`                           |
 | Tree view                                           | `api.getCellProps()`                          | `api.getNodeCellProps()`                              |
+| Tree view                                           | `getBranchProps()`, `branch` part             | `getNodeGroupProps()`, `node-group` part              |
+| Tree view                                           | `getBranchControlProps()`, `getItemProps()`   | `getNodeProps()`, `node` part                         |
+| Tree view                                           | `getBranchContentProps()`                     | `getNodeGroupContentProps()`                          |
+| Tree view                                           | `getBranchTextProps()`, `getItemTextProps()`  | `getNodeTextProps()`                                  |
+| Tree view                                           | `getBranchIndicatorProps()`                   | `getNodeIndicatorProps({ type: "expanded" })`         |
+| Tree view                                           | `getItemIndicatorProps()`                     | `getNodeIndicatorProps({ type: "selected" })`         |
+| Tree view                                           | `getBranchTriggerProps()`                     | `getNodeExpandTriggerProps()`                         |
+| Tree view                                           | `getBranchIndentGuideProps()`                 | `getIndentGuideProps()`                               |
 
 Steps has its own table in [Steps](#steps).
 
@@ -107,6 +130,21 @@ machine id, and each part exposes the attribute name as `attr`.
 - "data-ownedby": scope.id,
 + ...parts.trigger.attrs(scope.id)
 ```
+
+## Layering
+
+Zag no longer sets a `z-index`. Move it from the content to the positioner.
+
+```diff
+- [data-popover-content] {
++ [data-popover-positioner] {
+-   z-index: 1400;
++   z-index: calc(1400 + var(--layer-index));
+  }
+```
+
+`--z-index` is removed. The floating panel needs the same rule to bring the
+focused panel to the front. See [Layering](/guides/styling#layering).
 
 ## Accordion
 
@@ -303,7 +341,7 @@ index.
 | `api.setStep(index)`                        | `api.setValue(value)`                                           |
 | `api.isCompleted`                           | `api.complete`                                                  |
 | `step === count` (completed screen)         | `value === steps.COMPLETE`                                      |
-| `getContentProps({ index: count })`         | `getContentProps({ value: steps.COMPLETE })`                    |
+| `getContentProps({ index: count })`         | `getCompletedContentProps()`                                    |
 | `api.isStepValid` / `isStepSkippable`       | `api.getItemState({ value })`                                   |
 | `{ index }` in part props                   | `{ value }`                                                     |
 | `itemState.incomplete`                      | `[data-incomplete]`, or not `current`, `completed` or `skipped` |

@@ -37,7 +37,7 @@ export interface AvatarSchema {
   defaultPropKey: never
   context: any
   initial: "loading"
-  effect: "trackImageRemoval" | "trackSrcChange"
+  effect: "trackImage"
   action: "invokeOnLoad" | "invokeOnError" | "checkImageStatus"
   event:
     | { type: "img.loaded"; src?: string | undefined }
@@ -54,6 +54,13 @@ export type AvatarMachine = Machine<AvatarSchema>
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface RootState {
+  /**
+   * The current image loading status.
+   */
+  status: LoadStatus
+}
 
 export interface AvatarApi<T extends PropTypes = PropTypes> {
   /**
@@ -73,6 +80,10 @@ export interface AvatarApi<T extends PropTypes = PropTypes> {
    */
   setError: VoidFunction
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getImageProps: () => T["img"]
   getFallbackProps: () => T["element"]

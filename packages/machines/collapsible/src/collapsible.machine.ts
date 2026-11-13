@@ -1,6 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import {
   addDomEvent,
+  AnimationFrame,
   getComputedStyle,
   getEventTarget,
   getTabbables,
@@ -9,9 +10,10 @@ import {
   raf,
   setAttribute,
   setStyle,
+  Timeout,
 } from "@zag-js/dom-query"
 import * as dom from "./collapsible.dom"
-import type { CollapsibleSchema } from "./collapsible.types"
+import type { CollapsibleSchema, OpenChangeReason } from "./collapsible.types"
 
 export const machine = createMachine<CollapsibleSchema>({
   initialState({ prop }) {
@@ -215,8 +217,8 @@ export const machine = createMachine<CollapsibleSchema>({
 
         // Some adapters exit `closed` synchronously inside `send`, so check a flag, not timer handles
         let active = true
-        let revertTimer: ReturnType<typeof setTimeout> | undefined
-        let revertFrame: VoidFunction | undefined
+        const revertTimer = Timeout.create()
+        const revertFrame = AnimationFrame.create()
 
         const frameCleanup = raf(() => {
           const contentEl = dom.getContentEl(scope)
@@ -227,13 +229,12 @@ export const machine = createMachine<CollapsibleSchema>({
 
           const onBeforeMatch = () => {
             refs.set("revealedByFind", true)
-            send({ type: "open" })
+            send({ type: "open", src: "find-in-page" })
             if (!active) return
 
             // Re-hide if still closed (ignored controlled `open`)
-            revertTimer = setTimeout(() => {
-              revertFrame = raf(() => {
-                if (!active) return
+            revertTimer.start(0, () => {
+              revertFrame.request(() => {
                 refs.set("revealedByFind", false)
                 contentEl.setAttribute("hidden", "until-found")
               })
@@ -246,8 +247,8 @@ export const machine = createMachine<CollapsibleSchema>({
         return () => {
           active = false
           frameCleanup()
-          clearTimeout(revertTimer)
-          revertFrame?.()
+          revertTimer.cancel()
+          revertFrame.cancel()
         }
       },
 
@@ -335,12 +336,12 @@ export const machine = createMachine<CollapsibleSchema>({
         refs.set("cleanup", rafCleanup)
       },
 
-      invokeOnOpen: ({ prop }) => {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: true, reason: getOpenChangeReason(event) })
       },
 
-      invokeOnClose: ({ prop }) => {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose: ({ prop, event }) => {
+        prop("onOpenChange")?.({ open: false, reason: getOpenChangeReason(event) })
       },
 
       invokeOnExitComplete: ({ prop }) => {
@@ -353,3 +354,7 @@ export const machine = createMachine<CollapsibleSchema>({
     },
   },
 })
+
+function getOpenChangeReason(event: CollapsibleSchema["event"]): OpenChangeReason | undefined {
+  return "src" in event ? event.src : undefined
+}

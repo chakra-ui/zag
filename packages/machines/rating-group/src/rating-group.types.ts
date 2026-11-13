@@ -151,7 +151,22 @@ export interface ItemProps {
   index: number
 }
 
-export interface ItemState {
+export interface RootState {
+  /**
+   * Whether the rating group is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the rating group is read-only
+   */
+  readOnly: boolean
+  /**
+   * Whether the rating group is required
+   */
+  required: boolean
+}
+
+export interface ItemState extends RootState {
   /**
    * Whether the rating item is highlighted.
    */
@@ -164,17 +179,6 @@ export interface ItemState {
    * Whether the rating item is checked.
    */
   checked: boolean
-}
-
-export interface ControlState {
-  /**
-   * Whether the rating group is disabled
-   */
-  disabled: boolean
-  /**
-   * Whether the rating group is read-only
-   */
-  readOnly: boolean
 }
 
 export interface RatingGroupApi<T extends PropTypes = PropTypes> {
@@ -211,13 +215,13 @@ export interface RatingGroupApi<T extends PropTypes = PropTypes> {
    */
   getItemState: (props: ItemProps) => ItemState
 
+  /**
+   * Returns the state of the root. The label, control and hidden input share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getHiddenInputProps: () => T["input"]
   getLabelProps: () => T["element"]
-  /**
-   * Returns the state of the control
-   */
-  getControlState: () => ControlState
   getControlProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
 }

@@ -6,9 +6,9 @@ import * as dom from "./switch.dom"
 import type { RootState, SwitchApi, SwitchService } from "./switch.types"
 
 export function connect<T extends PropTypes>(service: SwitchService, normalize: NormalizeProps<T>): SwitchApi<T> {
-  const { context, send, prop, scope } = service
+  const { context, send, prop, scope, computed } = service
 
-  const disabled = !!prop("disabled")
+  const disabled = !!computed("isDisabled")
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const checked = !!context.get("checked")

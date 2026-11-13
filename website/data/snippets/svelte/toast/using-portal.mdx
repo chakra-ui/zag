@@ -4,7 +4,7 @@
 
   // ...
   const id = $props.id()
-  const service = useMachine(toast.group.machine, ({ id, store: toaster }))
+  const service = useMachine(toast.group.machine, { id, store: toaster })
   const api = $derived(toast.group.connect(service, normalizeProps))
 
   // ...
@@ -12,7 +12,7 @@
 
 <div use:portal {...api.getGroupProps()}>
   {#each api.getToasts() as toast, index (toast.id)}
-    <Toast toast={toast} index={index} parent={service} />
+    <Toast {toast} {index} parent={service} />
   {/each}
 </div>
 ```

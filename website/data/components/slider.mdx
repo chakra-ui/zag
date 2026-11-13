@@ -133,17 +133,27 @@ callbacks are invoked. You can use this to setup custom behaviors in your app.
 ```tsx {2-7}
 const service = useMachine(slider.machine, {
   onValueChange(details) {
-    // details => { value: number[] }
+    // details => { value: number[], reason?: ValueChangeReason }
     console.log("value is changing to:", details.value)
   },
   onValueChangeEnd(details) {
-    // details => { value: number[] }
+    // details => { value: number[], reason?: ValueChangeReason }
     console.log("value has changed to:", details.value)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change. `onValueChangeEnd` receives it
+too.
+
+| Reason        | Meaning                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| `track-click` | The pointer was pressed on the track and the thumb jumped there  |
+| `drag`        | A thumb was dragged                                              |
+| `keyboard`    | An arrow, `Page Up`/`Page Down`, `Home` or `End` key was pressed |
+| `script`      | Changed programmatically, such as `setValue`                     |
 
 ### Thumb focus changes
 

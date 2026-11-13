@@ -247,7 +247,7 @@
     </p>
 
     <Portal>
-      <div {...comboboxApi.getPositionerProps()}>
+      <div {...comboboxApi.getPositionerProps()} class={styles.positioner}>
         <div {...mergeProps(comboboxApi.getContentProps(), { class: styles.content })}>
           <div class={styles.treePanel}>
             {#if visibleCount === 0}

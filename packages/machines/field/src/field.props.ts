@@ -6,6 +6,7 @@ export const props = createProps<FieldProps>()([
   "dir",
   "dirty",
   "disabled",
+  "errors",
   "getRootNode",
   "id",
   "ids",

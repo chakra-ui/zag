@@ -10,20 +10,21 @@
     return str.replace(/\s+/g, "-").toLowerCase()
   }
 
-  let invalidReason = $state<string | null>(null)
+  let invalid = $state<string | null>(null)
 
   const id = $props.id()
   const service = useMachine(tagsInput.machine, {
     id,
     defaultValue: ["react", "vue"],
+    addOnPaste: true,
     validate(details) {
       return /^[a-z]+$/.test(details.inputValue)
     },
     onValueChange() {
-      invalidReason = null
+      invalid = null
     },
     onValueInvalid(details) {
-      invalidReason = details.reason
+      invalid = details.values?.join(", ") ?? details.reason
     },
   })
 
@@ -51,8 +52,8 @@
         <XIcon />
       </button>
     </div>
-    {#if invalidReason}
-      <p style="margin-top: 8px; font-size: 14px; color: red">Invalid: {invalidReason}</p>
+    {#if invalid}
+      <p style="margin-top: 8px; font-size: 14px; color: red">Invalid: {invalid}</p>
     {/if}
     <input {...api.getHiddenInputProps()} />
   </div>

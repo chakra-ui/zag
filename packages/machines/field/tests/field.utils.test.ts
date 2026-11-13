@@ -3,6 +3,8 @@
 import { describe, expect, test } from "vitest"
 import type { ValiditySnapshot } from "../src/field.types"
 import {
+  getFirstInvalidControl,
+  getFormValues,
   composeDescribedBy,
   getValiditySnapshot,
   isErrorMatch,
@@ -171,5 +173,58 @@ describe("composeDescribedBy", () => {
     expect(composeDescribedBy({ helperTextId: "helper", hasHelperText: true, errorTextIds: [] })).toBe("helper")
     expect(composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: ["err"] })).toBe("err")
     expect(composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: [] })).toBeUndefined()
+  })
+
+  test("the enclosing fieldset's error comes last", () => {
+    expect(
+      composeDescribedBy({
+        helperTextId: "helper",
+        hasHelperText: true,
+        errorTextIds: ["err"],
+        fieldsetErrorTextId: "fieldset-err",
+      }),
+    ).toBe("helper err fieldset-err")
+    expect(
+      composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: [], fieldsetErrorTextId: null }),
+    ).toBeUndefined()
+  })
+})
+
+describe("getFormValues", () => {
+  test("collects values by name, grouping repeated names", () => {
+    document.body.innerHTML = `
+      <form>
+        <input name="email" value="sage@example.com" />
+        <input type="checkbox" name="tags" value="a" checked />
+        <input type="checkbox" name="tags" value="b" checked />
+      </form>`
+    const input = document.querySelector("input")!
+    expect(getFormValues(input)).toEqual({ email: "sage@example.com", tags: ["a", "b"] })
+  })
+
+  test("is empty without a form", () => {
+    document.body.innerHTML = `<input name="email" value="x" />`
+    expect(getFormValues(document.querySelector("input")!)).toEqual({})
+  })
+})
+
+describe("getFirstInvalidControl", () => {
+  test("returns the first invalid control in document order", () => {
+    document.body.innerHTML = `
+      <form>
+        <input id="a" value="ok" required />
+        <input id="b" required />
+        <input id="c" required />
+      </form>`
+    expect(getFirstInvalidControl(document.querySelector("form")!)?.id).toBe("b")
+  })
+
+  test("skips disabled controls", () => {
+    document.body.innerHTML = `
+      <form>
+        <input id="a" required disabled />
+        <input id="b" required />
+      </form>`
+    expect(getFirstInvalidControl(document.querySelector("form")!)?.id).toBe("b")
   })
 })

@@ -104,6 +104,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     display: flex;
     min-width: max-content;
@@ -115,7 +119,6 @@
     font-size: 0.875rem;
     isolation: isolate;
     transform-origin: var(--transform-origin);
-    z-index: calc(var(--layer-index) + 50);
 
     &[data-state="open"] {
       animation: cascade-select-in 140ms ease-out;

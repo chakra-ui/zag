@@ -57,4 +57,39 @@ test.describe("meter", () => {
       await I.seeState("least-optimal")
     })
   })
+
+  test.describe("custom range", () => {
+    test.beforeEach(async ({ page }) => {
+      I = new MeterModel(page)
+      await I.goto("custom-range")
+    })
+
+    test("should place the value within the range and format it", async () => {
+      await expect(I.getRoot()).toHaveAttribute("aria-valuemin", "-20")
+      await expect(I.getRoot()).toHaveAttribute("aria-valuemax", "40")
+      await I.seeValue("10")
+      await expect(I.getRoot()).toHaveAttribute("aria-valuetext", "10°C")
+      await expect(I.getValueText()).toHaveText("10°C · 50%")
+      await I.seeIndicatorPercent("50")
+    })
+
+    test("should clamp values outside the range", async () => {
+      await I.clickButton("Set -30")
+      await I.seeValue("-20")
+      await I.seeIndicatorPercent("0")
+      await I.seeState("suboptimal")
+
+      await I.clickButton("Set 18")
+      await I.seeValue("18")
+      await I.seeState("optimal")
+
+      await I.clickButton("Set 50")
+      await I.seeValue("40")
+      await I.seeIndicatorPercent("100")
+    })
+
+    test("should accept aria-label when there is no visible label", async ({ page }) => {
+      await expect(page.getByRole("meter", { name: "Disk usage" })).toHaveAttribute("aria-valuenow", "30")
+    })
+  })
 })

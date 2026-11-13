@@ -132,6 +132,26 @@
   }
 }
 
+.content [data-drawer-close-trigger] {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--z-fg-muted, #71717a);
+
+  &:hover {
+    background: var(--z-bg-muted, #f4f4f5);
+    color: var(--z-fg, #09090b);
+  }
+}
+
 .grabber {
   width: 100%;
   padding: 20px 0;

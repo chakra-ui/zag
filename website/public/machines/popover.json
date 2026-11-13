@@ -17,12 +17,6 @@
   ],
   "transitions": [
     {
-      "from": "*",
-      "to": null,
-      "event": "TRIGGER_VALUE.SET",
-      "guard": null
-    },
-    {
       "from": "closed",
       "to": "open",
       "event": "CONTROLLED.OPEN",
@@ -50,6 +44,12 @@
       "from": "closed",
       "to": "open",
       "event": "TOGGLE",
+      "guard": null
+    },
+    {
+      "from": "closed",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
       "guard": null
     },
     {
@@ -87,6 +87,18 @@
       "to": "closed",
       "event": "TOGGLE",
       "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_SWITCH.END",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER_VALUE.SET",
+      "guard": "isNewTriggerValue"
     }
   ],
   "layouts": {
@@ -111,25 +123,11 @@
         {
           "from": "closed",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TOGGLE"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TOGGLE"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TOGGLE"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TOGGLE"],
           "points": [
-            [
-              468,
-              95
-            ],
-            [
-              126,
-              95
-            ]
+            [468, 95],
+            [126, 95]
           ],
           "label": {
             "x": 240,
@@ -141,41 +139,15 @@
         {
           "from": "open",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TOGGLE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TOGGLE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "TOGGLE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "TOGGLE"],
           "points": [
-            [
-              126,
-              109
-            ],
-            [
-              152,
-              109
-            ],
-            [
-              152,
-              112
-            ],
-            [
-              384,
-              112
-            ],
-            [
-              384,
-              109
-            ],
-            [
-              468,
-              109
-            ]
+            [126, 109],
+            [152, 109],
+            [152, 112],
+            [384, 112],
+            [384, 109],
+            [468, 109]
           ],
           "label": {
             "x": 236,
@@ -207,25 +179,11 @@
         {
           "from": "closed",
           "to": "open",
-          "events": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TOGGLE"
-          ],
-          "lines": [
-            "CONTROLLED.OPEN",
-            "OPEN",
-            "TOGGLE"
-          ],
+          "events": ["CONTROLLED.OPEN", "OPEN", "TOGGLE"],
+          "lines": ["CONTROLLED.OPEN", "OPEN", "TOGGLE"],
           "points": [
-            [
-              169,
-              352
-            ],
-            [
-              169,
-              76
-            ]
+            [169, 352],
+            [169, 76]
           ],
           "label": {
             "x": 48,
@@ -237,33 +195,13 @@
         {
           "from": "open",
           "to": "closed",
-          "events": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TOGGLE"
-          ],
-          "lines": [
-            "CLOSE",
-            "CONTROLLED.CLOSE",
-            "TOGGLE"
-          ],
+          "events": ["CLOSE", "CONTROLLED.CLOSE", "TOGGLE"],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "TOGGLE"],
           "points": [
-            [
-              195,
-              76
-            ],
-            [
-              195,
-              268
-            ],
-            [
-              201,
-              268
-            ],
-            [
-              201,
-              352
-            ]
+            [195, 76],
+            [195, 268],
+            [201, 268],
+            [201, 352]
           ],
           "label": {
             "x": 202,

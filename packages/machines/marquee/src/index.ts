@@ -14,6 +14,7 @@ export type {
   ElementIds,
   IntlTranslations,
   PauseStatusDetails,
+  RootState,
   Side,
   UserDefinedContext,
   Orientation,

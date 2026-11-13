@@ -7,17 +7,20 @@ import "@styles/number-input.css"
 const min = 0
 const max = 10
 
+// No min/max on the machine, so stepping never stops at the bounds
 const service = useMachine(numberInput.machine, {
   id: useId(),
-  allowOverflow: true,
-  max,
-  min,
-  onValueInvalid(details) {
-    if (details.valueAsNumber > max) {
-      api.value.setValue(min)
-    } else if (details.valueAsNumber < min) {
-      api.value.setValue(max)
-    }
+  defaultValue: 8,
+  onValueChange({ value, reason }) {
+    if (value == null || reason === "input-change") return
+    if (value > max) api.value.setValue(min)
+    else if (value < min) api.value.setValue(max)
+  },
+  // Typed values clamp instead of wrapping
+  onValueCommit({ value }) {
+    if (value == null) return
+    if (value > max) api.value.setValue(max)
+    else if (value < min) api.value.setValue(min)
   },
 })
 
@@ -27,7 +30,7 @@ const api = computed(() => numberInput.connect(service, normalizeProps))
 <template>
   <main>
     <div v-bind="api.getRootProps()">
-      <label v-bind="api.getLabelProps()">Enter number:</label>
+      <label v-bind="api.getLabelProps()">Wraps between 0 and 10</label>
       <div v-bind="api.getControlProps()">
         <button v-bind="api.getDecrementTriggerProps()">
           <MinusIcon />

@@ -28,6 +28,22 @@ test.describe("rating / pointer", () => {
     await I.seeRatingIsChecked(3)
   })
 
+  test("should preview the item the pointer first lands on", async () => {
+    await I.movePointerOnto(4)
+    await I.seeRatingIsHighlighted(4)
+  })
+
+  test("should not preview on a touch move", async () => {
+    await I.touchMove(5)
+    await I.seeRatingIsNotHighlighted(5)
+  })
+
+  test("should not preview on a touch move while focused", async () => {
+    await I.focusRating(3)
+    await I.touchMove(5)
+    await I.seeRatingIsNotHighlighted(5)
+  })
+
   test.skip("highlight when hovered", async () => {
     await I.hoverRating(4)
     await I.seeRatingIsHighlighted(4)

@@ -26,9 +26,10 @@ export const trigger = css({
 
 export const chevron = css({ color: "ink.muted" })
 
+export const positioner = css({ zIndex: "1000" })
+
 export const content = css({
   w: "200px",
-  zIndex: "1000",
   p: "1.5",
   rounded: "xl",
   bg: "surface",

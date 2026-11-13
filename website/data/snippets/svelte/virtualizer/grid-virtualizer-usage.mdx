@@ -33,9 +33,7 @@
   {...virtualizer.getContainerAriaAttrs()}
   style="height: 400px; overflow: auto; position: relative"
 >
-  <div
-    style="position: relative; width: {virtualizer.getTotalWidth()}px; height: {virtualizer.getTotalHeight()}px"
-  >
+  <div style="position: relative; width: {virtualizer.getTotalWidth()}px; height: {virtualizer.getTotalHeight()}px">
     {#each virtualizer.getVirtualRows() as virtualRow (`row-${virtualRow.row}`)}
       {@const rowStyle = virtualizer.getRowStyle(virtualRow)}
       <div

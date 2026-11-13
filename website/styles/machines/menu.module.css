@@ -47,6 +47,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     background: var(--colors-bg-raised);
     width: 12rem;
@@ -62,7 +66,6 @@
     &[data-state="open"] {
       animation: menu-in 140ms ease-out;
     }
-    z-index: calc(var(--layer-index) + 50);
 
     &:is(:focus, [data-focus]) {
       outline: none;

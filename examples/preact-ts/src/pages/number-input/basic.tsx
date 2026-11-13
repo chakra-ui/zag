@@ -13,6 +13,7 @@ export default function Page() {
 
   const service = useMachine(numberInput.machine, {
     id: useId(),
+    name: "amount",
     ...controls.context,
   })
 
@@ -30,6 +31,7 @@ export default function Page() {
               <MinusIcon />
             </button>
             <input data-testid="input" {...api.getInputProps()} />
+            <input data-testid="hidden-input" {...api.getHiddenInputProps()} />
             <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
               <PlusIcon />
             </button>

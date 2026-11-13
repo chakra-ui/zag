@@ -42,13 +42,22 @@ export interface PanelData {
    * The size of the panel when collapsed.
    */
   collapsedSize?: PanelSize | undefined
+  /**
+   * How far a drag must go to collapse or expand the panel. Defaults to half the gap between `collapsedSize` and `minSize`.
+   */
+  collapsedThreshold?: PanelSize | undefined
+  /**
+   * Whether the panel's size is locked
+   */
+  disabled?: boolean | undefined
 }
 
 // zag-ignore-export
-export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize"> & {
+export type NormalizedPanelData = Omit<PanelData, "minSize" | "maxSize" | "collapsedSize" | "collapsedThreshold"> & {
   minSize?: number | undefined
   maxSize?: number | undefined
   collapsedSize?: number | undefined
+  collapsedThreshold?: number | undefined
 }
 
 export interface CursorState {
@@ -86,6 +95,10 @@ export interface ElementIds {
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
+   * Whether resizing is disabled for the whole splitter
+   */
+  disabled?: boolean | undefined
+  /**
    * The orientation of the splitter. Can be `horizontal` or `vertical`
    * @default "horizontal"
    */
@@ -120,7 +133,8 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The number of pixels to resize the panel by when the keyboard is used.
+   * The percentage to resize the panel by when an arrow key is pressed.
+   * @default 1
    */
   keyboardResizeBy?: number | null | undefined
   /**
@@ -164,15 +178,21 @@ interface Context {
   panels: NormalizedPanelData[]
 }
 
+interface RequestedLayout {
+  size: number[]
+  groupSize: number
+}
+
 interface Refs {
   panelSizeBeforeCollapse: Map<string, number>
   panelIdToLastNotifiedSizeMap: Map<string, number>
   prevDelta: number
   initialSize: number[] | null
   prevInitialLayout: string | null
-  prevGroupSize: number | null
-  prevPropsKey: string | null
-  lastRequestedSize: number[] | null
+  prevPanelIds: string | null
+  prevSizeProps: string | null
+  requestedLayout: RequestedLayout | null
+  layoutCache: Map<string, RequestedLayout>
   suppressOnResize: boolean
 }
 
@@ -209,9 +229,29 @@ export interface ResizeTriggerProps {
   disabled?: boolean | undefined
 }
 
-export interface ResizeTriggerState {
+export interface RootState {
+  /**
+   * Whether any resize trigger is being dragged
+   */
   dragging: boolean
+  /**
+   * The orientation of the splitter
+   */
+  orientation: "horizontal" | "vertical"
+}
+
+export interface ResizeTriggerState {
+  /**
+   * Whether this resize trigger is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether this resize trigger is focused or being dragged
+   */
   focused: boolean
+  /**
+   * Whether this resize trigger is disabled, including when the splitter or an adjacent panel is disabled
+   */
   disabled: boolean
 }
 
@@ -277,9 +317,9 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   expandPanel: (id: PanelId, minSize?: number) => void
   /**
-   * Resizes the specified panel.
+   * Resizes the specified panel. Takes a percentage, or a size with a unit such as `"200px"`.
    */
-  resizePanel: (id: PanelId, unsafePanelSize: number) => void
+  resizePanel: (id: PanelId, size: PanelSize) => void
   /**
    * Returns the layout of the splitter.
    */
@@ -292,7 +332,10 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    * Returns the state of the resize trigger.
    */
   getResizeTriggerState: (props: ResizeTriggerProps) => ResizeTriggerState
-
+  /**
+   * Returns the state of the root. The panels share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getPanelProps: (props: PanelProps) => T["element"]
   getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]

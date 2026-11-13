@@ -12,11 +12,23 @@ export class MeterModel extends Model {
   }
 
   getRoot() {
-    return this.page.locator(part("meter", "root"))
+    return this.page.locator(part("meter", "root")).first()
   }
 
   getIndicator() {
-    return this.page.locator(part("meter", "indicator"))
+    return this.page.locator(part("meter", "indicator")).first()
+  }
+
+  getValueText() {
+    return this.page.locator(part("meter", "value-text")).first()
+  }
+
+  async clickButton(name: string) {
+    await this.page.getByRole("button", { name, exact: true }).click()
+  }
+
+  async seeIndicatorPercent(percent: string) {
+    await expect(this.getIndicator()).toHaveAttribute("style", new RegExp(`width:\\s*${percent}%`))
   }
 
   async setValue(value: number) {

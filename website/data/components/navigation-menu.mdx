@@ -102,13 +102,26 @@ value.
 const service = useMachine(navigationMenu.machine, {
   id: "nav",
   onValueChange(details) {
-    // details => { value: string }
+    // details => { value: string, reason?: ValueChangeReason }
     console.log("Current open item:", details.value)
   },
 })
 ```
 
 </Example>
+
+`details.reason` says what caused the change.
+
+| Reason             | Meaning                                   |
+| ------------------ | ----------------------------------------- |
+| `trigger-click`    | A trigger was pressed                     |
+| `trigger-hover`    | The pointer rested on a trigger           |
+| `pointer-leave`    | The pointer left the triggers and content |
+| `item-select`      | A link was selected                       |
+| `escape-key`       | Escape was pressed                        |
+| `interact-outside` | The pointer was pressed outside           |
+| `focus-outside`    | Focus moved outside                       |
+| `script`           | `setValue` was called                     |
 
 ### Animated indicator
 

@@ -1,7 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
-import { clampValue, getValuePercent, isNumber } from "@zag-js/utils"
 import type { MeterSchema } from "./meter.types"
-import { getMeterValueState, resolveMeterBounds, validateMeterBounds } from "./meter.utils"
+import { getClampedValue, getMeterValueState, getPercent, resolveMeterBounds, validateMeterBounds } from "./meter.utils"
 
 export const machine = createMachine<MeterSchema>({
   props({ props }) {
@@ -17,7 +16,7 @@ export const machine = createMachine<MeterSchema>({
       low: bounds.low,
       high: bounds.high,
       optimum: bounds.optimum,
-      defaultValue: props.defaultValue !== undefined ? props.defaultValue : midValue(min, max),
+      defaultValue: props.defaultValue ?? min,
       formatOptions: {
         style: "percent",
         ...props.formatOptions,
@@ -28,8 +27,6 @@ export const machine = createMachine<MeterSchema>({
   initialState() {
     return "idle"
   },
-
-  entry: ["validateContext", "clampValue"],
 
   context({ bindable, prop }) {
     return {
@@ -44,18 +41,20 @@ export const machine = createMachine<MeterSchema>({
   },
 
   computed: {
-    percent({ context, prop }) {
-      const value = context.get("value")
-      if (!isNumber(value)) return 0
-      return getValuePercent(value, prop("min"), prop("max")) * 100
-    },
+    clampedValue: ({ context, prop }) => getClampedValue(context.get("value"), prop("min"), prop("max")),
+    percent: ({ computed, prop }) => getPercent(computed("clampedValue"), prop("min"), prop("max")),
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
       ([locale, formatOptions]) => new Intl.NumberFormat(locale, formatOptions),
     ),
+    percentFormatter: memo(
+      ({ prop }) => [prop("locale"), prop("formatOptions")],
+      ([locale, formatOptions]) =>
+        new Intl.NumberFormat(locale, formatOptions.style === "percent" ? formatOptions : { style: "percent" }),
+    ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
-    valueState: ({ context, prop }) =>
-      getMeterValueState(context.get("value"), {
+    valueState: ({ computed, prop }) =>
+      getMeterValueState(computed("clampedValue"), {
         min: prop("min"),
         max: prop("max"),
         low: prop("low"),
@@ -77,19 +76,8 @@ export const machine = createMachine<MeterSchema>({
   implementations: {
     actions: {
       setValue: ({ context, event, prop }) => {
-        context.set("value", clampValue(event.value, prop("min"), prop("max")))
-      },
-      clampValue: ({ context, prop }) => {
-        const value = context.get("value")
-        if (!isNumber(value)) return
-        const next = clampValue(value, prop("min"), prop("max"))
-        if (next !== value) context.set("value", next)
-      },
-      validateContext: ({ prop }) => {
-        validateMeterBounds(prop("min"), prop("max"), prop("low"), prop("high"), prop("optimum"))
+        context.set("value", getClampedValue(event.value, prop("min"), prop("max")))
       },
     },
   },
 })
-
-const midValue = (min: number, max: number) => min + (max - min) / 2

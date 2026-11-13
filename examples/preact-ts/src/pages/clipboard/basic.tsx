@@ -2,7 +2,7 @@ import * as clipboard from "@zag-js/clipboard"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { clipboardControls } from "@zag-js/shared"
 import { ClipboardCheck, ClipboardCopyIcon } from "lucide-preact"
-import { useId } from "preact/hooks"
+import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -10,10 +10,14 @@ import "@styles/clipboard.css"
 
 export default function Page() {
   const controls = useControls(clipboardControls)
+  const [reports, setReports] = useState<string[]>([])
 
   const service = useMachine(clipboard.machine, {
     id: useId(),
     value: "https://github.com/chakra-ui/zag",
+    onStatusChange(details) {
+      setReports((prev) => [...prev, details.error ? "error" : details.copied ? "copied" : "reset"])
+    },
     ...controls.context,
   })
 
@@ -31,6 +35,9 @@ export default function Page() {
           <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
           <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
         </div>
+        <p>
+          onStatusChange: <output aria-label="Status reports">{reports.join(",") || "-"}</output>
+        </p>
       </main>
 
       <Toolbar controls={controls.ui}>

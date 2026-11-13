@@ -7,7 +7,7 @@ export class NavigationMenuModel extends Model {
     super(page)
   }
 
-  goto(id?: "viewport") {
+  goto(id?: "viewport" | "default-value") {
     return this.page.goto(`/navigation-menu/${id ?? "basic"}`)
   }
 

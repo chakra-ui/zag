@@ -463,9 +463,9 @@ export const machine = createMachine<ScrollAreaSchema>({
       },
 
       clearTimeouts({ refs }) {
-        refs.get("scrollYTimeout").clear()
-        refs.get("scrollXTimeout").clear()
-        refs.get("scrollEndTimeout").clear()
+        refs.get("scrollYTimeout").cancel()
+        refs.get("scrollXTimeout").cancel()
+        refs.get("scrollEndTimeout").cancel()
       },
     },
 
@@ -491,7 +491,7 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         return () => {
           obs.disconnect()
-          measureTimeout.clear()
+          measureTimeout.cancel()
         }
       },
 

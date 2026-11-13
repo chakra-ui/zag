@@ -11,9 +11,24 @@ import type { AutoScrollHandlers } from "./select.dom"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+/**
+ * What changed the select value:
+ * - `item-select`: an item was clicked, pressed with Enter, or released after press-and-drag
+ * - `keyboard`: an arrow, Home or End key on the closed trigger selected an item
+ * - `typeahead`: typing on the closed trigger selected a matching item
+ * - `clear-trigger`: the clear trigger was pressed
+ * - `autofill`: the browser autofilled the hidden select
+ * - `script`: `setValue`, `selectValue`, `selectAll` or `clearValue` was called
+ */
+export type ValueChangeReason = "item-select" | "keyboard" | "typeahead" | "clear-trigger" | "autofill" | "script"
+
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
   items: T[]
+  /**
+   * What changed the value
+   */
+  reason?: ValueChangeReason | undefined
 }
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
@@ -22,9 +37,34 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
   highlightedIndex: number
 }
 
+/**
+ * What opened or closed the select:
+ * - `trigger-click`: the trigger was pressed by pointer or Enter/Space
+ * - `arrow-key`: an arrow key on the trigger opened the select
+ * - `item-select`: an item was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `tab-key`: Tab moved focus out of the content
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "arrow-key"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "tab-key"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
   value: string[]
+  /**
+   * What opened or closed the select
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ScrollToIndexDetails {
@@ -297,24 +337,9 @@ export interface ItemState {
 
 export interface RootState {
   /**
-   * Whether the select is invalid
-   */
-  invalid: boolean
-  /**
-   * Whether the select is read-only
-   */
-  readOnly: boolean
-}
-
-export interface TriggerState {
-  /**
    * Whether the select is open
    */
   open: boolean
-  /**
-   * Whether the select is focused
-   */
-  focused: boolean
   /**
    * Whether the select is disabled
    */
@@ -324,13 +349,20 @@ export interface TriggerState {
    */
   invalid: boolean
   /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+  /**
    * Whether the select is required
    */
   required: boolean
   /**
-   * Whether the select is read-only
+   * Whether the trigger is focused
    */
-  readOnly: boolean
+  focused: boolean
+}
+
+export interface TriggerState extends RootState {
   /**
    * Whether the trigger is showing the placeholder (no selected items)
    */
@@ -454,7 +486,7 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   /**
    * Function to open or close the select
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to toggle the select
    */

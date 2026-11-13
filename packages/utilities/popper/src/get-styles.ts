@@ -52,7 +52,6 @@ export function getPlacementStyles(
       // Hide off-screen until popper sets --x/--y. Keeping this style static (vs a
       // `positioned`-gated opacity) stops reactive re-renders from clobbering those vars.
       transform: "translate3d(var(--x, 0px), var(--y, -100vh), 0)",
-      zIndex: "var(--z-index)",
     } as const,
   }
 }

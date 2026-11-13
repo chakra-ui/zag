@@ -95,7 +95,7 @@ export default function Page() {
               )}
             </For>
 
-            <div {...api().getContentProps({ value: steps.COMPLETE })}>
+            <div {...api().getCompletedContentProps()}>
               <h3>Your store is live</h3>
             </div>
 

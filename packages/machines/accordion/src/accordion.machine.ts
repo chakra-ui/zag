@@ -1,9 +1,9 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, getEventTarget, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getEventTarget, raf, Timeout } from "@zag-js/dom-query"
 import { add, remove, warn } from "@zag-js/utils"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
-import type { AccordionSchema } from "./accordion.types"
+import type { AccordionSchema, ValueChangeReason } from "./accordion.types"
 
 const { and, not } = createGuards<AccordionSchema>()
 
@@ -28,7 +28,7 @@ export const machine = createMachine<AccordionSchema>({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getEvent }) {
     return {
       focusedValue: bindable<string | null>(() => ({
         defaultValue: null,
@@ -42,7 +42,7 @@ export const machine = createMachine<AccordionSchema>({
         value: prop("value"),
         hash: (value) => value.join(","),
         onChange(value) {
-          prop("onValueChange")?.({ value })
+          prop("onValueChange")?.({ value, reason: getValueChangeReason(getEvent()) })
         },
       })),
     }
@@ -102,8 +102,8 @@ export const machine = createMachine<AccordionSchema>({
       trackBeforeMatch({ scope, prop, context, send }) {
         if (!prop("hiddenUntilFound")) return
 
-        const timers = new Set<ReturnType<typeof setTimeout>>()
-        const frames = new Set<VoidFunction>()
+        const revertTimer = Timeout.create()
+        const revertFrame = AnimationFrame.create()
 
         const frameCleanup = raf(() => {
           dom.syncHiddenUntilFound(scope)
@@ -119,19 +119,13 @@ export const machine = createMachine<AccordionSchema>({
 
             const value = contentEl.dataset.value
             const disabled = contentEl.hasAttribute("data-disabled")
-            if (value != null && !disabled) send({ type: "ITEM.MATCH", value })
+            if (value != null && !disabled) send({ type: "ITEM.MATCH", value, src: "find-in-page" })
 
-            // Re-hide if it didn't expand (disabled or ignored controlled value)
-            const timer = setTimeout(() => {
-              timers.delete(timer)
-              const frame = raf(() => {
-                frames.delete(frame)
-                if (value != null && context.get("value").includes(value)) return
-                contentEl.setAttribute("hidden", "until-found")
-              })
-              frames.add(frame)
+            // Re-hide what didn't expand (disabled or ignored controlled value).
+            // It covers every item, so a newer match can replace a pending one.
+            revertTimer.start(0, () => {
+              revertFrame.request(() => dom.restoreHiddenUntilFound(scope, context.get("value")))
             })
-            timers.add(timer)
           }
 
           return addDomEvent(rootEl, "beforematch", onBeforeMatch, true)
@@ -139,8 +133,8 @@ export const machine = createMachine<AccordionSchema>({
 
         return () => {
           frameCleanup()
-          timers.forEach(clearTimeout)
-          frames.forEach((cleanup) => cleanup())
+          revertTimer.cancel()
+          revertFrame.cancel()
         }
       },
     },
@@ -184,3 +178,7 @@ export const machine = createMachine<AccordionSchema>({
     },
   },
 })
+
+function getValueChangeReason(event: AccordionSchema["event"]): ValueChangeReason | undefined {
+  return event.src as ValueChangeReason | undefined
+}

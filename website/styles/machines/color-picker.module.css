@@ -146,6 +146,10 @@
     }
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     isolation: isolate;
     padding: 0.75rem;
@@ -155,7 +159,6 @@
     border: 1px solid var(--colors-border);
     border-radius: 10px;
     box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.25);
-    z-index: calc(var(--layer-index) + 50);
 
     &:focus-visible {
       outline: none;

@@ -95,8 +95,8 @@ export function connect<T extends PropTypes>(
     open,
     resizable: prop("resizable"),
     draggable: prop("draggable"),
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     dragging,
     resizing,
@@ -133,7 +133,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (prop("disabled")) return
           const open = state.hasTag("open")
-          send({ type: open ? "CLOSE" : "OPEN", src: "trigger" })
+          send({ type: open ? "CLOSE" : "OPEN", src: "trigger-click" })
         },
       })
     },
@@ -147,12 +147,11 @@ export function connect<T extends PropTypes>(
           "--height": toPx(size?.height),
           "--x": toPx(renderX),
           "--y": toPx(renderY),
-          "--z-index": stackIndex > -1 ? stackIndex + 1 : undefined,
+          "--layer-index": stackIndex > -1 ? stackIndex : undefined,
           position: prop("strategy"),
           isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
-          zIndex: "var(--z-index)",
         },
       })
     },
@@ -228,7 +227,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "CLOSE" })
+          send({ type: "CLOSE", src: "close-trigger" })
         },
       })
     },

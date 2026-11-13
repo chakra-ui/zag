@@ -20,7 +20,7 @@ export function Popover(props: PopoverProps) {
         Click me
       </button>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <div className={styles.Arrow} {...api.getArrowProps()}>
               <div className={styles.ArrowTip} {...api.getArrowTipProps()} />

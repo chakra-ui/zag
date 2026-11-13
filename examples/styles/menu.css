@@ -1,3 +1,7 @@
+[data-menu-positioner] {
+  z-index: calc(var(--layer-index) * 2 + 1);
+}
+
 [data-menu-trigger][data-state="open"] {
   background: var(--z-bg-emphasis);
 }

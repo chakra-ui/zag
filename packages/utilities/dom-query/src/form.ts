@@ -1,3 +1,4 @@
+import { createSharedMutationObserver } from "./mutation-observer"
 import { getWindow } from "./node"
 import type { HTMLElementWithValue } from "./types"
 
@@ -94,17 +95,19 @@ function trackFormReset(el: HTMLElement | null | undefined, callback: VoidFuncti
   return () => form?.removeEventListener("reset", onReset)
 }
 
-function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
+const fieldsetDisabledObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["disabled"] })
+
+export function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
   const fieldset = el?.closest("fieldset")
   if (!fieldset) return
-  callback(fieldset.disabled)
-  const win = getWindow(fieldset)
-  const obs = new win.MutationObserver(() => callback(fieldset.disabled))
-  obs.observe(fieldset, {
-    attributes: true,
-    attributeFilter: ["disabled"],
-  })
-  return () => obs.disconnect()
+  // `:disabled` also covers fieldsets disabled further up the tree, so watch every ancestor
+  const sync = () => callback(fieldset.matches(":disabled"))
+  sync()
+  const cleanups: VoidFunction[] = []
+  for (let node: HTMLFieldSetElement | null = fieldset; node; node = node.parentElement?.closest("fieldset") ?? null) {
+    cleanups.push(fieldsetDisabledObserver.observe(node, sync))
+  }
+  return () => cleanups.forEach((cleanup) => cleanup())
 }
 
 export interface TrackFormControlOptions {

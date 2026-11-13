@@ -19,11 +19,7 @@
   })
 </script>
 
-<div
-  bind:this={rootEl}
-  {...virtualizer.getContainerAriaAttrs()}
-  style="position: relative; width: 100%"
->
+<div bind:this={rootEl} {...virtualizer.getContainerAriaAttrs()} style="position: relative; width: 100%">
   <div style="height: {virtualizer.getTotalSize()}px; position: relative">
     {#each virtualizer.getVirtualItems() as virtualItem (virtualItem.key)}
       {@const style = virtualizer.getItemStyle(virtualItem)}

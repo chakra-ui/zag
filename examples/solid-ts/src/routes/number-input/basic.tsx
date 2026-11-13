@@ -11,7 +11,7 @@ import "@styles/number-input.css"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const service = useMachine(numberInput.machine, controls.mergeProps({ id: createUniqueId() }))
+  const service = useMachine(numberInput.machine, controls.mergeProps({ id: createUniqueId(), name: "amount" }))
 
   const api = createMemo(() => numberInput.connect(service, normalizeProps))
 
@@ -27,6 +27,7 @@ export default function Page() {
               <MinusIcon />
             </button>
             <input data-testid="input" {...api().getInputProps()} />
+            <input data-testid="hidden-input" {...api().getHiddenInputProps()} />
             <button data-testid="inc-button" {...api().getIncrementTriggerProps()}>
               <PlusIcon />
             </button>

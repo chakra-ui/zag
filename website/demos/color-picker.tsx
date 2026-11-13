@@ -45,7 +45,7 @@ export function ColorPicker(props: ColorPickerProps) {
       </div>
 
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <div>
               <div className={styles.Area} {...api.getAreaProps()}>

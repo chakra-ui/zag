@@ -26,7 +26,7 @@ function Content(props: {
   if (!api.open) return null
   return (
     <Portal>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           {props.arrow && (
             <div className={styles.Arrow} {...api.getArrowProps()}>

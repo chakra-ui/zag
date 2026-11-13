@@ -4,8 +4,10 @@ Bug reports, documentation improvements, and new component ideas are welcome. Br
 [good first issues](https://github.com/chakra-ui/zag/contribute) or
 [open an issue](https://github.com/chakra-ui/zag/issues) to discuss a bug or proposal.
 
-For bug reports, include the affected component, framework, package version, and steps to reproduce. A small
-reproduction helps us investigate. For feature requests, describe the use case and the behavior you need.
+For bug reports, include the affected component, framework, package version, and steps to reproduce. Please also share a
+video or screenshot of the problem, or a minimal reproduction (a StackBlitz or CodeSandbox link, or a small repository).
+Reports with one are much quicker for us to confirm and fix. For feature requests, describe the use case and the
+behavior you need.
 
 ## Local setup
 

@@ -25,7 +25,7 @@ export function DatePicker(props: DatePickerProps) {
         </button>
       </div>
 
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           <div hidden={api.view !== "day"}>
             <div

@@ -35,6 +35,19 @@ const preserveKeys =
     ",",
   )
 
+const vendorPrefixRE = /^(Webkit|Moz|ms)(?=[A-Z])/
+const uppercaseRE = /\B([A-Z])/g
+
+// Vue renders `WebkitUserSelect` as `webkit-user-select` on the server, so write prefixes as `-webkit-user-select`
+function toVueStyle(style: Record<string, unknown>) {
+  const normalized: Record<string, unknown> = {}
+  for (const key in style) {
+    const name = vendorPrefixRE.test(key) ? `-${key.replace(uppercaseRE, "-$1").toLowerCase()}` : key
+    normalized[name] = style[key]
+  }
+  return normalized
+}
+
 function toVueProp(prop: string) {
   if (prop in propMap) return propMap[prop]
   if (prop.startsWith("on")) return `on${toCase(prop.substr(2))}`
@@ -52,6 +65,8 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
       } else if (process.env.NODE_ENV !== "production" && value != null) {
         console.warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
+    } else if (key === "style" && typeof value === "object" && value != null) {
+      normalized.style = toVueStyle(value) as any
     } else {
       normalized[toVueProp(key)] = props[key]
     }

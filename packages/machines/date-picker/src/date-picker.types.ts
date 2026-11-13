@@ -41,9 +41,32 @@ export interface VisibleRangeChangeDetails {
   visibleRange: { start: DateValue; end: DateValue }
 }
 
+/**
+ * What opened or closed the date picker:
+ * - `trigger-click`: the trigger was pressed
+ * - `input-click`: the input was clicked (with `openOnClick`)
+ * - `item-select`: a date or preset was selected
+ * - `escape-key`: Escape was pressed
+ * - `interact-outside`: the pointer was pressed outside
+ * - `focus-outside`: focus moved outside
+ * - `script`: `setOpen` was called
+ */
+export type OpenChangeReason =
+  | "trigger-click"
+  | "input-click"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "script"
+
 export interface OpenChangeDetails {
   open: boolean
   value: DateValue[]
+  /**
+   * What opened or closed the date picker
+   */
+  reason?: OpenChangeReason | undefined
 }
 
 export interface Time {
@@ -319,15 +342,20 @@ type PropsWithDefault =
   | "defaultFocusedValue"
   | "outsideDaySelectable"
 
+interface InputValue {
+  index: number
+  value: string
+}
+
 interface PrivateContext {
   /**
    * The computed layer stack state used for declarative styles and attributes.
    */
   layer: LayerSnapshot | null
   /**
-   * The active input value (based on the active index)
+   * The text to sync into the input at `index`
    */
-  inputValue: string
+  inputValue: InputValue
   /**
    * The start date of the current visible duration.
    */
@@ -566,24 +594,16 @@ export interface RootState {
    */
   readOnly: boolean
   /**
+   * Whether the date picker is invalid.
+   */
+  invalid: boolean
+  /**
    * Whether the date picker has no selected value.
    */
   empty: boolean
 }
 
-export interface TriggerState {
-  /**
-   * Whether the date picker is open.
-   */
-  open: boolean
-  /**
-   * Whether the trigger is disabled.
-   */
-  disabled: boolean
-  /**
-   * Whether the trigger is showing the placeholder (no selected value).
-   */
-  placeholderShown: boolean
+export interface TriggerState extends RootState {
   /**
    * The current placement of the content relative to the trigger.
    */
@@ -621,25 +641,9 @@ export interface ContentState {
   side: PlacementSide | undefined
 }
 
-export interface InputState {
+export interface InputState extends RootState {
   /**
-   * Whether the date picker is open.
-   */
-  open: boolean
-  /**
-   * Whether the input is disabled.
-   */
-  disabled: boolean
-  /**
-   * Whether the input is read-only.
-   */
-  readOnly: boolean
-  /**
-   * Whether the input value is invalid.
-   */
-  invalid: boolean
-  /**
-   * Whether the input is showing the placeholder (no selected value).
+   * Whether this input has no selected value.
    */
   placeholderShown: boolean
 }
@@ -781,7 +785,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the calendar.
    */
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to set the selected month.
    */
@@ -891,7 +895,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of the input.
    */
-  getInputState: () => InputState
+  getInputState: (props?: InputProps) => InputState
   getInputProps: (props?: InputProps) => T["input"]
   getMonthSelectProps: () => T["select"]
   getYearSelectProps: () => T["select"]

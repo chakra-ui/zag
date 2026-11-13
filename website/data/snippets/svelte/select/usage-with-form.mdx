@@ -34,13 +34,13 @@
 
   <!-- Custom Select -->
 
-<div {...api.getControlProps()}>
-  <label {...api.getLabelProps()}>Label</label>
-  <button type="button" {...api.getTriggerProps()}>
-    <span>{api.valueAsString || "Select option"}</span>
-    <CaretIcon />
-  </button>
-</div>
+  <div {...api.getControlProps()}>
+    <label {...api.getLabelProps()}>Label</label>
+    <button type="button" {...api.getTriggerProps()}>
+      <span>{api.valueAsString || "Select option"}</span>
+      <CaretIcon />
+    </button>
+  </div>
 
   <div use:portal {...api.getPositionerProps()}>
     <div {...api.getContentProps()}>

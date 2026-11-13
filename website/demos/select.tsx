@@ -29,7 +29,7 @@ export function Select(props: SelectProps) {
         </button>
       </div>
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
             <ul {...api.getListProps()}>
               {data.map((item) => (

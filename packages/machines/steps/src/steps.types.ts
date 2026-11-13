@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /** The value of the position past the last step */
 export const COMPLETE = "__complete__"
@@ -216,23 +216,32 @@ export type StepsMachine<T extends StepItem = StepItem> = Machine<StepsSchema<T>
 
 export interface ItemProps {
   /**
-   * The value of the step item. Pass `COMPLETE` to `getContentProps` for the completed content.
+   * The value of the step item
    */
   value: string
 }
 
+export interface RootState {
+  /** Whether the flow reached the completed step */
+  complete: boolean
+  /** The orientation of the steps */
+  orientation: Orientation
+}
+
 export interface ItemState {
-  value: string
   /** The position of the step in the flow, or `-1` when disabled */
   index: number
-  triggerId: string
-  contentId: string
+  /** Whether the step is the current step */
   current: boolean
+  /** Whether the step is completed */
   completed: boolean
   /** Whether the flow moved past the step without completing it */
   skipped: boolean
+  /** Whether the step is invalid */
   invalid: boolean
+  /** Whether the step is disabled */
   disabled: boolean
+  /** Whether the step is optional */
   optional: boolean
   /** Whether the step is completed and cannot be returned to */
   locked: boolean
@@ -318,11 +327,19 @@ export interface StepsApi<T extends PropTypes = PropTypes, V extends StepItem = 
    */
   setCompletedValues: (values: string[]) => void
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
   getTriggerProps: (props: ItemProps) => T["element"]
   getContentProps: (props: ItemProps) => T["element"]
+  /**
+   * Returns the props for the content shown once the flow is complete
+   */
+  getCompletedContentProps: () => T["element"]
   getNextTriggerProps: () => T["button"]
   getPreviousTriggerProps: () => T["button"]
   getSkipTriggerProps: () => T["button"]

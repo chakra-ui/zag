@@ -8,19 +8,20 @@ import "@styles/tags-input.css"
 
 // Only lowercase alphabetic tags; duplicates prevented by default.
 export default function Page() {
-  const [invalidReason, setInvalidReason] = createSignal<string | null>(null)
+  const [invalid, setInvalid] = createSignal<string | null>(null)
 
   const service = useMachine(tagsInput.machine, {
     id: createUniqueId(),
     defaultValue: ["react", "vue"],
+    addOnPaste: true,
     validate(details) {
       return /^[a-z]+$/.test(details.inputValue)
     },
     onValueChange() {
-      setInvalidReason(null)
+      setInvalid(null)
     },
     onValueInvalid(details) {
-      setInvalidReason(details.reason)
+      setInvalid(details.values?.join(", ") ?? details.reason)
     },
   })
 
@@ -50,8 +51,8 @@ export default function Page() {
               <XIcon />
             </button>
           </div>
-          <Show when={invalidReason()}>
-            <p style={{ "margin-top": "8px", "font-size": "14px", color: "red" }}>Invalid: {invalidReason()}</p>
+          <Show when={invalid()}>
+            <p style={{ "margin-top": "8px", "font-size": "14px", color: "red" }}>Invalid: {invalid()}</p>
           </Show>
           <input {...api().getHiddenInputProps()} />
         </div>

@@ -4,7 +4,7 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(fileUpload.machine, ({ id }))
+  const service = useMachine(fileUpload.machine, { id })
   const api = $derived(fileUpload.connect(service, normalizeProps))
 </script>
 

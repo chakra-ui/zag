@@ -11,7 +11,6 @@
 
   const id = $props.id()
   let value = $state(["Design", "Build", "Test", "Ship"])
-  let announcement = $state("")
 
   const tagsService = useMachine(tagsInput.machine, (): tagsInput.Props => ({
     id,
@@ -37,19 +36,9 @@
   function onInputKeyDown(event: KeyboardEvent) {
     const highlighted = tagsApi.highlightedValue
     if (!event.altKey || !highlighted) return
-    const step = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0
-    const target = value[value.indexOf(highlighted) + step]
-    if (!step || !target) return
-
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
     event.preventDefault()
-    const next = dnd.reorder(value, {
-      source: highlighted,
-      target,
-      placement: step < 0 ? "before" : "after",
-      itemToValue: (item) => item,
-    })
-    value = next
-    announcement = `${highlighted} moved to position ${next.indexOf(highlighted) + 1} of ${next.length}`
+    dndApi.move({ value: highlighted, to: event.key === "ArrowLeft" ? "prev" : "next" })
   }
 </script>
 
@@ -89,7 +78,6 @@
     </div>
     <input {...tagsApi.getHiddenInputProps()} />
     <p id={`${id}:hint`} class="tags-input-hint">{hint}</p>
-    <span class="sr-only" aria-live="polite">{announcement}</span>
   </div>
 </main>
 

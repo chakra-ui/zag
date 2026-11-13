@@ -28,7 +28,7 @@ function Content(props: {
   const { api } = props
   return (
     <Portal>
-      <div {...api.getPositionerProps()}>
+      <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
           {props.arrow && (
             <div className={styles.Arrow} {...api.getArrowProps()}>

@@ -51,7 +51,7 @@ export default function Page() {
             </div>
           ))}
 
-          <div {...api.getContentProps({ value: steps.COMPLETE })}>All done 🎉</div>
+          <div {...api.getCompletedContentProps()}>All done 🎉</div>
 
           <div>
             <button {...api.getPreviousTriggerProps()}>Back</button>

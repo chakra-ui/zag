@@ -53,7 +53,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -98,7 +97,7 @@
       "--height": "The height of the element",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value"
+      "--layer-index": "The index of the panel in the panel stack"
     }
   },
   "image-cropper": {
@@ -271,7 +270,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Arrow": {
@@ -328,7 +326,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -353,7 +350,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -378,7 +374,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -403,7 +398,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -428,7 +422,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -453,7 +446,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -478,7 +470,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     },
     "Content": {
@@ -503,7 +494,6 @@
       "--available-height": "The available height in viewport",
       "--x": "The x position for transform",
       "--y": "The y position for transform",
-      "--z-index": "The z-index value",
       "--transform-origin": "The transform origin for animations"
     }
   },

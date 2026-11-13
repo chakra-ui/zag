@@ -103,6 +103,10 @@
     font-size: 1rem;
   }
 
+  .Positioner {
+    z-index: calc(var(--layer-index, 0) + 50);
+  }
+
   .Content {
     width: var(--reference-width, 16rem);
     max-height: 15rem;
@@ -117,7 +121,6 @@
     list-style-type: none;
     isolation: isolate;
     transform-origin: var(--transform-origin);
-    z-index: calc(var(--layer-index) + 50);
 
     &[data-state="open"]:not([data-inline]) {
       animation: combobox-in 140ms ease-out;

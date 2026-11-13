@@ -458,7 +458,7 @@ export interface EventPosition {
   totalColumns: number
 }
 
-export interface EventStateDetail {
+export interface EventState {
   dragging: boolean
   resizing: boolean
   focused: boolean
@@ -470,17 +470,17 @@ export interface EventStateDetail {
 
 export interface DayColumnState {
   /** Whether this day is today (locale/timezone aware). */
-  isToday: boolean
-  /** Whether this day is a Saturday or Sunday. */
-  isWeekend: boolean
-  /** Whether a live drag is currently hovering this column. */
-  isDropTarget: boolean
-  /** Whether the drag preview (floating ghost) renders in this column. */
-  isDragPreviewDay: boolean
-  /** Whether the drag/resize gesture started in this column — i.e. the origin outline renders here. */
-  isDragOriginDay: boolean
+  today: boolean
+  /** Whether this day is a weekend day for the locale. */
+  weekend: boolean
+  /** Whether an event is being dragged over this column. False while resizing. */
+  dragOver: boolean
+  /** Whether the drag preview renders in this column, while dragging or resizing. */
+  hasDragPreview: boolean
+  /** Whether the dragged or resized event started in this column, i.e. the origin outline renders here. */
+  hasDragOrigin: boolean
   /** Whether the selected slot highlight renders in this column. */
-  isSelectedSlotDay: boolean
+  hasSelectedSlot: boolean
 }
 
 export interface TimeSlotProps {
@@ -671,7 +671,7 @@ export interface SchedulerApi<T extends PropTypes = PropTypes, P extends Schedul
   /** Dismiss the selected slot highlight (e.g. when a create dialog closes). */
   clearSelectedSlot: () => void
   /** Interaction state for an event — dragging, focused, conflicting, and so on. */
-  getEventState: (id: string) => EventStateDetail
+  getEventState: (props: EventProps<P>) => EventState
   /**
    * Day-level flags for the given column — use to conditionally render custom UI (drop-target hint, day-specific styling) without reconstructing the comparisons from `dragState` / `selectedSlot`.
    */

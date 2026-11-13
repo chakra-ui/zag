@@ -55,7 +55,7 @@ export const getChannelSliderValueFromPoint = (ctx: Scope, point: Point, channel
   const { getPercentValue } = getRelativePoint(point, trackEl)
   return {
     x: getPercentValue({ dir, orientation: "horizontal" }),
-    y: getPercentValue({ orientation: "vertical" }),
+    y: getPercentValue({ orientation: "vertical", inverted: true }),
   }
 }
 export const getChannelInputEls = (ctx: Scope) => {

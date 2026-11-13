@@ -41,9 +41,10 @@ export const trigger = css({
   "&[data-state=open] svg": { rotate: "180deg" },
 })
 
+export const positioner = css({ zIndex: "1000" })
+
 export const content = css({
   w: "220px",
-  zIndex: "1000",
   p: "1.5",
   rounded: "xl",
   bg: "surface",

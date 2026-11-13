@@ -9,16 +9,25 @@ export const getTriggerId = (scope: Scope, value?: string) => {
   return value ? `${scope.id}:trigger:${value}` : `${scope.id}:trigger`
 }
 
-export const getContentId = (scope: Scope) => scope.ids?.content ?? `${scope.id}:content`
+export const getContentId = (scope: Scope, value?: string | null) => {
+  const id = scope.ids?.content ?? `${scope.id}:content`
+  return value != null ? `${id}:${value}` : id
+}
 
 export const getArrowId = (scope: Scope) => scope.ids?.arrow ?? `${scope.id}:arrow`
 
 export const getPositionerId = (scope: Scope) => scope.ids?.positioner ?? `${scope.id}:popper`
 
 // Element lookups — use querySelector with merged data attributes
-export const getTriggerEl = (scope: Scope) => scope.query(scope.selector(parts.trigger))
+export const getContentEl = (scope: Scope, value?: string | null) => {
+  const selector = scope.selector(parts.content)
+  if (value == null) return scope.query(selector)
+  return scope.query(`${selector}[data-value="${value}"]`) ?? scope.query(`${selector}:not([data-value])`)
+}
 
-export const getContentEl = (scope: Scope) => scope.query(scope.selector(parts.content))
+export const getViewportEl = (scope: Scope) => scope.query(scope.selector(parts.viewport))
+
+export const getPopupEl = (scope: Scope, value?: string | null) => getViewportEl(scope) ?? getContentEl(scope, value)
 
 export const getPositionerEl = (scope: Scope) => scope.query(scope.selector(parts.positioner))
 
@@ -26,7 +35,7 @@ export const getArrowEl = (scope: Scope) => scope.query(scope.selector(parts.arr
 
 export const getTriggerEls = (scope: Scope): HTMLElement[] => scope.queryAll<HTMLElement>(scope.selector(parts.trigger))
 
-export const getActiveTriggerEl = (scope: Scope, value: string | null): HTMLElement | null => {
-  if (value == null) return getTriggerEls(scope)[0]
+export const getTriggerEl = (scope: Scope, value?: string | null): HTMLElement | null => {
+  if (value == null) return getTriggerEls(scope)[0] ?? null
   return scope.query(`${scope.selector(parts.trigger)}[data-value="${value}"]`)
 }

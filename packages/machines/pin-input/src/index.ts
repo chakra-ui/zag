@@ -11,7 +11,6 @@ export type {
   InputProps,
   InputState,
   IntlTranslations,
-  LabelState,
   RootState,
   ValueChangeDetails,
   ValueInvalidDetails,

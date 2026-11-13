@@ -97,19 +97,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   }
 
   function getRootState(): RootState {
-    return { invalid, readOnly }
+    return { open, disabled: !!disabled, invalid, readOnly, required, focused }
   }
 
   function getTriggerState(): TriggerState {
-    return {
-      open,
-      focused,
-      disabled: !!disabled,
-      invalid,
-      required,
-      readOnly,
-      placeholderShown: !computed("hasSelectedItems"),
-    }
+    return { ...getRootState(), placeholderShown: !computed("hasSelectedItems") }
   }
 
   function getContentState(): ContentState {
@@ -151,26 +143,26 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     focus() {
       dom.getTriggerEl(scope)?.focus({ preventScroll: true })
     },
-    setOpen(nextOpen) {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", replaces: "open" })
+    setOpen(nextOpen, reason = "script") {
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
     selectValue(value) {
-      send({ type: "ITEM.SELECT", value })
+      send({ type: "ITEM.SELECT", value, src: "script" })
     },
     setValue(value) {
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value, src: "script" })
     },
     selectAll() {
-      send({ type: "VALUE.SET", value: collection.getValues() })
+      send({ type: "VALUE.SET", value: collection.getValues(), src: "script" })
     },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     clearValue(value) {
       if (value) {
-        send({ type: "ITEM.CLEAR", value })
+        send({ type: "ITEM.CLEAR", value, src: "script" })
       } else {
-        send({ type: "VALUE.CLEAR" })
+        send({ type: "VALUE.CLEAR", src: "script" })
       }
     },
 
@@ -182,47 +174,52 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
         "data-invalid": dataAttr(rootState.invalid),
         "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         ...parts.label.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
-        "data-required": dataAttr(required),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-required": dataAttr(rootState.required),
         htmlFor: dom.getHiddenSelectId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (disabled) return
+          if (rootState.disabled) return
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-focus": dataAttr(focused),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-focus": dataAttr(rootState.focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
     getValueTextProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
       })
     },
 
@@ -259,6 +256,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             type: "TRIGGER.POINTER_DOWN",
             point: { x: event.clientX, y: event.clientY },
             time: getNativeEvent(event).timeStamp,
+            src: "trigger-click",
           })
         },
         onClick(event) {
@@ -270,7 +268,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (event.defaultPrevented) return
           const pointerType = (getNativeEvent(event) as PointerEvent)?.pointerType
           refs.set("openMethod", pointerType === "mouse" ? "mouse" : pointerType ? "touch" : "keyboard")
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
         onFocus() {
           send({ type: "TRIGGER.FOCUS" })
@@ -297,31 +295,31 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send({ type: "TRIGGER.ARROW_UP" })
+              send({ type: "TRIGGER.ARROW_UP", src: "arrow-key" })
             },
             ArrowDown(event) {
-              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
+              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN", src: "arrow-key" })
             },
             ArrowLeft() {
-              send({ type: "TRIGGER.ARROW_LEFT" })
+              send({ type: "TRIGGER.ARROW_LEFT", src: "keyboard" })
             },
             ArrowRight() {
-              send({ type: "TRIGGER.ARROW_RIGHT" })
+              send({ type: "TRIGGER.ARROW_RIGHT", src: "keyboard" })
             },
             Home() {
-              send({ type: "TRIGGER.HOME" })
+              send({ type: "TRIGGER.HOME", src: "keyboard" })
             },
             End() {
-              send({ type: "TRIGGER.END" })
+              send({ type: "TRIGGER.END", src: "keyboard" })
             },
             Enter() {
-              send({ type: "TRIGGER.ENTER" })
+              send({ type: "TRIGGER.ENTER", src: "trigger-click" })
             },
             Space(event) {
               if (isTypingAhead) {
-                send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
+                send({ type: "TRIGGER.TYPEAHEAD", key: event.key, src: "typeahead" })
               } else {
-                send({ type: "TRIGGER.ENTER" })
+                send({ type: "TRIGGER.ENTER", src: "trigger-click" })
               }
             },
           }
@@ -341,7 +339,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           }
 
           if (getByTypeahead.isValidEvent(event)) {
-            send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
+            send({ type: "TRIGGER.TYPEAHEAD", key: event.key, src: "typeahead" })
             event.preventDefault()
           }
         },
@@ -349,14 +347,15 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -384,7 +383,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onClick(event) {
           if (event.defaultPrevented) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
+          send({ type: "ITEM.CLICK", src: "item-select", value: itemState.value })
         },
         onPointerLeave(event) {
           if (itemState.disabled) return
@@ -442,17 +441,18 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getClearTriggerProps() {
+      const rootState = getRootState()
       return normalize.button({
         ...parts.clearTrigger.attrs(scope.id),
         type: "button",
         "aria-label": translations.clearTriggerLabel,
-        "data-invalid": dataAttr(invalid),
-        disabled: disabled,
+        "data-invalid": dataAttr(rootState.invalid),
+        disabled: rootState.disabled,
         hidden: !computed("hasSelectedItems"),
         dir: prop("dir"),
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "CLEAR.CLICK" })
+          send({ type: "CLEAR.CLICK", src: "clear-trigger" })
         },
       })
     },
@@ -488,15 +488,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const handleChange = (e: { currentTarget: HTMLSelectElement; nativeEvent?: Event }) => {
         const evt = getNativeEvent(e)
         if (isInternalChangeEvent(evt)) return
-        send({ type: "VALUE.SET", value: getSelectedValues(e.currentTarget) })
+        send({ type: "VALUE.SET", value: getSelectedValues(e.currentTarget), src: "autofill" })
       }
 
+      const rootState = getRootState()
       return normalize.select({
         name: prop("name"),
         form: prop("form"),
-        disabled: disabled,
+        disabled: rootState.disabled,
         multiple: prop("multiple"),
-        required: prop("required"),
+        required: rootState.required,
         "aria-hidden": true,
         id: dom.getHiddenSelectId(scope),
         defaultValue,
@@ -523,7 +524,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           ...popperStyles.floating,
           transform: aligned ? "none" : popperStyles.floating.transform,
           ...(alignStyles ?? {}),
-          ...getDismissableLayerStyle(layer, { zIndexFallback: true }),
+          ...getDismissableLayerStyle(layer),
         },
       })
     },
@@ -552,7 +553,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (event.key === "Tab") {
             if (isValidTabEvent(event)) return
             event.preventDefault()
-            send({ type: "CONTENT.TAB", shiftKey: event.shiftKey, restoreFocus: false })
+            send({ type: "CONTENT.TAB", shiftKey: event.shiftKey, restoreFocus: false, src: "tab-key" })
             return
           }
 
@@ -579,7 +580,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
             Enter(event) {
               event.preventDefault()
-              send({ type: "ITEM.CLICK", src: "keydown.enter" })
+              send({ type: "ITEM.CLICK", src: "item-select" })
             },
             Space(event) {
               if (isEditableElement(target)) return
@@ -587,7 +588,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               if (isTypingAhead) {
                 send({ type: "CONTENT.TYPEAHEAD", key: event.key })
               } else {
-                send({ type: "ITEM.CLICK", src: "keydown.space" })
+                send({ type: "ITEM.CLICK", src: "item-select" })
               }
             },
           }
@@ -645,7 +646,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
             Tab() {
               if (!event.shiftKey) return false
-              send({ type: "CLOSE" })
+              send({ type: "CLOSE", src: "tab-key" })
               return true
             },
           }
