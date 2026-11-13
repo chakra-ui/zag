@@ -18,7 +18,7 @@ export default function Page() {
       <form onSubmit={(e) => e.preventDefault()}>
         <div {...username().getRootProps()}>
           <label {...username().getLabelProps()}>Username</label>
-          <input {...username().getInputProps()} name="username" pattern="[a-z0-9_]+" minLength={3} maxLength={16} />
+          <input {...username().getInputProps()} name="username" pattern="[a-z0-9_]+" minlength={3} maxlength={16} />
           <span {...username().getHelperTextProps()}>3–16 lowercase letters, numbers, or underscores.</span>
           <span {...username().getErrorTextProps({ match: "valueMissing" })}>Choose a username.</span>
           <span {...username().getErrorTextProps({ match: "tooShort" })}>Use at least 3 characters.</span>

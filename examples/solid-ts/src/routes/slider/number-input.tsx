@@ -17,12 +17,12 @@ interface PriceInputProps {
 }
 
 function PriceInput(props: PriceInputProps) {
-  const [draft, setDraft] = createSignal<string | null>(null)
+  const [draft, setDraft] = createSignal<number | null | undefined>(undefined)
 
   const id = createUniqueId()
   const service = useMachine(numberInput.machine, () => ({
     id,
-    value: draft() ?? String(props.value),
+    value: draft() === undefined ? props.value : draft(),
     min: props.min,
     max: props.max,
     formatOptions: { style: "currency" as const, currency: "USD", maximumFractionDigits: 0 },
@@ -30,8 +30,8 @@ function PriceInput(props: PriceInputProps) {
       setDraft(details.value)
     },
     onValueCommit(details: numberInput.ValueChangeDetails) {
-      if (!Number.isNaN(details.valueAsNumber)) props.onChange(details.valueAsNumber)
-      setDraft(null)
+      if (details.value != null) props.onChange(details.value)
+      setDraft(undefined)
     },
   }))
 

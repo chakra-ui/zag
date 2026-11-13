@@ -50,7 +50,7 @@ export default function Page() {
 
         <div {...password().getRootProps()}>
           <label {...password().getLabelProps()}>Password</label>
-          <input {...password().getInputProps()} name="password" type="password" minLength={8} />
+          <input {...password().getInputProps()} name="password" type="password" minlength={8} />
           <span {...password().getHelperTextProps()}>At least 8 characters.</span>
           <span {...password().getErrorTextProps()}>{password().errors[0]}</span>
         </div>

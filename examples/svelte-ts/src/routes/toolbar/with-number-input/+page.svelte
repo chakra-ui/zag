@@ -15,7 +15,7 @@
     id: `${id}-zoom`,
     ids: { input: api.getItemId("zoom") },
     disabled: api.disabled,
-    defaultValue: "100",
+    defaultValue: 100,
     min: 25,
     max: 400,
     step: 25,

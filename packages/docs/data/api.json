@@ -7190,6 +7190,10 @@
       "getRootState": {
         "type": "() => RootState",
         "description": "Returns the state of the root"
+      },
+      "getCompletedContentProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Returns the props for the content shown once the flow is complete"
       }
     },
     "context": {

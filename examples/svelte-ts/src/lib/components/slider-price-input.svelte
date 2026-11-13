@@ -12,12 +12,12 @@
 
   const props: Props = $props()
 
-  let draft = $state<string | null>(null)
+  let draft = $state<number | null | undefined>(undefined)
 
   const id = $props.id()
   const service = useMachine(numberInput.machine, () => ({
     id,
-    value: draft ?? String(props.value),
+    value: draft === undefined ? props.value : draft,
     min: props.min,
     max: props.max,
     formatOptions: { style: "currency" as const, currency: "USD", maximumFractionDigits: 0 },
@@ -25,8 +25,8 @@
       draft = details.value
     },
     onValueCommit(details: numberInput.ValueChangeDetails) {
-      if (!Number.isNaN(details.valueAsNumber)) props.onChange(details.valueAsNumber)
-      draft = null
+      if (details.value != null) props.onChange(details.value)
+      draft = undefined
     },
   }))
 

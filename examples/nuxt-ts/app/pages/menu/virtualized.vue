@@ -7,6 +7,13 @@ const items = Array.from({ length: 1000 }, (_, index) => ({ value: `item-${index
 
 const collection = menu.collection({ items })
 
+// Pairs each rendered row with its item, so the template needs no index lookups
+const getRows = () =>
+  virtualizer.getVirtualItems().flatMap((virtualItem) => {
+    const item = items[virtualItem.index]
+    return item ? [{ virtualItem, item }] : []
+  })
+
 const estimateSize = () => 32
 
 const selected = ref("-")
@@ -47,12 +54,12 @@ const api = computed(() => menu.connect(service, normalizeProps))
         >
           <div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }">
             <div
-              v-for="virtualItem in virtualizer.getVirtualItems()"
-              :key="items[virtualItem.index].value"
-              v-bind="api.getItemProps({ value: items[virtualItem.index].value })"
+              v-for="{ virtualItem, item } in getRows()"
+              :key="item.value"
+              v-bind="api.getItemProps({ value: item.value })"
               :style="virtualizer.getItemStyle(virtualItem)"
             >
-              {{ items[virtualItem.index].label }}
+              {{ item.label }}
             </div>
           </div>
         </div>

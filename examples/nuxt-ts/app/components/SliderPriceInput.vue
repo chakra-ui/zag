@@ -5,14 +5,14 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 const props = defineProps<{ label: string; value: number; min: number; max: number }>()
 const emit = defineEmits<{ change: [value: number] }>()
 
-const draft = ref<string | null>(null)
+const draft = ref<number | null | undefined>(undefined)
 
 const id = useId()
 const service = useMachine(
   numberInput.machine,
   computed(() => ({
     id,
-    value: draft.value ?? String(props.value),
+    value: draft.value === undefined ? props.value : draft.value,
     min: props.min,
     max: props.max,
     formatOptions: { style: "currency" as const, currency: "USD", maximumFractionDigits: 0 },
@@ -20,8 +20,8 @@ const service = useMachine(
       draft.value = details.value
     },
     onValueCommit(details: numberInput.ValueChangeDetails) {
-      if (!Number.isNaN(details.valueAsNumber)) emit("change", details.valueAsNumber)
-      draft.value = null
+      if (details.value != null) emit("change", details.value)
+      draft.value = undefined
     },
   })),
 )

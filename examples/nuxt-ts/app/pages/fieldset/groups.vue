@@ -35,21 +35,18 @@ const groups = [
 const errors = ref<Record<GroupName, boolean>>({ plan: false, notify: false })
 const status = ref("")
 
-const fieldsets = groups.map((group) => {
+const sections = groups.map((group) => {
   const id = useId()
-  const service = useMachine(
+  const fieldsetService = useMachine(
     fieldsetMachine.machine,
     computed(() => ({ id, invalid: errors.value[group.name] })),
   )
-  return computed(() => fieldsetMachine.connect(service, normalizeProps))
-})
-
-const fields = groups.map((group) =>
-  group.options.map(() => {
+  const options = group.options.map((option) => {
     const service = useMachine(field.machine, { id: useId() })
-    return computed(() => field.connect(service, normalizeProps))
-  }),
-)
+    return { option, api: computed(() => field.connect(service, normalizeProps)) }
+  })
+  return { group, options, api: computed(() => fieldsetMachine.connect(fieldsetService, normalizeProps)) }
+})
 
 const onChange = (event: Event) => {
   const target = getEventTarget<HTMLInputElement>(event)
@@ -70,23 +67,23 @@ const onSubmit = (event: Event) => {
 <template>
   <main class="field-page">
     <form @change="onChange" @submit.prevent="onSubmit">
-      <fieldset v-for="(group, i) in groups" :key="group.name" v-bind="fieldsets[i].value.getRootProps()">
-        <legend v-bind="fieldsets[i].value.getLegendProps()">{{ group.legend }}</legend>
+      <fieldset v-for="section in sections" :key="section.group.name" v-bind="section.api.value.getRootProps()">
+        <legend v-bind="section.api.value.getLegendProps()">{{ section.group.legend }}</legend>
         <div
-          v-for="(option, j) in group.options"
-          :key="option.value"
-          v-bind="fields[i][j].value.getRootProps()"
+          v-for="row in section.options"
+          :key="row.option.value"
+          v-bind="row.api.value.getRootProps()"
           class="field-option"
         >
           <input
-            v-bind="fields[i][j].value.getInputProps()"
-            :type="group.type"
-            :name="group.name"
-            :value="option.value"
+            v-bind="row.api.value.getInputProps()"
+            :type="section.group.type"
+            :name="section.group.name"
+            :value="row.option.value"
           />
-          <label v-bind="fields[i][j].value.getLabelProps()">{{ option.label }}</label>
+          <label v-bind="row.api.value.getLabelProps()">{{ row.option.label }}</label>
         </div>
-        <span v-bind="fieldsets[i].value.getErrorTextProps()">{{ group.error }}</span>
+        <span v-bind="section.api.value.getErrorTextProps()">{{ section.group.error }}</span>
       </fieldset>
 
       <div class="actions">

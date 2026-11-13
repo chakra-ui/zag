@@ -48,11 +48,11 @@
     id: `${id}-font-size`,
     ids: { input: api.getItemId("font-size") },
     disabled: api.disabled,
-    defaultValue: "16",
+    defaultValue: 16,
     min: 8,
     max: 96,
     onValueChange(details) {
-      fontSize = details.value
+      if (details.value != null) fontSize = String(details.value)
     },
   }))
   const sizeApi = $derived(numberInput.connect(sizeService, normalizeProps))

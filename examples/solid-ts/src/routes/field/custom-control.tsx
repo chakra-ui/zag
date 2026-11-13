@@ -1,3 +1,4 @@
+import type { JSX } from "@solidjs/web"
 import * as field from "@zag-js/field"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId } from "solid-js"
@@ -20,12 +21,12 @@ export default function Page() {
       </label>
 
       <div {...api().getRootProps()}>
-        <span {...api().getLabelProps()}>Bio</span>
+        <span {...(api().getLabelProps() as JSX.HTMLAttributes<HTMLSpanElement>)}>Bio</span>
         <div
           {...api().getControlProps()}
           role="textbox"
           aria-multiline="true"
-          contentEditable={api().disabled ? false : "plaintext-only"}
+          contenteditable={api().disabled ? false : "plaintext-only"}
           onInput={(e) => setLength(e.currentTarget.textContent?.length ?? 0)}
         />
         <span {...api().getHelperTextProps()}>
