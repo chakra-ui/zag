@@ -15,6 +15,7 @@ export type {
   IntlTranslations,
   ItemProps,
   ItemState,
+  RootState,
   NavigationBlockedDetails,
   ProgressTextDetails,
   StepItem,
