@@ -10,6 +10,7 @@ export type {
   AnimationDetails,
   DigitCellProps,
   ElementIds,
+  RootState,
   SymbolProps,
   DigitProps,
   DigitTrackProps,

@@ -198,6 +198,21 @@ export interface DigitCellProps {
   cell: DigitCell
 }
 
+export interface RootState {
+  /**
+   * Whether a roll animation is in progress
+   */
+  animating: boolean
+  /**
+   * The direction of the most recent value change
+   */
+  trend: "up" | "down" | "none"
+  /**
+   * Whether the roll is skipped because the user prefers reduced motion
+   */
+  reducedMotion: boolean
+}
+
 export interface NumberFlowApi<T extends PropTypes = PropTypes> {
   /**
    * The current numeric value.
@@ -237,6 +252,10 @@ export interface NumberFlowApi<T extends PropTypes = PropTypes> {
    */
   setValue: (value: number) => void
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getValueTextProps: () => T["element"]
   getSymbolProps: (props: SymbolProps) => T["element"]
