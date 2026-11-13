@@ -19,7 +19,6 @@ import type {
   InputProps,
   InputState,
   IntlTranslations,
-  LabelState,
   PinInputApi,
   PinInputSchema,
   RootState,
@@ -55,28 +54,20 @@ export function connect<T extends PropTypes>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  function getRootState(): RootState {
+    return { invalid, disabled, complete, readOnly, required }
+  }
+
   function getInputState(props: InputProps): InputState {
     const { index } = props
     const valueLength = computed("valueLength")
     const tabbableIndex = focusedIndex !== -1 ? focusedIndex : Math.min(computed("filledValueLength"), valueLength - 1)
     return {
-      index,
-      disabled,
-      readOnly,
-      invalid,
-      complete,
+      ...getRootState(),
       filled: computed("_value")[index] !== "",
       focused: focusedIndex === index,
       tabbable: index === tabbableIndex,
     }
-  }
-
-  function getRootState(): RootState {
-    return { invalid, disabled, complete, readOnly }
-  }
-
-  function getLabelState(): LabelState {
-    return { invalid, disabled, complete, required, readOnly }
   }
 
   // -----------------------------------------------------------------------------
@@ -116,19 +107,18 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getLabelState,
     getLabelProps() {
-      const labelState = getLabelState()
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
         id: dom.getLabelId(scope),
-        "data-invalid": dataAttr(labelState.invalid),
-        "data-disabled": dataAttr(labelState.disabled),
-        "data-complete": dataAttr(labelState.complete),
-        "data-required": dataAttr(labelState.required),
-        "data-readonly": dataAttr(labelState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-complete": dataAttr(rootState.complete),
+        "data-required": dataAttr(rootState.required),
+        "data-readonly": dataAttr(rootState.readOnly),
         onClick(event) {
           event.preventDefault()
           focus()
@@ -192,7 +182,7 @@ export function connect<T extends PropTypes>(
         type: prop("mask") ? "password" : inputType,
         defaultValue: computed("_value")[index] || "",
         readOnly: inputState.readOnly,
-        required,
+        required: inputState.required,
         autoCapitalize: "none",
         autoComplete: prop("otp") && index === 0 ? "one-time-code" : "off",
         placeholder: inputState.focused ? "" : prop("placeholder"),
