@@ -229,9 +229,29 @@ export interface ResizeTriggerProps {
   disabled?: boolean | undefined
 }
 
-export interface ResizeTriggerState {
+export interface RootState {
+  /**
+   * Whether any resize trigger is being dragged
+   */
   dragging: boolean
+  /**
+   * The orientation of the splitter
+   */
+  orientation: "horizontal" | "vertical"
+}
+
+export interface ResizeTriggerState {
+  /**
+   * Whether this resize trigger is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether this resize trigger is focused or being dragged
+   */
   focused: boolean
+  /**
+   * Whether this resize trigger is disabled, including when the splitter or an adjacent panel is disabled
+   */
   disabled: boolean
 }
 
@@ -312,7 +332,10 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    * Returns the state of the resize trigger.
    */
   getResizeTriggerState: (props: ResizeTriggerProps) => ResizeTriggerState
-
+  /**
+   * Returns the state of the root. The panels share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getPanelProps: (props: PanelProps) => T["element"]
   getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]

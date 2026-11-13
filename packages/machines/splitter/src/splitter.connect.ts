@@ -3,7 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
+import type { ResizeTriggerProps, ResizeTriggerState, RootState, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
 import {
@@ -84,6 +84,14 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     return splitResizeTriggerId(resolveResizeTriggerId(id), rawPanels).some(
       (panelId) => rawPanels.find((panel) => panel.id === panelId)?.disabled,
     )
+  }
+
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  const getRootState = (): RootState => {
+    return { dragging, orientation }
   }
 
   const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
@@ -170,11 +178,13 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       return getPanelLayout(prop("panels"))
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-dragging": dataAttr(dragging),
+        "data-orientation": rootState.orientation,
+        "data-dragging": dataAttr(rootState.dragging),
         dir: prop("dir"),
         style: {
           display: "flex",
@@ -188,10 +198,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
     getPanelProps(props) {
       const { id } = props
+      const rootState = getRootState()
       return normalize.element({
         ...parts.panel.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-dragging": dataAttr(dragging),
+        "data-orientation": rootState.orientation,
+        "data-dragging": dataAttr(rootState.dragging),
         dir: prop("dir"),
         "data-id": id,
         "data-index": findPanelIndex(prop("panels"), id),
