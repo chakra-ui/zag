@@ -86,7 +86,7 @@
     "@types/signale": "1.4.7",
     "commitlint": "21.2.4",
     "cross-env": "^10.1.0",
-    "dotenv": "17.4.2",
+    "dotenv": "18.0.10",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
