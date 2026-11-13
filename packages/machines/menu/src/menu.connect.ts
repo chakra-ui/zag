@@ -100,7 +100,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   }
 
   function getPositionerState(): PositionerState {
-    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested, transitioning, instant }
   }
 
   function getContentState(props: ContentProps = {}): ContentState {
@@ -111,12 +111,13 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
       side: currentPlacementSide,
+      instant,
       activationDirection,
     }
   }
 
   function getViewportState(): ViewportState {
-    return { open, side: currentPlacementSide, activationDirection, transitioning }
+    return { open, instant, side: currentPlacementSide, activationDirection, transitioning }
   }
 
   // -----------------------------------------------------------------------------
@@ -423,11 +424,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-instant": dataAttr(instant),
-        "data-transitioning": dataAttr(transitioning),
+        "data-instant": dataAttr(positionerState.instant),
+        "data-transitioning": dataAttr(positionerState.transitioning),
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
@@ -456,7 +458,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         dir: prop("dir"),
         hidden: !viewportState.open,
         "data-state": viewportState.open ? "open" : "closed",
-        "data-instant": dataAttr(instant),
+        "data-instant": dataAttr(viewportState.instant),
         "data-side": viewportState.side,
         "data-activation-direction": viewportState.activationDirection ?? undefined,
         "data-transitioning": dataAttr(viewportState.transitioning),
@@ -488,7 +490,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         hidden: !contentState.open,
         "data-value": value,
         "data-state": contentState.open ? "open" : "closed",
-        "data-instant": dataAttr(instant),
+        "data-instant": dataAttr(contentState.instant),
         role: isDialog ? "dialog" : "menu",
         tabIndex: isDialog ? -1 : 0,
         dir: prop("dir"),

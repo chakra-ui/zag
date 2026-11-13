@@ -441,6 +441,14 @@ export interface PositionerState {
    * Whether the menu has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Whether the menu is moving between triggers
+   */
+  transitioning: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
 }
 
 export interface ViewportSize {
@@ -477,6 +485,10 @@ export interface ContentState {
    */
   side: PlacementSide | undefined
   /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
+  /**
    * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
    * `null` until the menu switches triggers while open.
    */
@@ -488,6 +500,10 @@ export interface ViewportState {
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
   /**
    * The side of the trigger the viewport is placed on
    */
