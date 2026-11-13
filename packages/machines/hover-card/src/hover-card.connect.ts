@@ -55,7 +55,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
   }
 
   function getPositionerState(): PositionerState {
-    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested, transitioning, instant: context.get("instant") }
   }
 
   function getContentState(props: ContentProps = {}): ContentState {
@@ -189,10 +189,12 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
 
     getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-transitioning": dataAttr(transitioning),
+        "data-transitioning": dataAttr(positionerState.transitioning),
+        "data-instant": positionerState.instant ?? undefined,
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,

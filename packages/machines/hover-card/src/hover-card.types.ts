@@ -217,6 +217,14 @@ export interface PositionerState {
    * Whether the hover card has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Whether the hover card is moving between triggers
+   */
+  transitioning: boolean
+  /**
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
 }
 
 export interface ViewportSize {
