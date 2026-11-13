@@ -1,4 +1,4 @@
-import { contains, getEventTarget, isHTMLElement, whenNode } from "@zag-js/dom-query"
+import { contains, getActiveElement, getDocument, getEventTarget, isHTMLElement, whenNode } from "@zag-js/dom-query"
 import {
   trackInteractOutside,
   type FocusOutsideEvent,
@@ -86,8 +86,18 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     layerStyleTargets,
   } = options
 
+  const resolveContainers = () => {
+    const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
+    return Array.isArray(containers) ? containers : [containers]
+  }
+
+  // A layer nests in the layer its trigger or focused element is in
+  const triggers = resolveContainers().filter(Boolean)
+  const origins = triggers.length ? [node, ...triggers, getActiveElement(getDocument(node))] : undefined
+
   const layer: Layer = {
     dismiss: onDismiss,
+    origins,
     node,
     type,
     pointerBlocking,
@@ -132,8 +142,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
   }
 
   function exclude(target: Element) {
-    const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
-    const _containers = Array.isArray(containers) ? containers : [containers]
+    const _containers = resolveContainers()
     const persistentElements = options.persistentElements?.map((fn) => fn()).filter(isHTMLElement)
     if (persistentElements) _containers.push(...persistentElements)
     return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)

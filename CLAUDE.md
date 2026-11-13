@@ -14,6 +14,7 @@ For detailed information on specific topics, see:
 - `@.claude/docs/playwright-testing-guide.md` - E2E testing with Playwright
 - `@.claude/docs/documentation-structure-guide.md` - Documentation standards
 - `@.claude/docs/changelog-guide.md` - Changelog and changeset writing
+- `@.claude/docs/dismissable-layers.md` - Layer nesting decisions in the dismissable layer stack
 
 ## Project Overview
 
