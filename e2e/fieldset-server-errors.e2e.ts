@@ -19,7 +19,7 @@ test.describe("fieldset server errors", () => {
     await expect(page.getByText("Enter your email address")).toBeVisible()
     await expect(page.getByText("Choose a username")).toBeVisible()
     await expect(page.getByText("Fix the highlighted fields to continue")).toBeVisible()
-    await expect(group).toHaveAttribute("aria-invalid", "true")
+    await expect(group).toHaveAttribute("data-invalid")
     await expect(email).toHaveAttribute("aria-invalid", "true")
     await expect(username).toHaveAttribute("aria-invalid", "true")
     await expect(group).toHaveAccessibleDescription(/Fix the highlighted fields to continue/)
