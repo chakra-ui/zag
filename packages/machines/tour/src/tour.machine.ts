@@ -109,12 +109,10 @@ export const machine = createMachine<TourSchema>({
       })
     })
 
-    // Re-apply the active target so a preventInteraction change takes effect mid-step
+    // Re-apply the open step's target when preventInteraction changes
     track([() => prop("preventInteraction")], () => {
-      const cleanup = refs.get("targetCleanup")
-      if (!cleanup) return
-      cleanup()
-      refs.set("targetCleanup", undefined)
+      if (!refs.get("targetCleanup")) return
+      clearTargetAttrs(refs)
       syncTargetAttrsFromContext({ context, refs, prop })
     })
   },
@@ -313,8 +311,7 @@ export const machine = createMachine<TourSchema>({
         performStepTransition(params, idx)
       },
       clearStep({ context, refs }) {
-        refs.get("targetCleanup")?.()
-        refs.set("targetCleanup", undefined)
+        clearTargetAttrs(refs)
 
         context.set("targetRect", { width: 0, height: 0, x: 0, y: 0 })
         context.set("resolvedTarget", null)
@@ -384,8 +381,7 @@ export const machine = createMachine<TourSchema>({
         context.set("resolvedTarget", node ?? null)
       },
       cleanupAll({ refs }) {
-        refs.get("targetCleanup")?.()
-        refs.set("targetCleanup", undefined)
+        clearTargetAttrs(refs)
         refs.set("prevTarget", undefined)
 
         refs.get("effectCleanup")?.()
@@ -641,6 +637,11 @@ export const machine = createMachine<TourSchema>({
 // Step transition helpers
 // ============================================================================
 
+function clearTargetAttrs(refs: Params<TourSchema>["refs"]) {
+  refs.get("targetCleanup")?.()
+  refs.set("targetCleanup", undefined)
+}
+
 /**
  * Shared logic for syncing target element attributes.
  * Used by both actions and the watch callback.
@@ -652,20 +653,18 @@ function syncTargetAttrsFromContext(params: {
 }) {
   const { context, refs, prop } = params
   const targetEl = context.get("resolvedTarget")
-  const cleanup = refs.get("targetCleanup")
 
-  // A step change runs the cleanup before syncing, so the same target is only skipped while it is still highlighted
-  if (targetEl === refs.get("prevTarget") && cleanup) return
+  // Same target, still applied: a step change clears it first
+  if (targetEl === refs.get("prevTarget") && refs.get("targetCleanup")) return
 
-  if (cleanup) cleanup()
-  refs.set("targetCleanup", undefined)
+  clearTargetAttrs(refs)
 
   if (!targetEl) {
     refs.set("prevTarget", null)
     return
   }
 
-  // Restore what the target had before, so an app's own inert or highlight survives the tour
+  // Cleanup restores the target's own state, not a blank one
   const preventInteraction = !!prop("preventInteraction")
   const wasInert = targetEl.inert
   const wasHighlighted = targetEl.hasAttribute("data-tour-highlighted")
@@ -699,8 +698,7 @@ function performStepTransition(params: Params<TourSchema>, idx: number) {
   refs.get("effectCleanup")?.()
   refs.set("effectCleanup", undefined)
 
-  refs.get("targetCleanup")?.()
-  refs.set("targetCleanup", undefined)
+  clearTargetAttrs(refs)
 
   if (step.effect) {
     executeStepEffect(params, step, idx)
