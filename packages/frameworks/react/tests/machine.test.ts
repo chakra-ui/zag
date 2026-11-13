@@ -33,6 +33,7 @@ describe("basic", () => {
         return "foo"
       },
       entry: ["rootEntry"],
+      exit: ["rootExit"],
       states: {
         foo: {
           entry: ["fooEntry"],
@@ -1117,6 +1118,7 @@ describe("uniform coverage", () => {
 describe("unmount before start", () => {
   test("does not start a machine whose component unmounts before the start runs", async () => {
     const rootEntry = vi.fn()
+    const rootExit = vi.fn()
     const openEntry = vi.fn()
     const lockCleanup = vi.fn()
     const lock = vi.fn(() => lockCleanup)
@@ -1126,6 +1128,7 @@ describe("unmount before start", () => {
         return "open"
       },
       entry: ["rootEntry"],
+      exit: ["rootExit"],
       states: {
         open: {
           entry: ["openEntry"],
@@ -1133,7 +1136,7 @@ describe("unmount before start", () => {
         },
       },
       implementations: {
-        actions: { rootEntry, openEntry },
+        actions: { rootEntry, rootExit, openEntry },
         effects: { lock },
       },
     })
@@ -1146,6 +1149,7 @@ describe("unmount before start", () => {
     expect(rootEntry).not.toHaveBeenCalled()
     expect(openEntry).not.toHaveBeenCalled()
     expect(lock).not.toHaveBeenCalled()
+    expect(rootExit).not.toHaveBeenCalled()
     expect(result.current.getStatus()).not.toBe(MachineStatus.Started)
   })
 })

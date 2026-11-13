@@ -203,8 +203,7 @@ describe("React Strict Mode", () => {
   })
 
   test("unmounting before the machine starts leaves no entry-effect mutations behind", async () => {
-    // Regression test for #3631: a dialog that mounts and unmounts in the same tick must not
-    // apply its scroll lock after it is gone.
+    // A dialog that mounts and unmounts in the same tick must not apply its scroll lock
     const ATTR = "data-test-lock"
     const lockScroll = vi.fn(() => {
       document.body.setAttribute(ATTR, "")

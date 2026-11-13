@@ -2,5 +2,4 @@
 "@zag-js/react": patch
 ---
 
-- Fix machines starting after their component unmounts in the same tick, which left a dialog's scroll lock on
-  `document.body` (#3631).
+- Fix a machine starting after its component unmounted, which left effects like a dialog's scroll lock in place.

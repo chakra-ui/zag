@@ -290,12 +290,12 @@ export function useMachine<T extends MachineSchema>(
 
   useSafeLayoutEffect(() => {
     mountedRef.current = true
+    let startedHere = false
 
     queueMicrotask(() => {
-      // The component can unmount before this runs (e.g. mount and unmount in the same tick).
-      // Starting then would run entry effects that nothing cleans up.
+      // Unmounted before starting: its effects would never be cleaned up
       if (!mountedRef.current) return
-
+      startedHere = true
       const started = statusRef.current === MachineStatus.Started
       statusRef.current = MachineStatus.Started
       debug(started ? "rehydrating..." : "initializing...")
@@ -318,6 +318,7 @@ export function useMachine<T extends MachineSchema>(
       transitionRef.current = null
 
       queueMicrotask(() => {
+        if (!startedHere) return
         action(machine.exit)
         statusRef.current = MachineStatus.Stopped
       })
