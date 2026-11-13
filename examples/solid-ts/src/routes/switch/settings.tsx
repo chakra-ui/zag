@@ -32,7 +32,7 @@ export default function Page() {
           <div class="rows">
             <For each={rows}>
               {(row) => (
-                <label data-testid={row.testId} {...row.api().getRootProps()}>
+                <label {...row.api().getRootProps()}>
                   <input {...row.api().getHiddenInputProps()} />
                   <span {...row.api().getControlProps()}>
                     <span {...row.api().getThumbProps()} />

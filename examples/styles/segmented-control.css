@@ -61,7 +61,6 @@
 
 /* Layout shared by the time-range, icon-only and settings-nav examples */
 .time-range,
-.icon-only,
 .settings-nav {
   display: flex;
   flex-direction: column;
@@ -75,15 +74,13 @@
 }
 
 .time-range .hint,
-.icon-only .hint,
 .settings-nav .hint {
   margin: 0;
   font-size: var(--z-text-sm);
   color: var(--z-fg-muted);
 }
 
-.time-range [data-radio-group-root],
-.icon-only [data-radio-group-root] {
+.time-range [data-radio-group-root] {
   align-self: flex-start;
 }
 
@@ -105,42 +102,6 @@
 .time-range .caption {
   margin: 0;
   font-size: var(--z-text-md);
-}
-
-/* icon-only: square items with an inline icon */
-.icon-only [data-radio-group-item] {
-  width: 32px;
-  padding: 0;
-}
-
-.icon-only svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-
-.icon-only .preview {
-  margin: 0;
-  padding: 12px;
-  border-radius: var(--z-radius);
-  background: var(--z-bg-muted);
-  font-size: var(--z-text-md);
-  line-height: 1.5;
-}
-
-.icon-only .preview[data-align="center"] {
-  text-align: center;
-}
-
-.icon-only .preview[data-align="right"] {
-  text-align: right;
-}
-
-.icon-only .preview[data-align="justify"] {
-  text-align: justify;
 }
 
 /* settings-nav: vertical items beside a content panel */

@@ -1,6 +1,5 @@
 .popper-selection,
-.popper-inline,
-.popper-dropdown {
+.popper-inline {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -9,8 +8,7 @@
 }
 
 .popper-selection .hint,
-.popper-inline .hint,
-.popper-dropdown .hint {
+.popper-inline .hint {
   margin: 0;
   font-size: var(--z-text-md);
   color: var(--z-fg-muted);
@@ -89,77 +87,4 @@
 .popper-inline .card[data-open="false"] {
   visibility: hidden;
   pointer-events: none;
-}
-
-/* Dropdown */
-
-.popper-dropdown {
-  /* Fills the canvas so the trigger sits at the bottom edge and the list has to flip */
-  flex: 1;
-  justify-content: space-between;
-  --arrow-size: 10px;
-  --arrow-background: var(--z-bg);
-}
-
-.popper-dropdown .trigger {
-  align-self: flex-end;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 16rem;
-  max-width: 100%;
-}
-
-.popper-dropdown .content {
-  position: relative;
-  isolation: isolate;
-  background: var(--z-bg);
-  border: 1px solid var(--z-border);
-  border-radius: var(--z-radius);
-  box-shadow: var(--z-shadow-popover);
-}
-
-.popper-dropdown .menu[data-open="false"] {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.popper-dropdown .list {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding: 4px;
-  list-style: none;
-  background: var(--z-bg);
-  border-radius: var(--z-radius);
-}
-
-.popper-dropdown .list button {
-  width: 100%;
-  justify-content: flex-start;
-  height: 32px;
-  padding: 0 8px;
-  background: transparent;
-  border: 0;
-  text-align: start;
-  font-size: var(--z-text-md);
-
-  &:hover {
-    background: var(--z-bg-muted);
-  }
-
-  &[aria-current="true"] {
-    font-weight: 600;
-  }
-}
-
-.popper-dropdown .arrow {
-  z-index: -1;
-}
-
-.popper-dropdown .arrow-tip {
-  border: 1px solid var(--z-border);
-  border-bottom-color: transparent;
-  border-inline-end-color: transparent;
 }

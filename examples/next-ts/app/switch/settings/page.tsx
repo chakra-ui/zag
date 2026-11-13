@@ -32,7 +32,7 @@ export default function Page() {
           <p className="hint">Turn on Low power mode to pause the other two.</p>
           <div className="rows">
             {rows.map(({ label, testId, api }) => (
-              <label key={testId} data-testid={testId} {...api.getRootProps()}>
+              <label key={testId} {...api.getRootProps()}>
                 <input {...api.getHiddenInputProps()} />
                 <span {...api.getControlProps()}>
                   <span {...api.getThumbProps()} />

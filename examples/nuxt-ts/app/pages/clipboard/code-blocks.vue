@@ -43,7 +43,6 @@ const copy = (snippet: (typeof snippets)[number]) => {
             <strong>{{ snippet.title }}</strong>
             <button
               type="button"
-              :data-testid="`copy-${snippet.id}`"
               :data-copied="api.copied && activeId === snippet.id ? '' : undefined"
               :aria-label="`${api.copied && activeId === snippet.id ? 'Copied!' : 'Copy'} ${snippet.title} snippet`"
               @click="copy(snippet)"
@@ -53,7 +52,7 @@ const copy = (snippet: (typeof snippets)[number]) => {
               <span>{{ api.copied && activeId === snippet.id ? "Copied!" : "Copy" }}</span>
             </button>
           </div>
-          <pre :data-testid="`code-${snippet.id}`">{{ snippet.code }}</pre>
+          <pre>{{ snippet.code }}</pre>
         </div>
       </div>
     </div>

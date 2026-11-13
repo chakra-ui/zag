@@ -53,7 +53,7 @@
       </div>
     </form>
     {#if output}
-      <pre class="output" data-testid="form-output">{output}</pre>
+      <pre class="output">{output}</pre>
     {/if}
   </div>
 </main>

@@ -73,8 +73,7 @@
 }
 
 .switch-settings,
-.switch-form,
-.switch-two-factor {
+.switch-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -122,15 +121,4 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.switch-two-factor .field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.switch-two-factor .description,
-.switch-two-factor .error {
-  padding-inline-start: 44px;
 }

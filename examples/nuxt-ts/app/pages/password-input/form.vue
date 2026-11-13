@@ -50,7 +50,7 @@ function onReset() {
           <button type="reset">Reset</button>
         </div>
       </form>
-      <pre v-if="output" class="output" data-testid="form-output">{{ output }}</pre>
+      <pre v-if="output" class="output">{{ output }}</pre>
     </div>
   </main>
 

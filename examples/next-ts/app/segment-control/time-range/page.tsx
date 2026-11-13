@@ -33,18 +33,18 @@ export default function Page() {
             <span {...api.getLabelProps()}>Time range</span>
             <div {...api.getIndicatorProps()} />
             {timeRanges.map((opt) => (
-              <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
+              <label key={opt.id} {...api.getItemProps({ value: opt.id })}>
                 <span {...api.getItemTextProps({ value: opt.id })}>{opt.label}</span>
                 <input {...api.getItemHiddenInputProps({ value: opt.id })} />
               </label>
             ))}
           </div>
-          <div className="chart" data-testid="chart">
+          <div className="chart">
             {range.bars.map((bar, i) => (
-              <div key={i} className="bar" data-testid="bar" style={{ height: `${(bar / max) * 100}%` }} />
+              <div key={i} className="bar" style={{ height: `${(bar / max) * 100}%` }} />
             ))}
           </div>
-          <p className="caption" data-testid="caption" role="status">
+          <p className="caption" role="status">
             {range.caption}
           </p>
           <div className="actions">

@@ -1,9 +1,3 @@
-export const shippingOptions = [
-  { id: "standard", label: "Standard", price: "$4.99", delivery: "5-7 business days" },
-  { id: "express", label: "Express", price: "$12.00", delivery: "2-3 business days" },
-  { id: "overnight", label: "Overnight", price: "$24.50", delivery: "Next business day" },
-]
-
 export const planOptions = [
   { id: "free", label: "Free", price: "$0 / month", note: "1 project" },
   { id: "pro", label: "Pro", price: "$12 / month", note: "Unlimited projects" },
@@ -27,13 +21,6 @@ export const timeRanges = [
     caption: "Page views per month, last 12 months",
     bars: [8200, 7900, 9100, 9800, 10400, 11200, 10800, 11900, 12600, 12100, 13400, 14200],
   },
-]
-
-export const alignOptions = [
-  { id: "left", label: "Align left", icon: "M3 4h14M3 8h9M3 12h14M3 16h9" },
-  { id: "center", label: "Align center", icon: "M3 4h14M6 8h8M3 12h14M6 16h8" },
-  { id: "right", label: "Align right", icon: "M3 4h14M8 8h9M3 12h14M8 16h9" },
-  { id: "justify", label: "Justify", icon: "M3 4h14M3 8h14M3 12h14M3 16h14" },
 ]
 
 export const settingsSections = [

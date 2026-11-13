@@ -50,7 +50,7 @@ export default function Page() {
 
           <div class="controls">
             <button onClick={() => setPaused(!paused())}>{paused() ? "Resume" : "Pause"}</button>
-            <span class="status" role="status" data-testid="status">
+            <span class="status" role="status">
               {finished() ? "Finished" : ""}
             </span>
           </div>

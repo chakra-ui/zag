@@ -29,11 +29,7 @@ export default function Page() {
           <div {...api.getRootProps()}>
             <span {...api.getLabelProps()}>Plan</span>
             {planOptions.map((opt) => (
-              <label
-                key={opt.id}
-                data-testid={`radio-${opt.id}`}
-                {...api.getItemProps({ value: opt.id, disabled: opt.disabled })}
-              >
+              <label key={opt.id} {...api.getItemProps({ value: opt.id, disabled: opt.disabled })}>
                 <div {...api.getItemControlProps({ value: opt.id, disabled: opt.disabled })} />
                 <span {...api.getItemTextProps({ value: opt.id, disabled: opt.disabled })}>
                   <span className="name">{opt.label}</span>
@@ -44,7 +40,7 @@ export default function Page() {
               </label>
             ))}
           </div>
-          <p className="selected" data-testid="selected-plan" role="status">
+          <p className="selected" role="status">
             Selected plan: {selected?.label ?? "None"}
           </p>
           <div className="actions">

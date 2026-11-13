@@ -25,13 +25,6 @@
   padding: 8px;
 }
 
-.share-link [data-clipboard-trigger] {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-}
-
 .api-key [data-clipboard-control] {
   gap: 8px;
 }
@@ -46,14 +39,12 @@
   gap: 12px;
 }
 
-.share-link,
 .api-key,
 .code-blocks {
   width: 100%;
   max-width: 32rem;
 }
 
-.share-link [data-clipboard-root],
 .api-key [data-clipboard-root] {
   width: 100%;
 }

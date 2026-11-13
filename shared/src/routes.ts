@@ -129,7 +129,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Password Input",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "sign-up", title: "Sign Up" },
       { slug: "confirm-password", title: "Confirm Password" },
       { slug: "form", title: "Form" },
     ],
@@ -275,7 +274,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Clipboard",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "share-link", title: "Share Link" },
       { slug: "api-key", title: "API Key" },
       { slug: "code-blocks", title: "Code Blocks" },
     ],
@@ -346,8 +344,6 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "shipping-address", title: "Shipping Address" },
-      { slug: "notification-preferences", title: "Notification Preferences" },
-      { slug: "server-errors", title: "Server Errors" },
       { slug: "groups", title: "Checkbox and Radio Groups" },
       { slug: "nested", title: "Nested" },
     ],
@@ -411,7 +407,6 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "settings", title: "Settings" },
       { slug: "form", title: "Form" },
-      { slug: "two-factor", title: "Two-Factor" },
     ],
   },
   {
@@ -692,7 +687,6 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "selection-toolbar", title: "Selection Toolbar" },
       { slug: "inline-anchor", title: "Inline Anchor" },
-      { slug: "dropdown", title: "Dropdown" },
     ],
   },
   {
@@ -719,7 +713,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Radio Group",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "shipping-options", title: "Shipping Options" },
       { slug: "plan-picker", title: "Plan Picker" },
       { slug: "form", title: "Form" },
     ],
@@ -867,7 +860,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Segment Control",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "icon-only", title: "Icon Only" },
       { slug: "time-range", title: "Time Range" },
       { slug: "vertical", title: "Vertical" },
     ],
@@ -961,12 +953,7 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "swap",
     label: "Swap",
-    examples: [
-      { slug: "basic", title: "Basic" },
-      { slug: "menu-toggle", title: "Menu Toggle" },
-      { slug: "theme-toggle", title: "Theme Toggle" },
-      { slug: "like", title: "Like" },
-    ],
+    examples: [{ slug: "basic", title: "Basic" }],
   },
 ]
 

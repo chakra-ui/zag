@@ -3,14 +3,13 @@
   import type { Snippet } from "svelte"
 
   interface Props {
-    id: string
     label: string
     open: boolean
     ondismiss: () => void
     children?: Snippet
   }
 
-  let { id, label, open, ondismiss, children }: Props = $props()
+  let { label, open, ondismiss, children }: Props = $props()
   let panelRef = $state<HTMLDivElement>()
 
   const peers = () => Array.from(document.querySelectorAll<HTMLElement>("[data-peer]"))
@@ -26,14 +25,6 @@
   })
 </script>
 
-<div
-  bind:this={panelRef}
-  data-peer
-  hidden={!open}
-  role="dialog"
-  aria-label={label}
-  data-testid="panel-{id}"
-  class="panel"
->
+<div bind:this={panelRef} data-peer hidden={!open} role="dialog" aria-label={label} class="panel">
   {@render children?.()}
 </div>

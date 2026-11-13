@@ -24,7 +24,7 @@ export default function Page() {
   return (
     <main>
       <div class="exclude">
-        <div ref={toolbarRef} role="toolbar" aria-label="Sort results" data-testid="toolbar" class="sort-bar">
+        <div ref={toolbarRef} role="toolbar" aria-label="Sort results" class="sort-bar">
           <For each={sortOptions}>
             {(option) => (
               <button aria-pressed={sort() === option ? "true" : "false"} onClick={() => setSort(option)}>
@@ -34,11 +34,11 @@ export default function Page() {
           </For>
         </div>
 
-        <button ref={triggerRef} data-testid="trigger" onClick={() => setOpen((value) => !value)}>
+        <button ref={triggerRef} onClick={() => setOpen((value) => !value)}>
           Filters
         </button>
 
-        <div ref={panelRef} hidden={!open()} role="dialog" aria-label="Filters" data-testid="panel" class="panel">
+        <div ref={panelRef} hidden={!open()} role="dialog" aria-label="Filters" class="panel">
           <strong>Filter running shoes</strong>
           <label>
             <input type="checkbox" /> In stock
@@ -48,10 +48,10 @@ export default function Page() {
           </label>
         </div>
 
-        <p role="status" data-testid="status" class="status">
+        <p role="status" class="status">
           Sorted by {sort()}
         </p>
-        <p data-testid="outside">Showing 24 results. Click here to close the filters.</p>
+        <p>Showing 24 results. Click here to close the filters.</p>
       </div>
     </main>
   )

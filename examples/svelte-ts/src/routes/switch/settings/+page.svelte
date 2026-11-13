@@ -36,7 +36,7 @@
       {#each rows as row (row.testId)}
         {@const api = zagSwitch.connect(row.service, normalizeProps)}
         <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label data-testid={row.testId} {...api.getRootProps()}>
+        <label {...api.getRootProps()}>
           <input {...api.getHiddenInputProps()} />
           <span {...api.getControlProps()}>
             <span {...api.getThumbProps()}></span>

@@ -59,7 +59,7 @@ export default function Page() {
     <main>
       <div className="popper-selection">
         <p className="hint">Select any words to open the toolbar above them.</p>
-        <p className="article" ref={paragraphRef} data-testid="paragraph">
+        <p className="article" ref={paragraphRef}>
           Zag state machines keep interaction logic out of your components. Each machine describes the states a widget
           can be in, the events that move it between them, and the effects it runs along the way, so the same behavior
           works in every framework.
@@ -70,7 +70,6 @@ export default function Page() {
           role="toolbar"
           tabIndex={-1}
           aria-label="Text formatting"
-          data-testid="selection-toolbar"
           data-open={open ? "true" : "false"}
           style={styles.floating}
           onMouseDown={(e) => e.preventDefault()}

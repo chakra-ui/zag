@@ -28,22 +28,22 @@ watchEffect(
 <template>
   <main>
     <div class="exclude">
-      <div ref="toolbarRef" role="toolbar" aria-label="Sort results" data-testid="toolbar" class="sort-bar">
+      <div ref="toolbarRef" role="toolbar" aria-label="Sort results" class="sort-bar">
         <button v-for="option in sortOptions" :key="option" :aria-pressed="sort === option" @click="sort = option">
           {{ option }}
         </button>
       </div>
 
-      <button ref="triggerRef" data-testid="trigger" @click="open = !open">Filters</button>
+      <button ref="triggerRef" @click="open = !open">Filters</button>
 
-      <div ref="panelRef" :hidden="!open" role="dialog" aria-label="Filters" data-testid="panel" class="panel">
+      <div ref="panelRef" :hidden="!open" role="dialog" aria-label="Filters" class="panel">
         <strong>Filter running shoes</strong>
         <label><input type="checkbox" /> In stock</label>
         <label><input type="checkbox" /> Free delivery</label>
       </div>
 
-      <p role="status" data-testid="status" class="status">Sorted by {{ sort }}</p>
-      <p data-testid="outside">Showing 24 results. Click here to close the filters.</p>
+      <p role="status" class="status">Sorted by {{ sort }}</p>
+      <p>Showing 24 results. Click here to close the filters.</p>
     </div>
   </main>
 </template>

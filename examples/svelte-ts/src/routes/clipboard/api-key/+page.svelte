@@ -49,7 +49,7 @@
         >
           Regenerate
         </button>
-        <span data-testid="status">{status}</span>
+        <span>{status}</span>
       </div>
     </div>
   </div>

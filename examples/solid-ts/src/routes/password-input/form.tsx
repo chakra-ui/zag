@@ -52,9 +52,7 @@ export default function Page() {
             </div>
           </form>
           <Show when={output()}>
-            <pre class="output" data-testid="form-output">
-              {output()}
-            </pre>
+            <pre class="output">{output()}</pre>
           </Show>
         </div>
       </main>

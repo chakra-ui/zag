@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trackDismissableElement } from "@zag-js/dismissable"
 
-const props = defineProps<{ id: string; label: string; open: boolean }>()
+const props = defineProps<{ label: string; open: boolean }>()
 const emit = defineEmits<{ dismiss: [] }>()
 
 const panelRef = ref<HTMLDivElement | null>(null)
@@ -24,15 +24,7 @@ watchEffect(
 </script>
 
 <template>
-  <div
-    ref="panelRef"
-    data-peer
-    :hidden="!props.open"
-    role="dialog"
-    :aria-label="props.label"
-    :data-testid="`panel-${props.id}`"
-    class="panel"
-  >
+  <div ref="panelRef" data-peer :hidden="!props.open" role="dialog" :aria-label="props.label" class="panel">
     <slot />
   </div>
 </template>

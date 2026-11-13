@@ -43,7 +43,6 @@ export default function Page() {
                     <strong>{snippet.title}</strong>
                     <button
                       type="button"
-                      data-testid={`copy-${snippet.id}`}
                       data-copied={copied ? "" : undefined}
                       aria-label={`${copied ? "Copied!" : "Copy"} ${snippet.title} snippet`}
                       onClick={() => {
@@ -56,7 +55,7 @@ export default function Page() {
                       <span>{copied ? "Copied!" : "Copy"}</span>
                     </button>
                   </div>
-                  <pre data-testid={`code-${snippet.id}`}>{snippet.code}</pre>
+                  <pre>{snippet.code}</pre>
                 </div>
               )
             })}

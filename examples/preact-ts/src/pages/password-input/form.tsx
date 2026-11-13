@@ -47,11 +47,7 @@ export default function Page() {
               <button type="reset">Reset</button>
             </div>
           </form>
-          {output && (
-            <pre className="output" data-testid="form-output">
-              {output}
-            </pre>
-          )}
+          {output && <pre className="output">{output}</pre>}
         </div>
       </main>
 

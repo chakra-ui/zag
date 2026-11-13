@@ -25,17 +25,12 @@ const section = computed(() => settingsSections.find((s) => s.id === api.value.v
         <div v-bind="api.getRootProps()">
           <span v-bind="api.getLabelProps()">Settings section</span>
           <div v-bind="api.getIndicatorProps()" />
-          <label
-            v-for="opt in settingsSections"
-            :key="opt.id"
-            :data-testid="`radio-${opt.id}`"
-            v-bind="api.getItemProps({ value: opt.id })"
-          >
+          <label v-for="opt in settingsSections" :key="opt.id" v-bind="api.getItemProps({ value: opt.id })">
             <span v-bind="api.getItemTextProps({ value: opt.id })">{{ opt.label }}</span>
             <input v-bind="api.getItemHiddenInputProps({ value: opt.id })" />
           </label>
         </div>
-        <div class="panel" role="region" :aria-label="section.label" data-testid="panel">
+        <div class="panel" role="region" :aria-label="section.label">
           <p class="title">{{ section.label }}</p>
           <p class="description">{{ section.description }}</p>
         </div>

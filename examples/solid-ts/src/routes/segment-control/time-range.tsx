@@ -33,19 +33,17 @@ export default function Page() {
             <div {...api().getIndicatorProps()} />
             <For each={timeRanges}>
               {(opt) => (
-                <label data-testid={`radio-${opt.id}`} {...api().getItemProps({ value: opt.id })}>
+                <label {...api().getItemProps({ value: opt.id })}>
                   <span {...api().getItemTextProps({ value: opt.id })}>{opt.label}</span>
                   <input {...api().getItemHiddenInputProps({ value: opt.id })} />
                 </label>
               )}
             </For>
           </div>
-          <div class="chart" data-testid="chart">
-            <For each={range().bars}>
-              {(bar) => <div class="bar" data-testid="bar" style={{ height: `${(bar / max()) * 100}%` }} />}
-            </For>
+          <div class="chart">
+            <For each={range().bars}>{(bar) => <div class="bar" style={{ height: `${(bar / max()) * 100}%` }} />}</For>
           </div>
-          <p class="caption" data-testid="caption" role="status">
+          <p class="caption" role="status">
             {range().caption}
           </p>
           <div class="actions">

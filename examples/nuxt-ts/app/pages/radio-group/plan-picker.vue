@@ -33,7 +33,6 @@ const selected = computed(() => planOptions.find((plan) => plan.id === value.val
         <label
           v-for="opt in planOptions"
           :key="opt.id"
-          :data-testid="`radio-${opt.id}`"
           v-bind="api.getItemProps({ value: opt.id, disabled: opt.disabled })"
         >
           <div v-bind="api.getItemControlProps({ value: opt.id, disabled: opt.disabled })" />
@@ -45,7 +44,7 @@ const selected = computed(() => planOptions.find((plan) => plan.id === value.val
           <input v-bind="api.getItemHiddenInputProps({ value: opt.id, disabled: opt.disabled })" />
         </label>
       </div>
-      <p class="selected" data-testid="selected-plan" role="status">Selected plan: {{ selected?.label ?? "None" }}</p>
+      <p class="selected" role="status">Selected plan: {{ selected?.label ?? "None" }}</p>
       <div class="actions">
         <button type="button" @click="value = 'team'">Switch to Team</button>
       </div>

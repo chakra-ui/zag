@@ -28,10 +28,7 @@ export default function Page() {
             <span {...api().getLabelProps()}>Plan</span>
             <For each={planOptions}>
               {(opt) => (
-                <label
-                  data-testid={`radio-${opt.id}`}
-                  {...api().getItemProps({ value: opt.id, disabled: opt.disabled })}
-                >
+                <label {...api().getItemProps({ value: opt.id, disabled: opt.disabled })}>
                   <div {...api().getItemControlProps({ value: opt.id, disabled: opt.disabled })} />
                   <span {...api().getItemTextProps({ value: opt.id, disabled: opt.disabled })}>
                     <span class="name">{opt.label}</span>
@@ -43,7 +40,7 @@ export default function Page() {
               )}
             </For>
           </div>
-          <p class="selected" data-testid="selected-plan" role="status">
+          <p class="selected" role="status">
             Selected plan: {selected()?.label ?? "None"}
           </p>
           <div class="actions">

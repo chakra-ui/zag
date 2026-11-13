@@ -28,7 +28,7 @@
     <div {...api.getRootProps()}>
       <span {...api.getLabelProps()}>Plan</span>
       {#each planOptions as opt (opt.id)}
-        <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id, disabled: opt.disabled })}>
+        <label {...api.getItemProps({ value: opt.id, disabled: opt.disabled })}>
           <div {...api.getItemControlProps({ value: opt.id, disabled: opt.disabled })}></div>
           <span {...api.getItemTextProps({ value: opt.id, disabled: opt.disabled })}>
             <span class="name">{opt.label}</span>
@@ -39,7 +39,7 @@
         </label>
       {/each}
     </div>
-    <p class="selected" data-testid="selected-plan" role="status">Selected plan: {selected?.label ?? "None"}</p>
+    <p class="selected" role="status">Selected plan: {selected?.label ?? "None"}</p>
     <div class="actions">
       <button type="button" onclick={() => (value = "team")}>Switch to Team</button>
     </div>

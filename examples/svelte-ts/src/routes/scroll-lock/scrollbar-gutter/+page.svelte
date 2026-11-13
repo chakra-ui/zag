@@ -12,9 +12,9 @@
 
 <main>
   <div class="scrollbar-gutter">
-    <div class="header" data-testid="header">Northwind Design</div>
+    <div class="header">Northwind Design</div>
     <p class="hint">Lock scrolling and watch the header keep its width.</p>
-    <button data-testid="toggle-lock" aria-pressed={locked} onclick={() => (locked = !locked)}>
+    <button aria-pressed={locked} onclick={() => (locked = !locked)}>
       {locked ? "Unlock scrolling" : "Lock scrolling"}
     </button>
   </div>

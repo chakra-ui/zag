@@ -32,18 +32,18 @@
       <span {...api.getLabelProps()}>Time range</span>
       <div {...api.getIndicatorProps()}></div>
       {#each timeRanges as opt (opt.id)}
-        <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
+        <label {...api.getItemProps({ value: opt.id })}>
           <span {...api.getItemTextProps({ value: opt.id })}>{opt.label}</span>
           <input {...api.getItemHiddenInputProps({ value: opt.id })} />
         </label>
       {/each}
     </div>
-    <div class="chart" data-testid="chart">
+    <div class="chart">
       {#each range.bars as bar, i (i)}
-        <div class="bar" data-testid="bar" style:height={`${(bar / max) * 100}%`}></div>
+        <div class="bar" style:height={`${(bar / max) * 100}%`}></div>
       {/each}
     </div>
-    <p class="caption" data-testid="caption" role="status">{range.caption}</p>
+    <p class="caption" role="status">{range.caption}</p>
     <div class="actions">
       <button type="button" onclick={() => (value = "year")}>Jump to Year</button>
     </div>

@@ -31,7 +31,7 @@ const rows = [
     <div class="switch-settings">
       <p class="hint">Turn on Low power mode to pause the other two.</p>
       <div class="rows">
-        <label v-for="row in rows" :key="row.testId" :data-testid="row.testId" v-bind="row.api.value.getRootProps()">
+        <label v-for="row in rows" :key="row.testId" v-bind="row.api.value.getRootProps()">
           <input v-bind="row.api.value.getHiddenInputProps()" />
           <span v-bind="row.api.value.getControlProps()">
             <span v-bind="row.api.value.getThumbProps()" />

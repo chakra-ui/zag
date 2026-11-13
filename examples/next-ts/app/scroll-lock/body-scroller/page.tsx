@@ -16,19 +16,15 @@ export default function Page() {
     <main>
       <div className="body-scroller">
         <p className="hint">Open the filters, then try scrolling the page behind them.</p>
-        <button data-testid="open-panel" onClick={() => setOpen(true)}>
-          Open filters
-        </button>
+        <button onClick={() => setOpen(true)}>Open filters</button>
 
         {open && (
           <>
             <div className="backdrop" />
-            <div className="panel" role="dialog" aria-modal="true" aria-label="Filters" data-testid="panel">
+            <div className="panel" role="dialog" aria-modal="true" aria-label="Filters">
               <span className="panel-title">Filters</span>
               <p>Narrow the results by price, brand and rating.</p>
-              <button data-testid="close-panel" onClick={() => setOpen(false)}>
-                Show 24 results
-              </button>
+              <button onClick={() => setOpen(false)}>Show 24 results</button>
             </div>
           </>
         )}

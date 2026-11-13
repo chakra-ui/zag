@@ -15,11 +15,9 @@ export default function Page() {
   return (
     <main>
       <div className="scrollbar-gutter">
-        <div className="header" data-testid="header">
-          Northwind Design
-        </div>
+        <div className="header">Northwind Design</div>
         <p className="hint">Lock scrolling and watch the header keep its width.</p>
-        <button data-testid="toggle-lock" aria-pressed={locked} onClick={() => setLocked((v) => !v)}>
+        <button aria-pressed={locked} onClick={() => setLocked((v) => !v)}>
           {locked ? "Unlock scrolling" : "Lock scrolling"}
         </button>
       </div>

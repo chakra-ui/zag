@@ -29,14 +29,14 @@ export default function Page() {
               <div {...api().getIndicatorProps()} />
               <For each={settingsSections}>
                 {(opt) => (
-                  <label data-testid={`radio-${opt.id}`} {...api().getItemProps({ value: opt.id })}>
+                  <label {...api().getItemProps({ value: opt.id })}>
                     <span {...api().getItemTextProps({ value: opt.id })}>{opt.label}</span>
                     <input {...api().getItemHiddenInputProps({ value: opt.id })} />
                   </label>
                 )}
               </For>
             </div>
-            <div class="panel" role="region" aria-label={section().label} data-testid="panel">
+            <div class="panel" role="region" aria-label={section().label}>
               <p class="title">{section().label}</p>
               <p class="description">{section().description}</p>
             </div>

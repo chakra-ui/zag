@@ -46,7 +46,7 @@ const regenerate = () => {
         </div>
         <div class="actions">
           <button type="button" @click="regenerate">Regenerate</button>
-          <span data-testid="status">{{ status }}</span>
+          <span>{{ status }}</span>
         </div>
       </div>
     </div>

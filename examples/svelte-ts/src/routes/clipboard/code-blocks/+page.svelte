@@ -41,7 +41,6 @@
             <strong>{snippet.title}</strong>
             <button
               type="button"
-              data-testid="copy-{snippet.id}"
               data-copied={copied ? "" : undefined}
               aria-label="{copied ? 'Copied!' : 'Copy'} {snippet.title} snippet"
               onclick={() => {
@@ -58,7 +57,7 @@
               <span>{copied ? "Copied!" : "Copy"}</span>
             </button>
           </div>
-          <pre data-testid="code-{snippet.id}">{snippet.code}</pre>
+          <pre>{snippet.code}</pre>
         </div>
       {/each}
     </div>
