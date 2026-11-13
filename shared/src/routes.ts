@@ -111,6 +111,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "body-scroller", title: "Body Scroll Container" },
       { slug: "nested", title: "Nested" },
       { slug: "scrollbar-gutter", title: "Scrollbar Gutter" },
+      { slug: "scroll-position", title: "Scroll Position" },
     ],
   },
   {

@@ -1,6 +1,7 @@
 .body-scroller,
 .nested,
-.scrollbar-gutter {
+.scrollbar-gutter,
+.scroll-position {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -11,7 +12,8 @@
 
 .body-scroller .hint,
 .nested .hint,
-.scrollbar-gutter .hint {
+.scrollbar-gutter .hint,
+.scroll-position .hint {
   margin: 0;
   font-size: var(--z-text-md);
   color: var(--z-fg-muted);
@@ -29,11 +31,11 @@ body:has(.pg):has(.body-scroller) {
 }
 
 /* <html> is the scroller, with a classic scrollbar that takes layout space */
-html:has(.pg):is(:has(.nested), :has(.scrollbar-gutter)) {
+html:has(.pg):is(:has(.nested), :has(.scrollbar-gutter), :has(.scroll-position)) {
   overflow: auto;
 }
 
-body:has(.pg):is(:has(.nested), :has(.scrollbar-gutter)) {
+body:has(.pg):is(:has(.nested), :has(.scrollbar-gutter), :has(.scroll-position)) {
   overflow: visible;
 }
 
@@ -42,7 +44,7 @@ html:has(.pg):has(.scrollbar-gutter) {
 }
 
 /* Tall tail after the canvas, so the document overflows its viewport */
-body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::after {
+body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter), :has(.scroll-position))::after {
   content: "";
   display: block;
   height: 1600px;
@@ -52,7 +54,8 @@ body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::
 /* Panels */
 
 .body-scroller .backdrop,
-.nested .backdrop {
+.nested .backdrop,
+.scroll-position .backdrop {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -60,7 +63,8 @@ body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::
 }
 
 .body-scroller .panel,
-.nested .panel {
+.nested .panel,
+.scroll-position .panel {
   position: fixed;
   z-index: 2;
   display: flex;
@@ -74,7 +78,8 @@ body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::
 }
 
 .body-scroller .panel,
-.nested .sheet {
+.nested .sheet,
+.scroll-position .panel {
   top: var(--pg-topbar-h);
   bottom: 0;
   left: 0;
@@ -94,12 +99,14 @@ body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::
 }
 
 .body-scroller .panel p,
-.nested .panel p {
+.nested .panel p,
+.scroll-position .panel p {
   margin: 0;
 }
 
 .body-scroller .panel-title,
-.nested .panel-title {
+.nested .panel-title,
+.scroll-position .panel-title {
   font-weight: 600;
 }
 
@@ -121,4 +128,31 @@ body:has(.pg):is(:has(.body-scroller), :has(.nested), :has(.scrollbar-gutter))::
   color: var(--z-fg-inverted);
   border-radius: var(--z-radius);
   font-weight: 600;
+}
+
+/* Hides on scroll down, like a headroom nav: a lock that moves the page would hide it */
+
+.scroll-position .nav {
+  position: fixed;
+  top: var(--pg-topbar-h);
+  inset-inline: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--z-bg-inverted);
+  color: var(--z-fg-inverted);
+  font-weight: 600;
+  transition: translate 200ms;
+
+  &[data-hidden] {
+    translate: 0 -100%;
+  }
+}
+
+.scroll-position .list {
+  max-height: 16rem;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
