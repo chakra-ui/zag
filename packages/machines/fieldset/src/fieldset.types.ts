@@ -70,7 +70,7 @@ export interface ResolvedElementIds {
   helperText: string
 }
 
-export interface FieldsetState {
+export interface RootState {
   /**
    * Whether the fieldset is disabled (including inherited ancestor fieldset state).
    */
@@ -79,19 +79,6 @@ export interface FieldsetState {
    * Whether the fieldset is invalid.
    */
   invalid: boolean
-}
-
-export interface RootState extends FieldsetState {}
-
-export interface LegendState extends FieldsetState {}
-
-export interface HelperTextState extends FieldsetState {}
-
-export interface ErrorTextState extends FieldsetState {
-  /**
-   * Whether the error text is hidden.
-   */
-  hidden: boolean
 }
 
 export interface FieldsetApi<T extends PropTypes = PropTypes> {
@@ -112,19 +99,7 @@ export interface FieldsetApi<T extends PropTypes = PropTypes> {
    */
   getRootState: () => RootState
   getRootProps: () => T["element"]
-  /**
-   * Returns the state of the legend.
-   */
-  getLegendState: () => LegendState
   getLegendProps: () => T["element"]
-  /**
-   * Returns the state of the helper text.
-   */
-  getHelperTextState: () => HelperTextState
   getHelperTextProps: () => T["element"]
-  /**
-   * Returns the state of the error text.
-   */
-  getErrorTextState: () => ErrorTextState
   getErrorTextProps: () => T["element"]
 }
