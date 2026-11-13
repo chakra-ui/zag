@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
-    "@tanstack/react-virtual": "3.14.14",
+    "@tanstack/react-virtual": "3.14.26",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -69,9 +69,9 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "1.66.0",
-    "match-sorter": "8.3.0",
-    "next": "16.4.3",
+    "lucide-react": "1.72.0",
+    "match-sorter": "8.3.1",
+    "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-spinners": "0.17.1"
