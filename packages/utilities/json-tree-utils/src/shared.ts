@@ -28,3 +28,18 @@ export const isObj = (v: unknown): v is Record<string, unknown> =>
   v != null && typeof v === "object" && !Array.isArray(v)
 
 export const typeOf = (value: any): string => Object.prototype.toString.call(value)
+
+export function getNonEnumerableKeys(value: object, enumerableKeys: string[]): string[] {
+  const enumerableSet = new Set(enumerableKeys)
+  return Object.getOwnPropertyNames(value).filter((key) => !enumerableSet.has(key))
+}
+
+export function take<T>(iterable: Iterable<T>, count: number): T[] {
+  const result: T[] = []
+  if (count <= 0) return result
+  for (const value of iterable) {
+    result.push(value)
+    if (result.length >= count) break
+  }
+  return result
+}
