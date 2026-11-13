@@ -1,5 +1,26 @@
 # @zag-js/date-input
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3433](https://github.com/chakra-ui/zag/pull/3433)
+  [`94d6072`](https://github.com/chakra-ui/zag/commit/94d6072e5739ac5cf662a82386245c6119e5ba08) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - - Add `maxGranularity` to set the largest displayed unit, e.g.
+  `"hour"` for a time-only input.
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/date-utils@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/live-region@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

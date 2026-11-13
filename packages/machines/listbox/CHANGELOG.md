@@ -1,5 +1,71 @@
 # @zag-js/listbox
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a filter input and an empty state to menu and
+  select with `popupType: "dialog"`. You filter the items; the input keeps focus while the arrow keys move the
+  highlight.
+
+  ```tsx
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
+    <div {...api.getListProps()}>{/* items */}</div>
+  </div>
+  ```
+
+  - Add `getEmptyProps()` to combobox and listbox. It's a polite live region, so keep it rendered and toggle its text.
+
+  - Fix a lazily mounted popup inside nested dialogs rendering behind the dialog.
+
+  **Breaking:** Set the highlight with `setHighlightedValue` in every list component, and pass `null` to clear it.
+
+  ```diff
+  - api.setHighlightValue("react") // select, combobox, cascade select
+  - api.highlightValue("react") // listbox
+  + api.setHighlightedValue("react")
+
+  - api.clearHighlightValue()
+  + api.setHighlightedValue(null)
+  ```
+
+  **Breaking (menu):** Replace `composite` with `popupType`, matching select and combobox.
+
+  ```diff
+  - menu.machine({ composite: false })
+  + menu.machine({ popupType: "dialog" })
+  ```
+
+  - **Menu:** Add `autoHighlight` to highlight the first item as the query changes. A submenu can have its own input;
+    `Escape`, `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's. `onHighlightChange` reports a
+    `reason`.
+
+  - **Select:** `Home` and `End` jump to the first or last item when the input is empty, and `alignItemWithTrigger`
+    keeps the selected item of a long list next to the trigger.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`e96fd9e`](https://github.com/chakra-ui/zag/commit/e96fd9e523b89adae9d033dabc2256e978f02e32) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Highlight the first selected item when the listbox
+  receives focus.
+
+  - Move through a horizontal listbox with ArrowLeft and ArrowRight only.
+
+- Updated dependencies [[`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/collection@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

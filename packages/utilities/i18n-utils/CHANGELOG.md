@@ -1,5 +1,12 @@
 # @zag-js/i18n-utils
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

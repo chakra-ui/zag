@@ -1,5 +1,29 @@
 # @zag-js/toolbar
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`9b61799`](https://github.com/chakra-ui/zag/commit/9b617992522cfd0f6a1474442db2295a8a4fbae7) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a disabled toolbar trapping focus on its root.
+
+  - Fix clicking an empty part of the toolbar moving focus onto the root.
+
+  - Fix the focused item not scrolling into view when the toolbar overflows.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

@@ -1,13 +1,7 @@
 ---
-"@zag-js/avatar": major
+"@zag-js/avatar": patch
 ---
 
-- Added `api.status` (`loading`, `loaded` or `error`), and `onStatusChange` now emits `loading`.
-- **Breaking:** Removed `api.setSrc`. Update `src` on the image you render instead; the machine reacts the same way.
+- Fix the status staying "loaded" when the image remounts with a new `src`, which left the avatar blank.
 
-  ```diff
-  - api.setSrc(nextSrc)
-  + setSrc(nextSrc) // your own state, passed to <img src={src} />
-  ```
-
-  `api.setLoaded()` and `api.setError()` are unchanged.
+- Fix the fallback not showing when an image wrapped in another element, such as `<picture>`, is removed.

@@ -1,5 +1,52 @@
 # @zag-js/accordion
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `hiddenUntilFound`, so closed content stays
+  searchable with the browser's find-in-page. A match opens the item. A `[hidden] { display: none }` reset blocks this,
+  so exclude it:
+
+  ```css
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+  ```
+
+  - **Breaking:** Remove arrow, `Home` and `End` navigation between triggers, and the `loopFocus` prop, following the
+    WAI-ARIA accordion pattern. Triggers are reached with `Tab`. Remove `loopFocus` from your props.
+
+  - **Breaking:** Default `collapsible` to `true`. Set it to `false` to keep one item open.
+
+    ```diff
+    - accordion.machine({})
+    + accordion.machine({ collapsible: false })
+    ```
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onValueChange` details, such as
+  `trigger-click`, `keyboard`, `drag`, `item-select` or `script`. Each component exports its `ValueChangeReason` type.
+  Slider also adds it to `onValueChangeEnd`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

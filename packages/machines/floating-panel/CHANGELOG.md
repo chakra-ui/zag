@@ -1,5 +1,66 @@
 # @zag-js/floating-panel
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Zag no longer sets a `z-index` on overlays. Set it in
+  CSS, using `--layer-index` for the overlay's place in the stack.
+
+  - Fix a `z-index` set on the positioner in CSS being overridden.
+
+  - Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
+
+  **Breaking:** Move the `z-index` to the positioner (or the backdrop) and add `--layer-index`.
+
+  ```diff
+  - [data-popover-content] {
+  + [data-popover-positioner] {
+  -   z-index: 1400;
+  +   z-index: calc(1400 + var(--layer-index));
+    }
+  ```
+
+  - Popover, menu, select, combobox, hover card, tooltip, date picker, color picker and cascade select no longer copy
+    the content's `z-index` onto the positioner or set `--z-index`.
+
+  - Dialog and drawer no longer set `--z-index`. Use `--layer-index` on the backdrop and positioner.
+
+  - The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the
+    front.
+
+  - The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+  - The toast group no longer sets an inline `z-index`. Set it on `[data-toast-group]` in CSS.
+
+  - Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onOpenChange` details, such as
+  `trigger-click`, `escape-key`, `interact-outside`, `item-select` or `script`. Each component exports its
+  `OpenChangeReason` type.
+
+  - Add an optional `reason` to `api.setOpen(open, reason)`, defaulting to `script`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/rect-utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

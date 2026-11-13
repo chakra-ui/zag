@@ -1,13 +1,7 @@
 ---
-"@zag-js/tree-view": major
+"@zag-js/tree-view": patch
 ---
 
-- A branch with no descendants (e.g. an async branch that hasn't loaded) is no longer reported as checked.
-- **Breaking:** Renamed `getCellProps` to `getNodeCellProps`, matching the other node-scoped APIs.
+- Fix clicking a button or link inside a node, such as an actions menu trigger, selecting the node.
 
-### Migration
-
-```diff
-- api.getCellProps(nodeProps)
-+ api.getNodeCellProps(nodeProps)
-```
+- Fix the tree having no tabbable row when the focused node is removed or hidden in a collapsed branch.

@@ -1,5 +1,127 @@
 # @zag-js/tabs
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`1e1f6da`](https://github.com/chakra-ui/zag/commit/1e1f6da67fb6fb4682a9982a9243eec8f06fb7ae) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Spell out "Prev" as "Previous" across the
+  API.
+
+  The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps, including
+  its prop getter, data attribute, `ids` key and translation key.
+
+  ```diff
+  - <button {...api.getPrevTriggerProps()} />
+  + <button {...api.getPreviousTriggerProps()} />
+
+  - [data-carousel-prev-trigger] { ... }
+  + [data-carousel-previous-trigger] { ... }
+
+    carousel.machine({
+  -   ids: { prevTrigger: "prev" },
+  -   translations: { prevTrigger: "Previous slide" },
+  +   ids: { previousTrigger: "prev" },
+  +   translations: { previousTrigger: "Previous slide" },
+    })
+  ```
+
+  Pagination and scheduler rename `translations.prevTriggerLabel` to `translations.previousTriggerLabel`.
+
+  | Component              | Before                          | After                                   |
+  | ---------------------- | ------------------------------- | --------------------------------------- |
+  | Carousel               | `scrollPrev()`, `canScrollPrev` | `scrollPrevious()`, `canScrollPrevious` |
+  | Date picker, Scheduler | `goToPrev()`                    | `goToPrevious()`                        |
+  | Pagination             | `goToPrevPage()`                | `goToPreviousPage()`                    |
+  | Steps                  | `goToPrevStep()`, `hasPrevStep` | `goToPreviousStep()`, `hasPreviousStep` |
+  | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
+  | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
+
+  The tour's `"prev"` action is now `"previous"`, and its trigger renders `data-type="previous"`.
+
+  ```diff
+  - actions: [{ label: "Prev", action: "prev" }],
+  + actions: [{ label: "Previous", action: "previous" }],
+  - action: (actions) => actions.prev()
+  + action: (actions) => actions.previous()
+  - translations: { prevStep: "Previous step" }
+  + translations: { previousStep: "Previous step" }
+  ```
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Remove the indicator's inline transition
+  and the `--transition-*` CSS variables. Add the transition in CSS, and turn it off for `data-instant`, which is set
+  when the indicator moves for a reason other than a value change (first render, resize, `dir` or `orientation` change).
+
+  ```diff
+    [data-tabs-indicator] {
+  -   --transition-duration: 0.2s;
+  -   --transition-timing-function: ease-in-out;
+  +   transition:
+  +     left 0.2s ease-in-out,
+  +     width 0.2s ease-in-out;
+    }
+  +
+  + [data-tabs-indicator][data-instant] {
+  +   transition: none;
+  + }
+  ```
+
+  - **Breaking:** Replace `data-ssr` with `data-indicator-pending`. It's set during server rendering and while the
+    indicator hasn't been measured, such as inside a hidden panel.
+
+    ```diff
+    - [data-tabs-trigger][data-selected][data-ssr] { ... }
+    + [data-tabs-trigger][data-selected][data-indicator-pending] { ... }
+    ```
+
+  - Fix the indicator animating on resize after a transition never finished.
+
+  - Add `data-activation-direction` to every part, `api.activationDirection`, and `activationDirection` in
+    `onValueChange`, for animating panels in the direction of the selected tab.
+
+  - Add `getIndicatorState`, and `orientation` and `activationDirection` to `getContentState`.
+
+  - Type `value` in `onValueChange` and `focusedValue` in `onFocusChange` as nullable. They're `null` after deselecting,
+    and when focus leaves the list.
+
+  - Fix the indicator not following the selected tab when tabs are reordered, added, removed or scrolled.
+
+  - Fix `setIndicatorRect` not moving the indicator.
+
+  - Fix `selectNext` and `selectPrevious` not selecting in manual mode.
+
+  - Fix arrow keys pressed with a modifier switching tabs, and Home and End moving DOM focus with `virtualFocus`.
+
+  - Fix the tab list losing its tab stop when no tab is selected or the selected tab is disabled.
+
+  - Fix Home, End and `setValue` deselecting the selected tab when `deselectable` is set.
+
+  - Fix the tab list staying focused when focus moves to another tab list.
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onValueChange` details, such as
+  `trigger-click`, `keyboard`, `drag`, `item-select` or `script`. Each component exports its `ValueChangeReason` type.
+  Slider also adds it to `onValueChangeEnd`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

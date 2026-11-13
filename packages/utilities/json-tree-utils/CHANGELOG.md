@@ -1,5 +1,15 @@
 # @zag-js/json-tree-utils
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`dfb6a4b`](https://github.com/chakra-ui/zag/commit/dfb6a4b710ee77c467f8c45bd332c17c79551e1e) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Speed up tree conversion for large objects (~20×) and
+  arrays (~50×).
+  - Improve collection previews by avoiding unnecessary copies.
+
 ## 2.0.0-next.3
 
 ## 2.0.0-next.2
