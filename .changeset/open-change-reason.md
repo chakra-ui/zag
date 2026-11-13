@@ -13,7 +13,7 @@
 "@zag-js/floating-panel": minor
 ---
 
-- Add `reason` to `onOpenChange` details, such as `trigger-click`, `escape-key`, `interact-outside`, `focus-outside`,
-  `item-select` or `script`. Each component exports its `OpenChangeReason` type.
-- Add an optional `reason` to `api.setOpen(open, reason)`. It defaults to `script`.
-- Add `getDismissReason` to `@zag-js/dismissable`.
+- Add `reason` to `onOpenChange` details, such as `trigger-click`, `escape-key`, `interact-outside`, `item-select` or
+  `script`. Each component exports its `OpenChangeReason` type.
+
+- Add an optional `reason` to `api.setOpen(open, reason)`, defaulting to `script`.

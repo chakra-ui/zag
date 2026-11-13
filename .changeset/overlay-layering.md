@@ -1,44 +1,44 @@
 ---
-"@zag-js/popper": minor
-"@zag-js/dismissable": minor
-"@zag-js/popover": minor
-"@zag-js/menu": minor
-"@zag-js/select": minor
-"@zag-js/combobox": minor
-"@zag-js/hover-card": minor
-"@zag-js/tooltip": minor
-"@zag-js/date-picker": minor
-"@zag-js/color-picker": minor
-"@zag-js/cascade-select": minor
-"@zag-js/dialog": minor
-"@zag-js/drawer": minor
-"@zag-js/floating-panel": minor
-"@zag-js/tour": minor
+"@zag-js/popper": major
+"@zag-js/dismissable": major
+"@zag-js/popover": major
+"@zag-js/menu": major
+"@zag-js/select": major
+"@zag-js/combobox": major
+"@zag-js/hover-card": major
+"@zag-js/tooltip": major
+"@zag-js/date-picker": major
+"@zag-js/color-picker": major
+"@zag-js/cascade-select": major
+"@zag-js/dialog": major
+"@zag-js/drawer": major
+"@zag-js/floating-panel": major
+"@zag-js/tour": major
 ---
 
-Zag no longer sets a `z-index` on overlays. Set it in CSS on the positioner, or the backdrop, with `--layer-index`.
+Zag no longer sets a `z-index` on overlays. Set it in CSS, using `--layer-index` for the overlay's place in the stack.
 
 - Fix a `z-index` set on the positioner in CSS being overridden.
-- Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
-- Add `--layer-index` to the floating panel positioner, with the panel's place in the stack.
 
-**Breaking:**
+- Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
+
+**Breaking:** Move the `z-index` to the positioner (or the backdrop) and add `--layer-index`.
+
+```diff
+- [data-popover-content] {
++ [data-popover-positioner] {
+-   z-index: 1400;
++   z-index: calc(1400 + var(--layer-index));
+  }
+```
 
 - Popover, menu, select, combobox, hover card, tooltip, date picker, color picker and cascade select no longer copy the
-  content's `z-index` onto the positioner, and the positioner no longer gets `--z-index`. Move the `z-index` from the
-  content to the positioner.
+  content's `z-index` onto the positioner or set `--z-index`.
 
-  ```diff
-  - [data-popover-content] {
-  + [data-popover-positioner] {
-  -   z-index: 1400;
-  +   z-index: calc(1400 + var(--layer-index));
-    }
-  ```
+- Dialog and drawer no longer set `--z-index`. Use `--layer-index` on the backdrop and positioner.
 
-- Dialog and drawer no longer set `--z-index` on the backdrop and positioner. Use `--layer-index`.
-- The floating panel no longer sets a `z-index` from its panel stack. Add `z-index: calc(<base> + var(--layer-index))`
-  to the positioner to bring the focused panel to the front.
-- The tour no longer copies the content's `z-index` onto the positioner of dialog steps. Style the positioner with
-  `--tour-layer`.
-- Removed the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.
+- The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the front.
+
+- The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+- Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.

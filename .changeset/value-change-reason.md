@@ -7,6 +7,5 @@
 "@zag-js/navigation-menu": minor
 ---
 
-- Add `reason` to `onValueChange` details, such as `trigger-click`, `keyboard`, `drag`, `track-click`, `item-select`,
-  `clear-trigger` or `script`. Each component exports its `ValueChangeReason` type.
-- Slider: add `reason` to `onValueChangeEnd` details.
+- Add `reason` to `onValueChange` details, such as `trigger-click`, `keyboard`, `drag`, `item-select` or `script`. Each
+  component exports its `ValueChangeReason` type. Slider also adds it to `onValueChangeEnd`.

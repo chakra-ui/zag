@@ -33,4 +33,4 @@
 "@zag-js/tree-view": patch
 ---
 
-- Cancel pending focus, scroll and sync frames when the machine stops, and let a newer request replace a pending one.
+- Fix focus, scroll and sync work scheduled for the next frame running after the component unmounts.
