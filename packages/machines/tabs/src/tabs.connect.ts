@@ -18,6 +18,7 @@ import type {
   ContentProps,
   ContentState,
   IndicatorState,
+  RootState,
   TabsApi,
   TabsSchema,
   TriggerProps,
@@ -48,6 +49,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     send({ type: "FOCUS.MOVE", to, src: "keyboard" })
   }
 
+  function getRootState(): RootState {
+    return { focused, orientation: prop("orientation"), activationDirection }
+  }
+
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
       selected: context.get("value") === props.value,
@@ -57,21 +62,15 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
   }
 
   function getContentState(props: ContentProps): ContentState {
-    return {
-      selected: context.get("value") === props.value,
-      orientation: prop("orientation"),
-      activationDirection,
-    }
+    return { ...getRootState(), selected: context.get("value") === props.value }
   }
 
   function getIndicatorState(): IndicatorState {
     const rect = context.get("indicatorRect")
     return {
-      rect,
+      ...getRootState(),
       visible: !isRectEmpty(rect),
       instant: context.get("indicatorInstant"),
-      orientation: prop("orientation"),
-      activationDirection,
     }
   }
 
@@ -107,25 +106,28 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
       dom.getTriggerEl(scope, value)?.focus()
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-orientation": prop("orientation"),
-        "data-focus": dataAttr(focused),
-        "data-activation-direction": activationDirection,
+        "data-orientation": rootState.orientation,
+        "data-focus": dataAttr(rootState.focused),
+        "data-activation-direction": rootState.activationDirection,
         dir: prop("dir"),
       })
     },
 
     getListProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.list.attrs(scope.id),
         role: "tablist",
         dir: prop("dir"),
-        "data-focus": dataAttr(focused),
-        "aria-orientation": prop("orientation"),
-        "data-orientation": prop("orientation"),
-        "data-activation-direction": activationDirection,
+        "data-focus": dataAttr(rootState.focused),
+        "aria-orientation": rootState.orientation,
+        "data-orientation": rootState.orientation,
+        "data-activation-direction": rootState.activationDirection,
         "aria-label": translations?.listLabel,
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -242,6 +244,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     getIndicatorState,
     getIndicatorProps() {
       const indicatorState = getIndicatorState()
+      const rect = context.get("indicatorRect")
 
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
@@ -251,10 +254,10 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "data-activation-direction": indicatorState.activationDirection,
         hidden: !indicatorState.visible,
         style: {
-          "--left": toPx(indicatorState.rect?.x),
-          "--top": toPx(indicatorState.rect?.y),
-          "--width": toPx(indicatorState.rect?.width),
-          "--height": toPx(indicatorState.rect?.height),
+          "--left": toPx(rect?.x),
+          "--top": toPx(rect?.y),
+          "--width": toPx(rect?.width),
+          "--height": toPx(rect?.height),
           position: "absolute",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },
