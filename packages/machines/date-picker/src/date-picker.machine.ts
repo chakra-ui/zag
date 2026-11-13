@@ -182,8 +182,10 @@ export const machine = createMachine<DatePickerSchema>({
           prop("onValueChange")?.({ value, valueAsString, view: context.get("view") })
         },
       })),
-      inputValue: bindable(() => ({
-        defaultValue: "",
+      inputValue: bindable<DatePickerSchema["context"]["inputValue"]>(() => ({
+        defaultValue: { index: 0, value: "" },
+        isEqual: (a, b) => a.index === b?.index && a.value === b?.value,
+        hash: (a) => `${a.index}:${a.value}`,
       })),
       activeIndex: bindable(() => ({
         defaultValue: 0,
@@ -254,7 +256,7 @@ export const machine = createMachine<DatePickerSchema>({
       action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
-    track([() => context.get("inputValue")], () => {
+    track([() => context.hash("inputValue")], () => {
       action(["syncInputValue"])
     })
 
@@ -932,7 +934,7 @@ export const machine = createMachine<DatePickerSchema>({
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = computed("valueAsString")
-        context.set("inputValue", valueAsString[activeIndex])
+        context.set("inputValue", { index: activeIndex, value: valueAsString[activeIndex] })
       },
       focusPreviousDay(params) {
         const { context } = params
@@ -1164,14 +1166,13 @@ export const machine = createMachine<DatePickerSchema>({
 
       setInputValue({ context, event }) {
         if (context.get("activeIndex") !== event.index) return
-        context.set("inputValue", event.value)
+        context.set("inputValue", { index: event.index, value: event.value })
       },
 
-      syncInputValue({ scope, context, event }) {
+      syncInputValue({ scope, context }) {
+        const { index, value } = context.get("inputValue")
         queueMicrotask(() => {
-          const inputEls = dom.getInputEls(scope)
-          const idx = event.index ?? context.get("activeIndex")
-          setElementValue(inputEls[idx], context.get("inputValue"))
+          setElementValue(dom.getInputEls(scope)[index], value)
         })
       },
 
@@ -1214,7 +1215,7 @@ export const machine = createMachine<DatePickerSchema>({
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
         const valueAsString = getValueAsString(adjustedValues, prop)
-        context.set("inputValue", valueAsString[event.index])
+        context.set("inputValue", { index: event.index, value: valueAsString[event.index] })
       },
 
       resetView({ context }) {
