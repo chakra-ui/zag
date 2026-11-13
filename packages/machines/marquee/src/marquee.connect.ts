@@ -3,7 +3,14 @@ import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./marquee.anatomy"
 import { dom } from "./marquee.dom"
-import type { ContentProps, ContentState, IntlTranslations, MarqueeApi, MarqueeService } from "./marquee.types"
+import type {
+  ContentProps,
+  ContentState,
+  IntlTranslations,
+  MarqueeApi,
+  MarqueeService,
+  RootState,
+} from "./marquee.types"
 import { getEdgePositionStyles, getMarqueeTranslate } from "./marquee.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
@@ -27,9 +34,12 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  function getRootState(): RootState {
+    return { paused, orientation }
+  }
+
   function getContentState(props: ContentProps): ContentState {
-    const { index } = props
-    return { index, clone: index > 0 }
+    return { ...getRootState(), clone: props.index > 0 }
   }
 
   // -----------------------------------------------------------------------------
@@ -59,8 +69,10 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
       send({ type: "RESTART" })
     },
 
+    getRootState,
     getRootProps() {
       const dir = prop("dir")
+      const rootState = getRootState()
 
       return normalize.element({
         ...parts.root.attrs(scope.id),
@@ -69,9 +81,9 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
         "aria-roledescription": "marquee",
         "aria-live": "off",
         "aria-label": translations.root,
-        "data-state": paused ? "paused" : "idle",
-        "data-orientation": orientation,
-        "data-paused": dataAttr(paused),
+        "data-state": rootState.paused ? "paused" : "idle",
+        "data-orientation": rootState.orientation,
+        "data-paused": dataAttr(rootState.paused),
         onMouseEnter: prop("pauseOnInteraction") ? () => send({ type: "PAUSE" }) : undefined,
         onMouseLeave: prop("pauseOnInteraction") ? () => send({ type: "RESUME" }) : undefined,
         onFocusCapture: prop("pauseOnInteraction")
@@ -92,7 +104,7 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
           : undefined,
         style: {
           display: "flex",
-          flexDirection: orientation === "vertical" ? "column" : "row",
+          flexDirection: rootState.orientation === "vertical" ? "column" : "row",
           position: "relative",
           // Essential for clipping scrolling content
           overflow: "hidden",
@@ -142,14 +154,15 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
 
     getContentState,
     getContentProps(props) {
+      const { index } = props
       const contentState = getContentState(props)
-      const { index, clone } = contentState
+      const { clone } = contentState
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope, index),
         dir: prop("dir"),
         "data-index": index,
-        "data-orientation": orientation,
+        "data-orientation": contentState.orientation,
         "data-side": side,
         "data-reverse": prop("reverse") ? "" : undefined,
         "data-clone": dataAttr(clone),
@@ -158,12 +171,12 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
         style: {
           // Essential layout for marquee content
           display: "flex",
-          flexDirection: orientation === "vertical" ? "column" : "row",
+          flexDirection: contentState.orientation === "vertical" ? "column" : "row",
           flexShrink: 0,
           // Force compositor layer to prevent flicker during animation reset
           backfaceVisibility: "hidden",
           WebkitBackfaceVisibility: "hidden",
-          willChange: paused ? "auto" : "transform",
+          willChange: contentState.paused ? "auto" : "transform",
           transform: "translateZ(0)",
           [isVertical ? "minWidth" : "minHeight"]: "auto",
           // Prevent subpixel rendering issues that cause flicker in Firefox
