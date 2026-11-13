@@ -113,8 +113,8 @@ test("context menu / should keep focus in the menu when it reopens before focus 
 
   // Close and reopen in the same task, before the deferred focus return runs
   await page.evaluate(() => {
-    const content = document.querySelector("[data-scope=menu][data-part=content]")!
-    const trigger = document.querySelector("[data-scope=menu][data-part=context-trigger]")!
+    const content = document.querySelector("[data-menu-content]")!
+    const trigger = document.querySelector("[data-menu-context-trigger]")!
     content.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }))
     trigger.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: -1 }))
   })
