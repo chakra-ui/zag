@@ -77,7 +77,7 @@
     "react-spinners": "0.17.1"
   },
   "devDependencies": {
-    "@types/node": "25.9.9",
+    "@types/node": "26.6.6",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "typescript": "6.0.3"

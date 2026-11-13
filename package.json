@@ -82,7 +82,7 @@
     "@playwright/test": "1.65.0",
     "@swc/core": "1.16.22",
     "@types/jsdom": "^30.0.0",
-    "@types/node": "25.9.9",
+    "@types/node": "26.6.6",
     "@types/signale": "1.4.7",
     "commitlint": "21.2.4",
     "cross-env": "^10.1.0",
