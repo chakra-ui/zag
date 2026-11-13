@@ -108,7 +108,6 @@ export function connect<T extends PropTypes>(
           isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
-          zIndex: "var(--z-index)",
         },
       })
     },
