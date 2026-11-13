@@ -1,5 +1,14 @@
 # @zag-js/utils
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3562](https://github.com/chakra-ui/zag/pull/3562)
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690) Thanks
+  [@tad-bit-better](https://github.com/tad-bit-better)! - - Fix stepping past `max` with a decimal `step` moving the
+  value down a step.
+
 ## 1.47.0
 
 No changes in this release.

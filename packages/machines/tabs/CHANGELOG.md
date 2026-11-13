@@ -1,5 +1,20 @@
 # @zag-js/tabs
 
+## 1.48.0
+
+### Patch Changes
+
+- [`0fbee3b`](https://github.com/chakra-ui/zag/commit/0fbee3b2e10e93774353e8b3779f6c5c29ef22ae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix Shift- and Alt-clicks on link triggers being prevented, so
+  they open a new window or download the link instead of selecting the tab.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

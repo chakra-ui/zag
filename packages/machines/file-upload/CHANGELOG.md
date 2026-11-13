@@ -1,5 +1,23 @@
 # @zag-js/file-upload
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3640](https://github.com/chakra-ui/zag/pull/3640)
+  [`1374e58`](https://github.com/chakra-ui/zag/commit/1374e584ed5fb4a7fafc36fd06d12d5ce25da107) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix the file upload staying in its dragging state when it
+  becomes disabled (or read-only) during a drag, which kept the trigger from opening the file picker.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/i18n-utils@1.48.0
+  - @zag-js/file-utils@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

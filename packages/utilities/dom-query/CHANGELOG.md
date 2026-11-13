@@ -1,5 +1,16 @@
 # @zag-js/dom-query
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3599](https://github.com/chakra-ui/zag/pull/3599)
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicks inside a same-origin iframe closing the popover, menu
+  or dialog that contains it.
+- Updated dependencies []:
+  - @zag-js/types@1.48.0
+
 ## 1.47.0
 
 ### Minor Changes
