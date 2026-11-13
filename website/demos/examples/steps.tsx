@@ -74,10 +74,7 @@ function View(props: ViewProps) {
             {props.content?.(item) ?? `${item.title} details`}
           </div>
         ))}
-        <div
-          className={styles.Content}
-          {...api.getContentProps({ value: steps.COMPLETE })}
-        >
+        <div className={styles.Content} {...api.getCompletedContentProps()}>
           All done. Your order is on its way.
         </div>
 
