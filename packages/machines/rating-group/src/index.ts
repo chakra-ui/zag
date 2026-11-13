@@ -7,11 +7,11 @@ export type {
   RatingGroupMachine as Machine,
   RatingGroupProps as Props,
   RatingGroupService as Service,
-  ControlState,
   ElementIds,
   HoverChangeDetails,
   IntlTranslations,
   ItemProps,
   ItemState,
+  RootState,
   ValueChangeDetails,
 } from "./rating-group.types"
