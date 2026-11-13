@@ -527,6 +527,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "tabs", title: "Tabs" },
       { slug: "custom-value", title: "Custom Value" },
       { slug: "controlled-input", title: "Controlled Input" },
+      { slug: "controlled-format", title: "Controlled Format" },
       { slug: "rehydrate", title: "Rehydrate" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "emoji-picker", title: "Emoji Picker" },

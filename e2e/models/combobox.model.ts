@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test"
+import { type CDPSession, expect, type Page } from "@playwright/test"
 import { a11y, isInViewport } from "../_utils"
 import { Model } from "./model"
 
@@ -15,8 +15,30 @@ export class ComboboxModel extends Model {
     return this.page.goto(url)
   }
 
+  private label: string | undefined
+
+  /** Target the combobox with this label, for pages with several */
+  withLabel(label: string) {
+    this.label = label
+    return this
+  }
+
   private get input() {
+    if (this.label) return this.page.getByRole("combobox", { name: this.label })
     return this.page.locator("[data-combobox-input]")
+  }
+
+  private cdp: CDPSession | undefined
+
+  /** Updates the pending IME composition text */
+  async compose(text: string) {
+    this.cdp ??= await this.page.context().newCDPSession(this.page)
+    await this.cdp.send("Input.imeSetComposition", { text, selectionStart: text.length, selectionEnd: text.length })
+  }
+
+  async commitComposition(text: string) {
+    this.cdp ??= await this.page.context().newCDPSession(this.page)
+    await this.cdp.send("Input.insertText", { text })
   }
 
   private get trigger() {
@@ -28,6 +50,7 @@ export class ComboboxModel extends Model {
   }
 
   private get content() {
+    if (this.label) return this.page.getByRole("listbox", { name: this.label, includeHidden: true })
     return this.page.locator("[data-combobox-content]")
   }
 

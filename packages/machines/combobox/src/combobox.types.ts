@@ -374,6 +374,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     highlightFrame: AnimationFrame
     initialFocusFrame: AnimationFrame
     autofillFrame: AnimationFrame
+    reconcileFrame: AnimationFrame
     autoHighlightPending: boolean
   }
   computed: {

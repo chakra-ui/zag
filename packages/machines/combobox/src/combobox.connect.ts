@@ -5,9 +5,11 @@ import {
   getEventKey,
   getModifierKeys,
   isAnchorElement,
+  isAndroid,
   isComposingEvent,
   isContextMenuEvent,
   isLeftClick,
+  recordCursor,
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
@@ -246,7 +248,23 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "INPUT.BLUR" })
         },
         onChange(event) {
-          send({ type: "INPUT.CHANGE", value: event.currentTarget.value, src: "input-change" })
+          send({
+            type: "INPUT.CHANGE",
+            value: event.currentTarget.value,
+            src: "input-change",
+            selection: recordCursor(event.currentTarget),
+            // Some Android keyboards report every edit as composing
+            composing: isComposingEvent(event) && !isAndroid(),
+          })
+        },
+        onCompositionEnd(event) {
+          if (isAndroid()) return
+          send({
+            type: "INPUT.CHANGE",
+            value: event.currentTarget.value,
+            src: "input-change",
+            selection: recordCursor(event.currentTarget),
+          })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

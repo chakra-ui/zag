@@ -66,15 +66,16 @@ export class Model {
   }
 
   seeCaretAt = async (position: number) => {
-    const value = await this.page.evaluate(() => {
-      const el = document.activeElement
-      try {
-        return (el as any).selectionStart
-      } catch {
-        return -1
-      }
-    })
-    expect(value).toBe(position)
+    const getCaret = () =>
+      this.page.evaluate(() => {
+        const el = document.activeElement
+        try {
+          return (el as any).selectionStart
+        } catch {
+          return -1
+        }
+      })
+    await expect.poll(getCaret).toBe(position)
   }
 
   moveCaretTo(start: number) {
