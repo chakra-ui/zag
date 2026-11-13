@@ -254,19 +254,33 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
 
     getContentProps(props) {
       const itemState = getItemState(props)
-      const isComplete = props.value === COMPLETE
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope, props.value),
-        role: isComplete ? undefined : "tabpanel",
-        tabIndex: isComplete ? -1 : 0,
+        role: "tabpanel",
+        tabIndex: 0,
         hidden: !itemState.current,
         "data-value": props.value,
+        "data-type": "step",
         "data-state": itemState.current ? "open" : "closed",
         "data-orientation": orientation,
-        "data-complete": dataAttr(isComplete ? complete : itemState.completed),
-        "aria-labelledby": isComplete ? undefined : dom.getTriggerId(scope, props.value),
+        "data-complete": dataAttr(itemState.completed),
+        "aria-labelledby": dom.getTriggerId(scope, props.value),
+      })
+    },
+
+    getCompletedContentProps() {
+      // A focusable region, not a tab panel: finishing moves focus here
+      return normalize.element({
+        ...parts.content.attrs(scope.id),
+        dir: prop("dir"),
+        id: dom.getContentId(scope, COMPLETE),
+        tabIndex: -1,
+        hidden: !complete,
+        "data-type": "complete",
+        "data-state": complete ? "open" : "closed",
+        "data-orientation": orientation,
       })
     },
 

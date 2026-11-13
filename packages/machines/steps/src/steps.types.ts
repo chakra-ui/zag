@@ -216,7 +216,7 @@ export type StepsMachine<T extends StepItem = StepItem> = Machine<StepsSchema<T>
 
 export interface ItemProps {
   /**
-   * The value of the step item. Pass `COMPLETE` to `getContentProps` for the completed content.
+   * The value of the step item
    */
   value: string
 }
@@ -336,6 +336,10 @@ export interface StepsApi<T extends PropTypes = PropTypes, V extends StepItem = 
   getItemProps: (props: ItemProps) => T["element"]
   getTriggerProps: (props: ItemProps) => T["element"]
   getContentProps: (props: ItemProps) => T["element"]
+  /**
+   * Returns the props for the content shown once the flow is complete
+   */
+  getCompletedContentProps: () => T["element"]
   getNextTriggerProps: () => T["button"]
   getPreviousTriggerProps: () => T["button"]
   getSkipTriggerProps: () => T["button"]

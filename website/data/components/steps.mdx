@@ -140,16 +140,24 @@ still loading.
 ### Steps completion
 
 Moving past the last step sets the value to `steps.COMPLETE` and invokes
-`onComplete`. Render the terminal screen with
-`getContentProps({ value: steps.COMPLETE })`, and `goToPreviousStep` returns to
-the last step.
+`onComplete`. Render the terminal screen with `getCompletedContentProps()`, and
+`goToPreviousStep` returns to the last step.
 
 ```tsx
-<div {...api.getContentProps({ value: steps.COMPLETE })}>All done</div>
+<div {...api.getCompletedContentProps()}>All done</div>
 ```
 
 The completed content is a focusable region, not a tab panel. Finishing moves
 focus to it, so the button the user pressed being disabled doesn't drop focus.
+
+Both kinds of content share the `content` part. Tell them apart with
+`data-type`, which is `step` or `complete`:
+
+```css
+[data-steps-content][data-type="complete"] {
+  padding: 16px 0;
+}
+```
 
 <Example id="StepsCompletion">
 

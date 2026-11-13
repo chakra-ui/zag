@@ -44,7 +44,7 @@
       {{ step.title }}
     </div>
 
-    <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+    <div v-bind="api.getCompletedContentProps()">
       Steps Complete - Thank you for filling out the form!
     </div>
 

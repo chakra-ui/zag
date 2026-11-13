@@ -42,7 +42,7 @@ export class Steps extends Component<steps.Props, steps.Api> {
     })
 
     const completed = this.rootEl.querySelector<HTMLElement>(".steps-completed-content")
-    if (completed) this.spreadProps(completed, this.api.getContentProps({ value: steps.COMPLETE }))
+    if (completed) this.spreadProps(completed, this.api.getCompletedContentProps())
   }
 
   render() {

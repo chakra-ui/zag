@@ -142,7 +142,7 @@
   }
 }
 
-[data-steps-content][data-value="__complete__"] {
+[data-steps-content][data-type="complete"] {
   padding: 16px 0;
 }
 

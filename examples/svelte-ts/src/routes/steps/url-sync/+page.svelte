@@ -73,7 +73,7 @@
       <p>Card ending in 4242</p>
     </div>
 
-    <div {...api.getContentProps({ value: steps.COMPLETE })}>
+    <div {...api.getCompletedContentProps()}>
       <p>Order placed. A receipt is on its way to {email}.</p>
     </div>
 

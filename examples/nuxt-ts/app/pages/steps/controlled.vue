@@ -49,7 +49,7 @@ const api = computed(() => steps.connect(service, normalizeProps))
         {{ item.title }} content
       </div>
 
-      <div v-bind="api.getContentProps({ value: steps.COMPLETE })">All done 🎉</div>
+      <div v-bind="api.getCompletedContentProps()">All done 🎉</div>
 
       <div>
         <button v-bind="api.getPreviousTriggerProps()">Back</button>

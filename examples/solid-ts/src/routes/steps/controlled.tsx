@@ -53,7 +53,7 @@ export default function Page() {
             {(item) => <div {...api().getContentProps({ value: item().value })}>{item().title} content</div>}
           </For>
 
-          <div {...api().getContentProps({ value: steps.COMPLETE })}>All done 🎉</div>
+          <div {...api().getCompletedContentProps()}>All done 🎉</div>
 
           <div>
             <button {...api().getPreviousTriggerProps()}>Back</button>

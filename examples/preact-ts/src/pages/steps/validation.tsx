@@ -132,7 +132,7 @@ export default function Page() {
             </dl>
           </div>
 
-          <div {...api.getContentProps({ value: steps.COMPLETE })}>
+          <div {...api.getCompletedContentProps()}>
             <p>
               Project <strong>{project.name}</strong> created.
             </p>
