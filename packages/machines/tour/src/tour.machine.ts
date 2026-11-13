@@ -20,9 +20,6 @@ import {
 
 const { and } = createGuards<TourSchema>()
 
-// setTimeout's max delay. Larger values overflow and fire immediately.
-const MAX_TIMEOUT_DELAY = 2 ** 31 - 1
-
 export const machine = createMachine<TourSchema>({
   props({ props }) {
     return {
@@ -425,8 +422,7 @@ export const machine = createMachine<TourSchema>({
 
       waitForTargetTimeout({ send, prop }) {
         const timeout = prop("targetTimeout")
-        // Infinity (or anything past the max delay) waits indefinitely
-        if (timeout > MAX_TIMEOUT_DELAY) return
+        if (timeout === Infinity) return
         const id = setTimeout(() => {
           send({ type: "TARGET.NOT_FOUND" })
         }, timeout)
