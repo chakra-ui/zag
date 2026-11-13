@@ -599,6 +599,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "virtualized", title: "Virtualized" },
       { slug: "hover-intent", title: "Hover Intent" },
+      { slug: "open-dialog", title: "Item Opens Dialog" },
     ],
   },
   {
