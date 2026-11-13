@@ -57,7 +57,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "marquee",
     label: "Marquee",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "logo-wall", title: "Logo Wall" },
+      { slug: "vertical", title: "Vertical" },
+      { slug: "ticker", title: "Ticker" },
+    ],
   },
   {
     slug: "image-cropper",
@@ -101,7 +106,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "scroll-lock",
     label: "Scroll Lock",
-    examples: [{ slug: "html-scroller", title: "HTML Scroll Container" }],
+    examples: [
+      { slug: "html-scroller", title: "HTML Scroll Container" },
+      { slug: "body-scroller", title: "Body Scroll Container" },
+      { slug: "nested", title: "Nested" },
+      { slug: "scrollbar-gutter", title: "Scrollbar Gutter" },
+    ],
   },
   {
     slug: "async-list",
@@ -117,7 +127,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "password-input",
     label: "Password Input",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "confirm-password", title: "Confirm Password" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "gridlist",
@@ -258,7 +272,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "clipboard",
     label: "Clipboard",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "api-key", title: "API Key" },
+      { slug: "code-blocks", title: "Code Blocks" },
+    ],
   },
   {
     slug: "tree-view",
@@ -325,6 +343,7 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Fieldset",
     examples: [
       { slug: "basic", title: "Basic" },
+      { slug: "shipping-address", title: "Shipping Address" },
       { slug: "groups", title: "Checkbox and Radio Groups" },
       { slug: "nested", title: "Nested" },
     ],
@@ -384,7 +403,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "switch",
     label: "Switch",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "settings", title: "Settings" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "carousel",
@@ -662,7 +685,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "popper",
     label: "Popper",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "selection-toolbar", title: "Selection Toolbar" },
+      { slug: "inline-anchor", title: "Inline Anchor" },
+    ],
   },
   {
     slug: "popover",
@@ -686,7 +713,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "radio-group",
     label: "Radio Group",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "plan-picker", title: "Plan Picker" },
+      { slug: "form", title: "Form" },
+    ],
   },
   {
     slug: "rating-group",
@@ -829,7 +860,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "segment-control",
     label: "Segment Control",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "time-range", title: "Time Range" },
+      { slug: "vertical", title: "Vertical" },
+    ],
   },
   {
     slug: "splitter",
@@ -852,7 +887,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "json-tree",
     label: "JSON Tree",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "api-response", title: "API Response" },
+      { slug: "large-data", title: "Large Data" },
+      { slug: "circular", title: "Circular" },
+    ],
   },
   {
     slug: "hotkeys",
@@ -900,7 +940,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "dismissable",
     label: "Dismissable",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "prevent-dismiss", title: "Prevent Dismiss" },
+      { slug: "exclude", title: "Exclude" },
+      { slug: "group", title: "Group" },
+    ],
   },
   {
     slug: "focus-visible",

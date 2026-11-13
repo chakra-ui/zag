@@ -1,0 +1,32 @@
+import { preventBodyScroll } from "@zag-js/remove-scroll"
+import { useEffect, useState } from "preact/hooks"
+import "@styles/scroll-lock.css"
+
+export default function Page() {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    return preventBodyScroll()
+  }, [open])
+
+  return (
+    <main>
+      <div className="body-scroller">
+        <p className="hint">Open the filters, then try scrolling the page behind them.</p>
+        <button onClick={() => setOpen(true)}>Open filters</button>
+
+        {open && (
+          <>
+            <div className="backdrop" />
+            <div className="panel" role="dialog" aria-modal="true" aria-label="Filters">
+              <span className="panel-title">Filters</span>
+              <p>Narrow the results by price, brand and rating.</p>
+              <button onClick={() => setOpen(false)}>Show 24 results</button>
+            </div>
+          </>
+        )}
+      </div>
+    </main>
+  )
+}

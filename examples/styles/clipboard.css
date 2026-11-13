@@ -24,3 +24,64 @@
   background: lightgray;
   padding: 8px;
 }
+
+.api-key [data-clipboard-control] {
+  gap: 8px;
+}
+
+.api-key [data-clipboard-input] {
+  font-family: monospace;
+}
+
+.api-key .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.api-key,
+.code-blocks {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.api-key [data-clipboard-root] {
+  width: 100%;
+}
+
+.code-blocks [data-clipboard-root] {
+  width: 100%;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.code-blocks .block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.code-blocks .block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.code-blocks pre {
+  margin: 0;
+  padding: 12px;
+  background: lightgray;
+  overflow-x: auto;
+}
+
+.code-blocks button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.code-blocks button svg {
+  height: 1em;
+  font-size: 16px;
+}
