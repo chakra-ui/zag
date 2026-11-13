@@ -101,11 +101,11 @@ export const layerStack = {
     const existingIndex = this.indexOf(layer.node)
     if (existingIndex !== -1) {
       layer.parent = this.layers[existingIndex].parent
-      this.layers.splice(existingIndex, 1)
+      this.layers[existingIndex] = layer
     } else {
       layer.parent = this.getParentNode(layer)
+      this.layers.push(layer)
     }
-    this.layers.push(layer)
     this.syncLayers()
   },
   getParentNode(layer: Layer) {

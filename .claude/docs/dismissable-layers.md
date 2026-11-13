@@ -7,12 +7,14 @@ helpers in `packages/utilities/dismissable/src/layer-stack.ts`.
 
 Every layer has a `parent`, set once when it is added:
 
-1. **It has triggers** (the `exclude` containers, passed as `origins`): the parent is the topmost open layer that
-   contains one of its origins (its own node or a trigger). If none does, it has no parent and is a sibling.
+1. **It has triggers** (the `exclude` containers): its origins are its own node, its triggers and the element focused
+   when it opened. The parent is the topmost open layer that contains one of them. If none does, it has no parent and is
+   a sibling.
 2. **It has no triggers**: the parent is whatever layer is on top. This is the old rule, kept for layers opened only
    through `open`/`setOpen`.
 
-A re-added layer (Strict Mode double register) keeps its old parent.
+A re-added layer (Strict Mode double register) keeps its old parent and its stack position, so it never rises above its
+children.
 
 ## Why not just "the layer on top"
 
@@ -33,10 +35,9 @@ follows portals' DOM, shadow hosts and same-origin iframes, so the answer doesn'
 `--layer-index` and pointer blocking stay stack-order based. They are about painting and which layer gets pointer
 events, not ancestry.
 
-## Known trade-off
+## Opened in code from inside another layer
 
-A layer opened in code from inside another layer, while its own trigger is rendered elsewhere, is a sibling, not a
-child:
+The focused element is an origin so this case still nests:
 
 ```tsx
 <button {...help.getTriggerProps()}>Help</button>
@@ -45,11 +46,8 @@ child:
 </div>
 ```
 
-Clicking inside Help closes Settings. Under the old rule it stayed open, but only because Help happened to be on top.
-The stack can't see who called `setOpen`, so neither rule truly knows the intent.
-
-Option if this needs support: also record the element focused at open time as an origin. It misses mouse clicks in
-Safari, which doesn't focus buttons on click.
+Clicking "Need help?" leaves focus inside Settings, so Help nests in it. Safari doesn't focus buttons on mouse click, so
+there focus stays wherever it was. If that is inside Settings it still nests, otherwise Help is a sibling.
 
 ## Not handled
 

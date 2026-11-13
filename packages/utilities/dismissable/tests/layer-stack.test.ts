@@ -86,6 +86,23 @@ describe("layerStack", () => {
       layerStack.layers[0]?.dismiss()
       expect(dismissCount).toBe(10)
     })
+    test("re-adding a parent keeps it below its children", () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      const childTrigger = document.createElement("button")
+      parent.append(childTrigger)
+      document.body.append(parent, child)
+
+      const childDismiss = vi.fn()
+      layerStack.add(createLayer(parent))
+      layerStack.add({ ...createLayer(child, { dismiss: childDismiss }), origins: [child, childTrigger] })
+      layerStack.add(createLayer(parent))
+
+      expect(layerStack.isTopMost(child)).toBe(true)
+      expect(layerStack.isInNestedLayer(parent, child)).toBe(true)
+      layerStack.remove(parent)
+      expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe("styleTargets", () => {
