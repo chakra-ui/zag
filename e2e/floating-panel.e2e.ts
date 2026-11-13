@@ -97,6 +97,7 @@ test.describe("floating-panel", () => {
   test("should close panel on escape", async () => {
     await I.clickTrigger()
     await I.seeContent()
+    // focus lands in a frame, and Escape is only handled on the content
     await expect(I.content).toBeFocused()
 
     await I.pressKey("Escape")
