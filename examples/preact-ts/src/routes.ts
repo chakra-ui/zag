@@ -464,6 +464,7 @@ export const routes: RouteDefinition[] = [
   { path: "/splitter/relative-units", component: lazy(() => import("./pages/splitter/relative-units")) },
   { path: "/splitter/events", component: lazy(() => import("./pages/splitter/events")) },
   { path: "/steps/async-items", component: lazy(() => import("./pages/steps/async-items")) },
+  { path: "/steps/async-validation", component: lazy(() => import("./pages/steps/async-validation")) },
   { path: "/steps/basic", component: lazy(() => import("./pages/steps/basic")) },
   { path: "/steps/conditional-steps", component: lazy(() => import("./pages/steps/conditional-steps")) },
   { path: "/steps/controlled", component: lazy(() => import("./pages/steps/controlled")) },

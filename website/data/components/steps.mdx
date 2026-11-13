@@ -243,7 +243,39 @@ const service = useMachine(steps.machine, {
 
 Error messages stay with your form. To show them only after the user tries to
 move on, record the step in `onNavigationBlocked` when `reason` is `"invalid"`.
-For asynchronous validation, keep the step `invalid` until the check resolves.
+
+### Async validation
+
+Run server checks from your own "Next" button. Store the error so the step is
+`invalid`, and advance only when the check passes.
+
+```tsx
+const [error, setError] = useState<string>()
+const [checking, setChecking] = useState(false)
+
+const service = useMachine(steps.machine, {
+  items: [{ value: "account", invalid: !!error }, { value: "review" }],
+})
+
+const api = steps.connect(service, normalizeProps)
+
+async function next() {
+  if (api.value !== "account") return api.goToNextStep()
+
+  setChecking(true)
+  const result = await checkUsername(username)
+  setChecking(false)
+
+  setError(result)
+  if (!result) api.goToNextStep()
+}
+
+return (
+  <button onClick={next} disabled={checking}>
+    {checking ? "Checking…" : "Next"}
+  </button>
+)
+```
 
 ### Blocked navigation
 

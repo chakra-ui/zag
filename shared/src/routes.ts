@@ -194,6 +194,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "controlled", title: "Controlled" },
       { slug: "async-items", title: "Async Items" },
       { slug: "validation", title: "Validation: Create Project" },
+      { slug: "async-validation", title: "Async Validation: Sign Up" },
       { slug: "conditional-steps", title: "Conditional & Optional Steps: Onboarding" },
       { slug: "url-sync", title: "URL Sync: Checkout" },
       { slug: "locked-steps", title: "Locked Steps: 2FA Setup" },
