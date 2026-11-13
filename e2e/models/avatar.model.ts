@@ -42,8 +42,9 @@ export class AvatarModel extends Model {
     return this.page.getByRole("button", { name }).click()
   }
 
-  seeStatus(status: "loading" | "loaded" | "error") {
-    return expect(this.page.getByRole("status", { name: "Load status" })).toHaveText(status)
+  async seeStatus(status: "loading" | "loaded" | "error") {
+    await expect(this.page.getByRole("status", { name: "Load status" })).toHaveText(status)
+    await expect(this.page.locator("[data-avatar-root]")).toHaveAttribute("data-status", status)
   }
 
   /** Checks the latest statuses reported by `onStatusChange` */

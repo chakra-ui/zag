@@ -2,6 +2,8 @@
 "@zag-js/clipboard": major
 ---
 
+- Add `getRootState()` with the `copied` state.
+
 - Fix copying again while copied not restarting the `timeout`.
 
 - Fix a failed copy showing as copied. `onStatusChange` reports `{ copied: false, error }` instead.

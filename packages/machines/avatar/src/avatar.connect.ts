@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./avatar.anatomy"
-import type { AvatarApi, AvatarSchema, AvatarService, LoadStatus } from "./avatar.types"
+import type { AvatarApi, AvatarSchema, AvatarService, LoadStatus, RootState } from "./avatar.types"
 
 export function connect<T extends PropTypes>(
   service: Service<AvatarSchema>,
@@ -10,6 +10,11 @@ export function connect<T extends PropTypes>(
   const { send, prop, scope } = service
   const status = getStatus(service)
   const loaded = status === "loaded"
+
+  function getRootState(): RootState {
+    return { status }
+  }
+
   return {
     status,
     loaded,
@@ -20,10 +25,13 @@ export function connect<T extends PropTypes>(
       send({ type: "img.error", src: "api" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-status": rootState.status,
       })
     },
 

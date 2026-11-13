@@ -55,6 +55,13 @@ export type AvatarMachine = Machine<AvatarSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface RootState {
+  /**
+   * The current image loading status.
+   */
+  status: LoadStatus
+}
+
 export interface AvatarApi<T extends PropTypes = PropTypes> {
   /**
    * The current image loading status.
@@ -73,6 +80,10 @@ export interface AvatarApi<T extends PropTypes = PropTypes> {
    */
   setError: VoidFunction
 
+  /**
+   * Returns the state of the root.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getImageProps: () => T["img"]
   getFallbackProps: () => T["element"]
