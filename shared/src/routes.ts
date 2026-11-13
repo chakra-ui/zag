@@ -407,6 +407,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "settings", title: "Settings" },
       { slug: "form", title: "Form" },
+      { slug: "disabled-tooltip", title: "Disabled With Tooltip" },
     ],
   },
   {

@@ -503,6 +503,7 @@ export const routes: RouteDefinition[] = [
   { path: "/steps/validation", component: lazy(() => import("./pages/steps/validation")) },
   { path: "/swap/basic", component: lazy(() => import("./pages/swap/basic")) },
   { path: "/switch/basic", component: lazy(() => import("./pages/switch/basic")) },
+  { path: "/switch/disabled-tooltip", component: lazy(() => import("./pages/switch/disabled-tooltip")) },
   { path: "/switch/settings", component: lazy(() => import("./pages/switch/settings")) },
   { path: "/switch/form", component: lazy(() => import("./pages/switch/form")) },
   { path: "/tabs/basic", component: lazy(() => import("./pages/tabs/basic")) },
