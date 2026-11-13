@@ -18,6 +18,9 @@
 
 - Fix vertical channel sliders running opposite to their gradient.
 
+- Fix text typed into a channel input being overwritten by a color change made just before it, such as a swatch click or
+  committing the same input.
+
 - Fix a typed color being stored in its own format instead of the picker's.
 
 - Fix the hue resetting when the color reaches gray, and the area and sliders not updating when the value changes from

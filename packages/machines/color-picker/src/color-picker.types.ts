@@ -211,6 +211,8 @@ export type ColorPickerSchema = {
     focusFrame: AnimationFrame
     inputSyncFrame: AnimationFrame
     formatSyncFrame: AnimationFrame
+    /** Text typed into a channel input and not committed yet */
+    channelDraft: { channel: string; value: string; el: HTMLInputElement } | null
   }
   event: EventObject
   action: string

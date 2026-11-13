@@ -41,7 +41,7 @@ export function connect<T extends PropTypes>(
   service: ColorPickerService,
   normalize: NormalizeProps<T>,
 ): ColorPickerApi<T> {
-  const { context, send, prop, computed, state, scope } = service
+  const { context, send, prop, computed, state, scope, refs } = service
   const layer = context.get("layer")
 
   const value = context.get("value")
@@ -652,6 +652,7 @@ export function connect<T extends PropTypes>(
 
       const isTextField = channel === "hex" || channel === "css"
       const channelRange = getChannelRange(value, channel)
+      const draft = refs.get("channelDraft")
 
       return normalize.input({
         ...parts.channelInput.attrs(scope.id),
@@ -667,7 +668,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         readOnly: readOnly,
-        defaultValue: getChannelValue(value, channel),
+        defaultValue: draft?.channel === channel ? draft.value : getChannelValue(value, channel),
         min: channelRange?.minValue,
         max: channelRange?.maxValue,
         step: channelRange?.step,
@@ -680,11 +681,17 @@ export function connect<T extends PropTypes>(
         },
         onFocus(event) {
           if (!interactive) return
+          refs.set("channelDraft", null)
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
           event.currentTarget.select()
         },
+        onInput(event) {
+          if (!interactive) return
+          refs.set("channelDraft", { channel, value: event.currentTarget.value, el: event.currentTarget })
+        },
         onBlur(event) {
           if (!interactive) return
+          refs.set("channelDraft", null)
           const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
           send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
@@ -695,6 +702,7 @@ export function connect<T extends PropTypes>(
 
           const inputEl = event.currentTarget
           const commit = (value: string | number) => {
+            refs.set("channelDraft", null)
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
           }
           const stepBy = (direction: number) => {
