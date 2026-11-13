@@ -33,7 +33,7 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
   <main class="image-cropper">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getViewportProps()">
-        <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" />
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop" v-bind="api.getImageProps()" />
         <div v-bind="api.getSelectionProps()" />
       </div>
     </div>

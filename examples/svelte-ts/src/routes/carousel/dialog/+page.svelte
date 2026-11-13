@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { carouselData } from "@zag-js/shared"
   import Presence from "#lib/components/presence.svelte"
   import * as carousel from "@zag-js/carousel"
   import * as dialog from "@zag-js/dialog"
@@ -46,7 +47,7 @@
               {#each Array.from({ length: SLIDE_COUNT }) as _, index}
                 <div {...carouselApi.getItemProps({ index })}>
                   <img
-                    src={`https://picsum.photos/seed/slide-${index}/300/200`}
+                    src={carouselData[index % carouselData.length]}
                     alt={`Slide ${index}`}
                     style="width: 100%"
                   />

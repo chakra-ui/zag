@@ -2,6 +2,7 @@
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { carouselData } from "@zag-js/shared"
 
 const SLIDE_COUNT = 30
 
@@ -49,7 +50,7 @@ const carouselApi = computed(() => carousel.connect(carouselService, normalizePr
                 v-bind="carouselApi.getItemProps({ index: index - 1 })"
               >
                 <img
-                  :src="`https://picsum.photos/seed/slide-${index - 1}/300/200`"
+                  :src="carouselData[(index - 1) % carouselData.length]"
                   :alt="`Slide ${index - 1}`"
                   style="width: 100%"
                 />
