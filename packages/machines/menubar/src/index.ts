@@ -12,4 +12,5 @@ export type {
   MenuCloseReason,
   ElementIds,
   Orientation,
+  RootState,
 } from "./menubar.types"
