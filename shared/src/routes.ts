@@ -51,6 +51,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "default-value", title: "Default Value" },
     ],
   },
   {

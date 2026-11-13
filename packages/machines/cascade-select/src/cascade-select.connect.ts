@@ -29,7 +29,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const value = context.get("value")
   const open = state.hasTag("open")
   const focused = state.matches("focused")
-  const highlightedIndexPath = context.get("highlightedIndexPath")
+  const highlightedIndexPath = computed("highlightedIndexPath")
   const highlightedValue = context.get("highlightedValue")
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
@@ -37,8 +37,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const interactive = computed("isInteractive")
   const valueAsString = computed("valueAsString")
 
-  const highlightedItems = context.get("highlightedItems")
-  const selectedItems = context.get("selectedItems")
+  const highlightedItems = computed("highlightedItems")
+  const selectedItems = computed("selectedItems")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),

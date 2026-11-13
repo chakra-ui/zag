@@ -2,7 +2,7 @@ import * as cascadeSelect from "@zag-js/cascade-select"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import serialize from "form-serialize"
-import { ChevronRightIcon, XIcon } from "lucide-preact"
+import { ChevronRightIcon, ChevronsUpDownIcon, XIcon } from "lucide-preact"
 import type { JSX } from "preact"
 import { useId, useState } from "preact/hooks"
 import { StateVisualizer } from "../../components/state-visualizer"
@@ -116,11 +116,15 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
-              <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.getClearTriggerProps()}>
-              <XIcon size={16} />
-            </button>
+            <div className="cascade-select-indicator-group">
+              <button {...api.getClearTriggerProps()}>
+                <XIcon size={16} />
+              </button>
+              <span {...api.getIndicatorProps()}>
+                <ChevronsUpDownIcon />
+              </span>
+            </div>
           </div>
 
           <form
