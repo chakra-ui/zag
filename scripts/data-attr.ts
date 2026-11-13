@@ -237,6 +237,11 @@ function extractDataAttrs(node: Node, opts: ExtractOptions) {
       desc = `${values.map((x) => JSON.stringify(x)).join(" | ")}`
     }
 
+    if (name === "data-type") {
+      const initializer = literal.getParentIfKind(SyntaxKind.PropertyAssignment)?.getInitializer()
+      if (initializer && Node.isStringLiteral(initializer)) desc = JSON.stringify(initializer.getLiteralValue())
+    }
+
     visit({ name, desc })
   })
 
@@ -306,14 +311,20 @@ async function main() {
             widget,
             part,
             visit: ({ name, desc }) => {
-              attrs[name] = desc
+              const prev = attrs[name]
+              const isLiteral = (value?: string) => !!value?.startsWith('"')
+              attrs[name] =
+                isLiteral(prev) && isLiteral(desc) && !prev!.split(" | ").includes(desc) ? `${prev} | ${desc}` : desc
             },
             seen: new Set(),
           })
 
           if (Object.keys(attrs).length === 0) return
 
-          const partAttr = `data-${widget}-${dashCase(part)}`
+          // the part the getter spreads, when unambiguous
+          const anatomyParts = new Set(Array.from(property.getText().matchAll(/\bparts\.(\w+)\.attrs\(/g), (m) => m[1]))
+          const anatomyPart = anatomyParts.size === 1 ? [...anatomyParts][0] : undefined
+          const partAttr = `data-${widget}-${dashCase(anatomyPart ?? part)}`
           result[part] = { [partAttr]: "<uid>", ...attrs }
 
           // Add layer attributes for content part if widget uses dismissable
