@@ -81,7 +81,7 @@ const onKeydown = (event: KeyboardEvent) => {
         <div v-for="[group, items] in collection.group()" :key="group" v-bind="api.getItemGroupProps({ id: group })">
           <div v-bind="api.getItemGroupLabelProps({ htmlFor: group })">{{ group }}</div>
           <div v-for="item in items" :key="item.value" v-bind="api.getItemProps({ item, persistFocus: true })">
-            <Highlight :text="item.label" :query="query" />
+            <Highlight :text="item.label" :query="query" fuzzy />
             <span v-if="query && pages.getAncestors(item).length > 0" data-part="item-path">
               {{
                 pages

@@ -507,6 +507,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "virtualized", title: "Virtualized" },
       { slug: "emoji-picker", title: "Emoji Picker" },
       { slug: "creatable", title: "Creatable" },
+      { slug: "highlight-matches", title: "Highlight Matches" },
     ],
   },
   {
