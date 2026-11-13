@@ -223,7 +223,7 @@ const inputProps = computed(() =>
       </p>
 
       <Teleport to="#teleports">
-        <div v-bind="comboboxApi.getPositionerProps()">
+        <div v-bind="comboboxApi.getPositionerProps()" :class="styles.positioner">
           <div v-bind="mergeProps(comboboxApi.getContentProps(), { class: styles.content })">
             <div :class="styles.treePanel">
               <div v-if="visibleCount === 0" :class="styles.empty">No matches for "{{ query.trim() }}"</div>

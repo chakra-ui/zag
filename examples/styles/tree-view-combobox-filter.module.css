@@ -187,6 +187,6 @@
   }
 }
 
-[data-combobox-positioner] {
+.positioner {
   z-index: calc(var(--layer-index) * 2 + 1);
 }
