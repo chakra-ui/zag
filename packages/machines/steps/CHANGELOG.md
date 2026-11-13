@@ -1,5 +1,116 @@
 # @zag-js/steps
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`1e1f6da`](https://github.com/chakra-ui/zag/commit/1e1f6da67fb6fb4682a9982a9243eec8f06fb7ae) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Spell out "Prev" as "Previous" across the
+  API.
+
+  The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps, including
+  its prop getter, data attribute, `ids` key and translation key.
+
+  ```diff
+  - <button {...api.getPrevTriggerProps()} />
+  + <button {...api.getPreviousTriggerProps()} />
+
+  - [data-carousel-prev-trigger] { ... }
+  + [data-carousel-previous-trigger] { ... }
+
+    carousel.machine({
+  -   ids: { prevTrigger: "prev" },
+  -   translations: { prevTrigger: "Previous slide" },
+  +   ids: { previousTrigger: "prev" },
+  +   translations: { previousTrigger: "Previous slide" },
+    })
+  ```
+
+  Pagination and scheduler rename `translations.prevTriggerLabel` to `translations.previousTriggerLabel`.
+
+  | Component              | Before                          | After                                   |
+  | ---------------------- | ------------------------------- | --------------------------------------- |
+  | Carousel               | `scrollPrev()`, `canScrollPrev` | `scrollPrevious()`, `canScrollPrevious` |
+  | Date picker, Scheduler | `goToPrev()`                    | `goToPrevious()`                        |
+  | Pagination             | `goToPrevPage()`                | `goToPreviousPage()`                    |
+  | Steps                  | `goToPrevStep()`, `hasPrevStep` | `goToPreviousStep()`, `hasPreviousStep` |
+  | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
+  | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
+
+  The tour's `"prev"` action is now `"previous"`, and its trigger renders `data-type="previous"`.
+
+  ```diff
+  - actions: [{ label: "Prev", action: "prev" }],
+  + actions: [{ label: "Previous", action: "previous" }],
+  - action: (actions) => actions.prev()
+  + action: (actions) => actions.previous()
+  - translations: { prevStep: "Previous step" }
+  + translations: { previousStep: "Previous step" }
+  ```
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Define steps with an `items` array and
+  address them by string `value` instead of index.
+
+  ```diff
+    steps.machine({
+  -   count: 3,
+  -   defaultStep: 0,
+  +   items: [{ value: "shipping" }, { value: "gift", optional: true }, { value: "payment" }],
+  +   defaultValue: "shipping",
+    })
+  ```
+
+  | Before                                      | After                                         |
+  | ------------------------------------------- | --------------------------------------------- |
+  | `step` / `defaultStep`                      | `value` / `defaultValue`                      |
+  | `onStepChange` / `onStepComplete`           | `onValueChange` / `onComplete`                |
+  | `isStepValid(index)`                        | `invalid` on the item                         |
+  | `isStepSkippable(index)`                    | `optional` on the item, plus `skipTrigger`    |
+  | `onStepInvalid`                             | `onNavigationBlocked` (`reason`, `blockedBy`) |
+  | `api.setStep(index)`                        | `api.setValue(value)`                         |
+  | `api.isCompleted`                           | `api.complete`                                |
+  | `step === count` (completed screen)         | `value === steps.COMPLETE`                    |
+  | `getContentProps({ index: count })`         | `getContentProps({ value: steps.COMPLETE })`  |
+  | `api.isStepValid` / `isStepSkippable`       | `api.getItemState({ value })`                 |
+  | `{ index }` in part props                   | `{ value }`                                   |
+  | `itemState.skippable` / `isValid()`         | `itemState.optional` / `!itemState.invalid`   |
+  | `itemState.first` / `itemState.last`        | `index === 0` / `index === api.count - 1`     |
+  | `ids.triggerId(index)` / `contentId(index)` | `(value) => string`                           |
+  | `--percent`                                 | `--steps-percent`                             |
+  - Add `disabled` and `editable` item flags, and optional `title` and `description`.
+
+  - Add `translations` with `progressLabel` and `progressText`. The progress bar announces the current step's `title`.
+
+  - Make `completedValues` controllable, so going back no longer marks later steps incomplete.
+
+  - Add `api.items`. Pass your item type to `connect` to keep extra fields typed.
+
+  - Add the `skipTrigger` part, and `data-invalid`, `data-optional`, `data-skipped`, `data-locked` and `data-disabled`.
+
+  - Add keyboard support to the step list: arrow keys, `Home` and `End` move focus, and `Enter` or `Space` opens a step.
+
+  - Disable unreachable triggers in linear mode.
+
+  - Make the completed content a focusable region, and move focus to it on finish.
+
+  - Give the progress bar an accessible name.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

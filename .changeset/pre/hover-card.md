@@ -1,37 +1,34 @@
 ---
-"@zag-js/hover-card": minor
-"@zag-js/tooltip": minor
+"@zag-js/hover-card": major
 ---
 
-### Safe area
+- Add a `viewport` part to animate switching between triggers. Render a content per trigger with
+  `getContentProps({ value })` and `getContentValues()`.
 
-The hover card now tracks the pointer travelling between the trigger and the content.
+- Add `data-activation-direction` and `api.activationDirection`, and `data-transitioning` on the positioner and viewport
+  while switching triggers.
 
-- The hover card stays open while the pointer moves to the content, even diagonally or pausing past `closeDelay`.
-- A hover card opened programmatically or by keyboard is no longer dismissed by pointer movement elsewhere.
-- Interactive tooltips (`interactive: true`) use it too, so the pointer can reach them without the tooltip closing (WCAG
-  1.4.13). Non-interactive tooltips are unchanged.
-- The hover card's `open` and `closing` states are now `open.idle` and `open.closing`. `state.matches("open")` still
-  works, but code matching `"closing"` should use `"open.closing"`.
+- Add `data-instant` to the content when focus opens the card or Escape closes it, so the animation can be skipped.
 
-### Inline triggers
+- Fix a card opened without hovering its trigger, such as with `defaultOpen`, closing when the pointer passes over it.
 
-- A trigger that wraps across lines anchors the hover card to the hovered line, not the box around every line.
-- The hover card moves when the active trigger changes, instead of staying over the previous one.
-- Added a `positioning.middleware` option for extra Floating UI middleware.
+- Fix a card or menu opened from inside the card closing it.
 
-### Open reason
+- Fix `onOpenChange` reporting a close twice when a controlled card is dismissed during a pending hover close.
 
-- Added `reason` to `onOpenChange`, and `api.setOpen` takes one as its second argument (default `script`).
+- Fix the card reopening when the window regains focus, and staying open when its trigger is removed.
+
+- **Breaking:** Report a hover close with the `trigger-hover` reason, the same as a hover open. The `pointer-leave`
+  reason is removed.
 
   ```ts
+  // before
   onOpenChange({ open, reason }) {
-    // "trigger-hover" | "trigger-focus" | "trigger-blur" | "pointer-leave"
-    // | "interact-outside" | "escape-key" | "script"
+    if (reason === "pointer-leave") {}
+  }
+
+  // after
+  onOpenChange({ open, reason }) {
+    if (!open && reason === "trigger-hover") {}
   }
   ```
-
-- Dismissing with `Escape` is reported as `escape-key`, not as a press outside.
-- Leaving the trigger before the open delay no longer fires `onOpenChange` with `open: false`.
-- Focus after a pointer interaction (e.g. a dialog restoring focus to the trigger) no longer opens the hover card. Only
-  keyboard and assistive-technology focus do, like the tooltip.

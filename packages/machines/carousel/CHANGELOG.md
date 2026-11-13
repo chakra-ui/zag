@@ -1,5 +1,80 @@
 # @zag-js/carousel
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`1e1f6da`](https://github.com/chakra-ui/zag/commit/1e1f6da67fb6fb4682a9982a9243eec8f06fb7ae) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Spell out "Prev" as "Previous" across the
+  API.
+
+  The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps, including
+  its prop getter, data attribute, `ids` key and translation key.
+
+  ```diff
+  - <button {...api.getPrevTriggerProps()} />
+  + <button {...api.getPreviousTriggerProps()} />
+
+  - [data-carousel-prev-trigger] { ... }
+  + [data-carousel-previous-trigger] { ... }
+
+    carousel.machine({
+  -   ids: { prevTrigger: "prev" },
+  -   translations: { prevTrigger: "Previous slide" },
+  +   ids: { previousTrigger: "prev" },
+  +   translations: { previousTrigger: "Previous slide" },
+    })
+  ```
+
+  Pagination and scheduler rename `translations.prevTriggerLabel` to `translations.previousTriggerLabel`.
+
+  | Component              | Before                          | After                                   |
+  | ---------------------- | ------------------------------- | --------------------------------------- |
+  | Carousel               | `scrollPrev()`, `canScrollPrev` | `scrollPrevious()`, `canScrollPrevious` |
+  | Date picker, Scheduler | `goToPrev()`                    | `goToPrevious()`                        |
+  | Pagination             | `goToPrevPage()`                | `goToPreviousPage()`                    |
+  | Steps                  | `goToPrevStep()`, `hasPrevStep` | `goToPreviousStep()`, `hasPreviousStep` |
+  | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
+  | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
+
+  The tour's `"prev"` action is now `"previous"`, and its trigger renders `data-type="previous"`.
+
+  ```diff
+  - actions: [{ label: "Prev", action: "prev" }],
+  + actions: [{ label: "Previous", action: "previous" }],
+  - action: (actions) => actions.prev()
+  + action: (actions) => actions.previous()
+  - translations: { prevStep: "Previous step" }
+  + translations: { previousStep: "Previous step" }
+  ```
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a quick mouse flick snapping back instead of moving
+  to the next page.
+
+  - Fix `scrollToIndex` not scrolling to slides that aren't the first of a page.
+
+  - Fix changing `dir` at runtime not updating the snap points in Vue.
+
+  - Fix changing `orientation` or `dir` at runtime throwing in Svelte.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/scroll-snap@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

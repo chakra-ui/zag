@@ -1,5 +1,15 @@
 # @zag-js/dom-query
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix `isAndroid` returning `false` in Chrome on Android.
+- Updated dependencies []:
+  - @zag-js/types@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

@@ -1,5 +1,42 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `api.highlightedValue` with the highlighted tag's
+  value.
+
+  - Add `values` to the `onValueInvalid` details with the tags that failed `validate`.
+
+  - Fix `onHighlightChange` reporting the tag's DOM id instead of its value.
+
+  - Fix pasting with `addOnPaste` skipping the checks a typed tag goes through. Each pasted tag is validated, empty
+    segments are skipped, and the paste stops at `max` unless `allowOverflow` is set.
+
+  - Keep the pasted text in the input when none of its tags can be added.
+
+  - Fix a disabled `<fieldset>` not disabling the tags input.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/interact-outside@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/auto-resize@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/live-region@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

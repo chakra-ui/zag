@@ -1,5 +1,42 @@
 # @zag-js/dnd
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `api.move({ value, to })` to move an item one step,
+  or to the start or end, without dragging. It calls `onDrop` and announces the move.
+
+  - Add `isActivationKey` to choose the key that starts a keyboard drag, or return `false` to turn it off.
+
+  - Add `translations.roleDescription`, or `null` to keep the element's own role.
+
+  - **Breaking:** Remove `dnd.move` and `dnd.getDestinationIndex`. Use `dnd.reorder`.
+
+    ```diff
+    - dnd.move(items, fromIndex, dnd.getDestinationIndex(items.length, fromIndex, toIndex, placement))
+    + dnd.reorder(items, { source, target, placement, itemToValue: (item) => item.id })
+    ```
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/aria-hidden@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/live-region@2.0.0-next.4
+  - @zag-js/rect-utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

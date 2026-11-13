@@ -1,5 +1,32 @@
 # @zag-js/toc
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Default `multiple` to `false`, so only
+  the topmost visible heading is active.
+
+  ```diff
+  - toc.machine({})
+  + toc.machine({ multiple: true })
+  ```
+
+  - Fix the active heading ignoring `rootMargin` and `threshold` changes after mount.
+
+  - Fix headings and `scrollEl` that mount after the TOC not being tracked.
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

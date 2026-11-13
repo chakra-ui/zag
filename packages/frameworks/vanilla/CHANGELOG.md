@@ -1,5 +1,23 @@
 # @zag-js/vanilla
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Shrink the adapter by about a third and drop the
+  `@zag-js/store` dependency.
+
+  - Publish once per tick instead of once per changed value.
+
+  - Keep one listener per event type in `spreadProps` instead of re-adding them on each render.
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

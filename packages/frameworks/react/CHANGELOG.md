@@ -1,5 +1,21 @@
 # @zag-js/react
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a machine reading a stale value when several events
+  arrive before the next render.
+
+  - Fix a machine starting after its component unmounted, which left effects like a dialog's scroll lock in place.
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ## 1.48.0

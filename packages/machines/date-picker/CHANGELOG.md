@@ -1,5 +1,168 @@
 # @zag-js/date-picker
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Zag no longer sets a `z-index` on overlays. Set it in
+  CSS, using `--layer-index` for the overlay's place in the stack.
+
+  - Fix a `z-index` set on the positioner in CSS being overridden.
+
+  - Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
+
+  **Breaking:** Move the `z-index` to the positioner (or the backdrop) and add `--layer-index`.
+
+  ```diff
+  - [data-popover-content] {
+  + [data-popover-positioner] {
+  -   z-index: 1400;
+  +   z-index: calc(1400 + var(--layer-index));
+    }
+  ```
+
+  - Popover, menu, select, combobox, hover card, tooltip, date picker, color picker and cascade select no longer copy
+    the content's `z-index` onto the positioner or set `--z-index`.
+
+  - Dialog and drawer no longer set `--z-index`. Use `--layer-index` on the backdrop and positioner.
+
+  - The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the
+    front.
+
+  - The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+  - The toast group no longer sets an inline `z-index`. Set it on `[data-toast-group]` in CSS.
+
+  - Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`1e1f6da`](https://github.com/chakra-ui/zag/commit/1e1f6da67fb6fb4682a9982a9243eec8f06fb7ae) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - **Breaking:** Spell out "Prev" as "Previous" across the
+  API.
+
+  The `prevTrigger` part is now `previousTrigger` in carousel, date picker, pagination, scheduler and steps, including
+  its prop getter, data attribute, `ids` key and translation key.
+
+  ```diff
+  - <button {...api.getPrevTriggerProps()} />
+  + <button {...api.getPreviousTriggerProps()} />
+
+  - [data-carousel-prev-trigger] { ... }
+  + [data-carousel-previous-trigger] { ... }
+
+    carousel.machine({
+  -   ids: { prevTrigger: "prev" },
+  -   translations: { prevTrigger: "Previous slide" },
+  +   ids: { previousTrigger: "prev" },
+  +   translations: { previousTrigger: "Previous slide" },
+    })
+  ```
+
+  Pagination and scheduler rename `translations.prevTriggerLabel` to `translations.previousTriggerLabel`.
+
+  | Component              | Before                          | After                                   |
+  | ---------------------- | ------------------------------- | --------------------------------------- |
+  | Carousel               | `scrollPrev()`, `canScrollPrev` | `scrollPrevious()`, `canScrollPrevious` |
+  | Date picker, Scheduler | `goToPrev()`                    | `goToPrevious()`                        |
+  | Pagination             | `goToPrevPage()`                | `goToPreviousPage()`                    |
+  | Steps                  | `goToPrevStep()`, `hasPrevStep` | `goToPreviousStep()`, `hasPreviousStep` |
+  | Tabs                   | `selectPrev()`                  | `selectPrevious()`                      |
+  | Tour                   | `prev()`, `hasPrevStep`         | `previous()`, `hasPreviousStep`         |
+
+  The tour's `"prev"` action is now `"previous"`, and its trigger renders `data-type="previous"`.
+
+  ```diff
+  - actions: [{ label: "Prev", action: "prev" }],
+  + actions: [{ label: "Previous", action: "previous" }],
+  - action: (actions) => actions.prev()
+  + action: (actions) => actions.previous()
+  - translations: { prevStep: "Previous step" }
+  + translations: { previousStep: "Previous step" }
+  ```
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onOpenChange` details, such as
+  `trigger-click`, `escape-key`, `interact-outside`, `item-select` or `script`. Each component exports its
+  `OpenChangeReason` type.
+
+  - Add an optional `reason` to `api.setOpen(open, reason)`, defaulting to `script`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix a preset closing the picker without calling
+  `onOpenChange`, and an inline or closed picker calling it.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a filter input and an empty state to menu and
+  select with `popupType: "dialog"`. You filter the items; the input keeps focus while the arrow keys move the
+  highlight.
+
+  ```tsx
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
+    <div {...api.getListProps()}>{/* items */}</div>
+  </div>
+  ```
+
+  - Add `getEmptyProps()` to combobox and listbox. It's a polite live region, so keep it rendered and toggle its text.
+
+  - Fix a lazily mounted popup inside nested dialogs rendering behind the dialog.
+
+  **Breaking:** Set the highlight with `setHighlightedValue` in every list component, and pass `null` to clear it.
+
+  ```diff
+  - api.setHighlightValue("react") // select, combobox, cascade select
+  - api.highlightValue("react") // listbox
+  + api.setHighlightedValue("react")
+
+  - api.clearHighlightValue()
+  + api.setHighlightedValue(null)
+  ```
+
+  **Breaking (menu):** Replace `composite` with `popupType`, matching select and combobox.
+
+  ```diff
+  - menu.machine({ composite: false })
+  + menu.machine({ popupType: "dialog" })
+  ```
+
+  - **Menu:** Add `autoHighlight` to highlight the first item as the query changes. A submenu can have its own input;
+    `Escape`, `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's. `onHighlightChange` reports a
+    `reason`.
+
+  - **Select:** `Home` and `End` jump to the first or last item when the input is empty, and `alignItemWithTrigger`
+    keeps the selected item of a long list next to the trigger.
+
+- Updated dependencies [[`a87b07c`](https://github.com/chakra-ui/zag/commit/a87b07cd7b52ffd9083cd61ea1f135b927e98109),
+  [`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2),
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06),
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8)]:
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/popper@2.0.0-next.4
+  - @zag-js/date-utils@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/live-region@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
