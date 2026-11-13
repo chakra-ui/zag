@@ -140,6 +140,10 @@
   }
 }
 
+[data-toast-group] {
+  z-index: 2000;
+}
+
 @media (max-width: 640px) {
   [data-toast-group] {
     width: 100%;

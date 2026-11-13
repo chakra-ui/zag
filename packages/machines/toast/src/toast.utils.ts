@@ -1,5 +1,4 @@
 import type { Service } from "@zag-js/core"
-import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
 import type { Style } from "@zag-js/types"
 import type {
@@ -54,7 +53,6 @@ export function getGroupPlacementStyle(service: ToastGroupService, placement: Pl
     "--viewport-offset-right": computedOffset.right,
     "--viewport-offset-top": computedOffset.top,
     "--viewport-offset-bottom": computedOffset.bottom,
-    zIndex: MAX_Z_INDEX,
   }
 
   let alignItems: Style["alignItems"] = "center"

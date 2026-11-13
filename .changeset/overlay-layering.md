@@ -14,6 +14,7 @@
 "@zag-js/drawer": major
 "@zag-js/floating-panel": major
 "@zag-js/tour": major
+"@zag-js/toast": major
 ---
 
 Zag no longer sets a `z-index` on overlays. Set it in CSS, using `--layer-index` for the overlay's place in the stack.
@@ -40,5 +41,7 @@ Zag no longer sets a `z-index` on overlays. Set it in CSS, using `--layer-index`
 - The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the front.
 
 - The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+- The toast group no longer sets an inline `z-index`. Set it on `[data-toast-group]` in CSS.
 
 - Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.

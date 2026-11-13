@@ -1,4 +1,8 @@
 @layer recipes {
+  .Group {
+    z-index: 2000;
+  }
+
   .Root {
     position: relative;
     display: flex;
