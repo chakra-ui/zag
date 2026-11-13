@@ -55,7 +55,12 @@ export default function Page() {
           </div>
         </div>
         <div {...api.getPositionerProps()}>
-          <div {...mergeProps(scrollAreaApi.getRootProps(), { style: { width: "auto", height: "auto" } })}>
+          <div
+            {...mergeProps(scrollAreaApi.getRootProps(), {
+              hidden: !api.open,
+              style: { width: "auto", height: "auto" },
+            })}
+          >
             <ul
               {...mergeProps(scrollAreaApi.getViewportProps(), api.getContentProps(), {
                 style: { scrollbarWidth: "none" },

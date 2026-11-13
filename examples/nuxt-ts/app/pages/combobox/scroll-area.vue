@@ -55,7 +55,11 @@ const scrollAreaApi = computed(() => scrollArea.connect(scrollAreaService, norma
       </div>
     </div>
     <div v-bind="api.getPositionerProps()">
-      <div v-bind="mergeProps(scrollAreaApi.getRootProps(), { style: { width: 'auto', height: 'auto' } })">
+      <div
+        v-bind="
+          mergeProps(scrollAreaApi.getRootProps(), { hidden: !api.open, style: { width: 'auto', height: 'auto' } })
+        "
+      >
         <ul
           v-bind="
             mergeProps(scrollAreaApi.getViewportProps(), api.getContentProps(), { style: { scrollbarWidth: 'none' } })

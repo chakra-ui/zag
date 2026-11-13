@@ -59,7 +59,7 @@
     </div>
   </div>
   <div {...api.getPositionerProps()}>
-    <div {...mergeProps(scrollAreaApi.getRootProps(), { style: "width: auto; height: auto" })}>
+    <div {...mergeProps(scrollAreaApi.getRootProps(), { hidden: !api.open, style: "width: auto; height: auto" })}>
       <ul {...mergeProps(scrollAreaApi.getViewportProps(), api.getContentProps(), { style: "scrollbar-width: none" })}>
         {#each options as item (item.code)}
           <li {...api.getItemProps({ item })}>

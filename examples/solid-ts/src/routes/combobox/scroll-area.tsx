@@ -46,7 +46,11 @@ export default function Page() {
 
   const scrollAreaApi = createMemo(() => scrollArea.connect(scrollAreaService, normalizeProps))
 
-  const rootProps = mergeProps(() => scrollAreaApi().getRootProps(), { style: { width: "auto", height: "auto" } })
+  const rootProps = mergeProps(
+    () => scrollAreaApi().getRootProps(),
+    () => ({ hidden: !api().open }),
+    { style: { width: "auto", height: "auto" } },
+  )
 
   const contentProps = mergeProps(
     () => scrollAreaApi().getViewportProps(),
