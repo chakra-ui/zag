@@ -1,5 +1,5 @@
 ---
-"@zag-js/hover-card": minor
+"@zag-js/hover-card": major
 ---
 
 - Add a `viewport` part to animate switching between triggers. Render a content per trigger with
@@ -17,3 +17,18 @@
 - Fix `onOpenChange` reporting a close twice when a controlled card is dismissed during a pending hover close.
 
 - Fix the card reopening when the window regains focus, and staying open when its trigger is removed.
+
+- **Breaking:** Report a hover close with the `trigger-hover` reason, the same as a hover open. The `pointer-leave`
+  reason is removed.
+
+  ```ts
+  // before
+  onOpenChange({ open, reason }) {
+    if (reason === "pointer-leave") {}
+  }
+
+  // after
+  onOpenChange({ open, reason }) {
+    if (!open && reason === "trigger-hover") {}
+  }
+  ```

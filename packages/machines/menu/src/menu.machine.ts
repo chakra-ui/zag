@@ -67,7 +67,7 @@ function getHighlightReason(event: { type: string; previousEvent?: any } | undef
   const type = event?.type === "CONTROLLED.OPEN" ? event.previousEvent?.type : event?.type
   if (keyboardEvents.has(type)) return "keyboard"
   if (pointerEvents.has(type)) return "pointer"
-  return "programmatic"
+  return "script"
 }
 
 type FocusSource = "hover" | "touch" | "pointer" | "other"
@@ -748,7 +748,7 @@ export const machine = createMachine<MenuSchema>({
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
-          send({ type: "DELAY.CLOSE", src: "pointer-leave" })
+          send({ type: "DELAY.CLOSE", src: "trigger-hover" })
         }, 100)
         return () => clearTimeout(timer)
       },
@@ -884,7 +884,7 @@ export const machine = createMachine<MenuSchema>({
           })
 
           if (!isMovingToSubmenu) {
-            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU", src: "pointer-leave" })
+            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU", src: "trigger-hover" })
             setParentRoutingLock(parent, false)
           }
         })
@@ -940,10 +940,10 @@ export const machine = createMachine<MenuSchema>({
         }
         dom.dispatchMenubarEvent(menubarEl, "menu:open", detail)
       },
-      dispatchMenubarClose({ scope, prop, refs }) {
+      dispatchMenubarClose({ scope, prop, refs, event }) {
         const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
         if (!menubarEl) return
-        const reason = refs.get("menubarCloseReason") ?? "close"
+        const reason = refs.get("menubarCloseReason") ?? getOpenChangeReason(event) ?? "script"
         refs.set("menubarCloseReason", null)
         dom.dispatchMenubarEvent(menubarEl, "menu:close", {
           menuId: scope.id,
@@ -1188,6 +1188,8 @@ export const machine = createMachine<MenuSchema>({
         nextEl?.focus({ preventScroll: true })
       },
       focusMenu({ scope, event, refs, context }) {
+        const openEvent = event.type === "CONTROLLED.OPEN" && event.previousEvent ? event.previousEvent : event
+        if (openEvent.focus === false) return
         const source = getFocusSource(event)
         const target = event.target
         refs.get("focusMenuFrame").request(() => {
@@ -1317,7 +1319,7 @@ export const machine = createMachine<MenuSchema>({
           // Focus parent menu before closing to prevent focus from escaping
           // (fixes issue where submenus with focusable elements cause parent to close)
           dom.getContentEl(scope, context.get("triggerValue"))?.focus({ preventScroll: true })
-          child.send({ type: "CLOSE", src: "pointer-leave" })
+          child.send({ type: "CLOSE", src: "trigger-hover" })
         }
       },
       closeRootMenu({ refs }) {

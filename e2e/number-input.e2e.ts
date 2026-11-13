@@ -659,7 +659,7 @@ test.describe("number input", () => {
       await I.seeChangeReason("keyboard")
 
       await I.clickInc()
-      await I.seeChangeReason("increment-press")
+      await I.seeChangeReason("increment-trigger")
 
       // blur only reports a reason when it actually changes the value (max is 1000)
       await I.fillInput("5000")
@@ -690,7 +690,7 @@ test.describe("number input", () => {
       await I.releaseIncWithTouch()
       await I.seeInputHasValue("6")
       await I.seeCommitCount(2)
-      await I.seeCommitReason("increment-press")
+      await I.seeCommitReason("increment-trigger")
     })
 
     test("should not step when a touch on a stepper turns into a scroll", async () => {
@@ -854,7 +854,7 @@ test.describe("number input", () => {
 
       await I.clickInc()
       await I.seeCommitCount(3)
-      await I.seeCommitReason("increment-press")
+      await I.seeCommitReason("increment-trigger")
     })
   })
 

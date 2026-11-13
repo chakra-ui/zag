@@ -299,6 +299,7 @@ export const routes: RouteDefinition[] = [
   { path: "/marquee/basic", component: lazy(() => import("./pages/marquee/basic")) },
   { path: "/menu/async", component: lazy(() => import("./pages/menu/async")) },
   { path: "/menu/basic", component: lazy(() => import("./pages/menu/basic")) },
+  { path: "/menu/hover-intent", component: lazy(() => import("./pages/menu/hover-intent")) },
   { path: "/menu/animated-triggers", component: lazy(() => import("./pages/menu/animated-triggers")) },
   { path: "/menu/conditional-portal", component: lazy(() => import("./pages/menu/conditional-portal")) },
   { path: "/menu/controlled", component: lazy(() => import("./pages/menu/controlled")) },

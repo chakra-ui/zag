@@ -116,7 +116,7 @@ export const machine = createMachine<MenubarSchema>({
 
   implementations: {
     guards: {
-      isTransientClose: ({ event }) => event.reason === "sibling-open" || event.reason === "list-navigation",
+      isTransientClose: ({ event }) => event.reason === "sibling-open",
     },
 
     effects: {

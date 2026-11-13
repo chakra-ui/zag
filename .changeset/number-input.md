@@ -74,3 +74,15 @@
   users being unable to type a negative number.
 
 - Fix Enter committing an out-of-range value without clamping it.
+
+- **Breaking:** Rename the `increment-press` and `decrement-press` change reasons to `increment-trigger` and
+  `decrement-trigger`, after the parts that cause them.
+
+  ```ts
+  // before
+  if (reason === "increment-press") {
+  }
+  // after
+  if (reason === "increment-trigger") {
+  }
+  ```

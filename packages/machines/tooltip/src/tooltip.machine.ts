@@ -511,7 +511,7 @@ export const machine = createMachine<TooltipSchema>({
           openedByPointer: () => context.get("isPointer"),
           defer: true,
           onLeave() {
-            send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
+            send({ type: "SAFE_AREA.EXIT", src: "trigger-hover" })
           },
         })
       },

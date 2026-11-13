@@ -335,7 +335,7 @@ export const machine = createMachine<HoverCardSchema>({
           isTargetInside: (target) => isInNestedLayer(dom.getLayerEl(scope, context.get("triggerValue")), target),
           defer: true,
           onLeave() {
-            send({ type: "SAFE_AREA.EXIT", src: "pointer-leave" })
+            send({ type: "SAFE_AREA.EXIT", src: "trigger-hover" })
           },
           onEnter() {
             send({ type: "SAFE_AREA.ENTER" })

@@ -164,7 +164,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
           refs.set("inlineLines", undefined)
-          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
+          send({ type: "POINTER_LEAVE", src: "trigger-hover" })
         },
         onFocus() {
           if (prop("disabled")) return

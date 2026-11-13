@@ -575,6 +575,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "nested-controlled", title: "Nested Controlled" },
       { slug: "multiple-trigger", title: "Multiple Trigger" },
       { slug: "virtualized", title: "Virtualized" },
+      { slug: "hover-intent", title: "Hover Intent" },
     ],
   },
   {

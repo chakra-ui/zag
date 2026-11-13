@@ -14,8 +14,8 @@ export type ValueChangeReason =
   | "input-change"
   | "input-blur" // clamped or formatted on blur
   | "keyboard"
-  | "increment-press"
-  | "decrement-press"
+  | "increment-trigger"
+  | "decrement-trigger"
   | "wheel"
   | "scrub"
   | "script"

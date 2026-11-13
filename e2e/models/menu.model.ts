@@ -103,6 +103,18 @@ export class MenuModel extends Model {
     await this.getItem(text).hover()
   }
 
+  get searchInput() {
+    return this.page.getByLabel("Search")
+  }
+
+  hoverTrigger = async () => {
+    await this.trigger.hover()
+  }
+
+  seeSearchIsFocused = async () => {
+    await expect(this.searchInput).toBeFocused()
+  }
+
   hoverOut = async () => {
     await this.page.mouse.move(0, 0)
   }

@@ -20,8 +20,7 @@ export interface ScrollToIndexDetails {
  * - `trigger-click`: the trigger was pressed by pointer or Enter/Space
  * - `arrow-key`: an arrow key opened or closed the menu
  * - `context-menu`: the context trigger was right-clicked or long-pressed
- * - `trigger-hover`: the pointer hovered the trigger (submenu or menubar)
- * - `pointer-leave`: the pointer left a submenu or its trigger
+ * - `trigger-hover`: the pointer hovered, or left, a trigger or submenu. With `setOpen`, focus stays put
  * - `sibling-open`: another menu in the menubar opened
  * - `item-select`: an item was selected
  * - `escape-key`: Escape was pressed
@@ -35,7 +34,6 @@ export type OpenChangeReason =
   | "arrow-key"
   | "context-menu"
   | "trigger-hover"
-  | "pointer-leave"
   | "sibling-open"
   | "item-select"
   | "escape-key"
@@ -77,7 +75,7 @@ export interface SelectionDetails {
   modifiers: ModifierKeys
 }
 
-export type HighlightChangeReason = "keyboard" | "pointer" | "programmatic"
+export type HighlightChangeReason = "keyboard" | "pointer" | "script"
 
 export interface HighlightChangeDetails {
   /**

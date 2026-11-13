@@ -14,3 +14,6 @@
 - Fix Tab being trapped in an open menu. Tab and Shift+Tab close every open menu and move focus past the trigger.
 
 - Fix a submenu closing without calling `onOpenChange` when the pointer moves away from it.
+
+- Keep focus where it is when `api.setOpen(open, "trigger-hover")` opens or closes the menu, for menus that open on
+  hover.

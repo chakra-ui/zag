@@ -205,7 +205,14 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     highlightedValue,
     open,
     setOpen(nextOpen, reason = "script") {
-      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
+      // Hover intent opens and closes without moving focus
+      const hover = reason === "trigger-hover"
+      send({
+        type: nextOpen ? "OPEN" : "CLOSE",
+        src: reason,
+        replaces: "open",
+        ...(hover && (nextOpen ? { focus: false } : { restoreFocus: false })),
+      })
     },
     triggerValue,
     activationDirection,
@@ -339,7 +346,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             type: "TRIGGER_POINTERLEAVE",
             target: event.currentTarget,
             point,
-            src: "pointer-leave",
+            src: "trigger-hover",
           })
         },
         onPointerDown(event) {
@@ -563,7 +570,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               }
               // Horizontal: a top-level menubar menu hops to the previous sibling (stays open).
               if (isInMenubar && menubar.rootEl) {
-                service.refs.set("menubarCloseReason", "list-navigation")
+                service.refs.set("menubarCloseReason", "sibling-open")
                 dom.dispatchMenubarEvent(menubar.rootEl, "menu:focus-prev")
                 return
               }
@@ -582,7 +589,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
               // nested submenu). Vertical switches siblings via the trigger's Up/Down instead.
               const menubar = getTreeMenubar(service)
               if (menubar.orientation === "horizontal" && menubar.rootEl) {
-                service.refs.set("menubarCloseReason", "list-navigation")
+                service.refs.set("menubarCloseReason", "sibling-open")
                 dom.dispatchMenubarEvent(menubar.rootEl, "menu:focus-next")
                 return
               }

@@ -20,8 +20,7 @@ import type {
 /**
  * What opened, switched or closed the menu:
  * - `trigger-click`: a trigger was pressed
- * - `trigger-hover`: the pointer rested on a trigger
- * - `pointer-leave`: the pointer left the triggers and content
+ * - `trigger-hover`: the pointer rested on a trigger, or left the triggers and content
  * - `item-select`: a link was selected
  * - `escape-key`: Escape was pressed
  * - `interact-outside`: the pointer was pressed outside
@@ -31,7 +30,6 @@ import type {
 export type ValueChangeReason =
   | "trigger-click"
   | "trigger-hover"
-  | "pointer-leave"
   | "item-select"
   | "escape-key"
   | "interact-outside"

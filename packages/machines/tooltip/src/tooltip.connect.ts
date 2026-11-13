@@ -167,10 +167,10 @@ export function connect<P extends PropTypes>(
           send({ type: "POINTER_MOVE", value, triggerId, src: "trigger-hover" })
         },
         onPointerLeave() {
-          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
+          send({ type: "POINTER_LEAVE", src: "trigger-hover" })
         },
         onPointerCancel() {
-          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
+          send({ type: "POINTER_LEAVE", src: "trigger-hover" })
         },
       })
     },
