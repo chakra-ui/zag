@@ -1,4 +1,4 @@
-import { contains, getActiveElement, getDocument, getEventTarget, isHTMLElement, whenNode } from "@zag-js/dom-query"
+import { contains, getEventTarget, isHTMLElement, whenNode } from "@zag-js/dom-query"
 import {
   trackInteractOutside,
   type FocusOutsideEvent,
@@ -99,6 +99,10 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     return Array.isArray(containers) ? containers : [containers]
   }
 
+  // Not the focused element: a menu opens on pointerdown while focus is still in an open sibling
+  const triggers = resolveExcluded().filter(Boolean)
+  const origins = triggers.length ? [node, ...triggers] : undefined
+
   const layer: Layer = {
     dismiss: onDismiss,
     node,
@@ -107,7 +111,7 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     pointerBlocking,
     requestDismiss: onRequestDismiss,
     onLayerChange,
-    origins: [node, ...resolveExcluded(), getActiveElement(getDocument(node))],
+    origins,
   }
 
   layerStack.add(layer)
