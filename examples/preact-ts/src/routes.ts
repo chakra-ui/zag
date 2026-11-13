@@ -156,6 +156,7 @@ export const routes: RouteDefinition[] = [
   { path: "/combobox/highlighted-on-mount", component: lazy(() => import("./pages/combobox/highlighted-on-mount")) },
   { path: "/combobox/emoji-picker", component: lazy(() => import("./pages/combobox/emoji-picker")) },
   { path: "/combobox/form", component: lazy(() => import("./pages/combobox/form")) },
+  { path: "/combobox/scroll-area", component: lazy(() => import("./pages/combobox/scroll-area")) },
   { path: "/editable/basic", component: lazy(() => import("./pages/editable/basic")) },
   { path: "/editable/controlled", component: lazy(() => import("./pages/editable/controlled")) },
   { path: "/dialog/basic", component: lazy(() => import("./pages/dialog/basic")) },

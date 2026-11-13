@@ -328,6 +328,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "emoji-picker", title: "Emoji Picker" },
       { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
       { slug: "grouped", title: "Grouped" },
+      { slug: "scroll-area", title: "Scroll Area" },
     ],
   },
   {
