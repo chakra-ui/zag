@@ -321,7 +321,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "fieldset",
     label: "Fieldset",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "groups", title: "Checkbox and Radio Groups" },
+      { slug: "nested", title: "Nested" },
+    ],
   },
   {
     slug: "file-upload",

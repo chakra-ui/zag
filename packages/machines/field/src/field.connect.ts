@@ -34,6 +34,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
     helperTextId: ids.helperText,
     hasHelperText: context.get("hasHelperText"),
     errorTextIds: context.get("errorTextIds"),
+    fieldsetErrorTextId: context.get("fieldsetErrorTextId"),
   })
 
   // -----------------------------------------------------------------------------

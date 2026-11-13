@@ -24,7 +24,8 @@ export interface FieldsetProps extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean | undefined
   /**
-   * Whether the fieldset is invalid. Not inherited by descendant fields.
+   * Whether the fieldset is invalid. Not inherited by descendant fields,
+   * but their controls are described by the fieldset's error text.
    * @default false
    */
   invalid?: boolean | undefined
@@ -39,6 +40,7 @@ export interface FieldsetSchema {
   context: {
     hasErrorText: boolean
     hasHelperText: boolean
+    hasLegend: boolean
     /**
      * Whether an ancestor `<fieldset disabled>` disables this one.
      */

@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./fieldset.anatomy"
 import * as dom from "./fieldset.dom"
@@ -54,9 +54,8 @@ export function connect<T extends PropTypes>(
         id: ids.root,
         dir: prop("dir"),
         disabled: prop("disabled"),
-        "aria-labelledby": ids.legend,
+        "aria-labelledby": context.get("hasLegend") ? ids.legend : undefined,
         "aria-describedby": ariaDescribedby,
-        "aria-invalid": ariaAttr(fieldsetState.invalid),
         ...getDataAttrs(fieldsetState),
       })
     },
@@ -89,7 +88,6 @@ export function connect<T extends PropTypes>(
         id: ids.errorText,
         dir: prop("dir"),
         hidden: errorTextState.hidden,
-        "aria-live": "polite",
         ...getDataAttrs(errorTextState),
       })
     },

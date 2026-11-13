@@ -103,16 +103,18 @@ export interface DescribedByOptions {
   helperTextId: string
   hasHelperText: boolean
   errorTextIds: string[]
+  fieldsetErrorTextId?: string | null | undefined
 }
 
 /**
- * Description first, then visible error ids in DOM order.
+ * Description first, then visible error ids in DOM order, then the enclosing fieldset's error.
  * Hidden error texts must not be referenced — screen readers still announce them.
  */
 export function composeDescribedBy(options: DescribedByOptions): string | undefined {
   const ids: string[] = []
   if (options.hasHelperText) ids.push(options.helperTextId)
   ids.push(...options.errorTextIds)
+  if (options.fieldsetErrorTextId) ids.push(options.fieldsetErrorTextId)
   return ids.length > 0 ? ids.join(" ") : undefined
 }
 

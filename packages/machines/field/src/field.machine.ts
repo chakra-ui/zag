@@ -48,6 +48,7 @@ export const machine = createMachine({
       validity: bindable<ValiditySnapshot | null>(() => ({ defaultValue: null })),
       errorTextIds: bindable<string[]>(() => ({ defaultValue: [] })),
       hasHelperText: bindable<boolean>(() => ({ defaultValue: false })),
+      fieldsetErrorTextId: bindable<string | null>(() => ({ defaultValue: null })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       submitAttempted: bindable<boolean>(() => ({ defaultValue: false })),
       dismissedErrorsKey: bindable<string | null>(() => ({ defaultValue: null })),
@@ -92,7 +93,7 @@ export const machine = createMachine({
     })
   },
 
-  effects: ["trackControlState", "trackTextParts"],
+  effects: ["trackControlState", "trackTextParts", "trackFieldsetError"],
 
   exit: ["cancelResetFrame"],
 
@@ -181,6 +182,21 @@ export const machine = createMachine({
         }
         sync()
         return observeChildren(() => dom.getRootEl(scope), {
+          defer: true,
+          callback: sync,
+          attributes: true,
+          attributeFilter: ["hidden"],
+        })
+      },
+
+      trackFieldsetError({ context, scope }) {
+        const getFieldsetEl = () => dom.getFieldsetEl(scope)
+        const sync = () => {
+          const fieldsetEl = getFieldsetEl()
+          context.set("fieldsetErrorTextId", fieldsetEl ? dom.getFieldsetErrorTextId(fieldsetEl) : null)
+        }
+        sync()
+        return observeChildren(getFieldsetEl, {
           defer: true,
           callback: sync,
           attributes: true,

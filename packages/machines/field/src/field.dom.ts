@@ -24,3 +24,17 @@ export const getVisibleErrorTextIds = (ctx: Scope) =>
     .queryAll<HTMLElement>(ctx.selector(parts.errorText))
     .filter((el) => !el.hidden && el.id)
     .map((el) => el.id)
+
+// Fieldset parts carry the fieldset machine id: `data-fieldset-root="<id>"`
+export const getFieldsetEl = (ctx: Scope) =>
+  getRootEl(ctx)?.parentElement?.closest<HTMLElement>("[data-fieldset-root]") ?? null
+
+export const getFieldsetErrorTextId = (fieldsetEl: HTMLElement) => {
+  const fieldsetId = fieldsetEl.getAttribute("data-fieldset-root")
+  for (const el of fieldsetEl.querySelectorAll<HTMLElement>("[data-fieldset-error-text]")) {
+    // skip error texts owned by nested fieldsets
+    if (el.getAttribute("data-fieldset-error-text") !== fieldsetId) continue
+    if (!el.hidden && el.id) return el.id
+  }
+  return null
+}

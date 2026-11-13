@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { observeAttributes, observeChildren } from "@zag-js/dom-query"
+import { observeChildren, trackFieldsetDisabled } from "@zag-js/dom-query"
 import * as dom from "./fieldset.dom"
 import type { FieldsetSchema } from "./fieldset.types"
 
@@ -23,6 +23,7 @@ export const machine = createMachine({
     return {
       hasErrorText: bindable<boolean>(() => ({ defaultValue: false })),
       hasHelperText: bindable<boolean>(() => ({ defaultValue: false })),
+      hasLegend: bindable<boolean>(() => ({ defaultValue: false })),
       ancestorDisabled: bindable<boolean>(() => ({ defaultValue: false })),
     }
   },
@@ -43,19 +44,16 @@ export const machine = createMachine({
         const sync = () => {
           context.set("hasErrorText", !!scope.getById(dom.getErrorTextId(scope)))
           context.set("hasHelperText", !!scope.getById(dom.getHelperTextId(scope)))
+          context.set("hasLegend", !!scope.getById(dom.getLegendId(scope)))
         }
         sync()
         return observeChildren(() => dom.getRootEl(scope), { defer: true, callback: sync })
       },
 
       trackAncestorDisabled({ context, scope }) {
-        const rootEl = dom.getRootEl(scope)
-        const parent = rootEl?.parentElement?.closest("fieldset")
-        if (!parent) return
-        // `:disabled` also covers fieldsets disabled further up the tree
-        const sync = () => context.set("ancestorDisabled", parent.matches(":disabled"))
-        sync()
-        return observeAttributes(parent, { attributes: ["disabled"], callback: sync })
+        return trackFieldsetDisabled(dom.getRootEl(scope)?.parentElement, (disabled) => {
+          context.set("ancestorDisabled", disabled)
+        })
       },
     },
   },

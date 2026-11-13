@@ -153,6 +153,7 @@ export interface FieldSchema {
     validity: ValiditySnapshot | null
     errorTextIds: string[]
     hasHelperText: boolean
+    fieldsetErrorTextId: string | null
     fieldsetDisabled: boolean
     submitAttempted: boolean
     dismissedErrorsKey: string | null

@@ -174,6 +174,20 @@ describe("composeDescribedBy", () => {
     expect(composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: ["err"] })).toBe("err")
     expect(composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: [] })).toBeUndefined()
   })
+
+  test("the enclosing fieldset's error comes last", () => {
+    expect(
+      composeDescribedBy({
+        helperTextId: "helper",
+        hasHelperText: true,
+        errorTextIds: ["err"],
+        fieldsetErrorTextId: "fieldset-err",
+      }),
+    ).toBe("helper err fieldset-err")
+    expect(
+      composeDescribedBy({ helperTextId: "helper", hasHelperText: false, errorTextIds: [], fieldsetErrorTextId: null }),
+    ).toBeUndefined()
+  })
 })
 
 describe("getFormValues", () => {

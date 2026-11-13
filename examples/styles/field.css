@@ -136,3 +136,17 @@ div[data-field-control] {
 .field-page .field-item-row input[data-field-control] {
   flex: 1;
 }
+
+.field-page .field-option {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  & input[data-field-control] {
+    padding: 0;
+  }
+
+  & [data-field-label] {
+    font-weight: 400;
+  }
+}

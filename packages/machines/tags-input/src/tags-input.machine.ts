@@ -87,8 +87,8 @@ export const machine = createMachine<TagsInputSchema>({
     count: ({ context }) => context.get("value").length,
     valueAsString: ({ context }) => context.hash("value"),
     sanitizedInputValue: ({ context, prop }) => prop("sanitizeValue")(context.get("inputValue")),
-    isDisabled: ({ prop }) => !!prop("disabled"),
-    isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),
+    isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
+    isInteractive: ({ prop, computed }) => !(prop("readOnly") || computed("isDisabled")),
     isAtMax: ({ context, prop }) => context.get("value").length === prop("max"),
     isOverflowing: ({ context, prop }) => context.get("value").length > prop("max"),
     highlightedValue: ({ context, scope }) =>
