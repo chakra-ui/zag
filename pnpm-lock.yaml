@@ -2520,15 +2520,9 @@ importers:
       '@internationalized/date':
         specifier: 3.12.4
         version: 3.12.4
-      '@zag-js/vanilla':
-        specifier: workspace:*
-        version: link:../../frameworks/vanilla
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
-      jsdom:
-        specifier: ^30.0.0
-        version: 30.1.3
 
   packages/machines/dialog:
     dependencies:

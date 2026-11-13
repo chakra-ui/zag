@@ -317,15 +317,16 @@ type PropsWithDefault =
   | "defaultFocusedValue"
   | "outsideDaySelectable"
 
+interface InputValue {
+  index: number
+  value: string
+}
+
 interface PrivateContext {
   /**
-   * The active input value (based on the active index)
+   * The text to sync into the input at `index`
    */
-  inputValue: string
-  /**
-   * The index of the input that `inputValue` belongs to.
-   */
-  inputValueIndex: number
+  inputValue: InputValue
   /**
    * The start date of the current visible duration.
    */

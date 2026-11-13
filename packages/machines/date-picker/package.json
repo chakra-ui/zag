@@ -49,9 +49,7 @@
   },
   "devDependencies": {
     "@internationalized/date": "3.12.4",
-    "@zag-js/vanilla": "workspace:*",
-    "clean-package": "2.2.0",
-    "jsdom": "^30.0.0"
+    "clean-package": "2.2.0"
   },
   "clean-package": "./clean-package.config.json"
 }
