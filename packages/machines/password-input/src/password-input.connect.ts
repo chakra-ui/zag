@@ -3,14 +3,7 @@ import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./password-input.anatomy"
 import * as dom from "./password-input.dom"
-import type {
-  InputState,
-  IntlTranslations,
-  PasswordInputApi,
-  PasswordInputService,
-  RootState,
-  VisibilityTriggerState,
-} from "./password-input.types"
+import type { IntlTranslations, PasswordInputApi, PasswordInputService, RootState } from "./password-input.types"
 
 const defaultTranslations: Required<IntlTranslations> = {
   visibilityTrigger: (visible) => (visible ? "Hide password" : "Show password"),
@@ -35,15 +28,7 @@ export function connect<T extends PropTypes>(
   // -----------------------------------------------------------------------------
 
   function getRootState(): RootState {
-    return { disabled, invalid, readOnly }
-  }
-
-  function getInputState(): InputState {
-    return { disabled, invalid, readOnly, visible }
-  }
-
-  function getVisibilityTriggerState(): VisibilityTriggerState {
-    return { disabled, readOnly, visible }
+    return { disabled, invalid, readOnly, required, visible }
   }
 
   // -----------------------------------------------------------------------------
@@ -77,51 +62,50 @@ export function connect<T extends PropTypes>(
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         htmlFor: dom.getInputId(scope),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
-        "data-required": dataAttr(required),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-required": dataAttr(rootState.required),
       })
     },
 
-    getInputState,
     getInputProps() {
-      const inputState = getInputState()
+      const rootState = getRootState()
       return normalize.input({
         ...parts.input.attrs(scope.id),
         id: dom.getInputId(scope),
         autoCapitalize: "off",
         name: prop("name"),
-        required: prop("required"),
+        required: rootState.required,
         autoComplete: prop("autoComplete"),
         spellCheck: false,
-        readOnly: inputState.readOnly,
-        disabled: inputState.disabled,
-        type: inputState.visible ? "text" : "password",
-        "data-state": inputState.visible ? "visible" : "hidden",
-        "aria-invalid": ariaAttr(inputState.invalid),
-        "data-disabled": dataAttr(inputState.disabled),
-        "data-invalid": dataAttr(inputState.invalid),
-        "data-readonly": dataAttr(inputState.readOnly),
+        readOnly: rootState.readOnly,
+        disabled: rootState.disabled,
+        type: rootState.visible ? "text" : "password",
+        "data-state": rootState.visible ? "visible" : "hidden",
+        "aria-invalid": ariaAttr(rootState.invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
         ...(prop("ignorePasswordManagers") ? passwordManagerProps : {}),
       })
     },
 
-    getVisibilityTriggerState,
     getVisibilityTriggerProps() {
-      const visibilityTriggerState = getVisibilityTriggerState()
+      const rootState = getRootState()
       return normalize.button({
         ...parts.visibilityTrigger.attrs(scope.id),
         type: "button",
         "aria-controls": dom.getInputId(scope),
-        "data-readonly": dataAttr(visibilityTriggerState.readOnly),
-        disabled: visibilityTriggerState.disabled,
-        "data-disabled": dataAttr(visibilityTriggerState.disabled),
-        "data-state": visibilityTriggerState.visible ? "visible" : "hidden",
-        "aria-label": translations?.visibilityTrigger?.(visibilityTriggerState.visible),
+        "data-readonly": dataAttr(rootState.readOnly),
+        disabled: rootState.disabled,
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-state": rootState.visible ? "visible" : "hidden",
+        "aria-label": translations?.visibilityTrigger?.(rootState.visible),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if (!interactive) return
@@ -138,22 +122,24 @@ export function connect<T extends PropTypes>(
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         "aria-hidden": true,
-        "data-state": visible ? "visible" : "hidden",
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-state": rootState.visible ? "visible" : "hidden",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
   }
