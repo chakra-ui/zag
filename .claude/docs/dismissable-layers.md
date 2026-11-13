@@ -7,9 +7,8 @@ helpers in `packages/utilities/dismissable/src/layer-stack.ts`.
 
 Every layer has a `parent`, set once when it is added:
 
-1. **It has triggers** (the `exclude` containers): its origins are its own node, its triggers and the element focused
-   when it opened. The parent is the topmost open layer that contains one of them. If none does, it has no parent and is
-   a sibling.
+1. **It has triggers** (the `exclude` containers, passed as `origins`): the parent is the topmost open layer that
+   contains one of its origins (its own node or a trigger). If none does, it has no parent and is a sibling.
 2. **It has no triggers**: the parent is whatever layer is on top. This is the old rule, kept for layers opened only
    through `open`/`setOpen`.
 
@@ -35,9 +34,10 @@ follows portals' DOM, shadow hosts and same-origin iframes, so the answer doesn'
 `--layer-index` and pointer blocking stay stack-order based. They are about painting and which layer gets pointer
 events, not ancestry.
 
-## Opened in code from inside another layer
+## Known trade-off
 
-The focused element is an origin so this case still nests:
+A layer opened in code from inside another layer, while its own trigger is rendered elsewhere, is a sibling, not a
+child:
 
 ```tsx
 <button {...help.getTriggerProps()}>Help</button>
@@ -46,8 +46,8 @@ The focused element is an origin so this case still nests:
 </div>
 ```
 
-Clicking "Need help?" leaves focus inside Settings, so Help nests in it. Safari doesn't focus buttons on mouse click, so
-there focus stays wherever it was. If that is inside Settings it still nests, otherwise Help is a sibling.
+Clicking inside Help closes Settings. The focused element can't be used as an origin: a menu opens on `pointerdown`
+while focus is still in the open sibling menu, so the new menu would nest in it and close with it.
 
 ## Not handled
 
