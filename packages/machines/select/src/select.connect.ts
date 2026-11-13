@@ -97,19 +97,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   }
 
   function getRootState(): RootState {
-    return { invalid, readOnly }
+    return { open, disabled: !!disabled, invalid, readOnly, required, focused }
   }
 
   function getTriggerState(): TriggerState {
-    return {
-      open,
-      focused,
-      disabled: !!disabled,
-      invalid,
-      required,
-      readOnly,
-      placeholderShown: !computed("hasSelectedItems"),
-    }
+    return { ...getRootState(), placeholderShown: !computed("hasSelectedItems") }
   }
 
   function getContentState(): ContentState {
@@ -182,47 +174,52 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
         "data-invalid": dataAttr(rootState.invalid),
         "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
     getLabelProps() {
+      const rootState = getRootState()
       return normalize.label({
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         ...parts.label.attrs(scope.id),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
-        "data-required": dataAttr(required),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-required": dataAttr(rootState.required),
         htmlFor: dom.getHiddenSelectId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (disabled) return
+          if (rootState.disabled) return
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
       })
     },
 
     getControlProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-focus": dataAttr(focused),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-focus": dataAttr(rootState.focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
     getValueTextProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.valueText.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
       })
     },
 
@@ -350,14 +347,15 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
         "aria-hidden": true,
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-readonly": dataAttr(rootState.readOnly),
       })
     },
 
@@ -443,12 +441,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
 
     getClearTriggerProps() {
+      const rootState = getRootState()
       return normalize.button({
         ...parts.clearTrigger.attrs(scope.id),
         type: "button",
         "aria-label": translations.clearTriggerLabel,
-        "data-invalid": dataAttr(invalid),
-        disabled: disabled,
+        "data-invalid": dataAttr(rootState.invalid),
+        disabled: rootState.disabled,
         hidden: !computed("hasSelectedItems"),
         dir: prop("dir"),
         onClick(event) {
@@ -492,12 +491,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         send({ type: "VALUE.SET", value: getSelectedValues(e.currentTarget), src: "autofill" })
       }
 
+      const rootState = getRootState()
       return normalize.select({
         name: prop("name"),
         form: prop("form"),
-        disabled: disabled,
+        disabled: rootState.disabled,
         multiple: prop("multiple"),
-        required: prop("required"),
+        required: rootState.required,
         "aria-hidden": true,
         id: dom.getHiddenSelectId(scope),
         defaultValue,

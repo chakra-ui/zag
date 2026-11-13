@@ -337,24 +337,9 @@ export interface ItemState {
 
 export interface RootState {
   /**
-   * Whether the select is invalid
-   */
-  invalid: boolean
-  /**
-   * Whether the select is read-only
-   */
-  readOnly: boolean
-}
-
-export interface TriggerState {
-  /**
    * Whether the select is open
    */
   open: boolean
-  /**
-   * Whether the select is focused
-   */
-  focused: boolean
   /**
    * Whether the select is disabled
    */
@@ -364,13 +349,20 @@ export interface TriggerState {
    */
   invalid: boolean
   /**
+   * Whether the select is read-only
+   */
+  readOnly: boolean
+  /**
    * Whether the select is required
    */
   required: boolean
   /**
-   * Whether the select is read-only
+   * Whether the trigger is focused
    */
-  readOnly: boolean
+  focused: boolean
+}
+
+export interface TriggerState extends RootState {
   /**
    * Whether the trigger is showing the placeholder (no selected items)
    */
