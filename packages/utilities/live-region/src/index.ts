@@ -52,6 +52,9 @@ const HIDDEN_STYLES: Partial<CSSStyleDeclaration> = {
 // when each region (shared across instances) can first be announced into
 const readyAt = new WeakMap<Element, number>()
 
+// instances sharing each region, so one destroying it doesn't remove it from the others
+const users = new WeakMap<Element, number>()
+
 export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   const {
     level = "polite",
@@ -68,6 +71,7 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
 
   let announceTimer: number | undefined
   let clearTimer: number | undefined
+  let destroyed = false
 
   // Screen readers only announce a change to a region they already know about,
   // so the region is created up front and kept.
@@ -160,18 +164,27 @@ export function createLiveRegion(opts: Partial<LiveRegionOptions> = {}) {
   }
 
   /**
-   * Cancels pending work and removes the region.
+   * Cancels pending work, and removes the region once no other instance uses it.
    */
   function destroy() {
     cancel()
     win.clearTimeout(clearTimer)
 
-    doc.getElementById(ID)?.remove()
+    if (destroyed) return
+    destroyed = true
+
+    const region = doc.getElementById(ID)
+    const count = region ? (users.get(region) ?? 1) - 1 : 0
+    if (region) users.set(region, count)
+    if (count > 0) return
+
+    region?.remove()
     if (debug) doc.getElementById(DEBUG_ID)?.remove()
   }
 
   // the region has to exist well before the first announcement
-  getRegion()
+  const region = getRegion()
+  users.set(region, (users.get(region) ?? 0) + 1)
 
   return {
     announce,

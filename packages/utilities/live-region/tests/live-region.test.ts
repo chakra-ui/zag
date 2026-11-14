@@ -92,4 +92,20 @@ describe("live region", () => {
     vi.advanceTimersByTime(1000)
     expect(regions()).toHaveLength(0)
   })
+
+  test("destroy keeps the region while another instance uses it", () => {
+    const first = createLiveRegion()
+    const second = createLiveRegion()
+
+    first.destroy()
+    first.destroy()
+    expect(regions()).toHaveLength(1)
+
+    second.announce("2 results")
+    vi.advanceTimersByTime(1000)
+    expect(regions()[0].textContent).toBe("2 results")
+
+    second.destroy()
+    expect(regions()).toHaveLength(0)
+  })
 })
