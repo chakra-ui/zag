@@ -217,6 +217,12 @@ export interface TourProps extends DirectionProperty, CommonProperties, Interact
    */
   scrollToTargetFn?: ((details: ScrollToTargetDetails) => void) | undefined
   /**
+   * How long to wait, in milliseconds, for a step's target to appear before the tour
+   * ends with the `not-found` status. Pass `Infinity` to wait indefinitely.
+   * @default 3000
+   */
+  targetTimeout?: number | undefined
+  /**
    * The translations for the tour
    */
   translations?: IntlTranslations | undefined
@@ -229,6 +235,7 @@ type PropsWithDefault =
   | "closeOnEscape"
   | "keyboardNavigation"
   | "preventInteraction"
+  | "targetTimeout"
 
 interface PrivateContext {
   /**
