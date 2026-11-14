@@ -6,7 +6,12 @@ import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, C
 
 const HEX_COLOR_REGEX = /^#[\da-f]+$/i
 const RGB_COLOR_REGEX = /^rgba?\((.*)\)$/
+const RGB_COMPONENT_REGEX = /^[+-]?(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?%?$/i
 const HEX_STARTING_REGEX = /[^#]/gi
+
+function toHexChannel(value: number) {
+  return Math.round(value).toString(16).padStart(2, "0")
+}
 
 export class RGBColor extends Color {
   constructor(
@@ -30,14 +35,23 @@ export class RGBColor extends Color {
       colors[3] = colors[3] !== undefined ? colors[3] / 255 : undefined
     }
 
-    // matching rgb(rrr, ggg, bbb), rgba(rrr, ggg, bbb, 0.a)
+    // matching comma-separated rgb() and rgba()
     const match = value.match(RGB_COLOR_REGEX)
 
     if (match?.[1]) {
-      colors = match[1]
-        .split(",")
-        .map((value) => Number(value.trim()))
-        .map((num, i) => clampValue(num, 0, i < 3 ? 255 : 1))
+      const components = match[1].split(",").map((part) => part.trim())
+      if (components.length < 3 || components.length > 4) return
+
+      for (const [index, component] of components.entries()) {
+        if (!RGB_COMPONENT_REGEX.test(component)) return
+
+        const percentage = component.endsWith("%")
+        const number = Number(percentage ? component.slice(0, -1) : component)
+        if (!Number.isFinite(number)) return
+
+        const max = index < 3 ? 255 : 1
+        colors.push(percentage ? (clampValue(number, 0, 100) * max) / 100 : clampValue(number, 0, max))
+      }
     }
 
     //@ts-expect-error
@@ -47,26 +61,11 @@ export class RGBColor extends Color {
   toString(format: ColorStringFormat = "css") {
     switch (format) {
       case "hex":
-        return (
-          "#" +
-          (
-            this.red.toString(16).padStart(2, "0") +
-            this.green.toString(16).padStart(2, "0") +
-            this.blue.toString(16).padStart(2, "0")
-          ).toUpperCase()
-        )
-      case "hexa":
-        return (
-          "#" +
-          (
-            this.red.toString(16).padStart(2, "0") +
-            this.green.toString(16).padStart(2, "0") +
-            this.blue.toString(16).padStart(2, "0") +
-            Math.round(this.alpha * 255)
-              .toString(16)
-              .padStart(2, "0")
-          ).toUpperCase()
-        )
+      case "hexa": {
+        const rgb = toHexChannel(this.red) + toHexChannel(this.green) + toHexChannel(this.blue)
+        const alpha = format === "hexa" ? toHexChannel(this.alpha * 255) : ""
+        return "#" + (rgb + alpha).toUpperCase()
+      }
       case "rgb":
         return `rgb(${this.red}, ${this.green}, ${this.blue})`
       case "css":
