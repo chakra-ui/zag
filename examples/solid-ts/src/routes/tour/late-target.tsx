@@ -1,6 +1,7 @@
 import { tourLateTargetData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
+import { XIcon } from "lucide-solid"
 import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { StateVisualizer } from "~/components/state-visualizer"
@@ -48,6 +49,10 @@ export default function Page() {
                     {(action) => <button {...api().getActionTriggerProps({ action })}>{action.label}</button>}
                   </For>
                 </div>
+
+                <button {...api().getCloseTriggerProps()}>
+                  <XIcon />
+                </button>
               </div>
             </div>
           </Portal>

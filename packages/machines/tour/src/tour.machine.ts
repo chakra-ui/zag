@@ -422,7 +422,7 @@ export const machine = createMachine<TourSchema>({
 
       waitForTargetTimeout({ send, prop }) {
         const timeout = prop("targetTimeout")
-        if (timeout === Infinity) return
+        if (!Number.isFinite(timeout)) return
         const id = setTimeout(() => {
           send({ type: "TARGET.NOT_FOUND" })
         }, timeout)
