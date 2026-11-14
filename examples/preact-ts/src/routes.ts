@@ -91,6 +91,7 @@ export const routes: RouteDefinition[] = [
   { path: "/combobox/controlled", component: lazy(() => import("./pages/combobox/controlled")) },
   { path: "/combobox/controlled-ignore", component: lazy(() => import("./pages/combobox/controlled-ignore")) },
   { path: "/combobox/controlled-input", component: lazy(() => import("./pages/combobox/controlled-input")) },
+  { path: "/combobox/controlled-format", component: lazy(() => import("./pages/combobox/controlled-format")) },
   { path: "/combobox/custom-value", component: lazy(() => import("./pages/combobox/custom-value")) },
   { path: "/combobox/default-open", component: lazy(() => import("./pages/combobox/default-open")) },
   { path: "/combobox/emoji-picker", component: lazy(() => import("./pages/combobox/emoji-picker")) },

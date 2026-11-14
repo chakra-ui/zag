@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { query, setCaretToEnd } from "@zag-js/dom-query"
+import { type InputSelection, query, restoreCursor, setCaretToEnd, setElementValue } from "@zag-js/dom-query"
 import { parts } from "./combobox.anatomy"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
@@ -42,4 +42,11 @@ export const focusTriggerEl = (ctx: Scope) => {
   const triggerEl = getTriggerEl(ctx)
   if (ctx.isActiveElement(triggerEl)) return
   triggerEl?.focus({ preventScroll: true })
+}
+
+export const syncInputValue = (ctx: Scope, value: string, typed?: InputSelection) => {
+  const inputEl = getInputEl(ctx)
+  if (!inputEl) return
+  if (inputEl.value !== value) setElementValue(inputEl, value)
+  restoreCursor(inputEl, typed)
 }

@@ -220,9 +220,11 @@ export const machine = createMachine<EditableSchema>({
         dom.syncInputValue(scope, context.get("value"))
       },
       reconcileInputValue({ context, scope, refs, event }) {
+        if (event.composing) return
         refs.get("syncFrame").request(() => dom.syncInputValue(scope, context.get("value"), event.selection))
       },
       setValue({ context, prop, event }) {
+        if (event.composing) return
         const max = prop("maxLength")
         const value = max != null ? event.value.slice(0, max) : event.value
         context.set("value", value)

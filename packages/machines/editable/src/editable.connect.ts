@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { ariaAttr, dataAttr, isApple, isComposingEvent, recordCursor } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isAndroid, isApple, isComposingEvent, recordCursor } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./editable.anatomy"
@@ -140,6 +140,17 @@ export function connect<T extends PropTypes>(
         defaultValue: value,
         size: autoResize ? 1 : undefined,
         onChange(event) {
+          send({
+            type: "VALUE.SET",
+            src: "input.change",
+            value: event.currentTarget.value,
+            selection: recordCursor(event.currentTarget),
+            // Some Android keyboards report every edit as composing
+            composing: isComposingEvent(event) && !isAndroid(),
+          })
+        },
+        onCompositionEnd(event) {
+          if (isAndroid()) return
           send({
             type: "VALUE.SET",
             src: "input.change",

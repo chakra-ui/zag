@@ -87,6 +87,7 @@ export const machine = createMachine({
       highlightFrame: AnimationFrame.create(),
       initialFocusFrame: AnimationFrame.create(),
       autofillFrame: AnimationFrame.create(),
+      reconcileFrame: AnimationFrame.create(),
       autoHighlightPending: false,
     }
   },
@@ -325,15 +326,15 @@ export const machine = createMachine({
             "INPUT.CHANGE": [
               {
                 guard: and("isOpenControlled", "openOnChange"),
-                actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
+                actions: ["setInputValue", "reconcileInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
               },
               {
                 guard: "openOnChange",
                 target: "open.suggesting",
-                actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
+                actions: ["setInputValue", "reconcileInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
               },
               {
-                actions: ["setInputValue"],
+                actions: ["setInputValue", "reconcileInputValue"],
               },
             ],
             "LAYER.INTERACT_OUTSIDE": {
@@ -584,11 +585,11 @@ export const machine = createMachine({
               {
                 guard: "autoComplete",
                 target: "suggesting",
-                actions: ["setInputValue", "scrollToTop"],
+                actions: ["setInputValue", "reconcileInputValue", "scrollToTop"],
               },
               {
                 target: "suggesting",
-                actions: ["clearHighlightedValue", "setInputValue", "scrollToTop"],
+                actions: ["clearHighlightedValue", "setInputValue", "reconcileInputValue", "scrollToTop"],
               },
             ],
             "ITEM.POINTER_MOVE": {
@@ -653,7 +654,7 @@ export const machine = createMachine({
               actions: ["highlightLastItem"],
             },
             "INPUT.CHANGE": {
-              actions: ["setInputValue", "scrollToTop"],
+              actions: ["setInputValue", "reconcileInputValue", "scrollToTop"],
             },
             "LAYER.ESCAPE": [
               {
@@ -940,6 +941,7 @@ export const machine = createMachine({
       cancelFrames({ refs }) {
         refs.get("initialFocusFrame").cancel()
         refs.get("autofillFrame").cancel()
+        refs.get("reconcileFrame").cancel()
       },
       cancelHighlightFrame({ refs }) {
         refs.get("highlightFrame").cancel()
@@ -956,7 +958,16 @@ export const machine = createMachine({
         })
       },
       setInputValue({ context, event }) {
+        if (event.composing) return
         context.set("inputValue", event.value)
+      },
+      reconcileInputValue({ context, scope, refs, event }) {
+        if (event.composing) return
+        refs.get("reconcileFrame").request(() => {
+          const value = context.get("inputValue")
+          if (value === event.value) return
+          dom.syncInputValue(scope, value, event.selection)
+        })
       },
       clearInputValue({ context }) {
         context.set("inputValue", "")
