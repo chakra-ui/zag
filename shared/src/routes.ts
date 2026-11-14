@@ -200,7 +200,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "presence",
     label: "Presence",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "activity", title: "React Activity" },
+    ],
   },
   {
     slug: "autoresize",
