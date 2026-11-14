@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, raf, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import type { Rect } from "@zag-js/types"
 import * as dom from "./radio-group.dom"
@@ -52,6 +52,9 @@ export const machine = createMachine<RadioGroupSchema>({
       ssr: bindable<boolean>(() => ({
         defaultValue: true,
       })),
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
     }
   },
 
@@ -71,7 +74,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   exit: ["cleanupObserver"],
 
-  effects: ["trackFormControlState", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackFocusVisible", "trackRenderedElements"],
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
@@ -125,6 +128,24 @@ export const machine = createMachine<RadioGroupSchema>({
       },
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
+      trackRenderedElements({ context, scope }) {
+        return raf(() => {
+          const syncRenderedElements = () => {
+            context.set("rendered", { label: !!dom.getLabelEl(scope) })
+          }
+
+          syncRenderedElements()
+
+          const rootEl = dom.getRootEl(scope)
+          if (!rootEl) return
+
+          const win = scope.getWin()
+          const observer = new win.MutationObserver(syncRenderedElements)
+          observer.observe(rootEl, { childList: true, subtree: true })
+
+          return () => observer.disconnect()
+        })
       },
     },
 

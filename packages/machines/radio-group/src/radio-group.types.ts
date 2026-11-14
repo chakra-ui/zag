@@ -105,6 +105,10 @@ interface PrivateContext {
    * Whether the radio group is in server-side rendering
    */
   ssr: boolean
+  /**
+   * Whether the label part is rendered
+   */
+  rendered: { label: boolean }
 }
 
 type PropsWithDefault = "orientation"
