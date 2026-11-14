@@ -64,7 +64,7 @@
   }
 }
 
-[data-scope="toast"][data-part="indicator"] {
+.toast-indicator {
   display: flex;
   flex-shrink: 0;
   padding-block: 1px;
@@ -117,7 +117,7 @@
   color: var(--z-fg-muted);
 }
 
-[data-scope="toast"][data-part="progressbar"] {
+.toast-progressbar {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
