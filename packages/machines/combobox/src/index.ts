@@ -13,6 +13,7 @@ export type {
   CollectionOptions,
   ElementIds,
   HighlightChangeDetails,
+  HighlightedItemDetails,
   InputValueChangeDetails,
   InputValueChangeReason,
   IntlTranslations,

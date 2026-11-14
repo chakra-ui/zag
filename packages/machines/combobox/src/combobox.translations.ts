@@ -7,4 +7,5 @@ export const defaultTranslations: Required<IntlTranslations> = {
   resultsCount: (count) => (count === 1 ? "1 result" : `${count} results`),
   noResults: "No results",
   loading: "Loading results",
+  highlightedItem: ({ label, selected }) => (selected ? `${label}, selected` : label),
 }
