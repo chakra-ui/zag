@@ -1,5 +1,14 @@
 import { createMachine } from "@zag-js/core"
-import { AnimationFrame, getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
+import {
+  AnimationFrame,
+  getComputedStyle,
+  getEventTarget,
+  getWindow,
+  nextTick,
+  raf,
+  setStyle,
+  Timeout,
+} from "@zag-js/dom-query"
 import type { PresenceSchema } from "./presence.types"
 
 export const machine = createMachine<PresenceSchema>({
@@ -240,7 +249,13 @@ export const machine = createMachine<PresenceSchema>({
         node.addEventListener("animationend", onEnd)
         const cleanupStyles = setStyle(node, { animationFillMode: "forwards" })
 
+        // `animationend` can be missed (detached node, a style swap), so unmount once the exit should be over
+        const exitTimeout = Timeout.create()
+        const duration = getExitDuration(refs.get("styles"))
+        if (duration != null) exitTimeout.start(duration, () => send({ type: "UNMOUNT", src: "timeout" }))
+
         return () => {
+          exitTimeout.cancel()
           node.removeEventListener("animationstart", onStart)
           node.removeEventListener("animationcancel", onCancel)
           node.removeEventListener("animationend", onEnd)
@@ -262,5 +277,31 @@ function hasRunningAnimation(node: HTMLElement | null, animationName: string) {
   return node.getAnimations().some((animation) => {
     const name = (animation as CSSAnimation).animationName
     return animation.playState === "running" && (name == null || names.includes(name))
+  })
+}
+
+const EXIT_BUFFER_MS = 50
+
+/** The longest exit animation in ms. An infinite one counts once, since it never ends */
+function getExitDuration(styles?: CSSStyleDeclaration | null) {
+  if (!styles) return
+  const durations = parseTimes(styles.animationDuration)
+  const delays = parseTimes(styles.animationDelay)
+  const counts = (styles.animationIterationCount || "1").split(",").map((v) => Number.parseFloat(v) || 1)
+
+  let max = 0
+  for (let i = 0; i < durations.length; i++) {
+    const total = (delays[i % delays.length] ?? 0) + durations[i] * counts[i % counts.length]
+    max = Math.max(max, total)
+  }
+  return max + EXIT_BUFFER_MS
+}
+
+function parseTimes(value: string | undefined) {
+  if (!value) return [0]
+  return value.split(",").map((v) => {
+    const n = Number.parseFloat(v)
+    if (Number.isNaN(n)) return 0
+    return v.trim().endsWith("ms") ? n : n * 1000
   })
 }
