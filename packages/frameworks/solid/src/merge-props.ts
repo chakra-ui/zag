@@ -58,10 +58,14 @@ export function mergeProps(...sources: any[]) {
           if (value !== undefined) return value
         }
       },
-      // Stops at the first source that has the key, so spreads don't rebuild the key set per key
+      // Checks the last source first, like `get`, and stops at the first that has the key, so finding
+      // a key in a static source never calls (and subscribes to) the function sources before it
       has(key: PropertyKey) {
         if (typeof key !== "string") return false
-        return sources.some((source) => Object.prototype.hasOwnProperty.call(resolve(source), key))
+        for (let i = sources.length - 1; i >= 0; i--) {
+          if (Object.prototype.hasOwnProperty.call(resolve(sources[i]), key)) return true
+        }
+        return false
       },
       keys() {
         const keys = new Set<string>()
