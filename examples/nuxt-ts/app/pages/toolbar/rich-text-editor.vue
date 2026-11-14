@@ -61,11 +61,11 @@ const sizeService = useMachine(
     id: sizeId,
     ids: { input: api.value.getItemId("font-size") },
     disabled: api.value.disabled,
-    defaultValue: "16",
+    defaultValue: 16,
     min: 8,
     max: 96,
     onValueChange(details) {
-      fontSize.value = details.value
+      if (details.value != null) fontSize.value = String(details.value)
     },
   })),
 )

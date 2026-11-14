@@ -8,6 +8,7 @@ import {
   type IntlTranslations,
   type ItemProps,
   type ItemState,
+  type RootState,
   type StepItem,
   type StepsApi,
   type StepsService,
@@ -66,6 +67,14 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
 
   const canSkip = currentItem != null && isItemOptional(currentItem)
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  const getRootState = (): RootState => {
+    return { complete, orientation }
+  }
+
   const getItemState = (props: ItemProps): ItemState => {
     const item = findItem(items, props.value)
     const index = findEffectiveIndex(items, props.value)
@@ -82,10 +91,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
     const skipped = !disabled && !completed && !current && passed
 
     return {
-      value: props.value,
       index,
-      triggerId: dom.getTriggerId(scope, props.value),
-      contentId: dom.getContentId(scope, props.value),
       current,
       completed,
       skipped,
@@ -138,13 +144,15 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
       send({ type: "COMPLETED.SET", value: values, src: "api.setCompletedValues" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         id: dom.getRootId(scope),
         dir: prop("dir"),
-        "data-orientation": orientation,
-        "data-complete": dataAttr(complete),
+        "data-orientation": rootState.orientation,
+        "data-complete": dataAttr(rootState.complete),
         style: {
           "--steps-percent": `${percent}%`,
         },
@@ -171,7 +179,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
         dir: prop("dir"),
         role: "presentation",
         "data-orientation": orientation,
-        ...itemStateAttrs(itemState),
+        ...itemStateAttrs(props.value, itemState),
       })
     },
 
@@ -180,7 +188,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
       const unreachable = !itemState.reachable
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
-        id: itemState.triggerId,
+        id: dom.getTriggerId(scope, props.value),
         role: "tab",
         type: "button",
         dir: prop("dir"),
@@ -188,10 +196,10 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
         disabled: unreachable,
         "aria-selected": itemState.current,
         "aria-current": itemState.current ? "step" : undefined,
-        "aria-controls": itemState.contentId,
+        "aria-controls": dom.getContentId(scope, props.value),
         "data-state": itemState.current ? "open" : "closed",
         "data-orientation": orientation,
-        ...itemStateAttrs(itemState),
+        ...itemStateAttrs(props.value, itemState),
         onClick(event) {
           if (event.defaultPrevented) return
           if (unreachable) return
@@ -246,19 +254,33 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
 
     getContentProps(props) {
       const itemState = getItemState(props)
-      const isComplete = props.value === COMPLETE
       return normalize.element({
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
-        id: itemState.contentId,
-        role: isComplete ? undefined : "tabpanel",
-        tabIndex: isComplete ? -1 : 0,
+        id: dom.getContentId(scope, props.value),
+        role: "tabpanel",
+        tabIndex: 0,
         hidden: !itemState.current,
-        "data-value": itemState.value,
+        "data-value": props.value,
+        "data-type": "step",
         "data-state": itemState.current ? "open" : "closed",
         "data-orientation": orientation,
-        "data-complete": dataAttr(isComplete ? complete : itemState.completed),
-        "aria-labelledby": isComplete ? undefined : itemState.triggerId,
+        "data-complete": dataAttr(itemState.completed),
+        "aria-labelledby": dom.getTriggerId(scope, props.value),
+      })
+    },
+
+    getCompletedContentProps() {
+      // A focusable region, not a tab panel: finishing moves focus here
+      return normalize.element({
+        ...parts.content.attrs(scope.id),
+        dir: prop("dir"),
+        id: dom.getContentId(scope, COMPLETE),
+        tabIndex: -1,
+        hidden: !complete,
+        "data-type": "complete",
+        "data-state": complete ? "open" : "closed",
+        "data-orientation": orientation,
       })
     },
 
@@ -269,7 +291,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
         dir: prop("dir"),
         "aria-hidden": true,
         "data-orientation": orientation,
-        ...itemStateAttrs(itemState),
+        ...itemStateAttrs(props.value, itemState),
       })
     },
 
@@ -279,7 +301,7 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
         ...parts.separator.attrs(scope.id),
         dir: prop("dir"),
         "data-orientation": orientation,
-        ...itemStateAttrs(itemState),
+        ...itemStateAttrs(props.value, itemState),
       })
     },
 
@@ -345,8 +367,8 @@ export function connect<T extends PropTypes, V extends StepItem = StepItem>(
   }
 }
 
-const itemStateAttrs = (itemState: ItemState) => ({
-  "data-value": itemState.value,
+const itemStateAttrs = (value: string, itemState: ItemState) => ({
+  "data-value": value,
   "data-complete": dataAttr(itemState.completed),
   "data-current": dataAttr(itemState.current),
   "data-incomplete": dataAttr(!itemState.disabled && !itemState.completed && !itemState.current && !itemState.skipped),

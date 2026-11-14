@@ -20,9 +20,9 @@ export type Status = "idle" | "loading" | "complete"
  * Why a load was requested.
  * - `scroll`: the sentinel entered the observer root
  * - `autofill`: the content does not fill the viewport yet
- * - `manual`: `api.loadMore()` was called
+ * - `script`: `api.loadMore()` was called
  */
-export type LoadMoreReason = "scroll" | "autofill" | "manual"
+export type LoadMoreReason = "scroll" | "autofill" | "script"
 
 /* -----------------------------------------------------------------------------
  * Callback details

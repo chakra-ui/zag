@@ -39,7 +39,7 @@ export type {
   EventPosition,
   EventProps,
   EventResizeHandleProps,
-  EventStateDetail,
+  EventState,
   HourEntry,
   HourEntryProps,
   HourRange,

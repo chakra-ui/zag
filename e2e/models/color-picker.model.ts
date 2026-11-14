@@ -101,6 +101,63 @@ export class ColorPickerModel extends Model {
     return this.alphaInput.fill(value)
   }
 
+  commitAlphaThenType(committed: string, typed: string) {
+    return this.alphaInput.evaluate(
+      (input: HTMLInputElement, [committed, typed]) =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => {
+            const type = (value: string) => {
+              input.value = value
+              input.dispatchEvent(new InputEvent("input", { bubbles: true }))
+            }
+            input.focus()
+            type(committed)
+            input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }))
+            type(typed)
+            resolve()
+          }),
+        ),
+      [committed, typed],
+    )
+  }
+
+  clickSwatchThenTypeInAlpha(index: number, typed: string) {
+    return this.page.evaluate(
+      ([index, typed]) =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => {
+            const swatches = document.querySelectorAll<HTMLElement>("[data-color-picker-swatch-trigger]")
+            const input = document.querySelector<HTMLInputElement>("[data-color-picker-control] [data-channel=alpha]")!
+            swatches[index as number].click()
+            input.focus()
+            input.value = typed as string
+            input.dispatchEvent(new InputEvent("input", { bubbles: true }))
+            resolve()
+          }),
+        ),
+      [index, typed] as const,
+    )
+  }
+
+  typeInContentAlpha(value: string) {
+    return this.content.locator("input[data-channel=alpha]").first().fill(value)
+  }
+
+  /** Simulates a browser that fires no blur when a focused input is removed */
+  blockBlur(blocked = true) {
+    return this.page.evaluate((blocked) => {
+      const w = window as any
+      if (blocked) {
+        w.__stopBlur = (event: Event) => event.stopImmediatePropagation()
+        window.addEventListener("focusout", w.__stopBlur, true)
+        window.addEventListener("blur", w.__stopBlur, true)
+      } else {
+        window.removeEventListener("focusout", w.__stopBlur, true)
+        window.removeEventListener("blur", w.__stopBlur, true)
+      }
+    }, blocked)
+  }
+
   seeAlphaInputHasValue(value: string) {
     return expect(this.alphaInput).toHaveValue(value)
   }

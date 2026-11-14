@@ -3,7 +3,15 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-area.anatomy"
 import * as dom from "./scroll-area.dom"
-import type { CornerState, ScrollAreaApi, ScrollAreaService, ScrollbarProps, ScrollbarState } from "./scroll-area.types"
+import type {
+  CornerState,
+  RootState,
+  ScrollAreaApi,
+  ScrollAreaService,
+  ScrollbarProps,
+  ScrollbarState,
+  ViewportState,
+} from "./scroll-area.types"
 import { getScrollProgress } from "./utils/scroll-progress"
 import { scrollTo } from "./utils/scroll-to"
 import { scrollToEdge } from "./utils/scroll-to-edge"
@@ -26,11 +34,29 @@ export function connect<T extends PropTypes>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  function getRootState(): RootState {
+    return {
+      hovering,
+      overflowX: !hiddenState.scrollbarXHidden,
+      overflowY: !hiddenState.scrollbarYHidden,
+    }
+  }
+
+  function getViewportState(): ViewportState {
+    return {
+      ...getRootState(),
+      atTop: atSides.top,
+      atBottom: atSides.bottom,
+      atLeft: atSides.left,
+      atRight: atSides.right,
+    }
+  }
+
   function getScrollbarState(props: ScrollbarProps): ScrollbarState {
     const { orientation = "vertical" } = props
     const horizontal = orientation === "horizontal"
     return {
-      hovering,
+      ...getRootState(),
       dragging: draggingOrientation === orientation,
       scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
       hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
@@ -38,7 +64,7 @@ export function connect<T extends PropTypes>(
   }
 
   function getCornerState(): CornerState {
-    return { hovering, hidden: hiddenState.cornerHidden }
+    return { ...getRootState(), hidden: hiddenState.cornerHidden }
   }
 
   // -----------------------------------------------------------------------------
@@ -64,13 +90,15 @@ export function connect<T extends PropTypes>(
     },
     getScrollbarState,
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
         role: "presentation",
-        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
-        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
+        "data-overflow-x": dataAttr(rootState.overflowX),
+        "data-overflow-y": dataAttr(rootState.overflowY),
         onPointerEnter(event) {
           const target = getEventTarget(event)
           if (!contains(event.currentTarget, target)) return
@@ -98,19 +126,21 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getViewportState,
     getViewportProps() {
+      const viewportState = getViewportState()
       const handleUserInteraction = () => {
         send({ type: "user.scroll" })
       }
       return normalize.element({
         ...parts.viewport.attrs(scope.id),
-        "data-at-top": dataAttr(atSides.top),
-        "data-at-bottom": dataAttr(atSides.bottom),
-        "data-at-left": dataAttr(atSides.left),
-        "data-at-right": dataAttr(atSides.right),
-        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
-        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
-        tabIndex: hiddenState.scrollbarXHidden && hiddenState.scrollbarYHidden ? undefined : 0,
+        "data-at-top": dataAttr(viewportState.atTop),
+        "data-at-bottom": dataAttr(viewportState.atBottom),
+        "data-at-left": dataAttr(viewportState.atLeft),
+        "data-at-right": dataAttr(viewportState.atRight),
+        "data-overflow-x": dataAttr(viewportState.overflowX),
+        "data-overflow-y": dataAttr(viewportState.overflowY),
+        tabIndex: viewportState.overflowX || viewportState.overflowY ? 0 : undefined,
         style: {
           overflow: "auto",
         },
@@ -126,11 +156,12 @@ export function connect<T extends PropTypes>(
     },
 
     getContentProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.content.attrs(scope.id),
         role: "presentation",
-        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
-        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
+        "data-overflow-x": dataAttr(rootState.overflowX),
+        "data-overflow-y": dataAttr(rootState.overflowY),
         style: {
           minWidth: "fit-content",
         },
@@ -147,8 +178,8 @@ export function connect<T extends PropTypes>(
         "data-scrolling": dataAttr(scrollbarState.scrolling),
         "data-hover": dataAttr(scrollbarState.hovering),
         "data-dragging": dataAttr(scrollbarState.dragging),
-        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
-        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
+        "data-overflow-x": dataAttr(scrollbarState.overflowX),
+        "data-overflow-y": dataAttr(scrollbarState.overflowY),
         onPointerUp() {
           send({ type: "scrollbar.pointerup", orientation })
         },
@@ -217,8 +248,8 @@ export function connect<T extends PropTypes>(
         "aria-hidden": true,
         "data-hover": dataAttr(cornerState.hovering),
         "data-state": cornerState.hidden ? "hidden" : "visible",
-        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
-        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
+        "data-overflow-x": dataAttr(cornerState.overflowX),
+        "data-overflow-y": dataAttr(cornerState.overflowY),
         style: {
           position: "absolute",
           bottom: 0,

@@ -29,7 +29,7 @@ function Lightbox({ page, onPageChange }: { page: number; onPageChange: (page: n
         <div {...api.getItemGroupProps()}>
           {images.map((src, index) => (
             <div {...api.getItemProps({ index })} key={index} className="carousel-photo">
-              <img src={src} alt={`Product image ${index + 1}`} />
+              <img src={src} alt={`Product ${index + 1}`} />
             </div>
           ))}
         </div>

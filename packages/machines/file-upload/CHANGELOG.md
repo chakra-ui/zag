@@ -1,6 +1,57 @@
 # @zag-js/file-upload
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Keep focus on a nearby file or the trigger when files
+  are removed or cleared.
+
+  - Announce added and removed files to screen readers, with the `filesAdded` and `fileDeleted` translations.
+
+  - Fix the file upload staying in its dragging state when it becomes disabled or read-only during a drag, which kept
+    the trigger from opening the file picker.
+
+  - **Breaking:** Submit the files of a read-only file upload. Only a disabled one is left out of the form, like a
+    native input.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/i18n-utils@2.0.0-next.4
+  - @zag-js/file-utils@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+  - @zag-js/live-region@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- [#3640](https://github.com/chakra-ui/zag/pull/3640)
+  [`1374e58`](https://github.com/chakra-ui/zag/commit/1374e584ed5fb4a7fafc36fd06d12d5ce25da107) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix the file upload staying in its dragging state when it
+  becomes disabled (or read-only) during a drag, which kept the trigger from opening the file picker.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/i18n-utils@1.48.0
+  - @zag-js/file-utils@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

@@ -23,7 +23,7 @@ export function connect<T extends PropTypes>(
     hasMore,
 
     loadMore() {
-      send({ type: "LOAD.REQUESTED", reason: "manual" })
+      send({ type: "LOAD.REQUESTED", reason: "script" })
     },
 
     reset() {

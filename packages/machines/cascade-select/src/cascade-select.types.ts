@@ -202,13 +202,12 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     currentPlacement: Placement | undefined
     fieldsetDisabled: boolean
     graceArea: Point[] | null
-    valueIndexPath: IndexPath[]
-    highlightedIndexPath: IndexPath
-    highlightedItems: T[]
-    selectedItems: T[][]
   }
   computed: {
     isInteractive: boolean
+    selectedItems: T[][]
+    highlightedIndexPath: IndexPath
+    highlightedItems: T[]
     valueAsString: string
   }
   refs: {

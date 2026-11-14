@@ -463,6 +463,15 @@ work. You need to connect these variables in your styles.
 }
 ```
 
+Zag doesn't set a `z-index` on the group. Set one so toasts sit above the rest
+of the page.
+
+```css
+[data-toast-group] {
+  z-index: 2000;
+}
+```
+
 Render the title, description and other content inside `api.getContentProps()`.
 The toast's height follows the content part, so put anything that can change
 size inside it.

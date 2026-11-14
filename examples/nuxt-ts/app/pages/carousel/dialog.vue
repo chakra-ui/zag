@@ -49,7 +49,7 @@ const carouselApi = computed(() => carousel.connect(carouselService, normalizePr
                   v-bind="carouselApi.getItemProps({ index })"
                   class="carousel-photo"
                 >
-                  <img :src="src" :alt="`Product image ${index + 1}`" />
+                  <img :src="src" :alt="`Product ${index + 1}`" />
                 </div>
               </div>
               <button v-bind="carouselApi.getNextTriggerProps()"><ChevronRightIcon /></button>

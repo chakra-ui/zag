@@ -35,7 +35,7 @@ export default function Page() {
             <div {...main.getItemGroupProps()}>
               {images.map((src, index) => (
                 <div {...main.getItemProps({ index })} key={index} className="carousel-photo">
-                  <img src={src} alt={`Photo ${index + 1}`} />
+                  <img src={src} alt={`Gallery item ${index + 1}`} />
                 </div>
               ))}
             </div>

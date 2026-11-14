@@ -73,7 +73,10 @@ type InternalOptions<T> = PageListCollectionOptions<T> & {
  * pages (not pagination). `items` are the open page's items; `setItems` replaces them, e.g. with
  * search results, and keeps the page. Edits like `append` change that view, not the pages.
  */
-export class PageListCollection<T extends CollectionItem = CollectionItem> extends ListCollection<T> {
+export class PageListCollection<T extends CollectionItem = CollectionItem> extends ListCollection<
+  T,
+  PageListCollection<T>
+> {
   private state: PageState<T>
 
   constructor(options: PageListCollectionOptions<T>) {
@@ -95,11 +98,9 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return new PageListCollection(options)
   }
 
-  /**
-   * Copy the collection, keeping its pages
-   */
-  copy = (items?: T[]): this => {
-    return this.with({}, items ?? [...this.items]) as this
+  // copies keep the pages
+  protected override createCollection(items: T[]): PageListCollection<T> {
+    return this.with({}, items)
   }
 
   /**

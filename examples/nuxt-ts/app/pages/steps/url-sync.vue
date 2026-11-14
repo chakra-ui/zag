@@ -75,7 +75,7 @@ const api = computed(() => steps.connect(service, normalizeProps))
         <p>Card ending in 4242</p>
       </div>
 
-      <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+      <div v-bind="api.getCompletedContentProps()">
         <p>Order placed. A receipt is on its way to {{ email }}.</p>
       </div>
 

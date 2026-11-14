@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/docs",
-  "version": "2.0.0-next.3",
+  "version": "2.0.0-next.4",
   "description": "Docs for zag.js machines",
   "keywords": [
     "zag",
@@ -17,7 +17,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest --passWithNoTests",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",

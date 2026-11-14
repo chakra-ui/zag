@@ -106,7 +106,7 @@ function Command(props: CommandProps) {
                 <For each={items}>
                   {(item) => (
                     <div {...api().getItemProps({ item, persistFocus: true })}>
-                      <Highlight text={item.label} query={props.query} />
+                      <Highlight text={item.label} query={props.query} fuzzy />
                       <Show when={props.query && props.pages.getAncestors(item).length > 0}>
                         <span data-part="item-path">
                           {props.pages

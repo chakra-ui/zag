@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/solid",
-  "version": "2.0.0-next.3",
+  "version": "2.0.0-next.4",
   "description": "The solid.js wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -36,7 +36,7 @@
     "@testing-library/jest-dom": "^7.0.0",
     "@types/jsdom": "^30.0.0",
     "clean-package": "2.2.0",
-    "jsdom": "^30.0.0",
+    "jsdom": "^31.0.0",
     "solid-js": "2.0.0-rc.19"
   },
   "peerDependencies": {
@@ -44,7 +44,7 @@
     "solid-js": ">=2.0.0-rc.19"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

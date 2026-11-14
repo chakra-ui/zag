@@ -1,5 +1,149 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Zag no longer sets a `z-index` on overlays. Set it in
+  CSS, using `--layer-index` for the overlay's place in the stack.
+
+  - Fix a `z-index` set on the positioner in CSS being overridden.
+
+  - Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
+
+  **Breaking:** Move the `z-index` to the positioner (or the backdrop) and add `--layer-index`.
+
+  ```diff
+  - [data-popover-content] {
+  + [data-popover-positioner] {
+  -   z-index: 1400;
+  +   z-index: calc(1400 + var(--layer-index));
+    }
+  ```
+
+  - Popover, menu, select, combobox, hover card, tooltip, date picker, color picker and cascade select no longer copy
+    the content's `z-index` onto the positioner or set `--z-index`.
+
+  - Dialog and drawer no longer set `--z-index`. Use `--layer-index` on the backdrop and positioner.
+
+  - The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the
+    front.
+
+  - The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+  - The toast group no longer sets an inline `z-index`. Set it on `[data-toast-group]` in CSS.
+
+  - Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a `locale` prop for formatting the channel values
+  announced on the area and sliders.
+
+  - Add readable labels and value text to the area and channel slider thumbs, like "Hue" and "210°".
+
+  - Add `aria-invalid` to the channel inputs and thumbs, and `aria-pressed` to swatch triggers.
+
+  - Add arrow-key stepping to number channel inputs.
+
+  - Fix keys on a channel slider throwing when the format doesn't have that channel, like hue in `rgba`, and
+    `getChannelValueText` throwing for such a channel.
+
+  - Fix `PageUp` and `PageDown` resetting a channel slider instead of stepping it, and moving the area's x channel
+    instead of y. `Home` and `End` step the area's x channel.
+
+  - Fix vertical channel sliders running opposite to their gradient.
+
+  - Fix text typed into a channel input being overwritten by a color change made just before it, such as a swatch click
+    or committing the same input.
+
+  - Fix a typed color being stored in its own format instead of the picker's.
+
+  - Fix the hue resetting when the color reaches gray, and the area and sliders not updating when the value changes from
+    outside.
+
+  - Fix `onValueChangeEnd` not firing for keyboard changes or swatch clicks.
+
+  - Fix the format select ignoring `defaultFormat`.
+
+  - Fix number channel inputs showing spinners in Firefox when server-rendered with Vue.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onOpenChange` details, such as
+  `trigger-click`, `escape-key`, `interact-outside`, `item-select` or `script`. Each component exports its
+  `OpenChangeReason` type.
+
+  - Add an optional `reason` to `api.setOpen(open, reason)`, defaulting to `script`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`12f18ab`](https://github.com/chakra-ui/zag/commit/12f18abeafe47ce181e45ea81552b8400681b1f8) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a filter input and an empty state to menu and
+  select with `popupType: "dialog"`. You filter the items; the input keeps focus while the arrow keys move the
+  highlight.
+
+  ```tsx
+  <div {...api.getContentProps()}>
+    <input {...api.getInputProps()} />
+    <div {...api.getEmptyProps()}>{items.length === 0 && "No results"}</div>
+    <div {...api.getListProps()}>{/* items */}</div>
+  </div>
+  ```
+
+  - Add `getEmptyProps()` to combobox and listbox. It's a polite live region, so keep it rendered and toggle its text.
+
+  - Fix a lazily mounted popup inside nested dialogs rendering behind the dialog.
+
+  **Breaking:** Set the highlight with `setHighlightedValue` in every list component, and pass `null` to clear it.
+
+  ```diff
+  - api.setHighlightValue("react") // select, combobox, cascade select
+  - api.highlightValue("react") // listbox
+  + api.setHighlightedValue("react")
+
+  - api.clearHighlightValue()
+  + api.setHighlightedValue(null)
+  ```
+
+  **Breaking (menu):** Replace `composite` with `popupType`, matching select and combobox.
+
+  ```diff
+  - menu.machine({ composite: false })
+  + menu.machine({ popupType: "dialog" })
+  ```
+
+  - **Menu:** Add `autoHighlight` to highlight the first item as the query changes. A submenu can have its own input;
+    `Escape`, `Shift+Tab` or `ArrowLeft` on an empty input returns to the parent's. `onHighlightChange` reports a
+    `reason`.
+
+  - **Select:** `Home` and `End` jump to the first or last item when the input is empty, and `alignItemWithTrigger`
+    keeps the selected item of a long list next to the trigger.
+
+- Updated dependencies [[`a87b07c`](https://github.com/chakra-ui/zag/commit/a87b07cd7b52ffd9083cd61ea1f135b927e98109),
+  [`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9),
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633),
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2),
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06)]:
+  - @zag-js/dismissable@2.0.0-next.4
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/popper@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/color-utils@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
@@ -115,6 +259,22 @@
   as `getAreaProps` / `getGamutOverlayProps`. Adds `isInSrgbGamut` and optional `pixelRatio` on overlay props for
   DPR-aware boundary sampling. See
   [OSS-2393](https://linear.app/chakra/issue/OSS-2393/color-picker-wide-gamut-color-support-oklaboklch-srgb-gamut-overlay).
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dismissable@1.48.0
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/popper@1.48.0
+  - @zag-js/color-utils@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

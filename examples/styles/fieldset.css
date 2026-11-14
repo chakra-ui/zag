@@ -1,0 +1,40 @@
+.shipping-address .same-as-billing {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.shipping-address .hint {
+  max-width: 28rem;
+  font-size: 0.875rem;
+  color: hsl(219, 1%, 42%);
+}
+
+.basic [data-fieldset-root],
+.shipping-address [data-fieldset-root] {
+  width: 100%;
+}
+
+.basic [data-field-root],
+.shipping-address [data-field-root] {
+  max-width: none;
+}
+
+.shipping-address .output {
+  max-width: 28rem;
+  font-size: 0.875rem;
+}
+
+.shipping-address .output {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: hsl(219, 14%, 96%);
+  overflow-x: auto;
+}
+
+.basic,
+.shipping-address {
+  width: 100%;
+  max-width: 28rem;
+}

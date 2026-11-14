@@ -37,7 +37,7 @@ const thumbnails = computed(() => carousel.connect(thumbnailService, normalizePr
               v-bind="main.getItemProps({ index })"
               class="carousel-photo"
             >
-              <img :src="src" :alt="`Photo ${index + 1}`" />
+              <img :src="src" :alt="`Gallery item ${index + 1}`" />
             </div>
           </div>
           <button v-bind="main.getNextTriggerProps()"><ChevronRightIcon /></button>

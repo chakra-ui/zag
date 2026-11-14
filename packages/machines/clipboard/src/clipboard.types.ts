@@ -91,6 +91,13 @@ export interface IndicatorProps {
   copied: boolean
 }
 
+export interface RootState {
+  /**
+   * Whether the value has been copied to the clipboard
+   */
+  copied: boolean
+}
+
 export interface IndicatorState {
   /**
    * The copied state this indicator represents
@@ -120,6 +127,10 @@ export interface ClipboardApi<T extends PropTypes = PropTypes> {
    */
   copy: VoidFunction
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["label"]
   getControlProps: () => T["element"]

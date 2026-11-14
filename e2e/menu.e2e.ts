@@ -175,3 +175,28 @@ test.describe("menu / links", () => {
     expect(await page.evaluate(() => (window as any).__linkNavigations)).toBe(1)
   })
 })
+
+test.describe("menu / hover intent", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new MenuModel(page)
+    await I.goto("/menu/hover-intent")
+  })
+
+  test("opens and closes by hover without taking focus", async () => {
+    await I.searchInput.focus()
+
+    await I.hoverTrigger()
+    await I.seeDropdown()
+    await I.seeSearchIsFocused()
+
+    await I.hoverOut()
+    await I.dontSeeDropdown()
+    await I.seeSearchIsFocused()
+  })
+
+  test("still moves focus when opened from the keyboard", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.seeDropdownIsFocused()
+  })
+})

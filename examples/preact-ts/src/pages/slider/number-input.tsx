@@ -18,11 +18,11 @@ interface PriceInputProps {
 
 function PriceInput(props: PriceInputProps) {
   const { label, value, min, max, onChange } = props
-  const [draft, setDraft] = useState<string | null>(null)
+  const [draft, setDraft] = useState<number | null | undefined>(undefined)
 
   const service = useMachine(numberInput.machine, {
     id: useId(),
-    value: draft ?? String(value),
+    value: draft === undefined ? value : draft,
     min,
     max,
     formatOptions: { style: "currency", currency: "USD", maximumFractionDigits: 0 },
@@ -30,8 +30,8 @@ function PriceInput(props: PriceInputProps) {
       setDraft(details.value)
     },
     onValueCommit(details) {
-      if (!Number.isNaN(details.valueAsNumber)) onChange(details.valueAsNumber)
-      setDraft(null)
+      if (details.value != null) onChange(details.value)
+      setDraft(undefined)
     },
   })
 

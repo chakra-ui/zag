@@ -341,7 +341,7 @@ index.
 | `api.setStep(index)`                        | `api.setValue(value)`                                           |
 | `api.isCompleted`                           | `api.complete`                                                  |
 | `step === count` (completed screen)         | `value === steps.COMPLETE`                                      |
-| `getContentProps({ index: count })`         | `getContentProps({ value: steps.COMPLETE })`                    |
+| `getContentProps({ index: count })`         | `getCompletedContentProps()`                                    |
 | `api.isStepValid` / `isStepSkippable`       | `api.getItemState({ value })`                                   |
 | `{ index }` in part props                   | `{ value }`                                                     |
 | `itemState.incomplete`                      | `[data-incomplete]`, or not `current`, `completed` or `skipped` |

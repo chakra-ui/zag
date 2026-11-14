@@ -4,15 +4,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/t
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./editable.anatomy"
 import * as dom from "./editable.dom"
-import type {
-  AreaState,
-  EditableApi,
-  EditableSchema,
-  InputState,
-  IntlTranslations,
-  LabelState,
-  PreviewState,
-} from "./editable.types"
+import type { EditableApi, EditableSchema, IntlTranslations, RootState } from "./editable.types"
 
 const defaultTranslations: Required<IntlTranslations> = {
   input: "editable input",
@@ -49,20 +41,8 @@ export function connect<T extends PropTypes>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getAreaState(): AreaState {
-    return { editing, disabled, empty }
-  }
-
-  function getLabelState(): LabelState {
-    return { editing, invalid, required }
-  }
-
-  function getInputState(): InputState {
-    return { editing, disabled, readOnly, invalid, autoResize }
-  }
-
-  function getPreviewState(): PreviewState {
-    return { editing, disabled, readOnly, invalid, autoResize, empty }
+  function getRootState(): RootState {
+    return { editing, disabled, readOnly, invalid, required, empty, autoResize }
   }
 
   // -----------------------------------------------------------------------------
@@ -93,37 +73,41 @@ export function connect<T extends PropTypes>(
       send({ type: "SUBMIT" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         dir: prop("dir"),
+        "data-focus": dataAttr(rootState.editing),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
       })
     },
 
-    getAreaState,
     getAreaProps() {
-      const areaState = getAreaState()
+      const rootState = getRootState()
       return normalize.element({
         ...parts.area.attrs(scope.id),
         dir: prop("dir"),
         style: autoResize ? { display: "inline-grid" } : undefined,
-        "data-focus": dataAttr(areaState.editing),
-        "data-disabled": dataAttr(areaState.disabled),
-        "data-placeholder-shown": dataAttr(areaState.empty),
+        "data-focus": dataAttr(rootState.editing),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-placeholder-shown": dataAttr(rootState.empty),
       })
     },
 
-    getLabelState,
     getLabelProps() {
-      const labelState = getLabelState()
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
-        "data-focus": dataAttr(labelState.editing),
-        "data-invalid": dataAttr(labelState.invalid),
-        "data-required": dataAttr(labelState.required),
+        "data-focus": dataAttr(rootState.editing),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-required": dataAttr(rootState.required),
         onClick() {
           if (editing) return
           const previewEl = dom.getPreviewEl(scope)
@@ -132,9 +116,8 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getInputState,
     getInputProps() {
-      const inputState = getInputState()
+      const rootState = getRootState()
       return normalize.input({
         ...parts.input.attrs(scope.id),
         dir: prop("dir"),
@@ -143,17 +126,17 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         form: prop("form"),
         id: dom.getInputId(scope),
-        hidden: autoResize ? undefined : !inputState.editing,
+        hidden: autoResize ? undefined : !rootState.editing,
         placeholder: placeholder?.edit,
         maxLength: prop("maxLength"),
         required: prop("required"),
-        disabled: inputState.disabled,
-        "data-disabled": dataAttr(inputState.disabled),
-        readOnly: inputState.readOnly,
-        "data-readonly": dataAttr(inputState.readOnly),
-        "aria-invalid": ariaAttr(inputState.invalid),
-        "data-invalid": dataAttr(inputState.invalid),
-        "data-autoresize": dataAttr(inputState.autoResize),
+        disabled: rootState.disabled,
+        "data-disabled": dataAttr(rootState.disabled),
+        readOnly: rootState.readOnly,
+        "data-readonly": dataAttr(rootState.readOnly),
+        "aria-invalid": ariaAttr(rootState.invalid),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-autoresize": dataAttr(rootState.autoResize),
         defaultValue: value,
         size: autoResize ? 1 : undefined,
         onChange(event) {
@@ -202,30 +185,29 @@ export function connect<T extends PropTypes>(
         style: autoResize
           ? {
               gridArea: "1 / 1 / auto / auto",
-              visibility: !inputState.editing ? "hidden" : undefined,
+              visibility: !rootState.editing ? "hidden" : undefined,
             }
           : undefined,
       })
     },
 
-    getPreviewState,
     getPreviewProps() {
-      const previewState = getPreviewState()
+      const rootState = getRootState()
       return normalize.element({
         id: dom.getPreviewId(scope),
         ...parts.preview.attrs(scope.id),
         dir: prop("dir"),
-        "data-placeholder-shown": dataAttr(previewState.empty),
-        "aria-readonly": ariaAttr(previewState.readOnly),
-        "data-readonly": dataAttr(previewState.disabled),
-        "data-disabled": dataAttr(previewState.disabled),
-        "aria-disabled": ariaAttr(previewState.disabled),
-        "aria-invalid": ariaAttr(previewState.invalid),
-        "data-invalid": dataAttr(previewState.invalid),
+        "data-placeholder-shown": dataAttr(rootState.empty),
+        "aria-readonly": ariaAttr(rootState.readOnly),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-disabled": dataAttr(rootState.disabled),
+        "aria-disabled": ariaAttr(rootState.disabled),
+        "aria-invalid": ariaAttr(rootState.invalid),
+        "data-invalid": dataAttr(rootState.invalid),
         "aria-label": translations?.edit,
-        "data-autoresize": dataAttr(previewState.autoResize),
+        "data-autoresize": dataAttr(rootState.autoResize),
         children: valueText,
-        hidden: autoResize ? undefined : previewState.editing,
+        hidden: autoResize ? undefined : rootState.editing,
         tabIndex: interactive ? 0 : undefined,
         onClick() {
           if (!interactive) return
@@ -247,7 +229,7 @@ export function connect<T extends PropTypes>(
           ? {
               whiteSpace: "pre",
               gridArea: "1 / 1 / auto / auto",
-              visibility: previewState.editing ? "hidden" : undefined,
+              visibility: rootState.editing ? "hidden" : undefined,
               // in event the preview overflow's the parent element
               overflow: "hidden",
               textOverflow: "ellipsis",

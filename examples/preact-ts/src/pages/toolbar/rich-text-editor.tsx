@@ -79,11 +79,11 @@ function FontSizeInput(props: { api: toolbar.Api; onChange: (value: string) => v
     id: useId(),
     ids: { input: inputId },
     disabled: api.disabled,
-    defaultValue: "16",
+    defaultValue: 16,
     min: 8,
     max: 96,
     onValueChange(details) {
-      onChange(details.value)
+      if (details.value != null) onChange(String(details.value))
     },
   })
   const numberApi = numberInput.connect(service, normalizeProps)

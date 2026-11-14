@@ -52,4 +52,4 @@ Utilities are organized by functionality:
 - `popper`: Positioning and floating elements
 - `focus-trap`: Focus management
 - `interact-outside`: Click outside detection
-- `dismissable`: Dismissal patterns
+- `dismissable`: Dismissal patterns (layer nesting decisions in `.claude/docs/dismissable-layers.md`)

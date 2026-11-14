@@ -121,7 +121,7 @@ test.describe("hover card", () => {
       await I.hoverTrigger()
       await I.moveClearOfCard()
       await I.waitOutCloseDelay()
-      await I.seeOpenChangeLog("open:trigger-hover close:pointer-leave")
+      await I.seeOpenChangeLog("open:trigger-hover close:trigger-hover")
     })
 
     test("should report an outside press", async () => {

@@ -176,16 +176,16 @@ const service = useMachine(numberInput.machine, {
 `details.reason` says what caused the change, so you can tell a deliberate entry
 from a drag.
 
-| Reason            | Meaning                                      |
-| ----------------- | -------------------------------------------- |
-| `input-change`    | The user typed in the input                  |
-| `input-blur`      | The value was clamped or formatted on blur   |
-| `keyboard`        | Arrow, page, home or end key                 |
-| `increment-press` | The increment trigger was pressed            |
-| `decrement-press` | The decrement trigger was pressed            |
-| `wheel`           | The mouse wheel was scrolled over the input  |
-| `scrub`           | The scrubber was dragged                     |
-| `script`          | Changed programmatically, such as `setValue` |
+| Reason              | Meaning                                      |
+| ------------------- | -------------------------------------------- |
+| `input-change`      | The user typed in the input                  |
+| `input-blur`        | The value was clamped or formatted on blur   |
+| `keyboard`          | Arrow, page, home or end key                 |
+| `increment-trigger` | The increment trigger was pressed            |
+| `decrement-trigger` | The decrement trigger was pressed            |
+| `wheel`             | The mouse wheel was scrolled over the input  |
+| `scrub`             | The scrubber was dragged                     |
+| `script`            | Changed programmatically, such as `setValue` |
 
 ### Value commit
 

@@ -78,7 +78,7 @@ const indicator = (value: string, index: number) => {
         <button>Connect Google Calendar</button>
       </div>
 
-      <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+      <div v-bind="api.getCompletedContentProps()">
         <p>Welcome aboard, {{ name }}!</p>
         <button @click="api.resetStep()">Start over</button>
       </div>

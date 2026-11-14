@@ -6,6 +6,9 @@ export { paginationData } from "./pagination"
 export { cascadeSelectData } from "./cascade-select"
 export { listboxData, type ListboxOption } from "./listbox"
 export * from "./scheduler"
+export * from "./json-tree"
+export * from "./marquee"
+export * from "./radio-group"
 
 export const selectData = countryList.map((country) => ({
   label: `${country.name} (${country.code})`,
@@ -178,12 +181,12 @@ export const radioData = [
 ]
 
 export const carouselData = [
-  "https://picsum.photos/seed/a/500/300",
-  "https://picsum.photos/seed/b/500/300",
-  "https://picsum.photos/seed/c/500/300",
-  "https://picsum.photos/seed/d/500/300",
-  "https://picsum.photos/seed/e/500/300",
-  "https://picsum.photos/seed/f/500/300",
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=500&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500&h=300&fit=crop",
 ]
 
 export const toggleGroupData = [
@@ -530,6 +533,14 @@ export const tourReplacedTargetData: StepDetails[] = [
     title: "Step 1",
     description: "This step follows its target, even when the page replaces the element.",
     target: () => document.querySelector<HTMLElement>("#target"),
+    actions: [{ label: "Next", action: "next" }],
+  },
+  {
+    id: "step-2",
+    type: "tooltip",
+    title: "Step 2",
+    description: "This step points at the same target as the one before it.",
+    target: () => document.querySelector<HTMLElement>("#target"),
     actions: [{ label: "Done", action: "dismiss" }],
   },
 ]
@@ -543,4 +554,17 @@ export const tourLateTargetData: StepDetails[] = [
     target: () => document.querySelector<HTMLElement>("#late-target"),
     actions: [{ label: "Done", action: "dismiss" }],
   },
+]
+
+// Groups interleave so the grouped (display) order differs from the source order
+export const groupedData = [
+  { label: "Apple", value: "apple", type: "Fruit" },
+  { label: "Avocado", value: "avocado", type: "Vegetable" },
+  { label: "Apricot", value: "apricot", type: "Fruit" },
+  { label: "Asparagus", value: "asparagus", type: "Vegetable" },
+  { label: "Banana", value: "banana", type: "Fruit" },
+  { label: "Broccoli", value: "broccoli", type: "Vegetable" },
+  { label: "Cherry", value: "cherry", type: "Fruit" },
+  { label: "Carrot", value: "carrot", type: "Vegetable" },
+  { label: "Celery", value: "celery", type: "Vegetable", disabled: true },
 ]

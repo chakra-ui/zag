@@ -438,3 +438,47 @@ test.describe("select / press and release over the aligned item", () => {
     await I.dontSeeDropdown()
   })
 })
+
+// Grouped order: Fruit (Apple, Apricot, Banana, Cherry), Vegetable (Avocado, Asparagus, Broccoli, Carrot, Celery*)
+test.describe("select / grouped", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SelectModel(page)
+    await I.goto("/select/grouped")
+  })
+
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
+  })
+
+  test("should navigate in grouped order", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Apple")
+
+    for (const item of ["Apricot", "Banana", "Cherry", "Avocado"]) {
+      await I.pressKey("ArrowDown")
+      await I.seeItemIsHighlighted(item)
+    }
+
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Carrot")
+    await I.pressKey("Home")
+    await I.seeItemIsHighlighted("Apple")
+  })
+
+  test("should cycle typeahead matches in grouped order", async () => {
+    await I.clickTrigger()
+    for (const item of ["Apple", "Apricot", "Avocado", "Asparagus", "Apple"]) {
+      await I.type("a")
+      await I.seeItemIsHighlighted(item)
+    }
+  })
+
+  test("should cycle selected value with typeahead in grouped order", async () => {
+    await I.focusTrigger()
+    for (const item of ["Apple", "Apricot", "Avocado"]) {
+      await I.type("a")
+      await I.seeItemIsChecked(item)
+    }
+  })
+})

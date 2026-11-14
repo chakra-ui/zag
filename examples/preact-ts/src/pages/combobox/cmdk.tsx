@@ -101,7 +101,7 @@ function Command(props: CommandProps) {
               <div {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
               {items.map((item) => (
                 <div key={item.value} {...api.getItemProps({ item, persistFocus: true })}>
-                  <Highlight text={item.label} query={query} />
+                  <Highlight text={item.label} query={query} fuzzy />
                   {query && pages.getAncestors(item).length > 0 && (
                     <span data-part="item-path">
                       {pages

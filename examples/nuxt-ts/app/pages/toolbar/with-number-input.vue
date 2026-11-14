@@ -15,7 +15,7 @@ const numberService = useMachine(
     id: zoomId,
     ids: { input: api.value.getItemId("zoom") },
     disabled: api.value.disabled,
-    defaultValue: "100",
+    defaultValue: 100,
     min: 25,
     max: 400,
     step: 25,

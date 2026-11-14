@@ -118,7 +118,7 @@ export type CollapsibleMachine = Machine<CollapsibleSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface TriggerState {
+export interface RootState {
   /**
    * Whether the collapsible is open
    */
@@ -133,19 +133,11 @@ export interface TriggerState {
   disabled: boolean
 }
 
-export interface ContentState {
+export interface ContentState extends RootState {
   /**
-   * Whether the collapsible is open
+   * Whether the content is open without animating, such as when it starts open. `data-state` is omitted.
    */
-  open: boolean
-  /**
-   * Whether the collapsible is visible (open or closing)
-   */
-  visible: boolean
-  /**
-   * Whether the collapsible is disabled
-   */
-  disabled: boolean
+  instant: boolean
   /**
    * Whether the content has a collapsed height or width
    */
@@ -174,11 +166,11 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
    */
   measureSize: VoidFunction
 
-  getRootProps: () => T["element"]
   /**
-   * Returns the state of the trigger
+   * Returns the state of the root
    */
-  getTriggerState: () => TriggerState
+  getRootState: () => RootState
+  getRootProps: () => T["element"]
   getTriggerProps: () => T["button"]
   /**
    * Returns the state of the content

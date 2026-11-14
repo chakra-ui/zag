@@ -76,8 +76,7 @@ const service = useMachine(menu.machine, {
 | `trigger-click`    | The trigger was pressed by pointer or `Enter`/`Space` |
 | `arrow-key`        | An arrow key opened or closed the menu                |
 | `context-menu`     | The context trigger was right-clicked or long-pressed |
-| `trigger-hover`    | The pointer hovered the trigger (submenu or menubar)  |
-| `pointer-leave`    | The pointer left a submenu or its trigger             |
+| `trigger-hover`    | The pointer hovered, or left, a trigger or submenu    |
 | `sibling-open`     | Another menu in the menubar opened                    |
 | `item-select`      | An item was selected                                  |
 | `escape-key`       | The user pressed `Esc`                                |
@@ -85,6 +84,22 @@ const service = useMachine(menu.machine, {
 | `focus-outside`    | Focus moved outside                                   |
 | `tab-key`          | `Tab` moved focus out of the menu                     |
 | `script`           | Changed programmatically, such as `setOpen`           |
+
+### Opening on hover
+
+A menu opens by click or keyboard. To open it on hover yourself, pass
+`trigger-hover` to `setOpen`. The menu then opens and closes without moving
+focus, so a user typing elsewhere isn't interrupted.
+
+```tsx
+<div
+  onPointerEnter={() => api.setOpen(true, "trigger-hover")}
+  onPointerLeave={() => api.setOpen(false, "trigger-hover")}
+>
+  <button {...api.getTriggerProps()}>Actions</button>
+  <div {...api.getPositionerProps()}>{/* content */}</div>
+</div>
+```
 
 ### Controlled open
 
@@ -211,6 +226,19 @@ const service = useMachine(menu.machine, {
 ```
 
 </Example>
+
+### Managing focus
+
+Set `initialFocusEl` to choose the element focused when the menu opens, and
+`finalFocusEl` for when it closes. Return `false` from `initialFocusEl` to leave
+focus where it is.
+
+```tsx
+const service = useMachine(menu.machine, {
+  initialFocusEl: () => document.getElementById("menu-search"),
+  finalFocusEl: () => document.getElementById("editor"),
+})
+```
 
 ### Positioning
 

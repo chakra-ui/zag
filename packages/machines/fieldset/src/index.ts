@@ -5,11 +5,7 @@ export * from "./fieldset.props"
 export type {
   FieldsetApi as Api,
   ElementIds,
-  ErrorTextState,
   FieldsetMachine as Machine,
-  FieldsetState,
-  HelperTextState,
-  LegendState,
   FieldsetProps as Props,
   RootState,
   FieldsetService as Service,

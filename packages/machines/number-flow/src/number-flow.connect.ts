@@ -10,6 +10,7 @@ import type {
   DigitTrackProps,
   NumberFlowApi,
   NumberFlowService,
+  RootState,
   SymbolProps,
 } from "./number-flow.types"
 import { getCycles, getDigitCells, getDigitGlyphs, getPlaceOrder, normalizeCounter } from "./utils/segments"
@@ -43,6 +44,18 @@ export function connect<T extends PropTypes>(
   // roll for its whole duration instead of flipping to "none" the moment it starts.
   const trend = value > prevValue ? "up" : value < prevValue ? "down" : refs.get("trend")
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { animating, trend, reducedMotion }
+  }
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   return {
     value,
     valueText: result.valueText,
@@ -57,16 +70,18 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.SET", value })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         id: dom.getRootId(scope),
         dir: prop("dir"),
         role: live ? undefined : "img",
         "aria-label": live ? undefined : result.valueText,
-        "data-state": animating ? "rolling" : "idle",
-        "data-trend": trend,
-        "data-reduced-motion": dataAttr(reducedMotion),
+        "data-state": rootState.animating ? "rolling" : "idle",
+        "data-trend": rootState.trend,
+        "data-reduced-motion": dataAttr(rootState.reducedMotion),
         style: getRootStyle({ prop }),
       })
     },

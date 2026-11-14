@@ -9,5 +9,6 @@ export type {
   AvatarService as Service,
   ElementIds,
   LoadStatus,
+  RootState,
   StatusChangeDetails,
 } from "./avatar.types"

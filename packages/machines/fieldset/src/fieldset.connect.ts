@@ -3,7 +3,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./fieldset.anatomy"
 import * as dom from "./fieldset.dom"
-import type { FieldsetApi, FieldsetSchema, FieldsetState } from "./fieldset.types"
+import type { FieldsetApi, FieldsetSchema, RootState } from "./fieldset.types"
 
 export function connect<T extends PropTypes>(
   service: Service<FieldsetSchema>,
@@ -33,12 +33,8 @@ export function connect<T extends PropTypes>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getFieldsetState(): FieldsetState {
+  function getRootState(): RootState {
     return { disabled, invalid }
-  }
-
-  function getErrorTextState() {
-    return { ...getFieldsetState(), hidden: !invalid }
   }
 
   return {
@@ -46,9 +42,9 @@ export function connect<T extends PropTypes>(
     disabled,
     invalid,
 
-    getRootState: getFieldsetState,
+    getRootState,
     getRootProps() {
-      const fieldsetState = getFieldsetState()
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
         id: ids.root,
@@ -56,45 +52,42 @@ export function connect<T extends PropTypes>(
         disabled: prop("disabled"),
         "aria-labelledby": context.get("hasLegend") ? ids.legend : undefined,
         "aria-describedby": ariaDescribedby,
-        ...getDataAttrs(fieldsetState),
+        ...getDataAttrs(rootState),
       })
     },
 
-    getLegendState: getFieldsetState,
     getLegendProps() {
       return normalize.element({
         ...parts.legend.attrs(scope.id),
         id: ids.legend,
         dir: prop("dir"),
-        ...getDataAttrs(getFieldsetState()),
+        ...getDataAttrs(getRootState()),
       })
     },
 
-    getHelperTextState: getFieldsetState,
     getHelperTextProps() {
       return normalize.element({
         ...parts.helperText.attrs(scope.id),
         id: ids.helperText,
         dir: prop("dir"),
-        ...getDataAttrs(getFieldsetState()),
+        ...getDataAttrs(getRootState()),
       })
     },
 
-    getErrorTextState,
     getErrorTextProps() {
-      const errorTextState = getErrorTextState()
+      const rootState = getRootState()
       return normalize.element({
         ...parts.errorText.attrs(scope.id),
         id: ids.errorText,
         dir: prop("dir"),
-        hidden: errorTextState.hidden,
-        ...getDataAttrs(errorTextState),
+        hidden: !rootState.invalid,
+        ...getDataAttrs(rootState),
       })
     },
   }
 }
 
-function getDataAttrs(state: FieldsetState) {
+function getDataAttrs(state: RootState) {
   return {
     "data-disabled": dataAttr(state.disabled),
     "data-invalid": dataAttr(state.invalid),

@@ -144,7 +144,8 @@ type StateIdTarget = `#${string}`
 
 // Bare name targets resolve to siblings (children of the source's parent, or root-level states)
 type SiblingStateTarget<S extends string, Source extends string> =
-  TopLevelState<S> | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
+  | TopLevelState<S>
+  | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
 
 // Dot-prefixed targets resolve to children of the source (e.g. ".idle" from "open" → "open.idle")
 type ChildStateTarget<S extends string, Source extends string> = `.${ChildStateKey<S, Source>}`

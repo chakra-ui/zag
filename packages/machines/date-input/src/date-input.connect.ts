@@ -11,7 +11,6 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./date-input.anatomy"
 import * as dom from "./date-input.dom"
 import type {
-  ControlState,
   DateInputApi,
   DateInputService,
   RootState,
@@ -51,7 +50,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
     return {
       editable: isEditable,
       focused: isFocused,
-      readonly: !segment.isEditable || readOnly,
+      readOnly: !segment.isEditable || readOnly,
     }
   }
 
@@ -60,17 +59,13 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
   // -----------------------------------------------------------------------------
 
   function getRootState(): RootState {
-    return { disabled, readOnly, invalid }
-  }
-
-  function getControlState(): ControlState {
     return { disabled, readOnly, invalid, focused }
   }
 
   function getSegmentGroupState(props: SegmentGroupProps = {}): SegmentGroupState {
     const { index = 0 } = props
     const activeIndex = context.get("activeIndex")
-    return { disabled, readOnly, invalid, focused: focused && activeIndex === index }
+    return { ...getRootState(), focused: focused && activeIndex === index }
   }
 
   // -----------------------------------------------------------------------------
@@ -129,19 +124,21 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         "data-disabled": dataAttr(rootState.disabled),
         "data-readonly": dataAttr(rootState.readOnly),
         "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
       })
     },
 
     getLabelProps(props = {}) {
       const { index = 0 } = props
+      const rootState = getRootState()
       return normalize.label({
         ...parts.label.attrs(scope.id),
         id: dom.getLabelId(scope, index),
         dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope, index),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
         onClick() {
           if (disabled) return
           dom.getSegmentEls(scope)[0]?.focus()
@@ -149,16 +146,15 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       })
     },
 
-    getControlState,
     getControlProps() {
-      const controlState = getControlState()
+      const rootState = getRootState()
       return normalize.element({
         ...parts.control.attrs(scope.id),
         dir: prop("dir"),
-        "data-disabled": dataAttr(controlState.disabled),
-        "data-readonly": dataAttr(controlState.readOnly),
-        "data-invalid": dataAttr(controlState.invalid),
-        "data-focus": dataAttr(controlState.focused),
+        "data-disabled": dataAttr(rootState.disabled),
+        "data-readonly": dataAttr(rootState.readOnly),
+        "data-invalid": dataAttr(rootState.invalid),
+        "data-focus": dataAttr(rootState.focused),
       })
     },
 
@@ -219,13 +215,13 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         "aria-valuemin": segment.minValue,
         "aria-valuemax": segment.maxValue,
         "aria-invalid": ariaAttr(invalid),
-        "aria-readonly": ariaAttr(segmentState.readonly),
+        "aria-readonly": ariaAttr(segmentState.readOnly),
         "aria-disabled": ariaAttr(disabled),
         "data-value": segment.value,
         "data-type": segment.type,
-        "data-readonly": dataAttr(segmentState.readonly),
+        "data-readonly": dataAttr(segmentState.readOnly),
         "data-disabled": dataAttr(disabled),
-        "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
+        "data-editable": dataAttr(segmentState.editable),
         "data-placeholder-shown": dataAttr(segment.isPlaceholder),
         style: {
           caretColor: "transparent",

@@ -8,6 +8,7 @@ import type {
   IndicatorProps,
   IndicatorState,
   IntlTranslations,
+  RootState,
 } from "./clipboard.types"
 import * as dom from "./clipboard.dom"
 
@@ -23,6 +24,10 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { copied }
+  }
 
   function getIndicatorState(props: IndicatorProps): IndicatorState {
     return { copied: props.copied, visible: props.copied === copied }
@@ -42,10 +47,12 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
       send({ type: "COPY" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-copied": dataAttr(copied),
+        "data-copied": dataAttr(rootState.copied),
       })
     },
 

@@ -249,7 +249,7 @@ export interface ResolvedElementIds {
 /**
  * Shared interaction and validity state, mirrored onto every field part.
  */
-export interface FieldState {
+export interface RootState {
   /**
    * Whether the field is disabled (including inherited fieldset disabled state).
    */
@@ -292,22 +292,14 @@ export interface FieldState {
   validating: boolean
 }
 
-export interface RootState extends FieldState {}
-
-export interface LabelState extends FieldState {}
-
-export interface ControlState extends FieldState {}
-
-export interface HelperTextState extends FieldState {}
-
-export interface ErrorTextState extends FieldState {
+export interface ErrorTextState extends RootState {
   /**
    * Whether the error text is hidden.
    */
   hidden: boolean
 }
 
-export interface IndicatorState extends FieldState {
+export interface IndicatorState extends RootState {
   /**
    * The state this indicator reflects.
    */
@@ -396,23 +388,11 @@ export interface FieldApi<T extends PropTypes = PropTypes> {
    */
   getRootState: () => RootState
   getRootProps: () => T["element"]
-  /**
-   * Returns the state of the label.
-   */
-  getLabelState: () => LabelState
   getLabelProps: (props?: ItemProps) => T["label"]
-  /**
-   * Returns the state of the control (input, textarea, select, or a custom host).
-   */
-  getControlState: () => ControlState
   getControlProps: (props?: ItemProps) => T["element"]
   getInputProps: (props?: ItemProps) => T["input"]
   getTextareaProps: (props?: ItemProps) => T["textarea"]
   getSelectProps: (props?: ItemProps) => T["select"]
-  /**
-   * Returns the state of the helper text.
-   */
-  getHelperTextState: () => HelperTextState
   getHelperTextProps: () => T["element"]
   /**
    * Returns the state of the error text.

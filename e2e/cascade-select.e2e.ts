@@ -51,6 +51,45 @@ test.describe("basic functionality", () => {
   })
 })
 
+test.describe("default value", () => {
+  test("should show the default value in the trigger on first render", async () => {
+    await I.goto("/cascade-select/default-value")
+    await I.seeTriggerHasText("North America / United States / New York")
+    await I.seeClearTrigger()
+  })
+
+  test("should scroll every list to the selected path when opened", async () => {
+    await I.goto("/cascade-select/default-value")
+    await I.clickTrigger()
+    await I.seeItemIsHighlighted("United States")
+    await I.seeItemInViewport("United States")
+    await I.seeItemInViewport("New York")
+  })
+})
+
+test.describe("controlled", () => {
+  test.beforeEach(async () => {
+    await I.goto("/cascade-select/controlled")
+  })
+
+  test("should show the controlled value in the trigger on first render", async () => {
+    await I.seeTriggerHasText("Asia / India / Haryana")
+  })
+
+  test("should update the trigger when the value changes externally", async ({ page }) => {
+    await page.getByRole("button", { name: "Set value (external)" }).click()
+    await I.seeTriggerHasText("North America / United States / New York")
+  })
+
+  test("should show the lists for an externally highlighted path", async ({ page }) => {
+    await page.getByRole("button", { name: "Highlight (external)" }).click()
+    await page.getByRole("button", { name: "Toggle (external)" }).click()
+    await I.seeList(2)
+    await I.seeHighlightedItemsCount(3)
+    await I.seeItemIsHighlighted("New York")
+  })
+})
+
 test.describe("navigation and lists", () => {
   test("should show multiple lists when navigating into parent items", async () => {
     await I.clickTrigger()

@@ -84,7 +84,7 @@ export default function Page() {
             </label>
           </div>
 
-          <div {...api().getContentProps({ value: steps.COMPLETE })}>
+          <div {...api().getCompletedContentProps()}>
             <p>Two-factor authentication is on. Save these backup codes:</p>
             <ul>
               <For each={backupCodes}>

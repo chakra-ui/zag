@@ -1,6 +1,35 @@
 # @zag-js/rating-group
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3617](https://github.com/chakra-ui/zag/pull/3617)
+  [`8c5b55d`](https://github.com/chakra-ui/zag/commit/8c5b55d2dfe48178411b836108798f81227480a9) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - - Fix the first pointer move onto an item not previewing it.
+
+  - Fix a touch move leaving a preview that the next tap commits.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

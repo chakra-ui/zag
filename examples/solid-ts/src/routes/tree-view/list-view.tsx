@@ -111,10 +111,10 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <h3 {...api().getLabelProps()}>My Documents</h3>
           <div style={{ display: "flex", gap: "10px" }}>
-            <button aria-pressed={String(view() === "tree")} onClick={() => setView("tree")}>
+            <button aria-pressed={view() === "tree" ? "true" : "false"} onClick={() => setView("tree")}>
               <ListTreeIcon /> Tree
             </button>
-            <button aria-pressed={String(view() === "list")} onClick={() => setView("list")}>
+            <button aria-pressed={view() === "list" ? "true" : "false"} onClick={() => setView("list")}>
               <ListIcon /> List
             </button>
           </div>

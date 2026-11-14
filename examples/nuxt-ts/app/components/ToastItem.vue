@@ -34,8 +34,8 @@ const Description = () => api.value.description
 <template>
   <div v-bind="api.getRootProps()">
     <div v-bind="api.getGhostBeforeProps()"></div>
-    <div data-scope="toast" data-part="progressbar"></div>
-    <span v-if="icon" data-scope="toast" data-part="indicator">
+    <div class="toast-progressbar"></div>
+    <span v-if="icon" class="toast-indicator">
       <component :is="icon" />
     </span>
     <div v-bind="api.getContentProps()">

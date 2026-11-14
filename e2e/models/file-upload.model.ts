@@ -92,6 +92,20 @@ export class FileUploadModel extends Model {
     return await fileChooserPromise
   }
 
+  dispatchDrag(type: "dragover" | "dragleave") {
+    return this.getDropzone().evaluate((el, type) => {
+      const dataTransfer = new DataTransfer()
+      dataTransfer.items.add(new File(["text"], "text.txt", { type: "text/plain" }))
+      el.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
+    }, type)
+  }
+
+  async seeDragging(dragging = true) {
+    const root = this.page.locator(part("file-upload", "root"))
+    if (dragging) await expect(root).toHaveAttribute("data-dragging", "")
+    else await expect(root).not.toHaveAttribute("data-dragging")
+  }
+
   async waitForNextFrame() {
     await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)))
   }

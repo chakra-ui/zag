@@ -1,5 +1,37 @@
 # @zag-js/menubar
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`3f83a21`](https://github.com/chakra-ui/zag/commit/3f83a218010d26fadbc80444925be7f1788d684b) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Report a menu's real close reason in the
+  `menu:close` event, using the same names as the menu, such as `escape-key` or `interact-outside`. Moving to a sibling
+  menu with the arrow keys is now `sibling-open`, like hovering to it.
+
+  ```ts
+  // before
+  if (reason === "list-navigation" || reason === "escape") {
+  }
+  // after
+  if (reason === "sibling-open" || reason === "escape-key") {
+  }
+  ```
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

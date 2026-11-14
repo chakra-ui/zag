@@ -130,11 +130,48 @@ export interface DragHandleProps {
   disabled?: boolean | undefined
 }
 
-export interface ItemState {
-  isDragging: boolean
-  isOver: boolean
-  dropPlacement: DropPlacement | null
-  isDisabled: boolean
+export interface RootState {
+  /**
+   * Whether a drag is in progress
+   */
+  dragging: boolean
+}
+
+export interface DraggableState {
+  /**
+   * Whether this item is the one being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether this item is dragged along with the source, as part of the selection
+   */
+  selectedDragging: boolean
+  /**
+   * Whether this item can't be dragged
+   */
+  disabled: boolean
+}
+
+export interface DropTargetState {
+  /**
+   * Whether the dragged item is over this target
+   */
+  over: boolean
+  /**
+   * Where the item would drop relative to this target, while it's over it
+   */
+  placement: DropPlacement | null
+  /**
+   * Whether this target is disabled
+   */
+  disabled: boolean
+}
+
+export interface DropIndicatorState {
+  /**
+   * Whether the item would drop at this indicator
+   */
+  active: boolean
 }
 
 export interface DragPreviewState {
@@ -342,10 +379,6 @@ export interface DndApi<T extends PropTypes = PropTypes> {
    */
   dropPlacement: DropPlacement | null
   /**
-   * Get the drag/drop state for a specific item.
-   */
-  getItemState(value: string): ItemState
-  /**
    * Programmatically cancel the current drag.
    */
   cancelDrag(): void
@@ -365,10 +398,26 @@ export interface DndApi<T extends PropTypes = PropTypes> {
    */
   instructions: string
 
+  /**
+   * Returns the state of the root
+   */
+  getRootState(): RootState
   getRootProps(): T["element"]
+  /**
+   * Returns the state of a draggable item. Its drag handle shares it.
+   */
+  getDraggableState(props: DraggableProps): DraggableState
   getDraggableProps(props: DraggableProps): T["element"]
   getDragHandleProps(props: DragHandleProps): T["element"]
+  /**
+   * Returns the state of a drop target
+   */
+  getDropTargetState(props: DropTargetProps): DropTargetState
   getDropTargetProps(props: DropTargetProps): T["element"]
+  /**
+   * Returns the state of a drop indicator
+   */
+  getDropIndicatorState(props: DropIndicatorProps): DropIndicatorState
   getDropIndicatorProps(props: DropIndicatorProps): T["element"]
   /**
    * Returns the state of the drag preview

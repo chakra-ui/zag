@@ -323,7 +323,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           // Pointer presses step on their own. This handles screen readers and `click()`.
           if (decrementTriggerState.disabled || event.detail !== 0) return
-          send({ type: "VALUE.DECREMENT", src: "decrement-press" })
+          send({ type: "VALUE.DECREMENT", src: "decrement-trigger" })
         },
         onPointerDown(event) {
           if (decrementTriggerState.disabled) return
@@ -332,7 +332,7 @@ export function connect<T extends PropTypes>(
             type: "TRIGGER.PRESS_DOWN",
             direction: -1,
             pointerType: event.pointerType,
-            src: "decrement-press",
+            src: "decrement-trigger",
           })
           if (event.pointerType === "mouse") {
             event.preventDefault()
@@ -342,7 +342,7 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", direction: -1, pointerType: event.pointerType, src: "decrement-press" })
+          send({ type: "TRIGGER.PRESS_UP", direction: -1, pointerType: event.pointerType, src: "decrement-trigger" })
         },
         onPointerLeave(event) {
           if (decrementTriggerState.disabled) return
@@ -351,7 +351,7 @@ export function connect<T extends PropTypes>(
             direction: -1,
             pointerType: event.pointerType,
             cancelled: true,
-            src: "decrement-press",
+            src: "decrement-trigger",
           })
         },
         onPointerCancel(event) {
@@ -360,7 +360,7 @@ export function connect<T extends PropTypes>(
             direction: -1,
             pointerType: event.pointerType,
             cancelled: true,
-            src: "decrement-press",
+            src: "decrement-trigger",
           })
         },
       })
@@ -382,7 +382,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           // Pointer presses step on their own. This handles screen readers and `click()`.
           if (incrementTriggerState.disabled || event.detail !== 0) return
-          send({ type: "VALUE.INCREMENT", src: "increment-press" })
+          send({ type: "VALUE.INCREMENT", src: "increment-trigger" })
         },
         onPointerDown(event) {
           if (incrementTriggerState.disabled || !isLeftClick(event)) return
@@ -390,7 +390,7 @@ export function connect<T extends PropTypes>(
             type: "TRIGGER.PRESS_DOWN",
             direction: 1,
             pointerType: event.pointerType,
-            src: "increment-press",
+            src: "increment-trigger",
           })
           if (event.pointerType === "mouse") {
             event.preventDefault()
@@ -400,7 +400,7 @@ export function connect<T extends PropTypes>(
           }
         },
         onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", direction: 1, pointerType: event.pointerType, src: "increment-press" })
+          send({ type: "TRIGGER.PRESS_UP", direction: 1, pointerType: event.pointerType, src: "increment-trigger" })
         },
         onPointerLeave(event) {
           send({
@@ -408,7 +408,7 @@ export function connect<T extends PropTypes>(
             direction: 1,
             pointerType: event.pointerType,
             cancelled: true,
-            src: "increment-press",
+            src: "increment-trigger",
           })
         },
         onPointerCancel(event) {
@@ -417,7 +417,7 @@ export function connect<T extends PropTypes>(
             direction: 1,
             pointerType: event.pointerType,
             cancelled: true,
-            src: "increment-press",
+            src: "increment-trigger",
           })
         },
       })

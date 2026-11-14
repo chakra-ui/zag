@@ -302,6 +302,10 @@
       "setError": {
         "type": "VoidFunction",
         "description": "Function to set error state."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root."
       }
     },
     "context": {
@@ -847,6 +851,10 @@
         "type": "VoidFunction",
         "description": "Copy the value to the clipboard"
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
       "getIndicatorState": {
         "type": "(props: IndicatorProps) => IndicatorState",
         "description": "Returns the state of the indicator"
@@ -875,7 +883,7 @@
       },
       "onStatusChange": {
         "type": "((details: CopyStatusDetails) => void) | undefined",
-        "description": "The function to be called when the value is copied to the clipboard"
+        "description": "The function to be called when the copied status changes, or copying fails"
       },
       "timeout": {
         "type": "number | undefined",
@@ -914,9 +922,9 @@
         "type": "VoidFunction",
         "description": "Function to measure the size of the content."
       },
-      "getTriggerState": {
-        "type": "() => TriggerState",
-        "description": "Returns the state of the trigger"
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       },
       "getContentState": {
         "type": "() => ContentState",
@@ -1455,7 +1463,7 @@
       },
       "popupType": {
         "type": "\"listbox\" | \"dialog\" | undefined",
-        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the\n`role` of the content element, the trigger's keyboard handling, and the\nlabel's click target.\n- `\"listbox\"` (default) \u2014 input-driven combobox; popup is a passive listbox.\n- `\"dialog\"` \u2014 popover-style combobox; popup is announced as a dialog,\n  trigger is keyboard-active, label-click focuses the trigger.",
+        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger, the\n`role` of the content element, the trigger's keyboard handling, and the\nlabel's click target.\n- `\"listbox\"` (default) — input-driven combobox; popup is a passive listbox.\n- `\"dialog\"` — popover-style combobox; popup is announced as a dialog,\n  trigger is keyboard-active, label-click focuses the trigger.",
         "defaultValue": "\"listbox\""
       },
       "loading": {
@@ -1546,10 +1554,6 @@
       "getRootState": {
         "type": "() => RootState",
         "description": "Returns the state of the root."
-      },
-      "getControlState": {
-        "type": "() => ControlState",
-        "description": "Returns the state of the control."
       },
       "getSegmentGroupState": {
         "type": "(props?: SegmentGroupProps | undefined) => SegmentGroupState",
@@ -1906,7 +1910,7 @@
         "description": "Returns the state of the trigger."
       },
       "getInputState": {
-        "type": "() => InputState",
+        "type": "(props?: InputProps) => InputState",
         "description": "Returns the state of the input."
       }
     },
@@ -2259,10 +2263,6 @@
         "type": "DropPlacement | null",
         "description": "The current drop placement relative to the target."
       },
-      "getItemState": {
-        "type": "(value: string) => ItemState",
-        "description": "Get the drag/drop state for a specific item."
-      },
       "cancelDrag": {
         "type": "() => void",
         "description": "Programmatically cancel the current drag."
@@ -2278,6 +2278,22 @@
       "instructions": {
         "type": "string",
         "description": "Keyboard instructions text for screen readers.\nAutomatically set as `aria-description` on draggable and drag handle elements."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getDraggableState": {
+        "type": "(props: DraggableProps) => DraggableState",
+        "description": "Returns the state of a draggable item. Its drag handle shares it."
+      },
+      "getDropTargetState": {
+        "type": "(props: DropTargetProps) => DropTargetState",
+        "description": "Returns the state of a drop target"
+      },
+      "getDropIndicatorState": {
+        "type": "(props: DropIndicatorProps) => DropIndicatorState",
+        "description": "Returns the state of a drop indicator"
       },
       "getDragPreviewState": {
         "type": "() => DragPreviewState",
@@ -2640,21 +2656,9 @@
         "type": "VoidFunction",
         "description": "Function to exit edit mode, and submit any changes"
       },
-      "getAreaState": {
-        "type": "() => AreaState",
-        "description": "Returns the state of the area"
-      },
-      "getLabelState": {
-        "type": "() => LabelState",
-        "description": "Returns the state of the label"
-      },
-      "getInputState": {
-        "type": "() => InputState",
-        "description": "Returns the state of the input"
-      },
-      "getPreviewState": {
-        "type": "() => PreviewState",
-        "description": "Returns the state of the preview"
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       }
     },
     "context": {
@@ -2858,18 +2862,6 @@
         "type": "() => RootState",
         "description": "Returns the state of the root."
       },
-      "getLabelState": {
-        "type": "() => LabelState",
-        "description": "Returns the state of the label."
-      },
-      "getControlState": {
-        "type": "() => ControlState",
-        "description": "Returns the state of the control (input, textarea, select, or a custom host)."
-      },
-      "getHelperTextState": {
-        "type": "() => HelperTextState",
-        "description": "Returns the state of the helper text."
-      },
       "getErrorTextState": {
         "type": "(props?: ErrorTextProps) => ErrorTextState",
         "description": "Returns the state of the error text."
@@ -2892,6 +2884,10 @@
       "invalid": {
         "type": "boolean | undefined",
         "description": "Whether the field is invalid, regardless of computed validity.\nUse for app-level errors (e.g. server errors) the machine cannot compute itself."
+      },
+      "errors": {
+        "type": "string | string[] | undefined",
+        "description": "Errors from outside the field, such as a server response. They mark the field invalid\nuntil the user changes the value, and show again when different errors are passed or the form is submitted."
       },
       "dirty": {
         "type": "boolean | undefined",
@@ -2960,18 +2956,6 @@
       "getRootState": {
         "type": "() => RootState",
         "description": "Returns the state of the root."
-      },
-      "getLegendState": {
-        "type": "() => LegendState",
-        "description": "Returns the state of the legend."
-      },
-      "getHelperTextState": {
-        "type": "() => HelperTextState",
-        "description": "Returns the state of the helper text."
-      },
-      "getErrorTextState": {
-        "type": "() => ErrorTextState",
-        "description": "Returns the state of the error text."
       }
     },
     "context": {
@@ -2986,7 +2970,7 @@
       },
       "invalid": {
         "type": "boolean | undefined",
-        "description": "Whether the fieldset is invalid. Not inherited by descendant fields.",
+        "description": "Whether the fieldset is invalid. Not inherited by descendant fields,\nbut their controls are described by the fieldset's error text.",
         "defaultValue": "false"
       },
       "dir": {
@@ -3449,6 +3433,14 @@
         "type": "(value: string | null) => void",
         "description": "Function to set the trigger value"
       },
+      "activationDirection": {
+        "type": "PopupActivationDirection | null",
+        "description": "Where the current trigger sits relative to the previous one, after switching triggers while open"
+      },
+      "getContentValues": {
+        "type": "() => string[]",
+        "description": "Returns the trigger values whose content to render: the current one, plus the previous one while\nit animates out after a switch. Oldest first."
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -3462,8 +3454,12 @@
         "description": "Returns the state of the positioner"
       },
       "getContentState": {
-        "type": "() => ContentState",
+        "type": "(props?: ContentProps) => ContentState",
         "description": "Returns the state of the content"
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
       }
     },
     "context": {
@@ -4084,6 +4080,10 @@
         "type": "VoidFunction",
         "description": "Restart the marquee animation from the beginning."
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
       "getContentState": {
         "type": "(props: ContentProps) => ContentState",
         "description": "Returns the state of a content instance"
@@ -4376,6 +4376,10 @@
         "type": "boolean",
         "description": "Whether the menubar is disabled."
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
       "getMenuContext": {
         "type": "() => MenubarMenuContext",
         "description": "Returns the config to pass to each top-level menu's `menubar` prop. Adapters\nusually expose this via a context so nested `<Menu>`s can read it."
@@ -4440,7 +4444,7 @@
       },
       "percent": {
         "type": "number",
-        "description": "The percentage of the meter's value (0\u2013100)."
+        "description": "The percentage of the meter's value (0–100)."
       },
       "percentAsString": {
         "type": "string",
@@ -4469,6 +4473,10 @@
       "valueState": {
         "type": "MeterValueState",
         "description": "How good the current value is: `optimal`, `suboptimal`, or `least-optimal`."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The label, track and indicator share it."
       }
     },
     "context": {
@@ -4482,7 +4490,8 @@
       },
       "defaultValue": {
         "type": "number | undefined",
-        "description": "The initial value of the meter when rendered.\nUse when you don't need to control the value of the meter."
+        "description": "The initial value of the meter when rendered.\nUse when you don't need to control the value of the meter.",
+        "defaultValue": "min"
       },
       "min": {
         "type": "number | undefined",
@@ -4577,6 +4586,10 @@
         "type": "VoidFunction",
         "description": "Function to reposition the viewport"
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The list, indicator, arrow and viewport positioner share it."
+      },
       "getTriggerState": {
         "type": "(props: ItemProps) => TriggerState",
         "description": "Returns the state of a specific trigger"
@@ -4584,6 +4597,14 @@
       "getContentState": {
         "type": "(props: ContentProps) => ContentState",
         "description": "Returns the state of a specific content"
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of a specific item"
       }
     },
     "context": {
@@ -4682,6 +4703,10 @@
       "setValue": {
         "type": "(value: number) => void",
         "description": "Sets the value."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
       }
     },
     "context": {
@@ -4796,12 +4821,12 @@
         "description": "Whether the input value is empty."
       },
       "value": {
-        "type": "string",
-        "description": "The formatted value of the input."
+        "type": "number | null",
+        "description": "The number, or `null` when the input is empty."
       },
-      "valueAsNumber": {
-        "type": "number",
-        "description": "The value of the input as a number."
+      "formattedValue": {
+        "type": "string",
+        "description": "The value as shown in the input."
       },
       "setValue": {
         "type": "(value: number) => void",
@@ -4883,22 +4908,20 @@
         "defaultValue": "\"-?[0-9]*(.[0-9]+)?\""
       },
       "value": {
-        "type": "string | undefined",
-        "description": "The controlled value of the input"
+        "type": "number | null | undefined",
+        "description": "The controlled value. Use `null` for an empty input."
       },
       "defaultValue": {
-        "type": "string | undefined",
-        "description": "The initial value of the input when rendered.\nUse when you don't need to control the value of the input."
+        "type": "number | null | undefined",
+        "description": "The initial value when rendered.\nUse when you don't need to control the value."
       },
       "min": {
         "type": "number | undefined",
-        "description": "The minimum value of the number input",
-        "defaultValue": "Number.MIN_SAFE_INTEGER"
+        "description": "The minimum value of the number input"
       },
       "max": {
         "type": "number | undefined",
-        "description": "The maximum value of the number input",
-        "defaultValue": "Number.MAX_SAFE_INTEGER"
+        "description": "The maximum value of the number input"
       },
       "step": {
         "type": "number | undefined",
@@ -4909,15 +4932,10 @@
         "type": "boolean | undefined",
         "description": "Whether to allow mouse wheel to change the value"
       },
-      "allowOverflow": {
+      "allowOutOfRange": {
         "type": "boolean | undefined",
-        "description": "Whether to allow the value overflow the min/max range",
-        "defaultValue": "true"
-      },
-      "clampValueOnBlur": {
-        "type": "boolean | undefined",
-        "description": "Whether to clamp the value when the input loses focus (blur)",
-        "defaultValue": "true"
+        "description": "Whether a typed value can stay outside the min/max range instead of being clamped on blur or Enter.\nThe value is then reported as invalid. Stepping always stays within the range.",
+        "defaultValue": "false"
       },
       "focusInputOnChange": {
         "type": "boolean | undefined",
@@ -4934,8 +4952,7 @@
       },
       "inputMode": {
         "type": "InputMode | undefined",
-        "description": "Hints at the type of data that might be entered by the user. It also determines\nthe type of keyboard shown to the user on mobile devices",
-        "defaultValue": "\"decimal\""
+        "description": "Hints at the type of data that might be entered by the user. It also determines\nthe type of keyboard shown to the user on mobile devices.\nDefaults to `\"text\"` on iPhone when negatives are allowed, otherwise `\"decimal\"`."
       },
       "onValueChange": {
         "type": "((details: ValueChangeDetails) => void) | undefined",
@@ -5183,15 +5200,7 @@
       },
       "getRootState": {
         "type": "() => RootState",
-        "description": "Returns the state of the root."
-      },
-      "getInputState": {
-        "type": "() => InputState",
-        "description": "Returns the state of the input."
-      },
-      "getVisibilityTriggerState": {
-        "type": "() => VisibilityTriggerState",
-        "description": "Returns the state of the visibility trigger."
+        "description": "Returns the state of the root. Every part shares it."
       }
     },
     "context": {
@@ -5301,10 +5310,6 @@
         "type": "() => RootState",
         "description": "Returns the state of the root."
       },
-      "getLabelState": {
-        "type": "() => LabelState",
-        "description": "Returns the state of the label."
-      },
       "getInputState": {
         "type": "(props: InputProps) => InputState",
         "description": "Returns the state of a given input."
@@ -5334,7 +5339,7 @@
       "placeholder": {
         "type": "string | undefined",
         "description": "The placeholder text for the input",
-        "defaultValue": "\"\u25cb\""
+        "defaultValue": "\"○\""
       },
       "autoFocus": {
         "type": "boolean | undefined",
@@ -5636,6 +5641,10 @@
         "type": "boolean",
         "description": "Whether the progress bar is indeterminate."
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The label, track, range and circle parts share it."
+      },
       "getViewState": {
         "type": "(props: ViewProps) => ViewState",
         "description": "Returns the state of a view"
@@ -5653,7 +5662,7 @@
       "defaultValue": {
         "type": "number | null | undefined",
         "description": "The initial value of the progress bar when rendered.\nUse when you don't need to control the value of the progress bar.",
-        "defaultValue": "50"
+        "defaultValue": "min"
       },
       "min": {
         "type": "number | undefined",
@@ -5879,9 +5888,9 @@
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a rating item"
       },
-      "getControlState": {
-        "type": "() => ControlState",
-        "description": "Returns the state of the control"
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The label, control and hidden input share it."
       }
     },
     "context": {
@@ -5969,7 +5978,7 @@
       },
       "today": {
         "type": "CalendarDateTime",
-        "description": "Locale/timezone-aware \"today\" date \u2014 useful for highlighting current day."
+        "description": "Locale/timezone-aware \"today\" date — useful for highlighting current day."
       },
       "visibleRange": {
         "type": "{ start: CalendarDateTime; end: CalendarDateTime }",
@@ -5977,7 +5986,7 @@
       },
       "visibleRangeText": {
         "type": "VisibleRangeText",
-        "description": "Localized text for the visible range \u2014 prefer this over formatting by hand."
+        "description": "Localized text for the visible range — prefer this over formatting by hand."
       },
       "visibleDays": {
         "type": "CalendarDateTime[]",
@@ -5985,7 +5994,7 @@
       },
       "columns": {
         "type": "SchedulerColumn<P>[]",
-        "description": "The columns to render \u2014 one per visible day, or one per day \u00d7 resource when grouping by resource."
+        "description": "The columns to render — one per visible day, or one per day × resource when grouping by resource."
       },
       "getTimelineState": {
         "type": "() => TimelineState<P>",
@@ -6009,7 +6018,7 @@
       },
       "formatTimeRange": {
         "type": "(start: CalendarDateTime, end: CalendarDateTime) => string",
-        "description": "Locale/timezone-aware time range, e.g. \"09:30 \u2013 11:00\"."
+        "description": "Locale/timezone-aware time range, e.g. \"09:30 – 11:00\"."
       },
       "formatLongDate": {
         "type": "(date: CalendarDateTime) => string",
@@ -6038,7 +6047,7 @@
       },
       "visibleEvents": {
         "type": "SchedulerEvent<P>[]",
-        "description": "Events whose range overlaps `visibleRange` \u2014 the set you actually render."
+        "description": "Events whose range overlaps `visibleRange` — the set you actually render."
       },
       "getAgendaGroups": {
         "type": "() => { date: CalendarDateTime; events: SchedulerEvent<P>[] }[]",
@@ -6058,7 +6067,7 @@
       },
       "dragState": {
         "type": "DragState<P> | null",
-        "description": "State of the active drag or resize \u2014 null when idle."
+        "description": "State of the active drag or resize — null when idle."
       },
       "selectedSlot": {
         "type": "{ start: CalendarDateTime; end: CalendarDateTime } | null",
@@ -6101,16 +6110,16 @@
         "description": "Dismiss the selected slot highlight (e.g. when a create dialog closes)."
       },
       "getEventState": {
-        "type": "(id: string) => EventStateDetail",
-        "description": "Interaction state for an event \u2014 dragging, focused, conflicting, and so on."
+        "type": "(props: EventProps<P>) => EventState",
+        "description": "Interaction state for an event — dragging, focused, conflicting, and so on."
       },
       "getDayColumnState": {
         "type": "(props: DayColumnProps) => DayColumnState",
-        "description": "Day-level flags for the given column \u2014 use to conditionally render custom UI (drop-target hint, day-specific styling) without reconstructing the comparisons from `dragState` / `selectedSlot`."
+        "description": "Day-level flags for the given column — use to conditionally render custom UI (drop-target hint, day-specific styling) without reconstructing the comparisons from `dragState` / `selectedSlot`."
       },
       "getEventPosition": {
         "type": "(event: SchedulerEvent<P>) => EventPosition",
-        "description": "Numeric position within a day column \u2014 use for custom layouts."
+        "description": "Numeric position within a day column — use for custom layouts."
       },
       "getTimePercent": {
         "type": "(date: CalendarDateTime) => number",
@@ -6130,7 +6139,7 @@
       },
       "getMonthGrid": {
         "type": "(date?: CalendarDateTime) => CalendarDateTime[][]",
-        "description": "Weeks \u00d7 days covering the month that contains `date`, padded to full weeks."
+        "description": "Weeks × days covering the month that contains `date`, padded to full weeks."
       },
       "getEventById": {
         "type": "(id: string) => SchedulerEvent<P> | undefined",
@@ -6142,11 +6151,11 @@
       },
       "getEventsForColumn": {
         "type": "(column: SchedulerColumn<P>) => SchedulerEvent<P>[]",
-        "description": "Events for a column \u2014 scoped to its resource when grouping by resource."
+        "description": "Events for a column — scoped to its resource when grouping by resource."
       },
       "getEventsForRow": {
         "type": "(row: TimelineRow<P>) => SchedulerEvent<P>[]",
-        "description": "Events for a timeline lane \u2014 scoped to its resource when the lane has one."
+        "description": "Events for a timeline lane — scoped to its resource when the lane has one."
       },
       "getEventsForSlot": {
         "type": "(start: CalendarDateTime, end: CalendarDateTime) => SchedulerEvent<P>[]",
@@ -6204,7 +6213,7 @@
       },
       "slotInterval": {
         "type": "15 | 30 | 60 | undefined",
-        "description": "Minutes per time slot \u2014 15, 30, or 60.",
+        "description": "Minutes per time slot — 15, 30, or 60.",
         "defaultValue": "30"
       },
       "dayStartHour": {
@@ -6219,7 +6228,7 @@
       },
       "workWeekDays": {
         "type": "number[] | undefined",
-        "description": "Days of week to show in work-week mode, 0=Sun\u20266=Sat.",
+        "description": "Days of week to show in work-week mode, 0=Sun…6=Sat.",
         "defaultValue": "[1,2,3,4,5]"
       },
       "workWeekOnly": {
@@ -6238,7 +6247,7 @@
       },
       "onSlotSelect": {
         "type": "((details: SlotSelectDetails) => void) | undefined",
-        "description": "Fires when a user selects an empty slot \u2014 either by single click or by drag-release."
+        "description": "Fires when a user selects an empty slot — either by single click or by drag-release."
       },
       "onEventReceive": {
         "type": "((details: EventReceiveDetails<T>) => void) | undefined",
@@ -6251,7 +6260,7 @@
       },
       "onSlotDoubleClick": {
         "type": "((details: SlotDoubleClickDetails) => void) | undefined",
-        "description": "Fires on double-click of an empty slot \u2014 the conventional \"create event\" fast-path that bypasses slot selection (selectedSlot is not set)."
+        "description": "Fires on double-click of an empty slot — the conventional \"create event\" fast-path that bypasses slot selection (selectedSlot is not set)."
       },
       "onDayActivate": {
         "type": "((details: DayActivateDetails) => void) | undefined",
@@ -6292,7 +6301,7 @@
       },
       "startOfWeek": {
         "type": "0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined",
-        "description": "Override the first day of the week (0=Sun\u20266=Sat)."
+        "description": "Override the first day of the week (0=Sun…6=Sat)."
       },
       "showWeekNumbers": {
         "type": "boolean | undefined",
@@ -6382,6 +6391,14 @@
       "getScrollbarState": {
         "type": "(props: ScrollbarProps) => ScrollbarState",
         "description": "Returns the state of the scrollbar"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The content shares it."
+      },
+      "getViewportState": {
+        "type": "() => ViewportState",
+        "description": "Returns the state of the viewport"
       },
       "getCornerState": {
         "type": "() => CornerState",
@@ -6629,7 +6646,7 @@
       },
       "popupType": {
         "type": "\"listbox\" | \"dialog\" | undefined",
-        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and\nthe `role` of the content element.\n- `\"listbox\"` (default) \u2014 content is a passthrough wrapper; the list bears `role=\"listbox\"`.\n- `\"dialog\"` \u2014 content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.",
+        "description": "The ARIA pattern of the popup. Drives `aria-haspopup` on the trigger and\nthe `role` of the content element.\n- `\"listbox\"` (default) — content is a passthrough wrapper; the list bears `role=\"listbox\"`.\n- `\"dialog\"` — content is announced as a dialog; useful when composing search inputs, tabs, or other widgets inside the popup.",
         "defaultValue": "\"listbox\""
       },
       "dir": {
@@ -6998,8 +7015,8 @@
         "description": "Expands the specified panel."
       },
       "resizePanel": {
-        "type": "(id: PanelId, unsafePanelSize: number) => void",
-        "description": "Resizes the specified panel."
+        "type": "(id: PanelId, size: PanelSize) => void",
+        "description": "Resizes the specified panel. Takes a percentage, or a size with a unit such as `\"200px\"`."
       },
       "getLayout": {
         "type": "() => string",
@@ -7012,9 +7029,17 @@
       "getResizeTriggerState": {
         "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
         "description": "Returns the state of the resize trigger."
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The panels share it."
       }
     },
     "context": {
+      "disabled": {
+        "type": "boolean | undefined",
+        "description": "Whether resizing is disabled for the whole splitter"
+      },
       "orientation": {
         "type": "\"horizontal\" | \"vertical\" | undefined",
         "description": "The orientation of the splitter. Can be `horizontal` or `vertical`",
@@ -7050,7 +7075,8 @@
       },
       "keyboardResizeBy": {
         "type": "number | null | undefined",
-        "description": "The number of pixels to resize the panel by when the keyboard is used."
+        "description": "The percentage to resize the panel by when an arrow key is pressed.",
+        "defaultValue": "1"
       },
       "nonce": {
         "type": "string | undefined",
@@ -7160,6 +7186,14 @@
       "setCompletedValues": {
         "type": "(values: string[]) => void",
         "description": "Function to set the completed steps"
+      },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root"
+      },
+      "getCompletedContentProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Returns the props for the content shown once the flow is complete"
       }
     },
     "context": {
@@ -7369,6 +7403,10 @@
         "type": "(props: TriggerProps) => TriggerState",
         "description": "Returns the state of the trigger with the given props"
       },
+      "getRootState": {
+        "type": "() => RootState",
+        "description": "Returns the state of the root. The list shares it."
+      },
       "getContentState": {
         "type": "(props: ContentProps) => ContentState",
         "description": "Returns the state of the content with the given props"
@@ -7420,7 +7458,7 @@
       },
       "virtualFocus": {
         "type": "boolean | undefined",
-        "description": "Whether the tabs use virtual focus instead of roving tabindex.\n\nWhen `true`, triggers receive no DOM focus \u2014 arrow keys update `focusedValue`\nand all triggers remain `tabIndex: -1`. Useful when tabs live inside another\nwidget that manages focus (e.g. a combobox).",
+        "description": "Whether the tabs use virtual focus instead of roving tabindex.\n\nWhen `true`, triggers receive no DOM focus — arrow keys update `focusedValue`\nand all triggers remain `tabIndex: -1`. Useful when tabs live inside another\nwidget that manages focus (e.g. a combobox).",
         "defaultValue": "false"
       },
       "deselectable": {

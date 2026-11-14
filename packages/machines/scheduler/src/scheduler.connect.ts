@@ -332,7 +332,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       })
     },
 
-    getEventState(id) {
+    getEventState({ event }) {
+      const { id } = event
       const draggingThis = isDragging && dragEventId === id
       const resizingThis = isResizing && dragEventId === id
       const focused = focusedEventId === id
@@ -524,6 +525,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
     getColumnHeaderProps(props: DayColumnProps) {
       const { date, resource } = props
+      const dayState = this.getDayColumnState({ date })
       return normalize.element({
         ...parts.columnHeader.attrs(scope.id),
         role: "columnheader",
@@ -531,8 +533,8 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-resource": resource?.id,
         "data-disabled": dataAttr(resource?.disabled),
         style: resource?.color ? ({ "--resource-color": resource.color } as any) : undefined,
-        "data-today": dataAttr(isToday(date, timeZone)),
-        "data-weekend": dataAttr(isWeekend(date, locale)),
+        "data-today": dataAttr(dayState.today),
+        "data-weekend": dataAttr(dayState.weekend),
       })
     },
 
@@ -684,12 +686,12 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       // the preview follows the pointer's region, the origin follows where the event started
       const inGrid = !!dragState && !dragState.allDay
       return {
-        isToday: isToday(date, timeZone),
-        isWeekend: isWeekend(date, locale),
-        isDropTarget: !!liveDrag && !liveDrag.allDay && liveDrag.kind === "drag" && isSameDay(liveDrag.start, date),
-        isDragPreviewDay: inGrid && isSameDay(dragState!.start, date),
-        isDragOriginDay: !!dragState && !dragState.event.allDay && isSameDay(dragState.origin.start, date),
-        isSelectedSlotDay: !!activeSlot && isSameDay(activeSlot.start, date),
+        today: isToday(date, timeZone),
+        weekend: isWeekend(date, locale),
+        dragOver: !!liveDrag && !liveDrag.allDay && liveDrag.kind === "drag" && isSameDay(liveDrag.start, date),
+        hasDragPreview: inGrid && isSameDay(dragState!.start, date),
+        hasDragOrigin: !!dragState && !dragState.event.allDay && isSameDay(dragState.origin.start, date),
+        hasSelectedSlot: !!activeSlot && isSameDay(activeSlot.start, date),
       }
     },
 
@@ -712,17 +714,17 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
       }
 
       const overlayVars: Record<string, string> = {}
-      if (dayState.isDragPreviewDay) {
+      if (dayState.hasDragPreview) {
         const b = getTimeRangeBounds({ start: dragState!.start, end: dragState!.end, dayStartHour, dayEndHour })
         overlayVars["--scheduler-drag-preview-top"] = b.top
         overlayVars["--scheduler-drag-preview-height"] = b.height
       }
-      if (dayState.isDragOriginDay) {
+      if (dayState.hasDragOrigin) {
         const b = getTimeRangeBounds({ ...dragState!.origin, dayStartHour, dayEndHour })
         overlayVars["--scheduler-drag-origin-top"] = b.top
         overlayVars["--scheduler-drag-origin-height"] = b.height
       }
-      if (dayState.isSelectedSlotDay) {
+      if (dayState.hasSelectedSlot) {
         const b = getTimeRangeBounds({ ...activeSlot!, dayStartHour, dayEndHour })
         overlayVars["--scheduler-slot-top"] = b.top
         overlayVars["--scheduler-slot-height"] = b.height
@@ -735,7 +737,9 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         "data-date": date.toString(),
         "data-resource": resource?.id,
         "data-disabled": dataAttr(resource?.disabled),
-        "data-drop-target": dataAttr(dayState.isDropTarget),
+        "data-today": dataAttr(dayState.today),
+        "data-weekend": dataAttr(dayState.weekend),
+        "data-drop-target": dataAttr(dayState.dragOver),
         style: {
           userSelect: "none",
           ...(resource?.color ? { "--resource-color": resource.color } : {}),
@@ -897,7 +901,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
 
     getEventProps(props) {
       const { event, layout = "grid", segment } = props
-      const evtState = this.getEventState(event.id)
+      const evtState = this.getEventState(props)
       // the timeline runs horizontally, so it spans the range rather than one day column
       const timelinePos = layout === "timeline" ? timeline.getSpan(event) : null
       const bar = layout === "all-day" ? segment : undefined

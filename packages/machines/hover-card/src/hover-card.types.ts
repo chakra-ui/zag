@@ -11,10 +11,9 @@ import type { CommonProperties, DirectionProperty, PopupActivationDirection, Pro
  * The reason for the hover card open/close state change
  */
 export type OpenChangeReason =
-  | "trigger-hover" // Pointer entered the trigger or content
+  | "trigger-hover" // Pointer entered, or left, the trigger and content
   | "trigger-focus" // Trigger received focus
   | "trigger-blur" // Focus left the trigger
-  | "pointer-leave" // Pointer left the trigger and content
   | "interact-outside" // User pressed outside
   | "escape-key" // User pressed escape
   | "script" // Programmatically changed
@@ -217,6 +216,14 @@ export interface PositionerState {
    * Whether the hover card has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Whether the hover card is moving between triggers
+   */
+  transitioning: boolean
+  /**
+   * Why the next animation should be skipped
+   */
+  instant: InstantType
 }
 
 export interface ViewportSize {

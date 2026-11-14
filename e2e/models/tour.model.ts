@@ -58,6 +58,21 @@ export class TourModel extends Model {
     return this.page.getByRole("button", { name: "Start" }).click()
   }
 
+  clickNext() {
+    return this.page.getByRole("button", { name: "Next", exact: true }).click()
+  }
+
+  /** The first step fetches from GitHub; mock it so the tour doesn't wait on the network */
+  mockStepRequest() {
+    return this.page.route("https://api.github.com/**", (route) => route.fulfill({ json: { name: "Step 1" } }))
+  }
+
+  makeInert(selector: string) {
+    return this.page.locator(selector).evaluate((el) => {
+      ;(el as HTMLElement).inert = true
+    })
+  }
+
   clickOutside() {
     return this.page.click("body", { force: true, position: { x: 200, y: 100 } })
   }
@@ -107,6 +122,15 @@ export class TourModel extends Model {
     // spotlight rect to be greater than content rect
     expect(spotlightRect.width).toBeGreaterThan(targetRect.width)
     expect(spotlightRect.height).toBeGreaterThan(targetRect.height)
+  }
+
+  async seeInert(selector: string, inert = true) {
+    const el = this.page.locator(selector)
+    await expect.poll(() => el.evaluate((node) => (node as HTMLElement).inert)).toBe(inert)
+  }
+
+  async seeHighlighted(heading: string) {
+    await expect(this.page.getByRole("heading", { name: heading })).toHaveAttribute("data-tour-highlighted", "")
   }
 
   seeStartIsFocused() {

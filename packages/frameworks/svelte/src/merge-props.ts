@@ -40,4 +40,3 @@ export function mergeProps(...args: Record<string | symbol, any>[]) {
 
   return merged
 }
-

@@ -157,19 +157,18 @@ const service = useMachine(tooltip.machine, {
 
 `details.reason` says what caused the change.
 
-| Reason             | Meaning                                     |
-| ------------------ | ------------------------------------------- |
-| `trigger-hover`    | The pointer entered the trigger             |
-| `trigger-focus`    | The trigger received keyboard focus         |
-| `trigger-blur`     | The trigger lost focus                      |
-| `trigger-click`    | The trigger was pressed                     |
-| `pointer-leave`    | The pointer left the trigger or content     |
-| `escape-key`       | The user pressed `Esc`                      |
-| `scroll`           | An ancestor of the trigger scrolled         |
-| `sibling-open`     | Another tooltip opened                      |
-| `interact-outside` | The pointer was locked                      |
-| `disabled`         | The tooltip was disabled while open         |
-| `script`           | Changed programmatically, such as `setOpen` |
+| Reason             | Meaning                                              |
+| ------------------ | ---------------------------------------------------- |
+| `trigger-hover`    | The pointer entered, or left, the trigger or content |
+| `trigger-focus`    | The trigger received keyboard focus                  |
+| `trigger-blur`     | The trigger lost focus                               |
+| `trigger-click`    | The trigger was pressed                              |
+| `escape-key`       | The user pressed `Esc`                               |
+| `scroll`           | An ancestor of the trigger scrolled                  |
+| `sibling-open`     | Another tooltip opened                               |
+| `interact-outside` | The pointer was locked                               |
+| `disabled`         | The tooltip was disabled while open                  |
+| `script`           | Changed programmatically, such as `setOpen`          |
 
 ### Multiple triggers
 

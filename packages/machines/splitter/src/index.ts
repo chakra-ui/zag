@@ -25,6 +25,7 @@ export type {
   ResizeTriggerItem,
   ResizeTriggerProps,
   ResizeTriggerState,
+  RootState,
   SplitterService as Service,
 } from "./splitter.types"
 export { getPanelLayout as layout } from "./utils/panel"

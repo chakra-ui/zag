@@ -12,6 +12,7 @@ export type {
   ContentProps,
   ContentState,
   IndicatorState,
+  RootState,
   IntlTranslations,
   FocusChangeDetails,
   NavigateDetails,

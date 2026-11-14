@@ -129,6 +129,17 @@ export type MeterMachine = Machine<MeterSchema>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface RootState {
+  /**
+   * Which region of the range the value falls in
+   */
+  valueState: MeterValueState
+  /**
+   * The orientation of the meter
+   */
+  orientation: Orientation
+}
+
 export interface MeterApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the meter.
@@ -183,6 +194,10 @@ export interface MeterApi<T extends PropTypes = PropTypes> {
    */
   valueState: MeterValueState
 
+  /**
+   * Returns the state of the root. The label, track and indicator share it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
   getTrackProps: () => T["element"]

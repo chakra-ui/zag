@@ -31,7 +31,7 @@ function Lightbox(props: { page: number; onPageChange: (page: number) => void })
           <For keyed={false} each={images}>
             {(src, index) => (
               <div {...api().getItemProps({ index })} class="carousel-photo">
-                <img src={src()} alt={`Product image ${index + 1}`} />
+                <img src={src()} alt={`Product ${index + 1}`} />
               </div>
             )}
           </For>

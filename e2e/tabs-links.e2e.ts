@@ -37,6 +37,36 @@ test.describe("tabs with links", () => {
     await expect(page).toHaveURL(/#agnes$/)
   })
 
+  test("shift-click leaves the link to the browser", async ({ page, context }) => {
+    await goto(page)
+    const url = page.url()
+
+    const popup = context.waitForEvent("page")
+    await page
+      .getByRole("tab")
+      .nth(1)
+      .click({ modifiers: ["Shift"] })
+    await (await popup).close()
+
+    await expect(page.getByTestId("value")).toHaveText("nils")
+    await expect(page).toHaveURL(url)
+  })
+
+  test("alt-click leaves the link to the browser", async ({ page }) => {
+    await goto(page)
+    const url = page.url()
+
+    const download = page.waitForEvent("download")
+    await page
+      .getByRole("tab")
+      .nth(1)
+      .click({ modifiers: ["Alt"] })
+    await download
+
+    await expect(page.getByTestId("value")).toHaveText("nils")
+    await expect(page).toHaveURL(url)
+  })
+
   test("automatic keyboard activation follows the link", async ({ page }) => {
     await goto(page, "?automatic=true")
     await page.getByRole("tab").first().focus()

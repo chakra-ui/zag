@@ -195,11 +195,11 @@ export interface ContentProps {
   value: string
 }
 
-export interface ContentState {
+export interface RootState {
   /**
-   * Whether the tab content is selected
+   * Whether a tab trigger has focus
    */
-  selected: boolean
+  focused: boolean
   /**
    * The orientation of the tabs
    */
@@ -210,11 +210,14 @@ export interface ContentState {
   activationDirection: ActivationDirection
 }
 
-export interface IndicatorState {
+export interface ContentState extends RootState {
   /**
-   * The position and size of the selected tab, relative to the indicator's offset parent
+   * Whether the tab content is selected
    */
-  rect: Rect | null
+  selected: boolean
+}
+
+export interface IndicatorState extends RootState {
   /**
    * Whether the indicator has a measured rect to point to
    */
@@ -223,14 +226,6 @@ export interface IndicatorState {
    * Whether the indicator should snap into place instead of animating
    */
   instant: boolean
-  /**
-   * The orientation of the tabs
-   */
-  orientation: "horizontal" | "vertical"
-  /**
-   * Where the selected tab sits relative to the previously selected one
-   */
-  activationDirection: ActivationDirection
 }
 
 export interface TabsApi<T extends PropTypes = PropTypes> {
@@ -281,6 +276,10 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   getTriggerState: (props: TriggerProps) => TriggerState
   getTriggerProps: (props: TriggerProps) => T["button"]
 
+  /**
+   * Returns the state of the root. The list shares it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   /**

@@ -439,22 +439,11 @@ export interface ItemState {
 
 export interface RootState {
   /**
-   * Whether the combobox is invalid
-   */
-  invalid: boolean
-  /**
-   * Whether the combobox is read-only
-   */
-  readOnly: boolean
-}
-
-export interface TriggerState {
-  /**
    * Whether the combobox is open
    */
   open: boolean
   /**
-   * Whether the trigger is disabled
+   * Whether the combobox is disabled
    */
   disabled: boolean
   /**
@@ -465,6 +454,17 @@ export interface TriggerState {
    * Whether the combobox is read-only
    */
   readOnly: boolean
+  /**
+   * Whether the combobox is required
+   */
+  required: boolean
+  /**
+   * Whether the combobox is focused
+   */
+  focused: boolean
+}
+
+export interface TriggerState extends RootState {
   /**
    * Whether the trigger is focusable
    */
@@ -500,6 +500,10 @@ export interface ContentState {
    * Whether the combobox has no items to show
    */
   empty: boolean
+  /**
+   * Whether the items are loading
+   */
+  loading: boolean
 }
 
 export interface ItemGroupProps {

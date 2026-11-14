@@ -8,11 +8,10 @@ import type { CommonProperties, DirectionProperty, PopupActivationDirection, Pro
 
 /**
  * What opened or closed the tooltip:
- * - `trigger-hover`: the pointer entered the trigger
+ * - `trigger-hover`: the pointer entered, or left, the trigger or content
  * - `trigger-focus`: the trigger received keyboard focus
  * - `trigger-blur`: the trigger lost focus
  * - `trigger-click`: the trigger was pressed
- * - `pointer-leave`: the pointer left the trigger or content
  * - `escape-key`: Escape was pressed
  * - `scroll`: an ancestor of the trigger scrolled
  * - `sibling-open`: another tooltip opened
@@ -25,7 +24,6 @@ export type OpenChangeReason =
   | "trigger-focus"
   | "trigger-blur"
   | "trigger-click"
-  | "pointer-leave"
   | "escape-key"
   | "scroll"
   | "sibling-open"

@@ -10,7 +10,17 @@ import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from
  * The reason a menu within the menubar closed. Used to decide whether the menubar
  * should keep `hasOpenMenu` active (another menu is about to open) or reset it.
  */
-export type MenuCloseReason = "escape" | "click-outside" | "sibling-open" | "item-select" | "list-navigation"
+export type MenuCloseReason =
+  | "sibling-open"
+  | "trigger-click"
+  | "trigger-hover"
+  | "arrow-key"
+  | "item-select"
+  | "escape-key"
+  | "interact-outside"
+  | "focus-outside"
+  | "tab-key"
+  | "script"
 
 /**
  * The custom DOM events menus dispatch on the menubar element to coordinate.
@@ -104,6 +114,21 @@ export interface MenubarMenuContext {
   activeId: string | null
 }
 
+export interface RootState {
+  /**
+   * Whether any menu within the menubar is open
+   */
+  hasOpenMenu: boolean
+  /**
+   * Whether the menubar is disabled
+   */
+  disabled: boolean
+  /**
+   * The orientation of the menubar
+   */
+  orientation: Orientation
+}
+
 export interface MenubarApi<T extends PropTypes = PropTypes> {
   /**
    * Whether any menu within the menubar is open.
@@ -117,6 +142,10 @@ export interface MenubarApi<T extends PropTypes = PropTypes> {
    * Whether the menubar is disabled.
    */
   disabled: boolean
+  /**
+   * Returns the state of the root
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
   /**
    * Returns the config to pass to each top-level menu's `menubar` prop. Adapters

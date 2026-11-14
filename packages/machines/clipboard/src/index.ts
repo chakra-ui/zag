@@ -13,4 +13,5 @@ export type {
   IndicatorProps,
   IndicatorState,
   IntlTranslations,
+  RootState,
 } from "./clipboard.types"

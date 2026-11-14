@@ -359,9 +359,18 @@ export interface SegmentProps {
 }
 
 export interface SegmentState {
+  /**
+   * Whether the segment can be edited.
+   */
   editable: boolean
+  /**
+   * Whether the segment is focused.
+   */
   focused: boolean
-  readonly: boolean
+  /**
+   * Whether the segment is read-only, either because the input is or because the segment can't be edited.
+   */
+  readOnly: boolean
 }
 
 export interface LabelProps {
@@ -381,42 +390,15 @@ export interface RootState {
    * Whether the date input is invalid.
    */
   invalid: boolean
-}
-
-export interface ControlState {
-  /**
-   * Whether the date input is disabled.
-   */
-  disabled: boolean
-  /**
-   * Whether the date input is read-only.
-   */
-  readOnly: boolean
-  /**
-   * Whether the date input is invalid.
-   */
-  invalid: boolean
   /**
    * Whether the date input is focused.
    */
   focused: boolean
 }
 
-export interface SegmentGroupState {
+export interface SegmentGroupState extends RootState {
   /**
-   * Whether the date input is disabled.
-   */
-  disabled: boolean
-  /**
-   * Whether the date input is read-only.
-   */
-  readOnly: boolean
-  /**
-   * Whether the date input is invalid.
-   */
-  invalid: boolean
-  /**
-   * Whether this segment group is focused.
+   * Whether this segment group is focused. In a range input, only the active group is.
    */
   focused: boolean
 }
@@ -487,10 +469,6 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
   getRootState: () => RootState
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
-  /**
-   * Returns the state of the control.
-   */
-  getControlState: () => ControlState
   getControlProps: () => T["element"]
   /**
    * Returns the state of a given segment group.

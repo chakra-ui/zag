@@ -17,7 +17,7 @@
   <label><input type="checkbox" bind:checked={disabled} /> Disabled</label>
 
   <div {...api.getRootProps()}>
-    <span {...api.getLabelProps()}>Bio</span>
+    <span {...api.getLabelProps() as Record<string, unknown>}>Bio</span>
     <div
       {...api.getControlProps()}
       role="textbox"

@@ -86,7 +86,7 @@
           <div {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</div>
           {#each items as item (item.value)}
             <div {...api.getItemProps({ item, persistFocus: true })}>
-              <Highlight text={item.label} query={props.query} />
+              <Highlight text={item.label} query={props.query} fuzzy />
               {#if props.query && props.pages.getAncestors(item).length > 0}
                 <span data-part="item-path">
                   {props.pages

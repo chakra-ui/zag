@@ -4,7 +4,13 @@ import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissa
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, PopupActivationDirection, PropTypes } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  MaybeElement,
+  PopupActivationDirection,
+  PropTypes,
+} from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -20,8 +26,7 @@ export interface ScrollToIndexDetails {
  * - `trigger-click`: the trigger was pressed by pointer or Enter/Space
  * - `arrow-key`: an arrow key opened or closed the menu
  * - `context-menu`: the context trigger was right-clicked or long-pressed
- * - `trigger-hover`: the pointer hovered the trigger (submenu or menubar)
- * - `pointer-leave`: the pointer left a submenu or its trigger
+ * - `trigger-hover`: the pointer hovered, or left, a trigger or submenu. With `setOpen`, focus stays put
  * - `sibling-open`: another menu in the menubar opened
  * - `item-select`: an item was selected
  * - `escape-key`: Escape was pressed
@@ -35,7 +40,6 @@ export type OpenChangeReason =
   | "arrow-key"
   | "context-menu"
   | "trigger-hover"
-  | "pointer-leave"
   | "sibling-open"
   | "item-select"
   | "escape-key"
@@ -77,7 +81,7 @@ export interface SelectionDetails {
   modifiers: ModifierKeys
 }
 
-export type HighlightChangeReason = "keyboard" | "pointer" | "programmatic"
+export type HighlightChangeReason = "keyboard" | "pointer" | "script"
 
 export interface HighlightChangeDetails {
   /**
@@ -156,6 +160,16 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * @default false
    */
   loopFocus?: boolean | undefined
+  /**
+   * The element to focus when the menu opens.
+   * Return `false` to skip moving focus, or `null` to use the default.
+   */
+  initialFocusEl?: (() => MaybeElement | false) | undefined
+  /**
+   * The element to focus when the menu closes.
+   * Return `null` to use the default (the trigger, or the element focused before a context menu opened).
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
   /**
    * The options used to dynamically position the menu
    */
@@ -294,6 +308,8 @@ export interface MenuSchema {
     menubarCloseReason: string | null
     pointerType: string | null
     focusMenuFrame: AnimationFrame
+    returnFocusFrame: AnimationFrame
+    returnFocusEl: HTMLElement | null
     autoHighlightFrame: AnimationFrame
     syncHighlightFrame: AnimationFrame
     cancelTriggerSwitch: VoidFunction | null
@@ -441,6 +457,14 @@ export interface PositionerState {
    * Whether the menu has nested layered elements within it
    */
   hasNested: boolean
+  /**
+   * Whether the menu is moving between triggers
+   */
+  transitioning: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
 }
 
 export interface ViewportSize {
@@ -477,6 +501,10 @@ export interface ContentState {
    */
   side: PlacementSide | undefined
   /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
+  /**
    * Where the current trigger sits relative to the previous one, e.g. `"right"` or `"left down"`.
    * `null` until the menu switches triggers while open.
    */
@@ -488,6 +516,10 @@ export interface ViewportState {
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * Whether the menu skips its animation, e.g. when switching between menubar menus
+   */
+  instant: boolean
   /**
    * The side of the trigger the viewport is placed on
    */

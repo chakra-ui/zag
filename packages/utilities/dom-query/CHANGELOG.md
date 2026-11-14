@@ -1,6 +1,27 @@
 # @zag-js/dom-query
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix `isAndroid` returning `false` in Chrome on Android.
+- Updated dependencies []:
+  - @zag-js/types@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- [#3599](https://github.com/chakra-ui/zag/pull/3599)
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicks inside a same-origin iframe closing the popover, menu
+  or dialog that contains it.
+- Updated dependencies []:
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

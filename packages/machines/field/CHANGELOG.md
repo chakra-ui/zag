@@ -1,5 +1,39 @@
 # @zag-js/field
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`38b2470`](https://github.com/chakra-ui/zag/commit/38b24706a3ff9018acf00498a99d3334ba8d2201) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Focus the first invalid field when a submit is blocked.
+
+  - Add `errors` for errors from outside the field, such as a server response.
+
+  - Pass `formValues` to `validate` for cross-field rules.
+
+  - Describe the control with the enclosing fieldset's error text while the fieldset is invalid.
+
+  - Label custom controls from `getControlProps` with `aria-labelledby`, and use `aria-disabled`, `aria-required` and
+    `aria-readonly`.
+
+  - Fix custom controls from `getControlProps` crashing the field.
+
+  - Remove `role="group"` from the root and `aria-live` from the error text.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes

@@ -20,7 +20,7 @@ function Toaster(props: { store: toast.Store }) {
   const api = toast.group.connect(service, normalizeProps)
   return (
     <Portal>
-      <div {...api.getGroupProps()}>
+      <div className={styles.Group} {...api.getGroupProps()}>
         {api.getToasts().map((item, index) => (
           <Toast key={item.id} actor={item} index={index} parent={service} />
         ))}

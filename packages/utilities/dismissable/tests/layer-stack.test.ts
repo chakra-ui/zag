@@ -87,6 +87,24 @@ describe("layerStack", () => {
       layerStack.layers[0]?.dismiss()
       expect(dismissCount).toBe(10)
     })
+    test("re-adding a parent keeps it below its children", async () => {
+      const parent = document.createElement("div")
+      const child = document.createElement("div")
+      const childTrigger = document.createElement("button")
+      parent.append(childTrigger)
+      document.body.append(parent, child)
+
+      const childDismiss = vi.fn()
+      layerStack.add(createLayer(parent))
+      layerStack.add({ ...createLayer(child, { dismiss: childDismiss }), origins: [child, childTrigger] })
+      layerStack.add(createLayer(parent))
+
+      expect(layerStack.isTopMost(child)).toBe(true)
+      expect(layerStack.isInNestedLayer(parent, child)).toBe(true)
+      layerStack.remove(parent)
+      await Promise.resolve()
+      expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe("snapshots", () => {
@@ -179,6 +197,64 @@ describe("layerStack", () => {
       await Promise.resolve()
 
       expect(childDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("does not dismiss a sibling layer whose trigger is outside the removed layer", async () => {
+      const a = document.createElement("div")
+      const nestedTrigger = document.createElement("button")
+      a.append(nestedTrigger)
+      const b = document.createElement("div")
+      const bTrigger = document.createElement("button")
+      const nested = document.createElement("div")
+      document.body.append(a, bTrigger, b, nested)
+
+      const bDismiss = vi.fn()
+      const nestedDismiss = vi.fn()
+      layerStack.add(createLayer(a))
+      layerStack.add({ ...createLayer(b, { dismiss: bDismiss }), origins: [b, bTrigger] })
+      layerStack.add({ ...createLayer(nested, { dismiss: nestedDismiss }), origins: [nested, nestedTrigger] })
+
+      layerStack.remove(a)
+      await Promise.resolve()
+
+      expect(bDismiss).not.toHaveBeenCalled()
+      expect(nestedDismiss).toHaveBeenCalledTimes(1)
+    })
+
+    test("keeps a nested layer that stays open nested in the removed layer's parent", async () => {
+      const a = document.createElement("div")
+      const b = document.createElement("div")
+      const c = document.createElement("div")
+      const bTrigger = document.createElement("button")
+      const cTrigger = document.createElement("button")
+      a.append(bTrigger)
+      b.append(cTrigger)
+      document.body.append(a, b, c)
+
+      layerStack.add(createLayer(a))
+      layerStack.add({ ...createLayer(b), origins: [b, bTrigger] })
+      layerStack.add({ ...createLayer(c, { requestDismiss: (e) => e.preventDefault() }), origins: [c, cTrigger] })
+
+      layerStack.remove(b)
+      await Promise.resolve()
+
+      expect(layerStack.isInNestedLayer(a, c)).toBe(true)
+    })
+
+    test("does not count sibling layers as nested", () => {
+      const a = document.createElement("div")
+      const b = document.createElement("div")
+      const aTrigger = document.createElement("button")
+      const bTrigger = document.createElement("button")
+      document.body.append(aTrigger, bTrigger, a, b)
+
+      const onAChange = vi.fn()
+      const onBChange = vi.fn()
+      layerStack.add({ ...createLayer(a, { onLayerChange: onAChange }), origins: [a, aTrigger] })
+      layerStack.add({ ...createLayer(b, { onLayerChange: onBChange }), origins: [b, bTrigger] })
+
+      expect(getLastSnapshot(onAChange)).toMatchObject({ hasNested: false, nestedCount: 0 })
+      expect(getLastSnapshot(onBChange)).toMatchObject({ nested: false })
     })
   })
 

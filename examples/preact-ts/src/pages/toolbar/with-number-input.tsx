@@ -15,7 +15,7 @@ function ZoomInput(props: { api: toolbar.Api }) {
     id: useId(),
     ids: { input: inputId },
     disabled: api.disabled,
-    defaultValue: "100",
+    defaultValue: 100,
     min: 25,
     max: 400,
     step: 25,

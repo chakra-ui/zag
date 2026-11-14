@@ -211,6 +211,12 @@
 [data-combobox-item-text] {
   flex: 1;
   min-width: 0;
+
+  & mark {
+    background: none;
+    color: inherit;
+    font-weight: 600;
+  }
 }
 
 [data-combobox-item-text] + [data-combobox-item-indicator] {

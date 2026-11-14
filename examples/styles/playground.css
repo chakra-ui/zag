@@ -572,6 +572,7 @@ body:has(.window-list-virtualizer) {
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 0;
   min-height: 0;
 }
 
@@ -580,6 +581,7 @@ body:has(.window-list-virtualizer) {
   align-items: center;
   gap: 10px;
   width: auto;
+  height: auto;
   padding: 0 14px;
   border: none;
   border-bottom: 1px solid var(--pg-border-subtle);
@@ -631,6 +633,7 @@ body:has(.window-list-virtualizer) {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  font-size: 13px;
 }
 
 .pg-palette-list.pg-palette-list {
@@ -662,6 +665,7 @@ body:has(.window-list-virtualizer) {
   gap: 10px;
   box-sizing: border-box;
   height: 36px;
+  min-height: 0;
   padding: 0 10px;
   border-radius: var(--pg-radius-sm);
   color: var(--pg-fg);
@@ -678,7 +682,7 @@ body:has(.window-list-virtualizer) {
 }
 
 .pg-palette-item-label {
-  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -691,6 +695,7 @@ body:has(.window-list-virtualizer) {
 }
 
 .pg-palette-item-check {
+  margin-inline-start: auto;
   width: 14px;
   height: 14px;
   flex-shrink: 0;

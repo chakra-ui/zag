@@ -20,7 +20,7 @@ import {
   observeAttributes,
   raf,
   resizeObserverBorderBox,
-  scrollIntoView,
+  scrollToNearest,
   waitForAnimationEnd,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -67,7 +67,7 @@ function getHighlightReason(event: { type: string; previousEvent?: any } | undef
   const type = event?.type === "CONTROLLED.OPEN" ? event.previousEvent?.type : event?.type
   if (keyboardEvents.has(type)) return "keyboard"
   if (pointerEvents.has(type)) return "pointer"
-  return "programmatic"
+  return "script"
 }
 
 type FocusSource = "hover" | "touch" | "pointer" | "other"
@@ -202,6 +202,8 @@ export const machine = createMachine<MenuSchema>({
       menubarCloseReason: null,
       pointerType: null,
       focusMenuFrame: AnimationFrame.create(),
+      returnFocusFrame: AnimationFrame.create(),
+      returnFocusEl: null,
       autoHighlightFrame: AnimationFrame.create(),
       syncHighlightFrame: AnimationFrame.create(),
       cancelTriggerSwitch: null,
@@ -219,7 +221,7 @@ export const machine = createMachine<MenuSchema>({
   },
 
   entry: ["setIsWebKit"],
-  exit: ["cancelFocusMenu", "cancelHighlightFrames", "focusParentIfOrphaned", "endTriggerSwitch"],
+  exit: ["cancelFocusMenu", "cancelHighlightFrames", "cancelReturnFocus", "focusParentIfOrphaned", "endTriggerSwitch"],
   effects: ["trackMenubarOpenRequest"],
 
   watch({ track, action, context, prop }) {
@@ -280,16 +282,16 @@ export const machine = createMachine<MenuSchema>({
         OPEN: openTransitions,
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint", "setTriggerValue"],
+          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue"],
         },
         CONTEXT_MENU: [
           {
             guard: "isOpenControlled",
-            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "invokeOnOpen"],
           },
         ],
         TRIGGER_CLICK: [
@@ -423,10 +425,12 @@ export const machine = createMachine<MenuSchema>({
         "clearHighlightedItem",
         "unlockParentOnClose",
         "clearAnchorPoint",
+        "clearReturnFocusEl",
         "dispatchMenubarClose",
         "endTriggerSwitch",
         "clearActivationDirection",
       ],
+      exit: ["cancelReturnFocus"],
       on: {
         OPEN: openTransitions,
         "CONTROLLED.OPEN": [
@@ -446,16 +450,16 @@ export const machine = createMachine<MenuSchema>({
         ],
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint", "setTriggerValue"],
+          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue"],
         },
         CONTEXT_MENU: [
           {
             guard: "isOpenControlled",
-            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setAnchorPoint", "setTriggerValue", "invokeOnOpen"],
+            actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "invokeOnOpen"],
           },
         ],
         TRIGGER_CLICK: [
@@ -748,7 +752,7 @@ export const machine = createMachine<MenuSchema>({
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
-          send({ type: "DELAY.CLOSE", src: "pointer-leave" })
+          send({ type: "DELAY.CLOSE", src: "trigger-hover" })
         }, 100)
         return () => clearTimeout(timer)
       },
@@ -884,7 +888,7 @@ export const machine = createMachine<MenuSchema>({
           })
 
           if (!isMovingToSubmenu) {
-            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU", src: "pointer-leave" })
+            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU", src: "trigger-hover" })
             setParentRoutingLock(parent, false)
           }
         })
@@ -909,7 +913,7 @@ export const machine = createMachine<MenuSchema>({
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
 
-          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+          scrollToNearest(itemEl, { rootEl: contentEl })
         }
         const rafCleanup = raf(() => {
           setInteractionModality("virtual")
@@ -940,10 +944,10 @@ export const machine = createMachine<MenuSchema>({
         }
         dom.dispatchMenubarEvent(menubarEl, "menu:open", detail)
       },
-      dispatchMenubarClose({ scope, prop, refs }) {
+      dispatchMenubarClose({ scope, prop, refs, event }) {
         const menubarEl = dom.getMenubarEl(scope, prop("menubar")?.rootId)
         if (!menubarEl) return
-        const reason = refs.get("menubarCloseReason") ?? "close"
+        const reason = refs.get("menubarCloseReason") ?? getOpenChangeReason(event) ?? "script"
         refs.set("menubarCloseReason", null)
         dom.dispatchMenubarEvent(menubarEl, "menu:close", {
           menuId: scope.id,
@@ -952,6 +956,12 @@ export const machine = createMachine<MenuSchema>({
       },
       setAnchorPoint({ context, event }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
+      },
+      setReturnFocusEl({ scope, refs }) {
+        refs.set("returnFocusEl", scope.getActiveElement())
+      },
+      clearReturnFocusEl({ refs }) {
+        refs.set("returnFocusEl", null)
       },
       setSubmenuPlacement({ context, computed, refs }) {
         if (!context.get("isSubmenu")) return
@@ -1187,13 +1197,16 @@ export const machine = createMachine<MenuSchema>({
         else send(closeEvent)
         nextEl?.focus({ preventScroll: true })
       },
-      focusMenu({ scope, event, refs, context }) {
+      focusMenu({ scope, event, refs, context, prop }) {
+        const openEvent = event.type === "CONTROLLED.OPEN" && event.previousEvent ? event.previousEvent : event
+        if (openEvent.focus === false) return
         const source = getFocusSource(event)
         const target = event.target
         refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
           const initialFocusEl = getInitialFocus({
             root: contentEl,
+            getInitialEl: prop("initialFocusEl"),
             enabled: !contains(contentEl, scope.getActiveElement()),
             filter(node) {
               return !node.role?.startsWith("menuitem")
@@ -1265,13 +1278,29 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value, modifiers: getModifierKeys(event.modifiers) })
       },
-      focusTrigger({ scope, context, event }) {
+      focusTrigger({ scope, context, event, refs, prop }) {
         const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
-        if (context.get("isSubmenu") || context.get("anchorPoint") || restoreFocus === false) return
+        if (context.get("isSubmenu") || restoreFocus === false) return
+
+        const getFinalFocusEl = () => prop("finalFocusEl")?.()
+
+        // Context menus return focus to whatever was focused when they opened
+        if (context.get("anchorPoint")) {
+          const returnFocusEl = refs.get("returnFocusEl")
+          refs.get("returnFocusFrame").request(() => {
+            const el = getFinalFocusEl() || returnFocusEl
+            el?.focus({ preventScroll: true })
+          })
+          return
+        }
+
         queueMicrotask(() => {
-          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-          triggerEl?.focus({ preventScroll: true })
+          const el = getFinalFocusEl() || dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+          el?.focus({ preventScroll: true })
         })
+      },
+      cancelReturnFocus({ refs }) {
+        refs.get("returnFocusFrame").cancel()
       },
       highlightMatchedItem({ scope, context, event, refs, prop }) {
         const collection = prop("collection")
@@ -1317,7 +1346,7 @@ export const machine = createMachine<MenuSchema>({
           // Focus parent menu before closing to prevent focus from escaping
           // (fixes issue where submenus with focusable elements cause parent to close)
           dom.getContentEl(scope, context.get("triggerValue"))?.focus({ preventScroll: true })
-          child.send({ type: "CLOSE", src: "pointer-leave" })
+          child.send({ type: "CLOSE", src: "trigger-hover" })
         }
       },
       closeRootMenu({ refs }) {

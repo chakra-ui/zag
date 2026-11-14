@@ -82,18 +82,56 @@ export type ScrollAreaService = Service<ScrollAreaSchema>
 
 export type ScrollAreaMachine = Machine<ScrollAreaSchema>
 
-export interface ScrollbarState {
-  hovering: boolean
-  dragging: boolean
-  scrolling: boolean
-  hidden: boolean
-}
-
-export interface CornerState {
+export interface RootState {
   /**
    * Whether the pointer is hovering the scroll area
    */
   hovering: boolean
+  /**
+   * Whether the content overflows horizontally. `false` until the first measurement.
+   */
+  overflowX: boolean
+  /**
+   * Whether the content overflows vertically. `false` until the first measurement.
+   */
+  overflowY: boolean
+}
+
+export interface ViewportState extends RootState {
+  /**
+   * Whether the viewport is scrolled to the top
+   */
+  atTop: boolean
+  /**
+   * Whether the viewport is scrolled to the bottom
+   */
+  atBottom: boolean
+  /**
+   * Whether the viewport is scrolled to the left
+   */
+  atLeft: boolean
+  /**
+   * Whether the viewport is scrolled to the right
+   */
+  atRight: boolean
+}
+
+export interface ScrollbarState extends RootState {
+  /**
+   * Whether the thumb of this scrollbar is being dragged
+   */
+  dragging: boolean
+  /**
+   * Whether the viewport is scrolling along this scrollbar's axis
+   */
+  scrolling: boolean
+  /**
+   * Whether this scrollbar is hidden because there is no overflow on its axis
+   */
+  hidden: boolean
+}
+
+export interface CornerState extends RootState {
   /**
    * Whether the corner is hidden
    */
@@ -160,7 +198,15 @@ export interface ScrollAreaApi<T extends PropTypes> {
    */
   getScrollbarState: (props: ScrollbarProps) => ScrollbarState
 
+  /**
+   * Returns the state of the root. The content shares it.
+   */
+  getRootState: () => RootState
   getRootProps: () => T["element"]
+  /**
+   * Returns the state of the viewport
+   */
+  getViewportState: () => ViewportState
   getViewportProps: () => T["element"]
   getContentProps: () => T["element"]
   getScrollbarProps: (props?: ScrollbarProps) => T["element"]

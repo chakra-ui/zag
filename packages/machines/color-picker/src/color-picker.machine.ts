@@ -4,6 +4,7 @@ import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@
 import {
   AnimationFrame,
   disableTextSelection,
+  contains,
   dispatchInputValueEvent,
   getInitialFocus,
   isFocusOutside,
@@ -58,6 +59,7 @@ export const machine = createMachine<ColorPickerSchema>({
       focusFrame: AnimationFrame.create(),
       inputSyncFrame: AnimationFrame.create(),
       formatSyncFrame: AnimationFrame.create(),
+      channelDraft: null,
     }
   },
 
@@ -234,6 +236,8 @@ export const machine = createMachine<ColorPickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackPositioning", "trackDismissableElement"],
+      // Its inputs can unmount without a blur
+      exit: ["clearContentChannelDraft"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": [
@@ -541,8 +545,12 @@ export const machine = createMachine<ColorPickerSchema>({
       dispatchChangeEvent({ scope, computed }) {
         dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: computed("valueAsString") })
       },
+      clearContentChannelDraft({ refs, scope }) {
+        const draft = refs.get("channelDraft")
+        if (draft && contains(dom.getContentEl(scope), draft.el)) refs.set("channelDraft", null)
+      },
       syncInputElements({ context, scope, refs }) {
-        syncChannelInputs(refs.get("inputSyncFrame"), scope, context.get("value"))
+        syncChannelInputs(refs, scope, context.get("value"))
       },
       invokeOnChangeEnd({ context, prop, computed }) {
         prop("onValueChangeEnd")?.({
@@ -583,7 +591,7 @@ export const machine = createMachine<ColorPickerSchema>({
         }
 
         // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-        syncChannelInputs(refs.get("inputSyncFrame"), scope, context.get("value"), color)
+        syncChannelInputs(refs, scope, context.get("value"), color)
 
         // set new color
         context.set("value", color)
@@ -685,11 +693,18 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 })
 
-function syncChannelInputs(frame: AnimationFrame, scope: Scope, currentValue: Color, nextValue?: Color) {
+function syncChannelInputs(
+  refs: Params<ColorPickerSchema>["refs"],
+  scope: Scope,
+  currentValue: Color,
+  nextValue?: Color,
+) {
   const channelInputEls = dom.getChannelInputEls(scope)
-  frame.request(() => {
+  refs.get("inputSyncFrame").request(() => {
+    const draftChannel = refs.get("channelDraft")?.channel
     channelInputEls.forEach((inputEl) => {
       const channel = inputEl.dataset.channel as ExtendedColorChannel | null
+      if (channel === draftChannel) return
       setElementValue(inputEl, getChannelValue(nextValue || currentValue, channel))
     })
   })

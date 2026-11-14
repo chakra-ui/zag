@@ -93,6 +93,33 @@ test.describe("color-picker", () => {
     await I.seeHexInputHasValue(FIRST_SWATCH_VALUE)
   })
 
+  test("[channel input] text typed after a swatch click is not overwritten", async () => {
+    await I.clickTrigger()
+    await I.clickSwatchThenTypeInAlpha(0, "0.5")
+    await I.waitForFrames()
+    await I.seeAlphaInputHasValue("0.5")
+  })
+
+  test("[channel input] text typed right after a commit is not overwritten", async () => {
+    await I.commitAlphaThenType("0.3", "0.35")
+    await I.waitForFrames()
+    await I.seeAlphaInputHasValue("0.35")
+  })
+
+  test("[channel input] closing mid-edit without a blur leaves no stale text", async () => {
+    await I.clickTrigger()
+    await I.typeInContentAlpha("0.6")
+
+    await I.blockBlur()
+    await I.clickTrigger()
+    await I.dontSeeColorPicker()
+    await I.blockBlur(false)
+
+    await I.clickTrigger()
+    await I.dragChannelSlider("alpha", 0.5)
+    await I.seeAlphaInputHasValue("0.5")
+  })
+
   test("[form] should reset value to initial on reset", async () => {
     await I.clickTrigger()
 

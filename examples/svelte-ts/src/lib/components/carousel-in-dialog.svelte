@@ -29,7 +29,7 @@
     <div {...api.getItemGroupProps()}>
       {#each props.images as src, index (src)}
         <div {...api.getItemProps({ index })} class="carousel-photo">
-          <img {src} alt={`Product image ${index + 1}`} />
+          <img {src} alt={`Product ${index + 1}`} />
         </div>
       {/each}
     </div>

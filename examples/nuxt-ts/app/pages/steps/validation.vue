@@ -125,7 +125,7 @@ const reset = () => {
         </dl>
       </div>
 
-      <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+      <div v-bind="api.getCompletedContentProps()">
         <p>
           Project <strong>{{ project.name }}</strong> created.
         </p>

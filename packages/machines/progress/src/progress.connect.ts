@@ -2,7 +2,7 @@ import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./progress.anatomy"
 import * as dom from "./progress.dom"
-import type { IntlTranslations, ProgressApi, ProgressService, ViewProps, ViewState } from "./progress.types"
+import type { IntlTranslations, ProgressApi, ProgressService, RootState, ViewProps, ViewState } from "./progress.types"
 import { getProgressState } from "./progress.utils"
 
 const defaultTranslations: Required<IntlTranslations> = {
@@ -35,6 +35,24 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
   const valueAsString = translations.value({ value, max, percent, min, formatter: computed("formatter") })
   const progressState = getProgressState(value, max)
 
+  // -----------------------------------------------------------------------------
+  // State getters: pure, serializable per-part state, independent of `normalize`
+  // -----------------------------------------------------------------------------
+
+  function getRootState(): RootState {
+    return { state: progressState, orientation }
+  }
+
+  function getViewState(props: ViewProps): ViewState {
+    return { visible: props.state === progressState }
+  }
+
+  const rootState = getRootState()
+
+  // -----------------------------------------------------------------------------
+  // Prop getters
+  // -----------------------------------------------------------------------------
+
   const progressbarProps = {
     role: "progressbar",
     "aria-labelledby": dom.getLabelId(scope),
@@ -43,15 +61,11 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     "aria-valuemax": max,
     "aria-valuenow": value ?? undefined,
     "aria-valuetext": indeterminate ? undefined : valueAsString,
-    "data-orientation": orientation,
-    "data-state": progressState,
+    "data-orientation": rootState.orientation,
+    "data-state": rootState.state,
   }
 
   const circleProps = getCircleProps(service)
-
-  function getViewState(props: ViewProps): ViewState {
-    return { state: props.state, visible: props.state === progressState }
-  }
 
   return {
     value,
@@ -71,14 +85,15 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       send({ type: "VALUE.SET", value: min })
     },
 
+    getRootState,
     getRootProps() {
       return normalize.element({
         dir: prop("dir"),
         ...parts.root.attrs(scope.id),
         "data-max": max,
         "data-value": value ?? undefined,
-        "data-state": progressState,
-        "data-orientation": orientation,
+        "data-state": rootState.state,
+        "data-orientation": rootState.orientation,
         style: {
           "--percent": indeterminate ? undefined : percent,
         },
@@ -90,7 +105,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         ...parts.label.attrs(scope.id),
-        "data-orientation": orientation,
+        "data-orientation": rootState.orientation,
       })
     },
 
@@ -113,8 +128,8 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         ...parts.range.attrs(scope.id),
-        "data-orientation": orientation,
-        "data-state": progressState,
+        "data-orientation": rootState.orientation,
+        "data-state": rootState.state,
         style: {
           [computed("isHorizontal") ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
         },
@@ -133,7 +148,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
     getCircleTrackProps() {
       return normalize.element({
         dir: prop("dir"),
-        "data-orientation": orientation,
+        "data-orientation": rootState.orientation,
         ...parts.circleTrack.attrs(scope.id),
         ...circleProps.track,
       })
@@ -144,7 +159,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
         dir: prop("dir"),
         ...parts.circleRange.attrs(scope.id),
         ...circleProps.range,
-        "data-state": progressState,
+        "data-state": rootState.state,
       })
     },
 
@@ -154,7 +169,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
       return normalize.element({
         dir: prop("dir"),
         ...parts.view.attrs(scope.id),
-        "data-state": viewState.state,
+        "data-state": props.state,
         hidden: !viewState.visible,
       })
     },

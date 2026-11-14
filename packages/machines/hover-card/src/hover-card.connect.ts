@@ -55,7 +55,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
   }
 
   function getPositionerState(): PositionerState {
-    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested }
+    return { nested: !!layer?.nested, hasNested: !!layer?.hasNested, transitioning, instant: context.get("instant") }
   }
 
   function getContentState(props: ContentProps = {}): ContentState {
@@ -164,7 +164,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
           if (event.pointerType === "touch") return
           if (prop("disabled")) return
           refs.set("inlineLines", undefined)
-          send({ type: "POINTER_LEAVE", src: "pointer-leave" })
+          send({ type: "POINTER_LEAVE", src: "trigger-hover" })
         },
         onFocus() {
           if (prop("disabled")) return
@@ -189,10 +189,12 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
 
     getPositionerState,
     getPositionerProps() {
+      const positionerState = getPositionerState()
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
         dir: prop("dir"),
-        "data-transitioning": dataAttr(transitioning),
+        "data-transitioning": dataAttr(positionerState.transitioning),
+        "data-instant": positionerState.instant ?? undefined,
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,

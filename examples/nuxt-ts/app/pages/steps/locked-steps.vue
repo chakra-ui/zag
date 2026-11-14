@@ -80,7 +80,7 @@ const cancel = () => {
         </label>
       </div>
 
-      <div v-bind="api.getContentProps({ value: steps.COMPLETE })">
+      <div v-bind="api.getCompletedContentProps()">
         <p>Two-factor authentication is on. Save these backup codes:</p>
         <ul>
           <li v-for="backupCode in backupCodes" :key="backupCode">

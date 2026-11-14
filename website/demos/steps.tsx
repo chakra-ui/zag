@@ -59,10 +59,7 @@ export function Steps(props: StepsProps) {
         </div>
       ))}
 
-      <div
-        className={styles.Content}
-        {...api.getContentProps({ value: steps.COMPLETE })}
-      >
+      <div className={styles.Content} {...api.getCompletedContentProps()}>
         Complete - Thank you 🎉
       </div>
 

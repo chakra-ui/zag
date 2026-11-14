@@ -588,7 +588,7 @@ export const machine = createMachine({
 })
 
 const getPressSource = (direction: StepDirection): ValueChangeReason =>
-  direction > 0 ? "increment-press" : "decrement-press"
+  direction > 0 ? "increment-trigger" : "decrement-trigger"
 
 type NumberParams = Pick<Params<NumberInputSchema>, "context" | "prop" | "computed">
 

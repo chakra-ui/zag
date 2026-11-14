@@ -75,6 +75,10 @@
   },
   "async-list": {},
   "avatar": {
+    "Root": {
+      "data-avatar-root": "<uid>",
+      "data-status": ""
+    },
     "Image": {
       "data-avatar-image": "<uid>",
       "data-state": "\"visible\" | \"hidden\""
@@ -299,7 +303,8 @@
   "collapsible": {
     "Root": {
       "data-collapsible-root": "<uid>",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled"
     },
     "Content": {
       "data-collapsible-content": "<uid>",
@@ -444,6 +449,8 @@
   "combobox": {
     "Root": {
       "data-combobox-root": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
       "data-readonly": "Present when read-only"
     },
@@ -528,7 +535,8 @@
       "data-date-input-root": "<uid>",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
     },
     "Label": {
       "data-date-input-label": "<uid>",
@@ -566,6 +574,7 @@
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
       "data-empty": "Present when the content is empty"
     },
     "Label": {
@@ -617,24 +626,24 @@
       "data-view": "The view of the tablerow"
     },
     "WeekNumberHeaderCell": {
-      "data-date-picker-week-number-header-cell": "<uid>",
+      "data-date-picker-table-cell": "<uid>",
       "data-view": "The view of the weeknumberheadercell",
-      "data-type": "The type of the item",
+      "data-type": "\"week-number\"",
       "data-disabled": "Present when disabled"
     },
     "WeekNumberCell": {
-      "data-date-picker-week-number-cell": "<uid>",
+      "data-date-picker-table-cell": "<uid>",
       "data-view": "The view of the weeknumbercell",
       "data-week-index": "",
-      "data-type": "The type of the item",
+      "data-type": "\"week-number\"",
       "data-disabled": "Present when disabled"
     },
     "DayTableCell": {
-      "data-date-picker-day-table-cell": "<uid>",
+      "data-date-picker-table-cell": "<uid>",
       "data-value": "The value of the item"
     },
     "DayTableCellTrigger": {
-      "data-date-picker-day-table-cell-trigger": "<uid>",
+      "data-date-picker-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
       "data-selectable": "",
       "data-selected": "Present when selected",
@@ -653,12 +662,12 @@
       "data-hover-range-end": "Present when is the end of the hovered range"
     },
     "MonthTableCell": {
-      "data-date-picker-month-table-cell": "<uid>",
+      "data-date-picker-table-cell": "<uid>",
       "data-selected": "Present when selected",
       "data-value": "The value of the item"
     },
     "MonthTableCellTrigger": {
-      "data-date-picker-month-table-cell-trigger": "<uid>",
+      "data-date-picker-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
       "data-selectable": "",
       "data-selected": "Present when selected",
@@ -674,12 +683,12 @@
       "data-hover-range-end": "Present when is the end of the hovered range"
     },
     "YearTableCell": {
-      "data-date-picker-year-table-cell": "<uid>",
+      "data-date-picker-table-cell": "<uid>",
       "data-selected": "Present when selected",
       "data-value": "The value of the item"
     },
     "YearTableCellTrigger": {
-      "data-date-picker-year-table-cell-trigger": "<uid>",
+      "data-date-picker-table-cell-trigger": "<uid>",
       "data-disabled": "Present when disabled",
       "data-selectable": "",
       "data-selected": "Present when selected",
@@ -838,6 +847,13 @@
     }
   },
   "editable": {
+    "Root": {
+      "data-editable-root": "<uid>",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
+    },
     "Area": {
       "data-editable-area": "<uid>",
       "data-focus": "Present when focused",
@@ -1074,6 +1090,10 @@
     }
   },
   "hover-card": {
+    "Arrow": {
+      "data-hover-card-arrow": "<uid>",
+      "data-state": "\"open\" | \"closed\""
+    },
     "Trigger": {
       "data-hover-card-trigger": "<uid>",
       "data-placement": "The placement of the trigger",
@@ -1084,15 +1104,29 @@
     },
     "Positioner": {
       "data-hover-card-positioner": "<uid>",
+      "data-transitioning": "",
+      "data-instant": "",
       "data-nested": "Present when the positioner is nested within another {{widget}}",
       "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
+    "Viewport": {
+      "data-hover-card-viewport": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-instant": "",
+      "data-side": "The side of the trigger that the viewport is positioned on",
+      "data-activation-direction": "",
+      "data-transitioning": "",
+      "data-nested": "Present when the viewport is nested within another {{widget}}",
+      "data-has-nested": "Present when the viewport has nested {{widget}}s"
+    },
     "Content": {
       "data-hover-card-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
       "data-instant": "",
+      "data-activation-direction": "",
       "data-nested": "popover",
       "data-has-nested": "popover"
     }
@@ -1255,15 +1289,32 @@
     "Positioner": {
       "data-menu-positioner": "<uid>",
       "data-instant": "",
+      "data-transitioning": "",
       "data-nested": "Present when the positioner is nested within another {{widget}}",
       "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
+    "Arrow": {
+      "data-menu-arrow": "<uid>",
+      "data-state": "\"open\" | \"closed\""
+    },
+    "Viewport": {
+      "data-menu-viewport": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-instant": "",
+      "data-side": "The side of the trigger that the viewport is positioned on",
+      "data-activation-direction": "",
+      "data-transitioning": "",
+      "data-nested": "Present when the viewport is nested within another {{widget}}",
+      "data-has-nested": "Present when the viewport has nested {{widget}}s"
+    },
     "Content": {
       "data-menu-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-instant": "",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
+      "data-activation-direction": "",
       "data-nested": "menu",
       "data-has-nested": "menu"
     },
@@ -1280,7 +1331,7 @@
       "data-close-on-select": ""
     },
     "OptionItem": {
-      "data-menu-option-item": "<uid>",
+      "data-menu-item": "<uid>",
       "data-type": "The type of the item",
       "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
@@ -1379,6 +1430,8 @@
       "data-navigation-menu-content": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the content",
+      "data-activation-direction": "",
+      "data-motion": "",
       "data-value": "The value of the item",
       "data-nested": "Present when the content is nested within another {{widget}}",
       "data-has-nested": "Present when the content has nested {{widget}}s"
@@ -1392,6 +1445,7 @@
       "data-navigation-menu-viewport": "<uid>",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the viewport",
+      "data-activation-direction": "",
       "data-align": "",
       "data-nested": "Present when the viewport is nested within another {{widget}}",
       "data-has-nested": "Present when the viewport has nested {{widget}}s"
@@ -1580,6 +1634,10 @@
     }
   },
   "popover": {
+    "Arrow": {
+      "data-popover-arrow": "<uid>",
+      "data-state": "\"open\" | \"closed\""
+    },
     "Trigger": {
       "data-popover-trigger": "<uid>",
       "data-placement": "The placement of the trigger",
@@ -1594,17 +1652,32 @@
     },
     "Positioner": {
       "data-popover-positioner": "<uid>",
+      "data-transitioning": "",
+      "data-instant": "",
       "data-nested": "Present when the positioner is nested within another {{widget}}",
       "data-has-nested": "Present when the positioner has nested {{widget}}s"
     },
     "Content": {
       "data-popover-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-expanded": "Present when expanded",
       "data-placement": "The placement of the content",
       "data-side": "The side of the trigger that the content is positioned on",
+      "data-activation-direction": "",
+      "data-instant": "",
       "data-nested": "popover",
       "data-has-nested": "popover"
+    },
+    "Viewport": {
+      "data-popover-viewport": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-side": "The side of the trigger that the viewport is positioned on",
+      "data-instant": "",
+      "data-activation-direction": "",
+      "data-transitioning": "",
+      "data-nested": "Present when the viewport is nested within another {{widget}}",
+      "data-has-nested": "Present when the viewport has nested {{widget}}s"
     }
   },
   "presence": {},
@@ -1711,6 +1784,11 @@
     }
   },
   "rating-group": {
+    "Root": {
+      "data-rating-group-root": "<uid>",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only"
+    },
     "Label": {
       "data-rating-group-label": "<uid>",
       "data-disabled": "Present when disabled",
@@ -1732,7 +1810,7 @@
   },
   "scheduler": {
     "SelectedSlot": {
-      "data-scheduler-selected-slot": "<uid>",
+      "data-scheduler-slot-highlight": "<uid>",
       "data-active": "Present when active or pressed",
       "data-pending": ""
     },
@@ -1792,6 +1870,8 @@
       "data-date": "",
       "data-resource": "",
       "data-disabled": "Present when disabled",
+      "data-today": "Present when the date represents today",
+      "data-weekend": "Present when is a weekend day",
       "data-drop-target": ""
     },
     "DayCell": {
@@ -1893,6 +1973,8 @@
   "select": {
     "Root": {
       "data-select-root": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
       "data-readonly": "Present when read-only"
     },
@@ -2141,9 +2223,16 @@
     "Content": {
       "data-steps-content": "<uid>",
       "data-value": "The value of the item",
+      "data-type": "\"step\"",
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the content",
       "data-complete": "Present when the content value is complete"
+    },
+    "CompletedContent": {
+      "data-steps-content": "<uid>",
+      "data-type": "\"complete\"",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the completedcontent"
     },
     "Indicator": {
       "data-steps-indicator": "<uid>",
@@ -2229,37 +2318,37 @@
   "tabs": {
     "Root": {
       "data-tabs-root": "<uid>",
-      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the tabs",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-activation-direction": ""
     },
     "List": {
       "data-tabs-list": "<uid>",
-      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-focus": "Present when focused",
-      "data-orientation": "The orientation of the list"
+      "data-orientation": "The orientation of the list",
+      "data-activation-direction": ""
     },
     "Trigger": {
       "data-tabs-trigger": "<uid>",
-      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the trigger",
       "data-disabled": "Present when disabled",
       "data-value": "The value of the item",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
-      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)"
+      "data-indicator-pending": "Present while the indicator isn't in place yet (server render or not measured)",
+      "data-activation-direction": ""
     },
     "Content": {
       "data-tabs-content": "<uid>",
-      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-selected": "Present when selected",
-      "data-orientation": "The orientation of the content"
+      "data-orientation": "The orientation of the content",
+      "data-activation-direction": ""
     },
     "Indicator": {
       "data-tabs-indicator": "<uid>",
-      "data-activation-direction": "Where the selected tab sits relative to the previous one",
       "data-orientation": "The orientation of the indicator",
-      "data-instant": ""
+      "data-instant": "",
+      "data-activation-direction": ""
     }
   },
   "tags-input": {
@@ -2430,11 +2519,11 @@
       "data-orientation": "The orientation of the item"
     },
     "Link": {
-      "data-toolbar-link": "<uid>",
+      "data-toolbar-item": "<uid>",
       "data-orientation": "The orientation of the link"
     },
     "Input": {
-      "data-toolbar-input": "<uid>",
+      "data-toolbar-item": "<uid>",
       "data-disabled": "Present when disabled",
       "data-focusable-when-disabled": "",
       "data-orientation": "The orientation of the input"
@@ -2448,12 +2537,30 @@
       "data-expanded": "Present when expanded",
       "data-state": "\"open\" | \"closed\""
     },
+    "Arrow": {
+      "data-tooltip-arrow": "<uid>",
+      "data-state": "\"open\" | \"closed\""
+    },
+    "Positioner": {
+      "data-tooltip-positioner": "<uid>",
+      "data-transitioning": ""
+    },
+    "Viewport": {
+      "data-tooltip-viewport": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-instant": "",
+      "data-side": "The side of the trigger that the viewport is positioned on",
+      "data-activation-direction": "",
+      "data-transitioning": ""
+    },
     "Content": {
       "data-tooltip-content": "<uid>",
+      "data-value": "The value of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-instant": "",
       "data-placement": "The placement of the content",
-      "data-side": "The side of the trigger that the content is positioned on"
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-activation-direction": ""
     }
   },
   "tour": {
@@ -2500,7 +2607,7 @@
     },
     "ActionTrigger": {
       "data-tour-action-trigger": "<uid>",
-      "data-type": "The type of the item",
+      "data-type": "\"next\" | \"previous\" | \"close\" | \"skip\" | \"custom\"",
       "data-disabled": "Present when disabled"
     }
   },
@@ -2574,7 +2681,7 @@
       "data-disabled": "Present when disabled"
     },
     "NodeCell": {
-      "data-tree-view-node-cell": "<uid>",
+      "data-tree-view-cell": "<uid>",
       "data-value": "The value of the item"
     }
   }

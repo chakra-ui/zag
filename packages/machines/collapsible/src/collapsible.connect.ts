@@ -3,7 +3,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import * as dom from "./collapsible.dom"
-import type { CollapsibleApi, CollapsibleSchema, ContentState, TriggerState } from "./collapsible.types"
+import type { CollapsibleApi, CollapsibleSchema, ContentState, RootState } from "./collapsible.types"
 import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
@@ -25,19 +25,18 @@ export function connect<T extends PropTypes>(
   const hasCollapsedWidth = collapsedWidth != null
   const hasCollapsedSize = hasCollapsedHeight || hasCollapsedWidth
 
-  const skip = !context.get("initial") && open
   const hiddenValue = prop("hiddenUntilFound") ? "until-found" : true
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
-  function getTriggerState(): TriggerState {
+  function getRootState(): RootState {
     return { open, visible, disabled }
   }
 
   function getContentState(): ContentState {
-    return { open, visible, disabled, hasCollapsedSize }
+    return { ...getRootState(), hasCollapsedSize, instant: !context.get("initial") && open }
   }
 
   // -----------------------------------------------------------------------------
@@ -55,10 +54,13 @@ export function connect<T extends PropTypes>(
       send({ type: nextOpen ? "open" : "close", src: reason, replaces: "open" })
     },
 
+    getRootState,
     getRootProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        "data-state": open ? "open" : "closed",
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
         dir: prop("dir"),
       })
     },
@@ -70,7 +72,7 @@ export function connect<T extends PropTypes>(
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
         "data-collapsible": "",
-        "data-state": skip ? undefined : contentState.open ? "open" : "closed",
+        "data-state": contentState.instant ? undefined : contentState.open ? "open" : "closed",
         "data-disabled": dataAttr(contentState.disabled),
         "data-has-collapsed-size": dataAttr(contentState.hasCollapsedSize),
         hidden: !contentState.visible && !contentState.hasCollapsedSize ? hiddenValue : false,
@@ -96,32 +98,33 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getTriggerState,
     getTriggerProps() {
-      const triggerState = getTriggerState()
-      return normalize.element({
+      const rootState = getRootState()
+      return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
         dir: prop("dir"),
         type: "button",
-        "data-state": triggerState.open ? "open" : "closed",
-        "data-disabled": dataAttr(triggerState.disabled),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
+        disabled: rootState.disabled,
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": triggerState.visible || false,
+        "aria-expanded": rootState.visible || false,
         onClick(event) {
           if (event.defaultPrevented) return
-          if (triggerState.disabled) return
-          send({ type: triggerState.open ? "close" : "open", src: "trigger-click" })
+          if (rootState.disabled) return
+          send({ type: rootState.open ? "close" : "open", src: "trigger-click" })
         },
       })
     },
 
     getIndicatorProps() {
+      const rootState = getRootState()
       return normalize.element({
         ...parts.indicator.attrs(scope.id),
         dir: prop("dir"),
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(disabled),
+        "data-state": rootState.open ? "open" : "closed",
+        "data-disabled": dataAttr(rootState.disabled),
       })
     },
   }

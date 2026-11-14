@@ -42,7 +42,7 @@
       </div>
     {/each}
 
-    <div {...api.getContentProps({ value: steps.COMPLETE })}>Steps Complete - Thank you for filling out the form!</div>
+    <div {...api.getCompletedContentProps()}>Steps Complete - Thank you for filling out the form!</div>
 
     <div>
       <button {...api.getPreviousTriggerProps()}>Back</button>

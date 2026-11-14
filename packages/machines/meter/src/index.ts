@@ -10,6 +10,7 @@ export type {
   ElementIds,
   IntlTranslations,
   MeterValueState,
+  RootState,
   Orientation,
   ValueChangeDetails,
   ValueTranslationDetails,
