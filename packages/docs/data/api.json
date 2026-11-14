@@ -1289,6 +1289,10 @@
         "type": "() => RootState",
         "description": "Returns the state of the root"
       },
+      "getHiddenInputProps": {
+        "type": "(props?: HiddenInputProps) => T[\"input\"]",
+        "description": "Props for a hidden input that submits the value in a form.\nRender one with no `value` for a single combobox, or one per item in `value` with `multiple`."
+      },
       "getContentState": {
         "type": "() => ContentState",
         "description": "Returns the state of the content"
@@ -1322,11 +1326,11 @@
       },
       "name": {
         "type": "string | undefined",
-        "description": "The `name` attribute of the combobox's input. Useful for form submission"
+        "description": "The `name` of the hidden input that submits the value. Render it with `getHiddenInputProps`"
       },
       "form": {
         "type": "string | undefined",
-        "description": "The associate form of the combobox."
+        "description": "The id of the form the hidden input belongs to"
       },
       "disabled": {
         "type": "boolean | undefined",
@@ -4286,6 +4290,14 @@
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation.",
         "defaultValue": "false"
+      },
+      "initialFocusEl": {
+        "type": "(() => MaybeElement | false) | undefined",
+        "description": "The element to focus when the menu opens.\nReturn `false` to skip moving focus, or `null` to use the default."
+      },
+      "finalFocusEl": {
+        "type": "(() => MaybeElement) | undefined",
+        "description": "The element to focus when the menu closes.\nReturn `null` to use the default (the trigger, or the element focused before a context menu opened)."
       },
       "positioning": {
         "type": "PositioningOptions | undefined",
@@ -8471,6 +8483,11 @@
       "scrollToTargetFn": {
         "type": "((details: ScrollToTargetDetails) => void) | undefined",
         "description": "Function to scroll the step target into view.\nDefaults to `scrollIntoView` with the nearest alignment."
+      },
+      "targetTimeout": {
+        "type": "number | undefined",
+        "description": "How long to wait, in milliseconds, for a step's target to appear before the tour\nends with the `not-found` status. Pass `Infinity` to wait indefinitely.",
+        "defaultValue": "3000"
       },
       "translations": {
         "type": "IntlTranslations | undefined",
