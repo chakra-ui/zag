@@ -1,5 +1,27 @@
 # @zag-js/tour
 
+## 1.49.0
+
+### Minor Changes
+
+- [#3636](https://github.com/chakra-ui/zag/pull/3636)
+  [`f6f33ea`](https://github.com/chakra-ui/zag/commit/f6f33ea8dc5017baec830f71c2b835a36db196ed) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - - Add `targetTimeout` to control how long the tour waits for a
+  step's target before ending with `not-found` (defaults to 3000ms).
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/types@1.49.0
+  - @zag-js/utils@1.49.0
+  - @zag-js/dismissable@1.49.0
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/focus-trap@1.49.0
+  - @zag-js/interact-outside@1.49.0
+  - @zag-js/popper@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

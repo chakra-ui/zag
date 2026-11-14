@@ -1,5 +1,9 @@
 # @zag-js/highlight-word
 
+## 1.49.0
+
+No changes in this release.
+
 ## 1.48.0
 
 No changes in this release.
