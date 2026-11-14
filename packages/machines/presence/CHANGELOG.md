@@ -1,5 +1,17 @@
 # @zag-js/presence
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [`c507890`](https://github.com/chakra-ui/zag/commit/c50789042a4c0fa9e9b86e94c3043e9dbc95e91f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix content staying mounted when its exit animation never fires
+  `animationend`.
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

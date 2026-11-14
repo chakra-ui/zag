@@ -1,5 +1,17 @@
 # @zag-js/react
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [`95cd511`](https://github.com/chakra-ui/zag/commit/95cd5111ea861e5c23927928b25f4b66100d898d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix machines not picking up prop changes made while mounted
+  inside a hidden `<Activity>` before its first reveal.
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

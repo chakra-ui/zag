@@ -1,5 +1,14 @@
 # @zag-js/svelte
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes
