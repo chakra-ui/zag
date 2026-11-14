@@ -48,6 +48,7 @@ const service = useMachine(
       options.value = filtered.length > 0 ? filtered : comboboxData
     },
     multiple: true,
+    name: "countries",
     onValueChange({ value }) {
       selectedValue.value = value
     },
@@ -67,6 +68,7 @@ const api = computed(() => combobox.connect(service, normalizeProps))
         <label v-bind="api.getLabelProps()">Select country</label>
         <div v-bind="api.getControlProps()">
           <input data-testid="input" v-bind="api.getInputProps()" />
+          <input v-for="value in api.value" :key="value" v-bind="api.getHiddenInputProps({ value })" />
           <button
             data-testid="trigger"
             v-bind="mergeProps(api.getTriggerProps(), { onClick: () => (options = comboboxData) })"

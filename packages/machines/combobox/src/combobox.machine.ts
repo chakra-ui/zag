@@ -202,14 +202,18 @@ export const machine = createMachine({
       }),
     valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
     isCustomValue: ({ context, computed }) => context.get("inputValue") !== computed("valueAsString"),
+    hiddenInputValue: ({ context, computed, prop }) =>
+      prop("allowCustomValue") && computed("isCustomValue")
+        ? context.get("inputValue")
+        : (context.get("value")[0] ?? ""),
   },
 
   watch({ context, prop, track, action, send }) {
     track([() => context.hash("value")], () => {
-      action(["syncSelectedItems"])
+      action(["syncSelectedItems", "syncHiddenInput"])
     })
     track([() => context.get("inputValue")], () => {
-      action(["syncInputValue", "announceResults"])
+      action(["syncInputValue", "syncHiddenInput", "announceResults"])
     })
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
@@ -945,6 +949,10 @@ export const machine = createMachine({
       },
       cancelHighlightFrame({ refs }) {
         refs.get("highlightFrame").cancel()
+      },
+      // Written to the DOM so a form submitted by the same Enter key sees the new value
+      syncHiddenInput({ scope, computed }) {
+        dom.setHiddenInputValue(scope, computed("hiddenInputValue"))
       },
       syncInputValue({ context, scope, event }) {
         const inputEl = dom.getInputEl(scope)

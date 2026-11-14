@@ -13,6 +13,7 @@ export type {
   CollectionOptions,
   ContentState,
   ElementIds,
+  HiddenInputProps,
   HighlightChangeDetails,
   InputValueChangeDetails,
   InputValueChangeReason,

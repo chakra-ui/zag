@@ -47,6 +47,7 @@ export default function Page() {
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
     multiple: true,
+    name: "countries",
     onValueChange({ value }) {
       selectedValue.current = value
     },
@@ -65,6 +66,9 @@ export default function Page() {
             <label {...api.getLabelProps()}>Select country</label>
             <div {...api.getControlProps()}>
               <input data-testid="input" {...api.getInputProps()} />
+              {api.value.map((value) => (
+                <input key={value} {...api.getHiddenInputProps({ value })} />
+              ))}
               <button
                 data-testid="trigger"
                 {...mergeProps(api.getTriggerProps(), {

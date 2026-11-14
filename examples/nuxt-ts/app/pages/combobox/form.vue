@@ -61,6 +61,7 @@ const onSubmit = (e: Event) => {
         <label v-bind="api.getLabelProps()">Select country</label>
         <div v-bind="api.getControlProps()">
           <input data-testid="input" v-bind="api.getInputProps()" />
+          <input v-bind="api.getHiddenInputProps()" />
           <button data-testid="trigger" type="button" v-bind="api.getTriggerProps()">▼</button>
           <button type="button" v-bind="api.getClearTriggerProps()">
             <XIcon />

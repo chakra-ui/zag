@@ -15,11 +15,13 @@ export const getItemGroupId = (ctx: Scope, id: string | number) =>
   ctx.ids?.itemGroup?.(id) ?? `${ctx.id}:optgroup:${id}`
 export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
   ctx.ids?.itemGroupLabel?.(id) ?? `${ctx.id}:optgroup-label:${id}`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `${ctx.id}:hidden-input`
 export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `${ctx.id}:option:${id}`
 
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
+export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
 export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
@@ -49,4 +51,9 @@ export const syncInputValue = (ctx: Scope, value: string, typed?: InputSelection
   if (!inputEl) return
   if (inputEl.value !== value) setElementValue(inputEl, value)
   restoreCursor(inputEl, typed)
+}
+
+export const setHiddenInputValue = (ctx: Scope, value: string) => {
+  const inputEl = getHiddenInputEl(ctx)
+  if (inputEl && inputEl.value !== value) setElementValue(inputEl, value)
 }

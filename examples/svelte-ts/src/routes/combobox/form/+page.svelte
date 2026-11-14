@@ -65,6 +65,7 @@
       <label {...api.getLabelProps()}>Select country</label>
       <div {...api.getControlProps()}>
         <input data-testid="input" {...api.getInputProps()} />
+        <input {...api.getHiddenInputProps()} />
         <button data-testid="trigger" type="button" {...api.getTriggerProps()}>▼</button>
         <button type="button" {...api.getClearTriggerProps()}>
           <XIcon />

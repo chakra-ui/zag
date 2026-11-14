@@ -207,6 +207,18 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
+    getHiddenInputProps(props = {}) {
+      const single = props.value === undefined
+      return normalize.input({
+        type: "hidden",
+        name: prop("name"),
+        form: prop("form"),
+        disabled,
+        id: single ? dom.getHiddenInputId(scope) : undefined,
+        defaultValue: single ? computed("hiddenInputValue") : props.value,
+      })
+    },
+
     getInputProps() {
       return normalize.input({
         ...parts.input.attrs(scope.id),
@@ -214,8 +226,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
         "data-autofocus": dataAttr(prop("autoFocus")),
-        name: prop("name"),
-        form: prop("form"),
         disabled: disabled,
         required: prop("required"),
         autoComplete: "off",

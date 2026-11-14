@@ -491,7 +491,31 @@ test.describe("combobox / form", () => {
     await I.pressKey("Enter")
     await I.seeInputHasValue("Zambia")
     await I.seeSubmitCount(1)
-    await I.seeLastSubmit("Zambia")
+    await I.seeLastSubmit("ZA")
+  })
+
+  test("submits the selected item's value, not its label", async ({ page }) => {
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+
+    await page.getByRole("button", { name: "Submit" }).click()
+    await I.seeLastSubmit("ZA")
+  })
+
+  test("[allowCustomValue] submits typed text over a previous selection", async ({ page }) => {
+    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("allowCustomValue", true)
+
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+
+    await page.getByRole("combobox", { name: "Select country" }).fill("Atlantis")
+    await I.pressKey("Enter")
+    await I.seeLastSubmit("Atlantis")
   })
 
   test("[alwaysSubmitOnEnter + allowCustomValue] Enter submits custom value with no highlight", async () => {
@@ -555,6 +579,19 @@ test.describe("combobox / multiple", () => {
 
     await I.seeItemIsSelected("Zambia")
     await I.seeItemIsNotSelected("Benin")
+  })
+
+  test("renders a hidden input per selected value", async ({ page }) => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+
+    const values = await page
+      .locator('input[type="hidden"][name="countries"]')
+      .evaluateAll((els) => els.map((el) => (el as HTMLInputElement).value))
+    expect(values).toEqual(["ZA", "BN"])
   })
 })
 

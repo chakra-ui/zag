@@ -48,6 +48,7 @@
       options = filtered.length > 0 ? filtered : comboboxData
     },
     multiple: true,
+    name: "countries",
     onValueChange({ value }) {
       selectedValue = value
     },
@@ -66,6 +67,9 @@
       <label {...api.getLabelProps()}>Select country</label>
       <div {...api.getControlProps()}>
         <input data-testid="input" {...api.getInputProps()} />
+        {#each api.value as value (value)}
+          <input {...api.getHiddenInputProps({ value })} />
+        {/each}
         <button
           data-testid="trigger"
           {...mergeProps(api.getTriggerProps(), {

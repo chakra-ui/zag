@@ -49,6 +49,7 @@ export default function Page() {
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
     multiple: true,
+    name: "countries",
     onValueChange({ value }) {
       setSelectedValue(value)
     },
@@ -67,6 +68,7 @@ export default function Page() {
             <label {...api().getLabelProps()}>Select country</label>
             <div {...api().getControlProps()}>
               <input data-testid="input" {...api().getInputProps()} />
+              <For each={api().value}>{(value) => <input {...api().getHiddenInputProps({ value })} />}</For>
               <button
                 data-testid="trigger"
                 {...mergeProps(api().getTriggerProps(), {

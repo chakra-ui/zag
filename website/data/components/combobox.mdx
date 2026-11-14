@@ -461,29 +461,43 @@ const service = useMachine(combobox.machine, {
 
 ### Form usage
 
-The combobox works in forms when you:
+Set `name` and render the hidden input. The form submits each selected item's
+value, not its label.
 
-- add a `name` so the selected value is included in `FormData`.
-
-Set `name` to enable form submission support.
-
-<Example>
-
-```tsx {2}
+```tsx {3,9}
 const service = useMachine(combobox.machine, {
-  name: "countries",
+  collection,
+  name: "country",
 })
+
+return (
+  <div {...api.getRootProps()}>
+    <input {...api.getInputProps()} />
+    <input {...api.getHiddenInputProps()} />
+  </div>
+)
 ```
 
-</Example>
+With `multiple`, render one hidden input per value, so the form gets one entry
+per item.
 
-If the input belongs to a different form element, also set `form`.
+```tsx
+{
+  api.value.map((value) => (
+    <input key={value} {...api.getHiddenInputProps({ value })} />
+  ))
+}
+```
+
+With `allowCustomValue`, typed text that doesn't match an item is submitted as
+is.
+
+If the combobox sits outside the form element, set `form` to the form's id.
 
 ```tsx
 const service = useMachine(combobox.machine, {
-  id: useId(),
   collection,
-  name: "countries",
+  name: "country",
   form: "checkout-form",
 })
 ```

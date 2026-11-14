@@ -116,6 +116,13 @@ export interface IntlTranslations {
   loading?: string | undefined
 }
 
+export interface HiddenInputProps {
+  /**
+   * The value to submit. Pass one per selected value with `multiple`
+   */
+  value?: string | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   label: string
@@ -127,6 +134,7 @@ export type ElementIds = Partial<{
   clearTrigger: string
   item: (id: string, index?: number) => string
   positioner: string
+  hiddenInput: string
   itemGroup: (id: string | number) => string
   itemGroupLabel: (id: string | number) => string
 }>
@@ -157,11 +165,11 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   defaultInputValue?: string | undefined
   /**
-   * The `name` attribute of the combobox's input. Useful for form submission
+   * The `name` of the hidden input that submits the value. Render it with `getHiddenInputProps`
    */
   name?: string | undefined
   /**
-   * The associate form of the combobox.
+   * The id of the form the hidden input belongs to
    */
   form?: string | undefined
   /**
@@ -386,6 +394,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     hasSelectedItems: boolean
     selectedItems: T[]
     valueAsString: string
+    hiddenInputValue: string
   }
   event: EventObject
   action: string
@@ -623,6 +632,11 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   getControlProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getInputProps: () => T["input"]
+  /**
+   * Props for a hidden input that submits the value in a form.
+   * Render one with no `value` for a single combobox, or one per item in `value` with `multiple`.
+   */
+  getHiddenInputProps: (props?: HiddenInputProps) => T["input"]
   /**
    * Returns the state of the content
    */
