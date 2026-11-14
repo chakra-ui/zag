@@ -49,7 +49,7 @@ export class ComboboxModel extends Model {
     return this.page.locator("[data-combobox-clear-trigger]")
   }
 
-  private get content() {
+  get content() {
     if (this.label) return this.page.getByRole("listbox", { name: this.label, includeHidden: true })
     return this.page.locator("[data-combobox-content]")
   }

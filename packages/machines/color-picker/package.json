@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/color-picker",
-  "version": "2.0.0-next.3",
+  "version": "2.0.0-next.4",
   "description": "Core logic for the color-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -21,7 +21,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

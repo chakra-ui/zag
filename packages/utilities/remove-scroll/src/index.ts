@@ -1,4 +1,14 @@
-import { getComputedStyle, isIos, isOverflowElement, setStyleProperty, setStyle } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  getComputedStyle,
+  getEventTarget,
+  getNearestScrollableAncestor,
+  isHTMLElement,
+  isIos,
+  isOverflowElement,
+  setStyle,
+  setStyleProperty,
+} from "@zag-js/dom-query"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
 
@@ -27,6 +37,48 @@ function hasStableScrollbarGutter(element: HTMLElement): boolean {
 function getScrollContainer(doc: Document): HTMLElement {
   const { documentElement, body } = doc
   return isOverflowElement(documentElement) ? documentElement : body
+}
+
+function isInScrollableArea(target: EventTarget | null): boolean {
+  if (!isHTMLElement(target)) return false
+  const { overflowX, overflowY } = getComputedStyle(target) ?? {}
+  const self = /auto|scroll/.test(`${overflowX}${overflowY}`)
+  const overflows = target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth
+  return (self && overflows) || getNearestScrollableAncestor(target) != null
+}
+
+function preventTouchScroll(doc: Document): VoidFunction {
+  let start: { id: number; x: number; y: number } | undefined
+
+  const onTouchStart = (event: TouchEvent) => {
+    const touch = event.touches[0]
+    start =
+      event.touches.length === 1 && touch ? { id: touch.identifier, x: touch.clientX, y: touch.clientY } : undefined
+  }
+
+  const onTouchMove = (event: TouchEvent) => {
+    if (event.touches.length > 1) return
+    const touch = event.touches[0]
+    // subpixel jitter on a tap; cancelling it drops the click
+    if (
+      start &&
+      touch &&
+      touch.identifier === start.id &&
+      Math.hypot(touch.clientX - start.x, touch.clientY - start.y) <= 0.01
+    ) {
+      return
+    }
+    start = undefined
+    if (isInScrollableArea(getEventTarget(event))) return
+    if (event.cancelable) event.preventDefault()
+  }
+
+  const cleanups = [
+    addDomEvent(doc, "touchstart", onTouchStart, { passive: true }),
+    addDomEvent(doc, "touchmove", onTouchMove, { passive: false }),
+  ]
+
+  return () => cleanups.forEach((fn) => fn())
 }
 
 function applyLock(doc: Document): VoidFunction {
@@ -58,36 +110,8 @@ function applyLock(doc: Document): VoidFunction {
     return setStyle(scroller, styles)
   }
 
-  // Only iOS doesn't respect `overflow: hidden` on document.body
-  const setBodyStyleIOS = () => {
-    const { scrollX, scrollY, visualViewport } = win
-
-    // iOS 12 does not support `visualViewport`.
-    const offsetLeft = visualViewport?.offsetLeft ?? 0
-    const offsetTop = visualViewport?.offsetTop ?? 0
-
-    // Only add padding if scrollbar-gutter: stable is not set
-    const styles: Record<string, string> = {
-      position: "fixed",
-      overflow: "hidden",
-      top: `${-(scrollY - Math.floor(offsetTop))}px`,
-      left: `${-(scrollX - Math.floor(offsetLeft))}px`,
-      right: "0",
-    }
-
-    if (!hasStableGutter && scrollbarWidth > 0) {
-      styles[paddingProperty] = `${scrollbarWidth}px`
-    }
-
-    const restoreStyle = setStyle(body, styles)
-
-    return () => {
-      restoreStyle?.()
-      win.scrollTo({ left: scrollX, top: scrollY, behavior: "instant" })
-    }
-  }
-
-  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setScrollerStyle()]
+  // iOS can still touch-scroll past `overflow: hidden`
+  const cleanups = [setScrollbarWidthProperty(), setScrollerStyle(), isIos() ? preventTouchScroll(doc) : undefined]
 
   return () => {
     cleanups.forEach((fn) => fn?.())

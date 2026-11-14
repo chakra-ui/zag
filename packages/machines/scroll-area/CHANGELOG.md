@@ -1,5 +1,33 @@
 # @zag-js/scroll-area
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix `hasOverflowX` and `hasOverflowY` starting as
+  `true`, which flashed scrollbars before the content was measured.
+
+  - Fix wheeling over a remounted scrollbar doing nothing.
+
+  - Fix a viewport that overflows on one axis not being focusable, and pressing the scrollbar moving focus away from it.
+
+  - Fix `data-scrolling` being set for scrolls made in code, and a touch marking the area as hovered.
+
+  - Fix scroll snapping fighting a thumb drag, and a jump when dragging a thumb that fills its track.
+
+  - Hide the scrollbars and corner from assistive technology, and remove the viewport's presentational role.
+
+  - Clear the scrolling state 500ms after scrolling stops, and shrink the minimum thumb size to 16px.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
@@ -53,6 +81,18 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

@@ -1,6 +1,79 @@
 # @zag-js/slider
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Replace the `aria-label` and
+  `aria-labelledby` array props with `getAriaLabel` and `getAriaLabelledBy`, matching `getAriaValueText`.
+
+  ```diff
+    slider.machine({
+  -   "aria-label": ["Minimum price", "Maximum price"],
+  +   getAriaLabel: ({ index }) => (index === 0 ? "Minimum price" : "Maximum price"),
+    })
+  ```
+
+  - **Breaking:** Leave a disabled slider out of form submission, like a native input.
+
+  - Add `disabled` to `getThumbProps` and `getHiddenInputProps` to disable a single thumb.
+
+  - Add `inRange` to the marker state and `data-in-range` to markers within the filled range.
+
+  - Accept a single number for `thumbSize`, setting both width and height.
+
+  - Add `aria-readonly` to the thumbs when `readOnly` is set, and `aria-invalid` and `data-invalid` when invalid.
+
+  - Fix thumbs with their own label getting `aria-labelledby` pointing at the label part.
+
+  - Fix the range falling short of the thumb's center when `thumbAlignment` is `"contain"`.
+
+  - Fix `onValueChangeEnd` firing when an interaction ends on the starting value.
+
+  - Fix Page Up, Page Down and Shift + Arrow snapping to multiples of `largeStep` instead of moving by it.
+
+  - Fix stacked thumbs getting stuck when `thumbCollisionBehavior` is `"none"`.
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onValueChange` details, such as
+  `trigger-click`, `keyboard`, `drag`, `item-select` or `script`. Each component exports its `ValueChangeReason` type.
+  Slider also adds it to `onValueChangeEnd`.
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`730ea29`](https://github.com/chakra-ui/zag/commit/730ea29dd3fff5005687020bc73d9f75962e2b5c) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix focus, scroll and sync work scheduled for the next
+  frame running after the component unmounts.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- [#3562](https://github.com/chakra-ui/zag/pull/3562)
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690) Thanks
+  [@tad-bit-better](https://github.com/tad-bit-better)! - - Fix stepping past `max` with a decimal `step` moving the
+  value down a step.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

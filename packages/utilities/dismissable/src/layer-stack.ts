@@ -222,6 +222,11 @@ export const layerStack = {
       const nested = this.getNestedLayers(node)
       nested.forEach((layer) => this.dismissing.add(layer.node))
       if (nested.length) queueMicrotask(() => nested.forEach((layer) => this.dismiss(layer.node, node)))
+
+      // A child that refuses to close stays nested in this layer's parent
+      for (const child of this.layers) {
+        if (child.parentId === layer.id) child.parentId = layer.parentId
+      }
     }
 
     this.layers.splice(index, 1)

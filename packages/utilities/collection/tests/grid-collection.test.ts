@@ -88,4 +88,50 @@ describe("grid collection", () => {
     expect(next.columnCount).toBe(grid.columnCount)
     expect(next.getRowCount()).toBe(Math.ceil(4 / grid.columnCount))
   })
+
+  test("copy keeps the grid type", () => {
+    const grid = new GridCollection({ items, columnCount: 3 })
+    const next = grid.update("vue", { label: "Vue 3", value: "vue3" })
+    expect(next).toBeInstanceOf(GridCollection)
+    expectTypeOf(next).toEqualTypeOf<GridCollection<Item>>()
+    expect(next.columnCount).toBe(3)
+    expect(next.getCell(0, 1)?.value).toBe("vue3")
+
+    // grid API stays available through the mutation methods
+    expect(grid.setItems(items.slice(0, 2)).getCell(0, 0)?.value).toBe("react")
+    expect(grid.append({ label: "Zig", value: "zig" }).getNextRowValue("js")).toBe("zig")
+    expect(
+      grid
+        .remove("react")
+        .moveBefore("vue", "solid")
+        .getRows()[0]
+        .map((item) => item.value),
+    ).toEqual(["solid", "vue", "angular"])
+  })
+
+  test("copy keeps the current column count", () => {
+    const grid = new GridCollection({ items, columnCount: 2 })
+    grid.columnCount = 4
+    expect(grid.copy().columnCount).toBe(4)
+    expect(grid.append({ label: "Zig", value: "zig" }).columnCount).toBe(4)
+  })
+
+  test("rows follow grouped order", () => {
+    const grouped = new GridCollection({
+      items: [
+        { label: "A1", value: "a1", group: "a" },
+        { label: "B1", value: "b1", group: "b" },
+        { label: "A2", value: "a2", group: "a" },
+        { label: "B2", value: "b2", group: "b" },
+      ],
+      columnCount: 2,
+      groupBy: (item) => item.group,
+    })
+    expect(grouped.getRows().map((row) => row.map((item) => item.value))).toEqual([
+      ["a1", "a2"],
+      ["b1", "b2"],
+    ])
+    expect(grouped.getValueCell("a2")).toEqual({ row: 0, column: 1 })
+    expect(grouped.getNextRowValue("a1")).toBe("b1")
+  })
 })

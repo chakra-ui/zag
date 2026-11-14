@@ -32,9 +32,9 @@
 
 <div {...api.getRootProps()}>
   <span {...api.getGhostBeforeProps()}></span>
-  <div data-scope="toast" data-part="progressbar"></div>
+  <div class="toast-progressbar"></div>
   {#if Icon}
-    <span data-scope="toast" data-part="indicator">
+    <span class="toast-indicator">
       <Icon />
     </span>
   {/if}

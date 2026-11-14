@@ -1,6 +1,39 @@
 # @zag-js/interact-outside
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3570](https://github.com/chakra-ui/zag/pull/3570)
+  [`cb8e73d`](https://github.com/chakra-ui/zag/commit/cb8e73dce228eb9eafb768e3e744fe35e9dac7f9) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - - Fix the page freezing when many overlays are open at once.
+
+  - Fix closing one overlay also closing unrelated overlays opened after it.
+
+  - Fix Escape closing the outer layer first when nested layers open together on mount.
+
+  - Fix unmounting nested layers firing `onOpenChange` for children that unmount too.
+
+  - Fix a layer that opens while its parent is closing being dismissed with it.
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- [#3599](https://github.com/chakra-ui/zag/pull/3599)
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix clicks inside a same-origin iframe closing the popover, menu
+  or dialog that contains it.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
 
 ## 1.47.0
 

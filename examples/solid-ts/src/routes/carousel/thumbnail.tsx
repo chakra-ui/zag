@@ -36,7 +36,7 @@ export default function Page() {
               <For keyed={false} each={images}>
                 {(src, index) => (
                   <div {...main().getItemProps({ index })} class="carousel-photo">
-                    <img src={src()} alt={`Photo ${index + 1}`} />
+                    <img src={src()} alt={`Gallery item ${index + 1}`} />
                   </div>
                 )}
               </For>

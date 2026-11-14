@@ -1,5 +1,52 @@
 # @zag-js/radio-group
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Remove the indicator's inline transition
+  and the `--transition-*` CSS variables. Add the transition in CSS, and turn it off for `data-instant`, which is set
+  when the indicator moves for a reason other than a value change (first render, resize, `dir` or `orientation` change).
+
+  ```diff
+    [data-radio-group-indicator] {
+  -   --transition-duration: 0.2s;
+  -   --transition-timing-function: ease-in-out;
+  +   transition:
+  +     left 0.2s ease-in-out,
+  +     width 0.2s ease-in-out;
+    }
+  +
+  + [data-radio-group-indicator][data-instant] {
+  +   transition: none;
+  + }
+  ```
+
+  - **Breaking:** Replace `data-ssr` with `data-indicator-pending`. It's set during server rendering and while the
+    indicator hasn't been measured, such as inside a hidden panel.
+
+    ```diff
+    - [data-radio-group-item][data-state="checked"][data-ssr] { ... }
+    + [data-radio-group-item][data-state="checked"][data-indicator-pending] { ... }
+    ```
+
+  - Fix the indicator animating on resize after a transition never finished.
+
+  - **Breaking:** Submit the value of a read-only radio group. Only a disabled one is left out of the form, like a
+    native input.
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/focus-visible@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
@@ -57,6 +104,19 @@
   - @zag-js/focus-visible@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/focus-visible@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

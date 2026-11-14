@@ -13,7 +13,7 @@ const quadrantImage = `
 `
 
 async function loadQuadrantImage() {
-  await I.page.route("https://picsum.photos/**", (route) =>
+  await I.page.route("https://images.unsplash.com/**", (route) =>
     route.fulfill({
       contentType: "image/svg+xml",
       headers: { "access-control-allow-origin": "*" },

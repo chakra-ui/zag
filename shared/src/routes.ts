@@ -111,6 +111,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "body-scroller", title: "Body Scroll Container" },
       { slug: "nested", title: "Nested" },
       { slug: "scrollbar-gutter", title: "Scrollbar Gutter" },
+      { slug: "scroll-position", title: "Scroll Position" },
     ],
   },
   {
@@ -168,6 +169,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "disabled-item", title: "Disabled Item" },
       { slug: "select-all", title: "Select All" },
       { slug: "selection-follows-focus", title: "Selection Follows Focus" },
+      { slug: "grouped", title: "Grouped" },
+      { slug: "grouped-grid", title: "Grouped Grid" },
       { slug: "controlled-ignore", title: "Controlled Ignore" },
       { slug: "external-value-change", title: "External Value Change" },
       { slug: "transfer", title: "Transfer" },
@@ -256,6 +259,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "conditional", title: "Conditional" },
       { slug: "layout-shift", title: "Layout Shift" },
       { slug: "replaced-target", title: "Replaced Target" },
+      { slug: "late-target", title: "Late Target" },
     ],
   },
   {
@@ -485,6 +489,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "virtualized", title: "Virtualized" },
       { slug: "with-search", title: "With Search" },
       { slug: "with-select-all", title: "With Select All" },
+      { slug: "grouped", title: "Grouped" },
     ],
   },
   {
@@ -533,6 +538,9 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "emoji-picker", title: "Emoji Picker" },
       { slug: "creatable", title: "Creatable" },
       { slug: "highlight-matches", title: "Highlight Matches" },
+      { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
+      { slug: "grouped", title: "Grouped" },
+      { slug: "scroll-area", title: "Scroll Area" },
     ],
   },
   {

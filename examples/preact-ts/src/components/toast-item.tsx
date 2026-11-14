@@ -28,9 +28,9 @@ export function ToastItem(props: ToastItemProps) {
   return (
     <div {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
-      <div data-scope="toast" data-part="progressbar" />
+      <div className="toast-progressbar" />
       {Icon && (
-        <span data-scope="toast" data-part="indicator">
+        <span className="toast-indicator">
           <Icon />
         </span>
       )}

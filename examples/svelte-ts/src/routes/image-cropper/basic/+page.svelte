@@ -103,7 +103,11 @@
 <main class="image-cropper">
   <div {...api.getRootProps()}>
     <div {...api.getViewportProps()}>
-      <img src="https://picsum.photos/seed/a/500/300" crossorigin="anonymous" {...api.getImageProps()} />
+      <img
+        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+        crossorigin="anonymous"
+        {...api.getImageProps()}
+      />
       <div {...api.getSelectionProps()}>
         {#each imageCropper.placements as placement (placement)}
           <div {...api.getHandleProps({ placement })}>

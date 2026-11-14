@@ -46,7 +46,7 @@ export function ToastGroup(props: ToastGroupProps) {
       </div>
 
       <Portal>
-        <div {...api.getGroupProps()}>
+        <div className={styles.Group} {...api.getGroupProps()}>
           {api.getToasts().map((toast, index) => (
             <Toast
               key={toast.id}

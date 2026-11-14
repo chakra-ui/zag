@@ -1,3 +1,4 @@
+import { carouselData } from "@zag-js/shared"
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
@@ -27,7 +28,7 @@ function Lightbox({ page, onPageChange }: { page: number; onPageChange: (page: n
         <div {...api.getItemGroupProps()}>
           {images.map((src, index) => (
             <div {...api.getItemProps({ index })} key={index} className="carousel-photo">
-              <img src={src} alt={`Product image ${index + 1}`} />
+              <img src={src} alt={`Product ${index + 1}`} />
             </div>
           ))}
         </div>

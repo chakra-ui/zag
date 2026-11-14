@@ -34,7 +34,7 @@
         <div {...main.getItemGroupProps()}>
           {#each images as src, index (src)}
             <div {...main.getItemProps({ index })} class="carousel-photo">
-              <img {src} alt={`Photo ${index + 1}`} />
+              <img {src} alt={`Gallery item ${index + 1}`} />
             </div>
           {/each}
         </div>

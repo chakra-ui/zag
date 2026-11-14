@@ -1,5 +1,30 @@
 # @zag-js/solid
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Move the adapter to Solid 2. Upgrade
+  `solid-js` and add `@solidjs/web`.
+
+  ```sh
+  npm install solid-js@^2.0.0-rc.19 @solidjs/web@^2.0.0-rc.19
+  ```
+
+  - Fix nested menus not opening on hover or with the keyboard. `mergeProps` keeps keys a source adds after the first
+    render.
+
+  - Fix `undefined` props from `mergeProps` overriding a machine's defaults.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
@@ -81,6 +106,16 @@
   - @zag-js/utils@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/store@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

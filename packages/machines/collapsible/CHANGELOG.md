@@ -1,6 +1,48 @@
 # @zag-js/collapsible
 
+## 2.0.0-next.4
+
+### Minor Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`d6089c3`](https://github.com/chakra-ui/zag/commit/d6089c3f31a0952f7f35a0b8c08427770b43aac9) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `hiddenUntilFound`, so closed content stays
+  searchable with the browser's find-in-page. A match opens it.
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`4f28f36`](https://github.com/chakra-ui/zag/commit/4f28f36c533f12c4a9b5ec0eaad7a77dc8c5faf2) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `reason` to `onOpenChange` details, such as
+  `trigger-click`, `escape-key`, `interact-outside`, `item-select` or `script`. Each component exports its
+  `OpenChangeReason` type.
+
+  - Add an optional `reason` to `api.setOpen(open, reason)`, defaulting to `script`.
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/core@2.0.0-next.4
+  - @zag-js/anatomy@2.0.0-next.4
+  - @zag-js/types@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- [#3569](https://github.com/chakra-ui/zag/pull/3569)
+  [`c023993`](https://github.com/chakra-ui/zag/commit/c0239937d08e8f8a733ed3f793c3efc1cf8e00b2) Thanks
+  [@rjsgud49](https://github.com/rjsgud49)! - - Fix the trigger staying focusable and not announced as disabled when the
+  collapsible is disabled.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
 
 ## 1.47.0
 

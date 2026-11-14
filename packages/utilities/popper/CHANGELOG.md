@@ -1,5 +1,48 @@
 # @zag-js/popper
 
+## 2.0.0-next.4
+
+### Major Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`08ea850`](https://github.com/chakra-ui/zag/commit/08ea8502ec357db6f528c71e9f2124dcdb96ca06) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - Zag no longer sets a `z-index` on overlays. Set it in
+  CSS, using `--layer-index` for the overlay's place in the stack.
+
+  - Fix a `z-index` set on the positioner in CSS being overridden.
+
+  - Fix overlays dropping behind other layers while they animate out. `--layer-index` stays set after close.
+
+  **Breaking:** Move the `z-index` to the positioner (or the backdrop) and add `--layer-index`.
+
+  ```diff
+  - [data-popover-content] {
+  + [data-popover-positioner] {
+  -   z-index: 1400;
+  +   z-index: calc(1400 + var(--layer-index));
+    }
+  ```
+
+  - Popover, menu, select, combobox, hover card, tooltip, date picker, color picker and cascade select no longer copy
+    the content's `z-index` onto the positioner or set `--z-index`.
+
+  - Dialog and drawer no longer set `--z-index`. Use `--layer-index` on the backdrop and positioner.
+
+  - The floating panel no longer sets a `z-index`. Style the positioner as above to bring the focused panel to the
+    front.
+
+  - The tour no longer copies the content's `z-index` onto dialog steps. Style the positioner with `--tour-layer`.
+
+  - The toast group no longer sets an inline `z-index`. Set it on `[data-toast-group]` in CSS.
+
+  - Remove the `zIndex` and `zIndexFallback` options from `getDismissableLayerStyle`.
+
+### Patch Changes
+
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+  - @zag-js/utils@2.0.0-next.4
+
 ## 2.0.0-next.3
 
 ### Patch Changes
@@ -63,6 +106,15 @@
   - @zag-js/dom-query@2.0.0-next.1
 
 ## 2.0.0-next.0
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
 
 ## 1.47.0
 

@@ -1,7 +1,20 @@
-import apiJson from "../data/api.json" with { type: "json" }
-import accessibilityJson from "../data/accessibility.json" with { type: "json" }
-import dataAttrJson from "../data/data-attr.json" with { type: "json" }
-import cssVarsJson from "../data/css-vars.json" with { type: "json" }
+import apiData from "../data/api.json" with { type: "json" }
+import accessibilityData from "../data/accessibility.json" with { type: "json" }
+import dataAttrData from "../data/data-attr.json" with { type: "json" }
+import cssVarsData from "../data/css-vars.json" with { type: "json" }
+import type { AccessibilityDocKey, ApiDocKey, CssVarDocKey, DataAttrDocKey } from "./keys"
+
+export type { AccessibilityDocKey, ApiDocKey, CssVarDocKey, DataAttrDocKey } from "./keys"
+
+// Fails typecheck when keys.ts drifts from the JSON. Run `pnpm document-keys` to regenerate it.
+type Same<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false
+type Assert<T extends true> = T
+type _KeysInSync = [
+  Assert<Same<keyof typeof apiData, ApiDocKey>>,
+  Assert<Same<keyof typeof accessibilityData, AccessibilityDocKey>>,
+  Assert<Same<keyof typeof dataAttrData, DataAttrDocKey>>,
+  Assert<Same<keyof typeof cssVarsData, CssVarDocKey>>,
+]
 
 /* -----------------------------------------------------------------------------
  * The data attribute documentation
@@ -11,7 +24,7 @@ export interface DataAttrEntry {
   [part: string]: Record<string, string>
 }
 
-export type DataAttrDocKey = keyof typeof dataAttrJson
+const dataAttrJson: Record<DataAttrDocKey, DataAttrEntry> = dataAttrData
 
 export function getDataAttrDoc(key: DataAttrDocKey): DataAttrEntry {
   const data = dataAttrJson[key]
@@ -29,7 +42,7 @@ export interface CssVarEntry {
   [part: string]: Record<string, string>
 }
 
-export type CssVarDocKey = keyof typeof cssVarsJson
+const cssVarsJson: Record<CssVarDocKey, CssVarEntry> = cssVarsData
 
 export function getCssVarDoc(key: CssVarDocKey): CssVarEntry {
   const data = cssVarsJson[key]
@@ -52,14 +65,14 @@ export interface AccessibilityDoc {
   keyboard: KeyboardDoc[]
 }
 
-export type AccessibilityDocKey = keyof typeof accessibilityJson
+const accessibilityJson: Record<AccessibilityDocKey, AccessibilityDoc> = accessibilityData
 
 export function getAccessibilityDoc(key: AccessibilityDocKey): AccessibilityDoc {
   const data = accessibilityJson[key]
   if (!data) {
     throw new Error(`No accessibility data found for ${key}`)
   }
-  return data as AccessibilityDoc
+  return data
 }
 
 /* -----------------------------------------------------------------------------
@@ -81,7 +94,7 @@ export interface ApiDoc {
   }
 }
 
-export type ApiDocKey = keyof typeof apiJson
+const apiJson: Record<ApiDocKey, ApiDoc> = apiData
 
 export function getApiDoc(key: ApiDocKey): ApiDoc {
   const data = apiJson[key]
@@ -90,7 +103,7 @@ export function getApiDoc(key: ApiDocKey): ApiDoc {
     throw new Error(`No API data found for ${key}`)
   }
 
-  return data as ApiDoc
+  return data
 }
 
 export { accessibilityJson, apiJson, cssVarsJson }

@@ -1,6 +1,24 @@
 # @zag-js/remove-scroll
 
+## 2.0.0-next.4
+
+### Patch Changes
+
+- [#3342](https://github.com/chakra-ui/zag/pull/3342)
+  [`cbd4387`](https://github.com/chakra-ui/zag/commit/cbd438741fc23e0c3a7799b6ef2f916d7c9c09d7) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix the iOS scroll lock resetting the page's scroll
+  position, which fired scroll events when an overlay opened and closed.
+- Updated dependencies [[`a80b307`](https://github.com/chakra-ui/zag/commit/a80b307d3d81c1b1ee22cd1049343dbc2f877633)]:
+  - @zag-js/dom-query@2.0.0-next.4
+
 ## 2.0.0-next.3
+
+## 1.48.0
+
+### Patch Changes
+
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb)]:
+  - @zag-js/dom-query@1.48.0
 
 ## 1.47.0
 

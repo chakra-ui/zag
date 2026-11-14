@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/collection",
-  "version": "2.0.0-next.3",
+  "version": "2.0.0-next.4",
   "description": "Utilities to manage a collection of items.",
   "keywords": [
     "js",
@@ -17,7 +17,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "oxlint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",

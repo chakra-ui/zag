@@ -31,10 +31,10 @@ export function ToastItem(props: ToastItemProps) {
   return (
     <div {...api().getRootProps()}>
       <span {...api().getGhostBeforeProps()} />
-      <div data-scope="toast" data-part="progressbar" />
+      <div class="toast-progressbar" />
       <Show when={icons[api().type]}>
         {(Icon) => (
-          <span data-scope="toast" data-part="indicator">
+          <span class="toast-indicator">
             <Dynamic component={Icon()} />
           </span>
         )}
