@@ -1,5 +1,21 @@
 # @zag-js/menu
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/rect-utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

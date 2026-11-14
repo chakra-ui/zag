@@ -1,5 +1,27 @@
 # @zag-js/editable
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3641](https://github.com/chakra-ui/zag/pull/3641)
+  [`1da747d`](https://github.com/chakra-ui/zag/commit/1da747dbc9a6de1c718423242e39912fd7a5eedc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Combobox**: Fix a controlled `inputValue` that rejects or
+  transforms an edit. The input now shows the controlled value and keeps the caret in place. Pair `inputValue` with
+  `onInputValueChange`, or use `defaultInputValue` to set only the initial value.
+
+  - **Combobox**: Fix IME composition committing the input value before the text is confirmed.
+
+  - **Editable**: Fix IME composition committing the value before the text is confirmed.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/interact-outside@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

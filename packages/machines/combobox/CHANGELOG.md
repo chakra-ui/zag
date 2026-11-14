@@ -1,5 +1,45 @@
 # @zag-js/combobox
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [`25997cd`](https://github.com/chakra-ui/zag/commit/25997cdbd517c700e3a58e91be578d9e0f8ae0d4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `getHiddenInputProps` to submit the selected value in forms.
+  With `multiple`, render one per item in `value`.
+
+  The form now submits the item's value instead of its label, and `name` and `form` move from the input to the hidden
+  input.
+
+  ```diff
+    <input {...api.getInputProps()} />
+  + <input {...api.getHiddenInputProps()} />
+  ```
+
+### Patch Changes
+
+- [#3641](https://github.com/chakra-ui/zag/pull/3641)
+  [`1da747d`](https://github.com/chakra-ui/zag/commit/1da747dbc9a6de1c718423242e39912fd7a5eedc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Combobox**: Fix a controlled `inputValue` that rejects or
+  transforms an edit. The input now shows the controlled value and keeps the caret in place. Pair `inputValue` with
+  `onInputValueChange`, or use `defaultInputValue` to set only the initial value.
+
+  - **Combobox**: Fix IME composition committing the input value before the text is confirmed.
+
+  - **Editable**: Fix IME composition committing the value before the text is confirmed.
+
+- Updated dependencies [[`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes
