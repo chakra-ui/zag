@@ -545,6 +545,17 @@ export const tourReplacedTargetData: StepDetails[] = [
   },
 ]
 
+export const tourLateTargetData: StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    title: "Late target",
+    description: "This step waits for its target, which renders after the default 3s timeout.",
+    target: () => document.querySelector<HTMLElement>("#late-target"),
+    actions: [{ label: "Done", action: "dismiss" }],
+  },
+]
+
 // Groups interleave so the grouped (display) order differs from the source order
 export const groupedData = [
   { label: "Apple", value: "apple", type: "Fruit" },
