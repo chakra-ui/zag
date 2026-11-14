@@ -13,6 +13,7 @@ export const getItemLabelId = (ctx: Scope, value: string) =>
 export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `radio-group:${ctx.id}:indicator`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))
 export const getItemHiddenInputEl = (ctx: Scope, value: string) =>
   ctx.getById<HTMLInputElement>(getItemHiddenInputId(ctx, value))
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))

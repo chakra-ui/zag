@@ -15,6 +15,7 @@ export function connect<T extends PropTypes>(
   const groupDisabled = computed("isDisabled")
   const groupInvalid = prop("invalid")
   const readOnly = prop("readOnly")
+  const rendered = context.get("rendered")
 
   function getItemState(props: ItemProps): ItemState {
     return {
@@ -64,7 +65,7 @@ export function connect<T extends PropTypes>(
         ...parts.root.attrs,
         role: "radiogroup",
         id: dom.getRootId(scope),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-required": prop("required") || undefined,
         "aria-disabled": groupDisabled || undefined,
         "aria-readonly": readOnly || undefined,
