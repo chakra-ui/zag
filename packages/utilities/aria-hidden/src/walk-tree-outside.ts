@@ -1,31 +1,62 @@
 // Based on https://github.com/theKashey/aria-hidden/blob/master/src/index.ts
 // Licensed under MIT
 
-import { findControlledElements, getWindow, isElement, isHTMLElement } from "@zag-js/dom-query"
+import { findControlledElements, getWindow, isElement, isHTMLElement, isShadowRoot } from "@zag-js/dom-query"
 
 let counterMap = new WeakMap<Element, number>()
 let uncontrolledNodes = new WeakMap<Element, boolean>()
 let markerMap: Record<string, WeakMap<Element, number>> = {}
 let lockCount = 0
 
-const unwrapHost = (node: Element | ShadowRoot): Element | null =>
-  node && ((node as ShadowRoot).host || unwrapHost(node.parentNode as Element))
+const getHost = (node: Element): Element | null => {
+  const root = node.getRootNode()
+  return isShadowRoot(root) ? root.host : null
+}
 
-const correctTargets = (parent: HTMLElement, targets: Element[]): Element[] =>
-  targets
-    .map((target) => {
-      if (parent.contains(target)) return target
-      const correctedTarget = unwrapHost(target)
-      if (correctedTarget && parent.contains(correctedTarget)) {
-        return correctedTarget
-      }
+// A target in a shadow root is represented in the parent by its outermost host there.
+// Also returns the targets that passed, so rejected ones don't trigger shadow walks.
+const correctTargets = (parent: HTMLElement | ShadowRoot, originals: Element[]) => {
+  const targets: Element[] = []
+  const valid: Element[] = []
+  originals.forEach((target) => {
+    let node: Element | null = target
+    while (node && !parent.contains(node)) node = getHost(node)
+    if (node) {
+      targets.push(node)
+      valid.push(target)
+    } else {
       console.error("[zag-js > ariaHidden] target", target, "in not contained inside", parent, ". Doing nothing")
-      return null
+    }
+  })
+  return { targets, valid }
+}
+
+// Each shadow root between a target and the parent, with the target or the host it sits in at that level.
+// A target inside another target is skipped, since the outer target's content is left untouched.
+const getShadowScopes = (parent: HTMLElement | ShadowRoot, targets: Element[]) => {
+  const parentRoot = isShadowRoot(parent) ? parent : parent.getRootNode()
+  const scopes = new Map<ShadowRoot, Element[]>()
+  targets.forEach((target) => {
+    const path: Array<[ShadowRoot, Element]> = []
+    let node = target
+    let root = node.getRootNode()
+    while (isShadowRoot(root) && root !== parentRoot) {
+      path.push([root, node])
+      node = root.host
+      if (targets.some((other) => other.contains(node))) return
+      root = node.getRootNode()
+    }
+    path.forEach(([root, node]) => {
+      const scope = scopes.get(root)
+      if (scope) scope.push(node)
+      else scopes.set(root, [node])
     })
-    .filter((x): x is Element => Boolean(x))
+  })
+  return scopes
+}
 
 interface WalkTreeOutsideOptions {
-  parentNode: HTMLElement
+  parentNode: HTMLElement | ShadowRoot
   markerName: string
   attribute: "aria-hidden" | "inert"
   followControlledElements?: boolean
@@ -77,7 +108,7 @@ const applyAttributeToOthers = (allTargets: Element[], props: WalkTreeOutsideOpt
     }
   })
 
-  const deep = (parent: Element | null) => {
+  const deep = (parent: Element | ShadowRoot | null) => {
     if (!parent || elementsToStop.has(parent)) {
       return
     }
@@ -195,10 +226,15 @@ const getLockStack = (doc: Document) => {
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
   const { parentNode, attribute, followControlledElements = true } = props
-  const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
+  const originalTargets = Array.isArray(originalTarget) ? originalTarget : [originalTarget]
+  const { targets, valid } = correctTargets(parentNode, originalTargets)
 
   // An invalid target must not pause the active lock
   if (!targets.length) return () => {}
+
+  // The document walk stops at a shadow host, so content beside the target inside it is walked separately
+  const scopes = [...getShadowScopes(parentNode, valid)]
+  const roots = [parentNode, ...scopes.map(([root]) => root)]
 
   const hiddenSelector = attribute === "aria-hidden" ? '[aria-hidden="true"]' : "[inert]"
 
@@ -208,7 +244,11 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
   const apply = () => {
     // Apply before undoing, so nodes hidden by both walks keep their attribute
     const prevUndo = undo
-    undo = applyAttributeToOthers(targets, props)
+    const undos = [
+      applyAttributeToOthers(targets, props),
+      ...scopes.map(([root, scopeTargets]) => applyAttributeToOthers(scopeTargets, { ...props, parentNode: root })),
+    ]
+    undo = () => undos.forEach((fn) => fn())
     prevUndo?.()
   }
 
@@ -234,11 +274,13 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
         // A controller inside hidden content can't reveal anything.
         if (records.some(({ target }) => isElement(target) && !target.closest(hiddenSelector))) apply()
       })
-      observer.observe(parentNode, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true })
+      roots.forEach((root) =>
+        observer!.observe(root, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true }),
+      )
     },
   }
 
-  const lockStack = getLockStack(parentNode.ownerDocument)
+  const lockStack = getLockStack(parentNode.ownerDocument!)
   lockStack.add(lock)
   return () => lockStack.remove(lock)
 }

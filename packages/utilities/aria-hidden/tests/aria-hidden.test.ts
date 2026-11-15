@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { afterEach, describe, expect, test } from "vitest"
+import { afterEach, describe, expect, test, vi } from "vitest"
 import { hideOthers, inertOthers } from "../src/aria-hidden"
 
 // Each dialog sits in its own portal at the body level, mounted before any dialog opens
@@ -415,5 +415,74 @@ describe("shadow DOM", () => {
 
     undo1()
     expect(document.querySelectorAll("[aria-hidden], [data-aria-hidden]")).toHaveLength(0)
+  })
+
+  test("hides content beside the target inside nested shadow roots", () => {
+    document.body.innerHTML = `<main id="main"></main><div id="outer"></div>`
+    const outer = document.getElementById("outer")!.attachShadow({ mode: "open" })
+    outer.innerHTML = `<p id="outer-sibling"></p><div id="inner"></div>`
+    const inner = outer.getElementById("inner")!.attachShadow({ mode: "open" })
+    inner.innerHTML = `<button id="inner-sibling"></button><div id="dialog"></div>`
+    const hidden = () =>
+      [
+        document.getElementById("main")!,
+        outer.getElementById("outer-sibling")!,
+        inner.getElementById("inner-sibling")!,
+        inner.getElementById("dialog")!,
+      ].map(isHidden)
+
+    const undo = hideOthers(inner.getElementById("dialog")!)!
+    expect(hidden()).toEqual([true, true, true, false])
+
+    undo()
+    expect(hidden()).toEqual([false, false, false, false])
+  })
+
+  test("stops at a parent inside a shadow root", () => {
+    document.body.innerHTML = `<div id="host"></div>`
+    const shadow = document.getElementById("host")!.attachShadow({ mode: "open" })
+    shadow.innerHTML = `<p id="outside"></p><div id="parent"><p id="sibling"></p><div id="dialog"></div></div>`
+
+    const undo = hideOthers(shadow.getElementById("dialog")!, shadow.getElementById("parent")!)!
+    expect([isHidden(shadow.getElementById("outside")!), isHidden(shadow.getElementById("sibling")!)]).toEqual([
+      false,
+      true,
+    ])
+
+    undo()
+    expect(isHidden(shadow.getElementById("sibling")!)).toBe(false)
+  })
+
+  test("ignores rejected targets when walking shadow roots", () => {
+    document.body.innerHTML = `<div id="parent"><p id="sibling"></p><div id="dialog"></div></div><div id="host"></div>`
+    const shadow = document.getElementById("host")!.attachShadow({ mode: "open" })
+    shadow.innerHTML = `<p id="shadow-sibling"></p><div id="outside-target"></div>`
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const undo = hideOthers(
+      [document.getElementById("dialog")!, shadow.getElementById("outside-target")!],
+      document.getElementById("parent")!,
+    )!
+    expect([isHidden(document.getElementById("sibling")!), isHidden(shadow.getElementById("shadow-sibling")!)]).toEqual(
+      [true, false],
+    )
+
+    undo()
+    error.mockRestore()
+  })
+
+  test("leaves the shadow content of a preserved host untouched", () => {
+    document.body.innerHTML = `<main id="main"></main><div id="host"></div>`
+    const host = document.getElementById("host")!
+    const shadow = host.attachShadow({ mode: "open" })
+    shadow.innerHTML = `<p id="sibling"></p><div id="child"></div>`
+
+    const undo = hideOthers([host, shadow.getElementById("child")!])!
+    expect([isHidden(document.getElementById("main")!), isHidden(shadow.getElementById("sibling")!)]).toEqual([
+      true,
+      false,
+    ])
+
+    undo()
   })
 })
