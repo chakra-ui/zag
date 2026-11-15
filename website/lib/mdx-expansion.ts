@@ -2,8 +2,10 @@ import siteConfig from "site.config"
 import { snippets } from "./source"
 import apiJson, {
   getAccessibilityDoc,
+  getCssVarDoc,
   getDataAttrDoc,
   type AccessibilityDocKey,
+  type CssVarDocKey,
   type DataAttrDocKey,
 } from "@zag-js/docs"
 
@@ -40,111 +42,63 @@ export function expandCodeSnippets(
   })
 }
 
-/**
- * Expands ApiTable components with API documentation
- */
-const API_TABLE_REGEX = /<ApiTable\s+name="[^"]*"\s*\/>/g
-
-export function expandApiTable(content: string, componentId: string): string {
-  if (!(componentId in apiJson)) return content
-
-  const apiItems = Object.entries(
-    apiJson[componentId as keyof typeof apiJson].api,
-  )
-    .map(([key, item]) => {
-      return [
+const formatProps = (
+  props: Record<string, { type: string; description: string }>,
+) =>
+  Object.entries(props)
+    .map(([key, item]) =>
+      [
         `**\`${key}\`**`,
         `Type: \`${item.type}\``,
         `Description: ${item.description}`,
-      ].join("\n")
-    })
+      ].join("\n"),
+    )
     .join("\n\n")
 
-  return content.replace(API_TABLE_REGEX, apiItems)
-}
+const formatGroupedDoc = (doc: Record<string, Record<string, string>>) =>
+  Object.entries(doc)
+    .map(([part, items]) =>
+      [
+        `**\`${part}\`**`,
+        Object.entries(items)
+          .map(([key, value]) => `**\`${key}\`**: ${value}`)
+          .join("\n"),
+      ].join("\n\n"),
+    )
+    .join("\n\n")
 
-/**
- * Expands ContextTable components with context documentation
- */
-const CONTEXT_TABLE_REGEX = /<ContextTable\s+name="[^"]*"\s*\/>/g
-
-export function expandContextTable(
-  content: string,
-  componentId: string,
-): string {
-  if (!(componentId in apiJson)) return content
-
-  const contextItems = Object.entries(
-    apiJson[componentId as keyof typeof apiJson].context,
-  )
-    .map(([key, item]) => {
-      return [
-        `**\`${key}\`**`,
-        `Type: \`${item.type}\``,
+const formatKeyboard = (name: string) =>
+  getAccessibilityDoc(name as AccessibilityDocKey)
+    .keyboard.map((item) =>
+      [
+        `**\`${item.keys.join(" + ")}\`**`,
         `Description: ${item.description}`,
-      ].join("\n")
-    })
+      ].join("\n"),
+    )
     .join("\n\n")
 
-  return content.replace(CONTEXT_TABLE_REGEX, contextItems)
+const tables: Record<string, (name: string) => string> = {
+  ApiTable: (name) => formatProps(apiJson[name as keyof typeof apiJson].api),
+  ContextTable: (name) =>
+    formatProps(apiJson[name as keyof typeof apiJson].context),
+  KeyboardTable: formatKeyboard,
+  DataAttrTable: (name) =>
+    formatGroupedDoc(getDataAttrDoc(name as DataAttrDocKey)),
+  CssVarTable: (name) => formatGroupedDoc(getCssVarDoc(name as CssVarDocKey)),
 }
 
-/**
- * Expands KeyboardTable components with keyboard shortcuts documentation
- */
-const KEYBOARD_TABLE_REGEX = /<KeyboardTable\s+name="[^"]*"\s*\/>/g
+const TABLE_REGEX =
+  /<(ApiTable|ContextTable|KeyboardTable|DataAttrTable|CssVarTable)\s+name="([^"]*)"\s*\/>/g
 
-export function expandKeyboardTable(
-  content: string,
-  componentId: string,
-): string {
-  try {
-    const keyboardDoc = getAccessibilityDoc(componentId as AccessibilityDocKey)
-    const keyboardItems = keyboardDoc.keyboard
-      .map((item) => {
-        return [
-          `**\`${item.keys.join(" + ")}\`**`,
-          `Description: ${item.description}`,
-        ].join("\n")
-      })
-      .join("\n\n")
-
-    return content.replace(KEYBOARD_TABLE_REGEX, keyboardItems)
-  } catch {
-    // Component may not have keyboard interactions
-    return content
-  }
-}
-
-/**
- * Expands DataAttrTable components with data attributes documentation
- */
-const DATA_ATTR_TABLE_REGEX = /<DataAttrTable\s+name="[^"]*"\s*\/>/g
-
-export function expandDataAttrTable(
-  content: string,
-  componentId: string,
-): string {
-  try {
-    const dataAttrDoc = getDataAttrDoc(componentId as DataAttrDocKey)
-    const dataAttrItems = Object.entries(dataAttrDoc)
-      .map(([part, attrs]) => {
-        return [
-          `**\`${part}\`**`,
-          Object.entries(attrs)
-            .map(([key, value]) => {
-              return `**\`${key}\`**: ${value}`
-            })
-            .join("\n"),
-        ].join("\n\n")
-      })
-      .join("\n\n")
-
-    return content.replace(DATA_ATTR_TABLE_REGEX, dataAttrItems)
-  } catch {
-    // Component may not have data attributes
-    return content
-  }
+/** Expands each doc table tag using the machine named in the tag; a missing doc renders nothing */
+export function expandTables(content: string): string {
+  return content.replace(TABLE_REGEX, (_, tag: string, name: string) => {
+    try {
+      return tables[tag](name)
+    } catch {
+      return ""
+    }
+  })
 }
 
 /**
@@ -152,10 +106,13 @@ export function expandDataAttrTable(
  */
 const SHOWCASE_REGEX = /<Showcase\s+id="[^"]*"\s*\/>/g
 const ANATOMY_REGEX = /<Anatomy\s+id="[^"]*"\s*\/>/g
+// keeps the code inside, drops the live-demo wrapper
+const EXAMPLE_TAG_REGEX = /^<\/?Example\b[^>]*>\n?/gm
 
 export function removeComponents(content: string): string {
   content = content.replace(SHOWCASE_REGEX, "")
   content = content.replace(ANATOMY_REGEX, "")
+  content = content.replace(EXAMPLE_TAG_REGEX, "")
   return content
 }
 
@@ -184,16 +141,12 @@ export function expandResources(content: string, component: any): string {
  */
 export function expandComponentContent(
   content: string,
-  componentId: string,
   component?: any,
   framework?: string,
 ): string {
   // Expand all the various MDX components
   content = expandCodeSnippets(content, framework)
-  content = expandApiTable(content, componentId)
-  content = expandContextTable(content, componentId)
-  content = expandKeyboardTable(content, componentId)
-  content = expandDataAttrTable(content, componentId)
+  content = expandTables(content)
   content = removeComponents(content)
 
   // Expand resources if component data is provided

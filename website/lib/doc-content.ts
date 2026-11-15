@@ -95,8 +95,7 @@ export function resolveDoc(slug: string[]) {
 
   // Expand component content (CodeSnippets, ApiTable, ContextTable, etc.) if content type is component
   if (contentType === "component" && content) {
-    const componentId = doc.slug // The slug is the component ID (e.g., "accordion", "dialog", etc.)
-    content = expandComponentContent(content, componentId, doc, framework)
+    content = expandComponentContent(content, doc, framework)
   }
 
   return { doc, contentType, framework, content: content as string }

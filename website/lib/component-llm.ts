@@ -1,46 +1,14 @@
 import sidebar from "sidebar.config"
-import {
-  components as allComponents,
-  getOverviewDoc,
-  snippets as allSnippets,
-} from "./source"
+import { components as allComponents, getOverviewDoc } from "./source"
 import { frameworks } from "./framework-utils"
-import {
-  expandResources,
-  expandApiTable,
-  expandContextTable,
-  expandKeyboardTable,
-  expandDataAttrTable,
-  removeComponents,
-} from "./mdx-expansion"
+import { expandComponentContent } from "./mdx-expansion"
 
 export function transformComponentDoc(itemId: string, framework?: string) {
   const comp = allComponents.find((c) => c.slug === itemId)
   if (!comp) return ""
-  let content = comp.body.raw
+  const content = comp.body.raw
   if (!content) return ""
-
-  // Apply all expansions
-  content = expandResources(content, comp)
-  content = expandApiTable(content, itemId)
-  content = expandContextTable(content, itemId)
-  content = expandKeyboardTable(content, itemId)
-  content = expandDataAttrTable(content, itemId)
-  content = removeComponents(content)
-
-  // Add CodeSnippets for specific framework (different from API route which shows all)
-  content = content.replace(
-    /<CodeSnippet\s+id="([^"]*)"\s*\/>/g,
-    (_: string, id: string) => {
-      const snippet = allSnippets.find(
-        (s) => s.id === id && s.framework === framework,
-      )
-
-      return snippet?.body.raw ?? ""
-    },
-  )
-
-  return content
+  return expandComponentContent(content, comp, framework)
 }
 
 export function getComponentsPerFramework(framework: string) {
