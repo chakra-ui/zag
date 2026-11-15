@@ -59,6 +59,7 @@
     "document-attr": "tsx scripts/data-attr.ts && pnpm document-keys",
     "document-css-vars": "tsx scripts/css-vars.ts && pnpm document-keys",
     "document-keys": "tsx scripts/docs-keys.ts",
+    "skill:components": "tsx scripts/skill-components.ts && oxfmt skills/zag/references/components.md",
     "check-type-exports": "tsx scripts/check-type-exports.ts",
     "website": "pnpm --filter=./website",
     "format": "oxfmt .",
