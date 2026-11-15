@@ -207,4 +207,15 @@ describe("mergeProps", () => {
     expect(merged.class).toBe("a")
     expect("class" in rest).toBe(false)
   })
+
+  it("finds a key in a later static source without calling earlier function sources", () =>
+    createRoot((dispose) => {
+      const source = vi.fn(() => ({ id: "machine" }))
+      const props = mergeProps(source, { children: "child" })
+
+      expect("children" in props).toBe(true)
+      expect(source).not.toHaveBeenCalled()
+
+      dispose()
+    }))
 })
