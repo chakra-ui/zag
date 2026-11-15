@@ -205,6 +205,15 @@ positioned or dismissable, and doesn't call `onOpenChange`.
   })
 ```
 
+`name` and `form` move from the input to a hidden input, and the form submits
+the selected item's value instead of its label. Render the hidden input, or one
+per value with `multiple`.
+
+```diff
+  <input {...api.getInputProps()} />
++ <input {...api.getHiddenInputProps()} />
+```
+
 ## Listbox
 
 `role="listbox"` moves to a new `list` part, which is now the focus target and
