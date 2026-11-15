@@ -607,7 +607,7 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
-   * Function to toggle the combobox
+   * The collection of items
    */
   collection: ListCollection<V>
   /**

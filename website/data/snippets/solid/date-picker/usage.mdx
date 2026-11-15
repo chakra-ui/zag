@@ -2,7 +2,7 @@
 import * as datepicker from "@zag-js/date-picker"
 import { useMachine, normalizeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 
 function DatePicker() {
   const service = useMachine(datepicker.machine, { id: createUniqueId() })

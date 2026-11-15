@@ -2,7 +2,7 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, Show } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 
 function Checkbox() {
   const service = useMachine(hoverCard.machine, { id: createUniqueId() })

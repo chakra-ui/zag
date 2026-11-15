@@ -2,7 +2,7 @@
 import * as tour from "@zag-js/tour"
 import { useMachine, normalizeProps } from "@zag-js/solid"
 import { For, Show, createMemo, createUniqueId } from "solid-js"
-import { Portal } from "solid-js/web"
+import { Portal } from "@solidjs/web"
 
 function Tour() {
   const service = useMachine(tour.machine, { id: createUniqueId(), steps })

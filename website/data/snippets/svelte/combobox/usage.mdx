@@ -1,7 +1,7 @@
 ```svelte
 <script lang="ts">
   import * as combobox from "@zag-js/combobox"
-  import { useMachine, normalizeProps } from "@zag-js/svelte"
+  import { useMachine, normalizeProps, portal } from "@zag-js/svelte"
 
   const comboboxData = [
     { label: "Zambia", code: "ZA" },
@@ -46,7 +46,7 @@
     <button {...api.getTriggerProps()}>▼</button>
   </div>
 </div>
-<div {...api.getPositionerProps()}>
+<div use:portal {...api.getPositionerProps()}>
   <div {...api.getContentProps()}>
     {#if options.length > 0}
       <div {...api.getListProps()}>

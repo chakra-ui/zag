@@ -1271,7 +1271,7 @@
       },
       "collection": {
         "type": "ListCollection<V>",
-        "description": "Function to toggle the combobox"
+        "description": "The collection of items"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
