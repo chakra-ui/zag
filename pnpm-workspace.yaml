@@ -3,6 +3,7 @@ packages:
   - shared
   - examples/**
   - website
+  - benchmarks/*
 
 allowBuilds:
   "@parcel/watcher": true

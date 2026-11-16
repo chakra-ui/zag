@@ -1,0 +1,35 @@
+{
+  "name": "zag-agent-benchmark",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port ${BENCHMARK_PORT:-5410} --strictPort",
+    "bench": "node harness/bench.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ui-sdk/core": "0.1.0-beta.5",
+    "@ui-sdk/react": "0.1.0-beta.5",
+    "@zag-js/accordion": "workspace:*",
+    "@zag-js/agent": "workspace:*",
+    "@zag-js/checkbox": "workspace:*",
+    "@zag-js/dialog": "workspace:*",
+    "@zag-js/menu": "workspace:*",
+    "@zag-js/react": "workspace:*",
+    "@zag-js/select": "workspace:*",
+    "@zag-js/switch": "workspace:*",
+    "@zag-js/tabs": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "26.6.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.8"
+  }
+}

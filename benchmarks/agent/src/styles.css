@@ -1,0 +1,156 @@
+body {
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+  margin: 0;
+  padding: 24px;
+  color: #111;
+  background: #fff;
+}
+[hidden] {
+  display: none !important;
+}
+h1 {
+  font-size: 20px;
+  margin: 0;
+}
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 420px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.choice {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+input,
+.trigger,
+.button {
+  font: inherit;
+  color: inherit;
+  padding: 6px 8px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: #fff;
+}
+.trigger {
+  display: flex;
+  justify-content: space-between;
+  text-align: start;
+}
+.button {
+  cursor: pointer;
+  align-self: flex-start;
+}
+[role="tab"] {
+  font: inherit;
+  padding: 6px 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+[role="tab"][aria-selected="true"] {
+  border-bottom-color: #111;
+}
+[role="tabpanel"] {
+  padding-top: 16px;
+}
+.popup {
+  min-width: 160px;
+  max-height: 240px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 4px 16px #0002;
+}
+.item {
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: default;
+  outline: none;
+}
+.item[data-highlighted] {
+  background: #e8eefc;
+}
+.switch {
+  flex: none;
+  width: 32px;
+  height: 18px;
+  padding: 2px;
+  border: 0;
+  border-radius: 9px;
+  background: #ccc;
+  box-sizing: border-box;
+}
+.switch[aria-checked="true"],
+.switch[data-state="checked"] {
+  background: #111;
+}
+.switch-thumb {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.1s;
+}
+.switch[aria-checked="true"] .switch-thumb,
+.switch[data-state="checked"] .switch-thumb {
+  transform: translateX(14px);
+}
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: #0004;
+}
+.dialog {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 320px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #fff;
+}
+.members {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.members .name {
+  flex: 1;
+}
+.banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin: -24px -24px 24px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #fff;
+  background: #111;
+  text-align: center;
+}
