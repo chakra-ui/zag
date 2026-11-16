@@ -223,7 +223,8 @@ export const machine = createMachine<PresenceSchema>({
 
         const onCancel = (event: AnimationEvent) => {
           const target = getEventTarget(event)
-          if (target === node && !prop("present")) {
+          const exitAnimationNames = (context.get("unmountAnimationName") ?? "").split(",").map((name) => name.trim())
+          if (target === node && exitAnimationNames.includes(event.animationName) && !prop("present")) {
             send({ type: "UNMOUNT", src: "animationcancel" })
           }
         }
