@@ -24,6 +24,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -387,7 +388,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = useEffectSync(reconcileEffects)
 
-  return {
+  const service = {
     state: getState(),
     send,
     context: ctx,
@@ -398,6 +399,15 @@ export function useMachine<T extends MachineSchema>(
     event: getEvent(),
     getStatus,
   } as Service<T>
+
+  const record = useConst(() => ({ machine, service }))
+  record.service = service
+  useSafeLayoutEffect(() => {
+    reportMachine(record, true)
+    return () => reportMachine(record, false)
+  }, [])
+
+  return service
 }
 
 function useLiveRef<T>(value: T) {
