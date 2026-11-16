@@ -1,0 +1,49 @@
+{
+  "name": "@zag-js/agent",
+  "version": "2.0.0-next.4",
+  "private": true,
+  "description": "Lets an AI agent read and drive the Zag machines on a page through snapshot, query and act",
+  "keywords": [
+    "js",
+    "agent",
+    "ai",
+    "webmcp"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/agent",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../clean-package.config.json",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@zag-js/accordion": "workspace:*",
+    "@zag-js/checkbox": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/dialog": "workspace:*",
+    "@zag-js/menu": "workspace:*",
+    "@zag-js/select": "workspace:*",
+    "@zag-js/switch": "workspace:*",
+    "@zag-js/tabs": "workspace:*",
+    "@zag-js/types": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  }
+}
