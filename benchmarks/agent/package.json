@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --port ${BENCHMARK_PORT:-5410} --strictPort",
     "bench": "node harness/bench.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "node checks/run.mjs"
   },
   "dependencies": {
     "@ui-sdk/core": "0.1.0-beta.5",

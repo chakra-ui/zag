@@ -342,6 +342,15 @@ export function useMachine<T extends MachineSchema>(
 
   const getStatus = useStableFn(() => statusRef.current)
 
+  // What listeners like an agent bridge hold: the latest service, through a ref.
+  const serviceRef = useRef<Service<T> | null>(null)
+  const record = useConst(() => ({
+    machine,
+    get service() {
+      return serviceRef.current!
+    },
+  }))
+
   useSafeLayoutEffect(() => {
     mountedRef.current = true
     let startedHere = false
@@ -357,11 +366,13 @@ export function useMachine<T extends MachineSchema>(
       // start the transition
       const initialState = hydratedStateRef.current ?? state.initial!
       state.invoke(initialState, started ? state.get() : INIT_STATE)
+      reportMachine(record, true)
     })
 
     const fns = effects.current
     return () => {
       mountedRef.current = false
+      if (startedHere) reportMachine(record, false)
       const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState
@@ -400,12 +411,7 @@ export function useMachine<T extends MachineSchema>(
     getStatus,
   } as Service<T>
 
-  const record = useConst(() => ({ machine, service }))
-  record.service = service
-  useSafeLayoutEffect(() => {
-    reportMachine(record, true)
-    return () => reportMachine(record, false)
-  }, [])
+  serviceRef.current = service
 
   return service
 }

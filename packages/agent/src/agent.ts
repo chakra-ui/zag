@@ -1,6 +1,6 @@
 import { createNormalizer } from "@zag-js/types"
 import { type MachineRecord, subscribeMachines } from "@zag-js/core"
-import { type AgentDescriptor, type AgentItem, defaultDescriptors, type Expected } from "./components"
+import type { AgentDescriptor, AgentItem, Expected } from "./components"
 import {
   buttonsIn,
   fillValue,
@@ -58,11 +58,23 @@ export interface AgentAction extends AgentStep {
   confirm?: string | undefined
 }
 
+/** Decides a step: true runs it, false refuses it. A promise lets the app ask a person first. */
+export type Allow = (action: AgentAction) => boolean | Promise<boolean>
+
+/** For one `act` call, beside the bridge's own options, like a browser agent's rules from `registerTools`. */
+export interface ActOptions {
+  /** Asked for every step before it runs, and again when the button it presses is marked `data-agent-confirm`. */
+  allow?: Allow | undefined
+}
+
 export interface CreateAgentOptions {
   /** Decides each press on an element marked `data-agent-confirm`. Without it those steps fail with "Needs a person". */
-  allow?: (action: AgentAction) => boolean | Promise<boolean>
-  /** The machines the bridge understands. Defaults to the ones this package ships. */
-  descriptors?: AgentDescriptor[]
+  allow?: Allow
+  /**
+   * The machines the bridge understands, like `[tabsAgent, selectAgent]`, or `allComponents` for every one this
+   * package describes. Only these are bundled.
+   */
+  components: AgentDescriptor[]
 }
 
 // The bridge reads api methods only, so props are passed through untouched.
@@ -106,11 +118,18 @@ const addedLimit = 30
 
 const limit = 100
 
+// What a secret field shows instead of its value: one an agent may fill but never read.
+const REDACTED = "[redacted]"
+const isSecret = (el: HTMLInputElement | HTMLTextAreaElement) =>
+  !!el.closest("[data-agent-secret]") ||
+  (el instanceof HTMLInputElement && el.type === "password") ||
+  /^(cc-|one-time-code)/.test(el.autocomplete)
+
 // Hidden by a closed section a step can open, not by being off the page.
 const hidesIn = (el: Element) => !!el.parentElement?.closest("[hidden][aria-labelledby]")
 
-export function createAgent(options: CreateAgentOptions = {}) {
-  const descriptors = options.descriptors ?? defaultDescriptors
+export function createAgent(options: CreateAgentOptions) {
+  const descriptors = options.components
   const records = new Set<MachineRecord>()
   subscribeMachines((record, mounted) => {
     if (mounted) records.add(record)
@@ -180,7 +199,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
         row: rowOf(el, label),
         in: sectionsOf(el),
         section: sectionOf(el),
-        state: { value: el.closest("[data-agent-secret]") || el.type === "password" ? "[redacted]" : el.value },
+        state: { value: isSecret(el) ? REDACTED : el.value },
         actions: el.disabled || el.readOnly ? [] : ["setValue"],
       })
     }
@@ -305,16 +324,25 @@ export function createAgent(options: CreateAgentOptions = {}) {
     return true
   }
 
-  async function confirmPress(target: Element, step: AgentStep, live: Live) {
-    const confirm = target.closest("[data-agent-confirm]")?.getAttribute("data-agent-confirm") ?? undefined
+  const confirmOf = (el: Element) => el.closest("[data-agent-confirm]")?.getAttribute("data-agent-confirm") ?? undefined
+  const actionOf = (step: AgentStep, live: Live, confirm?: string): AgentAction => ({
+    ...step,
+    args: step.args ?? [],
+    component: live.kind,
+    label: live.label,
+    ...(confirm ? { confirm } : {}),
+  })
+
+  // A press on an element marked `data-agent-confirm` runs only when a person agrees: through the bridge's own
+  // `allow`, or, when it has none, the caller's, which already answered for the step.
+  async function confirmPress(target: Element, step: AgentStep, live: Live, extra: ActOptions) {
+    const confirm = confirmOf(target)
     if (!confirm) return
-    const allowed = await options.allow?.({
-      ...step,
-      args: step.args ?? [],
-      component: live.kind,
-      label: live.label,
-      confirm,
-    })
+    const action = actionOf(step, live, confirm)
+    if (extra.allow && confirm !== confirmOf(live.el) && !(await extra.allow(action))) {
+      throw new Error(`Not allowed: ${confirm}`)
+    }
+    const allowed = options.allow ? await options.allow(action) : !!extra.allow
     if (!allowed) throw new Error(`Needs a person: ${confirm}`)
   }
 
@@ -339,7 +367,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
     expected?: Expected | void
   }
 
-  async function run(step: AgentStep): Promise<Ran> {
+  async function run(step: AgentStep, extra: ActOptions): Promise<Ran> {
     const action = step.action
     const args = step.args ?? []
     let live: Live
@@ -354,7 +382,12 @@ export function createAgent(options: CreateAgentOptions = {}) {
       await reveal(live.el)
       live = scan().find((next) => next.ref === live.ref) ?? live
     }
-    const what = `${action}${args.length ? ` ${JSON.stringify(args)}` : ""} on ${live.label ?? live.kind}`
+    if (extra.allow && !(await extra.allow(actionOf(step, live, confirmOf(live.el))))) {
+      throw new Error(`Not allowed: ${action} on ${live.label ?? live.kind}`)
+    }
+    // What a secret field was given stays out of the result, like its value.
+    const shownArgs = live.state.value === REDACTED ? [REDACTED] : args
+    const what = `${action}${args.length ? ` ${JSON.stringify(shownArgs)}` : ""} on ${live.label ?? live.kind}`
 
     if (live.kind === "field") {
       if (action !== "setValue") throw new Error(`A field takes setValue, not ${action}.`)
@@ -364,7 +397,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
     }
     if (live.kind === "button") {
       if (action !== "press") throw new Error(`A button takes press, not ${action}.`)
-      await confirmPress(live.el, step, live)
+      await confirmPress(live.el, step, live, extra)
       live.el.click()
       return { what, ref: live.ref, label: live.label }
     }
@@ -394,7 +427,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
         return match
       },
       async press(button) {
-        await confirmPress(button, step, live)
+        await confirmPress(button, step, live, extra)
         button.click()
       },
     })
@@ -409,6 +442,8 @@ export function createAgent(options: CreateAgentOptions = {}) {
     const live = now.find((next) => next.ref === ran.ref)
     if (!live || !(expected.key in live.state)) return undefined
     const committed = live.state[expected.key]
+    // A secret field's value can't be read back, so there's nothing to compare.
+    if (committed === REDACTED) return undefined
     const holds = expected.holds
       ? expected.holds(committed)
       : JSON.stringify(committed) === JSON.stringify(expected.value)
@@ -484,7 +519,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
     return `${live.ref} ${live.kind}${live.label ? `: ${live.label}` : ""}${buttons}`
   }
 
-  async function act(input: { steps: AgentStep[] }) {
+  async function act(input: { steps: AgentStep[] }, extra: ActOptions = {}) {
     const beforeAll = scan()
     const before = new Map(beforeAll.map((live) => [live.ref, live]))
     const valuesBefore = valuesOf(beforeAll)
@@ -508,7 +543,7 @@ export function createAgent(options: CreateAgentOptions = {}) {
     }
     for (const [index, step] of (input.steps ?? []).entries()) {
       try {
-        const ran = await run(step)
+        const ran = await run(step, extra)
         done.push(ran.what)
         await frames()
         const now = scan()

@@ -20,6 +20,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -300,8 +301,17 @@ export function useMachine<T extends MachineSchema>(
 
   let status = MachineStatus.NotStarted
 
+  // What listeners like an agent bridge hold, reported once the machine starts.
+  const record = {
+    machine,
+    get service() {
+      return service
+    },
+  }
+
   onCleanup(() => {
     if (status !== MachineStatus.Started) return
+    reportMachine(record, false)
 
     debug("unmounting...")
     status = MachineStatus.Stopped
@@ -362,6 +372,7 @@ export function useMachine<T extends MachineSchema>(
       status = MachineStatus.Started
       debug(started ? "rehydrating..." : "initializing...")
       state.invoke(state.initial!, INIT_STATE)
+      reportMachine(record, true)
     })
     return () => {
       cancelled = true
@@ -370,7 +381,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = createEffectSync(readEffectDeps, reconcileEffects)
 
-  return {
+  const service = {
     state: getState(),
     send,
     context: ctx,
@@ -383,6 +394,8 @@ export function useMachine<T extends MachineSchema>(
     event: getEvent(),
     getStatus: () => status,
   } as unknown as Service<T>
+
+  return service
 }
 
 function flush(fn: VoidFunction) {

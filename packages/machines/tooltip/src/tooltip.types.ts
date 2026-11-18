@@ -30,6 +30,7 @@ export type OpenChangeReason =
   | "interact-outside"
   | "disabled"
   | "script"
+  | "agent"
 
 export interface OpenChangeDetails {
   open: boolean

@@ -1,7 +1,6 @@
 {
   "name": "@zag-js/agent",
   "version": "2.0.0-next.4",
-  "private": true,
   "description": "Lets an AI agent read and drive the Zag machines on a page through snapshot, query and act",
   "keywords": [
     "js",

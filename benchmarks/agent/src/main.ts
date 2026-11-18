@@ -6,10 +6,18 @@ const load = screens[`./screens/${screen}.tsx`] ?? screens[`./screens/${screen}.
 // Created before any component, so the agent hears every one as it starts.
 // Each library's screen gets its own bridge, with its own tool descriptions.
 if (params.has("agent")) {
-  const { agentTools, createAgent } = screen.includes("ui-sdk")
-    ? await import("@ui-sdk/react/agent")
-    : await import("@zag-js/agent")
-  Object.assign(window, { __agent: createAgent(), __agentTools: agentTools })
+  if (screen.includes("ui-sdk")) {
+    const { agentTools, createAgent } = await import("@ui-sdk/react/agent")
+    Object.assign(window, { __agent: createAgent(), __agentTools: agentTools })
+  } else {
+    const { agentTools, allComponents, createAgent, registerTools } = await import("@zag-js/agent")
+    Object.assign(window, {
+      __agent: createAgent({ components: allComponents }),
+      __agentTools: agentTools,
+      // For the checks: registers the tools with a stand-in for the browser's own agent.
+      __registerTools: registerTools,
+    })
+  }
 }
 
 const label = params.get("label")

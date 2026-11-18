@@ -1,55 +1,9 @@
-// node checks/rejects.mjs
-// Checks that `act` reports a change the page refused or changed, on the react-zag-rejects screen.
-// Scripted Playwright only: no agent runs. Starts the dev server when one isn't up.
-import { spawn } from "node:child_process"
+// A change the page refused or changed shows in `act`'s rejected, on the react-zag-rejects screen.
 import assert from "node:assert/strict"
-import path from "node:path"
-import { chromium } from "@playwright/test"
 
-const port = Number(process.env.BENCHMARK_PORT ?? 5410)
-const app = `http://localhost:${port}`
-
-const isUp = () =>
-  fetch(app).then(
-    (response) => response.text().then((html) => html.includes('name="agent-benchmark"')),
-    () => false,
-  )
-
-let server
-if (!(await isUp())) {
-  server = spawn("pnpm", ["dev"], {
-    cwd: path.join(import.meta.dirname, ".."),
-    env: { ...process.env, BENCHMARK_PORT: String(port) },
-    stdio: "ignore",
-  })
-  for (let tries = 0; tries < 120 && !(await isUp()); tries++) {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-  }
-}
-
-const browser = await chromium.launch()
-const page = await browser.newPage()
-const errors = []
-page.on("pageerror", (error) => errors.push(String(error)))
-const failures = []
-
-async function check(name, fn) {
-  try {
-    await fn()
-    console.log(`ok    ${name}`)
-  } catch (error) {
-    failures.push(name)
-    console.log(`FAIL  ${name}\n      ${String(error.message).split("\n").join("\n      ")}`)
-  }
-}
-
-try {
-  await page.goto(`${app}/?screen=react-zag-rejects&agent`)
-  await page.waitForSelector("body[data-mounted]")
-  await page.waitForTimeout(300)
-  const call = (name, input) => page.evaluate(([name, input]) => window.__agent[name](input), [name, input])
-  const act = (...steps) => call("act", { steps })
-  const checkedOf = async (label) => (await call("snapshot")).find((entry) => entry.label === label)?.checked
+export default async function ({ open, check }) {
+  const { page, errors, act, snapshot } = await open({ screen: "react-zag-rejects", agent: "" })
+  const checkedOf = async (label) => (await snapshot()).find((entry) => entry.label === label)?.checked
 
   await check("a refused toggle is rejected, and the snapshot keeps the original value", async () => {
     const result = await act({ ref: "Always off", action: "toggle" })
@@ -111,10 +65,5 @@ try {
   })
 
   await check("the page threw no errors", async () => assert.deepEqual(errors, []))
-} finally {
-  await browser.close()
-  server?.kill()
+  await page.close()
 }
-
-console.log(failures.length ? `\n${failures.length} failed` : "\nAll passed")
-process.exit(failures.length ? 1 : 0)
