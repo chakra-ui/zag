@@ -162,7 +162,8 @@ export function connect<T extends PropTypes>(
             },
           }
 
-          const handler = keyMap[getEventKey(event, { dir: prop("dir") })]
+          // the panel is placed with physical `left`, so arrows move it physically in both directions
+          const handler = keyMap[getEventKey(event)]
 
           if (handler) {
             event.preventDefault()
