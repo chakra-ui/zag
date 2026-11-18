@@ -22,29 +22,29 @@ library changes.
 
 ## Results
 
-One run per row, all four rows at the same time on one machine, with Sonnet through Claude Code, on November 16, 2026.
-Every run was correct. Run with `--runs 3` for medians.
+With Sonnet through Claude Code. Every run was correct.
 
 ### Closed panels unmount (`--panels unmount`, the default)
 
 Closed tabs and accordion items leave the page, as ui-sdk's panels do by default. The Zag screen renders a panel only
-while it's open.
+while it's open. Medians of three runs, on November 18, 2026.
 
 | Library | Tools   | Tool calls | Text read | Time | Tokens | Cost   |
 | ------- | ------- | ---------- | --------- | ---- | ------ | ------ |
-| ui-sdk  | Browser | 17         | 41.3k     | 35 s | 259.2k | $0.127 |
-| ui-sdk  | Agent   | 10         | 8.9k      | 20 s | 75.6k  | $0.047 |
-| Zag     | Browser | 18         | 38.5k     | 38 s | 265.8k | $0.122 |
-| Zag     | Agent   | 11         | 16.2k     | 22 s | 91.3k  | $0.063 |
+| ui-sdk  | Browser | 17         | 41.3k     | 33 s | 254.2k | $0.125 |
+| ui-sdk  | Agent   | 8          | 7.1k      | 20 s | 60.2k  | $0.037 |
+| Zag     | Browser | 18         | 38.5k     | 41 s | 260.6k | $0.121 |
+| Zag     | Agent   | 6          | 3.8k      | 15 s | 38.2k  | $0.026 |
 
-The Zag agent row was measured before three changes to `@zag-js/agent`, which this mode exercises and which haven't been
-benchmarked yet: `act` lists components that came onto the page as one line each, remembers the values of fields whose
-tab unmounted (and reopens the tab when a step names one), and reports rows whose text changed, like a role.
+In this mode, `@zag-js/agent`'s `act` lists components that came onto the page as one short line each, with a menu's
+items, so the agent needs no `query` to use them. It remembers the values of fields whose tab unmounted, reopens the tab
+when a step names one, opens a closed section when a step's name starts with it, like "Email Deploy failures", and
+reports rows whose text changed, like a role.
 
 ### Closed panels stay, hidden (`--panels keep`)
 
 Closed tabs and accordion items stay in the page with `hidden`, as Zag's content parts do by default. The ui-sdk screen
-adds `keepMounted`.
+adds `keepMounted`. Measured on November 16, 2026, before the changes above.
 
 | Library | Tools   | Tool calls | Text read | Time | Tokens | Cost   |
 | ------- | ------- | ---------- | --------- | ---- | ------ | ------ |
@@ -56,7 +56,7 @@ adds `keepMounted`.
 With browser tools, the panel mode changes little. With agent tools, it decides how far the agent can see ahead. Zag's
 bridge lists components in closed panels that are still in the page, marked `hidden`, so the agent can make every change
 in one `act`. ui-sdk's bridge lists only components that are shown or were shown before, so its agent works tab by tab
-either way. When panels unmount, neither bridge can see what's behind a closed tab.
+either way. When panels unmount, neither bridge can see what's behind a closed tab until a step opens it.
 
 Cost is what Claude Code reports at API prices. On a Claude subscription, runs count against its usage limits instead.
 

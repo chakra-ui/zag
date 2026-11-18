@@ -35,13 +35,12 @@ The same screen runs two ways:
 - **Agent tools:** the agent uses `snapshot`, `query` and `act` from
   `@zag-js/agent`.
 
-Measured with Claude Sonnet through Claude Code, on November 16, 2026. Every run
-was correct.
+Measured with Claude Sonnet through Claude Code. Every run was correct.
 
 ### Closed panels kept in the page
 
 Closed tabs and accordion items stay in the page, hidden, as Zag's content parts
-do by default. Medians of three runs.
+do by default. Medians of three runs, on November 16, 2026.
 
 | Tools         | Tool calls | Text read | Time | Tokens | Cost   |
 | ------------- | ---------- | --------- | ---- | ------ | ------ |
@@ -54,21 +53,24 @@ in about a quarter of the time.
 
 ### Closed panels unmounted
 
-The screen renders a tab or accordion item only while it's open. One run.
+The screen renders a tab or accordion item only while it's open. Medians of
+three runs, on November 18, 2026.
 
 | Tools         | Tool calls | Text read | Time | Tokens | Cost   |
 | ------------- | ---------- | --------- | ---- | ------ | ------ |
-| Browser tools | 18         | 38.5k     | 38 s | 265.8k | $0.122 |
-| Agent tools   | 11         | 16.2k     | 22 s | 91.3k  | $0.063 |
+| Browser tools | 18         | 38.5k     | 41 s | 260.6k | $0.121 |
+| Agent tools   | 6          | 3.8k      | 15 s | 38.2k  | $0.026 |
 
 Here the agent can only find what's on a tab after opening it, so it works one
-tab at a time. Agent tools still took 39% fewer tool calls and 66% fewer tokens.
-This run came before `act` started listing new components as one line each and
-remembering the values on closed tabs, so current numbers should be lower.
+tab at a time. It still took 67% fewer tool calls and 85% fewer tokens, in about
+a third of the time. `act` keeps that cheap: it lists what came onto the page as
+one short line each, with a menu's items, remembers the values on closed tabs,
+and opens a closed section when a step names something in it, like "Email Deploy
+failures".
 
-With browser tools, how panels are rendered barely matters. With agent tools, it
-decides how far ahead the agent can see: keep closed panels in the page when you
-can.
+With browser tools, how panels are rendered barely matters. With agent tools,
+keeping closed panels in the page lets the agent see every tab at once, which
+saves another tool call or so.
 
 **Costs** are what Claude Code reports at API prices. **Text read** is the
 characters the tools returned to the model. The benchmark is adapted from
