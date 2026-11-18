@@ -3,7 +3,7 @@ import { getPlacementStyles } from "../src/get-styles"
 
 describe("getPlacementStyles", () => {
   test("leaves z-index to runtime positioning by default", () => {
-    expect(getPlacementStyles().floating.zIndex).toBeUndefined()
+    expect(getPlacementStyles().floating).not.toHaveProperty("zIndex")
   })
 
   test("consumes the z-index variable when styles are applied manually", () => {

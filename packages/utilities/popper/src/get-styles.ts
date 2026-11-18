@@ -51,7 +51,9 @@ export function getPlacementStyles(
       left: "0px",
       // move off-screen until placement and position are computed
       transform: placement ? "translate3d(var(--x, 0), var(--y, -100vh), 0)" : "translate3d(0, -100vh, 0)",
-      zIndex: applyStyles === false ? "var(--z-index)" : undefined,
+      // omit the key when positioning sets z-index at runtime: frameworks such as Vue clear
+      // inline styles whose value is `undefined` on every re-render
+      ...(applyStyles === false ? { zIndex: "var(--z-index)" } : {}),
     } as const,
   }
 }
