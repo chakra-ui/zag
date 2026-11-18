@@ -337,7 +337,8 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
-          const key = getEventKey(event, { dir: prop("dir") })
+          // crop and pan offsets are physical (`left`, `translate`), so arrows act physically in both directions
+          const key = getEventKey(event)
 
           const isZoomInKey = key === "+" || key === "="
           const isZoomOutKey = key === "-" || key === "_"
