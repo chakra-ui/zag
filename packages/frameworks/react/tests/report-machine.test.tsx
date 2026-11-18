@@ -61,8 +61,8 @@ describe("reporting machines to listeners", () => {
     stop()
   })
 
-  test("leaves one live record under strict mode", async () => {
-    const { live, stop } = listen()
+  test("reports one start and one stop under strict mode", async () => {
+    const { live, events, stop } = listen()
     const { unmount } = render(
       <StrictMode>
         <Rig />
@@ -70,9 +70,11 @@ describe("reporting machines to listeners", () => {
     )
     await flush()
     expect(live.size).toBe(1)
+    expect(events).toEqual([true])
 
     unmount()
     expect(live.size).toBe(0)
+    expect(events).toEqual([true, false])
     stop()
   })
 

@@ -34,4 +34,17 @@ describe("reporting machines to listeners", () => {
     expect(live.size).toBe(0)
     stop()
   })
+
+  test("reports nothing for a machine unmounted before it started", async () => {
+    const events: boolean[] = []
+    const stop = subscribeMachines((_record, mounted) => {
+      events.push(mounted)
+    })
+
+    const result = renderMachine(machine, { id: "rig" })
+    result.cleanup()
+    await flush()
+    expect(events).toEqual([])
+    stop()
+  })
 })

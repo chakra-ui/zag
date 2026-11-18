@@ -350,6 +350,7 @@ export function useMachine<T extends MachineSchema>(
       return serviceRef.current!
     },
   }))
+  const reportedRef = useRef(false)
 
   useSafeLayoutEffect(() => {
     mountedRef.current = true
@@ -366,13 +367,20 @@ export function useMachine<T extends MachineSchema>(
       // start the transition
       const initialState = hydratedStateRef.current ?? state.initial!
       state.invoke(initialState, started ? state.get() : INIT_STATE)
-      reportMachine(record, true)
+      // strict mode can start twice in a row, so report once per mount
+      if (!reportedRef.current) {
+        reportedRef.current = true
+        reportMachine(record, true)
+      }
     })
 
     const fns = effects.current
     return () => {
       mountedRef.current = false
-      if (startedHere) reportMachine(record, false)
+      if (reportedRef.current) {
+        reportedRef.current = false
+        reportMachine(record, false)
+      }
       const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState
