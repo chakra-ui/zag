@@ -22,6 +22,7 @@ if (!(await isUp())) {
     cwd: path.join(import.meta.dirname, ".."),
     env: { ...process.env, BENCHMARK_PORT: String(port) },
     stdio: "ignore",
+    detached: true,
   })
   for (let tries = 0; tries < 120 && !(await isUp()); tries++) {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -72,7 +73,7 @@ try {
   }
 } finally {
   await browser.close()
-  server?.kill()
+  if (server) process.kill(-server.pid)
 }
 
 console.log(failures.length ? `\n${failures.length} failed` : "\nAll passed")
