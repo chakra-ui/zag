@@ -21,6 +21,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -288,6 +289,18 @@ export function useMachine<T extends MachineSchema>(
   const hydratedStateRef = useRef<string | undefined>(undefined)
   const statusRef = useRef(MachineStatus.NotStarted)
 
+  // What listeners like an agent bridge hold: the latest service, through a ref.
+  const serviceRef = useRef<Service<T> | null>(null)
+  const record = useMemo(
+    () => ({
+      machine,
+      get service() {
+        return serviceRef.current!
+      },
+    }),
+    [],
+  )
+
   useLayoutEffect(() => {
     const started = statusRef.current === MachineStatus.Started
     statusRef.current = MachineStatus.Started
@@ -296,9 +309,11 @@ export function useMachine<T extends MachineSchema>(
     // start the transition
     const initialState = hydratedStateRef.current ?? state.initial!
     state.invoke(initialState, started ? state.get() : INIT_STATE)
+    reportMachine(record, true)
 
     const fns = effects.current
     return () => {
+      reportMachine(record, false)
       const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState
@@ -358,7 +373,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = useEffectSync(reconcileEffects)
 
-  return {
+  const service = {
     state: getState(),
     send,
     context: ctx,
@@ -369,6 +384,10 @@ export function useMachine<T extends MachineSchema>(
     event: getEvent(),
     getStatus,
   } as Service<T>
+
+  serviceRef.current = service
+
+  return service
 }
 
 function useLiveRef<T>(value: T) {

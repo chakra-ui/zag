@@ -27,6 +27,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   MachineStatus,
   matchesState,
   resolveStateValue,
@@ -351,14 +352,25 @@ export class VanillaMachine<T extends MachineSchema> {
     this.send = send
     this.getParams = getParams
 
+    // What listeners like an agent bridge hold, reported while the machine runs.
+    const self = this
+    const record = {
+      machine,
+      get service() {
+        return self.service
+      },
+    }
+
     const start = () => {
       status = MachineStatus.Started
       if (process.env.NODE_ENV !== "production") debug("initializing...")
       state.invoke(state.initial!, INIT_STATE)
       machine.watch?.(getParams())
+      reportMachine(record, true)
     }
 
     const stop = () => {
+      if (status === MachineStatus.Started) reportMachine(record, false)
       effects.forEach((record) => record.cleanup?.("exit"))
       effects.clear()
       transition = null
