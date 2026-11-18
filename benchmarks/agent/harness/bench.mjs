@@ -1,7 +1,7 @@
 // pnpm --filter zag-agent-benchmark bench --runs 3
 import { spawn } from "node:child_process"
 import { randomUUID } from "node:crypto"
-import { mkdtempSync, writeFileSync } from "node:fs"
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import { parseArgs } from "node:util"
@@ -37,7 +37,12 @@ const out = flags.out ?? mkdtempSync(path.join(tmpdir(), "agent-benchmark-"))
 const width = Number(flags.width)
 const token = randomUUID()
 const children = []
-const stop = () => children.forEach((child) => child.kill())
+// Each agent's empty working folder, removed when the bench stops.
+const workdirs = []
+const stop = () => {
+  children.forEach((child) => child.kill())
+  workdirs.forEach((dir) => rmSync(dir, { recursive: true, force: true }))
+}
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () => {
     stop()
@@ -121,6 +126,8 @@ async function operate(arm, round, app) {
     width,
   })
   const started = Date.now()
+  const cwd = mkdtempSync(path.join(tmpdir(), "agent-benchmark-cwd-"))
+  workdirs.push(cwd)
   const result = await claude(
     [
       "-p",
@@ -135,7 +142,7 @@ async function operate(arm, round, app) {
       `Bash(node ${toolPath}:*)`,
     ],
     {
-      cwd: mkdtempSync(path.join(tmpdir(), "agent-benchmark-cwd-")),
+      cwd,
       env: { ...process.env, AGENT_BENCHMARK_TOKEN: token },
     },
   )
