@@ -1,5 +1,5 @@
 import type { Machine, Scope, Service } from "@zag-js/core"
-import { textOf } from "../dom"
+import { buttonsIn, isShown, nameOf, textOf } from "../dom"
 
 export interface AgentItem {
   value: string
@@ -38,7 +38,12 @@ export interface AgentDescriptor<Api = any> {
   /** The element that names the component and decides whether it's on the page. */
   element: (scope: Scope) => HTMLElement | null
   name?: (scope: Scope, api: Api) => string | undefined
-  state: (api: Api) => Record<string, unknown>
+  state: (api: Api, scope: Scope) => Record<string, unknown>
+  /**
+   * The state key that holds its value, which `act` reports in `values` and remembers when its section unmounts.
+   * Defaults to `value`, or `checked` when there's no `value`. A component with neither, like a dialog, has none.
+   */
+  value?: string
   items?: (api: Api, scope: Scope) => AgentItem[]
   /** Text it shows, like a dialog's title and description. */
   text?: (scope: Scope) => string[]
@@ -83,5 +88,79 @@ export function sectionHolding(scope: Scope, target: Element) {
 
 export const toBoolean = (value: unknown) => value !== false && value !== "false" && value !== "off"
 
+export function toNumber(value: unknown): number {
+  const number = typeof value === "number" ? value : Number.parseFloat(String(value ?? ""))
+  if (Number.isNaN(number)) throw new Error(`"${String(value)}" isn't a number.`)
+  return number
+}
+
+// A step may pass a list as one array argument or as several arguments.
+export const toList = (args: unknown[]) => args.flat().map((arg) => String(arg))
+
+interface Part {
+  attr: string
+}
+
+/** One of the component's parts, from its anatomy, like `anatomy.build().root`. */
+export const elementOf = (scope: Scope, part: Part) => scope.query(`[${part.attr}="${CSS.escape(scope.id ?? "")}"]`)
+export const elementsOf = (scope: Scope, part: Part) => scope.queryAll(`[${part.attr}="${CSS.escape(scope.id ?? "")}"]`)
+
+/** A label part's text. Without one, the bridge names the component by its element's accessible name. */
+export const labelOf = (scope: Scope, label: Part) => textOf(elementOf(scope, label)) || undefined
+
+/**
+ * Items read from the page, one per part, like a radio group's radios. Their value is the part's `data-value`, or
+ * the end of its id, and their label its accessible name.
+ */
+export const itemsFrom = (scope: Scope, part: Part): AgentItem[] =>
+  elementsOf(scope, part).map((el) => ({
+    value: el.dataset.value ?? el.id.slice(el.id.lastIndexOf(":") + 1),
+    label: nameOf(el) ?? "",
+  }))
+
+interface ListCollectionLike {
+  items: unknown[]
+  getItemValue: (item: any) => string | null
+  stringifyItem: (item: any) => string | null
+}
+
+/** A list collection's items, like a select's or a combobox's options. */
+export const collectionItems = (collection: ListCollectionLike): AgentItem[] =>
+  collection.items.map((item) => ({
+    value: collection.getItemValue(item) ?? "",
+    label: collection.stringifyItem(item) ?? "",
+  }))
+
+/** The selected items' labels, as a select's trigger shows them. */
+export const labelsOf = (collection: ListCollectionLike, values: string[]) => {
+  const items = collectionItems(collection)
+  return values.map((value) => items.find((item) => item.value === value)?.label ?? value).join(", ")
+}
+
 // The reason the bridge gives api methods that take one, so an app's change callback can tell an agent's change.
 export const AGENT = "agent" as const
+
+/** Presses the button in `container` the step names, like a dialog's "Save". */
+export async function pressIn(
+  container: HTMLElement | null,
+  wanted: unknown,
+  press: (button: HTMLElement) => Promise<void>,
+) {
+  const name = String(wanted ?? "")
+  const buttons = buttonsIn(container)
+  const button = buttons.find((el) => (nameOf(el) ?? "").toLowerCase() === name.toLowerCase())
+  if (!button) throw new Error(`No button "${name}". Buttons: ${buttons.map((el) => nameOf(el)).join(", ")}.`)
+  await press(button)
+}
+
+/** Its content while it shows, else its trigger, so a closed popup is still listed and can be opened. */
+export const contentOrTrigger = (scope: Scope, content: Part, trigger: Part) => {
+  const el = elementOf(scope, content)
+  return isShown(el) ? el : (elementOf(scope, trigger) ?? el)
+}
+
+/** Waits for `done`, like a popup that opens after its delay, for at most `ms`. */
+export async function waitFor(done: () => boolean, ms = 2000) {
+  const end = Date.now() + ms
+  while (!done() && Date.now() < end) await new Promise((resolve) => setTimeout(resolve, 16))
+}

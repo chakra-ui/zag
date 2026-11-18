@@ -1,7 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import * as dialog from "@zag-js/dialog"
-import { buttonsIn, nameOf, textOf } from "../dom"
-import { AGENT, type AgentDescriptor, byId, toBoolean } from "./shared"
+import { textOf } from "../dom"
+import { AGENT, type AgentDescriptor, byId, pressIn, toBoolean } from "./shared"
 
 const dialogContent = (scope: Scope) => byId(scope, `${scope.id}:content`)
 
@@ -16,15 +16,7 @@ export const dialogAgent: AgentDescriptor<dialog.Api> = {
     [textOf(byId(scope, `${scope.id}:title`)), textOf(byId(scope, `${scope.id}:description`))].filter(Boolean),
   container: dialogContent,
   actions: {
-    async press({ args, scope, press }) {
-      const wanted = String(args[0] ?? "")
-      const buttons = buttonsIn(dialogContent(scope))
-      const button = buttons.find((el) => (nameOf(el) ?? "").toLowerCase() === wanted.toLowerCase())
-      if (!button) {
-        throw new Error(`No button "${wanted}". Buttons: ${buttons.map((el) => nameOf(el)).join(", ")}.`)
-      }
-      await press(button)
-    },
+    press: ({ args, scope, press }) => pressIn(dialogContent(scope), args[0], press),
     setOpen: ({ api, args }) => {
       const value = toBoolean(args[0])
       api().setOpen(value, AGENT)

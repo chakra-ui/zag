@@ -95,10 +95,57 @@ export const agent = createAgent({
 })
 ```
 
-To describe every component the package supports, pass `allComponents`.
-Supported today: accordion, checkbox, dialog, menu, select, switch and tabs.
-Plain `<input>`, `<textarea>` and `<button>` elements are picked up as fields
-and buttons.
+To describe every component the package supports, pass `allComponents`. Plain
+`<input>`, `<textarea>` and `<button>` elements that aren't part of a Zag
+component are picked up as fields and buttons.
+
+| Component       | Export                | Actions                                               |
+| --------------- | --------------------- | ----------------------------------------------------- |
+| accordion       | `accordionAgent`      | `open`, `close`, `setValue`                           |
+| angle-slider    | `angleSliderAgent`    | `setValue`                                            |
+| carousel        | `carouselAgent`       | `scrollTo`, `next`, `previous`                        |
+| cascade-select  | `cascadeSelectAgent`  | `setValue`, `clear`, `setOpen`                        |
+| checkbox        | `checkboxAgent`       | `setChecked`, `toggle`                                |
+| collapsible     | `collapsibleAgent`    | `setOpen`                                             |
+| color-picker    | `colorPickerAgent`    | `setValue`, `setOpen`                                 |
+| combobox        | `comboboxAgent`       | `setValue`, `search`, `clear`, `setOpen`              |
+| date-input      | `dateInputAgent`      | `setValue`, `clear`                                   |
+| date-picker     | `datePickerAgent`     | `setValue`, `clear`, `setOpen`                        |
+| dialog          | `dialogAgent`         | `press`, `setOpen`                                    |
+| drawer          | `drawerAgent`         | `press`, `setOpen`                                    |
+| editable        | `editableAgent`       | `setValue`                                            |
+| file-upload     | `fileUploadAgent`     | `remove`, `clear`                                     |
+| floating-panel  | `floatingPanelAgent`  | `press`, `setOpen`, `minimize`, `maximize`, `restore` |
+| gridlist        | `gridlistAgent`       | `setValue`, `clear`                                   |
+| hover-card      | `hoverCardAgent`      | `setOpen`                                             |
+| listbox         | `listboxAgent`        | `setValue`, `clear`                                   |
+| menu            | `menuAgent`           | `press`, `setOpen`                                    |
+| navigation-menu | `navigationMenuAgent` | `open`, `close`                                       |
+| number-input    | `numberInputAgent`    | `setValue`, `increment`, `decrement`, `clear`         |
+| pagination      | `paginationAgent`     | `setPage`, `next`, `previous`                         |
+| password-input  | `passwordInputAgent`  | `setValue`                                            |
+| pin-input       | `pinInputAgent`       | `setValue`, `clear`                                   |
+| popover         | `popoverAgent`        | `press`, `setOpen`                                    |
+| radio-group     | `radioGroupAgent`     | `setValue`, `clear`                                   |
+| rating-group    | `ratingGroupAgent`    | `setValue`, `clear`                                   |
+| select          | `selectAgent`         | `setValue`, `setOpen`                                 |
+| slider          | `sliderAgent`         | `setValue`, `increment`, `decrement`                  |
+| splitter        | `splitterAgent`       | `resize`, `collapse`, `expand`                        |
+| steps           | `stepsAgent`          | `setValue`, `next`, `previous`                        |
+| switch          | `switchAgent`         | `setChecked`, `toggle`                                |
+| tabs            | `tabsAgent`           | `setValue`                                            |
+| tags-input      | `tagsInputAgent`      | `setValue`, `add`, `remove`, `clear`                  |
+| timer           | `timerAgent`          | `start`, `pause`, `resume`, `reset`                   |
+| toast           | `toastAgent`          | `press`, `dismiss`                                    |
+| toggle-group    | `toggleGroupAgent`    | `setValue`, `toggle`                                  |
+| toggle          | `toggleAgent`         | `setPressed`, `toggle`                                |
+| tooltip         | `tooltipAgent`        | `press`, `setOpen`                                    |
+| tour            | `tourAgent`           | `next`, `previous`, `press`                           |
+| tree-view       | `treeViewAgent`       | `select`, `expand`, `collapse`                        |
+
+Any component with `setOpen` also takes `open` and `close`. A password input,
+and a pin input with `otp` or `mask`, are filled but never read back. A file
+upload's files can be removed but not added: an agent has no files to give.
 
 ## Connect a model
 

@@ -5,7 +5,7 @@ import { spawn } from "node:child_process"
 import path from "node:path"
 import { chromium } from "@playwright/test"
 
-const all = ["task", "unmount", "browser", "rejects", "safety"]
+const all = ["task", "unmount", "browser", "rejects", "safety", "components"]
 const names = process.argv.slice(2).length ? process.argv.slice(2) : all
 
 const port = Number(process.env.BENCHMARK_PORT ?? 5410)

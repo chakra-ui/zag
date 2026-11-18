@@ -8,8 +8,10 @@ import {
   frames,
   sectionsOf,
   isOffLimits,
+  isSecret,
   isShown,
   nameOf,
+  REDACTED,
   rowOf,
   textOf,
   wordsOf,
@@ -104,6 +106,8 @@ interface Remembered {
   kind: string
   label?: string | undefined
   in: string[]
+  /** The state key its value had, like `value` or `checked`. */
+  key: string
   value: unknown
   el: Element
   section: Element | null
@@ -117,13 +121,6 @@ const leftWithSection = (item: { section: Element | null }) => !!item.section &&
 const addedLimit = 30
 
 const limit = 100
-
-// What a secret field shows instead of its value: one an agent may fill but never read.
-const REDACTED = "[redacted]"
-const isSecret = (el: HTMLInputElement | HTMLTextAreaElement) =>
-  !!el.closest("[data-agent-secret]") ||
-  (el instanceof HTMLInputElement && el.type === "password") ||
-  /^(cc-|one-time-code)/.test(el.autocomplete)
 
 // Hidden by a closed section a step can open, not by being off the page.
 const hidesIn = (el: Element) => !!el.parentElement?.closest("[hidden][aria-labelledby]")
@@ -151,14 +148,19 @@ export function createAgent(options: CreateAgentOptions) {
   const descriptorOf = (record: MachineRecord) => descriptors.find((d) => d.machine === record.machine)
   const apiOf = (record: MachineRecord, descriptor: AgentDescriptor) => descriptor.connect(record.service, normalize)
 
-  // Elements owned by a machine's popup, whose buttons belong to it, not the page.
-  const ownedSelector = "[data-dialog-content], [data-menu-content]"
-  // Zag marks each part with `data-<scope>-<part>="<machine id>"`.
+  // A menu's content, whose items belong to the menu, not the page. Other popups name theirs with `container`.
+  const ownedSelector = "[data-menu-content]"
+  // Zag marks each part with `data-<scope>-<part>="<machine id>"`, and gives the rest, like a hidden input, an id
+  // that starts with the machine's.
   const isPart = (el: Element, ids: Set<string>) =>
-    Array.from(el.attributes).some((attr) => attr.name.startsWith("data-") && ids.has(attr.value))
+    Array.from(el.attributes).some((attr) => attr.name.startsWith("data-") && ids.has(attr.value)) ||
+    (!!el.id && [...ids].some((id) => el.id.startsWith(`${id}:`)))
 
   function scan(): Live[] {
     const found: Live[] = []
+    // Popups' contents, like a dialog's or a popover's, whose fields and buttons belong to them.
+    const owned: Element[] = []
+    const isOwned = (el: Element) => !!el.closest(ownedSelector) || owned.some((container) => container.contains(el))
     for (const record of records) {
       const descriptor = descriptorOf(record)
       if (!descriptor) continue
@@ -166,6 +168,8 @@ export function createAgent(options: CreateAgentOptions) {
       const el = descriptor.element(scope)
       if (!el || !el.isConnected || isOffLimits(el)) continue
       const api = apiOf(record, descriptor)
+      const container = descriptor.container?.(scope)
+      if (container) owned.push(container)
       const label = descriptor.name?.(scope, api) ?? nameOf(el, false)
       found.push({
         ref: refOf(record),
@@ -176,7 +180,7 @@ export function createAgent(options: CreateAgentOptions) {
         row: rowOf(el, label),
         in: sectionsOf(el),
         section: sectionOf(el),
-        state: descriptor.state(api),
+        state: descriptor.state(api, scope),
         items: descriptor.items?.(api, scope),
         descriptor,
         record,
@@ -188,7 +192,7 @@ export function createAgent(options: CreateAgentOptions) {
     // Plain text fields, which Zag leaves to the page.
     for (const el of doc.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")) {
       if (isPart(el, ids) || el.type === "hidden" || el.type === "checkbox" || el.type === "radio") continue
-      if (isOffLimits(el) || el.closest(ownedSelector)) continue
+      if (isOffLimits(el) || isOwned(el)) continue
       const label = nameOf(el)
       found.push({
         ref: refOf(el),
@@ -205,7 +209,7 @@ export function createAgent(options: CreateAgentOptions) {
     }
     // Plain buttons, like a form's save.
     for (const el of doc.querySelectorAll<HTMLElement>("button")) {
-      if (isPart(el, ids) || isOffLimits(el) || el.closest(ownedSelector)) continue
+      if (isPart(el, ids) || isOffLimits(el) || isOwned(el)) continue
       const label = nameOf(el)
       found.push({
         ref: refOf(el),
@@ -231,10 +235,11 @@ export function createAgent(options: CreateAgentOptions) {
   function remember(result: Live[]) {
     const present = new Set<string>()
     for (const live of result) {
-      if (!hasValue(live)) continue
+      const valueKey = valueKeyOf(live)
+      if (!valueKey) continue
       const key = keyOf(live)
       present.add(key)
-      memory.set(key, { ...live, value: valueOf(live) })
+      memory.set(key, { ...live, key: valueKey, value: live.state[valueKey] })
     }
     for (const [key, item] of memory) {
       if (!present.has(key) && !leftWithSection(item)) memory.delete(key)
@@ -452,8 +457,14 @@ export function createAgent(options: CreateAgentOptions) {
   }
 
   const keyOf = (live: Pick<Live, "in" | "label" | "kind">) => [...live.in, live.label ?? live.kind].join(" › ")
-  const valueOf = (live: Live) => ("value" in live.state ? live.state.value : live.state.checked)
-  const hasValue = (live: Live) => "value" in live.state || "checked" in live.state
+  // The state key that holds its value, if it has one.
+  const valueKeyOf = (live: Live) => {
+    const declared = live.descriptor?.value
+    if (declared) return declared in live.state ? declared : undefined
+    if ("value" in live.state) return "value"
+    if ("checked" in live.state) return "checked"
+    return undefined
+  }
 
   const offPageEntry = (item: Remembered): AgentEntry => ({
     ref: item.ref,
@@ -461,7 +472,7 @@ export function createAgent(options: CreateAgentOptions) {
     actions: [],
     ...(item.label ? { label: item.label } : {}),
     ...(item.in.length ? { in: item.in } : {}),
-    [item.kind === "switch" || item.kind === "checkbox" ? "checked" : "value"]: item.value,
+    [item.key]: item.value,
     offPage: true,
   })
 
@@ -509,7 +520,10 @@ export function createAgent(options: CreateAgentOptions) {
   const valuesOf = (all: Live[]) =>
     Object.fromEntries([
       ...offPage().map((item) => [keyOf(item), item.value]),
-      ...all.filter(hasValue).map((live) => [keyOf(live), valueOf(live)]),
+      ...all.flatMap((live) => {
+        const valueKey = valueKeyOf(live)
+        return valueKey ? [[keyOf(live), live.state[valueKey]]] : []
+      }),
     ])
 
   // One short line for a component that came onto the page, like "c20 menu: Actions for Jane Doe".

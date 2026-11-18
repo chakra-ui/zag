@@ -112,3 +112,12 @@ export function fillValue(el: HTMLInputElement | HTMLTextAreaElement, value: str
 export const fold = (text: string) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
 
 export const wordsOf = (text: string): string[] => Array.from(fold(text).match(/[\p{L}\p{N}]+/gu) ?? [])
+
+// What a secret field shows instead of its value: one an agent may fill but never read.
+export const REDACTED = "[redacted]"
+
+export const isSecret = (el: Element | null | undefined) =>
+  !!el &&
+  (!!el.closest("[data-agent-secret]") ||
+    (el instanceof HTMLInputElement && el.type === "password") ||
+    /^(cc-|one-time-code)/.test((el as HTMLInputElement).autocomplete ?? ""))
