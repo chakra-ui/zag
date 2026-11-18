@@ -26,7 +26,10 @@ export default async function ({ open, check }) {
         result.added.every((line) => typeof line === "string" && line.length < 60),
         result.added[0],
       )
-      assert.ok(result.added.includes(result.added.find((line) => line.endsWith("menu: Actions for Priya Shah"))))
+      assert.ok(
+        result.added.some((line) => line.endsWith("menu: Actions for Priya Shah [Make admin, Remove]")),
+        "a menu's line lists its items",
+      )
       assert.equal(result.removed, undefined, "a closed tab's fields aren't removed")
       assert.equal(result.values["General › Project name"], "Atlas")
       assert.equal(result.values["General › Visibility"], "Internal")
@@ -56,9 +59,15 @@ export default async function ({ open, check }) {
   })
 
   await check("a component never seen fails with the sections that may hold it", async () => {
-    const result = await act({ ref: "Email Deploy failures", action: "setChecked", args: [true] })
+    const result = await act({ ref: "Push Deploy failures", action: "setChecked", args: [true] })
     assert.equal(result.ok, false)
     assert.match(result.error.message, /It may be behind one of these.*accordion \(c\d+\): Email, Slack/)
+  })
+
+  await check("a name that starts with a closed section's opens that section first", async () => {
+    const result = await act({ ref: "Email Deploy failures", action: "setChecked", args: [true] })
+    assert.equal(result.ok, true, JSON.stringify(result.error))
+    assert.equal(result.values["Notifications › Email › Deploy failures"], true)
   })
 
   await check("the task finishes and saves the right settings", async () => {

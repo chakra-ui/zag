@@ -119,6 +119,8 @@ const sectionOf = (el: Element) => el.parentElement?.closest(sectionSelector) ??
 const leftWithSection = (item: { section: Element | null }) => !!item.section && !item.section.isConnected
 // At most this many components that came onto the page are listed by name after an act.
 const addedLimit = 30
+// A line in `added` lists a component's items when it has at most this many.
+const lineItemLimit = 6
 
 const limit = 100
 
@@ -329,6 +331,26 @@ export function createAgent(options: CreateAgentOptions) {
     return true
   }
 
+  // A name that starts with a closed section's, like "Email Deploy failures" with the Email accordion item closed:
+  // open that section, so what it holds mounts and the name can find it. Only when one section matches.
+  async function openSectionNamed(ref: string) {
+    const words = wordsOf(ref)
+    const matches = scan().flatMap((live) => {
+      if (!live.descriptor?.openItem || !live.items) return []
+      return live.items
+        .filter((item) => {
+          const label = wordsOf(item.label)
+          return label.length > 0 && label.length < words.length && label.every((word, index) => words[index] === word)
+        })
+        .map((item) => ({ live, item }))
+    })
+    if (matches.length !== 1) return false
+    const { live, item } = matches[0]
+    live.descriptor!.openItem!(apiOf(live.record!, live.descriptor!), item.value)
+    await frames()
+    return true
+  }
+
   const confirmOf = (el: Element) => el.closest("[data-agent-confirm]")?.getAttribute("data-agent-confirm") ?? undefined
   const actionOf = (step: AgentStep, live: Live, confirm?: string): AgentAction => ({
     ...step,
@@ -379,7 +401,7 @@ export function createAgent(options: CreateAgentOptions) {
     try {
       live = find(scan(), step.ref, action)
     } catch (error) {
-      if (!(await reopen(step.ref))) throw error
+      if (!(await reopen(step.ref)) && !(await openSectionNamed(step.ref))) throw error
       const back = offPage().find((item) => item.ref === step.ref)
       live = find(scan(), back?.label ?? step.ref, action)
     }
@@ -526,11 +548,14 @@ export function createAgent(options: CreateAgentOptions) {
       }),
     ])
 
-  // One short line for a component that came onto the page, like "c20 menu: Actions for Jane Doe".
+  // One short line for a component that came onto the page, with what it offers when that's short, like
+  // "c20 menu: Actions for Jane Doe [Make admin, Remove]", so a step can use it without a query first.
   const lineOf = (live: Live) => {
     const entry = entryOf(live)
-    const buttons = entry.buttons?.length ? ` [${entry.buttons.join(", ")}]` : ""
-    return `${live.ref} ${live.kind}${live.label ? `: ${live.label}` : ""}${buttons}`
+    const items = entry.items && entry.items.length <= lineItemLimit ? entry.items.map((item) => item.label) : []
+    const offers = [...items, ...(entry.buttons ?? [])]
+    const list = offers.length ? ` [${offers.join(", ")}]` : ""
+    return `${live.ref} ${live.kind}${live.label ? `: ${live.label}` : ""}${list}`
   }
 
   async function act(input: { steps: AgentStep[] }, extra: ActOptions = {}) {
