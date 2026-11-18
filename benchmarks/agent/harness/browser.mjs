@@ -85,9 +85,10 @@ async function openScreen({ app, screen, tools, port, token, dir, label, panels,
     }
     const text = typeof result === "string" ? result : JSON.stringify(result)
     stats.chars += text.length
+    // The result's text too, so a run can be read back to see what the model was shown before each next call.
     appendFileSync(
       path.join(dir, "calls.jsonl"),
-      `${JSON.stringify({ at: at - started, ms: Date.now() - at, tool, args, chars: text.length })}\n`,
+      `${JSON.stringify({ at: at - started, ms: Date.now() - at, tool, args, chars: text.length, output: text })}\n`,
     )
     return text
   }

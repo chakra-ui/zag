@@ -95,8 +95,8 @@ pnpm --filter zag-agent-benchmark bench --runs 3 --headless
 | `--width`     | `480`     | The width of each window.                                                              |
 | `--out`       |           | Where to write results. A temporary folder.                                            |
 
-Results go to `results.json`, with every tool call an agent made in `calls.jsonl` beside it. Set `CHROMIUM` to use a
-browser of your own.
+Results go to `results.json`, with every tool call an agent made in `calls.jsonl` beside it: its arguments, and the text
+it returned, under `output`. Set `CHROMIUM` to use a browser of your own.
 
 To look at a screen by hand, run `pnpm --filter zag-agent-benchmark dev` and open
 `http://localhost:5410/?screen=react-zag` or `?screen=react-ui-sdk`. Add `&panels=keep` to keep closed panels in the
