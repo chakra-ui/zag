@@ -190,7 +190,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "toggle",
     label: "Toggle",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "text-formatting", title: "Text Formatting" },
+      { slug: "favorite", title: "Favorite" },
+      { slug: "mute", title: "Mute" },
+    ],
   },
   {
     slug: "angle-slider",
