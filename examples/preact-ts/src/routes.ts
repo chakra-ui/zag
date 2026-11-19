@@ -258,7 +258,12 @@ export const routes: RouteDefinition[] = [
   { path: "/floating-panel/popover-inside", component: lazy(() => import("./pages/floating-panel/popover-inside")) },
   { path: "/floating-panel/stacking", component: lazy(() => import("./pages/floating-panel/stacking")) },
   { path: "/focus-visible/basic", component: lazy(() => import("./pages/focus-visible/basic")) },
+  { path: "/focus-visible/card-grid", component: lazy(() => import("./pages/focus-visible/card-grid")) },
   { path: "/focus-visible/safari-tab", component: lazy(() => import("./pages/focus-visible/safari-tab")) },
+  {
+    path: "/focus-visible/window-restore",
+    component: lazy(() => import("./pages/focus-visible/window-restore")),
+  },
   { path: "/gridlist/basic", component: lazy(() => import("./pages/gridlist/basic")) },
   { path: "/gridlist/grid", component: lazy(() => import("./pages/gridlist/grid")) },
   { path: "/gridlist/grouped", component: lazy(() => import("./pages/gridlist/grouped")) },

@@ -970,7 +970,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "focus-visible",
     label: "Focus Visible",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "card-grid", title: "Card Grid" },
+      { slug: "window-restore", title: "Window Restore" },
+    ],
   },
   {
     slug: "swap",
