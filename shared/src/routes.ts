@@ -185,6 +185,8 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "viewport", title: "Viewport" },
       { slug: "default-value", title: "Default Value" },
+      { slug: "links", title: "Links" },
+      { slug: "vertical", title: "Vertical" },
     ],
   },
   {
