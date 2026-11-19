@@ -50,6 +50,7 @@ export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: true,
+      pageSize: 10,
       openOnClick: false,
       defaultValue: [],
       defaultInputValue: "",
@@ -567,6 +568,12 @@ export const machine = createMachine({
             "INPUT.END": {
               actions: ["highlightLastItem"],
             },
+            "INPUT.PAGE_DOWN": {
+              actions: ["highlightNextPage"],
+            },
+            "INPUT.PAGE_UP": {
+              actions: ["highlightPrevPage"],
+            },
             "INPUT.ARROW_DOWN": [
               {
                 guard: and("autoComplete", "isLastItemHighlighted"),
@@ -656,6 +663,14 @@ export const machine = createMachine({
             "INPUT.END": {
               target: "interacting",
               actions: ["highlightLastItem"],
+            },
+            "INPUT.PAGE_DOWN": {
+              target: "interacting",
+              actions: ["highlightNextPage"],
+            },
+            "INPUT.PAGE_UP": {
+              target: "interacting",
+              actions: ["highlightPrevPage"],
             },
             "INPUT.CHANGE": {
               actions: ["setInputValue", "reconcileInputValue", "scrollToTop"],
@@ -1101,6 +1116,22 @@ export const machine = createMachine({
         } else {
           value = collection.lastValue
         }
+        if (value) context.set("highlightedValue", value)
+      },
+      highlightNextPage({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        const value = collection.has(highlightedValue)
+          ? (collection.getNextValue(highlightedValue, prop("pageSize"), true) ?? collection.lastValue)
+          : collection.firstValue
+        if (value) context.set("highlightedValue", value)
+      },
+      highlightPrevPage({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        const value = collection.has(highlightedValue)
+          ? (collection.getPreviousValue(highlightedValue, prop("pageSize"), true) ?? collection.firstValue)
+          : collection.lastValue
         if (value) context.set("highlightedValue", value)
       },
       highlightFirstSelectedItem({ context, prop, refs }) {

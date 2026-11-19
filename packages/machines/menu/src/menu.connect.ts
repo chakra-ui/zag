@@ -611,6 +611,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             End() {
               send({ type: "END" })
             },
+            PageDown() {
+              send({ type: "PAGE_DOWN" })
+            },
+            PageUp() {
+              send({ type: "PAGE_UP" })
+            },
           }
 
           const key = getEventKey(event, { dir: prop("dir") })
@@ -685,6 +691,16 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             End() {
               if (modified || !highlightedEl || hasValue) return false
               send({ type: "INPUT.NAVIGATE", key: "last" })
+              return true
+            },
+            PageDown() {
+              if (modified) return false
+              send({ type: "INPUT.NAVIGATE", key: "page-next" })
+              return true
+            },
+            PageUp() {
+              if (modified) return false
+              send({ type: "INPUT.NAVIGATE", key: "page-prev" })
               return true
             },
             ArrowRight() {

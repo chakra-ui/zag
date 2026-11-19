@@ -9,8 +9,6 @@ interface Item {
   value: string
 }
 
-const estimateSize = () => 28
-
 const items: Item[] = new Array(10000).fill(0).map((_, index) => ({
   label: `Item ${index}`,
   value: `item-${index}`,
@@ -20,7 +18,7 @@ const collection = listbox.collection({ items })
 
 const { virtualizer, init } = useListVirtualizer({
   count: items.length,
-  estimatedSize: estimateSize,
+  itemSize: 32,
   overscan: 12,
 })
 

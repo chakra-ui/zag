@@ -161,6 +161,11 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   loopFocus?: boolean | undefined
   /**
+   * Number of items Page Up / Page Down moves the highlight by
+   * @default 10
+   */
+  pageSize?: number | undefined
+  /**
    * The element to focus when the menu opens.
    * Return `false` to skip moving focus, or `null` to use the default.
    */
@@ -260,7 +265,7 @@ export interface MenubarContext {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-type PropsWithDefault = "closeOnSelect" | "typeahead" | "popupType" | "positioning" | "loopFocus"
+type PropsWithDefault = "pageSize" | "closeOnSelect" | "typeahead" | "popupType" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
   props: MenuProps

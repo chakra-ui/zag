@@ -23,7 +23,7 @@
     columnGap: 12,
     rowGap: 12,
     overscan: 6,
-    estimatedSize: (index: number) => getItemHeight(index),
+    estimatedItemSize: (index: number) => getItemHeight(index),
   })
 
   $effect(() => {

@@ -11,7 +11,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 export default function Page() {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => 72,
+    estimatedItemSize: 72,
     overscan: 8,
   })
 

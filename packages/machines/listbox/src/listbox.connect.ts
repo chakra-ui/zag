@@ -51,6 +51,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  // Grids page by rows to keep the column
+  function getPageStep() {
+    const pageSize = prop("pageSize")
+    return isGridCollection(collection) ? pageSize * collection.columnCount : pageSize
+  }
+
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
@@ -412,6 +418,24 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               if (isEditableElement(target)) return
               event.preventDefault()
               let nextValue = collection.lastValue
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
+            },
+            PageDown(event) {
+              event.preventDefault()
+              const step = getPageStep()
+              const nextValue = collection.has(highlightedValue)
+                ? (collection.getNextValue(highlightedValue, step, true) ?? collection.lastValue)
+                : collection.firstValue
+              if (!nextValue) return
+              send({ type: "NAVIGATE", value: nextValue, shiftKey })
+            },
+            PageUp(event) {
+              event.preventDefault()
+              const step = getPageStep()
+              const nextValue = collection.has(highlightedValue)
+                ? (collection.getPreviousValue(highlightedValue, step, true) ?? collection.firstValue)
+                : collection.lastValue
+              if (!nextValue) return
               send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
             Enter() {

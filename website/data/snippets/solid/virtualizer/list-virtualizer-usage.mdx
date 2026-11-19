@@ -4,7 +4,7 @@ import { Index } from "solid-js"
 function List(props: { items: { id: string; label: string }[] }) {
   const { virtualizer, ref } = useListVirtualizer({
     count: props.items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 5,
     indexToKey: (index) => props.items[index].id,
   })

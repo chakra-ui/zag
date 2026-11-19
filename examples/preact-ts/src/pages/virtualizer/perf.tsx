@@ -2,8 +2,6 @@ import { useCallback, useRef, useState } from "preact/hooks"
 import { useVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
-const zagEstimateSize = () => ITEM_HEIGHT
-
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
 
@@ -21,7 +19,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: zagEstimateSize,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
   })
 

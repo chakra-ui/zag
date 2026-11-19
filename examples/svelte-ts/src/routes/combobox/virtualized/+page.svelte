@@ -7,8 +7,6 @@
   import { XIcon } from "lucide-svelte"
   import "@styles/combobox.css"
 
-  const estimateSize = () => 32
-
   interface Item {
     code: string
     label: string
@@ -20,7 +18,7 @@
 
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: options.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   }))
 
@@ -74,6 +72,8 @@
             {#if item}
               <div
                 data-testid={item.code}
+                aria-posinset={vi.index + 1}
+                aria-setsize={options.length}
                 {...api.getItemProps({ item })}
                 {...normalizeProps.element({
                   style: {

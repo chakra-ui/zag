@@ -138,6 +138,13 @@ export class SizeTracker {
     this.version++
   }
 
+  refreshEstimates(): void {
+    this.fenwick = new FenwickTree(this.count)
+    this.sizes = new Float64Array(this.count)
+    this.initialized = false
+    this.version++
+  }
+
   /**
    * Clear only measured sizes, keep estimates
    */

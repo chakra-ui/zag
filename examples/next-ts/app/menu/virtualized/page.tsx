@@ -6,18 +6,19 @@ import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/menu.css"
 
-const items = Array.from({ length: 1000 }, (_, index) => ({ value: `item-${index}`, label: `Item ${index}` }))
+const items = Array.from({ length: 1000 }, (_, index) => ({
+  value: `item-${index}`,
+  label: `Item ${index}`,
+}))
 
 const collection = menu.collection({ items })
-
-const estimateSize = () => 32
 
 export default function Page() {
   const [selected, setSelected] = useState("-")
 
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -49,12 +50,19 @@ export default function Page() {
               onScroll={virtualizer.handleScroll}
               style={{ maxHeight: 320, overflowY: "auto" }}
             >
-              <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
+              <div
+                style={{
+                  height: virtualizer.getTotalSize(),
+                  position: "relative",
+                }}
+              >
                 {virtualizer.getVirtualItems().map((virtualItem) => {
                   const item = items[virtualItem.index]
                   return (
                     <div
                       key={item.value}
+                      aria-posinset={virtualItem.index + 1}
+                      aria-setsize={items.length}
                       {...api.getItemProps({ value: item.value })}
                       style={virtualizer.getItemStyle(virtualItem)}
                     >

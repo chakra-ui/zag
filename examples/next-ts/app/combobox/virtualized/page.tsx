@@ -9,8 +9,6 @@ import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/combobox.css"
 
-const estimateSize = () => 32
-
 interface Item {
   code: string
   label: string
@@ -23,7 +21,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: options.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -68,7 +66,13 @@ export default function Page() {
       <div {...api.getPositionerProps()}>
         <div data-testid="combobox-content" {...api.getContentProps()}>
           <div {...api.getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+            <div
+              style={{
+                height: virtualizer.getTotalSize(),
+                width: "100%",
+                position: "relative",
+              }}
+            >
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = options[vi.index]
                 // The count syncs before paint; skip rows from the previous one
@@ -77,6 +81,8 @@ export default function Page() {
                   <div
                     data-testid={item.code}
                     key={item.code}
+                    aria-posinset={vi.index + 1}
+                    aria-setsize={options.length}
                     {...api.getItemProps({ item })}
                     style={{
                       ...virtualizer.getItemStyle(vi),

@@ -89,6 +89,29 @@ test.describe("open with keyboard", () => {
     await I.seeItemInViewport("Andorra")
   })
 
+  test("should navigate on page down/up", async () => {
+    await I.clickTrigger()
+    await I.pressKey("Home")
+    await I.seeItemAtIndexIsHighlighted(0)
+
+    await I.pressKey("PageDown")
+    await I.seeItemAtIndexIsHighlighted(10)
+
+    await I.pressKey("PageDown")
+    await I.seeItemAtIndexIsHighlighted(20)
+
+    await I.pressKey("PageUp")
+    await I.seeItemAtIndexIsHighlighted(10)
+
+    await I.pressKey("PageUp", 2)
+    await I.seeItemAtIndexIsHighlighted(0)
+
+    await I.pressKey("End")
+    await I.pressKey("PageDown")
+    await I.seeItemIsHighlighted("Zimbabwe")
+    await I.seeItemInViewport("Zimbabwe")
+  })
+
   test("should navigate on typeahead", async () => {
     await I.clickTrigger()
     await I.type("Cy")

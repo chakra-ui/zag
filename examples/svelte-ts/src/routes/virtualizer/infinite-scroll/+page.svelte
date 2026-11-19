@@ -7,8 +7,6 @@
   const PAGE_SIZE = 50
   const ROW_HEIGHT = 56
 
-  const estimateSize = () => ROW_HEIGHT
-
   const allItems = Array.from({ length: TOTAL_ITEMS }, (_, index) => ({
     id: `item-${index}`,
     title: `Issue ${index + 1}`,
@@ -23,7 +21,7 @@
   let scroller: HTMLElement | null = null
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 4,
   }))
 

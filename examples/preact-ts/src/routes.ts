@@ -601,6 +601,7 @@ export const routes: RouteDefinition[] = [
   { path: "/virtualizer/perf-window", component: lazy(() => import("./pages/virtualizer/perf-window")) },
   { path: "/virtualizer/scroll-padding", component: lazy(() => import("./pages/virtualizer/scroll-padding")) },
   { path: "/virtualizer/sticky", component: lazy(() => import("./pages/virtualizer/sticky")) },
+  { path: "/virtualizer/table", component: lazy(() => import("./pages/virtualizer/table")) },
   { path: "/virtualizer/window", component: lazy(() => import("./pages/virtualizer/window")) },
   {
     path: "/:component",

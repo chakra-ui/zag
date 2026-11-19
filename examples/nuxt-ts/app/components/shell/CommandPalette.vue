@@ -95,7 +95,7 @@ const rowSize = (index: number) => (layout.value.rows[index]?.type === "group" ?
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: layout.value.rows.length,
-  estimatedSize: (index: number) => rowSize(index),
+  estimatedItemSize: (index: number) => rowSize(index),
   observeScrollElementSize: true,
   overscan: 8,
   // The list's vertical padding lives here so scrolled-to rows clear the edges

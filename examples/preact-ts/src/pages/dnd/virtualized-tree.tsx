@@ -10,8 +10,6 @@ import { Toolbar } from "../../components/toolbar"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import styles from "@styles/dnd-virtualized-tree.module.css"
 
-const estimateSize = () => ROW_HEIGHT
-
 interface Node {
   id: string
   name: string
@@ -258,7 +256,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: visibleNodeCount,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 8,
   })
 

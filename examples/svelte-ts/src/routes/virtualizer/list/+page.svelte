@@ -2,8 +2,6 @@
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import { normalizeProps } from "@zag-js/svelte"
 
-  const estimateSize = () => 142
-
   const generateItems = (count: number) =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -17,7 +15,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    estimatedItemSize: 142,
     overscan: 5,
     gap: 0,
     paddingStart: 0,

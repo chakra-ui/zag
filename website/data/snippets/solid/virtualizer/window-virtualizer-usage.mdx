@@ -4,7 +4,7 @@ import { Index } from "solid-js"
 function WindowList(props: { items: { id: string; label: string }[] }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: props.items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 8,
     initialRect: { width: 1024, height: 720 },
     indexToKey: (index) => props.items[index].id,

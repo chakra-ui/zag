@@ -13,7 +13,7 @@ export default function Page() {
   const [smoothScroll, setSmoothScroll] = createSignal(true)
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => 64,
+    estimatedItemSize: 64,
     overscan: 6,
   })
 

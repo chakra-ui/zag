@@ -202,14 +202,14 @@ interface PaletteListProps {
 function PaletteList(props: PaletteListProps) {
   const { api, items, currentValue, scrollToIndexRef } = props
   const { rows, itemRowIndex } = useMemo(() => getRows(items), [items])
-  const estimatedSize = useCallback(
+  const estimatedItemSize = useCallback(
     (index: number) => (rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT),
     [rows],
   )
 
   const { virtualizer, ref } = useListVirtualizer({
     count: rows.length,
-    estimatedSize,
+    estimatedItemSize,
     observeScrollElementSize: true,
     overscan: 8,
     // The list's vertical padding lives here so scrolled-to rows clear the edges

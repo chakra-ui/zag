@@ -7,8 +7,6 @@
   import styles from "@styles/dnd-virtualized-list.module.css"
   import { GripVerticalIcon } from "lucide-svelte"
 
-  const estimateSize = () => 44
-
   const initialItems = Array.from({ length: 500 }, (_, index) => ({
     id: String(index + 1),
     label: `Item ${index + 1}`,
@@ -20,7 +18,7 @@
 
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 44,
     overscan: 8,
   }))
 

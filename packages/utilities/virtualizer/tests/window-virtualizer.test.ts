@@ -53,7 +53,7 @@ describe("WindowVirtualizer", () => {
         () =>
           new WindowVirtualizer({
             count: 10,
-            estimatedSize: () => 10,
+            estimatedItemSize: () => 10,
             initialRect: { width: 320, height: 120 },
           }),
       ).not.toThrow()
@@ -69,7 +69,7 @@ describe("WindowVirtualizer", () => {
   test("returns virtual items before init when initialRect is provided", () => {
     const virtualizer = new WindowVirtualizer({
       count: 10,
-      estimatedSize: () => 10,
+      estimatedItemSize: () => 10,
       overscan: 0,
       initialRect: { width: 320, height: 30 },
     })
@@ -80,14 +80,17 @@ describe("WindowVirtualizer", () => {
   test("applies initialMeasurements seeds before init", () => {
     const virtualizer = new WindowVirtualizer({
       count: 5,
-      estimatedSize: () => 10,
+      estimatedItemSize: () => 10,
       overscan: 0,
       initialRect: { width: 320, height: 25 },
       initialMeasurements: { 0: 40, 1: 30 },
     })
 
     expect(virtualizer.getTotalSize()).toBe(100)
-    expect(virtualizer.getVisibleRange()).toEqual({ startIndex: 0, endIndex: 0 })
+    expect(virtualizer.getVisibleRange()).toEqual({
+      startIndex: 0,
+      endIndex: 0,
+    })
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0])
   })
 
@@ -97,7 +100,7 @@ describe("WindowVirtualizer", () => {
     const rootElement = createRootElement(-60)
     const virtualizer = new WindowVirtualizer({
       count: 100,
-      estimatedSize: () => 20,
+      estimatedItemSize: () => 20,
       initialRect: { width: 320, height: 200 },
       scrollingElement: rootElement,
       getWindow: () => mockWindow as unknown as Window & typeof globalThis,
@@ -117,7 +120,7 @@ describe("WindowVirtualizer", () => {
     const rootElement = createRootElement()
     const virtualizer = new WindowVirtualizer({
       count: 10,
-      estimatedSize: () => 10,
+      estimatedItemSize: () => 10,
       initialRect: { width: 320, height: 120 },
       scrollingElement: rootElement,
       getWindow: () => mockWindow as unknown as Window & typeof globalThis,

@@ -312,6 +312,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
                 event.preventDefault()
               }
             },
+            PageDown(event) {
+              if (isModifierKey || !open) return
+              send({ type: "INPUT.PAGE_DOWN", keypress })
+              event.preventDefault()
+            },
+            PageUp(event) {
+              if (isModifierKey || !open) return
+              send({ type: "INPUT.PAGE_UP", keypress })
+              event.preventDefault()
+            },
             Enter(event) {
               send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 

@@ -10,7 +10,6 @@
   import "@styles/tree-view.css"
 
   const ROW_HEIGHT = 32
-  const estimateSize = () => ROW_HEIGHT
 
   interface Node {
     id: string
@@ -55,7 +54,7 @@
 
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: visibleNodes.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 10,
   }))
 </script>

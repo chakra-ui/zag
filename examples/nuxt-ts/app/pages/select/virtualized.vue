@@ -5,8 +5,6 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronsUpDownIcon } from "lucide-vue-next"
 import "@styles/select.css"
 
-const estimateSize = () => 32
-
 const collection = select.collection({
   items: selectData,
   itemToString: (item) => item.label,
@@ -15,7 +13,7 @@ const collection = select.collection({
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: selectData.length,
-  estimatedSize: estimateSize,
+  itemSize: 32,
   observeScrollElementSize: true,
 }))
 
@@ -54,10 +52,18 @@ const rows = computed(() =>
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-bind="api.getListProps()" :ref="(el) => init(el as HTMLElement)" @scroll="virtualizer.handleScroll">
-              <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+              <div
+                :style="{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }"
+              >
                 <div
                   v-for="{ virtualItem, item } in rows"
                   :key="item.value"
+                  :aria-posinset="virtualItem.index + 1"
+                  :aria-setsize="selectData.length"
                   v-bind="api.getItemProps({ item })"
                   :style="virtualizer.getItemStyle(virtualItem)"
                 >

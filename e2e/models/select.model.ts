@@ -152,6 +152,10 @@ export class SelectModel extends Model {
     await expect(item).toHaveAttribute("data-highlighted", "")
   }
 
+  seeItemAtIndexIsHighlighted = async (index: number) => {
+    await expect(this.page.locator("[data-select-item]").nth(index)).toHaveAttribute("data-highlighted", "")
+  }
+
   dontSeeHighlightedItem = async () => {
     await expect(this.highlightedItem).not.toBeVisible()
   }

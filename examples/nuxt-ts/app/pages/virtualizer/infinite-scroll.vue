@@ -20,7 +20,7 @@ const items = computed(() => allItems.slice(0, loadedCount.value))
 let scroller: HTMLElement | null = null
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: items.value.length,
-  estimatedSize: () => ROW_HEIGHT,
+  itemSize: ROW_HEIGHT,
   overscan: 4,
 }))
 const setScroller = (el: unknown) => {

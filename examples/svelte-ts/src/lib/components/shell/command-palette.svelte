@@ -106,7 +106,7 @@
 
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: layout.rows.length,
-    estimatedSize: rowSize,
+    estimatedItemSize: rowSize,
     observeScrollElementSize: true,
     overscan: 8,
     // The list's vertical padding lives here so scrolled-to rows clear the edges

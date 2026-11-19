@@ -117,6 +117,27 @@ export function getAdjacentValue(
   return dom.getItemValue(items[index + step])
 }
 
+/** The enabled value `step` items away from `value`, clamped to the edges. */
+export function getPageValue(
+  scope: Scope,
+  triggerValue: string | null,
+  collection: ItemList,
+  value: string | null,
+  step: number,
+) {
+  const edge = step > 0 ? "first" : "last"
+  if (collection) {
+    if (!collection.has(value)) return getEdgeValue(scope, triggerValue, collection, edge)
+    return step > 0
+      ? (collection.getNextValue(value, step, true) ?? collection.lastValue)
+      : (collection.getPreviousValue(value, -step, true) ?? collection.firstValue)
+  }
+  const items = dom.getElements(scope, triggerValue)
+  const index = items.findIndex((el) => dom.getItemValue(el) === value)
+  if (index === -1) return getEdgeValue(scope, triggerValue, collection, edge)
+  return dom.getItemValue(items[Math.min(Math.max(index + step, 0), items.length - 1)])
+}
+
 export function hasItemValue(scope: Scope, triggerValue: string | null, collection: ItemList, value: string | null) {
   if (value == null) return false
   if (collection) return collection.has(value)

@@ -212,11 +212,11 @@ interface PaletteListProps {
 /** Virtualized rows (group headers and items); mounts with the dialog content */
 function PaletteList(props: PaletteListProps) {
   const data = createMemo(() => getRows(props.items()))
-  const estimatedSize = (index: number) => (data().rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT)
+  const estimatedItemSize = (index: number) => (data().rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT)
 
   const { virtualizer, ref } = useListVirtualizer({
     count: data().rows.length,
-    estimatedSize,
+    estimatedItemSize,
     observeScrollElementSize: true,
     overscan: 8,
     // The list's vertical padding lives here so scrolled-to rows clear the edges
@@ -227,7 +227,7 @@ function PaletteList(props: PaletteListProps) {
   // untrack: the proxy would subscribe this effect to the virtualizer it updates
   createTrackedEffect(() => {
     const { rows } = data()
-    untrack(() => virtualizer.updateOptions({ count: rows.length, estimatedSize }))
+    untrack(() => virtualizer.updateOptions({ count: rows.length, estimatedItemSize }))
   })
 
   props.setScrollToIndex((itemIndex, immediate) => {

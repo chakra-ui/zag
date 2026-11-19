@@ -86,7 +86,7 @@ export default function Page() {
 
   const { virtualizer, ref: scrollRef } = useListVirtualizer(() => ({
     count: layout().rows.length,
-    estimatedSize: (index) => (layout().rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
+    estimatedItemSize: (index) => (layout().rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
     groups: layout().groups,
     // Keep scrolled-to rows below the sticky header
     scrollPaddingStart: HEADER_SIZE,

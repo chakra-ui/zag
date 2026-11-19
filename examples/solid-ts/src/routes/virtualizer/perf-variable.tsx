@@ -125,7 +125,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: (i) => getItemHeight(i),
+    estimatedItemSize: (i) => getItemHeight(i),
     overscan: 5,
   })
 

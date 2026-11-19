@@ -73,7 +73,12 @@ export class GridVirtualizer {
   private viewportHeight = 0
 
   // Visible range
-  private range: GridRange = { startRow: 0, endRow: -1, startColumn: 0, endColumn: -1 }
+  private range: GridRange = {
+    startRow: 0,
+    endRow: -1,
+    startColumn: 0,
+    endColumn: -1,
+  }
   private lastScrollTop = -1
   private lastScrollLeft = -1
   private lastScrollMargin = -1
@@ -519,7 +524,10 @@ export class GridVirtualizer {
       this.range.endColumn !== newRange.endColumn
     ) {
       this.range = newRange
-      this.options.onRangeChange?.({ range: { startIndex: newRange.startRow, endIndex: newRange.endRow }, reason })
+      this.options.onRangeChange?.({
+        range: { startIndex: newRange.startRow, endIndex: newRange.endRow },
+        reason,
+      })
     }
 
     this.lastScrollTop = this.scrollTop
@@ -893,7 +901,10 @@ export class GridVirtualizer {
   }
 
   getVisibleColumnRange(): Range {
-    return { startIndex: this.range.startColumn, endIndex: this.range.endColumn }
+    return {
+      startIndex: this.range.startColumn,
+      endIndex: this.range.endColumn,
+    }
   }
 
   scrollToCell(
@@ -914,7 +925,11 @@ export class GridVirtualizer {
     const behavior = options.behavior ?? "auto"
 
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({ top: scrollTop, left: rawScrollLeft, behavior })
+      ;(this.scrollElement as any).scrollTo({
+        top: scrollTop,
+        left: rawScrollLeft,
+        behavior,
+      })
       if (behavior !== "smooth") {
         this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
       }
@@ -938,7 +953,9 @@ export class GridVirtualizer {
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
       ;(this.scrollElement as any).scrollTo({ top: scrollTop, behavior })
       if (behavior !== "smooth") {
-        this.handleScroll({ currentTarget: { scrollTop, scrollLeft: this.scrollLeft } })
+        this.handleScroll({
+          currentTarget: { scrollTop, scrollLeft: this.scrollLeft },
+        })
       }
     } else {
       this.scrollTop = scrollTop
@@ -959,7 +976,9 @@ export class GridVirtualizer {
     if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
       ;(this.scrollElement as any).scrollTo({ left: rawScrollLeft, behavior })
       if (behavior !== "smooth") {
-        this.handleScroll({ currentTarget: { scrollTop: this.scrollTop, scrollLeft } })
+        this.handleScroll({
+          currentTarget: { scrollTop: this.scrollTop, scrollLeft },
+        })
       }
     } else {
       this.scrollLeft = scrollLeft

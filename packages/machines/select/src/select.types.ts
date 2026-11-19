@@ -203,6 +203,11 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    */
   loopFocus?: boolean | undefined
   /**
+   * Number of items Page Up / Page Down moves the highlight by
+   * @default 10
+   */
+  pageSize?: number | undefined
+  /**
    * Whether to allow multiple selection
    */
   multiple?: boolean | undefined
@@ -247,7 +252,14 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   popupType?: "listbox" | "dialog" | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "popupType" | "collection" | "defaultValue"
+type PropsWithDefault =
+  | "pageSize"
+  | "positioning"
+  | "closeOnSelect"
+  | "loopFocus"
+  | "popupType"
+  | "collection"
+  | "defaultValue"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"

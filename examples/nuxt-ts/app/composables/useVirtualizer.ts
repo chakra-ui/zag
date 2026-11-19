@@ -2,10 +2,12 @@ import { useSyncExternalStore } from "@zag-js/vue"
 import {
   GridVirtualizer,
   ListVirtualizer,
+  TableVirtualizer,
   WaterfallVirtualizer,
   WindowVirtualizer,
   type GridVirtualizerOptions,
   type ListVirtualizerOptions,
+  type TableVirtualizerOptions,
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
@@ -19,6 +21,24 @@ interface VirtualizerLike<O> {
   updateOptions: (options: Partial<O>) => void
 }
 
+interface HookOptions {
+  /** Set `false` to render every item */
+  enabled?: boolean
+}
+
+const withEnabled = <O extends object>({ enabled = true, ...options }: O & HookOptions): O =>
+  (enabled ? options : { ...options, overscan: Infinity }) as O
+
+interface Measurable {
+  getTotalSize?: () => number
+  getTotalHeight?: () => number
+}
+
+const getRootAttrs = (virtualizer: Measurable, options: { count?: number; rowCount?: number }) => ({
+  empty: (options.count ?? options.rowCount) === 0,
+  totalSize: `${virtualizer.getTotalSize?.() ?? virtualizer.getTotalHeight?.() ?? 0}px`,
+})
+
 // One level deep, so a rebuilt `groups` array isn't a change
 const isEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true
@@ -30,27 +50,25 @@ const isEqual = (a: unknown, b: unknown): boolean => {
 
 function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   create: (options: O) => V,
-  options: MaybeRefOrGetter<O>,
+  options: MaybeRefOrGetter<O & HookOptions>,
 ) {
-  let latest = toValue(options)
+  const read = () => withEnabled(toValue(options))
+  let latest = read()
   const inner = create(latest)
   const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
   // Syncs changed options whenever the getter's dependencies change
-  watch(
-    () => toValue(options),
-    (next) => {
-      const changed: Partial<O> = {}
-      let dirty = false
-      for (const key in next) {
-        if (isEqual(next[key], latest[key])) continue
-        changed[key] = next[key]
-        dirty = true
-      }
-      latest = next
-      if (dirty) inner.updateOptions(changed)
-    },
-  )
+  watch(read, (next) => {
+    const changed: Partial<O> = {}
+    let dirty = false
+    for (const key in next) {
+      if (isEqual(next[key], latest[key])) continue
+      changed[key] = next[key]
+      dirty = true
+    }
+    latest = next
+    if (dirty) inner.updateOptions(changed)
+  })
 
   onUnmounted(() => inner.destroy())
 
@@ -72,21 +90,30 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
     inner.init(element)
   }
 
-  return { virtualizer, init }
+  const getRootProps = () => {
+    const { empty, totalSize } = getRootAttrs(virtualizer as Measurable, latest)
+    return { "data-empty": empty ? "" : undefined, style: { "--total-size": totalSize } }
+  }
+
+  return { virtualizer, init, getRootProps }
 }
 
-export function useListVirtualizer(options: MaybeRefOrGetter<ListVirtualizerOptions>) {
+export function useListVirtualizer(options: MaybeRefOrGetter<ListVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new ListVirtualizer(o), options)
 }
 
-export function useGridVirtualizer(options: MaybeRefOrGetter<GridVirtualizerOptions>) {
+export function useGridVirtualizer(options: MaybeRefOrGetter<GridVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new GridVirtualizer(o), options)
 }
 
-export function useWindowVirtualizer(options: MaybeRefOrGetter<WindowVirtualizerOptions>) {
+export function useWindowVirtualizer(options: MaybeRefOrGetter<WindowVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WindowVirtualizer(o), options)
 }
 
-export function useWaterfallVirtualizer(options: MaybeRefOrGetter<WaterfallVirtualizerOptions>) {
+export function useWaterfallVirtualizer(options: MaybeRefOrGetter<WaterfallVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WaterfallVirtualizer(o), options)
+}
+
+export function useTableVirtualizer(options: MaybeRefOrGetter<TableVirtualizerOptions & HookOptions>) {
+  return useVirtualizer((o) => new TableVirtualizer(o), options)
 }

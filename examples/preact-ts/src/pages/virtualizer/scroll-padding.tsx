@@ -1,8 +1,6 @@
 import { useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
-const estimateSize = () => ITEM_HEIGHT
-
 const ITEM_COUNT = 1000
 const ITEM_HEIGHT = 40
 
@@ -17,7 +15,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: estimateSize,
+    itemSize: ITEM_HEIGHT,
     scrollPaddingStart,
     scrollPaddingEnd,
     overscan: 5,

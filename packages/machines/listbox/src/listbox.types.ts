@@ -98,6 +98,11 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem> extends
    */
   loopFocus?: boolean | undefined
   /**
+   * Number of items Page Up / Page Down moves the highlight by
+   * @default 10
+   */
+  pageSize?: number | undefined
+  /**
    * How multiple selection should behave in the listbox.
    *
    * - `single`: The user can select a single item.
@@ -129,7 +134,7 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem> extends
   onSelect?: ((details: SelectionDetails) => void) | undefined
 }
 
-type PropsWithDefault = "collection" | "selectionMode"
+type PropsWithDefault = "pageSize" | "collection" | "selectionMode"
 
 export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"

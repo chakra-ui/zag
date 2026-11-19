@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 
-const estimateSize = () => 40
-
 const ITEM_COUNT = 1000
 
 const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
@@ -15,7 +13,7 @@ const paddingEnd = ref(40)
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: ITEM_COUNT,
-  estimatedSize: estimateSize,
+  itemSize: 40,
   paddingStart: paddingStart.value,
   paddingEnd: paddingEnd.value,
   overscan: 5,

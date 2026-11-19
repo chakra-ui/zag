@@ -19,6 +19,7 @@ export const props = createProps<ListboxProps>()([
   "onSelect",
   "onValueChange",
   "orientation",
+  "pageSize",
   "scrollToIndexFn",
   "selectionMode",
   "selectOnHighlight",

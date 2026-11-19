@@ -157,6 +157,22 @@ test.describe("combobox", () => {
     await I.seeItemIsHighlighted("Tunisia")
   })
 
+  test("[keyboard / open] on page down and up, move highlight by a page", async () => {
+    await I.clickTrigger()
+    await I.pressKey("Home")
+    await I.seeItemAtIndexIsHighlighted(0)
+
+    await I.pressKey("PageDown")
+    await I.seeItemAtIndexIsHighlighted(10)
+
+    await I.pressKey("PageUp")
+    await I.seeItemAtIndexIsHighlighted(0)
+
+    await I.pressKey("End")
+    await I.pressKey("PageDown")
+    await I.seeItemIsHighlighted("Tunisia")
+  })
+
   test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
     await I.clickTrigger()
     await I.type("an")

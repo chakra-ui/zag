@@ -7,8 +7,6 @@ import { XIcon } from "lucide-vue-next"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 import "@styles/combobox.css"
 
-const estimateSize = () => 32
-
 interface Item {
   code: string
   label: string
@@ -20,7 +18,7 @@ const options = ref(comboboxData)
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: options.value.length,
-  estimatedSize: estimateSize,
+  itemSize: 32,
   observeScrollElementSize: true,
 }))
 
@@ -70,12 +68,20 @@ const api = computed(() => combobox.connect(service, normalizeProps))
     <div v-bind="api.getPositionerProps()">
       <div data-testid="combobox-content" v-bind="api.getContentProps()">
         <div v-bind="api.getListProps()" :ref="(el) => init(el as HTMLElement)" @scroll="virtualizer.handleScroll">
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div
+            :style="{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }"
+          >
             <template v-for="vi in virtualizer.getVirtualItems()" :key="options[vi.index]?.code ?? vi.index">
               <!-- The count syncs before paint; skip rows from the previous one -->
               <div
                 v-if="options[vi.index]"
                 :data-testid="options[vi.index]!.code"
+                :aria-posinset="vi.index + 1"
+                :aria-setsize="options.length"
                 v-bind="api.getItemProps({ item: options[vi.index]! })"
                 :style="{
                   ...virtualizer.getItemStyle(vi),

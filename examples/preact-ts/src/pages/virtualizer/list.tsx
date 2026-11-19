@@ -1,8 +1,6 @@
 import { useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
-const estimateSize = () => 142
-
 const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -16,7 +14,7 @@ export default function Page() {
   const [isSmooth, setIsSmooth] = useState(true)
   const { virtualizer, ref: setScrollElementRef } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    estimatedItemSize: 142,
     overscan: 5,
     gap: 0,
     paddingStart: 0,

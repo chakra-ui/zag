@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useWindowVirtualizer } from "~/composables/useVirtualizer"
 
-const estimateSize = () => 142
-
 const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -14,7 +12,7 @@ const items = generateItems(10000)
 
 const { virtualizer, init } = useWindowVirtualizer(() => ({
   count: items.length,
-  estimatedSize: estimateSize,
+  estimatedItemSize: 142,
   overscan: 8,
   gap: 0,
   paddingStart: 0,

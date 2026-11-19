@@ -15,7 +15,6 @@ const allItems = Array.from({ length: TOTAL_ITEMS }, (_, index) => ({
   status: index % 3 === 0 ? "Triaged" : index % 3 === 1 ? "In progress" : "Backlog",
 }))
 
-const estimateSize = () => ROW_HEIGHT
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export default function Page() {
@@ -25,7 +24,7 @@ export default function Page() {
   const scrollerRef = useRef<HTMLDivElement | null>(null)
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 4,
   })
   const setScroller = useCallback(

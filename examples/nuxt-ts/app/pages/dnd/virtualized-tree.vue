@@ -13,7 +13,6 @@ interface Node {
 }
 
 const ROW_HEIGHT = 32
-const estimateSize = () => ROW_HEIGHT
 
 function createRoot(): Node {
   return {
@@ -156,7 +155,7 @@ const visibleNodes = computed(() => api.value.getVisibleNodes())
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: visibleNodes.value.length,
-  estimatedSize: estimateSize,
+  itemSize: ROW_HEIGHT,
   overscan: 8,
 }))
 

@@ -9,13 +9,11 @@
 
   const collection = menu.collection({ items })
 
-  const estimateSize = () => 32
-
   let selected = $state("-")
 
   const { virtualizer, init } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -52,6 +50,8 @@
             {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].value)}
               {@const item = items[virtualItem.index]}
               <div
+                aria-posinset={virtualItem.index + 1}
+                aria-setsize={items.length}
                 {...mergeProps(api.getItemProps({ value: item.value }), {
                   style: virtualizer.getItemStyle(virtualItem),
                 })}

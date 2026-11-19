@@ -2,7 +2,7 @@
 function List({ items }: { items: { id: string; label: string }[] }) {
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 5,
     indexToKey: (index) => items[index].id,
   })

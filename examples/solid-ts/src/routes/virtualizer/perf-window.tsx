@@ -104,7 +104,7 @@ function MetricsDisplay(props: { label: string; metrics: Metrics | null }) {
 function ZagWindowVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => ITEM_HEIGHT,
+    estimatedItemSize: ITEM_HEIGHT,
     overscan: 5,
     initialRect: { width: window.innerWidth, height: window.innerHeight },
   })

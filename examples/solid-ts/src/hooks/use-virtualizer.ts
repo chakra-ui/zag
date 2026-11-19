@@ -2,10 +2,12 @@ import { useSyncExternalStore } from "@zag-js/solid"
 import {
   GridVirtualizer,
   ListVirtualizer,
+  TableVirtualizer,
   WaterfallVirtualizer,
   WindowVirtualizer,
   type GridVirtualizerOptions,
   type ListVirtualizerOptions,
+  type TableVirtualizerOptions,
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
@@ -21,6 +23,24 @@ interface VirtualizerLike<O> {
 
 type MaybeAccessor<T> = T | Accessor<T>
 
+interface HookOptions {
+  /** Set `false` to render every item */
+  enabled?: boolean
+}
+
+const withEnabled = <O extends object>({ enabled = true, ...options }: O & HookOptions): O =>
+  (enabled ? options : { ...options, overscan: Infinity }) as O
+
+interface Measurable {
+  getTotalSize?: () => number
+  getTotalHeight?: () => number
+}
+
+const getRootAttrs = (virtualizer: Measurable, options: { count?: number; rowCount?: number }) => ({
+  empty: (options.count ?? options.rowCount) === 0,
+  totalSize: `${virtualizer.getTotalSize?.() ?? virtualizer.getTotalHeight?.() ?? 0}px`,
+})
+
 // One level deep, so a rebuilt `groups` array isn't a change
 const isEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true
@@ -32,9 +52,9 @@ const isEqual = (a: unknown, b: unknown): boolean => {
 
 function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   create: (options: O) => V,
-  options: MaybeAccessor<O>,
+  options: MaybeAccessor<O & HookOptions>,
 ) {
-  const read = () => (typeof options === "function" ? (options as Accessor<O>)() : options)
+  const read = () => withEnabled(typeof options === "function" ? (options as Accessor<O & HookOptions>)() : options)
   let latest = untrack(read)
   const inner = create(latest)
   const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
@@ -80,21 +100,30 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
     if (mounted && el) inner.init(el)
   }
 
-  return { virtualizer, ref }
+  const getRootProps = () => {
+    const { empty, totalSize } = getRootAttrs(virtualizer as Measurable, read())
+    return { "data-empty": empty ? "" : undefined, style: { "--total-size": totalSize } }
+  }
+
+  return { virtualizer, ref, getRootProps }
 }
 
-export function useListVirtualizer(options: MaybeAccessor<ListVirtualizerOptions>) {
+export function useListVirtualizer(options: MaybeAccessor<ListVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new ListVirtualizer(o), options)
 }
 
-export function useGridVirtualizer(options: MaybeAccessor<GridVirtualizerOptions>) {
+export function useGridVirtualizer(options: MaybeAccessor<GridVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new GridVirtualizer(o), options)
 }
 
-export function useWindowVirtualizer(options: MaybeAccessor<WindowVirtualizerOptions>) {
+export function useWindowVirtualizer(options: MaybeAccessor<WindowVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WindowVirtualizer(o), options)
 }
 
-export function useWaterfallVirtualizer(options: MaybeAccessor<WaterfallVirtualizerOptions>) {
+export function useWaterfallVirtualizer(options: MaybeAccessor<WaterfallVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WaterfallVirtualizer(o), options)
+}
+
+export function useTableVirtualizer(options: MaybeAccessor<TableVirtualizerOptions & HookOptions>) {
+  return useVirtualizer((o) => new TableVirtualizer(o), options)
 }

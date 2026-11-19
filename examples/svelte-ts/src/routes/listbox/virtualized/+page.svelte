@@ -1,8 +1,6 @@
 <script module lang="ts">
   import * as listbox from "@zag-js/listbox"
 
-  const estimateSize = () => 28
-
   const items = new Array(10000).fill(0).map((_, index) => ({
     label: `Item ${index}`,
     value: `item-${index}`,
@@ -23,7 +21,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     overscan: 12,
   })
 

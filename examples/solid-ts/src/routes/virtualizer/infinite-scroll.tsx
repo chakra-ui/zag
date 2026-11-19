@@ -22,7 +22,7 @@ export default function Page() {
   let scroller: HTMLDivElement | undefined
   const { virtualizer, ref } = useListVirtualizer(() => ({
     count: items().length,
-    estimatedSize: () => ROW_HEIGHT,
+    itemSize: ROW_HEIGHT,
     overscan: 4,
   }))
 

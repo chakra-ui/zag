@@ -5,18 +5,19 @@ import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/menu.css"
 
-const items = Array.from({ length: 1000 }, (_, index) => ({ value: `item-${index}`, label: `Item ${index}` }))
+const items = Array.from({ length: 1000 }, (_, index) => ({
+  value: `item-${index}`,
+  label: `Item ${index}`,
+}))
 
 const collection = menu.collection({ items })
-
-const estimateSize = () => 32
 
 export default function Page() {
   const [selected, setSelected] = createSignal("-")
 
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -48,12 +49,19 @@ export default function Page() {
               onScroll={virtualizer.handleScroll}
               style={{ "max-height": "320px", "overflow-y": "auto" }}
             >
-              <div style={{ height: `${virtualizer.getTotalSize()}px`, position: "relative" }}>
+              <div
+                style={{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  position: "relative",
+                }}
+              >
                 <For keyed={false} each={virtualizer.getVirtualItems()}>
                   {(virtualItem) => {
                     const item = () => items[virtualItem().index]
                     return (
                       <div
+                        aria-posinset={virtualItem().index + 1}
+                        aria-setsize={items.length}
                         {...api().getItemProps({ value: item().value })}
                         style={virtualizer.getItemStyle(virtualItem())}
                       >

@@ -31,7 +31,7 @@ const collection = gridlist.collection<Row>({
 export default function Page() {
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: () => ROW_HEIGHT,
+    itemSize: ROW_HEIGHT,
     overscan: 8,
   })
 

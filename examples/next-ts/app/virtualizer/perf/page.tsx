@@ -1,10 +1,10 @@
 "use client"
 
+/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- Scroll regions need keyboard scrolling. */
+
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { useCallback, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
-
-const zagEstimateSize = () => ITEM_HEIGHT
 
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
@@ -23,7 +23,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: zagEstimateSize,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
   })
 
@@ -50,6 +50,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       <div
         ref={setRef}
         onScroll={virtualizer.handleScroll}
+        role="region"
         tabIndex={0}
         aria-label="Zag virtualizer performance list"
         style={{
@@ -59,16 +60,11 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
           borderRadius: 8,
         }}
       >
-        <div
-          style={{
-            height: virtualizer.getTotalSize(),
-            width: "100%",
-            position: "relative",
-          }}
-        >
+        <div style={virtualizer.getContentStyle()}>
           {virtualItems.map((vi) => (
             <div
-              key={vi.index}
+              key={vi.key}
+              data-index={vi.index}
               style={{
                 ...virtualizer.getItemStyle(vi),
                 padding: "8px 12px",
@@ -114,6 +110,7 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
       />
       <div
         ref={scrollRef}
+        role="region"
         tabIndex={0}
         aria-label="TanStack virtualizer performance list"
         style={{
@@ -265,12 +262,26 @@ export default function Page() {
         run the benchmark.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
         <ZagVirtualizer onMetrics={setZagMetrics} />
         <TanStackVirtualizer onMetrics={setTanstackMetrics} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
         <MetricsDisplay label="@zag-js/virtualizer" metrics={zagMetrics} />
         <MetricsDisplay label="@tanstack/react-virtual" metrics={tanstackMetrics} />
       </div>

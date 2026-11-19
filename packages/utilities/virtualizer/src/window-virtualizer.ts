@@ -118,7 +118,9 @@ export class WindowVirtualizer extends ListVirtualizer {
     // Resize only — scroll is attached in `init()` once we know the scroll root (window vs overflow parent).
     const win = this.resolveWindow()
     if (typeof win !== "undefined") {
-      win.addEventListener("resize", this.windowResizeHandler, { passive: true })
+      win.addEventListener("resize", this.windowResizeHandler, {
+        passive: true,
+      })
     }
   }
 
@@ -132,7 +134,9 @@ export class WindowVirtualizer extends ListVirtualizer {
     this.scrollListenerTarget = target
 
     if (this.windowScrollHandler && target) {
-      target.addEventListener("scroll", this.windowScrollHandler, { passive: true })
+      target.addEventListener("scroll", this.windowScrollHandler, {
+        passive: true,
+      })
     }
 
     this.observeScrollTarget(target)

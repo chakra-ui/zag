@@ -8,8 +8,6 @@
   const ROW_HEIGHT = 44
   const ROW_COUNT = 10000
 
-  const estimateSize = () => ROW_HEIGHT
-
   const items: Row[] = Array.from({ length: ROW_COUNT }, (_, i) => ({
     id: `row-${i}`,
     index: i,
@@ -34,7 +32,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 8,
   })
 

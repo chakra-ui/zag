@@ -578,6 +578,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               event.preventDefault()
               send({ type: "CONTENT.END" })
             },
+            PageDown(event) {
+              event.preventDefault()
+              send({ type: "CONTENT.PAGE_DOWN" })
+            },
+            PageUp(event) {
+              event.preventDefault()
+              send({ type: "CONTENT.PAGE_UP" })
+            },
             Enter(event) {
               event.preventDefault()
               send({ type: "ITEM.CLICK", src: "item-select" })

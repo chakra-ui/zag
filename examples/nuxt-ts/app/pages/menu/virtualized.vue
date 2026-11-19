@@ -3,7 +3,10 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/menu.css"
 
-const items = Array.from({ length: 1000 }, (_, index) => ({ value: `item-${index}`, label: `Item ${index}` }))
+const items = Array.from({ length: 1000 }, (_, index) => ({
+  value: `item-${index}`,
+  label: `Item ${index}`,
+}))
 
 const collection = menu.collection({ items })
 
@@ -14,13 +17,11 @@ const getRows = () =>
     return item ? [{ virtualItem, item }] : []
   })
 
-const estimateSize = () => 32
-
 const selected = ref("-")
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: items.length,
-  estimatedSize: estimateSize,
+  itemSize: 32,
   observeScrollElementSize: true,
 }))
 
@@ -41,9 +42,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
 <template>
   <main>
     <button v-bind="api.getTriggerProps()">Pick an item <span v-bind="api.getIndicatorProps()">▾</span></button>
-    <p>
-      Selected: <output aria-label="Selected item">{{ selected }}</output>
-    </p>
+    <p>Selected: <output aria-label="Selected item">{{ selected }}</output></p>
     <Teleport v-if="api.open" to="#teleports">
       <div v-bind="api.getPositionerProps()">
         <div
@@ -52,10 +51,17 @@ const api = computed(() => menu.connect(service, normalizeProps))
           @scroll="virtualizer.handleScroll"
           style="max-height: 320px; overflow-y: auto"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }">
+          <div
+            :style="{
+              height: `${virtualizer.getTotalSize()}px`,
+              position: 'relative',
+            }"
+          >
             <div
               v-for="{ virtualItem, item } in getRows()"
               :key="item.value"
+              :aria-posinset="virtualItem.index + 1"
+              :aria-setsize="items.length"
               v-bind="api.getItemProps({ value: item.value })"
               :style="virtualizer.getItemStyle(virtualItem)"
             >

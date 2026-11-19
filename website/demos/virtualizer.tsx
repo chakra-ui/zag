@@ -15,7 +15,7 @@ function useListVirtualizer() {
     () =>
       new ListVirtualizer({
         count: ITEM_COUNT,
-        estimatedSize: () => ITEM_SIZE,
+        itemSize: ITEM_SIZE,
         overscan: 6,
         indexToKey: (index) => items[index].id,
       }),

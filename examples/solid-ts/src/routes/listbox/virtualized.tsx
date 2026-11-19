@@ -19,7 +19,7 @@ interface Item {
 export default function Page() {
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: () => 28,
+    itemSize: 32,
     overscan: 12,
   })
 

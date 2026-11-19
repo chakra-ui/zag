@@ -19,7 +19,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: initialItems.length,
-    estimatedSize: () => 44,
+    itemSize: 44,
     overscan: 8,
   })
 

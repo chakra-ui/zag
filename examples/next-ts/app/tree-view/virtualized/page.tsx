@@ -11,8 +11,6 @@ import { Toolbar } from "@/components/toolbar"
 import { useControls } from "@/hooks/use-controls"
 import "@styles/tree-view.css"
 
-const estimateSize = () => ROW_HEIGHT
-
 interface Node {
   id: string
   name: string
@@ -86,7 +84,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: visibleNodes.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 10,
   })
 

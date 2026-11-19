@@ -39,8 +39,8 @@ Subscribe with `virtualizer.subscribe` and `virtualizer.getSnapshot` (stable
 class fields, so they work with `useSyncExternalStore`).
 
 When `count` (or `rowCount` / `columnCount`) changes, sync it during render.
-`useEffect` is one frame too late. Keep callbacks like `estimatedSize` stable;
-`updateOptions` compares by reference.
+`useEffect` is one frame too late. Keep callbacks like `estimatedItemSize`
+stable; `updateOptions` compares by reference.
 
 ```tsx
 virtualizer.updateOptions({ count: items.length })
@@ -55,12 +55,57 @@ Use `ListVirtualizer` for feeds, logs, and chat timelines.
 <CodeSnippet id="virtualizer/list-virtualizer-usage.mdx" />
 
 `getVirtualItems()` returns `index`, `key`, `start`, `end`, `size`, `isVisible`,
-and `measureElement`. Horizontal lists use `orientation: "horizontal"` and
-`dir: "ltr" | "rtl"`.
+`isRetained`, and `measureElement`. Horizontal lists use
+`orientation: "horizontal"` and `dir: "ltr" | "rtl"`.
 
 **Measurement.** Pass `ref={virtualItem.measureElement}` for dynamic rows, or
 `measureItem(index, size)` when you already know the size. Keep estimates close
-to reality. Set `observeScrollElementSize: true` if the scrollport can resize.
+to reality. `estimatedItemSize` accepts a number or a function for per-item
+estimates. Measurements replace either estimate, and a number is refined with
+the average measured size so the scrollbar settles early. Set
+`observeScrollElementSize: true` if the scrollport can resize.
+
+For fixed rows, use `itemSize` instead of `estimatedItemSize` to skip estimation
+and measurement. It sets the exact height, or width for horizontal lists:
+
+```ts
+new ListVirtualizer({ count: 100_000, itemSize: 40 })
+```
+
+If blank rows flash during very fast scrolling, raise `overscan` to render more
+rows beyond the viewport.
+
+**Trailing content.** Attach `measureTrailingElement` to a loading row or
+end-of-list note. Its size is added to the total, and `getTrailingStyle()`
+places it after the last item:
+
+```tsx
+<div
+  ref={virtualizer.measureTrailingElement}
+  style={virtualizer.getTrailingStyle()}
+>
+  Loading more…
+</div>
+```
+
+**Loading more.** `onEndReached` fires once each time the rendered range reaches
+the end, and re-arms when it moves away or `count` grows. `endReachedThreshold`
+fires it that many items earlier:
+
+```ts
+new ListVirtualizer({
+  count: items.length,
+  estimatedItemSize: 48,
+  onEndReached: loadNextPage,
+  endReachedThreshold: 10,
+})
+```
+
+**Geometry.** `getItemMetrics(index)` returns `{ start, size, end }` for any
+item, mounted or not. `getIndexAtOffset(offset)` maps a scroll offset back to an
+index. Call `remeasure()` after a change that resizes items without changing the
+list, like a breakpoint or font swap. It discards measured sizes and keeps the
+scroll position.
 
 **Scrolling.**
 
@@ -83,10 +128,11 @@ approaches.
 ```ts
 const virtualizer = new ListVirtualizer({
   count: items.length,
-  estimatedSize: () => 32,
+  estimatedItemSize: 32,
+  estimatedGroupHeaderSize: 28,
   groups: [
-    { id: "a", startIndex: 0, headerSize: 32 },
-    { id: "b", startIndex: 50, headerSize: 32 },
+    { id: "a", startIndex: 0 },
+    { id: "b", startIndex: 50, headerSize: 40 },
   ],
 })
 
@@ -94,10 +140,93 @@ virtualizer.getStickyGroupHeader()
 // { group, headerSize, translateY, offset }
 ```
 
+Render each header inside its group's first item. `estimatedGroupHeaderSize` (a
+number, or a function of the group and its index) is added to that item's
+estimate unless the group sets `headerSize`, and those items don't skew the
+average estimate.
+
 **Prepend / chat.** Provide `indexToKey` and `keyToIndex`, then call
 `prependItems(addedCount)` (or `updateOptions({ count })` with
 `preserveScrollAnchor: true`). Use `shouldAdjustScrollOnSizeChange` when a size
 change above the viewport should keep the user pinned.
+
+## Tables
+
+Use `TableVirtualizer` to virtualize a real `<table>`, so a `<colgroup>`, a
+sticky `<thead>`, and table semantics keep working. It windows rows like
+`ListVirtualizer`, with two spacer bodies reserving the space of rows outside
+the rendered range. The row body is sticky, so rows stay painted while rendering
+catches up.
+
+```tsx
+const virtualizer = new TableVirtualizer({ count: rows.length, estimatedItemSize: 37 })
+
+<div ref={ref} onScroll={virtualizer.handleScroll} style={{ height: 420, overflow: "auto" }}>
+  <table aria-rowcount={rows.length + 1} style={virtualizer.getTableStyle()}>
+    <thead ref={virtualizer.measureHeaderElement}>{/* sticky header cells */}</thead>
+    <tbody aria-hidden>
+      <tr style={virtualizer.getRowSpacerStyle("start")} />
+    </tbody>
+    <tbody style={virtualizer.getBodyStyle()}>
+      {virtualizer.getVirtualItems().map((item) => (
+        <tr
+          key={item.key}
+          ref={item.measureElement}
+          aria-rowindex={item.index + 2}
+          style={virtualizer.getRowStyle(item)}
+        >
+          {/* cells */}
+        </tr>
+      ))}
+    </tbody>
+    <tbody aria-hidden>
+      <tr style={virtualizer.getRowSpacerStyle("end")} />
+    </tbody>
+  </table>
+</div>
+```
+
+`measureHeaderElement` keeps `headerSize` in sync with the `<thead>`, so rows
+scroll clear of it. Set `footerSize` for rows after the table body, like a
+loading row. `getRowStyle` keeps rows held by `retainedIndexes` focusable but
+out of the table layout.
+
+**Wide tables.** Set `columnCount` and `columnSize` (a number or a function of
+the column index) to window columns too. The table switches to
+`table-layout: fixed`, so widths come from the `<col>` elements. Render pinned
+columns, a start spacer, the windowed columns, then an end spacer, in the
+`<colgroup>` and in every row:
+
+```tsx
+const virtualizer = new TableVirtualizer({
+  count: rows.length,
+  estimatedItemSize: 37,
+  columnCount: columns.length,
+  columnSize: (index) => columns[index].width,
+  pinnedColumns: { start: 1 },
+})
+
+const virtualColumns = virtualizer.getVirtualColumns()
+const pinned = virtualColumns.filter((column) => column.pinned === "start")
+const windowed = virtualColumns.filter((column) => !column.pinned)
+
+<tr>
+  {pinned.map((column) => (
+    <th key={column.index} style={virtualizer.getCellStyle(column)}>…</th>
+  ))}
+  <td aria-hidden style={virtualizer.getColumnSpacerStyle("start")} />
+  {windowed.map((column) => (
+    <td key={column.index} aria-colindex={column.index + 1}>…</td>
+  ))}
+  <td aria-hidden style={virtualizer.getColumnSpacerStyle("end")} />
+</tr>
+```
+
+Use `getColumnStyle(column)` and `getColumnSpacerStyle()` for the matching
+`<col>` elements. Pinned columns are always rendered and `getCellStyle` sticks
+them to their edge; give pinned header cells a higher `z-index`.
+`scrollToColumn(index, { align })` reveals a column clear of the pinned ones.
+Column sizes must be known up front; update `columnSize` to resize a column.
 
 ## Grid virtualizer
 
@@ -130,7 +259,7 @@ Seed the first paint to avoid hydration jumps:
 ```ts
 new ListVirtualizer({
   count: items.length,
-  estimatedSize: () => 56,
+  estimatedItemSize: 56,
   initialRect: { width: 1024, height: 720 },
   initialOffset: 0,
   initialMeasurements: cachedMeasurements,
@@ -158,6 +287,18 @@ const service = useMachine(combobox.machine, {
 Put `ref` and `onScroll={virtualizer.handleScroll}` on `getListProps()`. Spread
 `getItemProps({ item })` onto each row and merge `getItemStyle(virtualItem)`.
 Same pattern for select, listbox, menu, and tree view.
+
+Use `retainedIndexes` to keep focused items and `aria-activedescendant` targets
+mounted outside the viewport without scrolling:
+
+```ts
+virtualizer.updateOptions({ retainedIndexes: [highlightedIndex] })
+```
+
+Works with list, window, and waterfall virtualizers, including custom
+`rangeExtractor` functions. Keep the set small, update indexes after filtering
+or reordering, and pass `[]` to release items. Use `scrollToIndex` to reveal
+them.
 
 ## Pitfalls
 

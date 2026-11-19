@@ -2,11 +2,9 @@
 
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { useId } from "react"
+import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/listbox.css"
-
-const estimateSize = () => 28
 
 const items = new Array(10000).fill(0).map((_, index) => ({
   label: `Item ${index}`,
@@ -21,15 +19,20 @@ interface Item {
 }
 
 export default function Page() {
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     overscan: 12,
+    retainedIndexes: [highlightedIndex],
   })
 
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     collection,
     id: useId(),
+    onHighlightChange(details) {
+      setHighlightedIndex(details.highlightedIndex)
+    },
     scrollToIndexFn(details) {
       virtualizer.scrollToIndex(details.index, { align: "auto" })
     },

@@ -11,8 +11,6 @@ import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
 import { type CSSProperties, type JSX, useId, useMemo, useState } from "react"
 
-const estimateSize = () => ROW_HEIGHT
-
 interface Node {
   id: string
   name: string
@@ -259,7 +257,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: visibleNodeCount,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 8,
   })
 

@@ -2,10 +2,12 @@ import { useSyncExternalStore } from "@zag-js/svelte"
 import {
   GridVirtualizer,
   ListVirtualizer,
+  TableVirtualizer,
   WaterfallVirtualizer,
   WindowVirtualizer,
   type GridVirtualizerOptions,
   type ListVirtualizerOptions,
+  type TableVirtualizerOptions,
   type WaterfallVirtualizerOptions,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
@@ -23,6 +25,24 @@ type MaybeGetter<O> = O | (() => O)
 
 const resolve = <O>(options: MaybeGetter<O>): O => (typeof options === "function" ? (options as () => O)() : options)
 
+interface HookOptions {
+  /** Set `false` to render every item */
+  enabled?: boolean
+}
+
+const withEnabled = <O extends object>({ enabled = true, ...options }: O & HookOptions): O =>
+  (enabled ? options : { ...options, overscan: Infinity }) as O
+
+interface Measurable {
+  getTotalSize?: () => number
+  getTotalHeight?: () => number
+}
+
+const getRootAttrs = (virtualizer: Measurable, options: { count?: number; rowCount?: number }) => ({
+  empty: (options.count ?? options.rowCount) === 0,
+  totalSize: `${virtualizer.getTotalSize?.() ?? virtualizer.getTotalHeight?.() ?? 0}px`,
+})
+
 // One level deep, so a rebuilt `groups` array isn't a change
 const isEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true
@@ -34,15 +54,16 @@ const isEqual = (a: unknown, b: unknown): boolean => {
 
 function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   create: (options: O) => V,
-  options: MaybeGetter<O>,
+  options: MaybeGetter<O & HookOptions>,
 ) {
-  let latest = untrack(() => resolve(options))
+  const read = () => withEnabled(resolve(options))
+  let latest = untrack(read)
   const inner = create(latest)
   const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
 
   // Syncs changed options whenever the getter's dependencies change
   $effect.pre(() => {
-    const next = resolve(options)
+    const next = read()
     untrack(() => {
       const changed: Partial<O> = {}
       let dirty = false
@@ -76,21 +97,30 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
     inner.init(element)
   }
 
-  return { virtualizer, init }
+  const getRootProps = () => {
+    const { empty, totalSize } = getRootAttrs(virtualizer as Measurable, read())
+    return { "data-empty": empty ? "" : undefined, style: `--total-size: ${totalSize}` }
+  }
+
+  return { virtualizer, init, getRootProps }
 }
 
-export function useListVirtualizer(options: MaybeGetter<ListVirtualizerOptions>) {
+export function useListVirtualizer(options: MaybeGetter<ListVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new ListVirtualizer(o), options)
 }
 
-export function useGridVirtualizer(options: MaybeGetter<GridVirtualizerOptions>) {
+export function useGridVirtualizer(options: MaybeGetter<GridVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new GridVirtualizer(o), options)
 }
 
-export function useWindowVirtualizer(options: MaybeGetter<WindowVirtualizerOptions>) {
+export function useWindowVirtualizer(options: MaybeGetter<WindowVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WindowVirtualizer(o), options)
 }
 
-export function useWaterfallVirtualizer(options: MaybeGetter<WaterfallVirtualizerOptions>) {
+export function useWaterfallVirtualizer(options: MaybeGetter<WaterfallVirtualizerOptions & HookOptions>) {
   return useVirtualizer((o) => new WaterfallVirtualizer(o), options)
+}
+
+export function useTableVirtualizer(options: MaybeGetter<TableVirtualizerOptions & HookOptions>) {
+  return useVirtualizer((o) => new TableVirtualizer(o), options)
 }

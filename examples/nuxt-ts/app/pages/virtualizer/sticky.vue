@@ -36,13 +36,13 @@ const COLORS = [
 const getGroupIndex = (index: number) => Math.floor(index / ITEMS_PER_GROUP)
 const getGroupLabel = (index: number) => `Group ${index + 1}`
 const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
-const getItemSize = (index: number) => ITEM_HEIGHT + (isGroupStart(index) ? HEADER_HEIGHT : 0)
 
 const scrollOffset = ref(0)
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: TOTAL_ITEMS,
-  estimatedSize: getItemSize,
+  estimatedItemSize: ITEM_HEIGHT,
+  estimatedGroupHeaderSize: HEADER_HEIGHT,
   groups,
   overscan: 5,
 }))

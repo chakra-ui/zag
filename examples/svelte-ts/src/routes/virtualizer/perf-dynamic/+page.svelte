@@ -23,7 +23,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: getItemHeight,
+    estimatedItemSize: getItemHeight,
     overscan: 5,
   })
 
@@ -41,8 +41,8 @@
   <h1>Variable Heights Perf (Known Sizes)</h1>
   <p style="color: #64748b">
     {ITEM_COUNT.toLocaleString()} items with <strong>known variable heights (25-125px)</strong>. Uses
-    <code>estimatedSize: (i) =&gt; getItemHeight(i)</code> — exact per-item size upfront, no measureElement. Tests pure scroll
-    + range-finding perf with variable-size prefix sums.
+    <code>estimatedItemSize: (i) =&gt; getItemHeight(i)</code> — exact per-item size upfront, no measureElement. Tests pure
+    scroll + range-finding perf with variable-size prefix sums.
   </p>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px">

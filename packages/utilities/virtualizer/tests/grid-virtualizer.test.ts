@@ -181,7 +181,10 @@ describe("GridVirtualizer", () => {
     rows = virtualizer.getVirtualRows()
     expect(rows.map((row) => row.row)).toEqual([3, 4, 5])
     expect(virtualizer.scrollToRow(5)).toEqual({ scrollTop: 30 })
-    expect(virtualizer.scrollToCell(5, 0)).toEqual({ scrollTop: 30, scrollLeft: 0 })
+    expect(virtualizer.scrollToCell(5, 0)).toEqual({
+      scrollTop: 30,
+      scrollLeft: 0,
+    })
   })
 
   test.each([
@@ -312,7 +315,10 @@ describe("GridVirtualizer", () => {
   test("uses measureElement override for zero-sized rows and reset remeasure", () => {
     vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
 
-    const contexts: Array<{ index: number; orientation: "vertical" | "horizontal" }> = []
+    const contexts: Array<{
+      index: number
+      orientation: "vertical" | "horizontal"
+    }> = []
     const virtualizer = new GridVirtualizer({
       rowCount: 3,
       columnCount: 1,
@@ -327,7 +333,10 @@ describe("GridVirtualizer", () => {
     })
 
     const [row] = virtualizer.getVirtualRows()
-    const element = { offsetHeight: 0, dataset: { size: "35" } } as unknown as HTMLElement
+    const element = {
+      offsetHeight: 0,
+      dataset: { size: "35" },
+    } as unknown as HTMLElement
 
     row!.measureRow(element)
     expect(virtualizer.getTotalHeight()).toBe(75)
@@ -340,7 +349,10 @@ describe("GridVirtualizer", () => {
   })
 
   test("reports range change reasons", () => {
-    const changes: Array<{ range: { startIndex: number; endIndex: number }; reason: string }> = []
+    const changes: Array<{
+      range: { startIndex: number; endIndex: number }
+      reason: string
+    }> = []
     const virtualizer = new GridVirtualizer({
       rowCount: 10,
       columnCount: 1,
@@ -354,7 +366,9 @@ describe("GridVirtualizer", () => {
     })
 
     virtualizer.setViewportSize(50, 30)
-    virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+    virtualizer.handleScroll({
+      currentTarget: { scrollTop: 20, scrollLeft: 0 },
+    })
     virtualizer.updateOptions({ rowCount: 3 })
     virtualizer.updateOptions({ overscan: 1 })
 
@@ -376,9 +390,13 @@ describe("GridVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      virtualizer.handleScroll({
+        currentTarget: { scrollTop: 20, scrollLeft: 0 },
+      })
       vi.advanceTimersByTime(50)
-      virtualizer.handleScroll({ currentTarget: { scrollTop: 40, scrollLeft: 0 } })
+      virtualizer.handleScroll({
+        currentTarget: { scrollTop: 40, scrollLeft: 0 },
+      })
       vi.advanceTimersByTime(99)
 
       expect(onScrollEnd).not.toHaveBeenCalled()
@@ -411,7 +429,9 @@ describe("GridVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({ currentTarget: { scrollTop: 20, scrollLeft: 0 } })
+      virtualizer.handleScroll({
+        currentTarget: { scrollTop: 20, scrollLeft: 0 },
+      })
       virtualizer.destroy()
       vi.advanceTimersByTime(100)
 

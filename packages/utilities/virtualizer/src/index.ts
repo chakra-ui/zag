@@ -1,5 +1,6 @@
 export { GridVirtualizer, type VirtualColumn, type VirtualRow } from "./grid-virtualizer"
 export { ListVirtualizer } from "./list-virtualizer"
+export { TableVirtualizer } from "./table-virtualizer"
 export { WaterfallVirtualizer } from "./waterfall-virtualizer"
 export type {
   CSSProperties,
@@ -19,8 +20,11 @@ export type {
   ScrollByOptions,
   ScrollState,
   ScrollToIndexOptions,
+  ScrollToColumnOptions,
   ScrollToIndexResult,
   ShouldAdjustScrollOnSizeChangeContext,
+  TableColumn,
+  TableVirtualizerOptions,
   TimerId,
   VirtualizerDir,
   VirtualItem,

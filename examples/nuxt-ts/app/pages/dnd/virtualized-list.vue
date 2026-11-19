@@ -5,8 +5,6 @@ import { GripVertical } from "lucide-vue-next"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 import styles from "@styles/dnd-virtualized-list.module.css"
 
-const estimateSize = () => 44
-
 const initialItems = Array.from({ length: 500 }, (_, index) => ({
   id: String(index + 1),
   label: `Item ${index + 1}`,
@@ -18,7 +16,7 @@ const viewportEl = ref<HTMLElement | null>(null)
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: items.value.length,
-  estimatedSize: estimateSize,
+  itemSize: 44,
   overscan: 8,
 }))
 

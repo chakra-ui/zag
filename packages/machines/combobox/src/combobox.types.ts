@@ -261,6 +261,11 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   loopFocus?: boolean | undefined
   /**
+   * Number of items Page Up / Page Down moves the highlight by
+   * @default 10
+   */
+  pageSize?: number | undefined
+  /**
    * The positioning options to dynamically position the menu
    * @default { placement: "bottom-start" }
    */
@@ -343,6 +348,7 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
 }
 
 type PropsWithDefault =
+  | "pageSize"
   | "openOnChange"
   | "openOnKeyPress"
   | "loopFocus"

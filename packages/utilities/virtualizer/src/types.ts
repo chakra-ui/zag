@@ -7,6 +7,8 @@ export interface VirtualItem {
   lane: number
   isVisible: boolean
   isOverscan: "before" | "after" | false
+  /** Mounted only through `retainedIndexes`. */
+  isRetained: boolean
   measureElement: (element: HTMLElement | null) => void
 }
 
@@ -151,10 +153,9 @@ export interface VirtualizerOptions {
 
   /**
    * Estimated item size (height for vertical, width for horizontal).
-   *
-   * For masonry layouts, the estimate may depend on the current `laneWidth`.
+   * A number is refined with the average measured size; a function is used as-is.
    */
-  estimatedSize: (index: number, laneWidth?: number) => number
+  estimatedItemSize: number | ((index: number, laneWidth?: number) => number)
 
   /** Gap between items */
   gap?: number
@@ -167,6 +168,9 @@ export interface VirtualizerOptions {
    * The range passed to this function includes overscan.
    */
   rangeExtractor?: RangeExtractor
+
+  /** Item indexes to keep mounted outside the rendered range, e.g. focused or dragged items. */
+  retainedIndexes?: readonly number[]
 
   /** Scroll orientation. Defaults to "vertical". */
   orientation?: VirtualizerOrientation
@@ -256,14 +260,60 @@ export interface VirtualizerOptions {
 
   /** Callback when item visibility changes */
   onVisibilityChange?: (index: number, isVisible: boolean) => void
+
+  /** Called once each time the rendered range reaches the end. */
+  onEndReached?: () => void
+
+  /** How many items before the end `onEndReached` fires (default: 0) */
+  endReachedThreshold?: number
 }
 
-export interface ListVirtualizerOptions extends VirtualizerOptions {
+export interface ListVirtualizerOptions extends Omit<VirtualizerOptions, "estimatedItemSize"> {
+  /** Exact item height (or width for horizontal lists). Skips item measurement. */
+  itemSize?: number | undefined
+
+  /** Estimate for dynamic items. Required unless `itemSize` is provided. */
+  estimatedItemSize?: VirtualizerOptions["estimatedItemSize"]
+
   /** Optional grouping info for sticky headers */
   groups?: GroupMeta[]
 
+  /** Header size added to each group's first item, unless the group sets `headerSize`. */
+  estimatedGroupHeaderSize?: number | ((group: GroupMeta, groupIndex: number) => number)
+
   /** The initial viewport rect for server-side rendering. */
   initialRect?: { width: number; height: number }
+}
+
+export interface TableVirtualizerOptions extends Omit<
+  ListVirtualizerOptions,
+  "orientation" | "paddingStart" | "paddingEnd" | "groups" | "estimatedGroupHeaderSize"
+> {
+  /** Height of the content before the rows, usually the `<thead>`. Kept in sync by `measureHeaderElement`. */
+  headerSize?: number
+  /** Height of the content after the rows, such as a loading row. */
+  footerSize?: number
+  /** Number of columns. Set it with `columnSize` to window columns. */
+  columnCount?: number
+  /** Column width, or a function of the column index. Required with `columnCount`. */
+  columnSize?: number | ((index: number) => number)
+  /** Columns that are always rendered and stick to the start or end edge. */
+  pinnedColumns?: { start?: number; end?: number }
+  /** Extra columns rendered on each side (default: 2) */
+  columnOverscan?: number
+}
+
+export interface ScrollToColumnOptions {
+  align?: ScrollAlignment
+  smooth?: boolean
+}
+
+export interface TableColumn {
+  index: number
+  start: number
+  end: number
+  size: number
+  pinned: "start" | "end" | false
 }
 
 export interface GroupMeta {
@@ -277,7 +327,10 @@ export interface GroupMeta {
   sticky?: boolean
 }
 
-export interface GridVirtualizerOptions extends Omit<VirtualizerOptions, "count" | "estimatedSize"> {
+export interface GridVirtualizerOptions extends Omit<
+  VirtualizerOptions,
+  "count" | "estimatedItemSize" | "retainedIndexes"
+> {
   /** Number of rows in the grid */
   rowCount: number
 

@@ -75,7 +75,10 @@ export function createMockScrollContainer(options: MockScrollContainerOptions = 
     set scrollLeft(value: number) {
       scrollLeft = value
     },
-    getBoundingClientRect: () => ({ width: viewport.width, height: viewport.height }),
+    getBoundingClientRect: () => ({
+      width: viewport.width,
+      height: viewport.height,
+    }),
   } as unknown as HTMLElement
 
   if (!omitScrollTo) {

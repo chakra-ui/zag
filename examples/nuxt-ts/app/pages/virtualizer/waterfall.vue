@@ -22,7 +22,7 @@ const { virtualizer, init } = useWaterfallVirtualizer({
   columnGap: 12,
   rowGap: 12,
   overscan: 6,
-  estimatedSize: (index) => getItemHeight(index),
+  estimatedItemSize: (index) => getItemHeight(index),
 })
 
 const setScrollRef = (element: Element | ComponentPublicInstance | null) => {

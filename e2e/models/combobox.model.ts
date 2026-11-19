@@ -114,6 +114,10 @@ export class ComboboxModel extends Model {
     expect(_count).toBe(count)
   }
 
+  seeItemAtIndexIsHighlighted = async (index: number) => {
+    await expect(this.page.locator("[data-combobox-item]").nth(index)).toHaveAttribute("data-highlighted", "")
+  }
+
   seeItemIsHighlighted = async (text: string) => {
     const item = this.getItem(text)
     await expect(item).toHaveAttribute("data-highlighted", "")

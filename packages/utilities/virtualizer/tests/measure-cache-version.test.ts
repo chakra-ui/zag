@@ -4,7 +4,7 @@ import { ListVirtualizer } from "../src/list-virtualizer"
 const make = () =>
   new ListVirtualizer({
     count: 1000,
-    estimatedSize: () => 20,
+    estimatedItemSize: () => 20,
     overscan: 0,
     initialRect: { width: 100, height: 100 },
   } as any)

@@ -36,6 +36,7 @@ import {
   closeRootMenu,
   getAdjacentValue,
   getEdgeValue,
+  getPageValue,
   hasItemValue,
   isWithinPolygon,
   resolveItemId,
@@ -53,6 +54,8 @@ const keyboardEvents = new Set([
   "ARROW_RIGHT",
   "HOME",
   "END",
+  "PAGE_UP",
+  "PAGE_DOWN",
   "TYPEAHEAD",
   "ENTER",
   "INPUT.NAVIGATE",
@@ -119,6 +122,7 @@ export const machine = createMachine<MenuSchema>({
       typeahead: true,
       popupType: "menu",
       loopFocus: false,
+      pageSize: 10,
       navigate(details) {
         clickIfLink(details.node, details.modifiers)
       },
@@ -569,6 +573,12 @@ export const machine = createMachine<MenuSchema>({
         },
         END: {
           actions: ["highlightLastItem", "focusMenu"],
+        },
+        PAGE_DOWN: {
+          actions: ["highlightNextPage", "focusMenu"],
+        },
+        PAGE_UP: {
+          actions: ["highlightPrevPage", "focusMenu"],
         },
         ARROW_RIGHT: {
           guard: "isTriggerItemHighlighted",
@@ -1152,6 +1162,10 @@ export const machine = createMachine<MenuSchema>({
           value =
             getAdjacentValue(scope, context.get("triggerValue"), collection, current, -1) ??
             (wrap ? getEdgeValue(scope, context.get("triggerValue"), collection, "last") : null)
+        else if (event.key === "page-next" || event.key === "page-prev") {
+          const step = event.key === "page-next" ? prop("pageSize") : -prop("pageSize")
+          value = getPageValue(scope, context.get("triggerValue"), collection, current, step)
+        }
         context.set("highlightedValue", value)
       },
       // Keeps the highlight on a rendered item once the consumer has re-rendered the filtered items
@@ -1268,6 +1282,28 @@ export const machine = createMachine<MenuSchema>({
           getAdjacentValue(scope, context.get("triggerValue"), collection, current, -1) ??
           (loop ? getEdgeValue(scope, context.get("triggerValue"), collection, "last") : current)
         context.set("highlightedValue", prev)
+      },
+      highlightNextPage({ context, scope, prop }) {
+        const triggerValue = context.get("triggerValue")
+        const next = getPageValue(
+          scope,
+          triggerValue,
+          prop("collection"),
+          context.get("highlightedValue"),
+          prop("pageSize"),
+        )
+        if (next != null) context.set("highlightedValue", next)
+      },
+      highlightPrevPage({ context, scope, prop }) {
+        const triggerValue = context.get("triggerValue")
+        const prev = getPageValue(
+          scope,
+          triggerValue,
+          prop("collection"),
+          context.get("highlightedValue"),
+          -prop("pageSize"),
+        )
+        if (prev != null) context.set("highlightedValue", prev)
       },
       invokeOnSelect({ context, prop, scope, event }) {
         const value = event.value || dom.getItemValue(event.target) || context.get("highlightedValue")

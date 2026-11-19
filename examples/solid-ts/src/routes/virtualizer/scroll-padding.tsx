@@ -15,7 +15,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: () => ITEM_HEIGHT,
+    itemSize: ITEM_HEIGHT,
     scrollPaddingStart: 64,
     scrollPaddingEnd: 64,
     overscan: 5,

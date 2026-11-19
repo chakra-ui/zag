@@ -8,6 +8,7 @@ export const props = createProps<MenuProps>()([
   "autoHighlight",
   "closeOnSelect",
   "collection",
+  "pageSize",
   "popupType",
   "defaultHighlightedValue",
   "defaultOpen",

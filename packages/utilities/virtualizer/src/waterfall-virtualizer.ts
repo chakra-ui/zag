@@ -95,7 +95,11 @@ export class WaterfallVirtualizer extends Virtualizer<WaterfallVirtualizerOption
 
     const measurement = this.measureCache.get(index)
     if (!measurement) {
-      return { start: this.options.paddingStart, end: this.options.paddingStart, size: 0 }
+      return {
+        start: this.options.paddingStart,
+        end: this.options.paddingStart,
+        size: 0,
+      }
     }
 
     return measurement

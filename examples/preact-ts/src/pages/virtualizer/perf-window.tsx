@@ -3,8 +3,6 @@ import { ClientOnly } from "../../components/client-only"
 import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
-const zagEstimateSize = () => ITEM_HEIGHT
-
 const ITEM_COUNT = 10_000
 const ITEM_HEIGHT = 80
 
@@ -21,7 +19,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 function ZagWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: zagEstimateSize,
+    estimatedItemSize: ITEM_HEIGHT,
     overscan: 5,
     initialRect:
       typeof window !== "undefined"

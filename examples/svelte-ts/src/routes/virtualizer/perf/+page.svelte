@@ -8,8 +8,6 @@
   const ITEM_COUNT = 100_000
   const ITEM_HEIGHT = 40
 
-  const estimateSize = () => ITEM_HEIGHT
-
   const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
     id: `item-${i}`,
     label: `Item ${i + 1}`,
@@ -20,7 +18,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: estimateSize,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
   })
 

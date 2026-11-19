@@ -22,7 +22,7 @@ export default function Page() {
     columnGap: 12,
     rowGap: 12,
     overscan: 6,
-    estimatedSize: (index) => getItemHeight(index),
+    estimatedItemSize: (index) => getItemHeight(index),
   })
 
   return (

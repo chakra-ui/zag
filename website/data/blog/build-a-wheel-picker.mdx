@@ -360,8 +360,8 @@ export function getRowOf(props: WheelProps, value: string, fromRow?: number) {
 Seven copies of 60 minutes is 420 rows, which is fine to render. For long lists,
 like a range of years, render the rows through
 [`ListVirtualizer`](/utilities/virtualizer) instead. Rows have a fixed height,
-so `estimatedSize` returns `itemHeight` and nothing needs measuring. Set
-`paddingStart` and `paddingEnd` to the same `pad` as the viewport.
+so pass `itemSize: itemHeight` and nothing needs measuring. Set `paddingStart`
+and `paddingEnd` to the same `pad` as the viewport.
 
 ## Step 7: the drum effect
 

@@ -40,6 +40,7 @@ export const props = createProps<ComboboxProps>()([
   "openOnChange",
   "openOnClick",
   "openOnKeyPress",
+  "pageSize",
   "placeholder",
   "popupType",
   "positioning",

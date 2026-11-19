@@ -5,8 +5,6 @@ import { useWindowVirtualizer } from "~/composables/useVirtualizer"
 const ITEM_COUNT = 10_000
 const ITEM_HEIGHT = 80
 
-const estimateSize = () => ITEM_HEIGHT
-
 const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
   id: `item-${i}`,
   label: `Item ${i + 1}`,
@@ -17,7 +15,7 @@ const metrics = ref<ScrollBenchmarkMetrics | null>(null)
 
 const { virtualizer, init } = useWindowVirtualizer(() => ({
   count: ITEM_COUNT,
-  estimatedSize: estimateSize,
+  estimatedItemSize: ITEM_HEIGHT,
   overscan: 5,
   initialRect:
     typeof window !== "undefined"

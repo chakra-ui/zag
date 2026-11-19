@@ -39,6 +39,7 @@ export const machine = createMachine<SelectSchema>({
   props({ props }) {
     return {
       loopFocus: false,
+      pageSize: 10,
       closeOnSelect: !props.multiple,
       popupType: "listbox",
       defaultValue: [],
@@ -496,6 +497,12 @@ export const machine = createMachine<SelectSchema>({
         "CONTENT.END": {
           actions: ["highlightLastItem"],
         },
+        "CONTENT.PAGE_DOWN": {
+          actions: ["highlightNextPage"],
+        },
+        "CONTENT.PAGE_UP": {
+          actions: ["highlightPrevPage"],
+        },
         "CONTENT.ARROW_DOWN": [
           {
             guard: and("hasHighlightedItem", "loop", "isLastItemHighlighted"),
@@ -806,6 +813,24 @@ export const machine = createMachine<SelectSchema>({
         const value = prop("collection").getNextValue(highlightedValue, 1, prop("loopFocus"))
         if (value == null) return
         context.set("highlightedValue", value)
+      },
+
+      highlightNextPage({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        const value = collection.has(highlightedValue)
+          ? (collection.getNextValue(highlightedValue, prop("pageSize"), true) ?? collection.lastValue)
+          : collection.firstValue
+        if (value) context.set("highlightedValue", value)
+      },
+
+      highlightPrevPage({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        const value = collection.has(highlightedValue)
+          ? (collection.getPreviousValue(highlightedValue, prop("pageSize"), true) ?? collection.firstValue)
+          : collection.lastValue
+        if (value) context.set("highlightedValue", value)
       },
 
       highlightFirstItem({ context, prop }) {

@@ -6,7 +6,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: props.items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 5,
     indexToKey: (index) => props.items[index].id,
   })

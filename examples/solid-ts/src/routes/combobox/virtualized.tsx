@@ -19,7 +19,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: comboboxData.length,
-    estimatedSize: () => 32,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -74,13 +74,21 @@ export default function Page() {
       <div {...api().getPositionerProps()}>
         <div data-testid="combobox-content" {...api().getContentProps()}>
           <div {...api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-            <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
+            <div
+              style={{
+                height: `${virtualizer.getTotalSize()}px`,
+                width: "100%",
+                position: "relative",
+              }}
+            >
               <For keyed={false} each={virtualizer.getVirtualItems()}>
                 {(vi) => {
                   const item = () => options()[vi().index]
                   return (
                     <div
                       data-testid={item().code}
+                      aria-posinset={vi().index + 1}
+                      aria-setsize={options().length}
                       {...api().getItemProps({ item: item() })}
                       style={{
                         ...virtualizer.getItemStyle(vi()),

@@ -97,7 +97,7 @@ const { virtualizer, init } = useListVirtualizer(() => {
   const rows = layout.value.rows
   return {
     count: rows.length,
-    estimatedSize: (index: number) => (rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
+    estimatedItemSize: (index: number) => (rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE),
     groups: layout.value.groups,
     // Keep scrolled-to rows below the sticky header
     scrollPaddingStart: HEADER_SIZE,

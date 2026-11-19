@@ -7,8 +7,6 @@ import { Toolbar } from "../../components/toolbar"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 import styles from "@styles/dnd-list.module.css"
 
-const estimateSize = () => 40
-
 const initialItems = Array.from({ length: 500 }, (_, i) => ({
   id: String(i + 1),
   label: `Item ${i + 1}`,
@@ -19,7 +17,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 40,
     overscan: 10,
   })
 

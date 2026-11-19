@@ -1,8 +1,6 @@
 import { useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
-const estimateSize = () => 40
-
 const ITEM_COUNT = 1000
 
 const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
@@ -16,7 +14,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: estimateSize,
+    itemSize: 40,
     paddingStart,
     paddingEnd,
     overscan: 5,

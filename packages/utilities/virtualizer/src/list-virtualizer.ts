@@ -1,3 +1,4 @@
+import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
   GroupMeta,
@@ -7,22 +8,36 @@ import type {
   Range,
   ScrollAnchor,
   VirtualItem,
+  VirtualizerOptions,
 } from "./types"
 import { Virtualizer } from "./virtualizer"
 import { CacheManager } from "./utils/cache-manager"
 import { SizeTracker } from "./utils/size-tracker"
 
-/**
- * Virtualizer for one-dimensional lists (vertical or horizontal).
- * Uses incremental measurement with caching for dynamic item sizes.
- */
-export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
-  declare private sizeTracker: SizeTracker
+type ResolvedListOptions = ListVirtualizerOptions & Pick<VirtualizerOptions, "estimatedItemSize">
+
+function validateItemSize(itemSize: number | undefined): void {
+  if (itemSize !== undefined && (!Number.isFinite(itemSize) || itemSize <= 0)) {
+    throw new Error("[@zag-js/virtualizer] `itemSize` must be a finite number greater than zero.")
+  }
+}
+
+export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
+  declare private sizeTracker: SizeTracker | undefined
   declare private groups: ListVirtualizerOptions["groups"] | null
+  declare private groupStarts: Map<number, number> | null
   declare private rangeCache: CacheManager<string, Range>
+  private refinedEstimate: number | undefined
+  private refineFrame = AnimationFrame.create()
+  private trailingSize = 0
+  private trailingCleanup: VoidFunction | undefined
 
   constructor(options: ListVirtualizerOptions) {
-    super(options)
+    validateItemSize(options.itemSize)
+    if (options.itemSize === undefined && !options.estimatedItemSize) {
+      throw new Error("[@zag-js/virtualizer] Provide `itemSize` or `estimatedItemSize`.")
+    }
+    super({ ...options, estimatedItemSize: options.estimatedItemSize ?? 0 })
     if (options.initialRect) {
       const { width, height } = options.initialRect
       const horizontal = options.orientation === "horizontal"
@@ -42,14 +57,16 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
   protected resetMeasurements(): void {
     this.measureCache.clear()
+    this.rangeCache?.clear()
     this.groups = this.options.groups?.slice().sort((a, b) => a.startIndex - b.startIndex) ?? null
+    this.groupStarts = this.groups ? new Map(this.groups.map((group, i) => [group.startIndex, i])) : null
     const count = this.options.count
 
     // Initialize or reset size tracker
-    if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(count, this.options.gap, (i) => this.getEstimatedSize(i))
+    if (this.options.itemSize !== undefined) {
+      this.sizeTracker = undefined
     } else {
-      this.sizeTracker.reset(count)
+      this.sizeTracker = new SizeTracker(count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     if (!this.rangeCache) {
@@ -65,10 +82,73 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected getKnownItemSize(index: number): number | undefined {
-    return this.itemSizeCache.get(index)
+    return this.options.itemSize ?? this.itemSizeCache.get(index)
+  }
+
+  protected shouldMeasureItems(): boolean {
+    return this.options.itemSize === undefined
+  }
+
+  protected getEstimatedSize(index: number): number {
+    const { itemSize, estimatedItemSize } = this.options
+    if (itemSize !== undefined) return itemSize
+    const size =
+      typeof estimatedItemSize === "number"
+        ? (this.refinedEstimate ?? estimatedItemSize)
+        : super.getEstimatedSize(index)
+    return size + this.getGroupHeaderEstimate(index)
+  }
+
+  private getGroupHeaderEstimate(index: number): number {
+    const estimate = this.options.estimatedGroupHeaderSize
+    if (estimate === undefined || !this.groups) return 0
+    const groupIndex = this.groupStarts?.get(index)
+    if (groupIndex === undefined) return 0
+    const group = this.groups[groupIndex]
+    return group.headerSize ?? (typeof estimate === "number" ? estimate : estimate(group, groupIndex))
+  }
+
+  private getGroupHeaderSize(group: GroupMeta): number {
+    if (group.headerSize !== undefined) return group.headerSize
+    const estimate = this.options.estimatedGroupHeaderSize
+    if (estimate === undefined) return 0
+    return typeof estimate === "number" ? estimate : estimate(group, this.groups?.indexOf(group) ?? 0)
+  }
+
+  protected onMeasurementsChanged(): void {
+    if (typeof this.options.estimatedItemSize !== "number" || this.options.itemSize !== undefined) return
+    if (this.refineFrame.isActive() || typeof globalThis.requestAnimationFrame !== "function") return
+    this.refineFrame.request(() => this.refineEstimate())
+  }
+
+  private refineEstimate(): void {
+    const { estimatedItemSize } = this.options
+    if (this.destroyed || this.isScrolling || !this.sizeTracker || typeof estimatedItemSize !== "number") return
+
+    let total = 0
+    let measured = 0
+    for (const [index, size] of this.itemSizeCache) {
+      if (index >= this.options.count || this.getGroupHeaderEstimate(index) > 0) continue
+      total += size
+      measured++
+    }
+    if (measured === 0) return
+
+    const next = Math.round(total / measured)
+    if (next <= 0 || next === (this.refinedEstimate ?? estimatedItemSize)) return
+
+    const anchor = this.options.preserveScrollAnchor && this.scrollOffset > 0 ? this.getScrollAnchor() : null
+    this.refinedEstimate = next
+    this.sizeTracker.refreshEstimates()
+    this.rangeCache?.clear()
+    this.invalidateMeasurements(0)
+    this.calculateRange({ reason: "measurement" })
+    if (anchor) this.restoreScrollAnchor(anchor)
+    this.notifyStore()
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
+    if (!this.shouldMeasureItems()) return false
     if (!this.sizeTracker) {
       this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
@@ -84,9 +164,15 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected getMeasurement(index: number): ItemMeasurement {
+    const { itemSize, gap, paddingStart } = this.options
+    if (itemSize !== undefined) {
+      const start = paddingStart + index * (itemSize + gap)
+      return { start, size: itemSize, end: start + itemSize }
+    }
+
     // The cache is derived from the size tracker, so it is only valid for the version it was
     // built from. A dirty-floor index cannot express which entries a measurement invalidated.
-    const version = this.sizeTracker.version
+    const version = this.sizeTracker!.version
     if (version !== this.measureCacheVersion) {
       this.measureCache.clear()
       this.measureCacheVersion = version
@@ -95,7 +181,6 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const cached = this.measureCache.get(index)
     if (cached) return cached
 
-    const { paddingStart } = this.options
     const size = this.getItemSize(index)
 
     // List mode: use prefix sum
@@ -119,6 +204,13 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   protected findVisibleRange(viewportStart: number, viewportEnd: number): Range {
     const { count, paddingStart } = this.options
     if (count === 0) return { startIndex: 0, endIndex: -1 }
+
+    if (this.options.itemSize !== undefined) {
+      return {
+        startIndex: this.findIndexAtOffset(viewportStart),
+        endIndex: this.findIndexAtOffset(viewportEnd),
+      }
+    }
 
     // Initialize cache if needed
     if (!this.rangeCache) {
@@ -181,16 +273,71 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       position: "absolute",
       top: 0,
       left: 0,
-      width: horizontal ? undefined : "100%",
-      height: horizontal ? "100%" : undefined,
+      width: horizontal ? (this.options.itemSize === undefined ? undefined : `${this.options.itemSize}px`) : "100%",
+      height: horizontal ? "100%" : this.options.itemSize === undefined ? undefined : `${this.options.itemSize}px`,
+      boxSizing: this.options.itemSize !== undefined ? "border-box" : undefined,
       transform,
+    }
+  }
+
+  protected invalidateLayout(): void {
+    this.measureCache.clear()
+    this.rangeCache?.clear()
+    this.invalidateMeasurements(0)
+  }
+
+  /** Ref for content after the last item, e.g. a loading row. */
+  measureTrailingElement = (element: HTMLElement | null): void => {
+    this.trailingCleanup?.()
+    this.trailingCleanup = undefined
+    if (!element || this.destroyed) {
+      this.setTrailingSize(0)
+      return
+    }
+    const rect = element.getBoundingClientRect()
+    this.setTrailingSize(this.isHorizontal ? rect.width : rect.height)
+    this.trailingCleanup = resizeObserverBorderBox.observe(element, (entry) => {
+      const box = entry.borderBoxSize?.[0]
+      const size = box ? (this.isHorizontal ? box.inlineSize : box.blockSize) : entry.contentRect.height
+      this.setTrailingSize(size)
+    })
+  }
+
+  private setTrailingSize(size: number): void {
+    if (size === this.trailingSize || this.destroyed) return
+    this.trailingSize = size
+    this.notifyStore()
+  }
+
+  getTrailingStyle(): CSSProperties {
+    const offset = this.getTotalSize() - this.options.paddingEnd - this.trailingSize - this.getScrollMargin()
+    if (this.isHorizontal) {
+      return {
+        position: "absolute",
+        top: 0,
+        [this.isRtl ? "right" : "left"]: 0,
+        height: "100%",
+        transform: `translate3d(${this.isRtl ? -offset : offset}px, 0, 0)`,
+      }
+    }
+    return {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      transform: `translate3d(0, ${offset}px, 0)`,
     }
   }
 
   getTotalSize(): number {
     const { count, paddingStart, paddingEnd } = this.options
 
-    if (count === 0) return paddingStart + paddingEnd
+    const trailing = this.trailingSize
+    if (count === 0) return paddingStart + trailing + paddingEnd
+
+    if (this.options.itemSize !== undefined) {
+      return paddingStart + count * this.options.itemSize + (count - 1) * this.options.gap + trailing + paddingEnd
+    }
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
@@ -198,7 +345,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     }
 
     // List mode: use size tracker's optimized total size calculation
-    return this.sizeTracker.getTotalSize(paddingStart, paddingEnd)
+    return this.sizeTracker.getTotalSize(paddingStart, trailing + paddingEnd)
   }
 
   private getItemSize(index: number): number {
@@ -221,6 +368,13 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
   protected findIndexAtOffset(offset: number): number {
     const { paddingStart } = this.options
+
+    if (this.options.itemSize !== undefined) {
+      const { count, itemSize, gap } = this.options
+      if (count === 0) return -1
+      const index = Math.ceil(Math.max(0, offset - paddingStart) / (itemSize + gap)) - 1
+      return Math.max(0, Math.min(count - 1, index))
+    }
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
@@ -265,7 +419,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     if (currentGroup.sticky === false) return null
 
     const currentStart = this.getMeasurement(currentGroup.startIndex).start
-    const currentHeaderSize = headerSizeOverride ?? currentGroup.headerSize ?? 0
+    const currentHeaderSize = headerSizeOverride ?? this.getGroupHeaderSize(currentGroup)
 
     // Look ahead to next group to compute push-off distance
     const currentIdx = this.groups.indexOf(currentGroup)
@@ -331,11 +485,14 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // Shift group metadata if present (sticky headers)
     if (this.groups) {
-      this.groups = this.groups.map((g) => ({ ...g, startIndex: g.startIndex + addedCount }))
+      this.groups = this.groups.map((g) => ({
+        ...g,
+        startIndex: g.startIndex + addedCount,
+      }))
     }
 
     // Shift measured sizes forward (index re-mapping) and rebuild size tracker
-    this.sizeTracker.reindex(addedCount, this.options.count)
+    this.sizeTracker?.reindex(addedCount, this.options.count)
     this.reindexItemSizeCache(addedCount)
 
     // Item starts/ends have changed; drop all cached measurements/ranges
@@ -376,5 +533,26 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       nextCache.set(index + shift, size)
     }
     this.itemSizeCache = nextCache
+  }
+
+  override updateOptions(nextOptions: Partial<ListVirtualizerOptions>): void {
+    if (this.destroyed) return
+    validateItemSize(nextOptions.itemSize)
+    const itemSize = "itemSize" in nextOptions ? nextOptions.itemSize : this.options.itemSize
+    const estimate = "estimatedItemSize" in nextOptions ? nextOptions.estimatedItemSize : this.options.estimatedItemSize
+    if (itemSize === undefined && !estimate) {
+      throw new Error("[@zag-js/virtualizer] Provide `itemSize` or `estimatedItemSize`.")
+    }
+    if ("estimatedItemSize" in nextOptions && estimate !== this.options.estimatedItemSize) {
+      this.refinedEstimate = undefined
+    }
+    super.updateOptions(nextOptions)
+  }
+
+  override destroy(): void {
+    this.refineFrame.cancel()
+    this.trailingCleanup?.()
+    this.trailingCleanup = undefined
+    super.destroy()
   }
 }

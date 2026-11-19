@@ -8,8 +8,6 @@
   import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-svelte"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const estimateSize = () => ROW_HEIGHT
-
   interface Node {
     id: string
     name: string
@@ -156,7 +154,7 @@
 
   const { virtualizer, init } = useListVirtualizer(() => ({
     count: visibleNodes.length,
-    estimatedSize: estimateSize,
+    itemSize: ROW_HEIGHT,
     overscan: 8,
   }))
 

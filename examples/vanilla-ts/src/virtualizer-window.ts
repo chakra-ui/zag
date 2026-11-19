@@ -12,7 +12,7 @@ const innerEl = document.querySelector<HTMLDivElement>("#inner")!
 
 const virtualizer = new WindowVirtualizer({
   count: ITEM_COUNT,
-  estimatedSize: () => 72,
+  estimatedItemSize: 72,
   overscan: 8,
   initialRect: { width: window.innerWidth, height: window.innerHeight },
 })

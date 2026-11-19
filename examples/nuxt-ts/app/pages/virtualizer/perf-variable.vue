@@ -22,7 +22,7 @@ let scrollEl: HTMLElement | null = null
 
 const { virtualizer, init } = useListVirtualizer(() => ({
   count: ITEM_COUNT,
-  estimatedSize: getItemHeight,
+  estimatedItemSize: getItemHeight,
   overscan: 5,
 }))
 

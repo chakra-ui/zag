@@ -14,7 +14,7 @@ const smoothToggle = document.querySelector<HTMLInputElement>("#smooth-toggle")!
 
 const virtualizer = new ListVirtualizer({
   count: ITEM_COUNT,
-  estimatedSize: () => 64,
+  estimatedItemSize: 64,
   overscan: 6,
 })
 

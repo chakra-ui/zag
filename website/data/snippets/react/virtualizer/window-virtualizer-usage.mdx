@@ -2,7 +2,7 @@
 function WindowList({ items }: { items: { id: string; label: string }[] }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 8,
     initialRect: { width: 1024, height: 720 },
     indexToKey: (index) => items[index].id,

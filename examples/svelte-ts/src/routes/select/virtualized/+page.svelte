@@ -7,8 +7,6 @@
   import { ChevronsUpDownIcon } from "lucide-svelte"
   import "@styles/select.css"
 
-  const estimateSize = () => 32
-
   const collection = select.collection({
     items: selectData,
     itemToString: (item) => item.label,
@@ -17,7 +15,7 @@
 
   const { virtualizer, init } = useListVirtualizer({
     count: selectData.length,
-    estimatedSize: estimateSize,
+    itemSize: 32,
     observeScrollElementSize: true,
   })
 
@@ -53,7 +51,11 @@
             <div style:height="{virtualizer.getTotalSize()}px" style:width="100%" style:position="relative">
               {#each virtualizer.getVirtualItems() as vi (selectData[vi.index].value)}
                 {@const item = selectData[vi.index]}
-                <div {...mergeProps(api.getItemProps({ item }), { style: virtualizer.getItemStyle(vi) })}>
+                <div
+                  aria-posinset={vi.index + 1}
+                  aria-setsize={selectData.length}
+                  {...mergeProps(api.getItemProps({ item }), { style: virtualizer.getItemStyle(vi) })}
+                >
                   <span {...api.getItemTextProps({ item })}>{item.label}</span>
                   <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </div>

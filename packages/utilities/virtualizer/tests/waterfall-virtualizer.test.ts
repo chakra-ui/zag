@@ -16,7 +16,7 @@ function createVirtualizer(
 ): WaterfallVirtualizer {
   return new WaterfallVirtualizer({
     count: 6,
-    estimatedSize: () => 80,
+    estimatedItemSize: () => 80,
     overscan: 0,
     initialRect: { width: 320, height: 220 },
     ...options,
@@ -59,7 +59,7 @@ describe("WaterfallVirtualizer", () => {
     const sizes = [100, 60, 80, 70, 90, 50]
     const virtualizer = createVirtualizer({
       count: sizes.length,
-      estimatedSize: (index) => sizes[index]!,
+      estimatedItemSize: (index) => sizes[index]!,
       columnCount: 2,
       columnGap: 12,
       rowGap: 6,
@@ -76,7 +76,7 @@ describe("WaterfallVirtualizer", () => {
     const sizes = [300, 80, 80, 80, 80, 80]
     const virtualizer = createVirtualizer({
       count: sizes.length,
-      estimatedSize: (index) => sizes[index]!,
+      estimatedItemSize: (index) => sizes[index]!,
       columnCount: 2,
       rowGap: 10,
       initialRect: { width: 300, height: 120 },
@@ -97,7 +97,7 @@ describe("WaterfallVirtualizer", () => {
 
     const virtualizer = createVirtualizer({
       count: 4,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 2,
       laneAssignment: "measured",
       rowGap: 0,
@@ -118,7 +118,7 @@ describe("WaterfallVirtualizer", () => {
   test("preserve lane assignment keeps prior lanes when columns are unchanged", () => {
     const virtualizer = createVirtualizer({
       count: 6,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 2,
       laneAssignment: "preserve",
       rowGap: 0,
@@ -138,7 +138,7 @@ describe("WaterfallVirtualizer", () => {
   test("preserve lane assignment falls back when prior lane is invalid", () => {
     const virtualizer = createVirtualizer({
       count: 6,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 3,
       laneAssignment: "preserve",
       rowGap: 0,
@@ -164,7 +164,7 @@ describe("WaterfallVirtualizer", () => {
     const estimateCalls = Array.from({ length: 6 }, () => 0)
     const virtualizer = createVirtualizer({
       count: 6,
-      estimatedSize: (index) => {
+      estimatedItemSize: (index) => {
         estimateCalls[index]! += 1
         return 100
       },
@@ -195,7 +195,7 @@ describe("WaterfallVirtualizer", () => {
     const sizes = [120, 90, 80, 70, 100, 60, 110, 95]
     const virtualizer = createVirtualizer({
       count: sizes.length,
-      estimatedSize: (index) => sizes[index]!,
+      estimatedItemSize: (index) => sizes[index]!,
       columnCount: 2,
       rowGap: 8,
       overscan: 0,
@@ -226,7 +226,7 @@ describe("WaterfallVirtualizer", () => {
   test("recomputes columns when width changes with minColumnWidth", () => {
     const virtualizer = createVirtualizer({
       count: 8,
-      estimatedSize: () => 80,
+      estimatedItemSize: () => 80,
       minColumnWidth: 120,
       columnGap: 10,
       initialRect: { width: 250, height: 400 },
@@ -247,13 +247,16 @@ describe("WaterfallVirtualizer", () => {
     const sizes = [100, 60, 80, 70, 90, 50]
     const virtualizer = createVirtualizer({
       count: sizes.length,
-      estimatedSize: (index) => sizes[index]!,
+      estimatedItemSize: (index) => sizes[index]!,
       columnCount: 2,
       rowGap: 10,
       initialRect: { width: 320, height: 120 },
     })
 
-    expect(virtualizer.scrollToIndex(3, { align: "start" })).toEqual({ scrollTop: 110, scrollLeft: 0 })
+    expect(virtualizer.scrollToIndex(3, { align: "start" })).toEqual({
+      scrollTop: 110,
+      scrollLeft: 0,
+    })
     expect(virtualizer.getScrollState().offset.y).toBe(110)
   })
 
@@ -261,7 +264,7 @@ describe("WaterfallVirtualizer", () => {
     const keys = ["a", "b", "c", "d"]
     const virtualizer = createVirtualizer({
       count: keys.length,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 2,
       rowGap: 0,
       initialRect: { width: 320, height: 400 },
@@ -282,7 +285,7 @@ describe("WaterfallVirtualizer", () => {
   test("measureItem overrides waterfall initialMeasurements and relayouts downstream items", () => {
     const virtualizer = createVirtualizer({
       count: 4,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 2,
       rowGap: 0,
       initialRect: { width: 320, height: 400 },
@@ -306,7 +309,7 @@ describe("WaterfallVirtualizer", () => {
 
     const virtualizer = createVirtualizer({
       count: 4,
-      estimatedSize: () => 100,
+      estimatedItemSize: () => 100,
       columnCount: 2,
       rowGap: 0,
       initialRect: { width: 320, height: 400 },

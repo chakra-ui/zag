@@ -6,7 +6,7 @@
 
   const { virtualizer, init } = useWindowVirtualizer({
     count: props.items.length,
-    estimatedSize: () => 48,
+    estimatedItemSize: 48,
     overscan: 8,
     initialRect: { width: 1024, height: 720 },
     indexToKey: (index) => props.items[index].id,

@@ -9,8 +9,6 @@ import styles from "@styles/dnd-virtualized-list.module.css"
 import { GripVerticalIcon } from "lucide-react"
 import { useCallback, useId, useRef, useState } from "react"
 
-const estimateSize = () => 44
-
 const initialItems = Array.from({ length: 500 }, (_, index) => ({
   id: String(index + 1),
   label: `Item ${index + 1}`,
@@ -23,7 +21,7 @@ export default function Page() {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: items.length,
-    estimatedSize: estimateSize,
+    itemSize: 44,
     overscan: 8,
   })
 

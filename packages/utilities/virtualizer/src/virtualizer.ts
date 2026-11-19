@@ -42,10 +42,10 @@ const DEFAULT_SMOOTH_SCROLL_OPTIONS: Required<Pick<SmoothScrollOptions, "duratio
   easing: easeOutCubic,
 }
 
-type ResolvedBaseOptions = Required<
-  Omit<VirtualizerOptions, "onScroll" | "onScrollEnd" | "onRangeChange" | "onVisibilityChange">
-> &
-  Pick<VirtualizerOptions, "onScroll" | "onScrollEnd" | "onRangeChange" | "onVisibilityChange">
+type CallbackOptions = "onScroll" | "onScrollEnd" | "onRangeChange" | "onVisibilityChange" | "onEndReached"
+
+type ResolvedBaseOptions = Required<Omit<VirtualizerOptions, CallbackOptions>> &
+  Pick<VirtualizerOptions, CallbackOptions>
 
 function defaultRangeExtractor(range: Range): number[] {
   const indexes: number[] = []
@@ -159,6 +159,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       disableScrollOnInit: false,
       overscan: 3,
       rangeExtractor: defaultRangeExtractor,
+      retainedIndexes: [],
+      endReachedThreshold: 0,
       rootMargin: "50px",
       preserveScrollAnchor: true,
       overflowAnchor: "none",
@@ -387,6 +389,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       const key = this.getItemKey(i)
       const isVisible = i >= visibleRange.startIndex && i <= visibleRange.endIndex
       const isOverscan = isVisible ? false : i < visibleRange.startIndex ? "before" : "after"
+      const isRetained = i < startIndex || i > endIndex
 
       this.keyIndexCache.set(key, i)
 
@@ -399,7 +402,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         cachedItem.size === measurement.size &&
         cachedItem.lane === lane &&
         cachedItem.isVisible === isVisible &&
-        cachedItem.isOverscan === isOverscan
+        cachedItem.isOverscan === isOverscan &&
+        cachedItem.isRetained === isRetained
       ) {
         newVirtualItems.push(cachedItem)
       } else {
@@ -412,6 +416,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
           lane,
           isVisible,
           isOverscan,
+          isRetained,
           measureElement: this.createMeasureElement(i),
         }
 
@@ -423,6 +428,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
           virtualItem.lane = lane
           virtualItem.isVisible = isVisible
           virtualItem.isOverscan = isOverscan
+          virtualItem.isRetained = isRetained
         }
 
         this.virtualItemObjectCache.set(i, virtualItem)
@@ -453,6 +459,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       uniqueIndexes.add(index)
     }
 
+    for (const index of this.options.retainedIndexes) {
+      if (!Number.isInteger(index)) continue
+      if (index < 0 || index >= this.options.count) continue
+      uniqueIndexes.add(index)
+    }
+
     return Array.from(uniqueIndexes).sort((a, b) => a - b)
   }
 
@@ -469,6 +481,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   abstract getTotalSize(): number
 
   protected onItemsChanged(): void {}
+
+  protected onMeasurementsChanged(): void {}
 
   protected onItemMeasured(index: number, size: number): boolean {
     const prevSize = this.itemSizeCache.get(index)
@@ -495,7 +509,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   protected getEstimatedSize(index: number, laneWidth?: number): number {
-    return this.options.estimatedSize(index, laneWidth)
+    const { estimatedItemSize } = this.options
+    return typeof estimatedItemSize === "number" ? estimatedItemSize : estimatedItemSize(index, laneWidth)
   }
 
   protected getScrollMargin(): number {
@@ -538,6 +553,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   protected applyInitialMeasurements(): void {
+    if (!this.shouldMeasureItems()) return
     const seeds = this.options.initialMeasurements
     if (!seeds) return
 
@@ -653,6 +669,22 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.lastCalculatedOffset = this.scrollOffset
     this.lastCalculatedScrollMargin = scrollMargin
+    this.checkEndReached()
+  }
+
+  private endReachedArmed = true
+
+  private checkEndReached(): void {
+    const { count, endReachedThreshold, onEndReached } = this.options
+    if (!onEndReached || !this.scrollElement) return
+    const atEnd = count > 0 && this.range.endIndex >= count - 1 - endReachedThreshold
+    if (!atEnd) {
+      this.endReachedArmed = true
+      return
+    }
+    if (!this.endReachedArmed) return
+    this.endReachedArmed = false
+    onEndReached()
   }
 
   // ============================================
@@ -701,6 +733,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       // Now that scrolling stopped, observe all currently tracked elements
       // so future size changes (image load, accordion, etc.) are detected.
       this.observeUnobservedElements()
+      this.onMeasurementsChanged()
       this.notifyStore()
     }, this.options.scrollEndDelay)
 
@@ -788,6 +821,30 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
+  /** Geometry of any item, mounted or not. */
+  getItemMetrics(index: number): ItemMeasurement | null {
+    if (!Number.isInteger(index) || index < 0 || index >= this.options.count) return null
+    const { start, size, end } = this.getMeasurement(index)
+    return { start, size, end }
+  }
+
+  /** Index of the item at a scroll offset. */
+  getIndexAtOffset(offset: number): number | null {
+    if (this.options.count === 0) return null
+    const index = this.findIndexAtOffset(offset + this.getScrollMargin())
+    return Math.max(0, Math.min(this.options.count - 1, index))
+  }
+
+  /** Discard measured sizes, keeping the scroll position. */
+  remeasure(): void {
+    if (this.isDestroyed) return
+    const anchor = this.options.preserveScrollAnchor ? this.getScrollAnchor() : null
+    this.itemSizeCache.clear()
+    this.onItemsChanged()
+    this.forceUpdate({ reason: "measurement" })
+    if (anchor) this.restoreScrollAnchor(anchor)
+  }
+
   measure(): void {
     if (this.isDestroyed) return
     if (!this.scrollElement) return
@@ -834,7 +891,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       setScrollPosition(
         this.scrollElement,
         horizontal
-          ? { scrollLeft: this.toRawHorizontalOffset(targetOffset, this.scrollElement) }
+          ? {
+              scrollLeft: this.toRawHorizontalOffset(targetOffset, this.scrollElement),
+            }
           : { scrollTop: targetOffset },
       )
     }
@@ -938,7 +997,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // resolveScrollToOffset used estimateSize. After the scroll causes the
     // item to mount and measure, the real offset may differ — correct on
     // the next frame. Skip for smooth scrolls (would cause visible jump).
-    if (settle !== false && !smooth) {
+    if (settle !== false && !smooth && this.shouldMeasureItems()) {
       this.scheduleConvergence(index, align, 0)
     }
 
@@ -1067,7 +1126,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   measureItem(index: number, size: number): void {
-    if (this.isDestroyed) return
+    if (this.isDestroyed || !this.shouldMeasureItems()) return
     const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
     const delta = size - previousSize
     const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
@@ -1133,7 +1192,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         const rangeNotified =
           prevRange.startIndex !== this.range.startIndex || prevRange.endIndex !== this.range.endIndex
         if (!rangeNotified) {
-          this.options.onRangeChange?.({ range: this.range, reason: "measurement" })
+          this.options.onRangeChange?.({
+            range: this.range,
+            reason: "measurement",
+          })
         }
         this.notifyStore()
       })
@@ -1157,14 +1219,18 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private flushSizeUpdates(): void {
-    if (this.isDestroyed) {
+    if (this.isDestroyed || !this.shouldMeasureItems()) {
       this.pendingSizeUpdates.clear()
       return
     }
 
     if (this.pendingSizeUpdates.size === 0) return
 
-    const updates: Array<{ index: number; size: number; shouldAdjust: boolean }> = []
+    const updates: Array<{
+      index: number
+      size: number
+      shouldAdjust: boolean
+    }> = []
     for (const [index, { size, element }] of this.pendingSizeUpdates) {
       if (element && this.elementsByIndex.get(index) !== element) continue
       const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
@@ -1192,6 +1258,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       if (!anySizeChanged) return
 
       this.invalidateMeasurements(minIndex)
+      this.onMeasurementsChanged()
     }
 
     const adjustCandidate = updates.reduce((min, update) => {
@@ -1212,7 +1279,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // Notify even when range indices didn't change — sizes changed, items need repositioning
     const rangeNotified = prevRange.startIndex !== this.range.startIndex || prevRange.endIndex !== this.range.endIndex
     if (!rangeNotified) {
-      this.options.onRangeChange?.({ range: this.range, reason: "measurement" })
+      this.options.onRangeChange?.({
+        range: this.range,
+        reason: "measurement",
+      })
     }
 
     this.notifyStore()
@@ -1421,12 +1491,25 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.measureCacheDirtyFrom = 0
     this.measureCache.clear()
     this.resetMeasurements()
+    if (!this.shouldMeasureItems()) {
+      this.cancelPendingConvergence()
+      for (const cleanup of this.resizeObserverCleanups.values()) cleanup()
+      this.resizeObserverCleanups.clear()
+      this.pendingSizeUpdates.clear()
+      this.sizeUpdateFrame.cancel()
+    }
     this.remeasureTrackedElements()
+    if (!this.isScrolling) this.observeUnobservedElements()
     this.calculateRange({ reason })
     this.notifyStore()
   }
 
+  protected shouldMeasureItems(): boolean {
+    return true
+  }
+
   private remeasureTrackedElements(): boolean {
+    if (!this.shouldMeasureItems()) return false
     const { count } = this.options
     let changed = false
     let minIndex = Infinity
@@ -1467,6 +1550,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
       if (element) {
         this.elementsByIndex.set(index, element)
+        if (!this.shouldMeasureItems()) return
 
         // Measure synchronously in the ref callback — updates Fenwick tree
         // immediately for correct positioning on the next render.
@@ -1479,6 +1563,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
             // sees the same size and becomes a no-op.
             this.itemSizeCache.set(index, size)
             this.measureElementSync(index, size)
+            this.onMeasurementsChanged()
           }
         }
 
@@ -1496,9 +1581,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   observeElementSize(element: Element, index: number): void {
     if (this.isDestroyed) return
     this.unobserveElementResize(element)
+    if (!this.shouldMeasureItems()) return
 
     const cleanup = resizeObserverBorderBox.observe(element, (entry) => {
-      if (this.isDestroyed) return
+      if (this.isDestroyed || !this.shouldMeasureItems()) return
       // Guard against queued RO callbacks firing for a stale element after the
       // ref slot has been reassigned to a different DOM node. Without this,
       // a removed element's final RO event can poison the surviving item's size.
@@ -1606,12 +1692,19 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     if (!changed) return
 
+    // Retention isn't geometry: keep sizes measured outside the viewport.
+    if (Object.keys(nextOptions).every((key) => key === "retainedIndexes")) {
+      this.notifyStore()
+      return
+    }
+
     this.invalidateItemKeys()
 
     const reason: RangeChangeReason =
       nextOptions.count !== undefined && nextOptions.count !== prev.count ? "count" : "manual"
 
     if (reason === "count") {
+      if (this.options.count > prev.count) this.endReachedArmed = true
       this.onItemsChanged()
     }
 

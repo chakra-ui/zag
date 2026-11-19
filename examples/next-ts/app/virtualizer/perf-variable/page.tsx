@@ -1,5 +1,7 @@
 "use client"
 
+/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- Scroll regions need keyboard scrolling. */
+
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { useCallback, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
@@ -83,7 +85,15 @@ function runScrollBenchmark(scrollEl: HTMLElement, scrollCount: number, onComple
 function MetricsDisplay({ label, metrics }: { label: string; metrics: Metrics | null }) {
   if (!metrics) return null
   return (
-    <div style={{ padding: 16, backgroundColor: "#f1f5f9", borderRadius: 8, fontSize: 14, fontFamily: "monospace" }}>
+    <div
+      style={{
+        padding: 16,
+        backgroundColor: "#f1f5f9",
+        borderRadius: 8,
+        fontSize: 14,
+        fontFamily: "monospace",
+      }}
+    >
       <strong>{label}</strong> ({metrics.scrollCount} scrolls)
       <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
         <div>Total time: {metrics.totalTime}ms</div>
@@ -123,7 +133,7 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
 
   const { virtualizer, ref } = useListVirtualizer({
     count: ITEM_COUNT,
-    estimatedSize: getItemHeight,
+    estimatedItemSize: getItemHeight,
     overscan: 5,
   })
 
@@ -148,16 +158,23 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       <div
         ref={setRef}
         onScroll={virtualizer.handleScroll}
+        role="region"
         tabIndex={0}
         aria-label="Zag variable-height performance list"
-        style={{ height: 400, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 }}
+        style={{
+          height: 400,
+          overflow: "auto",
+          border: "2px solid #3b82f6",
+          borderRadius: 8,
+        }}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div style={virtualizer.getContentStyle()}>
           {virtualItems.map((vi) => {
             const item = items[vi.index]
             return (
               <div
-                key={vi.index}
+                key={vi.key}
+                data-index={vi.index}
                 ref={vi.measureElement}
                 style={{
                   ...virtualizer.getItemStyle(vi),
@@ -203,11 +220,23 @@ function TanStackVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void })
       />
       <div
         ref={scrollRef}
+        role="region"
         tabIndex={0}
         aria-label="TanStack variable-height performance list"
-        style={{ height: 400, overflow: "auto", border: "2px solid #f97316", borderRadius: 8 }}
+        style={{
+          height: 400,
+          overflow: "auto",
+          border: "2px solid #f97316",
+          borderRadius: 8,
+        }}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div
+          style={{
+            height: virtualizer.getTotalSize(),
+            width: "100%",
+            position: "relative",
+          }}
+        >
           {virtualItems.map((vi) => {
             const item = items[vi.index]
             return (
@@ -254,23 +283,46 @@ export default function Page() {
         tests the full scroll + measure + reposition pipeline with variable-size items.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
         <ZagVirtualizer onMetrics={setZagMetrics} />
         <TanStackVirtualizer onMetrics={setTanstackMetrics} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
         <MetricsDisplay label="@zag-js/virtualizer" metrics={zagMetrics} />
         <MetricsDisplay label="@tanstack/react-virtual" metrics={tanstackMetrics} />
       </div>
 
       {zagMetrics && tanstackMetrics && (
-        <div style={{ marginTop: 24, padding: 16, backgroundColor: "#ecfdf5", borderRadius: 8, fontSize: 14 }}>
+        <div
+          style={{
+            marginTop: 24,
+            padding: 16,
+            backgroundColor: "#ecfdf5",
+            borderRadius: 8,
+            fontSize: 14,
+          }}
+        >
           <strong>Comparison:</strong>
           <div style={{ marginTop: 8 }}>
             Avg frame time: Zag {zagMetrics.avgFrameTime}ms vs TanStack {tanstackMetrics.avgFrameTime}ms (
             {zagMetrics.avgFrameTime < tanstackMetrics.avgFrameTime ? "Zag wins" : "TanStack wins"} by{" "}
-            {Math.abs(Math.round((1 - zagMetrics.avgFrameTime / tanstackMetrics.avgFrameTime) * 100))}%)
+            {Math.abs(Math.round((1 - zagMetrics.avgFrameTime / tanstackMetrics.avgFrameTime) * 100))}
+            %)
           </div>
           <div>
             Dropped frames: Zag {zagMetrics.droppedFrames} vs TanStack {tanstackMetrics.droppedFrames}
