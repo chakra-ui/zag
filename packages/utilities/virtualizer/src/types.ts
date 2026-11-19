@@ -48,10 +48,11 @@ export interface ScrollAnchor {
   offset: number
 }
 
-type ScrollAlignment = "start" | "center" | "end" | "auto"
+export type ScrollAlignment = "start" | "center" | "end" | "auto"
 export type ScrollEasing = (t: number) => number
 
 export interface ScrollToIndexOptions {
+  /** Where to place the item. `auto` scrolls only when it isn't fully visible, to the nearest edge (default: `auto`) */
   align?: ScrollAlignment
   /** Enable smooth scrolling with custom options */
   smooth?:
@@ -301,6 +302,12 @@ export interface TableVirtualizerOptions extends Omit<
   pinnedColumns?: { start?: number; end?: number }
   /** Extra columns rendered on each side (default: 2) */
   columnOverscan?: number
+}
+
+export interface GridScrollToOptions {
+  /** Where to place the cell. `auto` scrolls only when it isn't fully visible, to the nearest edge (default: `auto`) */
+  align?: ScrollAlignment
+  behavior?: ScrollBehavior
 }
 
 export interface ScrollToColumnOptions {

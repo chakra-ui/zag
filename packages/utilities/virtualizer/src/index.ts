@@ -20,6 +20,8 @@ export type {
   ScrollByOptions,
   ScrollState,
   ScrollToIndexOptions,
+  GridScrollToOptions,
+  ScrollAlignment,
   ScrollToColumnOptions,
   ScrollToIndexResult,
   ShouldAdjustScrollOnSizeChangeContext,

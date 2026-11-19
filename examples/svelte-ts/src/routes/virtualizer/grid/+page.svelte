@@ -68,6 +68,7 @@
         type="button"
         onclick={() =>
           virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
+            align: "center",
             behavior: behavior(),
           })}
       >

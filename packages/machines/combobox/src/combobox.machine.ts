@@ -14,6 +14,7 @@ import {
   isApple,
   nextTick,
   raf,
+  scrollIntoView,
   scrollToNearest,
   setCaretToEnd,
 } from "@zag-js/dom-query"
@@ -814,7 +815,8 @@ export const machine = createMachine({
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
-            scrollToNearest(itemEl, { rootEl: listEl })
+            if (immediate) scrollIntoView(itemEl, { rootEl: listEl, block: "center" })
+            else scrollToNearest(itemEl, { rootEl: listEl })
           })
           cleanups.push(raf_cleanup)
         }

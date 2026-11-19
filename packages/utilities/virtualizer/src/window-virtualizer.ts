@@ -229,6 +229,14 @@ export class WindowVirtualizer extends ListVirtualizer {
     return (scrollingElement.scrollTop || win.pageYOffset || 0) - windowOffset
   }
 
+  protected override getScrollportSize(): number {
+    return this.viewportSize
+  }
+
+  protected override getScrollportInsets() {
+    return { padding: 0, scrollPaddingStart: 0, scrollPaddingEnd: 0 }
+  }
+
   override getContainerStyle(): CSSProperties {
     const baseStyle = super.getContainerStyle()
     // Override container style for window scrolling — avoid `contain: strict` on huge in-flow content.
@@ -318,7 +326,7 @@ export class WindowVirtualizer extends ListVirtualizer {
   }
 
   override scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
-    const { align = "start", smooth } = options
+    const { align = "auto", smooth } = options
     if (!smooth) return super.scrollToIndex(index, options)
 
     const targetOffset = this.resolveScrollToOffset(index, align)

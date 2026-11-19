@@ -33,7 +33,7 @@ export default function Page() {
     id: useId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "center" })
+      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
     onOpenChange() {
       setOptions(comboboxData)

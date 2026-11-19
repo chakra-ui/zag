@@ -5,6 +5,13 @@
 - **Breaking:** Rename `estimatedSize` to `estimatedItemSize`. It accepts a number for uniform estimates or a function
   for per-item estimates, and a number is refined with the average measured size.
 
+- **Breaking:** Default `scrollToIndex` to `align: "auto"`, which scrolls only when the item isn't fully visible and to
+  the nearest edge. `GridVirtualizer`'s `scrollToCell`, `scrollToRow` and `scrollToColumn` take the same `align` option
+  with the same default. Pass `align: "start"` for the previous behavior.
+
+- Fix `scrollToIndex` leaving items hidden behind a horizontal scrollbar, and account for the scroll container's CSS
+  `padding` and `scroll-padding` like `scrollIntoView` does.
+
 - Add `itemSize` for fixed-size lists and window virtualizers, skipping per-item estimation and measurement.
 
 - Add `retainedIndexes` to keep focused, highlighted, or dragged items mounted outside the viewport, and `isRetained` on

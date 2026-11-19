@@ -1,4 +1,4 @@
-import { AnimationFrame, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, getComputedStyle, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
   InitialMeasurements,
@@ -67,6 +67,16 @@ function areEqual(a: number[], b: number[]): boolean {
  * Shared logic for all virtualizer variants (list, grid, table, masonry).
  * Layout-specific classes implement measurement and range calculation details.
  */
+interface ScrollportInsets {
+  padding: number
+  scrollPaddingStart: number
+  scrollPaddingEnd: number
+}
+
+const NO_INSETS: ScrollportInsets = { padding: 0, scrollPaddingStart: 0, scrollPaddingEnd: 0 }
+
+const toPx = (value: string | undefined) => Number.parseFloat(value ?? "") || 0
+
 export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
   protected options: ResolvedBaseOptions & O
 
@@ -234,9 +244,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private warnOnScaledContainer(element: HTMLElement): void {
     if (Virtualizer.hasWarnedScaledTransform) return
     if (typeof process !== "undefined" && process.env?.NODE_ENV === "production") return
-    if (typeof globalThis.getComputedStyle !== "function") return
+    if (!isHTMLElement(element)) return
 
-    const transform = globalThis.getComputedStyle(element).transform
+    const transform = getComputedStyle(element).transform
     if (!this.hasNonIdentityScale(transform)) return
 
     Virtualizer.hasWarnedScaledTransform = true
@@ -946,32 +956,55 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * Compute the list-space scroll offset for a given index + alignment.
    * Returns `null` when `align: "auto"` and the item is already visible.
    */
-  protected resolveScrollToOffset(index: number, align: ScrollToIndexOptions["align"] = "start"): number | null {
-    const { count, scrollPaddingStart, scrollPaddingEnd } = this.options
-    const scrollMargin = this.getScrollMargin()
+  /** Visible size along the scroll axis, excluding scrollbars and borders. */
+  protected getScrollportSize(): number {
+    const element = this.scrollElement
+    return (this.isHorizontal ? element?.clientWidth : element?.clientHeight) || this.viewportSize
+  }
+
+  /** The scroll container's CSS padding and `scroll-padding` along the scroll axis, like `scrollIntoView` uses. */
+  protected getScrollportInsets(): ScrollportInsets {
+    const element = this.scrollElement
+    if (!isHTMLElement(element)) return NO_INSETS
+    const style = getComputedStyle(element)
+    const axis = this.isHorizontal ? "Inline" : "Block"
+    return {
+      padding: toPx(style[`padding${axis}Start`]),
+      scrollPaddingStart: toPx(style[`scrollPadding${axis}Start`]),
+      scrollPaddingEnd: toPx(style[`scrollPadding${axis}End`]),
+    }
+  }
+
+  protected resolveScrollToOffset(index: number, align: ScrollToIndexOptions["align"] = "auto"): number | null {
+    const { count } = this.options
     if (index < 0 || index >= count) return this.scrollOffset
 
+    const insets = this.getScrollportInsets()
+    const scrollPaddingStart = this.options.scrollPaddingStart + insets.scrollPaddingStart
+    const scrollPaddingEnd = this.options.scrollPaddingEnd + insets.scrollPaddingEnd
+    const scrollMargin = this.getScrollMargin() - insets.padding
+    const viewportSize = this.getScrollportSize()
     const measurement = this.getMeasurement(index)
 
     if (align === "auto") {
       const itemStart = measurement.start
       const itemEnd = measurement.end
       const viewportStart = this.scrollOffset + scrollMargin + scrollPaddingStart
-      const viewportEnd = this.scrollOffset + scrollMargin + this.viewportSize - scrollPaddingEnd
+      const viewportEnd = this.scrollOffset + scrollMargin + viewportSize - scrollPaddingEnd
 
       if (itemStart < viewportStart) return itemStart - scrollMargin - scrollPaddingStart
-      if (itemEnd > viewportEnd) return itemEnd - scrollMargin - this.viewportSize + scrollPaddingEnd
+      if (itemEnd > viewportEnd) return itemEnd - scrollMargin - viewportSize + scrollPaddingEnd
       return null
     }
 
-    const effectiveViewportSize = Math.max(0, this.viewportSize - scrollPaddingStart - scrollPaddingEnd)
+    const effectiveViewportSize = Math.max(0, viewportSize - scrollPaddingStart - scrollPaddingEnd)
     let offset = measurement.start - scrollMargin - scrollPaddingStart
     switch (align) {
       case "center":
         offset -= (effectiveViewportSize - measurement.size) / 2
         break
       case "end":
-        offset = measurement.end - scrollMargin - this.viewportSize + scrollPaddingEnd
+        offset = measurement.end - scrollMargin - viewportSize + scrollPaddingEnd
         break
     }
     return Math.max(0, offset)
@@ -982,7 +1015,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.isDestroyed) {
       return this.isHorizontal ? { scrollLeft: this.scrollOffset } : { scrollTop: this.scrollOffset }
     }
-    const { align = "start", smooth, settle } = options
+    const { align = "auto", smooth, settle } = options
 
     this.cancelPendingConvergence()
 

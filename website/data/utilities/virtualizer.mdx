@@ -116,10 +116,13 @@ virtualizer.scrollToOffset(2400)
 virtualizer.getVisibleRange()
 ```
 
-`align` is `"start"`, `"center"`, `"end"`, or `"auto"`. Non-smooth scrolls
-settle after the target measures. `scrollPaddingStart` / `scrollPaddingEnd`
-reserve space for sticky chrome; `scrollMargin` offsets a list that sits below
-other content in the same scroll container.
+`align` is `"start"`, `"center"`, `"end"`, or `"auto"` (default). `"auto"`
+scrolls only when the item isn't fully visible, to the nearest edge, like a
+native listbox. Use it for keyboard navigation. Scrolling accounts for the
+scroll container's CSS `padding` and `scroll-padding`. Non-smooth scrolls settle
+after the target measures. `scrollPaddingStart` / `scrollPaddingEnd` reserve
+space for sticky chrome; `scrollMargin` offsets a list that sits below other
+content in the same scroll container.
 
 **Sticky headers.** Pass `groups` and read `getStickyGroupHeader()` while
 scrolling. `translateY` pushes the current header up as the next group
@@ -237,8 +240,9 @@ Use `GridVirtualizer` when both rows and columns need windowing. It virtualizes
 
 <CodeSnippet id="virtualizer/grid-virtualizer-usage.mdx" />
 
-Jump with `scrollToCell(row, column)` or `scrollToRow(row)`. The range reports
-`startRow` / `endRow` and `startColumn` / `endColumn`.
+Jump with `scrollToCell(row, column)`, `scrollToRow(row)` or
+`scrollToColumn(column)`. Each takes `align` (default `"auto"`) and `behavior`.
+The range reports `startRow` / `endRow` and `startColumn` / `endColumn`.
 
 ## Window virtualizer
 
@@ -279,7 +283,7 @@ virtualizer.updateOptions({ count: options.length })
 const service = useMachine(combobox.machine, {
   collection,
   scrollToIndexFn(details) {
-    virtualizer.scrollToIndex(details.index, { align: "center" })
+    virtualizer.scrollToIndex(details.index)
   },
 })
 ```

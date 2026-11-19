@@ -36,8 +36,8 @@ const service = useMachine(
   computed(() => ({
     id,
     collection: collection.value,
-    scrollToIndexFn(details: { index: number }) {
-      virtualizer.scrollToIndex(details.index, { align: "center" })
+    scrollToIndexFn(details: { index: number; immediate?: boolean }) {
+      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
     onOpenChange() {
       options.value = comboboxData

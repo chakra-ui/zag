@@ -68,6 +68,7 @@ const isHeader = (row: number, col: number) => row === 0 || col === 0
           type="button"
           @click="
             virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
+              align: 'center',
               behavior: behavior(),
             })
           "

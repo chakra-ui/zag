@@ -68,6 +68,7 @@ export default function Page() {
             type="button"
             onClick={() =>
               virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
+                align: "center",
                 behavior: isSmooth ? "smooth" : "auto",
               })
             }

@@ -1,5 +1,14 @@
 import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
-import type { CSSProperties, GridVirtualizerOptions, Range, RangeChangeReason, ScrollState, TimerId } from "./types"
+import type {
+  CSSProperties,
+  GridScrollToOptions,
+  GridVirtualizerOptions,
+  Range,
+  RangeChangeReason,
+  ScrollAlignment,
+  ScrollState,
+  TimerId,
+} from "./types"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
 import { SizeTracker } from "./utils/size-tracker"
@@ -56,6 +65,16 @@ type ResolvedOptions = Required<
  * Consumer renders: rows → cells inside each row.
  * This reduces measurement overhead from O(rows*cols) to O(rows + cols).
  */
+const alignOffset = (start: number, size: number, current: number, viewport: number, align: ScrollAlignment) => {
+  let offset = current
+  if (align === "start") offset = start
+  else if (align === "end") offset = start + size - viewport
+  else if (align === "center") offset = start - (viewport - size) / 2
+  else if (start < current) offset = start
+  else if (start + size > current + viewport) offset = start + size - viewport
+  return Math.max(0, offset)
+}
+
 export class GridVirtualizer {
   private options: ResolvedOptions
 
@@ -910,81 +929,58 @@ export class GridVirtualizer {
   scrollToCell(
     row: number,
     column: number,
-    options: { behavior?: ScrollBehavior } = {},
+    options: GridScrollToOptions = {},
   ): { scrollTop: number; scrollLeft: number } {
-    const { rowCount, columnCount } = this.options
-    const scrollTop = Math.max(
-      0,
-      this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart - this.getScrollMargin(),
-    )
-    const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
-    const rawScrollLeft =
-      this.scrollElement && typeof (this.scrollElement as { scrollLeft?: unknown }).scrollLeft === "number"
-        ? this.toRawHorizontalOffset(scrollLeft, this.scrollElement as HTMLElement)
-        : scrollLeft
-    const behavior = options.behavior ?? "auto"
-
-    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({
-        top: scrollTop,
-        left: rawScrollLeft,
-        behavior,
-      })
-      if (behavior !== "smooth") {
-        this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
-      }
-    } else {
-      this.scrollTop = scrollTop
-      this.scrollLeft = scrollLeft
-      this.forceUpdate({ reason: "manual" })
-    }
-
+    const scrollTop = this.resolveRowOffset(row, options.align)
+    const scrollLeft = this.resolveColumnOffset(column, options.align)
+    this.scrollToPosition(scrollTop, scrollLeft, options.behavior)
     return { scrollTop, scrollLeft }
   }
 
-  scrollToRow(row: number, options: { behavior?: ScrollBehavior } = {}): { scrollTop: number } {
-    const { rowCount } = this.options
-    const scrollTop = Math.max(
-      0,
-      this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart - this.getScrollMargin(),
-    )
-    const behavior = options.behavior ?? "auto"
-
-    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({ top: scrollTop, behavior })
-      if (behavior !== "smooth") {
-        this.handleScroll({
-          currentTarget: { scrollTop, scrollLeft: this.scrollLeft },
-        })
-      }
-    } else {
-      this.scrollTop = scrollTop
-      this.forceUpdate({ reason: "manual" })
-    }
+  scrollToRow(row: number, options: GridScrollToOptions = {}): { scrollTop: number } {
+    const scrollTop = this.resolveRowOffset(row, options.align)
+    this.scrollToPosition(scrollTop, this.scrollLeft, options.behavior)
     return { scrollTop }
   }
 
-  scrollToColumn(column: number, options: { behavior?: ScrollBehavior } = {}): { scrollLeft: number } {
-    const { columnCount } = this.options
-    const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
-    const behavior = options.behavior ?? "auto"
-
-    const rawScrollLeft =
-      this.scrollElement && typeof (this.scrollElement as { scrollLeft?: unknown }).scrollLeft === "number"
-        ? this.toRawHorizontalOffset(scrollLeft, this.scrollElement as HTMLElement)
-        : scrollLeft
-    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
-      ;(this.scrollElement as any).scrollTo({ left: rawScrollLeft, behavior })
-      if (behavior !== "smooth") {
-        this.handleScroll({
-          currentTarget: { scrollTop: this.scrollTop, scrollLeft },
-        })
-      }
-    } else {
-      this.scrollLeft = scrollLeft
-      this.forceUpdate({ reason: "manual" })
-    }
+  scrollToColumn(column: number, options: GridScrollToOptions = {}): { scrollLeft: number } {
+    const scrollLeft = this.resolveColumnOffset(column, options.align)
+    this.scrollToPosition(this.scrollTop, scrollLeft, options.behavior)
     return { scrollLeft }
+  }
+
+  private resolveRowOffset(row: number, align: ScrollAlignment = "auto"): number {
+    const index = Math.min(row, this.options.rowCount - 1)
+    const start = this.getPrefixRowSize(index - 1) + this.options.paddingStart - this.getScrollMargin()
+    const viewport = this.getClientSize().height || this.viewportHeight
+    return alignOffset(start, this.getRowSize(index), this.scrollTop, viewport, align)
+  }
+
+  private resolveColumnOffset(column: number, align: ScrollAlignment = "auto"): number {
+    const index = Math.min(column, this.options.columnCount - 1)
+    const start = this.getPrefixColumnSize(index - 1) + this.options.paddingStart
+    const viewport = this.getClientSize().width || this.viewportWidth
+    return alignOffset(start, this.getColumnSize(index), this.scrollLeft, viewport, align)
+  }
+
+  private getClientSize(): { width: number; height: number } {
+    const element = this.scrollElement
+    if (!element || !("clientHeight" in element)) return { width: 0, height: 0 }
+    return { width: element.clientWidth, height: element.clientHeight }
+  }
+
+  private scrollToPosition(scrollTop: number, scrollLeft: number, behavior: ScrollBehavior = "auto"): void {
+    const element = this.scrollElement
+    if (element && typeof element.scrollTo === "function") {
+      const hasScrollLeft = typeof (element as { scrollLeft?: unknown }).scrollLeft === "number"
+      const left = hasScrollLeft ? this.toRawHorizontalOffset(scrollLeft, element as HTMLElement) : scrollLeft
+      element.scrollTo({ top: scrollTop, left, behavior })
+      if (behavior !== "smooth") this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
+      return
+    }
+    this.scrollTop = scrollTop
+    this.scrollLeft = scrollLeft
+    this.forceUpdate({ reason: "manual" })
   }
 
   /**

@@ -24,7 +24,7 @@ export default function Page() {
     id: createUniqueId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "center" })
+      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
   })
 

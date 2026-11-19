@@ -142,6 +142,10 @@ export class TableVirtualizer extends ListVirtualizer {
     super.destroy()
   }
 
+  protected override getScrollportSize(): number {
+    return this.clientHeight
+  }
+
   private readClientSize(): void {
     const element = this.scrollElement
     this.clientWidth = element?.clientWidth || this.crossAxisSize

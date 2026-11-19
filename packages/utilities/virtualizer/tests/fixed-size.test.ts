@@ -232,7 +232,7 @@ describe("fixed-size lists", () => {
         initialRect: { width: 600, height: 100 },
       })
 
-      virtualizer.scrollToIndex(80)
+      virtualizer.scrollToIndex(80, { align: "start" })
       expect(raf.rafQueue).toHaveLength(1)
 
       virtualizer.updateOptions({ itemSize: 40 })
@@ -242,7 +242,7 @@ describe("fixed-size lists", () => {
 
       expect(virtualizer.getScrollState().offset.y).toBe(offset)
 
-      virtualizer.scrollToIndex(90)
+      virtualizer.scrollToIndex(90, { align: "start" })
 
       expect(virtualizer.getScrollState().offset.y).toBe(3600)
       expect(raf.rafQueue).toHaveLength(0)
@@ -261,6 +261,41 @@ describe("fixed-size lists", () => {
 })
 
 const viewport = { width: 600, height: 200 }
+
+describe("scrolling to an item", () => {
+  const createList = () => {
+    const virtualizer = new ListVirtualizer({ count: 100, itemSize: 40 })
+    const container = createMockScrollContainer({ viewport: { width: 600, height: 200 } })
+    Object.assign(container.element, { clientHeight: 184 })
+    virtualizer.init(container.element)
+    return { virtualizer, container }
+  }
+
+  test("does not scroll when the item is fully visible", () => {
+    const { virtualizer, container } = createList()
+
+    virtualizer.scrollToIndex(3)
+
+    expect(container.getScrollTop()).toBe(0)
+  })
+
+  test("reveals an item hidden behind the horizontal scrollbar at the bottom edge", () => {
+    const { virtualizer, container } = createList()
+
+    virtualizer.scrollToIndex(4)
+
+    expect(container.getScrollTop()).toBe(16)
+  })
+
+  test("reveals an item above the viewport at the top edge", () => {
+    const { virtualizer, container } = createList()
+    virtualizer.scrollToOffset(1000)
+
+    virtualizer.scrollToIndex(20)
+
+    expect(container.getScrollTop()).toBe(800)
+  })
+})
 
 describe("trailing content", () => {
   test("adds the trailing element to the total size and places it after the last item", () => {

@@ -180,8 +180,8 @@ describe("GridVirtualizer", () => {
     scrollMargin = 20
     rows = virtualizer.getVirtualRows()
     expect(rows.map((row) => row.row)).toEqual([3, 4, 5])
-    expect(virtualizer.scrollToRow(5)).toEqual({ scrollTop: 30 })
-    expect(virtualizer.scrollToCell(5, 0)).toEqual({
+    expect(virtualizer.scrollToRow(5, { align: "start" })).toEqual({ scrollTop: 30 })
+    expect(virtualizer.scrollToCell(5, 0, { align: "start" })).toEqual({
       scrollTop: 30,
       scrollLeft: 0,
     })
@@ -204,7 +204,7 @@ describe("GridVirtualizer", () => {
     const { element, getRawScrollLeft } = createRtlGridContainer(mode)
     virtualizer.init(element)
 
-    expect(virtualizer.scrollToColumn(6)).toEqual({ scrollLeft: 60 })
+    expect(virtualizer.scrollToColumn(6, { align: "start" })).toEqual({ scrollLeft: 60 })
     expect(getRawScrollLeft()).toBe(expectedRawScrollLeft)
   })
 
@@ -524,5 +524,28 @@ describe("GridVirtualizer", () => {
     } finally {
       restore()
     }
+  })
+})
+
+describe("scrolling to a cell", () => {
+  const createGrid = () =>
+    new GridVirtualizer({
+      rowCount: 100,
+      columnCount: 100,
+      estimatedRowSize: () => 20,
+      estimatedColumnSize: () => 50,
+      initialRect: { width: 200, height: 100 },
+    })
+
+  test("does not scroll when the cell is fully visible", () => {
+    expect(createGrid().scrollToCell(2, 1)).toEqual({ scrollTop: 0, scrollLeft: 0 })
+  })
+
+  test("reveals a cell past the viewport at the nearest edge", () => {
+    expect(createGrid().scrollToCell(10, 6)).toEqual({ scrollTop: 120, scrollLeft: 150 })
+  })
+
+  test("aligns to the start when asked", () => {
+    expect(createGrid().scrollToCell(10, 6, { align: "start" })).toEqual({ scrollTop: 200, scrollLeft: 300 })
   })
 })
