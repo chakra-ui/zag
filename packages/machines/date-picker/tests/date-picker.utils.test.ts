@@ -1,5 +1,6 @@
 import { parseDate } from "@internationalized/date"
-import { describe, expect, test } from "vitest"
+import { describe, expect, test, vi } from "vitest"
+import { connect } from "../src/date-picker.connect"
 import type { DayTableCellState } from "../src/date-picker.types"
 import {
   adjustStartAndEndDate,
@@ -206,6 +207,133 @@ describe("DatePicker Utils", () => {
 
     test("should fall back to naming the current view when there is no next view", () => {
       expect(defaultTranslations.viewTrigger("year", undefined)).toBe("year view")
+    })
+
+    test("should include the visible range text in the accessible name", () => {
+      expect(defaultTranslations.viewTrigger("day", "month", "February 2027")).toBe(
+        "February 2027, switch to month view",
+      )
+      expect(defaultTranslations.viewTrigger("month", "year", "2027")).toBe("2027, switch to year view")
+    })
+
+    test("should use only the visible range text when there is no next view", () => {
+      expect(defaultTranslations.viewTrigger("year", undefined, "2020 - 2029")).toBe("2020 - 2029")
+    })
+  })
+
+  describe("getViewTriggerProps", () => {
+    test("includes visible range text in aria-label to satisfy WCAG 2.5.3", () => {
+      const startValue = parseDate("2027-02-01")
+      const endValue = parseDate("2027-02-28")
+      const mockService: any = {
+        state: { get: () => "open", matches: () => false },
+        context: {
+          get: (key: string) => {
+            if (key === "startValue") return startValue
+            if (key === "value") return []
+            return undefined
+          },
+        },
+        computed: (key: string) => {
+          if (key === "endValue") return endValue
+          if (key === "isInteractive") return true
+          if (key === "visibleRangeText")
+            return { start: "February 2027", end: "February 2027", formatted: "February 2027" }
+          return undefined
+        },
+        prop: (key: string) => {
+          if (key === "locale") return "en-US"
+          if (key === "timeZone") return "UTC"
+          if (key === "selectionMode") return "single"
+          if (key === "minView") return "day"
+          if (key === "maxView") return "year"
+          if (key === "format") return (date: any) => date?.toString() ?? ""
+          return undefined
+        },
+        send: () => {},
+        scope: { getById: () => null },
+      }
+      const normalizer: any = new Proxy({}, { get: () => (v: any) => v })
+      const api = connect(mockService, normalizer)
+
+      expect(api.getViewTriggerProps({ view: "day" })["aria-label"]).toBe("February 2027, switch to month view")
+      expect(api.getViewTriggerProps({ view: "month" })["aria-label"]).toBe("2027, switch to year view")
+      expect(api.getViewTriggerProps({ view: "year" })["aria-label"]).toBe("2020 - 2029")
+    })
+
+    test("falls back to visible text only when at maxView", () => {
+      const startValue = parseDate("2027-02-01")
+      const endValue = parseDate("2027-02-28")
+      const mockService: any = {
+        state: { get: () => "open", matches: () => false },
+        context: {
+          get: (key: string) => {
+            if (key === "startValue") return startValue
+            if (key === "value") return []
+            return undefined
+          },
+        },
+        computed: (key: string) => {
+          if (key === "endValue") return endValue
+          if (key === "isInteractive") return true
+          return undefined
+        },
+        prop: (key: string) => {
+          if (key === "locale") return "en-US"
+          if (key === "timeZone") return "UTC"
+          if (key === "selectionMode") return "single"
+          if (key === "minView") return "day"
+          if (key === "maxView") return "month"
+          if (key === "format") return (date: any) => date?.toString() ?? ""
+          return undefined
+        },
+        send: () => {},
+        scope: { getById: () => null },
+      }
+      const normalizer: any = new Proxy({}, { get: () => (v: any) => v })
+      const api = connect(mockService, normalizer)
+
+      const monthTrigger = api.getViewTriggerProps({ view: "month" })
+      expect(monthTrigger["aria-label"]).toBe("2027")
+      expect(monthTrigger.disabled).toBe(true)
+    })
+
+    test("passes text to custom translations.viewTrigger", () => {
+      const startValue = parseDate("2027-02-01")
+      const endValue = parseDate("2027-02-28")
+      const customViewTrigger = vi.fn((view, nextView, text) => `${text} (${view}->${nextView ?? "none"})`)
+      const mockService: any = {
+        state: { get: () => "open", matches: () => false },
+        context: {
+          get: (key: string) => {
+            if (key === "startValue") return startValue
+            if (key === "value") return []
+            return undefined
+          },
+        },
+        computed: (key: string) => {
+          if (key === "endValue") return endValue
+          if (key === "isInteractive") return true
+          return undefined
+        },
+        prop: (key: string) => {
+          if (key === "locale") return "en-US"
+          if (key === "timeZone") return "UTC"
+          if (key === "selectionMode") return "single"
+          if (key === "minView") return "day"
+          if (key === "maxView") return "year"
+          if (key === "translations") return { viewTrigger: customViewTrigger }
+          if (key === "format") return (date: any) => date?.toString() ?? ""
+          return undefined
+        },
+        send: () => {},
+        scope: { getById: () => null },
+      }
+      const normalizer: any = new Proxy({}, { get: () => (v: any) => v })
+      const api = connect(mockService, normalizer)
+
+      expect(api.getViewTriggerProps({ view: "day" })["aria-label"]).toBe("February 2027 (day->month)")
+      expect(customViewTrigger).toHaveBeenCalledWith("day", "month", "February 2027")
     })
   })
 

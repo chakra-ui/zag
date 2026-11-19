@@ -53,9 +53,9 @@ export const defaultTranslations: Required<IntlTranslations> = {
   trigger(open) {
     return open ? "Close calendar" : "Open calendar"
   },
-  viewTrigger(view, nextView) {
-    if (!nextView) return `${view} view`
-    return `Switch to ${nextView} view`
+  viewTrigger(view, nextView, text) {
+    if (!nextView) return text ? `${text}` : `${view} view`
+    return text ? `${text}, switch to ${nextView} view` : `Switch to ${nextView} view`
   },
   presetTrigger(value) {
     const [start = "", end = ""] = value

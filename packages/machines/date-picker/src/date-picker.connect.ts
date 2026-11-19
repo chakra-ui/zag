@@ -51,6 +51,7 @@ import {
   defaultTranslations,
   getInputPlaceholder,
   getNextView,
+  getVisibleRangeText,
   isDateWithinRange,
 } from "./date-picker.utils"
 
@@ -897,6 +898,15 @@ export function connect<T extends PropTypes>(
       const nextView = getNextView(view, prop("minView"), prop("maxView"))
       const hasNextView = nextView !== view
       const isDisabled = disabled || !hasNextView
+      const rangeText = getVisibleRangeText({
+        view,
+        startValue: context.get("startValue"),
+        endValue: computed("endValue"),
+        locale: prop("locale"),
+        timeZone: prop("timeZone"),
+        selectionMode: prop("selectionMode"),
+      })
+      const text = view === "year" ? rangeText.formatted : rangeText.start
       return normalize.button({
         ...parts.viewTrigger.attrs,
         "data-view": view,
@@ -905,7 +915,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-label": translations.viewTrigger(view, hasNextView ? nextView : undefined),
+        "aria-label": translations.viewTrigger(view, hasNextView ? nextView : undefined, text),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return

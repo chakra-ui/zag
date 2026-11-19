@@ -67,7 +67,7 @@ export interface IntlTranslations {
   nextTrigger?: ((view: DateView) => string) | undefined
   monthSelect?: string | undefined
   yearSelect?: string | undefined
-  viewTrigger?: ((view: DateView, nextView: DateView | undefined) => string) | undefined
+  viewTrigger?: ((view: DateView, nextView: DateView | undefined, text?: string) => string) | undefined
   prevTrigger?: ((view: DateView) => string) | undefined
   presetTrigger?: ((value: string[]) => string) | undefined
   clearTrigger?: string | undefined
