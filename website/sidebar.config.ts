@@ -65,7 +65,12 @@ export const tabs: SidebarTab[] = [
       },
       {
         label: "AI agents",
-        items: docs("overview", [{ label: "LLMs.txt", id: "llms-txt" }]),
+        items: [
+          ...docs("overview", [{ label: "LLMs.txt", id: "llms-txt" }]),
+          ...docs("guides", [
+            { label: "Agent tools", id: "agent-tools", new: true },
+          ]),
+        ],
       },
     ],
   },

@@ -1,0 +1,299 @@
+---
+title: Agent tools
+description: Let an AI agent read and drive the Zag components on a page
+---
+
+`@zag-js/agent` lets an AI agent use your interface through the components' own
+APIs, instead of reading the accessibility tree and clicking. It gives the agent
+three tools: `snapshot` lists the components on the page, `query` finds some of
+them, and `act` runs a batch of steps and returns what changed.
+
+Each `act` result already includes the new values, so the agent doesn't need to
+check the page again. On a settings screen benchmark, this took an agent 5 to 11
+tool calls instead of 18, and between a seventh and a third of the tokens. See
+[Benchmark](#benchmark).
+
+## Benchmark
+
+The benchmark gives an agent one task on a project settings screen built with
+Zag: three tabs, 24 members with a menu on every row, a confirm dialog, and an
+accordion of switches. The agent is asked to:
+
+- rename the project to Atlas
+- set the visibility to Internal
+- make Priya Shah an admin
+- remove Tom Becker and confirm
+- in Email, turn Deploy failures on and Weekly digest off, and leave Slack alone
+- save
+
+A run counts as correct when the page saved once, with exactly those changes.
+The same screen runs two ways:
+
+- **Browser tools:** how agents use most pages today. The agent reads the
+  accessibility tree and clicks, types and presses keys, like the Playwright MCP
+  server's tools.
+- **Agent tools:** the agent uses `snapshot`, `query` and `act` from
+  `@zag-js/agent`.
+
+Measured with Claude Sonnet through Claude Code. Every run was correct.
+
+### Closed panels kept in the page
+
+Closed tabs and accordion items stay in the page, hidden, as Zag's content parts
+do by default. Medians of three runs, on November 16, 2026.
+
+| Tools         | Tool calls | Text read | Time | Tokens | Cost   |
+| ------------- | ---------- | --------- | ---- | ------ | ------ |
+| Browser tools | 18         | 38.4k     | 44 s | 265.8k | $0.122 |
+| Agent tools   | 5          | 9.3k      | 12 s | 37.5k  | $0.034 |
+
+The agent read one snapshot, made all six changes in one `act`, checked one
+value with `query`, and saved. That's 72% fewer tool calls and 86% fewer tokens,
+in about a quarter of the time.
+
+### Closed panels unmounted
+
+The screen renders a tab or accordion item only while it's open. Medians of
+three runs, on November 18, 2026.
+
+| Tools         | Tool calls | Text read | Time | Tokens | Cost   |
+| ------------- | ---------- | --------- | ---- | ------ | ------ |
+| Browser tools | 18         | 38.5k     | 41 s | 260.6k | $0.121 |
+| Agent tools   | 6          | 3.8k      | 15 s | 38.2k  | $0.026 |
+
+Here the agent can only find what's on a tab after opening it, so it works one
+tab at a time. It still took 67% fewer tool calls and 85% fewer tokens, in about
+a third of the time. `act` keeps that cheap: it lists what came onto the page as
+one short line each, with a menu's items, remembers the values on closed tabs,
+and opens a closed section when a step names something in it, like "Email Deploy
+failures".
+
+With browser tools, how panels are rendered barely matters. With agent tools,
+keeping closed panels in the page lets the agent see every tab at once, which
+saves another tool call or so.
+
+**Costs** are what Claude Code reports at API prices. **Text read** is the
+characters the tools returned to the model. The benchmark is adapted from
+[ui-sdk's agent benchmark](https://github.com/vercel-labs/ui/tree/main/benchmarks/agent)
+and lives in `benchmarks/agent` in the Zag repository.
+
+## Installation
+
+```bash
+npm install @zag-js/agent
+```
+
+## Create the agent
+
+Create the agent once, in the browser, before your components mount, so it hears
+every machine as it starts. Pass the components your page uses: only those are
+bundled.
+
+```ts
+import { createAgent, dialogAgent, selectAgent, tabsAgent } from "@zag-js/agent"
+
+export const agent = createAgent({
+  components: [tabsAgent, selectAgent, dialogAgent],
+})
+```
+
+To describe every component the package supports, pass `allComponents`. Plain
+`<input>`, `<textarea>` and `<button>` elements that aren't part of a Zag
+component are picked up as fields and buttons.
+
+| Component       | Export                | Actions                                               |
+| --------------- | --------------------- | ----------------------------------------------------- |
+| accordion       | `accordionAgent`      | `open`, `close`, `setValue`                           |
+| angle-slider    | `angleSliderAgent`    | `setValue`                                            |
+| carousel        | `carouselAgent`       | `scrollTo`, `next`, `previous`                        |
+| cascade-select  | `cascadeSelectAgent`  | `setValue`, `clear`, `setOpen`                        |
+| checkbox        | `checkboxAgent`       | `setChecked`, `toggle`                                |
+| collapsible     | `collapsibleAgent`    | `setOpen`                                             |
+| color-picker    | `colorPickerAgent`    | `setValue`, `setOpen`                                 |
+| combobox        | `comboboxAgent`       | `setValue`, `search`, `clear`, `setOpen`              |
+| date-input      | `dateInputAgent`      | `setValue`, `clear`                                   |
+| date-picker     | `datePickerAgent`     | `setValue`, `clear`, `setOpen`                        |
+| dialog          | `dialogAgent`         | `press`, `setOpen`                                    |
+| drawer          | `drawerAgent`         | `press`, `setOpen`                                    |
+| editable        | `editableAgent`       | `setValue`                                            |
+| file-upload     | `fileUploadAgent`     | `remove`, `clear`                                     |
+| floating-panel  | `floatingPanelAgent`  | `press`, `setOpen`, `minimize`, `maximize`, `restore` |
+| gridlist        | `gridlistAgent`       | `setValue`, `clear`                                   |
+| hover-card      | `hoverCardAgent`      | `setOpen`                                             |
+| listbox         | `listboxAgent`        | `setValue`, `clear`                                   |
+| menu            | `menuAgent`           | `press`, `setOpen`                                    |
+| navigation-menu | `navigationMenuAgent` | `open`, `close`                                       |
+| number-input    | `numberInputAgent`    | `setValue`, `increment`, `decrement`, `clear`         |
+| pagination      | `paginationAgent`     | `setPage`, `next`, `previous`                         |
+| password-input  | `passwordInputAgent`  | `setValue`                                            |
+| pin-input       | `pinInputAgent`       | `setValue`, `clear`                                   |
+| popover         | `popoverAgent`        | `press`, `setOpen`                                    |
+| radio-group     | `radioGroupAgent`     | `setValue`, `clear`                                   |
+| rating-group    | `ratingGroupAgent`    | `setValue`, `clear`                                   |
+| select          | `selectAgent`         | `setValue`, `setOpen`                                 |
+| slider          | `sliderAgent`         | `setValue`, `increment`, `decrement`                  |
+| splitter        | `splitterAgent`       | `resize`, `collapse`, `expand`                        |
+| steps           | `stepsAgent`          | `setValue`, `next`, `previous`                        |
+| switch          | `switchAgent`         | `setChecked`, `toggle`                                |
+| tabs            | `tabsAgent`           | `setValue`                                            |
+| tags-input      | `tagsInputAgent`      | `setValue`, `add`, `remove`, `clear`                  |
+| timer           | `timerAgent`          | `start`, `pause`, `resume`, `reset`                   |
+| toast           | `toastAgent`          | `press`, `dismiss`                                    |
+| toggle-group    | `toggleGroupAgent`    | `setValue`, `toggle`                                  |
+| toggle          | `toggleAgent`         | `setPressed`, `toggle`                                |
+| tooltip         | `tooltipAgent`        | `press`, `setOpen`                                    |
+| tour            | `tourAgent`           | `next`, `previous`, `press`                           |
+| tree-view       | `treeViewAgent`       | `select`, `expand`, `collapse`                        |
+
+Any component with `setOpen` also takes `open` and `close`. A password input,
+and a pin input with `otp` or `mask`, are filled but never read back. A file
+upload's files can be removed but not added: an agent has no files to give.
+
+## Connect a model
+
+`agentTools` has the three tools' names, descriptions and JSON Schemas. Give
+them to your model, and route each tool call to the matching method:
+
+```ts
+import { agentTools } from "@zag-js/agent"
+
+const tools = agentTools.map(({ name, description, inputSchema }) => ({
+  name,
+  description,
+  input_schema: inputSchema,
+}))
+
+async function runTool(name: string, input: any) {
+  if (name === "act") return agent.act(input)
+  if (name === "query") return agent.query(input)
+  return agent.snapshot()
+}
+```
+
+The tool descriptions are the model's only instructions for the page, so pass
+them as they are.
+
+## Let the browser's agent in
+
+In a browser with WebMCP (`document.modelContext`), `registerTools` registers
+the three tools with the browser's own agent. It does nothing in a browser
+without it.
+
+```ts
+import { registerTools } from "@zag-js/agent"
+
+const unregister = registerTools(agent, {
+  allow: (step) => !step.confirm || window.confirm(step.confirm),
+})
+```
+
+You didn't write that agent, so `allow` is required: it decides every step it
+asks for.
+
+## Mark what needs a person
+
+Three attributes decide what an agent may do on its own:
+
+- `data-agent-confirm="<what it does>"` on anything an agent must not do alone,
+  like delete, pay or send. A press on it runs only when `allow` agrees, and
+  otherwise fails with "Needs a person". Write the text for the person who's
+  asked.
+- `data-agent-secret` on a field an agent may fill but never read. Password,
+  credit card and one-time-code fields are secret already.
+- `data-agent-hidden` on a region an agent shouldn't see at all.
+
+```tsx
+<button
+  data-agent-confirm="Deletes the project and all its files"
+  onClick={deleteProject}
+>
+  Delete project
+</button>
+```
+
+```ts
+const agent = createAgent({
+  components: allComponents,
+  allow: (step) => (step.confirm ? askThePerson(step.confirm) : true),
+})
+```
+
+## Tell an agent's change apart
+
+Changes the agent makes through an API method that takes a reason report
+`reason: "agent"` in their change details, like a tab's `onValueChange` or a
+dialog's `onOpenChange`:
+
+```ts
+const service = useMachine(tabs.machine, {
+  id: useId(),
+  onValueChange(details) {
+    if (details.reason === "agent") track("agent-changed-tab", details.value)
+  },
+})
+```
+
+A select's value, a switch and a checkbox don't report a reason yet.
+
+## When the app refuses a change
+
+A controlled component can refuse a change by keeping its value, or answer with
+another one. `act` compares each step with what the page kept, and lists the
+ones that differ in `rejected`, with what was asked and what was kept. The steps
+after it still run, and `ok` is `false`.
+
+```json
+{
+  "ok": false,
+  "rejected": [
+    {
+      "step": 0,
+      "label": "Notifications",
+      "requested": true,
+      "committed": false
+    }
+  ]
+}
+```
+
+## Make your page easy to drive
+
+- **Name every control.** The agent finds components by their accessible name.
+  Use a label, or `aria-label` on a tab list, an accordion or a menu trigger.
+  Give a menu on each row a name with the row in it, like
+  `aria-label="Actions for Jane Doe"`.
+- **Keep state in change callbacks.** The agent calls the component's API, not
+  your `onClick` or `onKeyDown` handlers, so keep app state in sync through
+  `onValueChange`, `onOpenChange` and the rest.
+- **Keep closed panels in the page when you can.** Components inside a closed
+  tab or accordion item that's still in the page show up in `snapshot` as
+  `hidden`, and a step on one opens its section first. When panels unmount, the
+  agent can only find what's on a closed tab after opening it.
+
+## Your own machines
+
+Describe a machine of your own with `defineAgentComponent`, and pass it beside
+the others:
+
+```ts
+import { defineAgentComponent } from "@zag-js/agent"
+import * as rating from "./rating"
+
+const ratingAgent = defineAgentComponent<rating.Api>({
+  kind: "rating",
+  machine: rating.machine,
+  connect: rating.connect,
+  element: (scope) => scope.getById(`${scope.id}:control`),
+  state: (api) => ({ value: api.value }),
+  actions: {
+    setValue: ({ api, args }) => {
+      const value = Number(args[0])
+      api().setValue(value)
+      return { key: "value", value }
+    },
+  },
+})
+```
+
+An action that sets a value returns `{ key, value }`, so `act` can tell when the
+app refused it.

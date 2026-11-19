@@ -257,6 +257,169 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@types/node@26.6.6)(jsdom@31.0.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
 
+  benchmarks/agent:
+    dependencies:
+      '@ui-sdk/core':
+        specifier: 0.1.0-beta.5
+        version: 0.1.0-beta.5
+      '@ui-sdk/react':
+        specifier: 0.1.0-beta.5
+        version: 0.1.0-beta.5(@types/react@19.2.18)(@ui-sdk/core@0.1.0-beta.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@zag-js/accordion':
+        specifier: workspace:*
+        version: link:../../packages/machines/accordion
+      '@zag-js/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
+      '@zag-js/angle-slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/angle-slider
+      '@zag-js/carousel':
+        specifier: workspace:*
+        version: link:../../packages/machines/carousel
+      '@zag-js/cascade-select':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascade-select
+      '@zag-js/checkbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/checkbox
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/combobox':
+        specifier: workspace:*
+        version: link:../../packages/machines/combobox
+      '@zag-js/date-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-input
+      '@zag-js/date-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-picker
+      '@zag-js/dialog':
+        specifier: workspace:*
+        version: link:../../packages/machines/dialog
+      '@zag-js/drawer':
+        specifier: workspace:*
+        version: link:../../packages/machines/drawer
+      '@zag-js/editable':
+        specifier: workspace:*
+        version: link:../../packages/machines/editable
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../../packages/machines/gridlist
+      '@zag-js/hover-card':
+        specifier: workspace:*
+        version: link:../../packages/machines/hover-card
+      '@zag-js/listbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/listbox
+      '@zag-js/menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
+      '@zag-js/number-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/number-input
+      '@zag-js/pagination':
+        specifier: workspace:*
+        version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
+      '@zag-js/pin-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/pin-input
+      '@zag-js/popover':
+        specifier: workspace:*
+        version: link:../../packages/machines/popover
+      '@zag-js/radio-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/radio-group
+      '@zag-js/rating-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/rating-group
+      '@zag-js/react':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/react
+      '@zag-js/select':
+        specifier: workspace:*
+        version: link:../../packages/machines/select
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
+      '@zag-js/splitter':
+        specifier: workspace:*
+        version: link:../../packages/machines/splitter
+      '@zag-js/steps':
+        specifier: workspace:*
+        version: link:../../packages/machines/steps
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../../packages/machines/switch
+      '@zag-js/tabs':
+        specifier: workspace:*
+        version: link:../../packages/machines/tabs
+      '@zag-js/tags-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/tags-input
+      '@zag-js/timer':
+        specifier: workspace:*
+        version: link:../../packages/machines/timer
+      '@zag-js/toast':
+        specifier: workspace:*
+        version: link:../../packages/machines/toast
+      '@zag-js/toggle':
+        specifier: workspace:*
+        version: link:../../packages/machines/toggle
+      '@zag-js/toggle-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/toggle-group
+      '@zag-js/tooltip':
+        specifier: workspace:*
+        version: link:../../packages/machines/tooltip
+      '@zag-js/tree-view':
+        specifier: workspace:*
+        version: link:../../packages/machines/tree-view
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.65.0
+        version: 1.65.0
+      '@types/node':
+        specifier: 26.6.6
+        version: 26.6.6
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)
+      '@vitejs/plugin-react':
+        specifier: 6.1.1
+        version: 6.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vite:
+        specifier: 8.3.8
+        version: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
+
   examples/next-ts:
     dependencies:
       '@internationalized/date':
@@ -2140,6 +2303,142 @@ importers:
       vite:
         specifier: 8.3.5
         version: 8.3.5(@types/node@26.6.6)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
+
+  packages/agent:
+    dependencies:
+      '@zag-js/accordion':
+        specifier: workspace:*
+        version: link:../machines/accordion
+      '@zag-js/angle-slider':
+        specifier: workspace:*
+        version: link:../machines/angle-slider
+      '@zag-js/carousel':
+        specifier: workspace:*
+        version: link:../machines/carousel
+      '@zag-js/cascade-select':
+        specifier: workspace:*
+        version: link:../machines/cascade-select
+      '@zag-js/checkbox':
+        specifier: workspace:*
+        version: link:../machines/checkbox
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../machines/collapsible
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../machines/color-picker
+      '@zag-js/combobox':
+        specifier: workspace:*
+        version: link:../machines/combobox
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../core
+      '@zag-js/date-input':
+        specifier: workspace:*
+        version: link:../machines/date-input
+      '@zag-js/date-picker':
+        specifier: workspace:*
+        version: link:../machines/date-picker
+      '@zag-js/dialog':
+        specifier: workspace:*
+        version: link:../machines/dialog
+      '@zag-js/drawer':
+        specifier: workspace:*
+        version: link:../machines/drawer
+      '@zag-js/editable':
+        specifier: workspace:*
+        version: link:../machines/editable
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../machines/file-upload
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../machines/floating-panel
+      '@zag-js/gridlist':
+        specifier: workspace:*
+        version: link:../machines/gridlist
+      '@zag-js/hover-card':
+        specifier: workspace:*
+        version: link:../machines/hover-card
+      '@zag-js/listbox':
+        specifier: workspace:*
+        version: link:../machines/listbox
+      '@zag-js/menu':
+        specifier: workspace:*
+        version: link:../machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../machines/navigation-menu
+      '@zag-js/number-input':
+        specifier: workspace:*
+        version: link:../machines/number-input
+      '@zag-js/pagination':
+        specifier: workspace:*
+        version: link:../machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../machines/password-input
+      '@zag-js/pin-input':
+        specifier: workspace:*
+        version: link:../machines/pin-input
+      '@zag-js/popover':
+        specifier: workspace:*
+        version: link:../machines/popover
+      '@zag-js/radio-group':
+        specifier: workspace:*
+        version: link:../machines/radio-group
+      '@zag-js/rating-group':
+        specifier: workspace:*
+        version: link:../machines/rating-group
+      '@zag-js/select':
+        specifier: workspace:*
+        version: link:../machines/select
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../machines/slider
+      '@zag-js/splitter':
+        specifier: workspace:*
+        version: link:../machines/splitter
+      '@zag-js/steps':
+        specifier: workspace:*
+        version: link:../machines/steps
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../machines/switch
+      '@zag-js/tabs':
+        specifier: workspace:*
+        version: link:../machines/tabs
+      '@zag-js/tags-input':
+        specifier: workspace:*
+        version: link:../machines/tags-input
+      '@zag-js/timer':
+        specifier: workspace:*
+        version: link:../machines/timer
+      '@zag-js/toast':
+        specifier: workspace:*
+        version: link:../machines/toast
+      '@zag-js/toggle':
+        specifier: workspace:*
+        version: link:../machines/toggle
+      '@zag-js/toggle-group':
+        specifier: workspace:*
+        version: link:../machines/toggle-group
+      '@zag-js/tooltip':
+        specifier: workspace:*
+        version: link:../machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../machines/tour
+      '@zag-js/tree-view':
+        specifier: workspace:*
+        version: link:../machines/tree-view
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
 
   packages/anatomy:
     devDependencies:
@@ -8027,6 +8326,20 @@ packages:
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
+
+  '@ui-sdk/core@0.1.0-beta.5':
+    resolution: {integrity: sha512-dmunrxWrZ+vwldKJ6THQNYyyfbLFY6K82hBvIZSnuGwpEQmXKmM0iuANgGXtaqw8unSB2p9E5s3y7zfE9rgP6Q==}
+
+  '@ui-sdk/react@0.1.0-beta.5':
+    resolution: {integrity: sha512-Zfvl94ulACX511lQKQDnK7wVjhYUYsR5LLnCZ800NzQ3983TxZasHxXyC+KYNlvppkYfpELPlAbVslsSIGQ9/A==}
+    peerDependencies:
+      '@types/react': '>=19.2.10'
+      '@ui-sdk/core': ^0.1.0-beta.5
+      react: '>=19'
+      react-dom: '>=19'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@ungap/structured-clone@1.4.0':
     resolution: {integrity: sha512-1mEZtMKPM09vDmQt5y7YvmN2+DFTP7Tg0EWXdic8/C6VRnpb33e4ghisCIE3WZjsE2N8mf+QV1Zqh7ZFYLWInQ==}
@@ -15975,6 +16288,16 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
+  '@ui-sdk/core@0.1.0-beta.5': {}
+
+  '@ui-sdk/react@0.1.0-beta.5(@types/react@19.2.18)(@ui-sdk/core@0.1.0-beta.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      '@ui-sdk/core': 0.1.0-beta.5
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+    optionalDependencies:
+      '@types/react': 19.2.18
+
   '@ungap/structured-clone@1.4.0': {}
 
   '@unhead/vue@2.1.17(vue@3.5.44(typescript@7.0.2))':
@@ -16006,6 +16329,11 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
+
+  '@vitejs/plugin-react@6.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
 
   '@vitejs/plugin-vue-jsx@5.1.6(supports-color@10.2.2)(vite@7.3.6(@types/node@25.9.9)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vue@3.5.44(typescript@7.0.2))':
     dependencies:
@@ -21364,7 +21692,6 @@ snapshots:
       terser: 5.51.2
       tsx: 4.23.15
       yaml: 2.9.1
-    optional: true
 
   vitefu@1.1.3(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)):
     optionalDependencies:

@@ -1,0 +1,82 @@
+{
+  "name": "@zag-js/agent",
+  "version": "2.0.0-next.4",
+  "description": "Lets an AI agent read and drive the Zag machines on a page through snapshot, query and act",
+  "keywords": [
+    "js",
+    "agent",
+    "ai",
+    "webmcp"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/agent",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../clean-package.config.json",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@zag-js/accordion": "workspace:*",
+    "@zag-js/angle-slider": "workspace:*",
+    "@zag-js/carousel": "workspace:*",
+    "@zag-js/cascade-select": "workspace:*",
+    "@zag-js/checkbox": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
+    "@zag-js/color-picker": "workspace:*",
+    "@zag-js/combobox": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/date-input": "workspace:*",
+    "@zag-js/date-picker": "workspace:*",
+    "@zag-js/dialog": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
+    "@zag-js/editable": "workspace:*",
+    "@zag-js/file-upload": "workspace:*",
+    "@zag-js/floating-panel": "workspace:*",
+    "@zag-js/gridlist": "workspace:*",
+    "@zag-js/hover-card": "workspace:*",
+    "@zag-js/listbox": "workspace:*",
+    "@zag-js/menu": "workspace:*",
+    "@zag-js/navigation-menu": "workspace:*",
+    "@zag-js/number-input": "workspace:*",
+    "@zag-js/pagination": "workspace:*",
+    "@zag-js/password-input": "workspace:*",
+    "@zag-js/pin-input": "workspace:*",
+    "@zag-js/popover": "workspace:*",
+    "@zag-js/radio-group": "workspace:*",
+    "@zag-js/rating-group": "workspace:*",
+    "@zag-js/select": "workspace:*",
+    "@zag-js/slider": "workspace:*",
+    "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
+    "@zag-js/switch": "workspace:*",
+    "@zag-js/tabs": "workspace:*",
+    "@zag-js/tags-input": "workspace:*",
+    "@zag-js/timer": "workspace:*",
+    "@zag-js/toast": "workspace:*",
+    "@zag-js/toggle": "workspace:*",
+    "@zag-js/toggle-group": "workspace:*",
+    "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tour": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
+    "@zag-js/types": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  }
+}

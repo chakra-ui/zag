@@ -12,7 +12,7 @@ import type { ActivationDirection, CommonProperties, DirectionProperty, PropType
  * - `keyboard`: an arrow, `Home` or `End` key moved focus and selected the tab (automatic activation)
  * - `script`: `setValue`, `clearValue`, `selectNext` or `selectPrevious` was called
  */
-export type ValueChangeReason = "trigger-click" | "keyboard" | "script"
+export type ValueChangeReason = "trigger-click" | "keyboard" | "script" | "agent"
 
 export interface ValueChangeDetails {
   /** `null` when a `deselectable` tab is deselected */

@@ -39,7 +39,8 @@ export type InputValueChangeReason =
   | "input-change" // User typed in the input
   | "item-select" // Item was selected and input value changed based on selection behavior
   | "clear-trigger" // Clear button was clicked
-  | "script" // Programmatically changed
+  | "script"
+  | "agent" // Programmatically changed
   | "interact-outside" // User clicked outside or blurred the input
 
 export interface InputValueChangeDetails {
@@ -53,7 +54,8 @@ export interface InputValueChangeDetails {
 export type OpenChangeReason =
   | "input-click" // User clicked the input
   | "trigger-click" // User clicked the trigger button
-  | "script" // Programmatically changed
+  | "script"
+  | "agent" // Programmatically changed
   | "arrow-key" // User pressed arrow keys or used the listbox navigation keys
   | "input-change" // Input value changed
   | "interact-outside" // User clicked outside
