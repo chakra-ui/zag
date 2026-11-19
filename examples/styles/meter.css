@@ -68,3 +68,31 @@
   gap: 8px;
   margin-top: 16px;
 }
+
+.meter-storage-quota {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+
+  [data-meter-root] {
+    max-width: none;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .alert {
+    margin: 0;
+    color: var(--z-danger);
+  }
+}
