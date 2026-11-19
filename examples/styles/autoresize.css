@@ -1,0 +1,74 @@
+.autoresize-chat-composer,
+.autoresize-input-width {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.autoresize-chat-composer {
+  .messages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+
+    li {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--z-green-600);
+      color: white;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  form {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  textarea {
+    flex: 1;
+    resize: none;
+    overflow-y: hidden;
+    min-height: 0;
+    line-height: 20px;
+    max-height: calc(5 * 20px + 16px + 2px);
+  }
+}
+
+.autoresize-input-width {
+  align-items: center;
+
+  label {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    max-width: 100%;
+  }
+
+  input {
+    max-width: 100%;
+    min-width: 4ch;
+    font-size: 20px;
+    font-weight: 600;
+
+    &:not(:hover, :focus-visible) {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}
