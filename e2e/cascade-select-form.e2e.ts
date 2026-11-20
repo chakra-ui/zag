@@ -12,7 +12,7 @@ test.describe("cascade-select form", () => {
 
   test("submitting empty marks the field invalid", async ({ page }) => {
     await page.getByRole("button", { name: "Save address" }).click()
-    await expect(page.getByText("Choose a delivery region")).toBeVisible()
+    await expect(page.getByRole("alert").filter({ hasText: "Choose a delivery region" })).toBeVisible()
     await expect(page.locator("[data-cascade-select-root]")).toHaveAttribute("data-invalid", "")
     await expect(page.locator("[data-cascade-select-trigger]")).toHaveAttribute("data-invalid", "")
     await expect(page.getByTestId("form-output")).toHaveCount(0)

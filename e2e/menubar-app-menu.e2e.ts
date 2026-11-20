@@ -17,6 +17,10 @@ test.describe("menubar app-menu", () => {
 
     await page.getByRole("menuitem", { name: "Edit" }).click()
     await expect(page.getByRole("menuitem", { name: /^Redo/ })).toHaveAttribute("aria-disabled", "true")
+
+    await page.getByRole("menuitem", { name: /^Undo/ }).hover()
+    await page.keyboard.press("ArrowDown")
+    await expect(page.getByRole("menuitem", { name: /^Select all/ })).toHaveAttribute("data-highlighted", "")
   })
 
   test("checkbox items toggle and remember their state", async ({ page }) => {

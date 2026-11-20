@@ -73,7 +73,7 @@
         </Portal>
       </div>
       {#if invalid}
-        <p class="error">Choose a delivery region</p>
+        <p class="error" role="alert">Choose a delivery region</p>
       {/if}
       <div class="actions">
         <button type="submit">Save address</button>

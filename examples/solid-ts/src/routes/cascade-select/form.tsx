@@ -133,7 +133,9 @@ export default function Page() {
               </Portal>
             </div>
             <Show when={invalid()}>
-              <p class="error">Choose a delivery region</p>
+              <p class="error" role="alert">
+                Choose a delivery region
+              </p>
             </Show>
             <div class="actions">
               <button type="submit">Save address</button>

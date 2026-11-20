@@ -54,7 +54,11 @@ export default function Page() {
               </div>
               <input {...api.getHiddenInputProps()} />
             </div>
-            {rejected && <p className="error">Use letters and numbers only</p>}
+            {rejected && (
+              <p className="error" role="alert">
+                Use letters and numbers only
+              </p>
+            )}
             <button type="submit">Join team</button>
           </form>
           {output && <pre data-testid="form-output">{output}</pre>}

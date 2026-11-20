@@ -47,7 +47,7 @@
         <input {...api.getHiddenInputProps()} />
       </div>
       {#if rejected}
-        <p class="error">Use letters and numbers only</p>
+        <p class="error" role="alert">Use letters and numbers only</p>
       {/if}
       <button type="submit">Join team</button>
     </form>

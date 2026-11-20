@@ -131,7 +131,11 @@ export default function Page() {
                 </div>
               </Portal>
             </div>
-            {invalid && <p className="error">Choose a delivery region</p>}
+            {invalid && (
+              <p className="error" role="alert">
+                Choose a delivery region
+              </p>
+            )}
             <div className="actions">
               <button type="submit">Save address</button>
               <button type="reset">Clear form</button>

@@ -85,7 +85,7 @@ function onReset() {
             </div>
           </Teleport>
         </div>
-        <p v-if="invalid" class="error">Choose a delivery region</p>
+        <p v-if="invalid" class="error" role="alert">Choose a delivery region</p>
         <div class="actions">
           <button type="submit">Save address</button>
           <button type="reset">Clear form</button>

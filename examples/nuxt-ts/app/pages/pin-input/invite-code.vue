@@ -40,7 +40,7 @@ function onSubmit(event: Event) {
           </div>
           <input v-bind="api.getHiddenInputProps()" />
         </div>
-        <p v-if="rejected" class="error">Use letters and numbers only</p>
+        <p v-if="rejected" class="error" role="alert">Use letters and numbers only</p>
         <button type="submit">Join team</button>
       </form>
       <pre v-if="output" data-testid="form-output">{{ output }}</pre>

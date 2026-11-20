@@ -29,6 +29,6 @@ test.describe("pin-input invite-code", () => {
     await first.click()
     await page.keyboard.type("#")
     await expect(first).toHaveValue("")
-    await expect(page.getByText("Use letters and numbers only")).toBeVisible()
+    await expect(page.getByRole("alert").filter({ hasText: "Use letters and numbers only" })).toBeVisible()
   })
 })

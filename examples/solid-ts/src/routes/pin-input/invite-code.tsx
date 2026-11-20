@@ -53,7 +53,9 @@ export default function Page() {
               <input {...api().getHiddenInputProps()} />
             </div>
             <Show when={rejected()}>
-              <p class="error">Use letters and numbers only</p>
+              <p class="error" role="alert">
+                Use letters and numbers only
+              </p>
             </Show>
             <button type="submit">Join team</button>
           </form>
