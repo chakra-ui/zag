@@ -45,7 +45,7 @@ export default function Page() {
             <div className="progress-bar" style={{ width: `${done}%` }} />
           </div>
           <div {...api.getControlProps()}>
-            <button {...api.getActionTriggerProps({ action: "start" })}>Start focus</button>
+            {secondsLeft > 0 && <button {...api.getActionTriggerProps({ action: "start" })}>Start focus</button>}
             <button {...api.getActionTriggerProps({ action: "pause" })}>Pause</button>
             <button {...api.getActionTriggerProps({ action: "resume" })}>Resume</button>
             <button {...api.getActionTriggerProps({ action: "restart" })}>Restart</button>

@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as timer from "@zag-js/timer"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import "@styles/timer.css"
@@ -41,7 +41,9 @@ export default function Page() {
             <div class="progress-bar" style={{ width: `${done()}%` }} />
           </div>
           <div {...api().getControlProps()}>
-            <button {...api().getActionTriggerProps({ action: "start" })}>Start focus</button>
+            <Show when={secondsLeft() > 0}>
+              <button {...api().getActionTriggerProps({ action: "start" })}>Start focus</button>
+            </Show>
             <button {...api().getActionTriggerProps({ action: "pause" })}>Pause</button>
             <button {...api().getActionTriggerProps({ action: "resume" })}>Resume</button>
             <button {...api().getActionTriggerProps({ action: "restart" })}>Restart</button>

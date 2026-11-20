@@ -38,7 +38,7 @@ const getPageLinkProps = (value: string, page: string) =>
               <a
                 v-for="page in section.pages"
                 :key="page"
-                :href="`#${page}`"
+                :href="`#${page.toLowerCase().replaceAll(' ', '-')}`"
                 v-bind="getPageLinkProps(section.value, page)"
               >
                 {{ page }}
@@ -46,7 +46,7 @@ const getPageLinkProps = (value: string, page: string) =>
             </Presence>
           </div>
           <div v-bind="api.getItemProps({ value: 'changelog' })">
-            <a href="#Changelog" v-bind="getPageLinkProps('changelog', 'Changelog')">Changelog</a>
+            <a href="#changelog" v-bind="getPageLinkProps('changelog', 'Changelog')">Changelog</a>
           </div>
         </div>
       </nav>

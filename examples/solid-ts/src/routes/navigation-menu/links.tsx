@@ -38,7 +38,10 @@ export default function Page() {
                     <Presence {...api().getContentProps({ value: section.value })}>
                       <For each={section.pages}>
                         {(page) => (
-                          <a href={`#${page}`} {...getPageLinkProps(section.value, page)}>
+                          <a
+                            href={`#${page.toLowerCase().replaceAll(" ", "-")}`}
+                            {...getPageLinkProps(section.value, page)}
+                          >
                             {page}
                           </a>
                         )}
@@ -48,7 +51,7 @@ export default function Page() {
                 )}
               </For>
               <div {...api().getItemProps({ value: "changelog" })}>
-                <a href="#Changelog" {...getPageLinkProps("changelog", "Changelog")}>
+                <a href="#changelog" {...getPageLinkProps("changelog", "Changelog")}>
                   Changelog
                 </a>
               </div>

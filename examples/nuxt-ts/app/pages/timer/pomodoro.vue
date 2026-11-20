@@ -38,7 +38,7 @@ const done = computed(() => Math.round((1 - api.value.progressPercent) * 100))
         <div class="progress-bar" :style="{ width: `${done}%` }" />
       </div>
       <div v-bind="api.getControlProps()">
-        <button v-bind="api.getActionTriggerProps({ action: 'start' })">Start focus</button>
+        <button v-if="secondsLeft > 0" v-bind="api.getActionTriggerProps({ action: 'start' })">Start focus</button>
         <button v-bind="api.getActionTriggerProps({ action: 'pause' })">Pause</button>
         <button v-bind="api.getActionTriggerProps({ action: 'resume' })">Resume</button>
         <button v-bind="api.getActionTriggerProps({ action: 'restart' })">Restart</button>

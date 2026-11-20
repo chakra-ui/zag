@@ -35,13 +35,15 @@
             </button>
             <Presence {...api.getContentProps({ value: section.value })}>
               {#each section.pages as page (page)}
-                <a href={`#${page}`} {...getPageLinkProps(section.value, page)}>{page}</a>
+                <a href={`#${page.toLowerCase().replaceAll(" ", "-")}`} {...getPageLinkProps(section.value, page)}
+                  >{page}</a
+                >
               {/each}
             </Presence>
           </div>
         {/each}
         <div {...api.getItemProps({ value: "changelog" })}>
-          <a href="#Changelog" {...getPageLinkProps("changelog", "Changelog")}>Changelog</a>
+          <a href="#changelog" {...getPageLinkProps("changelog", "Changelog")}>Changelog</a>
         </div>
       </div>
     </nav>

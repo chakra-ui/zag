@@ -25,6 +25,6 @@ const setNode = (node: unknown) => {
       <br />
       <span class="meta">{{ props.meta }}</span>
     </span>
-    <button type="button" @click="present = false">Dismiss</button>
+    <button type="button" :aria-label="`Dismiss ${props.title}`" @click="present = false">Dismiss</button>
   </li>
 </template>

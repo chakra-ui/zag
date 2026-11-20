@@ -35,11 +35,6 @@
       background: var(--z-green-600);
       color: white;
     }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--z-ring);
-    }
   }
 
   [data-toggle-indicator] {

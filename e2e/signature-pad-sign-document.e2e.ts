@@ -24,6 +24,7 @@ test.describe("signature-pad sign-document", () => {
   test("submits the signature as a PNG data URL, and reset clears it", async ({ page }) => {
     await page.getByLabel("Full name").fill("Ada Lovelace")
     await drawStroke(page, 40)
+    await expect(page.locator("input[name='signature']")).toHaveValue(/^data:image\/png/)
     await page.getByRole("button", { name: "Sign lease" }).click()
 
     const output = page.getByTestId("form-output")

@@ -40,7 +40,9 @@
       <div class="progress-bar" style:width="{done}%"></div>
     </div>
     <div {...api.getControlProps()}>
-      <button {...api.getActionTriggerProps({ action: "start" })}>Start focus</button>
+      {#if secondsLeft > 0}
+        <button {...api.getActionTriggerProps({ action: "start" })}>Start focus</button>
+      {/if}
       <button {...api.getActionTriggerProps({ action: "pause" })}>Pause</button>
       <button {...api.getActionTriggerProps({ action: "resume" })}>Resume</button>
       <button {...api.getActionTriggerProps({ action: "restart" })}>Restart</button>

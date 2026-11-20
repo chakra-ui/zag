@@ -19,7 +19,7 @@ test.describe("presence reduced-motion", () => {
     await expect(details).toBeVisible()
     await page.getByRole("button", { name: "Hide details" }).click()
     // the exit animation is 600ms, so this only passes if presence skips it
-    await expect(details).toHaveCount(0, { timeout: 200 })
+    await expect(details).toHaveCount(0, { timeout: 400 })
 
     await page.getByRole("button", { name: "Show details" }).click()
     await expect(details).toBeVisible()

@@ -36,7 +36,11 @@ export default function Page() {
                   </button>
                   <Presence {...api.getContentProps({ value: section.value })}>
                     {section.pages.map((page) => (
-                      <a key={page} href={`#${page}`} {...getPageLinkProps(section.value, page)}>
+                      <a
+                        key={page}
+                        href={`#${page.toLowerCase().replaceAll(" ", "-")}`}
+                        {...getPageLinkProps(section.value, page)}
+                      >
                         {page}
                       </a>
                     ))}
@@ -44,7 +48,7 @@ export default function Page() {
                 </div>
               ))}
               <div {...api.getItemProps({ value: "changelog" })}>
-                <a href="#Changelog" {...getPageLinkProps("changelog", "Changelog")}>
+                <a href="#changelog" {...getPageLinkProps("changelog", "Changelog")}>
                   Changelog
                 </a>
               </div>

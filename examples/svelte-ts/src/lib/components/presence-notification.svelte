@@ -27,6 +27,6 @@
       <br />
       <span class="meta">{meta}</span>
     </span>
-    <button type="button" onclick={() => (present = false)}>Dismiss</button>
+    <button type="button" aria-label={`Dismiss ${title}`} onclick={() => (present = false)}>Dismiss</button>
   </li>
 {/if}

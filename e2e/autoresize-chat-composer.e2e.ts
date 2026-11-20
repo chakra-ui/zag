@@ -24,6 +24,8 @@ test.describe("autoresize chat-composer", () => {
       await page.keyboard.type(`Line ${i}`)
     }
     const capped = await height(composer)
+    // five 20px rows, 16px padding and a 2px border
+    expect(capped).toBe(118)
     await page.keyboard.press("Shift+Enter")
     await page.keyboard.type("Line 9")
     await expect.poll(() => height(composer)).toBe(capped)
@@ -44,7 +46,7 @@ test.describe("autoresize chat-composer", () => {
 
     const messages = page.getByTestId("messages").getByRole("listitem")
     await expect(messages).toHaveCount(3)
-    await expect(messages.last()).toHaveText("Running 5 minutes late\nStart without me")
+    expect(await messages.last().innerText()).toBe("Running 5 minutes late\nStart without me")
     await expect(composer).toHaveValue("")
     await expect.poll(() => height(composer)).toBe(initial)
   })

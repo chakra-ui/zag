@@ -31,7 +31,7 @@ function Notification(props: { item: Item; onRemove: (id: string) => void }) {
         <br />
         <span className="meta">{item.meta}</span>
       </span>
-      <button type="button" onClick={() => setPresent(false)}>
+      <button type="button" aria-label={`Dismiss ${item.title}`} onClick={() => setPresent(false)}>
         Dismiss
       </button>
     </li>
