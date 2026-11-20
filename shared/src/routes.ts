@@ -708,6 +708,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "transform-paste", title: "Transform Paste" },
+      { slug: "invite-code", title: "Invite Code" },
     ],
   },
   {

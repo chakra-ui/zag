@@ -383,6 +383,7 @@ export const routes: RouteDefinition[] = [
   { path: "/pin-input/basic", component: lazy(() => import("./pages/pin-input/basic")) },
   { path: "/pin-input/controlled", component: lazy(() => import("./pages/pin-input/controlled")) },
   { path: "/pin-input/transform-paste", component: lazy(() => import("./pages/pin-input/transform-paste")) },
+  { path: "/pin-input/invite-code", component: lazy(() => import("./pages/pin-input/invite-code")) },
   { path: "/popover/basic", component: lazy(() => import("./pages/popover/basic")) },
   { path: "/popover/animated-triggers", component: lazy(() => import("./pages/popover/animated-triggers")) },
   { path: "/popover/composition-controlled", component: lazy(() => import("./pages/popover/composition-controlled")) },
