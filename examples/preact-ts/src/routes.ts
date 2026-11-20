@@ -559,6 +559,7 @@ export const routes: RouteDefinition[] = [
   { path: "/toast/with-dialog", component: lazy(() => import("./pages/toast/with-dialog")) },
   { path: "/toc/basic", component: lazy(() => import("./pages/toc/basic")) },
   { path: "/toc/indicator", component: lazy(() => import("./pages/toc/indicator")) },
+  { path: "/toc/late-content", component: lazy(() => import("./pages/toc/late-content")) },
   { path: "/toc/long-sections", component: lazy(() => import("./pages/toc/long-sections")) },
   { path: "/toc/nested-nav", component: lazy(() => import("./pages/toc/nested-nav")) },
   { path: "/toc/scroll-element", component: lazy(() => import("./pages/toc/scroll-element")) },

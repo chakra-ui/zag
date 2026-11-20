@@ -105,8 +105,6 @@ test.describe("toc / scroll element", () => {
 })
 
 test.describe("toc / content mounts after the toc", () => {
-  test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
-
   test.beforeEach(async ({ page }) => {
     I = new TocModel(page)
     await I.goto("/toc/late-content")
