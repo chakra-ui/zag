@@ -297,7 +297,8 @@ test.describe("virtualizer / perf smoke", () => {
 
       await I.seeNoFlushSyncWarning()
       await expect(page.getByRole("heading", { name: "@zag-js/virtualizer" })).toBeVisible()
-      await expect(page.getByRole("heading", { name: /tanstack/i })).toBeVisible()
+      // Only the React examples compare against TanStack Virtual
+      if (isReact) await expect(page.getByRole("heading", { name: /tanstack/i })).toBeVisible()
       await I.checkAccessibility("main")
     })
   }
