@@ -1,0 +1,74 @@
+import * as signaturePad from "@zag-js/signature-pad"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { RotateCcw } from "lucide-solid"
+import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
+import { StateVisualizer } from "~/components/state-visualizer"
+import { Toolbar } from "~/components/toolbar"
+import "@styles/signature-pad.css"
+
+export default function Page() {
+  const id = createUniqueId()
+  const [paths, setPaths] = createSignal<string[]>([])
+  const [undone, setUndone] = createSignal<string[]>([])
+
+  const service = useMachine(signaturePad.machine, () => ({
+    id,
+    paths: paths(),
+    onDraw: (details) => setPaths(details.paths),
+    onDrawEnd: () => setUndone([]),
+  }))
+  const api = createMemo(() => signaturePad.connect(service, normalizeProps))
+
+  const undo = () => {
+    const last = paths().at(-1)
+    if (!last) return
+    setUndone((prev) => [...prev, last])
+    setPaths(paths().slice(0, -1))
+  }
+
+  const redo = () => {
+    const last = undone().at(-1)
+    if (!last) return
+    setPaths([...paths(), last])
+    setUndone((prev) => prev.slice(0, -1))
+  }
+
+  return (
+    <>
+      <main>
+        <div class="signature-pad-undo-redo">
+          <div {...api().getRootProps()}>
+            <label {...api().getLabelProps()}>Signature</label>
+            <div {...api().getControlProps()}>
+              <svg {...api().getSegmentProps()}>
+                <For each={api().paths}>{(path) => <path {...api().getSegmentPathProps({ path })} />}</For>
+                <Show when={api().currentPath}>
+                  {(path) => <path {...api().getSegmentPathProps({ path: path() })} />}
+                </Show>
+              </svg>
+              <div {...api().getGuideProps()} />
+            </div>
+            <button {...api().getClearTriggerProps()}>
+              <RotateCcw />
+            </button>
+          </div>
+          <div class="actions">
+            <button type="button" disabled={paths().length === 0} onClick={undo}>
+              Undo
+            </button>
+            <button type="button" disabled={undone().length === 0} onClick={redo}>
+              Redo
+            </button>
+            <span>
+              {paths().length} {paths().length === 1 ? "stroke" : "strokes"}
+            </span>
+          </div>
+        </div>
+      </main>
+
+      <Toolbar viz>
+        <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
+      </Toolbar>
+    </>
+  )
+}

@@ -24,3 +24,23 @@
   display: flex;
   gap: 4px;
 }
+
+.timer-resend-code {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .code {
+    letter-spacing: 0.4em;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .sent {
+    margin: 0;
+    color: var(--z-fg-subtle);
+  }
+}

@@ -185,12 +185,18 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "viewport", title: "Viewport" },
       { slug: "default-value", title: "Default Value" },
+      { slug: "links", title: "Links" },
+      { slug: "vertical", title: "Vertical" },
     ],
   },
   {
     slug: "toggle",
     label: "Toggle",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "text-formatting", title: "Text Formatting" },
+      { slug: "mute", title: "Mute" },
+    ],
   },
   {
     slug: "angle-slider",
@@ -234,7 +240,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "signature-pad",
     label: "Signature Pad",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sign-document", title: "Sign Document" },
+      { slug: "undo-redo", title: "Undo and Redo" },
+    ],
   },
   {
     slug: "floating-panel",
@@ -321,6 +331,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Storage (low is better)" },
       { slug: "battery", title: "Battery (high is better)" },
       { slug: "custom-range", title: "Custom Range" },
+      { slug: "storage-quota", title: "Storage Quota" },
     ],
   },
   {
@@ -370,6 +381,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "animate", title: "Animate Presence" },
       { slug: "activity", title: "React Activity" },
+      { slug: "notifications", title: "Notifications" },
     ],
   },
   {
@@ -793,6 +805,7 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "countdown", title: "CountDown" },
       { slug: "stopwatch", title: "StopWatch" },
+      { slug: "resend-code", title: "Resend Code" },
     ],
   },
   {
@@ -948,6 +961,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "chat-composer", title: "Chat Composer" },
+      { slug: "input-width", title: "Input Width" },
     ],
   },
   {
@@ -963,7 +978,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "focus-visible",
     label: "Focus Visible",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "window-restore", title: "Window Restore" },
+    ],
   },
   {
     slug: "swap",
