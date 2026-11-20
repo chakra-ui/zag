@@ -97,7 +97,6 @@ export default function Page() {
     <>
       <main>
         <div class="cascade-select-form">
-          <p class="hint">Pick a delivery region down to the state, then save. The form gets the full path.</p>
           <form
             novalidate
             onSubmit={(event) => {

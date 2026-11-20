@@ -108,7 +108,6 @@
   flex-direction: column;
   gap: 16px;
 
-  .hint,
   .status {
     margin: 0;
   }

@@ -45,7 +45,6 @@ function startOver() {
 <template>
   <main>
     <div class="image-cropper-avatar-upload">
-      <p class="hint">Pick a photo from your device, frame your face in the circle, then save.</p>
       <label v-if="!src" class="picker">
         <span>Choose a photo</span>
         <input type="file" accept="image/*" @change="onFileChange" />

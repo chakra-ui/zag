@@ -28,9 +28,6 @@ export default function Page() {
     <>
       <main>
         <div className="pin-input-invite-code">
-          <p className="hint">
-            Enter the 6-character code from your invite. It joins as soon as the last box is filled.
-          </p>
           <form
             onSubmit={(event) => {
               event.preventDefault()

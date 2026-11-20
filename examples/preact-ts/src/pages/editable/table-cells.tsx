@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <main>
       <div className="editable-table-cells">
-        <p className="hint">Double-click a name to rename it. Enter saves, Escape puts it back.</p>
+        <p className="hint">Double-click a name to rename it</p>
         <table>
           <thead>
             <tr>
@@ -65,7 +65,7 @@ export default function Page() {
             ))}
           </tbody>
         </table>
-        <ol className="activity" data-testid="activity" aria-label="Activity" reversed>
+        <ol className="activity" aria-label="Activity" reversed>
           {activity.map((entry, index) => (
             <li key={activity.length - index}>{entry}</li>
           ))}

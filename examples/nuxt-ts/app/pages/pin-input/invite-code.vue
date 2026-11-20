@@ -28,7 +28,6 @@ function onSubmit(event: Event) {
 <template>
   <main>
     <div class="pin-input-invite-code">
-      <p class="hint">Enter the 6-character code from your invite. It joins as soon as the last box is filled.</p>
       <form @submit.prevent="onSubmit">
         <div v-bind="api.getRootProps()">
           <label v-bind="api.getLabelProps()">Invite code</label>

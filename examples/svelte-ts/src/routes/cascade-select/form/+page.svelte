@@ -50,7 +50,6 @@
 
 <main>
   <div class="cascade-select-form">
-    <p class="hint">Pick a delivery region down to the state, then save. The form gets the full path.</p>
     <form novalidate {onsubmit} {onreset}>
       <div {...api.getRootProps()}>
         <!-- svelte-ignore a11y_label_has_associated_control -->

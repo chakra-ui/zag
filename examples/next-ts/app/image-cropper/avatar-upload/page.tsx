@@ -36,7 +36,6 @@ export default function Page() {
     <>
       <main>
         <div className="image-cropper-avatar-upload">
-          <p className="hint">Pick a photo from your device, frame your face in the circle, then save.</p>
           {!src ? (
             <label className="picker">
               <span>Choose a photo</span>

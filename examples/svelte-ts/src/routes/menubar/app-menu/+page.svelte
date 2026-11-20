@@ -33,14 +33,13 @@
 
 <main>
   <div class="menubar-app-menu">
-    <p class="hint">An editor's menu bar: shortcuts, a disabled action, toggles and a theme picker.</p>
     <div {...api.getRootProps()}>
       <MenubarActionMenu id="file" label="File" actions={fileActions} onRun={(label) => (lastAction = label)} />
       <MenubarActionMenu id="edit" label="Edit" actions={editActions} onRun={(label) => (lastAction = label)} />
       <MenubarViewMenu {settings} onChange={(next) => (settings = next)} />
     </div>
-    <p class="status" data-testid="last-action">Last action: {lastAction}</p>
-    <p class="status" data-testid="view-state">
+    <p class="status">Last action: {lastAction}</p>
+    <p class="status">
       Line numbers {settings.lineNumbers ? "on" : "off"} · Word wrap {settings.wordWrap ? "on" : "off"} · Theme: {settings.theme}
     </p>
   </div>

@@ -31,7 +31,6 @@
 
 <main>
   <div class="pin-input-invite-code">
-    <p class="hint">Enter the 6-character code from your invite. It joins as soon as the last box is filled.</p>
     <form {onsubmit}>
       <div {...api.getRootProps()}>
         <!-- svelte-ignore a11y_label_has_associated_control -->

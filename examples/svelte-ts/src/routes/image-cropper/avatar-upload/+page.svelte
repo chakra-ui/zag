@@ -45,7 +45,6 @@
 
 <main>
   <div class="image-cropper-avatar-upload">
-    <p class="hint">Pick a photo from your device, frame your face in the circle, then save.</p>
     {#if !src}
       <label class="picker">
         <span>Choose a photo</span>

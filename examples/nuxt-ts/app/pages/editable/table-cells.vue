@@ -14,7 +14,7 @@ const log = (entry: string) => (activity.value = [entry, ...activity.value])
 <template>
   <main>
     <div class="editable-table-cells">
-      <p class="hint">Double-click a name to rename it. Enter saves, Escape puts it back.</p>
+      <p class="hint">Double-click a name to rename it</p>
       <table>
         <thead>
           <tr>
@@ -29,7 +29,7 @@ const log = (entry: string) => (activity.value = [entry, ...activity.value])
           </tr>
         </tbody>
       </table>
-      <ol class="activity" data-testid="activity" aria-label="Activity" reversed>
+      <ol class="activity" aria-label="Activity" reversed>
         <li v-for="(entry, index) in activity" :key="activity.length - index">{{ entry }}</li>
       </ol>
     </div>
