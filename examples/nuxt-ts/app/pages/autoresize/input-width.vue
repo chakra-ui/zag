@@ -18,7 +18,6 @@ onUnmounted(() => {
 <template>
   <main>
     <div class="autoresize-input-width">
-      <p class="hint">Rename the board. The field is as wide as its name.</p>
       <label>
         <span>Board name</span>
         <input ref="inputRef" value="Roadmap" spellcheck="false" />

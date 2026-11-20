@@ -21,7 +21,7 @@ export default function Page() {
     <>
       <main>
         <div class="navigation-menu-vertical">
-          <p class="hint">Use the arrow keys to move between sections. Billing is admin-only, so it's skipped.</p>
+          <p class="hint">Billing is disabled</p>
           <nav {...api().getRootProps()}>
             <div {...api().getListProps()}>
               <For each={sections}>

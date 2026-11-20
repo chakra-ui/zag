@@ -25,19 +25,22 @@
   const api = $derived(signaturePad.connect(service, normalizeProps))
 
   function undo() {
-    undone = [...undone, paths[paths.length - 1]]
+    const last = paths.at(-1)
+    if (!last) return
+    undone = [...undone, last]
     paths = paths.slice(0, -1)
   }
 
   function redo() {
-    paths = [...paths, undone[undone.length - 1]]
+    const last = undone.at(-1)
+    if (!last) return
+    paths = [...paths, last]
     undone = undone.slice(0, -1)
   }
 </script>
 
 <main>
   <div class="signature-pad-undo-redo">
-    <p class="hint">Draw a few strokes, then step back and forward through them.</p>
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>Signature</label>
@@ -59,7 +62,7 @@
     <div class="actions">
       <button type="button" disabled={paths.length === 0} onclick={undo}>Undo</button>
       <button type="button" disabled={undone.length === 0} onclick={redo}>Redo</button>
-      <span data-testid="stroke-count">{paths.length} {paths.length === 1 ? "stroke" : "strokes"}</span>
+      <span>{paths.length} {paths.length === 1 ? "stroke" : "strokes"}</span>
     </div>
   </div>
 </main>

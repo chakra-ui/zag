@@ -61,11 +61,6 @@
   flex-direction: column;
   gap: 16px;
 
-  .hint {
-    margin: 0;
-    text-align: center;
-  }
-
   form,
   .field {
     display: flex;

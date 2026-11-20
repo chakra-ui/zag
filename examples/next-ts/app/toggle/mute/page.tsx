@@ -16,14 +16,9 @@ export default function Page() {
     <>
       <main>
         <div className="toggle-mute">
-          <p className="hint">The name stays "Mute"; the pressed state tells you it's on.</p>
           <button aria-label="Mute" {...api.getRootProps()}>
             <span {...api.getIndicatorProps()}>
-              {api.pressed ? (
-                <VolumeXIcon className="icon" data-testid="icon-muted" />
-              ) : (
-                <Volume2Icon className="icon" data-testid="icon-speaker" />
-              )}
+              {api.pressed ? <VolumeXIcon className="icon" /> : <Volume2Icon className="icon" />}
             </span>
           </button>
         </div>

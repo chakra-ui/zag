@@ -33,7 +33,6 @@ export default function Page() {
     <>
       <main>
         <div className="meter-storage-quota">
-          <p className="hint">Free up space or upload files and watch the quota change state.</p>
           <div {...api.getRootProps()}>
             <div className="header">
               <span {...api.getLabelProps()}>Storage used</span>

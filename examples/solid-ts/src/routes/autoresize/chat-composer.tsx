@@ -24,8 +24,8 @@ export default function Page() {
   return (
     <main>
       <div class="autoresize-chat-composer">
-        <p class="hint">Shift+Enter adds a line, Enter sends. The box stops growing at five rows.</p>
-        <ul class="messages" data-testid="messages">
+        <p class="hint">Shift+Enter for a new line</p>
+        <ul class="messages">
           <For each={messages()}>{(message) => <li>{message}</li>}</For>
         </ul>
         <form

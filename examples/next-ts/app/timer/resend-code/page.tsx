@@ -28,7 +28,6 @@ export default function Page() {
     <>
       <main>
         <div className="timer-resend-code">
-          <p className="hint">We sent a 6-digit code to ada@example.com. You can ask for a new one in 30 seconds.</p>
           <div {...api.getRootProps()}>
             <span className="code" aria-hidden="true">
               ••• •••
@@ -45,7 +44,7 @@ export default function Page() {
           >
             {canResend ? "Resend code" : `Resend code in ${secondsLeft}s`}
           </button>
-          <p className="sent" data-testid="sent-count">
+          <p className="sent">
             Sent {sent} {sent === 1 ? "code" : "codes"}
           </p>
         </div>

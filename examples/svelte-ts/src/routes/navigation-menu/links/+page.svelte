@@ -24,7 +24,6 @@
 
 <main>
   <div class="navigation-menu-links">
-    <p class="hint">Pick a page. The menu closes and the link you picked becomes the current page.</p>
     <nav {...api.getRootProps()}>
       <div {...api.getListProps()}>
         {#each sections as section (section.value)}
@@ -48,7 +47,7 @@
       </div>
     </nav>
     <p class="status">
-      You're on <strong data-testid="current-page">{currentPage}</strong>
+      You're on <strong>{currentPage}</strong>
     </p>
   </div>
 </main>

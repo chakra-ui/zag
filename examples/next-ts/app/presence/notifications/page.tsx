@@ -47,8 +47,7 @@ export default function Page() {
   return (
     <main>
       <div className="presence-notifications">
-        <p className="hint">Dismiss a notification. It leaves the list once its exit animation ends.</p>
-        <ul data-testid="notifications">
+        <ul>
           {items.map((item) => (
             <Notification
               key={item.id}
@@ -57,9 +56,7 @@ export default function Page() {
             />
           ))}
         </ul>
-        <p className="hint" data-testid="dismissed-count">
-          {dismissed} dismissed
-        </p>
+        <p className="hint">{dismissed} dismissed</p>
       </div>
     </main>
   )

@@ -25,9 +25,7 @@
 
 <main>
   <div class="focus-visible-window-restore">
-    <p class="hint">
-      Focus the search, switch to another tab and come back. Recent searches don't pop open on their own.
-    </p>
+    <p class="hint">Switch tabs and come back</p>
     <div class="search" {onfocusout}>
       <input type="search" aria-label="Search docs" placeholder="Search docs" bind:value={query} {onfocus} />
       {#if open}
@@ -43,7 +41,7 @@
       {/if}
     </div>
     <p class="status">
-      Last focus: <span data-testid="last-focus">{lastFocus}</span>
+      Last focus: <span>{lastFocus}</span>
     </p>
   </div>
 </main>

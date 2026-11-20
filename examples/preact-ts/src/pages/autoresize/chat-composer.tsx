@@ -20,8 +20,8 @@ export default function Page() {
   return (
     <main>
       <div className="autoresize-chat-composer">
-        <p className="hint">Shift+Enter adds a line, Enter sends. The box stops growing at five rows.</p>
-        <ul className="messages" data-testid="messages">
+        <p className="hint">Shift+Enter for a new line</p>
+        <ul className="messages">
           {messages.map((message, index) => (
             <li key={index}>{message}</li>
           ))}

@@ -14,8 +14,7 @@
 
 <main>
   <div class="presence-notifications">
-    <p class="hint">Dismiss a notification. It leaves the list once its exit animation ends.</p>
-    <ul data-testid="notifications">
+    <ul>
       {#each items as item (item.id)}
         <PresenceNotification
           title={item.title}
@@ -24,6 +23,6 @@
         />
       {/each}
     </ul>
-    <p class="hint" data-testid="dismissed-count">{dismissed} dismissed</p>
+    <p class="hint">{dismissed} dismissed</p>
   </div>
 </main>

@@ -45,7 +45,6 @@ function onReset() {
 <template>
   <main>
     <div class="signature-pad-sign-document">
-      <p class="hint">Type your name and sign. The signature is submitted as a PNG data URL.</p>
       <form novalidate @submit.prevent="onSubmit" @reset="onReset">
         <label class="field">
           <span>Full name</span>
@@ -73,7 +72,7 @@ function onReset() {
           <button type="reset">Start over</button>
         </div>
       </form>
-      <pre v-if="output" data-testid="form-output">{{ output }}</pre>
+      <pre v-if="output">{{ output }}</pre>
     </div>
   </main>
 

@@ -25,7 +25,6 @@ export default function Page() {
     <>
       <main>
         <div class="navigation-menu-links">
-          <p class="hint">Pick a page. The menu closes and the link you picked becomes the current page.</p>
           <nav {...api().getRootProps()}>
             <div {...api().getListProps()}>
               <For each={sections}>
@@ -58,7 +57,7 @@ export default function Page() {
             </div>
           </nav>
           <p class="status">
-            You're on <strong data-testid="current-page">{currentPage()}</strong>
+            You're on <strong>{currentPage()}</strong>
           </p>
         </div>
       </main>

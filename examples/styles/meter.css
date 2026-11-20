@@ -76,11 +76,6 @@
   flex-direction: column;
   gap: 16px;
 
-  .hint {
-    margin: 0;
-    text-align: center;
-  }
-
   [data-meter-root] {
     max-width: none;
   }

@@ -19,12 +19,16 @@ export default function Page() {
   const api = signaturePad.connect(service, normalizeProps)
 
   const undo = () => {
-    setUndone((prev) => [...prev, paths[paths.length - 1]])
+    const last = paths.at(-1)
+    if (!last) return
+    setUndone((prev) => [...prev, last])
     setPaths(paths.slice(0, -1))
   }
 
   const redo = () => {
-    setPaths([...paths, undone[undone.length - 1]])
+    const last = undone.at(-1)
+    if (!last) return
+    setPaths([...paths, last])
     setUndone((prev) => prev.slice(0, -1))
   }
 
@@ -32,7 +36,6 @@ export default function Page() {
     <>
       <main>
         <div className="signature-pad-undo-redo">
-          <p className="hint">Draw a few strokes, then step back and forward through them.</p>
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Signature</label>
             <div {...api.getControlProps()}>
@@ -55,7 +58,7 @@ export default function Page() {
             <button type="button" disabled={undone.length === 0} onClick={redo}>
               Redo
             </button>
-            <span data-testid="stroke-count">
+            <span>
               {paths.length} {paths.length === 1 ? "stroke" : "strokes"}
             </span>
           </div>

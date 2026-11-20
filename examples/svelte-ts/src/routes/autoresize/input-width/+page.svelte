@@ -10,7 +10,6 @@
 
 <main>
   <div class="autoresize-input-width">
-    <p class="hint">Rename the board. The field is as wide as its name.</p>
     <label>
       <span>Board name</span>
       <input bind:this={inputRef} value="Roadmap" spellcheck={false} />

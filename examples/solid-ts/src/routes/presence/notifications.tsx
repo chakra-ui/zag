@@ -47,8 +47,7 @@ export default function Page() {
   return (
     <main>
       <div class="presence-notifications">
-        <p class="hint">Dismiss a notification. It leaves the list once its exit animation ends.</p>
-        <ul data-testid="notifications">
+        <ul>
           <For each={items()}>
             {(item) => (
               <Notification
@@ -58,9 +57,7 @@ export default function Page() {
             )}
           </For>
         </ul>
-        <p class="hint" data-testid="dismissed-count">
-          {dismissed()} dismissed
-        </p>
+        <p class="hint">{dismissed()} dismissed</p>
       </div>
     </main>
   )

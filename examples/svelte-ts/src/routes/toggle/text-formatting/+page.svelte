@@ -25,7 +25,6 @@
 
 <main>
   <div class="toggle-text-formatting">
-    <p class="hint">Press a format to apply it to the preview.</p>
     <div class="group">
       {#each formats as format (format.label)}
         <button aria-label={format.label} {...format.api.getRootProps()}>
@@ -37,7 +36,6 @@
     </div>
     <p
       class="preview"
-      data-testid="preview"
       data-bold={boldApi.pressed || undefined}
       data-italic={italicApi.pressed || undefined}
       data-underline={underlineApi.pressed || undefined}

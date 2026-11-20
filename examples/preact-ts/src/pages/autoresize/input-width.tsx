@@ -10,7 +10,6 @@ export default function Page() {
   return (
     <main>
       <div className="autoresize-input-width">
-        <p className="hint">Rename the board. The field is as wide as its name.</p>
         <label>
           <span>Board name</span>
           <input ref={inputRef} value="Roadmap" spellcheck={false} />

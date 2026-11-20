@@ -18,8 +18,7 @@ function remove(id: string) {
 <template>
   <main>
     <div class="presence-notifications">
-      <p class="hint">Dismiss a notification. It leaves the list once its exit animation ends.</p>
-      <ul data-testid="notifications">
+      <ul>
         <PresenceNotification
           v-for="item in items"
           :key="item.id"
@@ -28,7 +27,7 @@ function remove(id: string) {
           @remove="remove(item.id)"
         />
       </ul>
-      <p class="hint" data-testid="dismissed-count">{{ dismissed }} dismissed</p>
+      <p class="hint">{{ dismissed }} dismissed</p>
     </div>
   </main>
 </template>

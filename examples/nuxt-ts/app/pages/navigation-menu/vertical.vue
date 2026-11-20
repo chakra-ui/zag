@@ -18,7 +18,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
 <template>
   <main>
     <div class="navigation-menu-vertical">
-      <p class="hint">Use the arrow keys to move between sections. Billing is admin-only, so it's skipped.</p>
+      <p class="hint">Billing is disabled</p>
       <nav v-bind="api.getRootProps()">
         <div v-bind="api.getListProps()">
           <div

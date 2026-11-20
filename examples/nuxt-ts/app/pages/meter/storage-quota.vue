@@ -38,7 +38,6 @@ function deleteBackups() {
 <template>
   <main>
     <div class="meter-storage-quota">
-      <p class="hint">Free up space or upload files and watch the quota change state.</p>
       <div v-bind="api.getRootProps()">
         <div class="header">
           <span v-bind="api.getLabelProps()">Storage used</span>

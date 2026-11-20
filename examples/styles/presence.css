@@ -13,8 +13,7 @@
   }
 }
 
-.presence-notifications,
-.presence-reduced-motion {
+.presence-notifications {
   width: 100%;
   max-width: 380px;
   display: flex;
@@ -25,9 +24,7 @@
     margin: 0;
     text-align: center;
   }
-}
 
-.presence-notifications {
   ul {
     list-style: none;
     margin: 0;
@@ -55,31 +52,5 @@
   .meta {
     color: var(--z-fg-subtle);
     font-size: 13px;
-  }
-}
-
-.presence-reduced-motion {
-  align-items: center;
-
-  .details {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--z-border);
-    border-radius: var(--z-radius-sm);
-    transform-origin: top center;
-
-    &[data-state="open"] {
-      animation: scaleFadeIn 600ms ease-out;
-    }
-
-    &[data-state="closed"] {
-      animation: scaleFadeOut 600ms ease-in forwards;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      &[data-state] {
-        animation: none;
-      }
-    }
   }
 }

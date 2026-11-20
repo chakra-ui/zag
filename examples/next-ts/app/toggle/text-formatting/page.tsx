@@ -28,7 +28,6 @@ export default function Page() {
     <>
       <main>
         <div className="toggle-text-formatting">
-          <p className="hint">Press a format to apply it to the preview.</p>
           <div className="group">
             {formats.map(({ label, Icon, api }) => (
               <button key={label} aria-label={label} {...api.getRootProps()}>
@@ -40,7 +39,6 @@ export default function Page() {
           </div>
           <p
             className="preview"
-            data-testid="preview"
             data-bold={bold.api.pressed || undefined}
             data-italic={italic.api.pressed || undefined}
             data-underline={underline.api.pressed || undefined}

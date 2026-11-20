@@ -27,7 +27,6 @@ export default function Page() {
     <>
       <main>
         <div class="signature-pad-sign-document">
-          <p class="hint">Type your name and sign. The signature is submitted as a PNG data URL.</p>
           <form
             novalidate
             onSubmit={(event) => {
@@ -81,7 +80,7 @@ export default function Page() {
             </div>
           </form>
           <Show when={output()}>
-            <pre data-testid="form-output">{output()}</pre>
+            <pre>{output()}</pre>
           </Show>
         </div>
       </main>

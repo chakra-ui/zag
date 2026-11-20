@@ -13,13 +13,12 @@
 
 <main>
   <div class="toggle-mute">
-    <p class="hint">The name stays "Mute"; the pressed state tells you it's on.</p>
     <button aria-label="Mute" {...api.getRootProps()}>
       <span {...api.getIndicatorProps()}>
         {#if api.pressed}
-          <VolumeXIcon class="icon" data-testid="icon-muted" />
+          <VolumeXIcon class="icon" />
         {:else}
-          <Volume2Icon class="icon" data-testid="icon-speaker" />
+          <Volume2Icon class="icon" />
         {/if}
       </span>
     </button>

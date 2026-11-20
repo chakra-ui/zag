@@ -195,7 +195,6 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "text-formatting", title: "Text Formatting" },
-      { slug: "favorite", title: "Favorite" },
       { slug: "mute", title: "Mute" },
     ],
   },
@@ -383,7 +382,6 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "animate", title: "Animate Presence" },
       { slug: "activity", title: "React Activity" },
       { slug: "notifications", title: "Notifications" },
-      { slug: "reduced-motion", title: "Reduced Motion" },
     ],
   },
   {
@@ -808,7 +806,6 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "countdown", title: "CountDown" },
       { slug: "stopwatch", title: "StopWatch" },
       { slug: "resend-code", title: "Resend Code" },
-      { slug: "pomodoro", title: "Pomodoro" },
     ],
   },
   {
@@ -983,7 +980,6 @@ export const componentRoutes: ComponentRoute[] = [
     label: "Focus Visible",
     examples: [
       { slug: "basic", title: "Basic" },
-      { slug: "card-grid", title: "Card Grid" },
       { slug: "window-restore", title: "Window Restore" },
     ],
   },

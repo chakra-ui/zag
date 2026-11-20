@@ -44,7 +44,6 @@
 
 <main>
   <div class="signature-pad-sign-document">
-    <p class="hint">Type your name and sign. The signature is submitted as a PNG data URL.</p>
     <form novalidate {onsubmit} {onreset}>
       <label class="field">
         <span>Full name</span>
@@ -80,7 +79,7 @@
       </div>
     </form>
     {#if output}
-      <pre data-testid="form-output">{output}</pre>
+      <pre>{output}</pre>
     {/if}
   </div>
 </main>

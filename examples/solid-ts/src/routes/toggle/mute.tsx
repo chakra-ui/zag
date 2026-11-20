@@ -14,11 +14,10 @@ export default function Page() {
     <>
       <main>
         <div class="toggle-mute">
-          <p class="hint">The name stays "Mute"; the pressed state tells you it's on.</p>
           <button aria-label="Mute" {...api().getRootProps()}>
             <span {...api().getIndicatorProps()}>
-              <Show when={api().pressed} fallback={<Volume2Icon class="icon" data-testid="icon-speaker" />}>
-                <VolumeXIcon class="icon" data-testid="icon-muted" />
+              <Show when={api().pressed} fallback={<Volume2Icon class="icon" />}>
+                <VolumeXIcon class="icon" />
               </Show>
             </span>
           </button>

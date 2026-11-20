@@ -31,14 +31,13 @@
 
 <main>
   <div class="timer-resend-code">
-    <p class="hint">We sent a 6-digit code to ada@example.com. You can ask for a new one in 30 seconds.</p>
     <div {...api.getRootProps()}>
       <span class="code" aria-hidden="true">••• •••</span>
     </div>
     <button type="button" disabled={!canResend} onclick={resend}>
       {canResend ? "Resend code" : `Resend code in ${secondsLeft}s`}
     </button>
-    <p class="sent" data-testid="sent-count">Sent {sent} {sent === 1 ? "code" : "codes"}</p>
+    <p class="sent">Sent {sent} {sent === 1 ? "code" : "codes"}</p>
   </div>
 </main>
 

@@ -26,7 +26,6 @@ export default function Page() {
     <>
       <main>
         <div className="signature-pad-sign-document">
-          <p className="hint">Type your name and sign. The signature is submitted as a PNG data URL.</p>
           <form
             noValidate
             onSubmit={(event) => {
@@ -77,7 +76,7 @@ export default function Page() {
               <button type="reset">Start over</button>
             </div>
           </form>
-          {output && <pre data-testid="form-output">{output}</pre>}
+          {output && <pre>{output}</pre>}
         </div>
       </main>
 

@@ -12,11 +12,10 @@ const api = computed(() => toggle.connect(service, normalizeProps))
 <template>
   <main>
     <div class="toggle-mute">
-      <p class="hint">The name stays "Mute"; the pressed state tells you it's on.</p>
       <button aria-label="Mute" v-bind="api.getRootProps()">
         <span v-bind="api.getIndicatorProps()">
-          <VolumeXIcon v-if="api.pressed" class="icon" data-testid="icon-muted" />
-          <Volume2Icon v-else class="icon" data-testid="icon-speaker" />
+          <VolumeXIcon v-if="api.pressed" class="icon" />
+          <Volume2Icon v-else class="icon" />
         </span>
       </button>
     </div>

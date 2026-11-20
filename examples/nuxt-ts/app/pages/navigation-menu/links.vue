@@ -26,7 +26,6 @@ const getPageLinkProps = (value: string, page: string) =>
 <template>
   <main>
     <div class="navigation-menu-links">
-      <p class="hint">Pick a page. The menu closes and the link you picked becomes the current page.</p>
       <nav v-bind="api.getRootProps()">
         <div v-bind="api.getListProps()">
           <div v-for="section in sections" :key="section.value" v-bind="api.getItemProps({ value: section.value })">
@@ -50,7 +49,7 @@ const getPageLinkProps = (value: string, page: string) =>
           </div>
         </div>
       </nav>
-      <p class="status">You're on <strong data-testid="current-page">{{ currentPage }}</strong></p>
+      <p class="status">You're on <strong>{{ currentPage }}</strong></p>
     </div>
   </main>
 

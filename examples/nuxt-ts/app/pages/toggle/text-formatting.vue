@@ -26,7 +26,6 @@ const formats = [
 <template>
   <main>
     <div class="toggle-text-formatting">
-      <p class="hint">Press a format to apply it to the preview.</p>
       <div class="group">
         <button
           v-for="format in formats"
@@ -41,7 +40,6 @@ const formats = [
       </div>
       <p
         class="preview"
-        data-testid="preview"
         :data-bold="bold.api.value.pressed || undefined"
         :data-italic="italic.api.value.pressed || undefined"
         :data-underline="underline.api.value.pressed || undefined"

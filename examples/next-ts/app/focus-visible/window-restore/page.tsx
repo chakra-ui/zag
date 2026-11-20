@@ -16,9 +16,7 @@ export default function Page() {
   return (
     <main>
       <div className="focus-visible-window-restore">
-        <p className="hint">
-          Focus the search, switch to another tab and come back. Recent searches don't pop open on their own.
-        </p>
+        <p className="hint">Switch tabs and come back</p>
         <div
           className="search"
           onBlur={(event) => {
@@ -55,7 +53,7 @@ export default function Page() {
           )}
         </div>
         <p className="status">
-          Last focus: <span data-testid="last-focus">{lastFocus}</span>
+          Last focus: <span>{lastFocus}</span>
         </p>
       </div>
     </main>

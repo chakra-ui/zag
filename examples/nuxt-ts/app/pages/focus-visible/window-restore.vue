@@ -34,9 +34,7 @@ function onFocusout(event: FocusEvent) {
 <template>
   <main>
     <div class="focus-visible-window-restore">
-      <p class="hint">
-        Focus the search, switch to another tab and come back. Recent searches don't pop open on their own.
-      </p>
+      <p class="hint">Switch tabs and come back</p>
       <div class="search" @focusout="onFocusout">
         <input v-model="query" type="search" aria-label="Search docs" placeholder="Search docs" @focus="onFocus" />
         <ul v-if="open" class="recent" aria-label="Recent searches">
@@ -45,7 +43,7 @@ function onFocusout(event: FocusEvent) {
           </li>
         </ul>
       </div>
-      <p class="status">Last focus: <span data-testid="last-focus">{{ lastFocus }}</span></p>
+      <p class="status">Last focus: <span>{{ lastFocus }}</span></p>
     </div>
   </main>
 </template>

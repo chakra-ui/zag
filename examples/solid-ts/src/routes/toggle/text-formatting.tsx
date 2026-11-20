@@ -27,7 +27,6 @@ export default function Page() {
     <>
       <main>
         <div class="toggle-text-formatting">
-          <p class="hint">Press a format to apply it to the preview.</p>
           <div class="group">
             <For each={formats}>
               {(format) => (
@@ -41,7 +40,6 @@ export default function Page() {
           </div>
           <p
             class="preview"
-            data-testid="preview"
             data-bold={bold.api().pressed ? "" : undefined}
             data-italic={italic.api().pressed ? "" : undefined}
             data-underline={underline.api().pressed ? "" : undefined}
