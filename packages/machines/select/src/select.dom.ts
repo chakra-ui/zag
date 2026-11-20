@@ -24,3 +24,5 @@ export const getItemEl = (ctx: Scope, id: string | number | null) => {
   if (id == null) return null
   return ctx.getById(getItemId(ctx, id))
 }
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

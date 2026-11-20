@@ -11,6 +11,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): RadioGroupApi<T> {
   const { context, send, computed, prop, scope } = service
+  const rendered = context.get("rendered")
 
   const groupDisabled = computed("isDisabled")
   const groupInvalid = prop("invalid")
@@ -64,7 +65,7 @@ export function connect<T extends PropTypes>(
         ...parts.root.attrs,
         role: "radiogroup",
         id: dom.getRootId(scope),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-required": prop("required") || undefined,
         "aria-disabled": groupDisabled || undefined,
         "aria-readonly": readOnly || undefined,

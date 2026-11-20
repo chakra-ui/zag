@@ -29,6 +29,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send } = service
+  const rendered = context.get("rendered")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
@@ -179,7 +180,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-state": open ? "open" : "closed",
         "aria-invalid": invalid,
         "aria-required": required,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         ...parts.trigger.attrs,
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -394,7 +395,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onFocus() {
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
       })
     },
 
@@ -420,7 +421,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         tabIndex: 0,
         onKeyDown(event) {
           if (!interactive) return
