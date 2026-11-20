@@ -57,7 +57,7 @@ const getDirectoryFiles = (reader: FileSystemDirectoryReader, path = ""): Promis
             if (!entry) return null
 
             if (isDirectoryEntry(entry)) {
-              return getDirectoryFiles(entry.createReader(), `${path}${entry.name}`)
+              return getDirectoryFiles(entry.createReader(), `${path}/${entry.name}`)
             }
 
             if (isFileEntry(entry)) {
