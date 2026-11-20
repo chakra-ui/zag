@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "preact/hooks"
 import { useVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/preact"
 
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
@@ -45,32 +46,27 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       />
       <div
         ref={setRef}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Zag virtualizer performance list"
-        style={{
-          height: 400,
-          overflow: "auto",
-          border: "2px solid #3b82f6",
-          borderRadius: 8,
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: 400,
+            overflow: "auto",
+            border: "2px solid #3b82f6",
+            borderRadius: 8,
+          },
+        })}
       >
-        <div
-          style={{
-            height: virtualizer.getTotalSize(),
-            width: "100%",
-            position: "relative",
-          }}
-        >
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((vi) => (
             <div
               key={vi.index}
-              style={{
-                ...virtualizer.getItemStyle(vi),
-                padding: "8px 12px",
-                borderBottom: "1px solid #e5e7eb",
-                backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-              }}
+              {...mergeProps(virtualizer.getItemProps(vi), {
+                style: {
+                  padding: "8px 12px",
+                  borderBottom: "1px solid #e5e7eb",
+                  backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                },
+              })}
             >
               {items[vi.index].label}
             </div>

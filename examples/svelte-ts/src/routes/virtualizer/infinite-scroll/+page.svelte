@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useInfiniteScroll } from "#lib/use-infinite-scroll.svelte.ts"
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { mergeProps, normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const TOTAL_ITEMS = 1000
   const PAGE_SIZE = 50
@@ -19,7 +19,9 @@
   const items = $derived(allItems.slice(0, loadedCount))
 
   let scroller: HTMLElement | null = null
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: items.length,
     itemSize: ROW_HEIGHT,
     overscan: 4,
@@ -27,10 +29,9 @@
 
   const setScroller = (el: HTMLElement) => {
     scroller = el
-    init(el)
+    vz.init(el)
   }
 
-  const id = $props.id()
   const api = useInfiniteScroll(() => ({
     id,
     count: items.length,
@@ -53,21 +54,25 @@
 
   <div
     {@attach setScroller}
-    tabindex="0"
-    role="region"
     aria-label="Virtualized infinite list"
-    style="height: 420px; width: 100%; overflow: auto; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 16px; box-sizing: border-box"
-    onscroll={virtualizer.handleScroll}
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: {
+        height: "420px",
+        width: "100%",
+        border: "1px solid #cbd5e1",
+        borderRadius: "8px",
+        marginTop: "16px",
+        boxSizing: "border-box",
+      },
+    })}
   >
-    <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-      {#each virtualizer.getVirtualItems() as virtualItem (virtualItem.index)}
+    <div {...vz.virtualizer.getContentProps()}>
+      {#each vz.virtualizer.getVirtualItems() as virtualItem (virtualItem.key)}
         {@const item = items[virtualItem.index]}
         {#if item}
           <div
-            {...normalizeProps.element({
+            {...mergeProps(vz.virtualizer.getItemProps(virtualItem), {
               style: {
-                ...virtualizer.getItemStyle(virtualItem),
-                height: `${virtualItem.size}px`,
                 padding: "0 16px",
                 borderBottom: "1px solid #e2e8f0",
                 boxSizing: "border-box",
@@ -96,7 +101,7 @@
   </div>
 
   <p style="margin-top: 12px; font-size: 13px; color: #64748b">
-    Rendered: {virtualizer.getVirtualItems().length} rows
+    Rendered: {vz.virtualizer.getVirtualItems().length} rows
     {loadedCount < TOTAL_ITEMS ? ` · Next page starts at ${items.length + 1}` : " · Complete"}
   </p>
 </main>

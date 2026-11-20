@@ -1,41 +1,60 @@
 ```tsx
 import {
+  normalizeProps,
+  type PropTypes,
+  useSyncExternalStore,
+} from "@zag-js/solid"
+import {
   GridVirtualizer,
   type GridVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useSyncExternalStore } from "@zag-js/solid"
-import { onCleanup, onMount } from "solid-js"
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createUniqueId,
+  onCleanup,
+  onSettled,
+  untrack,
+} from "solid-js"
 
-export function useGridVirtualizer(options: GridVirtualizerOptions) {
-  const virtualizer = new GridVirtualizer(options)
+type Options = Omit<GridVirtualizerOptions, "id" | "normalizeProps">
+
+export function useGridVirtualizer(options: Options | Accessor<Options>) {
+  const read = () => (typeof options === "function" ? options() : options)
+  const instance = new GridVirtualizer<PropTypes>({
+    ...untrack(read),
+    id: createUniqueId(),
+    normalizeProps,
+  })
   const snapshot = useSyncExternalStore(
-    virtualizer.subscribe,
-    virtualizer.getSnapshot,
+    instance.subscribe,
+    instance.getSnapshot,
   )
+
+  // Unchanged options and new callbacks don't re-render
+  createEffect(read, (next) => instance.updateOptions(next))
+
+  // The same instance, re-read by dependents on every change
+  const virtualizer = createMemo(() => (snapshot(), instance), {
+    equals: false,
+  })
 
   let scrollElement: HTMLElement | null = null
   let mounted = false
 
-  onMount(() => {
+  onSettled(() => {
     mounted = true
-    if (scrollElement) virtualizer.init(scrollElement)
+    if (scrollElement) instance.init(scrollElement)
   })
 
-  onCleanup(() => virtualizer.destroy())
+  onCleanup(() => instance.destroy())
 
-  const store = new Proxy(virtualizer, {
-    get(target, prop, receiver) {
-      snapshot()
-      const value = Reflect.get(target, prop, receiver)
-      return typeof value === "function" ? value.bind(target) : value
-    },
-  })
-
-  const ref = (el: HTMLElement | null) => {
-    scrollElement = el
-    if (mounted && el) virtualizer.init(el)
+  const ref = (element: HTMLElement | null) => {
+    scrollElement = element
+    if (mounted && element) instance.init(element)
   }
 
-  return { virtualizer: store, ref }
+  return { virtualizer, ref }
 }
 ```

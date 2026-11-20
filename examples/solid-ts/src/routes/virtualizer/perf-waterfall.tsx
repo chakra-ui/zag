@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For, Show, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -266,17 +267,17 @@ function ZagWaterfall(props: {
 
   createEffect(
     () => [props.items.length, props.columnCount] as const,
-    skipFirst(([count, columnCount]) => virtualizer.updateOptions({ count, columnCount })),
+    skipFirst(([count, columnCount]) => virtualizer().updateOptions({ count, columnCount })),
   )
 
   const getRuntimeStats = (): RuntimeStats => {
-    const virtualItems = virtualizer.getVirtualItems()
+    const virtualItems = virtualizer().getVirtualItems()
     const visibleCount = virtualItems.filter((item) => item.isVisible).length
     return {
       renderedCount: virtualItems.length,
       visibleCount,
       overscanCount: virtualItems.length - visibleCount,
-      totalSize: virtualizer.getTotalSize(),
+      totalSize: virtualizer().getTotalSize(),
     }
   }
 
@@ -286,7 +287,7 @@ function ZagWaterfall(props: {
   })
   onCleanup(() => props.registerBenchmarkRunner(null))
 
-  const layout = () => virtualizer.getWaterfallState()
+  const layout = () => virtualizer().getWaterfallState()
 
   return (
     <section>
@@ -296,35 +297,27 @@ function ZagWaterfall(props: {
           scrollEl = el
           ref(el)
         }}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Zag waterfall performance list"
-        style={{
-          height: `${VIEWPORT_HEIGHT}px`,
-          overflow: "auto",
-          border: "2px solid #3b82f6",
-          "border-radius": "8px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: { height: `${VIEWPORT_HEIGHT}px`, border: "2px solid #3b82f6", "border-radius": "8px" },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For each={virtualizer.getVirtualItems()}>
-            {(vi) => {
-              onCleanup(() => vi.measureElement(null))
-              return (
-                <Show when={props.items[vi.index]}>
-                  {(item) => (
-                    <div ref={vi.measureElement} style={virtualizer.getItemStyle(vi)}>
-                      <Card item={item()} width={layout().columnWidth} />
-                    </div>
-                  )}
-                </Show>
-              )
-            }}
+        <div {...virtualizer().getContentProps()}>
+          <For each={virtualizer().getVirtualItems()}>
+            {(vi) => (
+              <Show when={props.items[vi.index]}>
+                {(item) => (
+                  <div {...virtualizer().getItemProps(vi)}>
+                    <Card item={item()} width={layout().columnWidth} />
+                  </div>
+                )}
+              </Show>
+            )}
           </For>
         </div>
       </div>
       <p style={{ "font-size": "13px", color: "#64748b", "margin-top": "8px" }}>
-        Rendered: {virtualizer.getVirtualItems().length} items • Columns: {layout().columnCount} • Column width:{" "}
+        Rendered: {virtualizer().getVirtualItems().length} items • Columns: {layout().columnCount} • Column width:{" "}
         {Math.round(layout().columnWidth)}px
       </p>
     </section>

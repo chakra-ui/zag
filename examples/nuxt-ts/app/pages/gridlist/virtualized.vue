@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as gridlist from "@zag-js/gridlist"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { CheckIcon } from "lucide-vue-next"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 import "@styles/gridlist.css"
@@ -26,10 +26,12 @@ const collection = gridlist.collection<Row>({
   itemToString: (item) => item.name,
 })
 
-const { virtualizer, init } = useListVirtualizer({
+const { virtualizer, ref: rootRef } = useListVirtualizer({
   count: items.length,
   itemSize: ROW_HEIGHT,
   overscan: 8,
+  // Grid rows take `aria-rowindex`, not list positions
+  aria: false,
 })
 
 const service = useMachine(gridlist.machine as gridlist.Machine<Row>, {
@@ -37,12 +39,12 @@ const service = useMachine(gridlist.machine as gridlist.Machine<Row>, {
   collection,
   selectionMode: "multiple",
   scrollToIndexFn(details) {
-    virtualizer.scrollToIndex(details.index, { align: "auto" })
+    virtualizer.value.scrollToIndex(details.index, { align: "auto" })
   },
 })
 
 const api = computed(() => gridlist.connect(service, normalizeProps))
-const virtualItems = computed(() => virtualizer.getVirtualItems())
+const virtualItems = computed(() => virtualizer.value.getVirtualItems())
 </script>
 
 <template>
@@ -51,19 +53,15 @@ const virtualItems = computed(() => virtualizer.getVirtualItems())
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">10,000 rows</label>
         <div
-          :ref="(el) => init(el as HTMLElement)"
-          v-bind="api.getContentProps()"
-          tabindex="0"
+          :ref="rootRef"
+          v-bind="mergeProps(virtualizer.getRootProps(), api.getContentProps())"
           style="height: 360px; width: 480px"
-          @scroll="virtualizer.handleScroll"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div v-bind="virtualizer.getContentProps()">
             <div
               v-for="vi in virtualItems"
               :key="items[vi.index]!.id"
-              v-bind="api.getItemProps({ item: items[vi.index]! })"
-              :data-index="vi.index"
-              :style="{ ...virtualizer.getItemStyle(vi), overflowAnchor: 'none' }"
+              v-bind="mergeProps(virtualizer.getItemProps(vi), api.getItemProps({ item: items[vi.index]! }))"
             >
               <div v-bind="api.getCellProps()">
                 <button v-if="api.hasCheckbox" v-bind="api.getItemCheckboxProps({ item: items[vi.index]! })">

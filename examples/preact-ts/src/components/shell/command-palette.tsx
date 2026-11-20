@@ -215,6 +215,8 @@ function PaletteList(props: PaletteListProps) {
     // The list's vertical padding lives here so scrolled-to rows clear the edges
     paddingStart: LIST_PADDING,
     paddingEnd: LIST_PADDING,
+    // Group labels share the row index, so positions come from the options
+    aria: false,
   })
 
   scrollToIndexRef.current = (itemIndex, immediate) => {
@@ -226,15 +228,15 @@ function PaletteList(props: PaletteListProps) {
   }
 
   return (
-    <div {...api.getListProps()} ref={ref} onScroll={virtualizer.handleScroll} className="pg-palette-list">
-      <div style={{ position: "relative", width: "100%", height: virtualizer.getTotalSize() }}>
+    <div {...mergeProps(virtualizer.getRootProps(), api.getListProps())} ref={ref} className="pg-palette-list">
+      <div {...virtualizer.getContentProps()}>
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const row = rows[virtualItem.index]
           if (!row) return null
-          const style = virtualizer.getItemStyle(virtualItem)
+          const rowProps = virtualizer.getItemProps(virtualItem)
           if (row.type === "group") {
             return (
-              <div key={`group:${row.label}`} role="presentation" className="pg-palette-group-label" style={style}>
+              <div key={`group:${row.label}`} {...rowProps} role="presentation" className="pg-palette-group-label">
                 {row.label}
               </div>
             )
@@ -243,9 +245,8 @@ function PaletteList(props: PaletteListProps) {
           return (
             <div
               key={item.value}
-              {...api.getItemProps({ item, persistFocus: true })}
+              {...mergeProps(rowProps, api.getItemProps({ item, persistFocus: true }))}
               className="pg-palette-item"
-              style={style}
             >
               <span className="pg-palette-item-label">{item.label}</span>
               {item.meta && <span className="pg-palette-item-meta">{item.meta}</span>}

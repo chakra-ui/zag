@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For } from "solid-js"
 import { useWaterfallVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -30,38 +31,40 @@ export default function Page() {
       <h1>Waterfall Virtualizer</h1>
       <p style={{ color: "#64748b" }}>
         Masonry layout with {ITEM_COUNT.toLocaleString()} variable-height cards across{" "}
-        {virtualizer.getWaterfallState().columnCount} columns.
+        {virtualizer().getWaterfallState().columnCount} columns.
       </p>
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Virtualized waterfall"
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          height: "560px",
-          border: "1px solid #d1d5db",
-          "border-radius": "8px",
-          "margin-top": "16px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            width: "100%",
+            height: "560px",
+            border: "1px solid #d1d5db",
+            "border-radius": "8px",
+            "margin-top": "16px",
+          },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For keyed={false} each={virtualizer().getVirtualItems()}>
             {(virtualItem) => (
               <div
-                data-index={virtualItem().index}
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem()),
-                  height: `${items[virtualItem().index].height}px`,
-                  padding: "12px",
-                  "border-radius": "8px",
-                  border: "1px solid #e2e8f0",
-                  "box-sizing": "border-box",
-                  background:
-                    "linear-gradient(180deg, rgba(241,245,249,0.7) 0%, rgba(255,255,255,1) 45%, rgba(248,250,252,1) 100%)",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(virtualItem()),
+                  () => ({
+                    style: {
+                      height: `${items[virtualItem().index].height}px`,
+                      padding: "12px",
+                      "border-radius": "8px",
+                      border: "1px solid #e2e8f0",
+                      "box-sizing": "border-box",
+                      background:
+                        "linear-gradient(180deg, rgba(241,245,249,0.7) 0%, rgba(255,255,255,1) 45%, rgba(248,250,252,1) 100%)",
+                    },
+                  }),
+                )}
               >
                 <strong style={{ "font-size": "13px" }}>{items[virtualItem().index].title}</strong>
                 <p style={{ margin: "4px 0 0", "font-size": "12px", color: "#64748b" }}>

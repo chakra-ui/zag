@@ -11,18 +11,19 @@
 
   let selected = $state("-")
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: items.length,
     itemSize: 32,
     observeScrollElementSize: true,
   })
 
-  const id = $props.id()
   const service = useMachine(menu.machine, {
     id,
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index)
+      vz.virtualizer.scrollToIndex(details.index)
     },
     onSelect: ({ value }) => {
       selected = value
@@ -41,21 +42,13 @@
     <Portal>
       <div {...api.getPositionerProps()}>
         <div
-          {...api.getContentProps()}
-          {@attach init}
-          onscroll={virtualizer.handleScroll}
-          style="max-height: 320px; overflow-y: auto"
+          {...mergeProps(vz.virtualizer.getRootProps(), api.getContentProps(), { style: "max-height: 320px" })}
+          {@attach vz.init}
         >
-          <div style:height="{virtualizer.getTotalSize()}px" style:position="relative">
-            {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].value)}
+          <div {...vz.virtualizer.getContentProps()}>
+            {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].value)}
               {@const item = items[virtualItem.index]}
-              <div
-                aria-posinset={virtualItem.index + 1}
-                aria-setsize={items.length}
-                {...mergeProps(api.getItemProps({ value: item.value }), {
-                  style: virtualizer.getItemStyle(virtualItem),
-                })}
-              >
+              <div {...mergeProps(vz.virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}>
                 {item.label}
               </div>
             {/each}

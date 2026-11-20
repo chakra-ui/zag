@@ -3,7 +3,7 @@
   import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
   import { runWindowScrollBenchmark, type ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
   import { useWindowVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 10_000
   const ITEM_HEIGHT = 80
@@ -16,9 +16,11 @@
 
   let metrics = $state<ScrollBenchmarkMetrics | null>(null)
 
-  const { virtualizer, init } = useWindowVirtualizer({
+  const id = $props.id()
+  const vz = useWindowVirtualizer({
+    id,
     count: ITEM_COUNT,
-    estimatedItemSize: ITEM_HEIGHT,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
     initialRect:
       typeof window !== "undefined"
@@ -45,22 +47,16 @@
     <h3 style="color: #3b82f6">@zag-js/virtualizer (Window)</h3>
     <BenchmarkButtons onrun={run} />
     <div
-      {@attach init}
-      {...normalizeProps.element({
-        style: {
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          border: "2px solid #3b82f6",
-          borderRadius: "8px",
-        },
+      {@attach vz.init}
+      {...mergeProps(vz.virtualizer.getRootProps(), {
+        style: { width: "100%", border: "2px solid #3b82f6", borderRadius: "8px" },
       })}
     >
-      <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-        {#each virtualizer.getVirtualItems() as vi (vi.index)}
+      <div {...vz.virtualizer.getContentProps()}>
+        {#each vz.virtualizer.getVirtualItems() as vi (vi.key)}
           <div
-            {...normalizeProps.element({
+            {...mergeProps(vz.virtualizer.getItemProps(vi), {
               style: {
-                ...virtualizer.getItemStyle(vi),
                 padding: "8px 12px",
                 borderBottom: "1px solid #e5e7eb",
                 backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
@@ -74,7 +70,7 @@
       </div>
     </div>
     <p style="font-size: 13px; color: #64748b; margin-top: 8px">
-      Rendered: {virtualizer.getVirtualItems().length} items
+      Rendered: {vz.virtualizer.getVirtualItems().length} items
     </p>
   </div>
 </div>

@@ -3,7 +3,7 @@
   import * as combobox from "@zag-js/combobox"
   import { createFilter } from "@zag-js/i18n-utils"
   import { comboboxData } from "@zag-js/shared"
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { XIcon } from "lucide-svelte"
   import "@styles/combobox.css"
 
@@ -16,7 +16,9 @@
 
   let options = $state.raw(comboboxData)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: options.length,
     itemSize: 32,
     observeScrollElementSize: true,
@@ -30,12 +32,11 @@
     }),
   )
 
-  const id = $props.id()
   const service = useMachine(combobox.machine as combobox.Machine<Item>, () => ({
     id,
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+      vz.virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
     onOpenChange() {
       options = comboboxData
@@ -64,26 +65,13 @@
 
   <div {...api.getPositionerProps()}>
     <div data-testid="combobox-content" {...api.getContentProps()}>
-      <div {...api.getListProps()} {@attach init} onscroll={virtualizer.handleScroll}>
-        <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-          {#each virtualizer.getVirtualItems() as vi (options[vi.index]?.code ?? vi.index)}
+      <div {...mergeProps(vz.virtualizer.getRootProps(), api.getListProps())} {@attach vz.init}>
+        <div {...vz.virtualizer.getContentProps()}>
+          {#each vz.virtualizer.getVirtualItems() as vi (options[vi.index]?.code ?? vi.index)}
             {@const item = options[vi.index]}
             <!-- The count syncs before paint; skip rows from the previous one -->
             {#if item}
-              <div
-                data-testid={item.code}
-                aria-posinset={vi.index + 1}
-                aria-setsize={options.length}
-                {...api.getItemProps({ item })}
-                {...normalizeProps.element({
-                  style: {
-                    ...virtualizer.getItemStyle(vi),
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  },
-                })}
-              >
+              <div data-testid={item.code} {...mergeProps(vz.virtualizer.getItemProps(vi), api.getItemProps({ item }))}>
                 <span>{item.label}</span>
                 <span {...api.getItemIndicatorProps({ item })}>✅</span>
               </div>

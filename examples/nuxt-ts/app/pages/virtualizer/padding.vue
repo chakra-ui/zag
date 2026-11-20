@@ -11,7 +11,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 const paddingStart = ref(40)
 const paddingEnd = ref(40)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: ITEM_COUNT,
   itemSize: 40,
   paddingStart: paddingStart.value,
@@ -57,33 +57,29 @@ const updatePadding = (start: number, end: number) => {
     </div>
 
     <div
-      :ref="(el) => init(el as HTMLElement)"
-      tabindex="0"
+      :ref="rootRef"
+      v-bind="virtualizer.getRootProps()"
       aria-label="Virtualized list with padding"
       style="
         height: 400px;
         width: 100%;
-        overflow: auto;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         margin-top: 16px;
         box-sizing: border-box;
       "
-      @scroll="virtualizer.handleScroll"
     >
       <div
+        v-bind="virtualizer.getContentProps()"
         :style="{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
           background: `linear-gradient(to bottom, #dbeafe ${paddingStart}px, transparent ${paddingStart}px, transparent calc(100% - ${paddingEnd}px), #dbeafe calc(100% - ${paddingEnd}px))`,
         }"
       >
         <div
           v-for="vi in virtualizer.getVirtualItems()"
           :key="vi.index"
+          v-bind="virtualizer.getItemProps(vi)"
           :style="{
-            ...virtualizer.getItemStyle(vi),
             height: '40px',
             padding: '0 16px',
             borderBottom: '1px solid #cbd5e1',

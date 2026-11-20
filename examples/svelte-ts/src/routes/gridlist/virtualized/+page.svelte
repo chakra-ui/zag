@@ -30,24 +30,27 @@
     itemToString: (item) => item.name,
   })
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: items.length,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    // Grid rows take `aria-rowindex`, not list positions
+    aria: false,
   })
 
-  const id = $props.id()
   const service = useMachine(gridlist.machine as gridlist.Machine<Row>, {
     id,
     collection,
     selectionMode: "multiple",
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      vz.virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
   })
 
   const api = $derived(gridlist.connect(service, normalizeProps))
-  const virtualItems = $derived(virtualizer.getVirtualItems())
+  const virtualItems = $derived(vz.virtualizer.getVirtualItems())
 </script>
 
 <main>
@@ -55,19 +58,15 @@
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>10,000 rows</label>
       <div
-        {@attach init}
-        {...mergeProps(api.getContentProps(), { style: { height: "360px", width: "480px" } })}
-        tabindex={0}
-        onscroll={virtualizer.handleScroll}
+        {@attach vz.init}
+        {...mergeProps(vz.virtualizer.getRootProps(), api.getContentProps(), {
+          style: { height: "360px", width: "480px" },
+        })}
       >
-        <div style="width: 100%; position: relative" style:height="{virtualizer.getTotalSize()}px">
+        <div {...vz.virtualizer.getContentProps()}>
           {#each virtualItems as vi (items[vi.index].id)}
             {@const item = items[vi.index]}
-            <div
-              {...api.getItemProps({ item })}
-              data-index={vi.index}
-              {...normalizeProps.element({ style: { ...virtualizer.getItemStyle(vi), overflowAnchor: "none" } })}
-            >
+            <div {...mergeProps(vz.virtualizer.getItemProps(vi), api.getItemProps({ item }))}>
               <div {...api.getCellProps()}>
                 {#if api.hasCheckbox}
                   <button {...api.getItemCheckboxProps({ item })}>

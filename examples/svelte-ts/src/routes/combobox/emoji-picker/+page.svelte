@@ -2,9 +2,10 @@
   import Portal from "#lib/components/portal.svelte"
   import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "#lib/emoji-loader.ts"
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
+  import type { GroupMeta } from "@zag-js/virtualizer"
   import * as listbox from "@zag-js/listbox"
   import * as popover from "@zag-js/popover"
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { onMount } from "svelte"
   import "@styles/emoji-picker.css"
 
@@ -32,7 +33,7 @@
     // Grid row (in the collection) → visual row (with headers)
     const gridRowToRow: number[] = []
     // Sticky headers, one per category
-    const groups: { id: string; startIndex: number; headerSize: number }[] = []
+    const groups: GroupMeta[] = []
 
     categories.forEach(({ index: category, label }) => {
       const group = emojis.filter((emoji) => emoji.category === category)
@@ -94,7 +95,9 @@
   // Stable reference; reads the latest layout
   const estimatedItemSize = (index: number) => (layout.rows[index]?.type === "header" ? HEADER_SIZE : CELL_SIZE)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: layout.rows.length,
     estimatedItemSize,
     groups: layout.groups,
@@ -103,9 +106,10 @@
     overscan: 4,
     paddingEnd: 4,
     observeScrollElementSize: true,
+    // Rows wrap the options, which carry their own semantics
+    aria: false,
   }))
 
-  const id = $props.id()
   const popoverService = useMachine(popover.machine, { id: `${id}-popover` })
   const popoverApi = $derived(popover.connect(popoverService, normalizeProps))
 
@@ -115,7 +119,7 @@
     // The item may not be rendered yet, so scroll its row into view
     scrollToIndexFn({ index }) {
       const row = layout.gridRowToRow[Math.floor(index / COLUMN_COUNT)]
-      if (row != null) virtualizer.scrollToIndex(row, { align: "auto" })
+      if (row != null) vz.virtualizer.scrollToIndex(row, { align: "auto" })
     },
     onSelect({ value }) {
       selected = value
@@ -127,7 +131,7 @@
   const active = $derived(listboxApi.highlightedItem as EmojiItem | null)
 
   // Virtual rows are absolutely positioned, so the sticky header is an overlay
-  const sticky = $derived(virtualizer.getStickyGroupHeader())
+  const sticky = $derived(vz.virtualizer.getStickyGroupHeader())
 </script>
 
 <main>
@@ -160,18 +164,18 @@
                 {sticky.group.id}
               </div>
             {/if}
-            <div {...listboxApi.getListProps()} {@attach init} onscroll={virtualizer.handleScroll}>
-              <div style="position: relative; height: {virtualizer.getTotalSize()}px">
-                {#each virtualizer.getVirtualItems() as virtualRow (virtualRow.index)}
+            <div {...mergeProps(vz.virtualizer.getRootProps(), listboxApi.getListProps())} {@attach vz.init}>
+              <div {...vz.virtualizer.getContentProps()}>
+                {#each vz.virtualizer.getVirtualItems() as virtualRow (virtualRow.index)}
                   {@const row = layout.rows[virtualRow.index]}
                   {#if row}
-                    {@const styleProps = normalizeProps.element({ style: virtualizer.getItemStyle(virtualRow) })}
+                    {@const rowProps = vz.virtualizer.getItemProps(virtualRow)}
                     {#if row.type === "header"}
-                      <div class="emoji-category" {...styleProps}>
+                      <div {...rowProps} class="emoji-category">
                         {row.label}
                       </div>
                     {:else}
-                      <div class="emoji-row" {...styleProps}>
+                      <div {...rowProps} class="emoji-row">
                         {#each layout.items.slice(row.start, row.start + COLUMN_COUNT) as item (item.value)}
                           {#if item.placeholder}
                             <div class="emoji-item" aria-hidden="true"></div>

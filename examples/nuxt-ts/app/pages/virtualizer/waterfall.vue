@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from "vue"
 import { useWaterfallVirtualizer } from "~/composables/useVirtualizer"
 
 const ITEM_COUNT = 1_000
@@ -16,7 +15,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
   height: getItemHeight(index),
 }))
 
-const { virtualizer, init } = useWaterfallVirtualizer({
+const { virtualizer, ref: rootRef } = useWaterfallVirtualizer({
   count: ITEM_COUNT,
   columnCount: 3,
   columnGap: 12,
@@ -24,10 +23,6 @@ const { virtualizer, init } = useWaterfallVirtualizer({
   overscan: 6,
   estimatedItemSize: (index) => getItemHeight(index),
 })
-
-const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
-  init(element as HTMLElement | null)
-}
 </script>
 
 <template>
@@ -39,12 +34,10 @@ const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
     </p>
 
     <div
-      :ref="setScrollRef"
-      tabindex="0"
+      :ref="rootRef"
+      v-bind="virtualizer.getRootProps()"
       aria-label="Virtualized waterfall"
-      @scroll="virtualizer.handleScroll"
       :style="{
-        ...virtualizer.getContainerStyle(),
         width: '100%',
         height: '560px',
         border: '1px solid #d1d5db',
@@ -52,13 +45,12 @@ const setScrollRef = (element: Element | ComponentPublicInstance | null) => {
         marginTop: '16px',
       }"
     >
-      <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+      <div v-bind="virtualizer.getContentProps()">
         <div
           v-for="virtualItem in virtualizer.getVirtualItems()"
           :key="items[virtualItem.index]?.id"
-          :data-index="virtualItem.index"
+          v-bind="virtualizer.getItemProps(virtualItem)"
           :style="{
-            ...virtualizer.getItemStyle(virtualItem),
             height: `${items[virtualItem.index]?.height}px`,
             padding: '12px',
             borderRadius: '8px',

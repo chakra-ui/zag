@@ -12,10 +12,11 @@ const initialItems = Array.from({ length: 500 }, (_, i) => ({
 
 const items = ref(initialItems)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: items.value.length,
   itemSize: 40,
   overscan: 10,
+  aria: false,
 }))
 
 const service = useMachine(dnd.machine, {
@@ -30,7 +31,7 @@ const service = useMachine(dnd.machine, {
 const api = computed(() => dnd.connect(service, normalizeProps))
 
 const rows = computed(() =>
-  virtualizer.getVirtualItems().flatMap((vi) => {
+  virtualizer.value.getVirtualItems().flatMap((vi) => {
     const item = items.value[vi.index]
     return item ? [{ vi, item }] : []
   }),
@@ -41,9 +42,9 @@ const rows = computed(() =>
   <main :class="styles.main">
     <div v-bind="api.getRootProps()" :class="styles.root">
       <h3>Virtualized (500 items)</h3>
-      <div :ref="(el) => init(el as HTMLElement)" :class="styles.virtualViewport" @scroll="virtualizer.handleScroll">
-        <div :class="styles.virtualSizer" :style="{ height: `${virtualizer.getTotalSize()}px` }">
-          <div v-for="{ vi, item } in rows" :key="item.id" :style="virtualizer.getItemStyle(vi)">
+      <div :ref="rootRef" v-bind="virtualizer.getRootProps()" :class="styles.virtualViewport">
+        <div v-bind="virtualizer.getContentProps()" :class="styles.virtualSizer">
+          <div v-for="{ vi, item } in rows" :key="item.id" v-bind="virtualizer.getItemProps(vi)">
             <div :class="styles.virtualRowInner">
               <div
                 v-bind="api.getDropIndicatorProps({ value: item.id, placement: 'before' })"

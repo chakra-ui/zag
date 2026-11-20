@@ -12,7 +12,7 @@ const items = generateItems(10000)
 
 const isSmooth = ref(true)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: items.length,
   estimatedItemSize: 142,
   overscan: 5,
@@ -21,8 +21,8 @@ const { virtualizer, init } = useListVirtualizer(() => ({
   paddingEnd: 0,
 }))
 
-const virtualItems = computed(() => virtualizer.getVirtualItems())
-const totalSize = computed(() => virtualizer.getTotalSize())
+const virtualItems = computed(() => virtualizer.value.getVirtualItems())
+const totalSize = computed(() => virtualizer.value.getTotalSize())
 </script>
 
 <template>
@@ -50,26 +50,21 @@ const totalSize = computed(() => virtualizer.getTotalSize())
       </div>
 
       <div
-        :ref="(el) => init(el as HTMLElement)"
-        v-bind="virtualizer.getContainerAriaAttrs()"
-        tabindex="0"
+        :ref="rootRef"
+        v-bind="virtualizer.getRootProps()"
         aria-label="Virtualized list"
         :style="{
-          ...virtualizer.getContainerStyle(),
           height: '400px',
           border: '1px solid #ccc',
           marginTop: '16px',
         }"
-        @scroll="virtualizer.handleScroll"
       >
-        <div :style="{ height: `${totalSize}px`, width: '100%', position: 'relative' }">
+        <div v-bind="virtualizer.getContentProps()">
           <div
             v-for="virtualItem in virtualItems"
             :key="virtualItem.index"
-            :data-index="virtualItem.index"
-            v-bind="virtualizer.getItemAriaAttrs(virtualItem.index)"
+            v-bind="virtualizer.getItemProps(virtualItem)"
             :style="{
-              ...virtualizer.getItemStyle(virtualItem),
               padding: '16px',
               backgroundColor: virtualItem.index % 2 === 0 ? '#f8f9fa' : '#ffffff',
               borderBottom: '1px solid #e1e5e9',

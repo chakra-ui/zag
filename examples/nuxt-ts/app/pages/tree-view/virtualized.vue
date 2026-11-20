@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-vue-next"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 import "@styles/tree-view.css"
@@ -40,7 +40,7 @@ const service = useMachine(
     id: useId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer.value.scrollToIndex(details.index, { align: "auto" })
     },
   }),
 )
@@ -48,14 +48,16 @@ const service = useMachine(
 const api = computed(() => tree.connect(service, normalizeProps))
 const visibleNodes = computed(() => api.value.getVisibleNodes())
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: visibleNodes.value.length,
   itemSize: ROW_HEIGHT,
   overscan: 10,
+  // Items wrap tree nodes, which carry their own semantics
+  aria: false,
 }))
 
 const rows = computed(() =>
-  virtualizer.getVirtualItems().flatMap((vi) => {
+  virtualizer.value.getVirtualItems().flatMap((vi) => {
     const visible = visibleNodes.value[vi.index]
     if (!visible) return []
     const nodeProps = { node: visible.node, indexPath: visible.indexPath }
@@ -78,17 +80,15 @@ const rows = computed(() =>
       </div>
 
       <div
-        :ref="(el) => init(el as HTMLElement)"
-        v-bind="api.getTreeProps()"
-        style="height: 400px; overflow: auto; border: 1px solid #ccc; border-radius: 4px"
-        @scroll="virtualizer.handleScroll"
+        :ref="rootRef"
+        v-bind="mergeProps(virtualizer.getRootProps(), api.getTreeProps())"
+        style="height: 400px; border: 1px solid #ccc; border-radius: 4px"
       >
-        <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+        <div v-bind="virtualizer.getContentProps()">
           <div
             v-for="{ vi, nodeProps, nodeState } in rows"
             :key="nodeProps.node.id"
-            :data-index="vi.index"
-            :style="virtualizer.getItemStyle(vi)"
+            v-bind="virtualizer.getItemProps(vi)"
           >
             <div
               v-bind="api.getNodeProps(nodeProps)"

@@ -93,7 +93,7 @@ const layout = computed(() => {
 
 const rowSize = (index: number) => (layout.value.rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: layout.value.rows.length,
   estimatedItemSize: (index: number) => rowSize(index),
   observeScrollElementSize: true,
@@ -101,6 +101,8 @@ const { virtualizer, init } = useListVirtualizer(() => ({
   // The list's vertical padding lives here so scrolled-to rows clear the edges
   paddingStart: LIST_PADDING,
   paddingEnd: LIST_PADDING,
+  // Group labels share the row index, so positions come from the options
+  aria: false,
 }))
 
 const id = useId()
@@ -119,7 +121,7 @@ const service = useMachine(
       if (rowIndex == null) return
       // Bring the group header along when jumping to a group's first item
       const target = immediate && rows[rowIndex - 1]?.type === "group" ? rowIndex - 1 : rowIndex
-      virtualizer.scrollToIndex(target, { align: immediate ? "center" : "auto" })
+      virtualizer.value.scrollToIndex(target, { align: immediate ? "center" : "auto" })
     },
     inputBehavior: "autohighlight",
     selectionBehavior: "clear",
@@ -142,7 +144,6 @@ const inputProps = computed(() =>
     "aria-label": placeholders[props.mode.type],
   }),
 )
-const listRef = (el: any) => init(el as HTMLElement | null)
 </script>
 
 <template>
@@ -164,31 +165,32 @@ const listRef = (el: any) => init(el as HTMLElement | null)
               <template v-if="collection.size === 0">No results for “{{ query }}”</template>
             </div>
             <div
-              v-bind="comboboxApi.getListProps()"
-              :ref="listRef"
+              v-bind="mergeProps(virtualizer.getRootProps(), comboboxApi.getListProps())"
+              :ref="rootRef"
               class="pg-palette-list"
-              @scroll="virtualizer.handleScroll"
             >
-              <div :style="{ position: 'relative', width: '100%', height: `${virtualizer.getTotalSize()}px` }">
+              <div v-bind="virtualizer.getContentProps()">
                 <template v-for="virtualItem in virtualizer.getVirtualItems()" :key="virtualItem.index">
                   <div
                     v-if="layout.rows[virtualItem.index]?.type === 'group'"
+                    v-bind="virtualizer.getItemProps(virtualItem)"
                     role="presentation"
                     class="pg-palette-group-label"
-                    :style="virtualizer.getItemStyle(virtualItem)"
                   >
                     {{ (layout.rows[virtualItem.index] as { label: string }).label }}
                   </div>
                   <div
                     v-else-if="layout.rows[virtualItem.index]"
                     v-bind="
-                      comboboxApi.getItemProps({
-                        item: (layout.rows[virtualItem.index] as { item: PaletteItem }).item,
-                        persistFocus: true,
-                      })
+                      mergeProps(
+                        virtualizer.getItemProps(virtualItem),
+                        comboboxApi.getItemProps({
+                          item: (layout.rows[virtualItem.index] as { item: PaletteItem }).item,
+                          persistFocus: true,
+                        }),
+                      )
                     "
                     class="pg-palette-item"
-                    :style="virtualizer.getItemStyle(virtualItem)"
                   >
                     <span class="pg-palette-item-label">
                       {{ (layout.rows[virtualItem.index] as { item: PaletteItem }).item.label }}

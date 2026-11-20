@@ -37,9 +37,7 @@ const getGroupIndex = (index: number) => Math.floor(index / ITEMS_PER_GROUP)
 const getGroupLabel = (index: number) => `Group ${index + 1}`
 const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
 
-const scrollOffset = ref(0)
-
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: TOTAL_ITEMS,
   estimatedItemSize: ITEM_HEIGHT,
   estimatedGroupHeaderSize: HEADER_HEIGHT,
@@ -47,13 +45,8 @@ const { virtualizer, init } = useListVirtualizer(() => ({
   overscan: 5,
 }))
 
-const headerState = computed(() => virtualizer.getGroupHeaderState(scrollOffset.value, HEADER_HEIGHT))
-const virtualItems = computed(() => virtualizer.getVirtualItems())
-
-const onScroll = (event: Event) => {
-  scrollOffset.value = (event.target as HTMLDivElement).scrollTop
-  virtualizer.handleScroll(event)
-}
+const headerState = computed(() => virtualizer.value.getStickyGroupHeader(HEADER_HEIGHT))
+const virtualItems = computed(() => virtualizer.value.getVirtualItems())
 </script>
 
 <template>
@@ -88,19 +81,17 @@ const onScroll = (event: Event) => {
       </div>
 
       <div
-        :ref="(el) => init(el as HTMLElement)"
-        tabindex="0"
+        :ref="rootRef"
+        v-bind="virtualizer.getRootProps()"
         aria-label="Virtualized list with sticky group headers"
-        style="height: 400px; overflow: auto; border: 2px solid #cbd5e1; border-radius: 8px"
-        @scroll="onScroll"
+        style="height: 400px; border: 2px solid #cbd5e1; border-radius: 8px"
       >
-        <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+        <div v-bind="virtualizer.getContentProps()">
           <div
             v-for="vi in virtualItems"
             :key="vi.index"
+            v-bind="virtualizer.getItemProps(vi)"
             :style="{
-              ...virtualizer.getItemStyle(vi),
-              height: `${vi.size}px`,
               backgroundColor: COLORS[items[vi.index]!.groupIndex],
               fontSize: '13px',
               boxSizing: 'border-box',

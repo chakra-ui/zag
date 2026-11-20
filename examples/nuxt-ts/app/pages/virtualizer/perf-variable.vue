@@ -20,7 +20,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 const metrics = ref<ScrollBenchmarkMetrics | null>(null)
 let scrollEl: HTMLElement | null = null
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: ITEM_COUNT,
   estimatedItemSize: getItemHeight,
   overscan: 5,
@@ -28,7 +28,7 @@ const { virtualizer, init } = useListVirtualizer(() => ({
 
 const setScrollRef = (el: unknown) => {
   scrollEl = el as HTMLElement | null
-  init(scrollEl)
+  rootRef(scrollEl)
 }
 
 const run = (scrollCount: number) => {
@@ -41,8 +41,8 @@ const run = (scrollCount: number) => {
     <h1>Variable Heights Perf</h1>
     <p style="color: #64748b">
       {{ ITEM_COUNT.toLocaleString() }} items with <strong>variable heights (30-150px)</strong>, 5 overscan. Each item
-      has a deterministic height based on its index. Items use <code>measureElement</code> for dynamic measurement. This
-      tests the full scroll + measure + reposition pipeline with variable-size items.
+      has a deterministic height based on its index. Items are measured as they render. This tests the full scroll +
+      measure + reposition pipeline with variable-size items.
     </p>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px">
@@ -51,18 +51,16 @@ const run = (scrollCount: number) => {
         <VirtualizerBenchmarkButtons @run="run" />
         <div
           :ref="setScrollRef"
-          tabindex="0"
+          v-bind="virtualizer.getRootProps()"
           aria-label="Zag variable-height performance list"
-          style="height: 400px; overflow: auto; border: 2px solid #3b82f6; border-radius: 8px"
-          @scroll="virtualizer.handleScroll"
+          style="height: 400px; border: 2px solid #3b82f6; border-radius: 8px"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div v-bind="virtualizer.getContentProps()">
             <div
               v-for="vi in virtualizer.getVirtualItems()"
               :key="vi.index"
-              :ref="(el) => vi.measureElement(el as HTMLElement | null)"
+              v-bind="virtualizer.getItemProps(vi)"
               :style="{
-                ...virtualizer.getItemStyle(vi),
                 padding: '8px 12px',
                 borderBottom: '1px solid #e5e7eb',
                 backgroundColor: vi.index % 2 === 0 ? '#f8fafc' : '#fff',

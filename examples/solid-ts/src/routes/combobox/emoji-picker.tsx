@@ -1,9 +1,10 @@
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js"
 import { Portal } from "@solidjs/web"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
+import type { GroupMeta } from "@zag-js/virtualizer"
 import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "~/lib/emoji-loader"
 import "@styles/emoji-picker.css"
 
@@ -31,7 +32,7 @@ function getLayout(emojis: EmojiItem[], categories: EmojiDataCategory[]) {
   // Grid row (in the collection) → visual row (with headers)
   const gridRowToRow: number[] = []
   // Sticky headers, one per category
-  const groups: { id: string; startIndex: number; headerSize: number }[] = []
+  const groups: GroupMeta[] = []
 
   categories.forEach(({ index: category, label }) => {
     const group = emojis.filter((emoji) => emoji.category === category)
@@ -93,6 +94,8 @@ export default function Page() {
     overscan: 4,
     paddingEnd: 4,
     observeScrollElementSize: true,
+    // Rows wrap the options, which carry their own semantics
+    aria: false,
   }))
 
   const popoverService = useMachine(popover.machine, { id: createUniqueId() })
@@ -105,7 +108,7 @@ export default function Page() {
     // The item may not be rendered yet, so scroll its row into view
     scrollToIndexFn({ index }) {
       const row = layout().gridRowToRow[Math.floor(index / COLUMN_COUNT)]
-      if (row != null) virtualizer.scrollToIndex(row, { align: "auto" })
+      if (row != null) virtualizer().scrollToIndex(row, { align: "auto" })
     },
     onSelect({ value }) {
       setSelected(value)
@@ -117,7 +120,7 @@ export default function Page() {
   const active = () => api().highlightedItem as EmojiItem | null
 
   // Virtual rows are absolutely positioned, so the sticky header is an overlay
-  const sticky = () => virtualizer.getStickyGroupHeader()
+  const sticky = () => virtualizer().getStickyGroupHeader()
 
   return (
     <main>
@@ -153,23 +156,29 @@ export default function Page() {
                   )}
                 </Show>
 
-                <div {...api().getListProps()} ref={scrollRef} onScroll={virtualizer.handleScroll}>
-                  <div style={{ position: "relative", height: `${virtualizer.getTotalSize()}px` }}>
+                <div
+                  {...mergeProps(
+                    () => virtualizer().getRootProps(),
+                    () => api().getListProps(),
+                  )}
+                  ref={scrollRef}
+                >
+                  <div {...virtualizer().getContentProps()}>
                     {/* unkeyed: the virtualizer reuses its item objects */}
-                    <For keyed={false} each={virtualizer.getVirtualItems()}>
+                    <For keyed={false} each={virtualizer().getVirtualItems()}>
                       {(virtualRow) => {
                         const row = () => layout().rows[virtualRow().index]
-                        const style = () => virtualizer.getItemStyle(virtualRow())
+                        const rowProps = () => virtualizer().getItemProps(virtualRow())
                         return (
                           <Show
                             when={row()?.type === "emojis"}
                             fallback={
-                              <div class="emoji-category" style={style()}>
+                              <div {...rowProps()} class="emoji-category">
                                 {(row() as Extract<Row, { type: "header" }> | undefined)?.label}
                               </div>
                             }
                           >
-                            <div class="emoji-row" style={style()}>
+                            <div {...rowProps()} class="emoji-row">
                               <For
                                 keyed={false}
                                 each={layout().items.slice(

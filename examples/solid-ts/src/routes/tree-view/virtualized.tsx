@@ -1,8 +1,8 @@
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
-import { Accessor, createMemo, createUniqueId, For, Show, createTrackedEffect } from "solid-js"
+import { Accessor, createEffect, createMemo, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -78,6 +78,8 @@ export default function Page() {
     count: 0,
     itemSize: ROW_HEIGHT,
     overscan: 10,
+    // Items wrap tree nodes, which carry their own semantics
+    aria: false,
   })
 
   const service = useMachine(
@@ -86,7 +88,7 @@ export default function Page() {
       id: createUniqueId(),
       collection,
       scrollToIndexFn(details) {
-        virtualizer.scrollToIndex(details.index, { align: "auto" })
+        virtualizer().scrollToIndex(details.index, { align: "auto" })
       },
     }),
   )
@@ -94,9 +96,10 @@ export default function Page() {
   const api = createMemo(() => tree.connect(service, normalizeProps))
   const visibleNodes = createMemo(() => api().getVisibleNodes())
 
-  createTrackedEffect(() => {
-    virtualizer.updateOptions({ count: visibleNodes().length })
-  })
+  createEffect(
+    () => visibleNodes().length,
+    (count) => virtualizer().updateOptions({ count }),
+  )
 
   return (
     <>
@@ -114,18 +117,20 @@ export default function Page() {
 
           <div
             ref={ref}
-            {...api().getTreeProps()}
-            onScroll={virtualizer.handleScroll}
-            style={{ height: "400px", overflow: "auto", border: "1px solid #ccc", "border-radius": "4px" }}
+            {...mergeProps(
+              () => virtualizer().getRootProps(),
+              () => api().getTreeProps(),
+              { style: { height: "400px", border: "1px solid #ccc", "border-radius": "4px" } },
+            )}
           >
-            <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-              <For keyed={false} each={virtualizer.getVirtualItems()}>
+            <div {...virtualizer().getContentProps()}>
+              <For keyed={false} each={virtualizer().getVirtualItems()}>
                 {(vi) => {
                   const entry = () => visibleNodes()[vi().index]
                   return (
                     <Show when={entry()}>
                       {(e) => (
-                        <div data-index={vi().index} style={virtualizer.getItemStyle(vi())}>
+                        <div {...virtualizer().getItemProps(vi())}>
                           <TreeNode node={e().node} indexPath={e().indexPath} api={api} />
                         </div>
                       )}

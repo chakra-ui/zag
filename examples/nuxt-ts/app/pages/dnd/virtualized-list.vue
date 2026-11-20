@@ -14,15 +14,16 @@ const items = ref(initialItems)
 const lastDrop = ref<string | null>(null)
 const viewportEl = ref<HTMLElement | null>(null)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: items.value.length,
   itemSize: 44,
   overscan: 8,
+  aria: false,
 }))
 
 const setViewportRef = (el: HTMLElement | null) => {
   viewportEl.value = el
-  init(el)
+  rootRef(el)
 }
 
 const service = useMachine(dnd.machine, {
@@ -36,11 +37,11 @@ const service = useMachine(dnd.machine, {
 })
 
 const api = computed(() => dnd.connect(service, normalizeProps))
-const range = computed(() => virtualizer.getRange())
+const range = computed(() => virtualizer.value.getRange())
 const draggedItem = computed(() => items.value.find((item) => item.id === api.value.dragSource))
 
 const rows = computed(() =>
-  virtualizer.getVirtualItems().flatMap((virtualItem) => {
+  virtualizer.value.getVirtualItems().flatMap((virtualItem) => {
     const item = items.value[virtualItem.index]
     return item ? [{ virtualItem, item }] : []
   }),
@@ -61,11 +62,11 @@ const rows = computed(() =>
 
       <div
         :ref="(el) => setViewportRef(el as HTMLElement | null)"
+        v-bind="virtualizer.getRootProps()"
         :class="styles.viewport"
-        @scroll="virtualizer.handleScroll"
       >
-        <div :class="styles.sizer" :style="{ height: `${virtualizer.getTotalSize()}px` }">
-          <div v-for="{ virtualItem, item } in rows" :key="item.id" :style="virtualizer.getItemStyle(virtualItem)">
+        <div v-bind="virtualizer.getContentProps()" :class="styles.sizer">
+          <div v-for="{ virtualItem, item } in rows" :key="item.id" v-bind="virtualizer.getItemProps(virtualItem)">
             <div :class="styles.row">
               <div
                 v-bind="api.getDropIndicatorProps({ value: item.id, placement: 'before' })"

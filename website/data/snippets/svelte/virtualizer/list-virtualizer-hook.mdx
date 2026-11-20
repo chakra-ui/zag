@@ -1,33 +1,41 @@
 ```ts
+import { normalizeProps, type PropTypes } from "@zag-js/svelte"
 import {
   ListVirtualizer,
   type ListVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useSyncExternalStore } from "@zag-js/svelte"
-import { onDestroy } from "svelte"
+import { onDestroy, untrack } from "svelte"
 
-export function useListVirtualizer(options: ListVirtualizerOptions) {
-  const virtualizer = new ListVirtualizer(options)
-  const snapshot = useSyncExternalStore(
-    virtualizer.subscribe,
-    virtualizer.getSnapshot,
+// Pass `id` from `$props.id()` so server-rendered markup matches
+type Options = Omit<ListVirtualizerOptions, "normalizeProps"> & { id: string }
+
+export function useListVirtualizer(options: () => Options) {
+  const virtualizer = untrack(
+    () => new ListVirtualizer<PropTypes>({ ...options(), normalizeProps }),
   )
 
-  onDestroy(() => virtualizer.destroy())
+  let version = $state(0)
+  const unsubscribe = virtualizer.subscribe(() => version++)
 
-  const store = new Proxy(virtualizer, {
-    get(target, prop, receiver) {
-      snapshot()
-      const value = Reflect.get(target, prop, receiver)
-      return typeof value === "function" ? value.bind(target) : value
-    },
+  // Unchanged options and new callbacks don't re-render
+  $effect.pre(() => {
+    const next = options()
+    untrack(() => virtualizer.updateOptions(next))
   })
 
-  const init = (element: HTMLElement | null) => {
-    if (!element) return
-    virtualizer.init(element)
-  }
+  onDestroy(() => {
+    unsubscribe()
+    virtualizer.destroy()
+  })
 
-  return { virtualizer: store, init }
+  return {
+    // Read in templates to re-render when the virtualizer updates
+    get virtualizer() {
+      void version
+      return virtualizer
+    },
+    // An attachment: `{@attach vz.init}`
+    init: (element: HTMLElement) => virtualizer.init(element),
+  }
 }
 ```

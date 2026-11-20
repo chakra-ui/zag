@@ -16,13 +16,15 @@
   let lastDrop = $state<string | null>(null)
   let scrollTop = $state(0)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: items.length,
     itemSize: 44,
     overscan: 8,
+    aria: false,
   }))
 
-  const id = $props.id()
   const service = useMachine(dnd.machine, {
     id,
     orientation: "vertical",
@@ -33,13 +35,12 @@
     },
   })
   const api = $derived(dnd.connect(service, normalizeProps))
-  const range = $derived(virtualizer.getRange())
+  const range = $derived(vz.virtualizer.getRange())
   const draggedItem = $derived(items.find((item) => item.id === api.dragSource))
   const dragPreviewProps = $derived(api.getDragPreviewProps())
 
   const onScroll = (event: Event) => {
     scrollTop = (event.currentTarget as HTMLElement).scrollTop
-    virtualizer.handleScroll(event)
   }
 </script>
 
@@ -54,12 +55,12 @@
       <span class={styles.stat}>drop {lastDrop ?? "none"}</span>
     </div>
 
-    <div {@attach init} onscroll={onScroll} class={styles.viewport}>
-      <div class={styles.sizer} style:height="{virtualizer.getTotalSize()}px">
-        {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id ?? virtualItem.index)}
+    <div {@attach vz.init} {...vz.virtualizer.getRootProps()} onscroll={onScroll} class={styles.viewport}>
+      <div {...vz.virtualizer.getContentProps()} class={styles.sizer}>
+        {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id ?? virtualItem.index)}
           {@const item = items[virtualItem.index]}
           {#if item}
-            <div {...normalizeProps.element({ style: virtualizer.getItemStyle(virtualItem) })}>
+            <div {...vz.virtualizer.getItemProps(virtualItem)}>
               <div class={styles.row}>
                 <div
                   {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}

@@ -104,11 +104,15 @@
 
   const rowSize = (index: number) => (layout.rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: layout.rows.length,
     estimatedItemSize: rowSize,
     observeScrollElementSize: true,
     overscan: 8,
+    // Group labels share the row index, so positions come from the options
+    aria: false,
     // The list's vertical padding lives here so scrolled-to rows clear the edges
     paddingStart: LIST_PADDING,
     paddingEnd: LIST_PADDING,
@@ -127,7 +131,7 @@
       if (rowIndex == null) return
       // Bring the group header along when jumping to a group's first item
       const target = immediate && rows[rowIndex - 1]?.type === "group" ? rowIndex - 1 : rowIndex
-      virtualizer.scrollToIndex(target, { align: immediate ? "center" : "auto" })
+      vz.virtualizer.scrollToIndex(target, { align: immediate ? "center" : "auto" })
     },
     inputBehavior: "autohighlight",
     selectionBehavior: "clear",
@@ -169,27 +173,24 @@
             {#if collection.size === 0}No results for “{query}”{/if}
           </div>
           <div
-            {...comboboxApi.getListProps()}
-            {@attach init}
+            {...mergeProps(vz.virtualizer.getRootProps(), comboboxApi.getListProps())}
+            {@attach vz.init}
             class="pg-palette-list"
-            onscroll={virtualizer.handleScroll}
           >
-            <div style:position="relative" style:width="100%" style:height="{virtualizer.getTotalSize()}px">
-              {#each virtualizer.getVirtualItems() as virtualItem (virtualItem.index)}
+            <div {...vz.virtualizer.getContentProps()}>
+              {#each vz.virtualizer.getVirtualItems() as virtualItem (virtualItem.index)}
                 {@const row = layout.rows[virtualItem.index]}
                 {#if row?.type === "group"}
-                  <div
-                    role="presentation"
-                    class="pg-palette-group-label"
-                    {...normalizeProps.element({ style: virtualizer.getItemStyle(virtualItem) })}
-                  >
+                  <div {...vz.virtualizer.getItemProps(virtualItem)} role="presentation" class="pg-palette-group-label">
                     {row.label}
                   </div>
                 {:else if row}
                   <div
-                    {...comboboxApi.getItemProps({ item: row.item, persistFocus: true })}
+                    {...mergeProps(
+                      vz.virtualizer.getItemProps(virtualItem),
+                      comboboxApi.getItemProps({ item: row.item, persistFocus: true }),
+                    )}
                     class="pg-palette-item"
-                    {...normalizeProps.element({ style: virtualizer.getItemStyle(virtualItem) })}
                   >
                     <span class="pg-palette-item-label">{row.item.label}</span>
                     {#if row.item.meta}

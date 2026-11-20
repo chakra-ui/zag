@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "preact/hooks"
 import { useVirtualizer } from "../../hooks/use-tanstack-virtualizer"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/preact"
 
 const ITEM_COUNT = 100_000
 
@@ -128,26 +129,28 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       />
       <div
         ref={setRef}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Zag known-size performance list"
-        style={{ height: 400, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: { height: 400, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 },
+        })}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((vi) => {
             const item = items[vi.index]
             return (
               <div
                 key={vi.index}
-                style={{
-                  ...virtualizer.getItemStyle(vi),
-                  height: item.height,
-                  padding: "8px 12px",
-                  borderBottom: "1px solid #e5e7eb",
-                  backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                }}
+                {...mergeProps(virtualizer.getItemProps(vi), {
+                  style: {
+                    height: item.height,
+                    boxSizing: "border-box",
+                    padding: "8px 12px",
+                    borderBottom: "1px solid #e5e7eb",
+                    backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                })}
               >
                 {item.label} <span style={{ color: "#9ca3af", fontSize: 12, marginLeft: 8 }}>({item.height}px)</span>
               </div>
@@ -234,8 +237,8 @@ export default function Page() {
       <h1>Variable Heights Perf (Known Sizes)</h1>
       <p style={{ color: "#64748b" }}>
         {ITEM_COUNT.toLocaleString()} items with <strong>known variable heights (25-125px)</strong>. Both use{" "}
-        <code>estimateSize: (i) =&gt; getItemHeight(i)</code> — exact per-item size upfront, no measureElement. Tests
-        pure scroll + range-finding perf with variable-size prefix sums (Fenwick tree O(log n) vs linear scan).
+        <code>(i) =&gt; getItemHeight(i)</code> as the per-item estimate, so measuring changes nothing. Tests pure
+        scroll + range-finding perf with variable-size prefix sums (Fenwick tree O(log n) vs linear scan).
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24 }}>

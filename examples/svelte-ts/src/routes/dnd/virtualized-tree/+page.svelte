@@ -141,7 +141,7 @@
     collection: visibleCollection,
     expandedValue,
     scrollToIndexFn(details: tree.ScrollToIndexDetails) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      vz.virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
     onExpandedChange(details: tree.ExpandedChangeDetails) {
       if (query) return
@@ -152,13 +152,15 @@
   const api = $derived(tree.connect(treeService, normalizeProps))
   const visibleNodes = $derived(api.getVisibleNodes())
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const vz = useListVirtualizer(() => ({
+    id,
     count: visibleNodes.length,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    aria: false,
   }))
 
-  const range = $derived(virtualizer.getRange())
+  const range = $derived(vz.virtualizer.getRange())
 
   const draggedNode = $derived(dragSource ? collection.findNode(dragSource) : undefined)
   const draggedIsBranch = $derived(draggedNode ? collection.isBranchNode(draggedNode) : false)
@@ -187,11 +189,11 @@
   {/if}
 {/snippet}
 
-{#snippet treeNode(node: Node, indexPath: number[], style: Record<string, any>)}
+{#snippet treeNode(node: Node, indexPath: number[], itemProps: Record<string, any>)}
   {@const nodeProps = { node, indexPath }}
   {@const nodeState = api.getNodeState(nodeProps)}
   {@const value = nodeState.value}
-  <div {...normalizeProps.element({ style })}>
+  <div {...itemProps}>
     <div class={styles.row}>
       <div
         {...dndApi.getDropIndicatorProps({ value, placement: "before" })}
@@ -251,18 +253,19 @@
       <span>drop {dndApi.dropTarget ? `${dndApi.dropTarget} ${dndApi.dropPlacement}` : "none"}</span>
     </div>
 
-    <div {@attach init} onscroll={virtualizer.handleScroll} class={styles.viewport}>
-      <div {...api.getTreeProps()} class={styles.sizer} style:height="{virtualizer.getTotalSize()}px">
-        {#each virtualizer.getVirtualItems() as virtualItem (visibleNodes[virtualItem.index]?.node.id ?? virtualItem.index)}
+    <div {@attach vz.init} {...vz.virtualizer.getRootProps()} class={styles.viewport}>
+      <div {...mergeProps(vz.virtualizer.getContentProps(), api.getTreeProps())} class={styles.sizer}>
+        {#each vz.virtualizer.getVirtualItems() as virtualItem (visibleNodes[virtualItem.index]?.node.id ?? virtualItem.index)}
           {@const item = visibleNodes[virtualItem.index]}
           {#if item}
             {@const isDropTarget = dndApi.dropTarget === item.node.id}
-            {@render treeNode(item.node, item.indexPath, {
-              ...virtualizer.getItemStyle(virtualItem),
-              height: `${virtualItem.size}px`,
-              zIndex: isDropTarget ? 2 : undefined,
-              overflow: "visible",
-            })}
+            {@render treeNode(
+              item.node,
+              item.indexPath,
+              mergeProps(vz.virtualizer.getItemProps(virtualItem), {
+                style: { zIndex: isDropTarget ? 2 : undefined, overflow: "visible" },
+              }),
+            )}
           {/if}
         {/each}
       </div>

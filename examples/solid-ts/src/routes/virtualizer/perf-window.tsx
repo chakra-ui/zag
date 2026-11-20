@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For, Show, createSignal, onSettled } from "solid-js"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -104,7 +105,7 @@ function MetricsDisplay(props: { label: string; metrics: Metrics | null }) {
 function ZagWindowVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
-    estimatedItemSize: ITEM_HEIGHT,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
     initialRect: { width: window.innerWidth, height: window.innerHeight },
   })
@@ -115,23 +116,24 @@ function ZagWindowVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
       <BenchmarkButtons onRun={(scrollCount) => runWindowScrollBenchmark(scrollCount, props.onMetrics)} />
       <div
         ref={ref}
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          border: "2px solid #3b82f6",
-          "border-radius": "8px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: { width: "100%", border: "2px solid #3b82f6", "border-radius": "8px" },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For each={virtualizer().getVirtualItems()}>
             {(vi) => (
               <div
-                style={{
-                  ...virtualizer.getItemStyle(vi),
-                  padding: "8px 12px",
-                  "border-bottom": "1px solid #e5e7eb",
-                  "background-color": vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(vi),
+                  () => ({
+                    style: {
+                      padding: "8px 12px",
+                      "border-bottom": "1px solid #e5e7eb",
+                      "background-color": vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                    },
+                  }),
+                )}
               >
                 <strong>{items[vi.index].label}</strong>
                 <div style={{ "font-size": "12px", color: "#64748b" }}>{items[vi.index].description}</div>
@@ -141,7 +143,7 @@ function ZagWindowVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
         </div>
       </div>
       <p style={{ "font-size": "13px", color: "#64748b", "margin-top": "8px" }}>
-        Rendered: {virtualizer.getVirtualItems().length} items
+        Rendered: {virtualizer().getVirtualItems().length} items
       </p>
     </div>
   )

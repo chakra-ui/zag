@@ -17,7 +17,7 @@ const generateCellData = (row: number, col: number) => ({
 
 const isSmooth = ref(true)
 
-const { virtualizer, init } = useGridVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useGridVirtualizer(() => ({
   rowCount: TOTAL_ROWS,
   columnCount: TOTAL_COLUMNS,
   estimatedRowSize: estimateRowSize,
@@ -29,9 +29,9 @@ const { virtualizer, init } = useGridVirtualizer(() => ({
   observeScrollElementSize: true,
 }))
 
-const totalWidth = computed(() => virtualizer.getTotalWidth())
-const totalHeight = computed(() => virtualizer.getTotalHeight())
-const range = computed(() => virtualizer.getRange())
+const totalWidth = computed(() => virtualizer.value.getTotalWidth())
+const totalHeight = computed(() => virtualizer.value.getTotalHeight())
+const range = computed(() => virtualizer.value.getRange())
 const visibleRowCount = computed(() => range.value.endRow - range.value.startRow + 1)
 const visibleColCount = computed(() => range.value.endColumn - range.value.startColumn + 1)
 const renderedCellCount = computed(() => visibleRowCount.value * visibleColCount.value)
@@ -84,35 +84,29 @@ const isHeader = (row: number, col: number) => row === 0 || col === 0
       </div>
 
       <div
-        :ref="(el) => init(el as HTMLElement)"
-        v-bind="virtualizer.getContainerAriaAttrs()"
-        tabindex="0"
+        :ref="rootRef"
+        v-bind="virtualizer.getRootProps()"
         aria-label="Virtualized grid"
         :style="{
           height: '500px',
           width: '100%',
           maxWidth: '900px',
-          ...virtualizer.getContainerStyle(),
           border: '1px solid #ccc',
           borderRadius: '8px',
           marginTop: '16px',
         }"
-        @scroll="virtualizer.handleScroll"
       >
-        <div :style="{ width: `${totalWidth}px`, height: `${totalHeight}px`, position: 'relative' }">
+        <div v-bind="virtualizer.getContentProps()">
           <div
             v-for="virtualRow in virtualizer.getVirtualRows()"
             :key="virtualRow.row"
-            :ref="(el) => virtualRow.measureRow(el as HTMLElement | null)"
-            v-bind="virtualizer.getRowAriaAttrs(virtualRow.row)"
-            :style="virtualizer.getRowStyle(virtualRow)"
+            v-bind="virtualizer.getRowProps(virtualRow)"
           >
             <div
               v-for="col in virtualRow.columns"
               :key="col.column"
-              v-bind="virtualizer.getCellAriaAttrs(virtualRow.row, col.column)"
+              v-bind="virtualizer.getCellProps(virtualRow, col)"
               :style="{
-                ...virtualizer.getCellStyleInRow(col),
                 backgroundColor: generateCellData(virtualRow.row, col.column).color,
                 border: '1px solid rgba(0,0,0,0.1)',
                 display: 'flex',

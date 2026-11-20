@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronsUpDownIcon } from "lucide-vue-next"
 import "@styles/select.css"
 
@@ -11,7 +11,7 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: selectData.length,
   itemSize: 32,
   observeScrollElementSize: true,
@@ -21,14 +21,14 @@ const service = useMachine(select.machine, {
   id: useId(),
   collection,
   scrollToIndexFn(details) {
-    virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+    virtualizer.value.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
   },
 })
 
 const api = computed(() => select.connect(service, normalizeProps))
 
 const rows = computed(() =>
-  virtualizer.getVirtualItems().flatMap((virtualItem) => {
+  virtualizer.value.getVirtualItems().flatMap((virtualItem) => {
     const item = selectData[virtualItem.index]
     return item ? [{ virtualItem, item }] : []
   }),
@@ -51,21 +51,12 @@ const rows = computed(() =>
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
-            <div v-bind="api.getListProps()" :ref="(el) => init(el as HTMLElement)" @scroll="virtualizer.handleScroll">
-              <div
-                :style="{
-                  height: `${virtualizer.getTotalSize()}px`,
-                  width: '100%',
-                  position: 'relative',
-                }"
-              >
+            <div v-bind="mergeProps(virtualizer.getRootProps(), api.getListProps())" :ref="rootRef">
+              <div v-bind="virtualizer.getContentProps()">
                 <div
                   v-for="{ virtualItem, item } in rows"
                   :key="item.value"
-                  :aria-posinset="virtualItem.index + 1"
-                  :aria-setsize="selectData.length"
-                  v-bind="api.getItemProps({ item })"
-                  :style="virtualizer.getItemStyle(virtualItem)"
+                  v-bind="mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ item }))"
                 >
                   <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
                   <span v-bind="api.getItemIndicatorProps({ item })">✓</span>

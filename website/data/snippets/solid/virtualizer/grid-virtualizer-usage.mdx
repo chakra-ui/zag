@@ -1,61 +1,34 @@
 ```tsx
-import { Index } from "solid-js"
+import { For } from "solid-js"
 
 function Grid(props: {
   rowCount: number
   columnCount: number
   getCell: (row: number, column: number) => string
 }) {
-  const { virtualizer, ref } = useGridVirtualizer({
+  const { virtualizer, ref } = useGridVirtualizer(() => ({
     rowCount: props.rowCount,
     columnCount: props.columnCount,
     estimatedRowSize: () => 40,
     estimatedColumnSize: () => 120,
-    overscan: 3,
-  })
-
-  virtualizer.updateOptions({
-    rowCount: props.rowCount,
-    columnCount: props.columnCount,
-  })
+  }))
 
   return (
-    <div
-      ref={ref}
-      onScroll={virtualizer.handleScroll}
-      {...virtualizer.getContainerAriaAttrs()}
-      style={{ ...virtualizer.getContainerStyle(), height: "400px" }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: `${virtualizer.getTotalWidth()}px`,
-          height: `${virtualizer.getTotalHeight()}px`,
-        }}
-      >
-        <Index each={virtualizer.getVirtualRows()}>
-          {(virtualRow) => (
-            <div
-              ref={virtualRow().measureRow}
-              {...virtualizer.getRowAriaAttrs(virtualRow().row)}
-              style={virtualizer.getRowStyle(virtualRow())}
-            >
-              <Index each={virtualRow().columns}>
+    <div ref={ref} {...virtualizer().getRootProps()} class="grid">
+      <div {...virtualizer().getContentProps()}>
+        <For keyed={false} each={virtualizer().getVirtualRows()}>
+          {(row) => (
+            <div {...virtualizer().getRowProps(row())}>
+              <For keyed={false} each={row().columns}>
                 {(column) => (
-                  <div
-                    {...virtualizer.getCellAriaAttrs(
-                      virtualRow().row,
-                      column().column,
-                    )}
-                    style={virtualizer.getCellStyleInRow(column())}
-                  >
-                    {props.getCell(virtualRow().row, column().column)}
+                  <div {...virtualizer().getCellProps(row(), column())}>
+                    {props.getCell(row().row, column().column)}
                   </div>
                 )}
-              </Index>
+              </For>
             </div>
           )}
-        </Index>
+        </For>
       </div>
     </div>
   )

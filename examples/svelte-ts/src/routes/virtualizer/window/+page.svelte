@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useWindowVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const generateItems = (count: number) =>
     Array.from({ length: count }, (_, i) => ({
@@ -11,7 +11,9 @@
 
   const items = generateItems(10000)
 
-  const { virtualizer, init } = useWindowVirtualizer({
+  const id = $props.id()
+  const vz = useWindowVirtualizer({
+    id,
     count: items.length,
     estimatedItemSize: 142,
     overscan: 8,
@@ -24,8 +26,8 @@
         : { width: 0, height: 800 },
   })
 
-  const virtualItems = $derived(virtualizer.getVirtualItems())
-  const totalSize = $derived(virtualizer.getTotalSize())
+  const virtualItems = $derived(vz.virtualizer.getVirtualItems())
+  const totalSize = $derived(vz.virtualizer.getTotalSize())
 </script>
 
 <main class="window-list-virtualizer" style="max-width: 960px; margin: 0 auto; padding: 20px 20px 80px">
@@ -37,39 +39,29 @@
   </p>
 
   <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px">
-    <button type="button" onclick={() => virtualizer.scrollToIndex(0, { smooth: true })}>Scroll to top</button>
+    <button type="button" onclick={() => vz.virtualizer.scrollToIndex(0, { smooth: true })}>Scroll to top</button>
     <button
       type="button"
-      onclick={() => virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: true })}
+      onclick={() => vz.virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: true })}
     >
       Scroll to middle
     </button>
-    <button type="button" onclick={() => virtualizer.scrollToIndex(items.length - 1, { smooth: true })}>
+    <button type="button" onclick={() => vz.virtualizer.scrollToIndex(items.length - 1, { smooth: true })}>
       Scroll to bottom
     </button>
   </div>
 
   <div
-    {@attach init}
-    {...virtualizer.getContainerAriaAttrs()}
-    {...normalizeProps.element({
-      style: {
-        ...virtualizer.getContainerStyle(),
-        width: "100%",
-        marginTop: "20px",
-        border: "1px solid #d1d5db",
-        borderRadius: "8px",
-      },
+    {@attach vz.init}
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: { width: "100%", marginTop: "20px", border: "1px solid #d1d5db", borderRadius: "8px" },
     })}
   >
-    <div style="height: {totalSize}px; width: 100%; position: relative">
-      {#each virtualItems as virtualItem (virtualItem.index)}
+    <div {...vz.virtualizer.getContentProps()}>
+      {#each virtualItems as virtualItem (virtualItem.key)}
         <div
-          data-index={virtualItem.index}
-          {...virtualizer.getItemAriaAttrs(virtualItem.index)}
-          {...normalizeProps.element({
+          {...mergeProps(vz.virtualizer.getItemProps(virtualItem), {
             style: {
-              ...virtualizer.getItemStyle(virtualItem),
               padding: "16px",
               backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
               borderBottom: "1px solid #e1e5e9",

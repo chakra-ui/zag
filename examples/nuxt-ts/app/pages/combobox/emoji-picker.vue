@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
+import type { GroupMeta } from "@zag-js/virtualizer"
 import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "~/lib/emoji-loader"
 import "@styles/emoji-picker.css"
 
@@ -51,7 +52,7 @@ function getLayout(emojis: EmojiItem[], categories: EmojiDataCategory[]) {
   // Grid row (in the collection) → visual row (with headers)
   const gridRowToRow: number[] = []
   // Sticky headers, one per category
-  const groups: { id: string; startIndex: number; headerSize: number }[] = []
+  const groups: GroupMeta[] = []
 
   categories.forEach(({ index: category, label }) => {
     const group = emojis.filter((emoji) => emoji.category === category)
@@ -93,7 +94,7 @@ const collection = computed(() =>
   }),
 )
 
-const { virtualizer, init } = useListVirtualizer(() => {
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => {
   const rows = layout.value.rows
   return {
     count: rows.length,
@@ -104,6 +105,8 @@ const { virtualizer, init } = useListVirtualizer(() => {
     overscan: 4,
     paddingEnd: 4,
     observeScrollElementSize: true,
+    // Rows wrap the options, which carry their own semantics
+    aria: false,
   }
 })
 
@@ -119,7 +122,7 @@ const listboxService = useMachine(
     // The item may not be rendered yet, so scroll its row into view
     scrollToIndexFn({ index }: { index: number }) {
       const row = layout.value.gridRowToRow[Math.floor(index / COLUMN_COUNT)]
-      if (row != null) virtualizer.scrollToIndex(row, { align: "auto" })
+      if (row != null) virtualizer.value.scrollToIndex(row, { align: "auto" })
     },
     onSelect({ value }: listbox.SelectionDetails) {
       selected.value = value
@@ -132,7 +135,7 @@ const listboxApi = computed(() => listbox.connect(listboxService, normalizeProps
 const active = computed(() => listboxApi.value.highlightedItem as EmojiItem | null)
 
 // Virtual rows are absolutely positioned, so the sticky header is an overlay
-const sticky = computed(() => virtualizer.getStickyGroupHeader())
+const sticky = computed(() => virtualizer.value.getStickyGroupHeader())
 
 const rowItems = (start: number) => layout.value.items.slice(start, start + COLUMN_COUNT)
 </script>
@@ -167,22 +170,18 @@ const rowItems = (start: number) => layout.value.items.slice(start, start + COLU
               >
                 {{ sticky.group.id }}
               </div>
-              <div
-                v-bind="listboxApi.getListProps()"
-                :ref="(el) => init(el as HTMLElement)"
-                @scroll="virtualizer.handleScroll"
-              >
-                <div :style="{ position: 'relative', height: `${virtualizer.getTotalSize()}px` }">
+              <div v-bind="mergeProps(virtualizer.getRootProps(), listboxApi.getListProps())" :ref="rootRef">
+                <div v-bind="virtualizer.getContentProps()">
                   <template v-for="virtualRow in virtualizer.getVirtualItems()" :key="virtualRow.index">
                     <template v-if="layout.rows[virtualRow.index]">
                       <div
                         v-if="layout.rows[virtualRow.index]!.type === 'header'"
                         class="emoji-category"
-                        :style="virtualizer.getItemStyle(virtualRow)"
+                        v-bind="virtualizer.getItemProps(virtualRow)"
                       >
                         {{ (layout.rows[virtualRow.index] as { label: string }).label }}
                       </div>
-                      <div v-else class="emoji-row" :style="virtualizer.getItemStyle(virtualRow)">
+                      <div v-else class="emoji-row" v-bind="virtualizer.getItemProps(virtualRow)">
                         <template
                           v-for="item in rowItems((layout.rows[virtualRow.index] as { start: number }).start)"
                           :key="item.value"

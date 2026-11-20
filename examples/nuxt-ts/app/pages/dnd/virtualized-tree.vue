@@ -141,7 +141,7 @@ const treeService = useMachine(
     collection: visibleCollection.value,
     expandedValue: expandedValue.value,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer.value.scrollToIndex(details.index, { align: "auto" })
     },
     onExpandedChange(details) {
       if (query.value) return
@@ -153,16 +153,17 @@ const treeService = useMachine(
 const api = computed(() => tree.connect(treeService, normalizeProps))
 const visibleNodes = computed(() => api.value.getVisibleNodes())
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: visibleNodes.value.length,
   itemSize: ROW_HEIGHT,
   overscan: 8,
+  aria: false,
 }))
 
-const range = computed(() => virtualizer.getRange())
+const range = computed(() => virtualizer.value.getRange())
 
 const rows = computed(() =>
-  virtualizer.getVirtualItems().flatMap((virtualItem) => {
+  virtualizer.value.getVirtualItems().flatMap((virtualItem) => {
     const item = visibleNodes.value[virtualItem.index]
     if (!item) return []
     const nodeProps = { node: item.node as Node, indexPath: item.indexPath }
@@ -173,12 +174,9 @@ const rows = computed(() =>
         node: item.node as Node,
         nodeProps,
         nodeState,
-        style: {
-          ...virtualizer.getItemStyle(virtualItem),
-          height: `${virtualItem.size}px`,
-          zIndex: dndApi.value.dropTarget === item.node.id ? 2 : undefined,
-          overflow: "visible",
-        },
+        itemProps: mergeProps(virtualizer.value.getItemProps(virtualItem), {
+          style: { zIndex: dndApi.value.dropTarget === item.node.id ? 2 : undefined, overflow: "visible" },
+        }),
       },
     ]
   }),
@@ -224,9 +222,9 @@ const dragPreviewProps = computed(() => {
         <span>drop {{ dndApi.dropTarget ? `${dndApi.dropTarget} ${dndApi.dropPlacement}` : "none" }}</span>
       </div>
 
-      <div :ref="(el) => init(el as HTMLElement)" :class="styles.viewport" @scroll="virtualizer.handleScroll">
-        <div v-bind="api.getTreeProps()" :class="styles.sizer" :style="{ height: `${virtualizer.getTotalSize()}px` }">
-          <div v-for="row in rows" :key="row.key" :style="row.style">
+      <div :ref="rootRef" v-bind="virtualizer.getRootProps()" :class="styles.viewport">
+        <div v-bind="mergeProps(virtualizer.getContentProps(), api.getTreeProps())" :class="styles.sizer">
+          <div v-for="row in rows" :key="row.key" v-bind="row.itemProps">
             <div :class="styles.row">
               <div
                 v-bind="dndApi.getDropIndicatorProps({ value: row.nodeState.value, placement: 'before' })"

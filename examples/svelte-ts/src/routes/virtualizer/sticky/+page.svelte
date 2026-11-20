@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
   import type { GroupMeta } from "@zag-js/virtualizer"
 
   const ITEMS_PER_GROUP = 50
@@ -38,9 +38,9 @@
   const getGroupLabel = (index: number) => `Group ${index + 1}`
   const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
 
-  let scrollOffset = $state(0)
-
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: TOTAL_ITEMS,
     estimatedItemSize: ITEM_HEIGHT,
     estimatedGroupHeaderSize: HEADER_HEIGHT,
@@ -48,13 +48,8 @@
     overscan: 5,
   })
 
-  const headerState = $derived(virtualizer.getGroupHeaderState(scrollOffset, HEADER_HEIGHT))
-  const virtualItems = $derived(virtualizer.getVirtualItems())
-
-  const onScroll = (event: Event & { currentTarget: HTMLDivElement }) => {
-    scrollOffset = event.currentTarget.scrollTop
-    virtualizer.handleScroll(event)
-  }
+  const headerState = $derived(vz.virtualizer.getStickyGroupHeader(HEADER_HEIGHT))
+  const virtualItems = $derived(vz.virtualizer.getVirtualItems())
 </script>
 
 <main style="padding: 20px; max-width: 600px; width: 100%">
@@ -76,25 +71,18 @@
     {/if}
 
     <div
-      {@attach init}
-      tabindex="0"
-      role="region"
+      {@attach vz.init}
       aria-label="Virtualized list with sticky group headers"
-      style="height: 400px; overflow: auto; border: 2px solid #cbd5e1; border-radius: 8px"
-      onscroll={onScroll}
+      {...mergeProps(vz.virtualizer.getRootProps(), {
+        style: { height: "400px", border: "2px solid #cbd5e1", borderRadius: "8px" },
+      })}
     >
-      <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-        {#each virtualItems as vi (vi.index)}
+      <div {...vz.virtualizer.getContentProps()}>
+        {#each virtualItems as vi (vi.key)}
           {@const item = items[vi.index]}
           <div
-            {...normalizeProps.element({
-              style: {
-                ...virtualizer.getItemStyle(vi),
-                height: `${vi.size}px`,
-                backgroundColor: COLORS[item.groupIndex],
-                fontSize: "13px",
-                boxSizing: "border-box",
-              },
+            {...mergeProps(vz.virtualizer.getItemProps(vi), {
+              style: { backgroundColor: COLORS[item.groupIndex], fontSize: "13px", boxSizing: "border-box" },
             })}
           >
             {#if isGroupStart(vi.index)}

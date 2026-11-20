@@ -13,7 +13,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 const metrics = ref<ScrollBenchmarkMetrics | null>(null)
 let scrollEl: HTMLElement | null = null
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: ITEM_COUNT,
   itemSize: ITEM_HEIGHT,
   overscan: 5,
@@ -21,7 +21,7 @@ const { virtualizer, init } = useListVirtualizer(() => ({
 
 const setScrollRef = (el: unknown) => {
   scrollEl = el as HTMLElement | null
-  init(scrollEl)
+  rootRef(scrollEl)
 }
 
 const run = (scrollCount: number) => {
@@ -44,17 +44,16 @@ const run = (scrollCount: number) => {
         <VirtualizerBenchmarkButtons @run="run" />
         <div
           :ref="setScrollRef"
-          tabindex="0"
+          v-bind="virtualizer.getRootProps()"
           aria-label="Zag virtualizer performance list"
-          style="height: 400px; overflow: auto; border: 2px solid #3b82f6; border-radius: 8px"
-          @scroll="virtualizer.handleScroll"
+          style="height: 400px; border: 2px solid #3b82f6; border-radius: 8px"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div v-bind="virtualizer.getContentProps()">
             <div
               v-for="vi in virtualizer.getVirtualItems()"
               :key="vi.index"
+              v-bind="virtualizer.getItemProps(vi)"
               :style="{
-                ...virtualizer.getItemStyle(vi),
                 padding: '8px 12px',
                 borderBottom: '1px solid #e5e7eb',
                 backgroundColor: vi.index % 2 === 0 ? '#f8fafc' : '#fff',

@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "@solidjs/web"
@@ -24,7 +24,7 @@ export default function Page() {
     id: createUniqueId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+      virtualizer().scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
   })
 
@@ -46,23 +46,23 @@ export default function Page() {
         <Portal>
           <div {...api().getPositionerProps()}>
             <div {...api().getContentProps()}>
-              <div {...api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-                <div
-                  style={{
-                    height: `${virtualizer.getTotalSize()}px`,
-                    width: "100%",
-                    position: "relative",
-                  }}
-                >
-                  <For keyed={false} each={virtualizer.getVirtualItems()}>
+              <div
+                {...mergeProps(
+                  () => virtualizer().getRootProps(),
+                  () => api().getListProps(),
+                )}
+                ref={ref}
+              >
+                <div {...virtualizer().getContentProps()}>
+                  <For keyed={false} each={virtualizer().getVirtualItems()}>
                     {(vi) => {
                       const item = () => selectData[vi().index]
                       return (
                         <div
-                          aria-posinset={vi().index + 1}
-                          aria-setsize={selectData.length}
-                          {...api().getItemProps({ item: item() })}
-                          style={virtualizer.getItemStyle(vi())}
+                          {...mergeProps(
+                            () => virtualizer().getItemProps(vi()),
+                            () => api().getItemProps({ item: item() }),
+                          )}
                         >
                           <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
                           <span {...api().getItemIndicatorProps({ item: item() })}>✓</span>

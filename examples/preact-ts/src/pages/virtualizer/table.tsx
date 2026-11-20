@@ -1,5 +1,6 @@
 import { useCallback, useState } from "preact/hooks"
 import { useTableVirtualizer } from "../../hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/preact"
 
 const TOTAL_ROWS = 2000
 const PAGE_SIZE = 200
@@ -40,7 +41,7 @@ export default function Page() {
     setLoadedCount((count) => Math.min(count + PAGE_SIZE, TOTAL_ROWS))
   }, [])
 
-  const { virtualizer, ref, rootProps } = useTableVirtualizer({
+  const { virtualizer, ref } = useTableVirtualizer({
     count: rows.length,
     estimatedItemSize: 37,
     footerSize: hasMore ? 40 : 0,
@@ -102,56 +103,53 @@ export default function Page() {
 
       <div
         ref={ref}
-        {...rootProps}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: "min(420px, calc(var(--total-size) + 2px))",
+            width: "100%",
+            border: "1px solid #cbd5e1",
+            borderRadius: 8,
+            marginTop: 16,
+          },
+        })}
         role="region"
         aria-label="Customers"
         onKeyDown={onKeyDown}
-        style={{
-          ...rootProps.style,
-          height: "min(420px, calc(var(--total-size) + 2px))",
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #cbd5e1",
-          borderRadius: 8,
-          marginTop: 16,
-        }}
       >
         <table
           aria-rowcount={hasMore ? -1 : rows.length + 1}
           aria-colcount={columns.length}
-          style={{ ...virtualizer.getTableStyle(), fontSize: 13 }}
+          {...mergeProps(virtualizer.getTableProps(), { style: { fontSize: 13 } })}
         >
           <colgroup>
             {startColumns.map((column) => (
-              <col key={column.index} style={virtualizer.getColumnStyle(column)} />
+              <col key={column.index} {...virtualizer.getColumnProps(column)} />
             ))}
-            <col style={virtualizer.getColumnSpacerStyle("start")} />
+            <col {...virtualizer.getColumnSpacerProps("start")} />
             {middleColumns.map((column) => (
-              <col key={column.index} style={virtualizer.getColumnStyle(column)} />
+              <col key={column.index} {...virtualizer.getColumnProps(column)} />
             ))}
-            <col style={virtualizer.getColumnSpacerStyle("end")} />
+            <col {...virtualizer.getColumnSpacerProps("end")} />
           </colgroup>
-          <thead ref={virtualizer.measureHeaderElement}>
+          <thead {...virtualizer.getHeaderProps()}>
             <tr aria-rowindex={1}>
               {[startColumns, null, middleColumns, null].map((group, i) =>
                 group === null ? (
-                  <th key={`spacer-${i}`} aria-hidden style={virtualizer.getColumnSpacerStyle(i ? "end" : "start")} />
+                  <th key={`spacer-${i}`} {...virtualizer.getColumnSpacerProps(i ? "end" : "start")} />
                 ) : (
                   group.map((column) => (
                     <th
                       key={column.index}
-                      aria-colindex={column.index + 1}
-                      style={{
-                        ...cellStyle,
-                        ...virtualizer.getCellStyle(column),
-                        position: "sticky",
-                        top: 0,
-                        zIndex: column.pinned ? 3 : 2,
-                        background: "#f8fafc",
-                        textAlign: "left",
-                      }}
+                      {...mergeProps(virtualizer.getCellProps(column), {
+                        style: {
+                          ...cellStyle,
+                          position: "sticky",
+                          top: 0,
+                          zIndex: column.pinned ? 3 : 2,
+                          background: "#f8fafc",
+                          textAlign: "left",
+                        },
+                      })}
                     >
                       {columns[column.index].label}
                     </th>
@@ -161,9 +159,9 @@ export default function Page() {
             </tr>
           </thead>
           <tbody aria-hidden>
-            <tr style={virtualizer.getRowSpacerStyle("start")} />
+            <tr {...virtualizer.getRowSpacerProps("start")} />
           </tbody>
-          <tbody style={virtualizer.getBodyStyle()}>
+          <tbody {...virtualizer.getBodyProps()}>
             {virtualizer.getVirtualItems().map((item) => {
               const row = rows[item.index]
               const isActiveRow = item.index === active.row
@@ -171,51 +169,43 @@ export default function Page() {
               return (
                 <tr
                   key={row.id}
-                  ref={item.measureElement}
-                  data-index={item.index}
+                  {...mergeProps(virtualizer.getRowProps(item), { style: { background } })}
                   aria-rowindex={item.index + 2}
-                  style={{ ...virtualizer.getRowStyle(item), background }}
                 >
                   {startColumns.map((column) => (
                     <th
                       key={column.index}
                       scope="row"
-                      aria-colindex={column.index + 1}
-                      style={{
-                        ...cellStyle,
-                        ...virtualizer.getCellStyle(column),
-                        background,
-                        textAlign: "left",
-                      }}
+                      {...mergeProps(virtualizer.getCellProps(column), {
+                        style: { ...cellStyle, background, textAlign: "left" },
+                      })}
                     >
                       {row.name}
                     </th>
                   ))}
-                  <td aria-hidden style={virtualizer.getColumnSpacerStyle("start")} />
+                  <td {...virtualizer.getColumnSpacerProps("start")} />
                   {middleColumns.map((column) => {
                     const isActive = isActiveRow && column.index === active.column
                     return (
                       <td
                         key={column.index}
-                        aria-colindex={column.index + 1}
+                        {...mergeProps(virtualizer.getCellProps(column), {
+                          style: { ...cellStyle, background: isActive ? "#bfdbfe" : undefined },
+                        })}
                         data-active={isActive ? "" : undefined}
                         onClick={() => setActive({ row: item.index, column: column.index })}
-                        style={{
-                          ...cellStyle,
-                          background: isActive ? "#bfdbfe" : undefined,
-                        }}
                       >
                         {row.values[column.index - 1]}
                       </td>
                     )
                   })}
-                  <td aria-hidden style={virtualizer.getColumnSpacerStyle("end")} />
+                  <td {...virtualizer.getColumnSpacerProps("end")} />
                 </tr>
               )
             })}
           </tbody>
           <tbody aria-hidden>
-            <tr style={virtualizer.getRowSpacerStyle("end")} />
+            <tr {...virtualizer.getRowSpacerProps("end")} />
           </tbody>
           {hasMore && (
             <tbody>

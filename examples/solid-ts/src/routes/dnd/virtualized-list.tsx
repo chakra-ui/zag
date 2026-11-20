@@ -21,11 +21,12 @@ export default function Page() {
     count: initialItems.length,
     itemSize: 44,
     overscan: 8,
+    aria: false,
   })
 
   createEffect(
     () => items().length,
-    (count) => virtualizer.updateOptions({ count }),
+    (count) => virtualizer().updateOptions({ count }),
   )
 
   const service = useMachine(dnd.machine, {
@@ -39,12 +40,11 @@ export default function Page() {
   })
 
   const api = createMemo(() => dnd.connect(service, normalizeProps))
-  const range = () => virtualizer.getRange()
+  const range = () => virtualizer().getRange()
   const draggedItem = createMemo(() => items().find((item) => item.id === api().dragSource))
 
   const onScroll = (event: Event & { currentTarget: HTMLDivElement }) => {
     setScrollTop(event.currentTarget.scrollTop)
-    virtualizer.handleScroll(event)
   }
 
   return (
@@ -64,15 +64,15 @@ export default function Page() {
             <span class={styles.stat}>drop {lastDrop() ?? "none"}</span>
           </div>
 
-          <div ref={ref} onScroll={onScroll} class={styles.viewport}>
-            <div class={styles.sizer} style={{ height: `${virtualizer.getTotalSize()}px` }}>
-              <For keyed={false} each={virtualizer.getVirtualItems()}>
+          <div ref={ref} {...virtualizer().getRootProps()} onScroll={onScroll} class={styles.viewport}>
+            <div {...virtualizer().getContentProps()} class={styles.sizer}>
+              <For keyed={false} each={virtualizer().getVirtualItems()}>
                 {(virtualItem) => {
                   const item = () => items()[virtualItem().index]
                   return (
                     <Show when={item()}>
                       {(item) => (
-                        <div style={virtualizer.getItemStyle(virtualItem())}>
+                        <div {...virtualizer().getItemProps(virtualItem())}>
                           <div class={styles.row}>
                             <div
                               {...api().getDropIndicatorProps({ value: item().id, placement: "before" })}

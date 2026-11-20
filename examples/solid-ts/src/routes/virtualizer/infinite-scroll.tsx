@@ -50,37 +50,39 @@ export default function Page() {
           scroller = el
           ref(el)
         }}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Virtualized infinite list"
-        style={{
-          height: "420px",
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #cbd5e1",
-          "border-radius": "8px",
-          "margin-top": "16px",
-          "box-sizing": "border-box",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            height: "420px",
+            width: "100%",
+            border: "1px solid #cbd5e1",
+            "border-radius": "8px",
+            "margin-top": "16px",
+            "box-sizing": "border-box",
+          },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For keyed={false} each={virtualizer().getVirtualItems()}>
             {(virtualItem) => (
               <Show when={items()[virtualItem().index]}>
                 {(item) => (
                   <div
-                    style={{
-                      ...virtualizer.getItemStyle(virtualItem()),
-                      height: `${virtualItem().size}px`,
-                      padding: "0 16px",
-                      "border-bottom": "1px solid #e2e8f0",
-                      "box-sizing": "border-box",
-                      background: virtualItem().index % 2 === 0 ? "#ffffff" : "#f1f5f9",
-                      display: "flex",
-                      "align-items": "center",
-                      "justify-content": "space-between",
-                      gap: "16px",
-                    }}
+                    {...mergeProps(
+                      () => virtualizer().getItemProps(virtualItem()),
+                      () => ({
+                        style: {
+                          padding: "0 16px",
+                          "border-bottom": "1px solid #e2e8f0",
+                          "box-sizing": "border-box",
+                          background: virtualItem().index % 2 === 0 ? "#ffffff" : "#f1f5f9",
+                          display: "flex",
+                          "align-items": "center",
+                          "justify-content": "space-between",
+                          gap: "16px",
+                        },
+                      }),
+                    )}
                   >
                     <strong>{item().title}</strong>
                     <span style={{ color: "#64748b", "font-size": "13px" }}>{item().status}</span>
@@ -101,7 +103,7 @@ export default function Page() {
       </div>
 
       <p style={{ "margin-top": "12px", "font-size": "13px", color: "#64748b" }}>
-        Rendered: {virtualizer.getVirtualItems().length} rows
+        Rendered: {virtualizer().getVirtualItems().length} rows
         {loadedCount() < TOTAL_ITEMS ? ` · Next page starts at ${items().length + 1}` : " · Complete"}
       </p>
     </main>

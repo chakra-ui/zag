@@ -1,5 +1,5 @@
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { Portal } from "@solidjs/web"
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
@@ -25,7 +25,7 @@ export default function Page() {
     id: createUniqueId(),
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index)
+      virtualizer().scrollToIndex(details.index)
     },
     onSelect: ({ value }) => setSelected(value),
   })
@@ -44,26 +44,23 @@ export default function Page() {
         <Portal>
           <div {...api().getPositionerProps()}>
             <div
-              {...api().getContentProps()}
+              {...mergeProps(
+                () => virtualizer().getRootProps(),
+                () => api().getContentProps(),
+                { style: { "max-height": "320px" } },
+              )}
               ref={ref}
-              onScroll={virtualizer.handleScroll}
-              style={{ "max-height": "320px", "overflow-y": "auto" }}
             >
-              <div
-                style={{
-                  height: `${virtualizer.getTotalSize()}px`,
-                  position: "relative",
-                }}
-              >
-                <For keyed={false} each={virtualizer.getVirtualItems()}>
+              <div {...virtualizer().getContentProps()}>
+                <For keyed={false} each={virtualizer().getVirtualItems()}>
                   {(virtualItem) => {
                     const item = () => items[virtualItem().index]
                     return (
                       <div
-                        aria-posinset={virtualItem().index + 1}
-                        aria-setsize={items.length}
-                        {...api().getItemProps({ value: item().value })}
-                        style={virtualizer.getItemStyle(virtualItem())}
+                        {...mergeProps(
+                          () => virtualizer().getItemProps(virtualItem()),
+                          () => api().getItemProps({ value: item().value }),
+                        )}
                       >
                         {item().label}
                       </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useGridVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   // Grid configuration
   const TOTAL_ROWS = 1000
@@ -19,7 +19,9 @@
 
   let isSmooth = $state(true)
 
-  const { virtualizer, init } = useGridVirtualizer({
+  const id = $props.id()
+  const vz = useGridVirtualizer({
+    id,
     rowCount: TOTAL_ROWS,
     columnCount: TOTAL_COLUMNS,
     estimatedRowSize: estimateRowSize,
@@ -31,9 +33,9 @@
     observeScrollElementSize: true,
   })
 
-  const totalWidth = $derived(virtualizer.getTotalWidth())
-  const totalHeight = $derived(virtualizer.getTotalHeight())
-  const range = $derived(virtualizer.getRange())
+  const totalWidth = $derived(vz.virtualizer.getTotalWidth())
+  const totalHeight = $derived(vz.virtualizer.getTotalHeight())
+  const range = $derived(vz.virtualizer.getRange())
   const visibleRowCount = $derived(range.endRow - range.startRow + 1)
   const visibleColCount = $derived(range.endColumn - range.startColumn + 1)
   const renderedCellCount = $derived(visibleRowCount * visibleColCount)
@@ -61,13 +63,13 @@
     </label>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
-      <button type="button" onclick={() => virtualizer.scrollToCell(0, 0, { behavior: behavior() })}>
+      <button type="button" onclick={() => vz.virtualizer.scrollToCell(0, 0, { behavior: behavior() })}>
         Scroll to Top-Left
       </button>
       <button
         type="button"
         onclick={() =>
-          virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
+          vz.virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
             align: "center",
             behavior: behavior(),
           })}
@@ -76,47 +78,34 @@
       </button>
       <button
         type="button"
-        onclick={() => virtualizer.scrollToCell(TOTAL_ROWS - 1, TOTAL_COLUMNS - 1, { behavior: behavior() })}
+        onclick={() => vz.virtualizer.scrollToCell(TOTAL_ROWS - 1, TOTAL_COLUMNS - 1, { behavior: behavior() })}
       >
         Scroll to Bottom-Right
       </button>
     </div>
 
     <div
-      {@attach init}
-      onscroll={virtualizer.handleScroll}
-      {...virtualizer.getContainerAriaAttrs()}
-      tabindex="0"
+      {@attach vz.init}
       aria-label="Virtualized grid"
-      {...normalizeProps.element({
+      {...mergeProps(vz.virtualizer.getRootProps(), {
         style: {
           height: "500px",
           width: "100%",
           maxWidth: "900px",
-          ...virtualizer.getContainerStyle(),
           border: "1px solid #ccc",
           borderRadius: "8px",
           marginTop: "16px",
         },
       })}
     >
-      <div style="width: {totalWidth}px; height: {totalHeight}px; position: relative">
-        {#each virtualizer.getVirtualRows() as virtualRow (virtualRow.row)}
-          <div
-            {@attach (el) => {
-              virtualRow.measureRow(el)
-              return () => virtualRow.measureRow(null)
-            }}
-            {...virtualizer.getRowAriaAttrs(virtualRow.row)}
-            {...normalizeProps.element({ style: virtualizer.getRowStyle(virtualRow) })}
-          >
+      <div {...vz.virtualizer.getContentProps()}>
+        {#each vz.virtualizer.getVirtualRows() as virtualRow (virtualRow.row)}
+          <div {...vz.virtualizer.getRowProps(virtualRow)}>
             {#each virtualRow.columns as col (col.column)}
               {@const data = generateCellData(virtualRow.row, col.column)}
               <div
-                {...virtualizer.getCellAriaAttrs(virtualRow.row, col.column)}
-                {...normalizeProps.element({
+                {...mergeProps(vz.virtualizer.getCellProps(virtualRow, col), {
                   style: {
-                    ...virtualizer.getCellStyleInRow(col),
                     backgroundColor: data.color,
                     border: "1px solid rgba(0,0,0,0.1)",
                     display: "flex",

@@ -44,7 +44,7 @@
       id,
       collection,
       scrollToIndexFn(details) {
-        virtualizer.scrollToIndex(details.index, { align: "auto" })
+        vz.virtualizer.scrollToIndex(details.index, { align: "auto" })
       },
     }),
   )
@@ -52,10 +52,13 @@
   const api = $derived(tree.connect(service, normalizeProps))
   const visibleNodes = $derived(api.getVisibleNodes())
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const vz = useListVirtualizer(() => ({
+    id,
     count: visibleNodes.length,
     itemSize: ROW_HEIGHT,
     overscan: 10,
+    // Items wrap tree nodes, which carry their own semantics
+    aria: false,
   }))
 </script>
 
@@ -95,17 +98,16 @@
     </div>
 
     <div
-      {@attach init}
-      {...mergeProps(api.getTreeProps(), {
-        style: "height: 400px; overflow: auto; border: 1px solid #ccc; border-radius: 4px",
+      {@attach vz.init}
+      {...mergeProps(vz.virtualizer.getRootProps(), api.getTreeProps(), {
+        style: "height: 400px; border: 1px solid #ccc; border-radius: 4px",
       })}
-      onscroll={virtualizer.handleScroll}
     >
-      <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-        {#each virtualizer.getVirtualItems() as vi (visibleNodes[vi.index]?.node.id ?? vi.index)}
+      <div {...vz.virtualizer.getContentProps()}>
+        {#each vz.virtualizer.getVirtualItems() as vi (visibleNodes[vi.index]?.node.id ?? vi.index)}
           {@const visible = visibleNodes[vi.index]}
           {#if visible}
-            <div data-index={vi.index} {...normalizeProps.element({ style: virtualizer.getItemStyle(vi) })}>
+            <div {...vz.virtualizer.getItemProps(vi)}>
               {@render treeNode(visible.node, visible.indexPath)}
             </div>
           {/if}

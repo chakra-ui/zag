@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/preact"
 
 const ITEM_COUNT = 1000
 
@@ -62,43 +63,43 @@ export default function Page() {
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Virtualized list with padding"
-        style={{
-          height: 400,
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #e2e8f0",
-          borderRadius: 8,
-          marginTop: 16,
-          boxSizing: "border-box",
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: 400,
+            width: "100%",
+            overflow: "auto",
+            border: "1px solid #e2e8f0",
+            borderRadius: 8,
+            marginTop: 16,
+            boxSizing: "border-box",
+          },
+        })}
       >
         <div
-          style={{
-            height: virtualizer.getTotalSize(),
-            width: "100%",
-            position: "relative",
-            background: `linear-gradient(to bottom, #dbeafe ${paddingStart}px, transparent ${paddingStart}px, transparent calc(100% - ${paddingEnd}px), #dbeafe calc(100% - ${paddingEnd}px))`,
-          }}
+          {...mergeProps(virtualizer.getContentProps(), {
+            style: {
+              background: `linear-gradient(to bottom, #dbeafe ${paddingStart}px, transparent ${paddingStart}px, transparent calc(100% - ${paddingEnd}px), #dbeafe calc(100% - ${paddingEnd}px))`,
+            },
+          })}
         >
           {virtualItems.map((vi) => {
             const item = items[vi.index]
             return (
               <div
                 key={vi.index}
-                style={{
-                  ...virtualizer.getItemStyle(vi),
-                  height: 40,
-                  padding: "0 16px",
-                  borderBottom: "1px solid #cbd5e1",
-                  boxSizing: "border-box",
-                  backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#e2e8f0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+                {...mergeProps(virtualizer.getItemProps(vi), {
+                  style: {
+                    height: 40,
+                    padding: "0 16px",
+                    borderBottom: "1px solid #cbd5e1",
+                    boxSizing: "border-box",
+                    backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#e2e8f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  },
+                })}
               >
                 <span>{item.label}</span>
                 <span style={{ color: "#94a3b8", fontSize: 12 }}>y: {vi.start}px</span>

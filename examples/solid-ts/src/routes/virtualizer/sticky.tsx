@@ -1,5 +1,6 @@
+import { mergeProps } from "@zag-js/solid"
 import type { GroupMeta } from "@zag-js/virtualizer"
-import { createSignal, For, Show } from "solid-js"
+import { For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
 const ITEMS_PER_GROUP = 50
@@ -38,8 +39,6 @@ const getGroupLabel = (index: number) => `Group ${index + 1}`
 const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
 
 export default function Page() {
-  const [scrollOffset, setScrollOffset] = createSignal(0)
-
   const { virtualizer, ref } = useListVirtualizer({
     count: TOTAL_ITEMS,
     estimatedItemSize: ITEM_HEIGHT,
@@ -48,7 +47,7 @@ export default function Page() {
     overscan: 5,
   })
 
-  const headerState = () => virtualizer.getGroupHeaderState(scrollOffset(), HEADER_HEIGHT)
+  const headerState = () => virtualizer().getStickyGroupHeader(HEADER_HEIGHT)
 
   return (
     <main style={{ padding: "20px", "max-width": "600px", width: "100%" }}>
@@ -86,27 +85,27 @@ export default function Page() {
 
         <div
           ref={ref}
-          onScroll={(e) => {
-            setScrollOffset(e.currentTarget.scrollTop)
-            virtualizer.handleScroll(e)
-          }}
-          tabindex={0}
           aria-label="Virtualized list with sticky group headers"
-          style={{ height: "400px", overflow: "auto", border: "2px solid #cbd5e1", "border-radius": "8px" }}
+          {...mergeProps(() => virtualizer().getRootProps(), {
+            style: { height: "400px", border: "2px solid #cbd5e1", "border-radius": "8px" },
+          })}
         >
-          <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-            <For keyed={false} each={virtualizer.getVirtualItems()}>
+          <div {...virtualizer().getContentProps()}>
+            <For keyed={false} each={virtualizer().getVirtualItems()}>
               {(vi) => {
                 const item = () => items[vi().index]
                 return (
                   <div
-                    style={{
-                      ...virtualizer.getItemStyle(vi()),
-                      height: `${vi().size}px`,
-                      "background-color": COLORS[item().groupIndex],
-                      "font-size": "13px",
-                      "box-sizing": "border-box",
-                    }}
+                    {...mergeProps(
+                      () => virtualizer().getItemProps(vi()),
+                      () => ({
+                        style: {
+                          "background-color": COLORS[item().groupIndex],
+                          "font-size": "13px",
+                          "box-sizing": "border-box",
+                        },
+                      }),
+                    )}
                   >
                     <Show when={isGroupStart(vi().index)}>
                       <div
@@ -146,7 +145,7 @@ export default function Page() {
       </div>
 
       <p style={{ "margin-top": "8px", "font-size": "13px", color: "#64748b" }}>
-        Rendered: {virtualizer.getVirtualItems().length} of {TOTAL_ITEMS}
+        Rendered: {virtualizer().getVirtualItems().length} of {TOTAL_ITEMS}
         {headerState() ? ` · ${getGroupLabel(getGroupIndex(headerState()!.group.startIndex))}` : ""}
       </p>
     </main>

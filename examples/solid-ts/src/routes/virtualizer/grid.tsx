@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For } from "solid-js"
 import { useGridVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -29,46 +30,38 @@ export default function Page() {
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        {...virtualizer.getContainerAriaAttrs()}
-        tabindex={0}
         aria-label="Virtualized grid"
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          height: "520px",
-          border: "1px solid #d1d5db",
-          "border-radius": "8px",
-          "margin-top": "16px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            width: "100%",
+            height: "520px",
+            border: "1px solid #d1d5db",
+            "border-radius": "8px",
+            "margin-top": "16px",
+          },
+        })}
       >
-        <div
-          style={{
-            height: `${virtualizer.getTotalHeight()}px`,
-            width: `${virtualizer.getTotalWidth()}px`,
-            position: "relative",
-          }}
-        >
-          <For keyed={false} each={virtualizer.getVirtualRows()}>
+        <div {...virtualizer().getContentProps()}>
+          <For keyed={false} each={virtualizer().getVirtualRows()}>
             {(virtualRow) => (
-              <div style={virtualizer.getRowStyle(virtualRow())}>
+              <div {...virtualizer().getRowProps(virtualRow())}>
                 <For keyed={false} each={virtualRow().columns}>
                   {(column) => (
                     <div
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: `${column().x}px`,
-                        width: `${column().width}px`,
-                        height: `${virtualRow().height}px`,
-                        border: "1px solid #e5e7eb",
-                        "box-sizing": "border-box",
-                        display: "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                        "font-size": "12px",
-                        background: (virtualRow().row + column().column) % 2 === 0 ? "#fff" : "#f8fafc",
-                      }}
+                      {...mergeProps(
+                        () => virtualizer().getCellProps(virtualRow(), column()),
+                        () => ({
+                          style: {
+                            border: "1px solid #e5e7eb",
+                            "box-sizing": "border-box",
+                            display: "flex",
+                            "align-items": "center",
+                            "justify-content": "center",
+                            "font-size": "12px",
+                            background: (virtualRow().row + column().column) % 2 === 0 ? "#fff" : "#f8fafc",
+                          },
+                        }),
+                      )}
                     >
                       {getCellValue(virtualRow().row, column().column)}
                     </div>

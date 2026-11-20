@@ -1,9 +1,10 @@
 import * as listbox from "@zag-js/listbox"
 import * as popover from "@zag-js/popover"
-import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { useDeferredValue } from "preact/compat"
 import { useCallback, useEffect, useId, useMemo, useState } from "preact/hooks"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
+import type { GroupMeta } from "@zag-js/virtualizer"
 import { type EmojiData, type EmojiDataCategory, EmojiLoader } from "../../lib/emoji-loader"
 import "@styles/emoji-picker.css"
 
@@ -52,7 +53,7 @@ function getLayout(emojis: EmojiItem[], categories: EmojiDataCategory[]) {
   // Grid row (in the collection) → visual row (with headers)
   const gridRowToRow: number[] = []
   // Sticky headers, one per category
-  const groups: { id: string; startIndex: number; headerSize: number }[] = []
+  const groups: GroupMeta[] = []
 
   categories.forEach(({ index: category, label }) => {
     const group = emojis.filter((emoji) => emoji.category === category)
@@ -112,6 +113,8 @@ export default function Page() {
     overscan: 4,
     paddingEnd: 4,
     observeScrollElementSize: true,
+    // Rows wrap the options, which carry their own semantics
+    aria: false,
   })
 
   const popoverService = useMachine(popover.machine, { id: useId() })
@@ -168,21 +171,21 @@ export default function Page() {
                     {sticky.group.id}
                   </div>
                 )}
-                <div {...listboxApi.getListProps()} ref={scrollRef} onScroll={virtualizer.handleScroll}>
-                  <div style={{ position: "relative", height: virtualizer.getTotalSize() }}>
+                <div {...mergeProps(virtualizer.getRootProps(), listboxApi.getListProps())} ref={scrollRef}>
+                  <div {...virtualizer.getContentProps()}>
                     {virtualizer.getVirtualItems().map((virtualRow) => {
                       const row = rows[virtualRow.index]
                       if (!row) return null
-                      const style = virtualizer.getItemStyle(virtualRow)
+                      const rowProps = virtualizer.getItemProps(virtualRow)
                       if (row.type === "header") {
                         return (
-                          <div key={`header:${row.label}`} className="emoji-category" style={style}>
+                          <div key={`header:${row.label}`} {...rowProps} className="emoji-category">
                             {row.label}
                           </div>
                         )
                       }
                       return (
-                        <div key={row.start} className="emoji-row" style={style}>
+                        <div key={row.start} {...rowProps} className="emoji-row">
                           {items.slice(row.start, row.start + COLUMN_COUNT).map((item) =>
                             item.placeholder ? (
                               <div key={item.value} className="emoji-item" aria-hidden />

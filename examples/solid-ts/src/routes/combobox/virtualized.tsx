@@ -1,9 +1,9 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { For, createMemo, createSignal, createUniqueId, createEffect } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/combobox.css"
 
@@ -17,17 +17,11 @@ const { contains } = createFilter({ sensitivity: "base" })
 export default function Page() {
   const [options, setOptions] = createSignal(comboboxData)
 
-  const { virtualizer, ref } = useListVirtualizer({
-    count: comboboxData.length,
+  const { virtualizer, ref } = useListVirtualizer(() => ({
+    count: options().length,
     itemSize: 32,
     observeScrollElementSize: true,
-  })
-
-  // Sync count before render
-  createEffect(
-    () => options().length,
-    (count) => virtualizer.updateOptions({ count }),
-  )
+  }))
 
   const collection = createMemo(() =>
     combobox.collection({
@@ -43,7 +37,7 @@ export default function Page() {
     id,
     collection: collection(),
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+      virtualizer().scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
     onOpenChange() {
       setOptions(comboboxData)
@@ -73,33 +67,30 @@ export default function Page() {
 
       <div {...api().getPositionerProps()}>
         <div data-testid="combobox-content" {...api().getContentProps()}>
-          <div {...api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-            <div
-              style={{
-                height: `${virtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              <For keyed={false} each={virtualizer.getVirtualItems()}>
+          <div
+            {...mergeProps(
+              () => virtualizer().getRootProps(),
+              () => api().getListProps(),
+            )}
+            ref={ref}
+          >
+            <div {...virtualizer().getContentProps()}>
+              <For keyed={false} each={virtualizer().getVirtualItems()}>
                 {(vi) => {
                   const item = () => options()[vi().index]
                   return (
-                    <div
-                      data-testid={item().code}
-                      aria-posinset={vi().index + 1}
-                      aria-setsize={options().length}
-                      {...api().getItemProps({ item: item() })}
-                      style={{
-                        ...virtualizer.getItemStyle(vi()),
-                        "white-space": "nowrap",
-                        overflow: "hidden",
-                        "text-overflow": "ellipsis",
-                      }}
-                    >
-                      <span>{item().label}</span>
-                      <span {...api().getItemIndicatorProps({ item: item() })}>✅</span>
-                    </div>
+                    <Show when={item()}>
+                      <div
+                        data-testid={item().code}
+                        {...mergeProps(
+                          () => virtualizer().getItemProps(vi()),
+                          () => api().getItemProps({ item: item() }),
+                        )}
+                      >
+                        <span>{item().label}</span>
+                        <span {...api().getItemIndicatorProps({ item: item() })}>✅</span>
+                      </div>
+                    </Show>
                   )
                 }}
               </For>

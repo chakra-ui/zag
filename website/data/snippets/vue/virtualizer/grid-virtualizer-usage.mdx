@@ -6,48 +6,28 @@
     getCell: { type: Function, required: true },
   })
 
-  const { virtualizer, init } = useGridVirtualizer({
+  const { virtualizer, ref: rootRef } = useGridVirtualizer(() => ({
     rowCount: props.rowCount,
     columnCount: props.columnCount,
     estimatedRowSize: () => 40,
     estimatedColumnSize: () => 120,
-    overscan: 3,
-  })
-
-  virtualizer.updateOptions({
-    rowCount: props.rowCount,
-    columnCount: props.columnCount,
-  })
+  }))
 </script>
 
 <template>
-  <div
-    :ref="init"
-    v-bind="virtualizer.getContainerAriaAttrs()"
-    @scroll="virtualizer.handleScroll"
-    :style="{ ...virtualizer.getContainerStyle(), height: '400px' }"
-  >
-    <div
-      :style="{
-        position: 'relative',
-        width: `${virtualizer.getTotalWidth()}px`,
-        height: `${virtualizer.getTotalHeight()}px`,
-      }"
-    >
+  <div :ref="rootRef" v-bind="virtualizer.getRootProps()" class="grid">
+    <div v-bind="virtualizer.getContentProps()">
       <div
-        v-for="virtualRow in virtualizer.getVirtualRows()"
-        :key="virtualRow.row"
-        :ref="virtualRow.measureRow"
-        v-bind="virtualizer.getRowAriaAttrs(virtualRow.row)"
-        :style="virtualizer.getRowStyle(virtualRow)"
+        v-for="row in virtualizer.getVirtualRows()"
+        :key="row.row"
+        v-bind="virtualizer.getRowProps(row)"
       >
         <div
-          v-for="column in virtualRow.columns"
+          v-for="column in row.columns"
           :key="column.column"
-          v-bind="virtualizer.getCellAriaAttrs(virtualRow.row, column.column)"
-          :style="virtualizer.getCellStyleInRow(column)"
+          v-bind="virtualizer.getCellProps(row, column)"
         >
-          {{ props.getCell(virtualRow.row, column.column) }}
+          {{ props.getCell(row.row, column.column) }}
         </div>
       </div>
     </div>

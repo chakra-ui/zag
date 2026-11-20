@@ -3,16 +3,7 @@ import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
-import {
-  type Accessor,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  For,
-  Show,
-  untrack,
-  createTrackedEffect,
-} from "solid-js"
+import { type Accessor, createEffect, createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -118,7 +109,7 @@ interface TreeNodeProps {
   dndApi: Accessor<dnd.Api>
   indexPath: number[]
   node: Node
-  style: JSX.CSSProperties
+  itemProps: JSX.HTMLAttributes<HTMLDivElement>
 }
 
 function TreeNode(props: TreeNodeProps): JSX.Element {
@@ -128,7 +119,7 @@ function TreeNode(props: TreeNodeProps): JSX.Element {
   const value = () => nodeState().value
 
   return (
-    <div style={props.style}>
+    <div {...props.itemProps}>
       <div class={styles.row}>
         <div
           {...dndApi().getDropIndicatorProps({ value: value(), placement: "before" })}
@@ -196,6 +187,7 @@ export default function Page() {
     count: 0,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    aria: false,
   })
 
   const dndService = useMachine(dnd.machine, {
@@ -257,7 +249,7 @@ export default function Page() {
     collection: visibleCollection(),
     expandedValue: expandedValue(),
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer().scrollToIndex(details.index, { align: "auto" })
     },
     onExpandedChange(details) {
       if (query()) return
@@ -268,12 +260,12 @@ export default function Page() {
   const api = createMemo(() => tree.connect(treeService, normalizeProps))
   const visibleNodes = createMemo(() => api().getVisibleNodes())
 
-  createTrackedEffect(() => {
-    const count = visibleNodes().length
-    untrack(() => virtualizer.updateOptions({ count }))
-  })
+  createEffect(
+    () => visibleNodes().length,
+    (count) => virtualizer().updateOptions({ count }),
+  )
 
-  const range = () => virtualizer.getRange()
+  const range = () => virtualizer().getRange()
 
   const draggedNode = createMemo(() => {
     const source = dragSource()
@@ -328,14 +320,17 @@ export default function Page() {
             <span>drop {dndApi().dropTarget ? `${dndApi().dropTarget} ${dndApi().dropPlacement}` : "none"}</span>
           </div>
 
-          <div ref={ref} onScroll={virtualizer.handleScroll} class={styles.viewport}>
+          <div ref={ref} {...virtualizer().getRootProps()} class={styles.viewport}>
             <div
-              {...mergeProps(api().getTreeProps(), {
-                class: styles.sizer,
-                style: { height: `${virtualizer.getTotalSize()}px` },
-              })}
+              {...mergeProps(
+                () => virtualizer().getContentProps(),
+                () => api().getTreeProps(),
+                {
+                  class: styles.sizer,
+                },
+              )}
             >
-              <For keyed={false} each={virtualizer.getVirtualItems()}>
+              <For keyed={false} each={virtualizer().getVirtualItems()}>
                 {(virtualItem) => {
                   const item = () => visibleNodes()[virtualItem().index]
                   return (
@@ -346,12 +341,15 @@ export default function Page() {
                           dndApi={dndApi}
                           node={item().node}
                           indexPath={item().indexPath}
-                          style={{
-                            ...virtualizer.getItemStyle(virtualItem()),
-                            height: `${virtualItem().size}px`,
-                            "z-index": dndApi().dropTarget === item().node.id ? 2 : undefined,
-                            overflow: "visible",
-                          }}
+                          itemProps={mergeProps(
+                            () => virtualizer().getItemProps(virtualItem()),
+                            () => ({
+                              style: {
+                                "z-index": dndApi().dropTarget === item().node.id ? 2 : undefined,
+                                overflow: "visible",
+                              },
+                            }),
+                          )}
                         />
                       )}
                     </Show>

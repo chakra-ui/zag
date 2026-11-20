@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useWaterfallVirtualizer } from "#lib/use-virtualizer.svelte.ts"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 1_000
 
@@ -15,9 +16,9 @@
     height: getItemHeight(index),
   }))
 
-  let scrollEl = $state<HTMLDivElement | null>(null)
-
-  const { virtualizer, init } = useWaterfallVirtualizer({
+  const id = $props.id()
+  const vz = useWaterfallVirtualizer({
+    id,
     count: ITEM_COUNT,
     columnCount: 3,
     columnGap: 12,
@@ -25,37 +26,43 @@
     overscan: 6,
     estimatedItemSize: (index: number) => getItemHeight(index),
   })
-
-  $effect(() => {
-    init(scrollEl)
-  })
 </script>
 
 <main style="padding: 20px; width: 100%; max-width: 960px">
   <h1>Waterfall Virtualizer</h1>
   <p style="color: #64748b">
-    Masonry layout with {ITEM_COUNT.toLocaleString()} variable-height cards across {virtualizer.getWaterfallState()
+    Masonry layout with {ITEM_COUNT.toLocaleString()} variable-height cards across {vz.virtualizer.getWaterfallState()
       .columnCount} columns.
   </p>
 
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
-    bind:this={scrollEl}
-    onscroll={virtualizer.handleScroll}
-    role="region"
-    tabindex="0"
+    {@attach vz.init}
     aria-label="Virtualized waterfall"
-    style="height: 560px; width: 100%; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; margin-top: 16px; position: relative;"
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: {
+        height: "560px",
+        width: "100%",
+        border: "1px solid #d1d5db",
+        borderRadius: "8px",
+        marginTop: "16px",
+      },
+    })}
   >
-    <div style={`height: ${virtualizer.getTotalSize()}px; width: 100%; position: relative`}>
-      {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id)}
+    <div {...vz.virtualizer.getContentProps()}>
+      {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index]?.id)}
         {@const item = items[virtualItem.index]}
-        {@const lane = virtualItem.lane ?? 0}
-        {@const layout = virtualizer.getWaterfallState()}
-        {@const left = layout.columns[lane]?.offset ?? 0}
         <div
-          data-index={virtualItem.index}
-          style={`position: absolute; top: 0; left: 0; transform: translate3d(${left}px, ${virtualItem.start}px, 0); width: ${layout.columnWidth}px; height: ${item?.height}px; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; background: linear-gradient(180deg, rgba(241,245,249,0.7) 0%, rgba(255,255,255,1) 45%, rgba(248,250,252,1) 100%);`}
+          {...mergeProps(vz.virtualizer.getItemProps(virtualItem), {
+            style: {
+              height: `${item?.height}px`,
+              padding: "12px",
+              borderRadius: "8px",
+              border: "1px solid #e2e8f0",
+              boxSizing: "border-box",
+              background:
+                "linear-gradient(180deg, rgba(241,245,249,0.7) 0%, rgba(255,255,255,1) 45%, rgba(248,250,252,1) 100%)",
+            },
+          })}
         >
           <strong style="font-size: 13px">{item?.title}</strong>
           <p style="margin: 4px 0 0; font-size: 12px; color: #64748b">{item?.subtitle} · {item?.height}px</p>

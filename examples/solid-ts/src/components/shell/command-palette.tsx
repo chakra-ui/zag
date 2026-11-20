@@ -5,18 +5,7 @@ import { componentRoutesData, exampleRoutes, getComponentExamples } from "@zag-j
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { useNavigate } from "@solidjs/router"
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-solid"
-import {
-  createMemo,
-  createSignal,
-  createUniqueId,
-  For,
-  Match,
-  Show,
-  Switch,
-  untrack,
-  type Accessor,
-  createTrackedEffect,
-} from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, Match, Show, Switch, type Accessor } from "solid-js"
 import { Portal } from "@solidjs/web"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
@@ -214,7 +203,7 @@ function PaletteList(props: PaletteListProps) {
   const data = createMemo(() => getRows(props.items()))
   const estimatedItemSize = (index: number) => (data().rows[index]?.type === "group" ? GROUP_HEIGHT : ITEM_HEIGHT)
 
-  const { virtualizer, ref } = useListVirtualizer({
+  const { virtualizer, ref } = useListVirtualizer(() => ({
     count: data().rows.length,
     estimatedItemSize,
     observeScrollElementSize: true,
@@ -222,13 +211,9 @@ function PaletteList(props: PaletteListProps) {
     // The list's vertical padding lives here so scrolled-to rows clear the edges
     paddingStart: LIST_PADDING,
     paddingEnd: LIST_PADDING,
-  })
-
-  // untrack: the proxy would subscribe this effect to the virtualizer it updates
-  createTrackedEffect(() => {
-    const { rows } = data()
-    untrack(() => virtualizer.updateOptions({ count: rows.length, estimatedItemSize }))
-  })
+    // Group labels share the row index, so positions come from the options
+    aria: false,
+  }))
 
   props.setScrollToIndex((itemIndex, immediate) => {
     const { rows, itemRowIndex } = data()
@@ -236,22 +221,29 @@ function PaletteList(props: PaletteListProps) {
     if (rowIndex == null) return
     // Bring the group header along when jumping to a group's first item
     const target = immediate && rows[rowIndex - 1]?.type === "group" ? rowIndex - 1 : rowIndex
-    virtualizer.scrollToIndex(target, { align: immediate ? "center" : "auto" })
+    virtualizer().scrollToIndex(target, { align: immediate ? "center" : "auto" })
   })
 
   return (
-    <div {...props.api().getListProps()} ref={ref} onScroll={virtualizer.handleScroll} class="pg-palette-list">
-      <div style={{ position: "relative", width: "100%", height: `${virtualizer.getTotalSize()}px` }}>
+    <div
+      {...mergeProps(
+        () => virtualizer().getRootProps(),
+        () => props.api().getListProps(),
+      )}
+      ref={ref}
+      class="pg-palette-list"
+    >
+      <div {...virtualizer().getContentProps()}>
         {/* unkeyed: the virtualizer reuses its item objects */}
-        <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <For keyed={false} each={virtualizer().getVirtualItems()}>
           {(virtualItem) => {
             const row = () => data().rows[virtualItem().index]
-            const style = () => virtualizer.getItemStyle(virtualItem())
+            const rowProps = () => virtualizer().getItemProps(virtualItem())
             return (
               <Switch>
                 <Match when={row()?.type === "group" && row()}>
                   {(group) => (
-                    <div role="presentation" class="pg-palette-group-label" style={style()}>
+                    <div {...rowProps()} role="presentation" class="pg-palette-group-label">
                       {(group() as Extract<Row, { type: "group" }>).label}
                     </div>
                   )}
@@ -259,9 +251,8 @@ function PaletteList(props: PaletteListProps) {
                 <Match when={row()?.type === "item" && (row() as Extract<Row, { type: "item" }>).item}>
                   {(item) => (
                     <div
-                      {...props.api().getItemProps({ item: item(), persistFocus: true })}
+                      {...mergeProps(rowProps, () => props.api().getItemProps({ item: item(), persistFocus: true }))}
                       class="pg-palette-item"
-                      style={style()}
                     >
                       <span class="pg-palette-item-label">{item().label}</span>
                       <Show when={item().meta}>

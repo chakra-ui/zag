@@ -4,30 +4,21 @@
     items: { type: Array, required: true },
   })
 
-  const { virtualizer, init } = useListVirtualizer({
+  // A getter keeps the options in sync with the props
+  const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
     count: props.items.length,
     estimatedItemSize: 48,
-    overscan: 5,
     indexToKey: (index) => props.items[index].id,
-  })
-
-  virtualizer.updateOptions({ count: props.items.length })
+  }))
 </script>
 
 <template>
-  <div
-    :ref="init"
-    v-bind="virtualizer.getContainerAriaAttrs()"
-    @scroll="virtualizer.handleScroll"
-    :style="{ ...virtualizer.getContainerStyle(), height: '400px' }"
-  >
-    <div :style="virtualizer.getContentStyle()">
+  <div :ref="rootRef" v-bind="virtualizer.getRootProps()" class="list">
+    <div v-bind="virtualizer.getContentProps()">
       <div
         v-for="virtualItem in virtualizer.getVirtualItems()"
         :key="virtualItem.key"
-        :ref="virtualItem.measureElement"
-        v-bind="virtualizer.getItemAriaAttrs(virtualItem.index)"
-        :style="virtualizer.getItemStyle(virtualItem)"
+        v-bind="virtualizer.getItemProps(virtualItem)"
       >
         {{ props.items[virtualItem.index].label }}
       </div>

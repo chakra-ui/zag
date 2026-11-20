@@ -13,18 +13,19 @@
     itemToValue: (item) => item.value,
   })
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: selectData.length,
     itemSize: 32,
     observeScrollElementSize: true,
   })
 
-  const id = $props.id()
   const service = useMachine(select.machine, {
     id,
     collection,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+      vz.virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
   })
 
@@ -47,15 +48,11 @@
     <Portal>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
-          <div {...api.getListProps()} {@attach init} onscroll={virtualizer.handleScroll}>
-            <div style:height="{virtualizer.getTotalSize()}px" style:width="100%" style:position="relative">
-              {#each virtualizer.getVirtualItems() as vi (selectData[vi.index].value)}
+          <div {...mergeProps(vz.virtualizer.getRootProps(), api.getListProps())} {@attach vz.init}>
+            <div {...vz.virtualizer.getContentProps()}>
+              {#each vz.virtualizer.getVirtualItems() as vi (selectData[vi.index].value)}
                 {@const item = selectData[vi.index]}
-                <div
-                  aria-posinset={vi.index + 1}
-                  aria-setsize={selectData.length}
-                  {...mergeProps(api.getItemProps({ item }), { style: virtualizer.getItemStyle(vi) })}
-                >
+                <div {...mergeProps(vz.virtualizer.getItemProps(vi), api.getItemProps({ item }))}>
                   <span {...api.getItemTextProps({ item })}>{item.label}</span>
                   <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </div>

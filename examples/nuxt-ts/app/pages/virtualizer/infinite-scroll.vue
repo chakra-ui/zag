@@ -18,14 +18,14 @@ const loadedCount = ref(PAGE_SIZE)
 const items = computed(() => allItems.slice(0, loadedCount.value))
 
 let scroller: HTMLElement | null = null
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: items.value.length,
   itemSize: ROW_HEIGHT,
   overscan: 4,
 }))
 const setScroller = (el: unknown) => {
   scroller = el as HTMLElement | null
-  init(scroller)
+  rootRef(scroller)
 }
 
 const api = useInfiniteScroll(() => ({
@@ -51,26 +51,23 @@ const sentinelProps = computed(() => mergeProps(api.value.getSentinelProps(), { 
 
     <div
       :ref="setScroller"
-      tabindex="0"
+      v-bind="virtualizer.getRootProps()"
       aria-label="Virtualized infinite list"
       style="
         height: 420px;
         width: 100%;
-        overflow: auto;
         border: 1px solid #cbd5e1;
         border-radius: 8px;
         margin-top: 16px;
         box-sizing: border-box;
       "
-      @scroll="virtualizer.handleScroll"
     >
-      <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+      <div v-bind="virtualizer.getContentProps()">
         <template v-for="virtualItem in virtualizer.getVirtualItems()" :key="virtualItem.index">
           <div
             v-if="items[virtualItem.index]"
+            v-bind="virtualizer.getItemProps(virtualItem)"
             :style="{
-              ...virtualizer.getItemStyle(virtualItem),
-              height: `${virtualItem.size}px`,
               padding: '0 16px',
               borderBottom: '1px solid #e2e8f0',
               boxSizing: 'border-box',

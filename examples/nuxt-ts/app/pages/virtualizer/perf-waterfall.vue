@@ -111,7 +111,7 @@ const items = computed(() => buildItems(itemCount.value))
 
 let scrollEl: HTMLElement | null = null
 
-const { virtualizer, init } = useWaterfallVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useWaterfallVirtualizer(() => ({
   count: items.value.length,
   columnCount: columnCount.value,
   columnGap: COLUMN_GAP,
@@ -122,19 +122,19 @@ const { virtualizer, init } = useWaterfallVirtualizer(() => ({
 
 const setScrollRef = (el: unknown) => {
   scrollEl = el as HTMLElement | null
-  init(scrollEl)
+  rootRef(scrollEl)
 }
 
-const layout = computed(() => virtualizer.getWaterfallState())
+const layout = computed(() => virtualizer.value.getWaterfallState())
 
 const getRuntimeStats = (): RuntimeStats => {
-  const virtualItems = virtualizer.getVirtualItems()
+  const virtualItems = virtualizer.value.getVirtualItems()
   const visibleCount = virtualItems.filter((item) => item.isVisible).length
   return {
     renderedCount: virtualItems.length,
     visibleCount,
     overscanCount: virtualItems.length - visibleCount,
-    totalSize: virtualizer.getTotalSize(),
+    totalSize: virtualizer.value.getTotalSize(),
   }
 }
 
@@ -218,23 +218,17 @@ const getLineWidth = (lineIndex: number, lines: number) => `${55 + ((lineIndex *
         <h2 style="color: #3b82f6">@zag-js/virtualizer — WaterfallVirtualizer</h2>
         <div
           :ref="setScrollRef"
-          tabindex="0"
+          v-bind="virtualizer.getRootProps()"
           aria-label="Zag waterfall performance list"
           :style="{
             height: `${VIEWPORT_HEIGHT}px`,
-            overflow: 'auto',
             border: '2px solid #3b82f6',
             borderRadius: '8px',
           }"
-          @scroll="virtualizer.handleScroll"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div v-bind="virtualizer.getContentProps()">
             <template v-for="vi in virtualizer.getVirtualItems()" :key="items[vi.index]?.id ?? vi.index">
-              <div
-                v-if="items[vi.index]"
-                :ref="(el) => vi.measureElement(el as HTMLElement | null)"
-                :style="virtualizer.getItemStyle(vi)"
-              >
+              <div v-if="items[vi.index]" v-bind="virtualizer.getItemProps(vi)">
                 <article
                   :style="{
                     boxSizing: 'border-box',

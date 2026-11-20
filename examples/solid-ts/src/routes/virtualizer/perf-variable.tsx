@@ -1,4 +1,5 @@
-import { For, Show, createSignal, onCleanup } from "solid-js"
+import { mergeProps } from "@zag-js/solid"
+import { For, Show, createSignal } from "solid-js"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const ITEM_COUNT = 100_000
@@ -142,34 +143,34 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
           scrollEl = el
           ref(el)
         }}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Zag variable-height performance list"
-        style={{ height: "400px", overflow: "auto", border: "2px solid #3b82f6", "border-radius": "8px" }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: { height: "400px", border: "2px solid #3b82f6", "border-radius": "8px" },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For each={virtualizer.getVirtualItems()}>
-            {(vi) => {
-              onCleanup(() => vi.measureElement(null))
-              return (
-                <div
-                  ref={vi.measureElement}
-                  style={{
-                    ...virtualizer.getItemStyle(vi),
-                    padding: "8px 12px",
-                    "border-bottom": "1px solid #e5e7eb",
-                    "background-color": vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-                  }}
-                >
-                  <ItemContent item={items[vi.index]} />
-                </div>
-              )
-            }}
+        <div {...virtualizer().getContentProps()}>
+          <For each={virtualizer().getVirtualItems()}>
+            {(vi) => (
+              <div
+                {...mergeProps(
+                  () => virtualizer().getItemProps(vi),
+                  () => ({
+                    style: {
+                      padding: "8px 12px",
+                      "border-bottom": "1px solid #e5e7eb",
+                      "background-color": vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                    },
+                  }),
+                )}
+              >
+                <ItemContent item={items[vi.index]} />
+              </div>
+            )}
           </For>
         </div>
       </div>
       <p style={{ "font-size": "13px", color: "#64748b", "margin-top": "8px" }}>
-        Rendered: {virtualizer.getVirtualItems().length} items
+        Rendered: {virtualizer().getVirtualItems().length} items
       </p>
     </div>
   )
@@ -183,8 +184,8 @@ export default function Page() {
       <h1>Variable Heights Perf</h1>
       <p style={{ color: "#64748b" }}>
         {ITEM_COUNT.toLocaleString()} items with <strong>variable heights (30-150px)</strong>, 5 overscan. Each item has
-        a deterministic height based on its index. Items use <code>measureElement</code> for dynamic measurement. This
-        tests the full scroll + measure + reposition pipeline with variable-size items.
+        a deterministic height based on its index. Items are measured through <code>getItemProps</code>. This tests the
+        full scroll + measure + reposition pipeline with variable-size items.
       </p>
 
       <div style={{ display: "grid", "grid-template-columns": "1fr 1fr", gap: "24px", "margin-top": "24px" }}>

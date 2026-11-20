@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useTableVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const TOTAL_ROWS = 2000
   const PAGE_SIZE = 200
@@ -32,7 +32,9 @@
     loadedCount = Math.min(loadedCount + PAGE_SIZE, TOTAL_ROWS)
   }
 
-  const { virtualizer, init, getRootProps } = useTableVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useTableVirtualizer(() => ({
+    id,
     count: rows.length,
     estimatedItemSize: 37,
     footerSize: hasMore ? 40 : 0,
@@ -44,9 +46,7 @@
     endReachedThreshold: 20,
   }))
 
-  const { measureHeaderElement } = virtualizer
-
-  const virtualColumns = $derived(virtualizer.getVirtualColumns())
+  const virtualColumns = $derived(vz.virtualizer.getVirtualColumns())
   const startColumns = $derived(virtualColumns.filter((column) => column.pinned === "start"))
   const middleColumns = $derived(virtualColumns.filter((column) => !column.pinned))
 
@@ -56,8 +56,8 @@
       column: Math.max(1, Math.min(columns.length - 1, column)),
     }
     active = next
-    virtualizer.scrollToIndex(next.row)
-    virtualizer.scrollToColumn(next.column)
+    vz.virtualizer.scrollToIndex(next.row)
+    vz.virtualizer.scrollToColumn(next.column)
   }
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -87,47 +87,46 @@
   </p>
 
   <div
-    {@attach init}
-    {...getRootProps()}
-    onscroll={virtualizer.handleScroll}
-    tabindex="0"
+    {@attach vz.init}
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: {
+        height: "min(420px, calc(var(--total-size) + 2px))",
+        width: "100%",
+        border: "1px solid #cbd5e1",
+        borderRadius: "8px",
+        marginTop: "16px",
+      },
+    })}
     role="region"
     aria-label="Customers"
     onkeydown={onKeyDown}
-    style="{getRootProps()
-      .style}; height: min(420px, calc(var(--total-size) + 2px)); width: 100%; overflow: auto; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 16px"
   >
     <table
       aria-rowcount={hasMore ? -1 : rows.length + 1}
       aria-colcount={columns.length}
-      {...normalizeProps.element({ style: { ...virtualizer.getTableStyle(), fontSize: "13px" } })}
+      {...mergeProps(vz.virtualizer.getTableProps(), { style: { fontSize: "13px" } })}
     >
       <colgroup>
         {#each startColumns as column (column.index)}
-          <col {...normalizeProps.element({ style: virtualizer.getColumnStyle(column) })} />
+          <col {...vz.virtualizer.getColumnProps(column)} />
         {/each}
-        <col {...normalizeProps.element({ style: virtualizer.getColumnSpacerStyle("start") })} />
+        <col {...vz.virtualizer.getColumnSpacerProps("start")} />
         {#each middleColumns as column (column.index)}
-          <col {...normalizeProps.element({ style: virtualizer.getColumnStyle(column) })} />
+          <col {...vz.virtualizer.getColumnProps(column)} />
         {/each}
-        <col {...normalizeProps.element({ style: virtualizer.getColumnSpacerStyle("end") })} />
+        <col {...vz.virtualizer.getColumnSpacerProps("end")} />
       </colgroup>
-      <thead {@attach measureHeaderElement}>
+      <thead {...vz.virtualizer.getHeaderProps()}>
         <tr aria-rowindex={1}>
           {#each [startColumns, null, middleColumns, null] as group, i (i)}
             {#if group === null}
-              <th
-                aria-hidden="true"
-                {...normalizeProps.element({ style: virtualizer.getColumnSpacerStyle(i ? "end" : "start") })}
-              ></th>
+              <th {...vz.virtualizer.getColumnSpacerProps(i ? "end" : "start")}></th>
             {:else}
               {#each group as column (column.index)}
                 <th
-                  aria-colindex={column.index + 1}
-                  {...normalizeProps.element({
+                  {...mergeProps(vz.virtualizer.getCellProps(column), {
                     style: {
                       ...cellStyle,
-                      ...virtualizer.getCellStyle(column),
                       position: "sticky",
                       top: "0",
                       zIndex: column.pinned ? 3 : 2,
@@ -144,51 +143,46 @@
         </tr>
       </thead>
       <tbody aria-hidden="true">
-        <tr {...normalizeProps.element({ style: virtualizer.getRowSpacerStyle("start") })}></tr>
+        <tr {...vz.virtualizer.getRowSpacerProps("start")}></tr>
       </tbody>
-      <tbody {...normalizeProps.element({ style: virtualizer.getBodyStyle() })}>
-        {#each virtualizer.getVirtualItems() as item (rows[item.index].id)}
+      <tbody {...vz.virtualizer.getBodyProps()}>
+        {#each vz.virtualizer.getVirtualItems() as item (rows[item.index].id)}
           {@const row = rows[item.index]}
           {@const isActiveRow = item.index === active.row}
           {@const background = isActiveRow ? "#eff6ff" : item.index % 2 ? "#f8fafc" : "#fff"}
           <tr
-            {@attach (el) => item.measureElement(el)}
-            data-index={item.index}
+            {...mergeProps(vz.virtualizer.getRowProps(item), { style: { background } })}
             aria-rowindex={item.index + 2}
-            {...normalizeProps.element({ style: { ...virtualizer.getRowStyle(item), background } })}
           >
             {#each startColumns as column (column.index)}
               <th
                 scope="row"
-                aria-colindex={column.index + 1}
-                {...normalizeProps.element({
-                  style: { ...cellStyle, ...virtualizer.getCellStyle(column), background, textAlign: "left" },
+                {...mergeProps(vz.virtualizer.getCellProps(column), {
+                  style: { ...cellStyle, background, textAlign: "left" },
                 })}
               >
                 {row.name}
               </th>
             {/each}
-            <td aria-hidden="true" {...normalizeProps.element({ style: virtualizer.getColumnSpacerStyle("start") })}
-            ></td>
+            <td {...vz.virtualizer.getColumnSpacerProps("start")}></td>
             {#each middleColumns as column (column.index)}
               {@const isActive = isActiveRow && column.index === active.column}
               <td
-                aria-colindex={column.index + 1}
-                data-active={isActive ? "" : undefined}
-                onclick={() => (active = { row: item.index, column: column.index })}
-                {...normalizeProps.element({
+                {...mergeProps(vz.virtualizer.getCellProps(column), {
                   style: { ...cellStyle, background: isActive ? "#bfdbfe" : undefined },
                 })}
+                data-active={isActive ? "" : undefined}
+                onclick={() => (active = { row: item.index, column: column.index })}
               >
                 {row.values[column.index - 1]}
               </td>
             {/each}
-            <td aria-hidden="true" {...normalizeProps.element({ style: virtualizer.getColumnSpacerStyle("end") })}></td>
+            <td {...vz.virtualizer.getColumnSpacerProps("end")}></td>
           </tr>
         {/each}
       </tbody>
       <tbody aria-hidden="true">
-        <tr {...normalizeProps.element({ style: virtualizer.getRowSpacerStyle("end") })}></tr>
+        <tr {...vz.virtualizer.getRowSpacerProps("end")}></tr>
       </tbody>
       {#if hasMore}
         <tbody>
@@ -201,7 +195,7 @@
   </div>
 
   <p style="margin-top: 12px; font-size: 13px; color: #64748b">
-    Loaded {rows.length} of {TOTAL_ROWS} rows · Rendered {virtualizer.getVirtualItems().length} rows × {virtualColumns.length}
+    Loaded {rows.length} of {TOTAL_ROWS} rows · Rendered {vz.virtualizer.getVirtualItems().length} rows × {virtualColumns.length}
     columns · Active {active.row + 1}:{columns[active.column].label}
   </p>
 </main>

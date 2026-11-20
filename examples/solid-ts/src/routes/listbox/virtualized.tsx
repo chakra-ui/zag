@@ -1,5 +1,5 @@
 import * as listbox from "@zag-js/listbox"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 import "@styles/listbox.css"
@@ -27,7 +27,7 @@ export default function Page() {
     collection,
     id: createUniqueId(),
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer().scrollToIndex(details.index, { align: "auto" })
     },
   })
 
@@ -39,27 +39,23 @@ export default function Page() {
         <div {...api().getRootProps()}>
           <label {...api().getLabelProps()}>Label</label>
           <div {...api().getContentProps()}>
-            <div ref={ref} {...api().getListProps()} onScroll={virtualizer.handleScroll}>
-              <div
-                style={{
-                  height: `${virtualizer.getTotalSize()}px`,
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                <For keyed={false} each={virtualizer.getVirtualItems()}>
+            <div
+              ref={ref}
+              {...mergeProps(
+                () => virtualizer().getRootProps(),
+                () => api().getListProps(),
+              )}
+            >
+              <div {...virtualizer().getContentProps()}>
+                <For keyed={false} each={virtualizer().getVirtualItems()}>
                   {(virtualItem) => {
                     const item = () => items[virtualItem().index]
                     return (
                       <div
-                        {...api().getItemProps({ item: item() })}
-                        data-index={virtualItem().index}
-                        aria-setsize={items.length}
-                        aria-posinset={virtualItem().index + 1}
-                        style={{
-                          ...virtualizer.getItemStyle(virtualItem()),
-                          "overflow-anchor": "none",
-                        }}
+                        {...mergeProps(
+                          () => virtualizer().getItemProps(virtualItem()),
+                          () => api().getItemProps({ item: item() }),
+                        )}
                       >
                         <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
                         <span {...api().getItemIndicatorProps({ item: item() })}>✓</span>

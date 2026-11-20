@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For, createSignal } from "solid-js"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -34,52 +35,52 @@ export default function Page() {
       </label>
 
       <div style={{ display: "flex", gap: "8px", "flex-wrap": "wrap", "margin-top": "12px" }}>
-        <button type="button" onClick={() => virtualizer.scrollToIndex(0, { smooth: smoothScroll() })}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(0, { smooth: smoothScroll() })}>
           Scroll to top
         </button>
         <button
           type="button"
           onClick={() =>
-            virtualizer.scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll() })
+            virtualizer().scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: smoothScroll() })
           }
         >
           Scroll to middle
         </button>
-        <button type="button" onClick={() => virtualizer.scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll() })}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(ITEM_COUNT - 1, { smooth: smoothScroll() })}>
           Scroll to bottom
         </button>
       </div>
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        {...virtualizer.getContainerAriaAttrs()}
-        tabindex={0}
         aria-label="Virtualized list"
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          height: "420px",
-          border: "1px solid #d1d5db",
-          "border-radius": "8px",
-          "margin-top": "16px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            width: "100%",
+            height: "420px",
+            border: "1px solid #d1d5db",
+            "border-radius": "8px",
+            "margin-top": "16px",
+          },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For each={virtualizer().getVirtualItems()}>
             {(virtualItem) => (
               <div
-                data-index={virtualItem().index}
-                {...virtualizer.getItemAriaAttrs(virtualItem().index)}
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem()),
-                  padding: "12px 16px",
-                  "border-bottom": "1px solid #e5e7eb",
-                  background: virtualItem().index % 2 === 0 ? "#f8fafc" : "#fff",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(virtualItem),
+                  () => ({
+                    style: {
+                      padding: "12px 16px",
+                      "border-bottom": "1px solid #e5e7eb",
+                      background: virtualItem.index % 2 === 0 ? "#f8fafc" : "#fff",
+                    },
+                  }),
+                )}
               >
-                <strong>{items[virtualItem().index].name}</strong>
-                <p style={{ margin: "6px 0 0", color: "#64748b" }}>{items[virtualItem().index].description}</p>
+                <strong>{items[virtualItem.index].name}</strong>
+                <p style={{ margin: "6px 0 0", color: "#64748b" }}>{items[virtualItem.index].description}</p>
               </div>
             )}
           </For>

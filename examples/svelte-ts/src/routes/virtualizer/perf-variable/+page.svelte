@@ -3,7 +3,7 @@
   import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
   import { runScrollBenchmark, type ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 100_000
 
@@ -23,7 +23,9 @@
   let metrics = $state<ScrollBenchmarkMetrics | null>(null)
   let scrollEl: HTMLElement | null = null
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: ITEM_COUNT,
     estimatedItemSize: getItemHeight,
     overscan: 5,
@@ -31,7 +33,7 @@
 
   const setScrollRef = (el: HTMLElement) => {
     scrollEl = el
-    init(el)
+    vz.init(el)
   }
 
   const run = (scrollCount: number) => {
@@ -43,8 +45,8 @@
   <h1>Variable Heights Perf</h1>
   <p style="color: #64748b">
     {ITEM_COUNT.toLocaleString()} items with <strong>variable heights (30-150px)</strong>, 5 overscan. Each item has a
-    deterministic height based on its index. Items use <code>measureElement</code> for dynamic measurement. This tests the
-    full scroll + measure + reposition pipeline with variable-size items.
+    deterministic height based on its index. Rendered items are measured automatically. This tests the full scroll +
+    measure + reposition pipeline with variable-size items.
   </p>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px">
@@ -53,20 +55,17 @@
       <BenchmarkButtons onrun={run} />
       <div
         {@attach setScrollRef}
-        tabindex="0"
-        role="region"
         aria-label="Zag variable-height performance list"
-        style="height: 400px; overflow: auto; border: 2px solid #3b82f6; border-radius: 8px"
-        onscroll={virtualizer.handleScroll}
+        {...mergeProps(vz.virtualizer.getRootProps(), {
+          style: { height: "400px", border: "2px solid #3b82f6", borderRadius: "8px" },
+        })}
       >
-        <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-          {#each virtualizer.getVirtualItems() as vi (vi.index)}
+        <div {...vz.virtualizer.getContentProps()}>
+          {#each vz.virtualizer.getVirtualItems() as vi (vi.key)}
             {@const item = items[vi.index]}
             <div
-              {@attach (el) => vi.measureElement(el)}
-              {...normalizeProps.element({
+              {...mergeProps(vz.virtualizer.getItemProps(vi), {
                 style: {
-                  ...virtualizer.getItemStyle(vi),
                   padding: "8px 12px",
                   borderBottom: "1px solid #e5e7eb",
                   backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
@@ -87,7 +86,7 @@
         </div>
       </div>
       <p style="font-size: 13px; color: #64748b; margin-top: 8px">
-        Rendered: {virtualizer.getVirtualItems().length} items
+        Rendered: {vz.virtualizer.getVirtualItems().length} items
       </p>
     </div>
     <PerfMetrics label="@zag-js/virtualizer" {metrics} />

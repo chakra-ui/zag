@@ -3,7 +3,7 @@
   import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
   import { runScrollBenchmark, type ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 100_000
   const ITEM_HEIGHT = 40
@@ -16,7 +16,9 @@
   let metrics = $state<ScrollBenchmarkMetrics | null>(null)
   let scrollEl: HTMLElement | null = null
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: ITEM_COUNT,
     itemSize: ITEM_HEIGHT,
     overscan: 5,
@@ -24,7 +26,7 @@
 
   const setScrollRef = (el: HTMLElement) => {
     scrollEl = el
-    init(el)
+    vz.init(el)
   }
 
   const run = (scrollCount: number) => {
@@ -46,18 +48,16 @@
       <BenchmarkButtons onrun={run} />
       <div
         {@attach setScrollRef}
-        tabindex="0"
-        role="region"
         aria-label="Zag virtualizer performance list"
-        style="height: 400px; overflow: auto; border: 2px solid #3b82f6; border-radius: 8px"
-        onscroll={virtualizer.handleScroll}
+        {...mergeProps(vz.virtualizer.getRootProps(), {
+          style: { height: "400px", border: "2px solid #3b82f6", borderRadius: "8px" },
+        })}
       >
-        <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-          {#each virtualizer.getVirtualItems() as vi (vi.index)}
+        <div {...vz.virtualizer.getContentProps()}>
+          {#each vz.virtualizer.getVirtualItems() as vi (vi.key)}
             <div
-              {...normalizeProps.element({
+              {...mergeProps(vz.virtualizer.getItemProps(vi), {
                 style: {
-                  ...virtualizer.getItemStyle(vi),
                   padding: "8px 12px",
                   borderBottom: "1px solid #e5e7eb",
                   backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
@@ -70,7 +70,7 @@
         </div>
       </div>
       <p style="font-size: 13px; color: #64748b; margin-top: 8px">
-        Rendered: {virtualizer.getVirtualItems().length} items
+        Rendered: {vz.virtualizer.getVirtualItems().length} items
       </p>
     </div>
   </div>

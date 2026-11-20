@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 1000
   const ITEM_HEIGHT = 40
@@ -13,7 +13,9 @@
   let scrollPaddingStart = $state(64)
   let scrollPaddingEnd = $state(64)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: ITEM_COUNT,
     itemSize: ITEM_HEIGHT,
     scrollPaddingStart,
@@ -58,25 +60,32 @@
   </div>
 
   <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap">
-    <button type="button" onclick={() => virtualizer.scrollToIndex(250, { align: "start" })}>Item 251 start</button>
-    <button type="button" onclick={() => virtualizer.scrollToIndex(500, { align: "center" })}>Item 501 center</button>
-    <button type="button" onclick={() => virtualizer.scrollToIndex(750, { align: "end" })}>Item 751 end</button>
+    <button type="button" onclick={() => vz.virtualizer.scrollToIndex(250, { align: "start" })}>Item 251 start</button>
+    <button type="button" onclick={() => vz.virtualizer.scrollToIndex(500, { align: "center" })}>Item 501 center</button
+    >
+    <button type="button" onclick={() => vz.virtualizer.scrollToIndex(750, { align: "end" })}>Item 751 end</button>
   </div>
 
   <div
-    {@attach init}
-    tabindex="0"
-    role="region"
+    {@attach vz.init}
     aria-label="Virtualized list with scroll padding"
-    style="height: 400px; width: 100%; overflow: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 16px; box-sizing: border-box; background: linear-gradient(to bottom, #dbeafe {scrollPaddingStart}px, transparent {scrollPaddingStart}px, transparent calc(100% - {scrollPaddingEnd}px), #dbeafe calc(100% - {scrollPaddingEnd}px))"
-    onscroll={virtualizer.handleScroll}
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: {
+        height: "400px",
+        width: "100%",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        marginTop: "16px",
+        boxSizing: "border-box",
+        background: `linear-gradient(to bottom, #dbeafe ${scrollPaddingStart}px, transparent ${scrollPaddingStart}px, transparent calc(100% - ${scrollPaddingEnd}px), #dbeafe calc(100% - ${scrollPaddingEnd}px))`,
+      },
+    })}
   >
-    <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-      {#each virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].id)}
+    <div {...vz.virtualizer.getContentProps()}>
+      {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].id)}
         <div
-          {...normalizeProps.element({
+          {...mergeProps(vz.virtualizer.getItemProps(virtualItem), {
             style: {
-              ...virtualizer.getItemStyle(virtualItem),
               height: `${ITEM_HEIGHT}px`,
               padding: "0 16px",
               borderBottom: "1px solid #cbd5e1",
@@ -97,6 +106,6 @@
 
   <p style="margin-top: 12px; font-size: 13px; color: #64748b">
     Scroll padding: {scrollPaddingStart}px start, {scrollPaddingEnd}px end. Total size stays
-    {virtualizer.getTotalSize()}px.
+    {vz.virtualizer.getTotalSize()}px.
   </p>
 </main>

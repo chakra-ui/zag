@@ -10,7 +10,7 @@ const generateItems = (count: number) =>
 
 const items = generateItems(10000)
 
-const { virtualizer, init } = useWindowVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useWindowVirtualizer(() => ({
   count: items.length,
   estimatedItemSize: 142,
   overscan: 8,
@@ -23,8 +23,8 @@ const { virtualizer, init } = useWindowVirtualizer(() => ({
       : { width: 0, height: 800 },
 }))
 
-const virtualItems = computed(() => virtualizer.getVirtualItems())
-const totalSize = computed(() => virtualizer.getTotalSize())
+const virtualItems = computed(() => virtualizer.value.getVirtualItems())
+const totalSize = computed(() => virtualizer.value.getTotalSize())
 </script>
 
 <template>
@@ -51,24 +51,21 @@ const totalSize = computed(() => virtualizer.getTotalSize())
       </div>
 
       <div
-        :ref="(el) => init(el as HTMLElement)"
-        v-bind="virtualizer.getContainerAriaAttrs()"
+        :ref="rootRef"
+        v-bind="virtualizer.getRootProps()"
         :style="{
-          ...virtualizer.getContainerStyle(),
           width: '100%',
           marginTop: '20px',
           border: '1px solid #d1d5db',
           borderRadius: '8px',
         }"
       >
-        <div :style="{ height: `${totalSize}px`, width: '100%', position: 'relative' }">
+        <div v-bind="virtualizer.getContentProps()">
           <div
             v-for="virtualItem in virtualItems"
             :key="virtualItem.index"
-            :data-index="virtualItem.index"
-            v-bind="virtualizer.getItemAriaAttrs(virtualItem.index)"
+            v-bind="virtualizer.getItemProps(virtualItem)"
             :style="{
-              ...virtualizer.getItemStyle(virtualItem),
               padding: '16px',
               backgroundColor: virtualItem.index % 2 === 0 ? '#f8f9fa' : '#ffffff',
               borderBottom: '1px solid #e1e5e9',

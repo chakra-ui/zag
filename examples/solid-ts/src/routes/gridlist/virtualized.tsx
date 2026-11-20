@@ -1,5 +1,5 @@
 import * as gridlist from "@zag-js/gridlist"
-import { normalizeProps, useMachine } from "@zag-js/solid"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import { CheckIcon } from "lucide-solid"
 import { createMemo, createUniqueId, For, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
@@ -33,6 +33,8 @@ export default function Page() {
     count: items.length,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    // Grid rows take `aria-rowindex`, not list positions
+    aria: false,
   })
 
   const service = useMachine(gridlist.machine as gridlist.Machine<Row>, {
@@ -40,7 +42,7 @@ export default function Page() {
     collection,
     selectionMode: "multiple",
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      virtualizer().scrollToIndex(details.index, { align: "auto" })
     },
   })
 
@@ -54,20 +56,22 @@ export default function Page() {
             <label {...api().getLabelProps()}>10,000 rows</label>
             <div
               ref={ref}
-              {...api().getContentProps()}
-              tabindex={0}
-              onScroll={virtualizer.handleScroll}
-              style={{ height: "360px", width: "480px" }}
+              {...mergeProps(
+                () => virtualizer().getRootProps(),
+                () => api().getContentProps(),
+                { style: { height: "360px", width: "480px" } },
+              )}
             >
-              <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-                <For keyed={false} each={virtualizer.getVirtualItems()}>
+              <div {...virtualizer().getContentProps()}>
+                <For keyed={false} each={virtualizer().getVirtualItems()}>
                   {(vi) => {
                     const item = () => items[vi().index]
                     return (
                       <div
-                        {...api().getItemProps({ item: item() })}
-                        data-index={vi().index}
-                        style={{ ...virtualizer.getItemStyle(vi()), "overflow-anchor": "none" }}
+                        {...mergeProps(
+                          () => virtualizer().getItemProps(vi()),
+                          () => api().getItemProps({ item: item() }),
+                        )}
                       >
                         <div {...api().getCellProps()}>
                           <Show when={api().hasCheckbox}>
@@ -90,7 +94,7 @@ export default function Page() {
           </div>
 
           <p style={{ "margin-top": "12px", "font-size": "13px", color: "#52525b" }}>
-            Selected: <strong>{api().value.length}</strong> · Rendered: {virtualizer.getVirtualItems().length} of{" "}
+            Selected: <strong>{api().value.length}</strong> · Rendered: {virtualizer().getVirtualItems().length} of{" "}
             {items.length}
           </p>
         </div>

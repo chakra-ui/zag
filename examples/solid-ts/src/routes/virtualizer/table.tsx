@@ -1,5 +1,6 @@
-import { normalizeProps } from "@zag-js/solid"
-import { createMemo, createSignal, For, onCleanup, Show } from "solid-js"
+import { mergeProps } from "@zag-js/solid"
+import type { TableColumn } from "@zag-js/virtualizer"
+import { createMemo, createSignal, For, Show } from "solid-js"
 import { useTableVirtualizer } from "~/hooks/use-virtualizer"
 
 const TOTAL_ROWS = 2000
@@ -26,9 +27,18 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const cellStyle = {
   padding: "8px 12px",
-  borderBottom: "1px solid #e2e8f0",
-  whiteSpace: "nowrap",
+  "border-bottom": "1px solid #e2e8f0",
+  "white-space": "nowrap",
 }
+
+const headerCellStyle = (column: TableColumn) => ({
+  ...cellStyle,
+  position: "sticky",
+  top: "0",
+  "z-index": column.pinned ? 3 : 2,
+  background: "#f8fafc",
+  "text-align": "left",
+})
 
 export default function Page() {
   const [loadedCount, setLoadedCount] = createSignal(PAGE_SIZE)
@@ -41,7 +51,7 @@ export default function Page() {
     setLoadedCount((count) => Math.min(count + PAGE_SIZE, TOTAL_ROWS))
   }
 
-  const { virtualizer, ref, getRootProps } = useTableVirtualizer(() => ({
+  const { virtualizer, ref } = useTableVirtualizer(() => ({
     count: rows().length,
     estimatedItemSize: 37,
     footerSize: hasMore() ? 40 : 0,
@@ -53,7 +63,7 @@ export default function Page() {
     endReachedThreshold: 20,
   }))
 
-  const virtualColumns = () => virtualizer.getVirtualColumns()
+  const virtualColumns = () => virtualizer().getVirtualColumns()
   const startColumns = () => virtualColumns().filter((column) => column.pinned === "start")
   const middleColumns = () => virtualColumns().filter((column) => !column.pinned)
 
@@ -63,8 +73,8 @@ export default function Page() {
       column: Math.max(1, Math.min(columns.length - 1, column)),
     }
     setActive(next)
-    virtualizer.scrollToIndex(next.row)
-    virtualizer.scrollToColumn(next.column)
+    virtualizer().scrollToIndex(next.row)
+    virtualizer().scrollToColumn(next.column)
   }
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -103,207 +113,106 @@ export default function Page() {
 
       <div
         ref={ref}
-        {...getRootProps()}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            height: "min(420px, calc(var(--total-size) + 2px))",
+            width: "100%",
+            border: "1px solid #cbd5e1",
+            "border-radius": "8px",
+            "margin-top": "16px",
+          },
+        })}
         role="region"
         aria-label="Customers"
         onKeyDown={onKeyDown}
-        style={{
-          ...getRootProps().style,
-          height: "min(420px, calc(var(--total-size) + 2px))",
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #cbd5e1",
-          "border-radius": "8px",
-          "margin-top": "16px",
-        }}
       >
         <table
           aria-rowcount={hasMore() ? -1 : rows().length + 1}
           aria-colcount={columns.length}
-          {...normalizeProps.element({
-            style: { ...virtualizer.getTableStyle(), fontSize: "13px" },
-          })}
+          {...mergeProps(() => virtualizer().getTableProps(), { style: { "font-size": "13px" } })}
         >
           <colgroup>
-            <For each={startColumns()}>
-              {(column) => (
-                <col
-                  {...normalizeProps.element({
-                    style: virtualizer.getColumnStyle(column),
-                  })}
-                />
-              )}
-            </For>
-            <col
-              {...normalizeProps.element({
-                style: virtualizer.getColumnSpacerStyle("start"),
-              })}
-            />
-            <For each={middleColumns()}>
-              {(column) => (
-                <col
-                  {...normalizeProps.element({
-                    style: virtualizer.getColumnStyle(column),
-                  })}
-                />
-              )}
-            </For>
-            <col
-              {...normalizeProps.element({
-                style: virtualizer.getColumnSpacerStyle("end"),
-              })}
-            />
+            <For each={startColumns()}>{(column) => <col {...virtualizer().getColumnProps(column)} />}</For>
+            <col {...virtualizer().getColumnSpacerProps("start")} />
+            <For each={middleColumns()}>{(column) => <col {...virtualizer().getColumnProps(column)} />}</For>
+            <col {...virtualizer().getColumnSpacerProps("end")} />
           </colgroup>
-          <thead ref={virtualizer.measureHeaderElement}>
+          <thead {...virtualizer().getHeaderProps()}>
             <tr aria-rowindex={1}>
               <For each={startColumns()}>
                 {(column) => (
-                  <th
-                    aria-colindex={column.index + 1}
-                    {...normalizeProps.element({
-                      style: {
-                        ...cellStyle,
-                        ...virtualizer.getCellStyle(column),
-                        position: "sticky",
-                        top: 0,
-                        zIndex: column.pinned ? 3 : 2,
-                        background: "#f8fafc",
-                        textAlign: "left",
-                      },
-                    })}
-                  >
+                  <th {...mergeProps(() => virtualizer().getCellProps(column), { style: headerCellStyle(column) })}>
                     {columns[column.index].label}
                   </th>
                 )}
               </For>
-              <th
-                aria-hidden="true"
-                {...normalizeProps.element({
-                  style: virtualizer.getColumnSpacerStyle("start"),
-                })}
-              />
+              <th {...virtualizer().getColumnSpacerProps("start")} />
               <For each={middleColumns()}>
                 {(column) => (
-                  <th
-                    aria-colindex={column.index + 1}
-                    {...normalizeProps.element({
-                      style: {
-                        ...cellStyle,
-                        ...virtualizer.getCellStyle(column),
-                        position: "sticky",
-                        top: 0,
-                        zIndex: column.pinned ? 3 : 2,
-                        background: "#f8fafc",
-                        textAlign: "left",
-                      },
-                    })}
-                  >
+                  <th {...mergeProps(() => virtualizer().getCellProps(column), { style: headerCellStyle(column) })}>
                     {columns[column.index].label}
                   </th>
                 )}
               </For>
-              <th
-                aria-hidden="true"
-                {...normalizeProps.element({
-                  style: virtualizer.getColumnSpacerStyle("end"),
-                })}
-              />
+              <th {...virtualizer().getColumnSpacerProps("end")} />
             </tr>
           </thead>
           <tbody aria-hidden="true">
-            <tr
-              {...normalizeProps.element({
-                style: virtualizer.getRowSpacerStyle("start"),
-              })}
-            />
+            <tr {...virtualizer().getRowSpacerProps("start")} />
           </tbody>
-          <tbody {...normalizeProps.element({ style: virtualizer.getBodyStyle() })}>
-            <For each={virtualizer.getVirtualItems()}>
+          <tbody {...virtualizer().getBodyProps()}>
+            <For each={virtualizer().getVirtualItems()}>
               {(item) => {
-                onCleanup(() => item.measureElement(null))
                 const row = rows()[item.index]
                 const isActiveRow = () => item.index === active().row
                 const background = () => (isActiveRow() ? "#eff6ff" : item.index % 2 ? "#f8fafc" : "#fff")
                 return (
                   <tr
-                    ref={item.measureElement}
-                    data-index={item.index}
                     aria-rowindex={item.index + 2}
-                    {...normalizeProps.element({
-                      style: {
-                        ...virtualizer.getRowStyle(item),
-                        background: background(),
-                      },
-                    })}
+                    {...mergeProps(
+                      () => virtualizer().getRowProps(item),
+                      () => ({ style: { background: background() } }),
+                    )}
                   >
                     <For each={startColumns()}>
                       {(column) => (
                         <th
                           scope="row"
-                          aria-colindex={column.index + 1}
-                          {...normalizeProps.element({
-                            style: {
-                              ...cellStyle,
-                              ...virtualizer.getCellStyle(column),
-                              background: background(),
-                              textAlign: "left",
-                            },
-                          })}
+                          {...mergeProps(
+                            () => virtualizer().getCellProps(column),
+                            () => ({ style: { ...cellStyle, background: background(), "text-align": "left" } }),
+                          )}
                         >
                           {row.name}
                         </th>
                       )}
                     </For>
-                    <td
-                      aria-hidden="true"
-                      {...normalizeProps.element({
-                        style: virtualizer.getColumnSpacerStyle("start"),
-                      })}
-                    />
+                    <td {...virtualizer().getColumnSpacerProps("start")} />
                     <For each={middleColumns()}>
                       {(column) => {
                         const isActive = () => isActiveRow() && column.index === active().column
                         return (
                           <td
-                            aria-colindex={column.index + 1}
+                            {...mergeProps(
+                              () => virtualizer().getCellProps(column),
+                              () => ({ style: { ...cellStyle, background: isActive() ? "#bfdbfe" : undefined } }),
+                            )}
                             data-active={isActive() ? "" : undefined}
-                            onClick={() =>
-                              setActive({
-                                row: item.index,
-                                column: column.index,
-                              })
-                            }
-                            {...normalizeProps.element({
-                              style: {
-                                ...cellStyle,
-                                background: isActive() ? "#bfdbfe" : undefined,
-                              },
-                            })}
+                            onClick={() => setActive({ row: item.index, column: column.index })}
                           >
                             {row.values[column.index - 1]}
                           </td>
                         )
                       }}
                     </For>
-                    <td
-                      aria-hidden="true"
-                      {...normalizeProps.element({
-                        style: virtualizer.getColumnSpacerStyle("end"),
-                      })}
-                    />
+                    <td {...virtualizer().getColumnSpacerProps("end")} />
                   </tr>
                 )
               }}
             </For>
           </tbody>
           <tbody aria-hidden="true">
-            <tr
-              {...normalizeProps.element({
-                style: virtualizer.getRowSpacerStyle("end"),
-              })}
-            />
+            <tr {...virtualizer().getRowSpacerProps("end")} />
           </tbody>
           <Show when={hasMore()}>
             <tbody>
@@ -318,7 +227,7 @@ export default function Page() {
       </div>
 
       <p style={{ "margin-top": "12px", "font-size": "13px", color: "#64748b" }}>
-        Loaded {rows().length} of {TOTAL_ROWS} rows · Rendered {virtualizer.getVirtualItems().length} rows ×{" "}
+        Loaded {rows().length} of {TOTAL_ROWS} rows · Rendered {virtualizer().getVirtualItems().length} rows ×{" "}
         {virtualColumns().length} columns · Active {active().row + 1}:{columns[active().column].label}
       </p>
     </main>

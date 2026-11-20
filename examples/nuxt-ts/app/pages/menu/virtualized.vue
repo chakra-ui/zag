@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as menu from "@zag-js/menu"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/menu.css"
 
 const items = Array.from({ length: 1000 }, (_, index) => ({
@@ -12,14 +12,14 @@ const collection = menu.collection({ items })
 
 // Pairs each rendered row with its item, so the template needs no index lookups
 const getRows = () =>
-  virtualizer.getVirtualItems().flatMap((virtualItem) => {
+  virtualizer.value.getVirtualItems().flatMap((virtualItem) => {
     const item = items[virtualItem.index]
     return item ? [{ virtualItem, item }] : []
   })
 
 const selected = ref("-")
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: items.length,
   itemSize: 32,
   observeScrollElementSize: true,
@@ -29,7 +29,7 @@ const service = useMachine(menu.machine, {
   id: useId(),
   collection,
   scrollToIndexFn(details) {
-    virtualizer.scrollToIndex(details.index)
+    virtualizer.value.scrollToIndex(details.index)
   },
   onSelect: ({ value }) => {
     selected.value = value
@@ -46,24 +46,15 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <Teleport v-if="api.open" to="#teleports">
       <div v-bind="api.getPositionerProps()">
         <div
-          v-bind="api.getContentProps()"
-          :ref="(el) => init(el as HTMLElement)"
-          @scroll="virtualizer.handleScroll"
-          style="max-height: 320px; overflow-y: auto"
+          v-bind="mergeProps(virtualizer.getRootProps(), api.getContentProps())"
+          :ref="rootRef"
+          style="max-height: 320px"
         >
-          <div
-            :style="{
-              height: `${virtualizer.getTotalSize()}px`,
-              position: 'relative',
-            }"
-          >
+          <div v-bind="virtualizer.getContentProps()">
             <div
               v-for="{ virtualItem, item } in getRows()"
               :key="item.value"
-              :aria-posinset="virtualItem.index + 1"
-              :aria-setsize="items.length"
-              v-bind="api.getItemProps({ value: item.value })"
-              :style="virtualizer.getItemStyle(virtualItem)"
+              v-bind="mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))"
             >
               {{ item.label }}
             </div>

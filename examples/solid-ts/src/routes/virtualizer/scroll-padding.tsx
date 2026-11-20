@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { createSignal, For } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
@@ -24,7 +25,7 @@ export default function Page() {
   const updateScrollPadding = (start: number, end: number) => {
     setScrollPaddingStart(start)
     setScrollPaddingEnd(end)
-    virtualizer.updateOptions({ scrollPaddingStart: start, scrollPaddingEnd: end })
+    virtualizer().updateOptions({ scrollPaddingStart: start, scrollPaddingEnd: end })
   }
 
   return (
@@ -65,49 +66,54 @@ export default function Page() {
       </div>
 
       <div style={{ display: "flex", gap: "8px", "margin-top": "12px", "flex-wrap": "wrap" }}>
-        <button type="button" onClick={() => virtualizer.scrollToIndex(250, { align: "start" })}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(250, { align: "start" })}>
           Item 251 start
         </button>
-        <button type="button" onClick={() => virtualizer.scrollToIndex(500, { align: "center" })}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(500, { align: "center" })}>
           Item 501 center
         </button>
-        <button type="button" onClick={() => virtualizer.scrollToIndex(750, { align: "end" })}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(750, { align: "end" })}>
           Item 751 end
         </button>
       </div>
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Virtualized list with scroll padding"
-        style={{
-          height: "400px",
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #e2e8f0",
-          "border-radius": "8px",
-          "margin-top": "16px",
-          "box-sizing": "border-box",
-          background: `linear-gradient(to bottom, #dbeafe ${scrollPaddingStart()}px, transparent ${scrollPaddingStart()}px, transparent calc(100% - ${scrollPaddingEnd()}px), #dbeafe calc(100% - ${scrollPaddingEnd()}px))`,
-        }}
+        {...mergeProps(
+          () => virtualizer().getRootProps(),
+          () => ({
+            style: {
+              height: "400px",
+              width: "100%",
+              border: "1px solid #e2e8f0",
+              "border-radius": "8px",
+              "margin-top": "16px",
+              "box-sizing": "border-box",
+              background: `linear-gradient(to bottom, #dbeafe ${scrollPaddingStart()}px, transparent ${scrollPaddingStart()}px, transparent calc(100% - ${scrollPaddingEnd()}px), #dbeafe calc(100% - ${scrollPaddingEnd()}px))`,
+            },
+          }),
+        )}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For keyed={false} each={virtualizer().getVirtualItems()}>
             {(virtualItem) => (
               <div
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem()),
-                  height: `${ITEM_HEIGHT}px`,
-                  padding: "0 16px",
-                  "border-bottom": "1px solid #cbd5e1",
-                  "box-sizing": "border-box",
-                  "background-color":
-                    virtualItem().index % 2 === 0 ? "rgba(248, 250, 252, 0.92)" : "rgba(226, 232, 240, 0.92)",
-                  display: "flex",
-                  "align-items": "center",
-                  "justify-content": "space-between",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(virtualItem()),
+                  () => ({
+                    style: {
+                      padding: "0 16px",
+                      "border-bottom": "1px solid #cbd5e1",
+                      "box-sizing": "border-box",
+                      "background-color":
+                        virtualItem().index % 2 === 0 ? "rgba(248, 250, 252, 0.92)" : "rgba(226, 232, 240, 0.92)",
+                      display: "flex",
+                      "align-items": "center",
+                      "justify-content": "space-between",
+                    },
+                  }),
+                )}
               >
                 <span>{items[virtualItem().index].label}</span>
                 <span style={{ color: "#64748b", "font-size": "12px" }}>y: {virtualItem().start}px</span>
@@ -119,7 +125,7 @@ export default function Page() {
 
       <p style={{ "margin-top": "12px", "font-size": "13px", color: "#64748b" }}>
         Scroll padding: {scrollPaddingStart()}px start, {scrollPaddingEnd()}px end. Total size stays{" "}
-        {virtualizer.getTotalSize()}px.
+        {virtualizer().getTotalSize()}px.
       </p>
     </main>
   )

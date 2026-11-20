@@ -1,4 +1,4 @@
-import { normalizeProps, useMachine } from "@zag-js/preact"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-preact"
@@ -84,6 +84,8 @@ export default function Page() {
     count: visibleNodes.length,
     itemSize: ROW_HEIGHT,
     overscan: 10,
+    // Items wrap tree nodes, which carry their own semantics
+    aria: false,
   })
 
   return (
@@ -104,17 +106,17 @@ export default function Page() {
 
           <div
             ref={ref}
-            {...api.getTreeProps()}
-            onScroll={virtualizer.handleScroll}
-            style={{ height: 400, overflow: "auto", border: "1px solid #ccc", borderRadius: "4px" }}
+            {...mergeProps(virtualizer.getRootProps(), api.getTreeProps(), {
+              style: { height: 400, border: "1px solid #ccc", borderRadius: "4px" },
+            })}
           >
-            <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+            <div {...virtualizer.getContentProps()}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const visible = visibleNodes[vi.index]
                 if (!visible) return null
                 const { node, indexPath } = visible
                 return (
-                  <div key={node.id} data-index={vi.index} style={virtualizer.getItemStyle(vi)}>
+                  <div key={node.id} {...virtualizer.getItemProps(vi)}>
                     <TreeNode node={node} indexPath={indexPath} api={api} />
                   </div>
                 )

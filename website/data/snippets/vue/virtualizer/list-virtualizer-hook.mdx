@@ -1,33 +1,47 @@
 ```ts
+import { normalizeProps, type PropTypes } from "@zag-js/vue"
 import {
   ListVirtualizer,
   type ListVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useSyncExternalStore } from "@zag-js/vue"
-import { onUnmounted } from "vue"
+import {
+  onScopeDispose,
+  shallowRef,
+  toValue,
+  triggerRef,
+  useId,
+  watchEffect,
+  type MaybeRefOrGetter,
+} from "vue"
 
-export function useListVirtualizer(options: ListVirtualizerOptions) {
-  const virtualizer = new ListVirtualizer(options)
-  const snapshot = useSyncExternalStore(
-    virtualizer.subscribe,
-    virtualizer.getSnapshot,
-  )
+type Options = Omit<ListVirtualizerOptions, "id" | "normalizeProps">
 
-  onUnmounted(() => virtualizer.destroy())
-
-  const store = new Proxy(virtualizer, {
-    get(target, prop, receiver) {
-      void snapshot.value
-      const value = Reflect.get(target, prop, receiver)
-      return typeof value === "function" ? value.bind(target) : value
-    },
+export function useListVirtualizer(options: MaybeRefOrGetter<Options>) {
+  const instance = new ListVirtualizer<PropTypes>({
+    ...toValue(options),
+    id: useId(),
+    normalizeProps,
   })
 
-  const init = (element: HTMLElement | null) => {
-    if (!element) return
-    virtualizer.init(element)
+  // The same instance, re-triggered on every change so templates re-render
+  const virtualizer = shallowRef(instance)
+  const unsubscribe = instance.subscribe(() => triggerRef(virtualizer))
+
+  // Unchanged options and new callbacks don't re-render
+  watchEffect(() => instance.updateOptions(toValue(options)), { flush: "pre" })
+
+  let current: Element | null = null
+  const ref = (element: Element | object | null) => {
+    if (!(element instanceof HTMLElement) || element === current) return
+    current = element
+    instance.init(element)
   }
 
-  return { virtualizer: store, init }
+  onScopeDispose(() => {
+    unsubscribe()
+    instance.destroy()
+  })
+
+  return { virtualizer, ref }
 }
 ```

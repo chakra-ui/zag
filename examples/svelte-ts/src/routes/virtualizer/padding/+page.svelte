@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const ITEM_COUNT = 1000
 
@@ -12,7 +12,9 @@
   let paddingStart = $state(40)
   let paddingEnd = $state(40)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: ITEM_COUNT,
     itemSize: 40,
     paddingStart,
@@ -57,21 +59,30 @@
   </div>
 
   <div
-    {@attach init}
-    tabindex="0"
-    role="region"
+    {@attach vz.init}
     aria-label="Virtualized list with padding"
-    style="height: 400px; width: 100%; overflow: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 16px; box-sizing: border-box"
-    onscroll={virtualizer.handleScroll}
+    {...mergeProps(vz.virtualizer.getRootProps(), {
+      style: {
+        height: "400px",
+        width: "100%",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        marginTop: "16px",
+        boxSizing: "border-box",
+      },
+    })}
   >
     <div
-      style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative; background: linear-gradient(to bottom, #dbeafe {paddingStart}px, transparent {paddingStart}px, transparent calc(100% - {paddingEnd}px), #dbeafe calc(100% - {paddingEnd}px))"
+      {...mergeProps(vz.virtualizer.getContentProps(), {
+        style: {
+          background: `linear-gradient(to bottom, #dbeafe ${paddingStart}px, transparent ${paddingStart}px, transparent calc(100% - ${paddingEnd}px), #dbeafe calc(100% - ${paddingEnd}px))`,
+        },
+      })}
     >
-      {#each virtualizer.getVirtualItems() as vi (vi.index)}
+      {#each vz.virtualizer.getVirtualItems() as vi (vi.key)}
         <div
-          {...normalizeProps.element({
+          {...mergeProps(vz.virtualizer.getItemProps(vi), {
             style: {
-              ...virtualizer.getItemStyle(vi),
               height: "40px",
               padding: "0 16px",
               borderBottom: "1px solid #cbd5e1",
@@ -91,6 +102,7 @@
   </div>
 
   <p style="margin-top: 12px; font-size: 13px; color: #64748b">
-    Total size: {virtualizer.getTotalSize()}px (padding: {paddingStart} + {paddingEnd} = {paddingStart + paddingEnd}px)
+    Total size: {vz.virtualizer.getTotalSize()}px (padding: {paddingStart} + {paddingEnd} = {paddingStart +
+      paddingEnd}px)
   </p>
 </main>

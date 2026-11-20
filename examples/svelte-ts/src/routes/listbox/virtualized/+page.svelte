@@ -15,46 +15,39 @@
 </script>
 
 <script lang="ts">
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import "@styles/listbox.css"
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: items.length,
     itemSize: 32,
     overscan: 12,
   })
 
-  const id = $props.id()
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     collection,
     id,
     scrollToIndexFn(details) {
-      virtualizer.scrollToIndex(details.index, { align: "auto" })
+      vz.virtualizer.scrollToIndex(details.index, { align: "auto" })
     },
   })
 
   const api = $derived(listbox.connect(service, normalizeProps))
-  const virtualItems = $derived(virtualizer.getVirtualItems())
+  const virtualItems = $derived(vz.virtualizer.getVirtualItems())
 </script>
 
 <main class="listbox">
   <div {...api.getRootProps()}>
     <label {...api.getLabelProps()}>Label</label>
     <div {...api.getContentProps()}>
-      <div {@attach init} {...api.getListProps()} onscroll={virtualizer.handleScroll}>
-        <div style="width: 100%; position: relative" style:height="{virtualizer.getTotalSize()}px">
+      <div {@attach vz.init} {...mergeProps(vz.virtualizer.getRootProps(), api.getListProps())}>
+        <div {...vz.virtualizer.getContentProps()}>
           {#each virtualItems as virtualItem (items[virtualItem.index].value)}
             {@const item = items[virtualItem.index]}
-            <div
-              {...api.getItemProps({ item })}
-              data-index={virtualItem.index}
-              aria-setsize={items.length}
-              aria-posinset={virtualItem.index + 1}
-              {...normalizeProps.element({
-                style: { ...virtualizer.getItemStyle(virtualItem), overflowAnchor: "none" },
-              })}
-            >
+            <div {...mergeProps(vz.virtualizer.getItemProps(virtualItem), api.getItemProps({ item }))}>
               <span {...api.getItemTextProps({ item })}>{item.label}</span>
               <span {...api.getItemIndicatorProps({ item })}>✓</span>
             </div>

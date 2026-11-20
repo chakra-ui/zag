@@ -39,7 +39,7 @@ const onEndReached = async () => {
   loadedCount.value = Math.min(loadedCount.value + PAGE_SIZE, TOTAL_ROWS)
 }
 
-const { virtualizer, init, getRootProps } = useTableVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useTableVirtualizer(() => ({
   count: rows.value.length,
   estimatedItemSize: 37,
   footerSize: hasMore.value ? 40 : 0,
@@ -51,9 +51,7 @@ const { virtualizer, init, getRootProps } = useTableVirtualizer(() => ({
   endReachedThreshold: 20,
 }))
 
-const measureHeaderElement = (el: unknown) => virtualizer.measureHeaderElement(el as HTMLElement | null)
-
-const virtualColumns = computed(() => virtualizer.getVirtualColumns())
+const virtualColumns = computed(() => virtualizer.value.getVirtualColumns())
 const startColumns = computed(() => virtualColumns.value.filter((column) => column.pinned === "start"))
 const middleColumns = computed(() => virtualColumns.value.filter((column) => !column.pinned))
 
@@ -63,8 +61,8 @@ const moveActive = (row: number, column: number) => {
     column: Math.max(1, Math.min(columns.length - 1, column)),
   }
   active.value = next
-  virtualizer.scrollToIndex(next.row)
-  virtualizer.scrollToColumn(next.column)
+  virtualizer.value.scrollToIndex(next.row)
+  virtualizer.value.scrollToColumn(next.column)
 }
 
 const onKeyDown = (event: KeyboardEvent) => {
@@ -97,52 +95,42 @@ const getBackground = (index: number) => (index === active.value.row ? "#eff6ff"
     </p>
 
     <div
-      :ref="(el) => init(el as HTMLElement)"
-      v-bind="getRootProps()"
-      tabindex="0"
+      :ref="rootRef"
+      v-bind="virtualizer.getRootProps()"
       role="region"
       aria-label="Customers"
-      :style="[
-        getRootProps().style,
-        {
-          height: 'min(420px, calc(var(--total-size) + 2px))',
-          width: '100%',
-          overflow: 'auto',
-          border: '1px solid #cbd5e1',
-          borderRadius: '8px',
-          marginTop: '16px',
-        },
-      ]"
-      @scroll="virtualizer.handleScroll"
+      :style="{
+        height: 'min(420px, calc(var(--total-size) + 2px))',
+        width: '100%',
+        border: '1px solid #cbd5e1',
+        borderRadius: '8px',
+        marginTop: '16px',
+      }"
       @keydown="onKeyDown"
     >
       <table
+        v-bind="virtualizer.getTableProps()"
         :aria-rowcount="hasMore ? -1 : rows.length + 1"
         :aria-colcount="columns.length"
-        :style="{ ...virtualizer.getTableStyle(), fontSize: '13px' }"
+        :style="{ fontSize: '13px' }"
       >
         <colgroup>
-          <col v-for="column in startColumns" :key="column.index" :style="virtualizer.getColumnStyle(column)" />
-          <col :style="virtualizer.getColumnSpacerStyle('start')" />
-          <col v-for="column in middleColumns" :key="column.index" :style="virtualizer.getColumnStyle(column)" />
-          <col :style="virtualizer.getColumnSpacerStyle('end')" />
+          <col v-for="column in startColumns" :key="column.index" v-bind="virtualizer.getColumnProps(column)" />
+          <col v-bind="virtualizer.getColumnSpacerProps('start')" />
+          <col v-for="column in middleColumns" :key="column.index" v-bind="virtualizer.getColumnProps(column)" />
+          <col v-bind="virtualizer.getColumnSpacerProps('end')" />
         </colgroup>
-        <thead :ref="measureHeaderElement">
+        <thead v-bind="virtualizer.getHeaderProps()">
           <tr :aria-rowindex="1">
             <template v-for="(group, i) in [startColumns, null, middleColumns, null]" :key="i">
-              <th
-                v-if="group === null"
-                aria-hidden="true"
-                :style="virtualizer.getColumnSpacerStyle(i ? 'end' : 'start')"
-              />
+              <th v-if="group === null" v-bind="virtualizer.getColumnSpacerProps(i ? 'end' : 'start')" />
               <template v-else>
                 <th
                   v-for="column in group"
                   :key="column.index"
-                  :aria-colindex="column.index + 1"
+                  v-bind="virtualizer.getCellProps(column)"
                   :style="{
                     ...cellStyle,
-                    ...virtualizer.getCellStyle(column),
                     position: 'sticky',
                     top: 0,
                     zIndex: column.pinned ? 3 : 2,
@@ -157,39 +145,30 @@ const getBackground = (index: number) => (index === active.value.row ? "#eff6ff"
           </tr>
         </thead>
         <tbody aria-hidden="true">
-          <tr :style="virtualizer.getRowSpacerStyle('start')" />
+          <tr v-bind="virtualizer.getRowSpacerProps('start')" />
         </tbody>
-        <tbody :style="virtualizer.getBodyStyle()">
+        <tbody v-bind="virtualizer.getBodyProps()">
           <tr
             v-for="item in virtualizer.getVirtualItems()"
             :key="rows[item.index]!.id"
-            :ref="(el) => item.measureElement(el as HTMLElement | null)"
-            :data-index="item.index"
+            v-bind="virtualizer.getRowProps(item)"
             :aria-rowindex="item.index + 2"
-            :style="{
-              ...virtualizer.getRowStyle(item),
-              background: getBackground(item.index),
-            }"
+            :style="{ background: getBackground(item.index) }"
           >
             <th
               v-for="column in startColumns"
               :key="column.index"
               scope="row"
-              :aria-colindex="column.index + 1"
-              :style="{
-                ...cellStyle,
-                ...virtualizer.getCellStyle(column),
-                background: getBackground(item.index),
-                textAlign: 'left',
-              }"
+              v-bind="virtualizer.getCellProps(column)"
+              :style="{ ...cellStyle, background: getBackground(item.index), textAlign: 'left' }"
             >
               {{ rows[item.index]!.name }}
             </th>
-            <td aria-hidden="true" :style="virtualizer.getColumnSpacerStyle('start')" />
+            <td v-bind="virtualizer.getColumnSpacerProps('start')" />
             <td
               v-for="column in middleColumns"
               :key="column.index"
-              :aria-colindex="column.index + 1"
+              v-bind="virtualizer.getCellProps(column)"
               :data-active="item.index === active.row && column.index === active.column ? '' : undefined"
               :style="{
                 ...cellStyle,
@@ -199,11 +178,11 @@ const getBackground = (index: number) => (index === active.value.row ? "#eff6ff"
             >
               {{ rows[item.index]!.values[column.index - 1] }}
             </td>
-            <td aria-hidden="true" :style="virtualizer.getColumnSpacerStyle('end')" />
+            <td v-bind="virtualizer.getColumnSpacerProps('end')" />
           </tr>
         </tbody>
         <tbody aria-hidden="true">
-          <tr :style="virtualizer.getRowSpacerStyle('end')" />
+          <tr v-bind="virtualizer.getRowSpacerProps('end')" />
         </tbody>
         <tbody v-if="hasMore">
           <tr style="height: 40px">

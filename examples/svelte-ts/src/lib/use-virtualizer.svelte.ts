@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "@zag-js/svelte"
+import { normalizeProps, type PropTypes } from "@zag-js/svelte"
 import {
   GridVirtualizer,
   ListVirtualizer,
@@ -15,81 +15,48 @@ import { onDestroy, untrack } from "svelte"
 
 interface VirtualizerLike<O> {
   subscribe: (listener: () => void) => () => void
-  getSnapshot: () => number
   destroy: () => void
   init: (element: HTMLElement) => void
   updateOptions: (options: Partial<O>) => void
 }
-
-type MaybeGetter<O> = O | (() => O)
-
-const resolve = <O>(options: MaybeGetter<O>): O => (typeof options === "function" ? (options as () => O)() : options)
 
 interface HookOptions {
   /** Set `false` to render every item */
   enabled?: boolean
 }
 
-const withEnabled = <O extends object>({ enabled = true, ...options }: O & HookOptions): O =>
-  (enabled ? options : { ...options, overscan: Infinity }) as O
+/** Pass `id` from `$props.id()` so server-rendered markup matches */
+type Options<O> = Omit<O, "id" | "normalizeProps"> & HookOptions & { id: string }
 
-interface Measurable {
-  getTotalSize?: () => number
-  getTotalHeight?: () => number
-}
-
-const getRootAttrs = (virtualizer: Measurable, options: { count?: number; rowCount?: number }) => ({
-  empty: (options.count ?? options.rowCount) === 0,
-  totalSize: `${virtualizer.getTotalSize?.() ?? virtualizer.getTotalHeight?.() ?? 0}px`,
-})
-
-// One level deep, so a rebuilt `groups` array isn't a change
-const isEqual = (a: unknown, b: unknown): boolean => {
-  if (Object.is(a, b)) return true
-  if (!a || !b || typeof a !== "object" || typeof b !== "object") return false
-  if (Array.isArray(a)) return Array.isArray(b) && a.length === b.length && a.every((v, i) => isEqual(v, b[i]))
-  const keys = Object.keys(a)
-  return keys.length === Object.keys(b).length && keys.every((k) => Object.is((a as any)[k], (b as any)[k]))
-}
+type MaybeGetter<O> = O | (() => O)
 
 function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
   create: (options: O) => V,
-  options: MaybeGetter<O & HookOptions>,
+  options: MaybeGetter<Options<O>>,
 ) {
-  const read = () => withEnabled(resolve(options))
-  let latest = untrack(read)
-  const inner = create(latest)
-  const snapshot = useSyncExternalStore(inner.subscribe, inner.getSnapshot)
+  const read = () => {
+    const { enabled = true, id: _id, ...rest } = typeof options === "function" ? options() : options
+    return (enabled ? rest : { ...rest, overscan: Infinity }) as unknown as O
+  }
 
-  // Syncs changed options whenever the getter's dependencies change
+  const { id } = untrack(() => (typeof options === "function" ? options() : options))
+  const inner = create({ ...untrack(read), id, normalizeProps })
+
+  let version = $state(0)
+  const unsubscribe = inner.subscribe(() => version++)
+
+  // Unchanged options and new callbacks don't re-render
   $effect.pre(() => {
     const next = read()
-    untrack(() => {
-      const changed: Partial<O> = {}
-      let dirty = false
-      for (const key in next) {
-        if (isEqual(next[key], latest[key])) continue
-        changed[key] = next[key]
-        dirty = true
-      }
-      latest = next
-      if (dirty) inner.updateOptions(changed)
-    })
+    untrack(() => inner.updateOptions(next))
   })
 
-  onDestroy(() => inner.destroy())
+  onDestroy(() => {
+    unsubscribe()
+    inner.destroy()
+  })
 
-  // Reading any property on the proxy registers a dep on `snapshot`,
-  // so template bindings like virtualizer.getVirtualItems() re-track on every notify.
-  const virtualizer = new Proxy(inner, {
-    get(target, prop, receiver) {
-      snapshot()
-      const value = Reflect.get(target, prop, receiver)
-      return typeof value === "function" ? value.bind(target) : value
-    },
-  }) as V
-
-  // Works as an attachment (`{@attach init}`) or from an effect; only (re)initialises for a new element
+  // An attachment (`{@attach vz.init}`); only (re)initialises for a new element
   let current: HTMLElement | null = null
   const init = (element: HTMLElement | null | undefined) => {
     if (!element || element === current) return
@@ -97,30 +64,27 @@ function useVirtualizer<O extends object, V extends VirtualizerLike<O>>(
     inner.init(element)
   }
 
-  const getRootProps = () => {
-    const { empty, totalSize } = getRootAttrs(virtualizer as Measurable, read())
-    return { "data-empty": empty ? "" : undefined, style: `--total-size: ${totalSize}` }
+  return {
+    /** Read in templates to re-render when the virtualizer updates */
+    get virtualizer() {
+      void version
+      return inner
+    },
+    init,
   }
-
-  return { virtualizer, init, getRootProps }
 }
 
-export function useListVirtualizer(options: MaybeGetter<ListVirtualizerOptions & HookOptions>) {
-  return useVirtualizer((o) => new ListVirtualizer(o), options)
-}
+export const useListVirtualizer = (options: MaybeGetter<Options<ListVirtualizerOptions>>) =>
+  useVirtualizer((o) => new ListVirtualizer<PropTypes>(o), options)
 
-export function useGridVirtualizer(options: MaybeGetter<GridVirtualizerOptions & HookOptions>) {
-  return useVirtualizer((o) => new GridVirtualizer(o), options)
-}
+export const useGridVirtualizer = (options: MaybeGetter<Options<GridVirtualizerOptions>>) =>
+  useVirtualizer((o) => new GridVirtualizer<PropTypes>(o), options)
 
-export function useWindowVirtualizer(options: MaybeGetter<WindowVirtualizerOptions & HookOptions>) {
-  return useVirtualizer((o) => new WindowVirtualizer(o), options)
-}
+export const useWindowVirtualizer = (options: MaybeGetter<Options<WindowVirtualizerOptions>>) =>
+  useVirtualizer((o) => new WindowVirtualizer<PropTypes>(o), options)
 
-export function useWaterfallVirtualizer(options: MaybeGetter<WaterfallVirtualizerOptions & HookOptions>) {
-  return useVirtualizer((o) => new WaterfallVirtualizer(o), options)
-}
+export const useWaterfallVirtualizer = (options: MaybeGetter<Options<WaterfallVirtualizerOptions>>) =>
+  useVirtualizer((o) => new WaterfallVirtualizer<PropTypes>(o), options)
 
-export function useTableVirtualizer(options: MaybeGetter<TableVirtualizerOptions & HookOptions>) {
-  return useVirtualizer((o) => new TableVirtualizer(o), options)
-}
+export const useTableVirtualizer = (options: MaybeGetter<Options<TableVirtualizerOptions>>) =>
+  useVirtualizer((o) => new TableVirtualizer<PropTypes>(o), options)

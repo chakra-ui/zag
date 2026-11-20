@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { createSignal, For } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
@@ -23,7 +24,7 @@ export default function Page() {
   const updatePadding = (start: number, end: number) => {
     setPaddingStart(start)
     setPaddingEnd(end)
-    virtualizer.updateOptions({ paddingStart: start, paddingEnd: end })
+    virtualizer().updateOptions({ paddingStart: start, paddingEnd: end })
   }
 
   return (
@@ -61,41 +62,45 @@ export default function Page() {
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Virtualized list with padding"
-        style={{
-          height: "400px",
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #e2e8f0",
-          "border-radius": "8px",
-          "margin-top": "16px",
-          "box-sizing": "border-box",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            height: "400px",
+            width: "100%",
+            border: "1px solid #e2e8f0",
+            "border-radius": "8px",
+            "margin-top": "16px",
+            "box-sizing": "border-box",
+          },
+        })}
       >
         <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-            background: `linear-gradient(to bottom, #dbeafe ${paddingStart()}px, transparent ${paddingStart()}px, transparent calc(100% - ${paddingEnd()}px), #dbeafe calc(100% - ${paddingEnd()}px))`,
-          }}
+          {...mergeProps(
+            () => virtualizer().getContentProps(),
+            () => ({
+              style: {
+                background: `linear-gradient(to bottom, #dbeafe ${paddingStart()}px, transparent ${paddingStart()}px, transparent calc(100% - ${paddingEnd()}px), #dbeafe calc(100% - ${paddingEnd()}px))`,
+              },
+            }),
+          )}
         >
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+          <For keyed={false} each={virtualizer().getVirtualItems()}>
             {(vi) => (
               <div
-                style={{
-                  ...virtualizer.getItemStyle(vi()),
-                  height: "40px",
-                  padding: "0 16px",
-                  "border-bottom": "1px solid #cbd5e1",
-                  "box-sizing": "border-box",
-                  "background-color": vi().index % 2 === 0 ? "#f8fafc" : "#e2e8f0",
-                  display: "flex",
-                  "align-items": "center",
-                  "justify-content": "space-between",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(vi()),
+                  () => ({
+                    style: {
+                      padding: "0 16px",
+                      "border-bottom": "1px solid #cbd5e1",
+                      "box-sizing": "border-box",
+                      "background-color": vi().index % 2 === 0 ? "#f8fafc" : "#e2e8f0",
+                      display: "flex",
+                      "align-items": "center",
+                      "justify-content": "space-between",
+                    },
+                  }),
+                )}
               >
                 <span>{items[vi().index].label}</span>
                 <span style={{ color: "#94a3b8", "font-size": "12px" }}>y: {vi().start}px</span>
@@ -106,7 +111,7 @@ export default function Page() {
       </div>
 
       <p style={{ "margin-top": "12px", "font-size": "13px", color: "#64748b" }}>
-        Total size: {virtualizer.getTotalSize()}px (padding: {paddingStart()} + {paddingEnd()} ={" "}
+        Total size: {virtualizer().getTotalSize()}px (padding: {paddingStart()} + {paddingEnd()} ={" "}
         {paddingStart() + paddingEnd()}
         px)
       </p>

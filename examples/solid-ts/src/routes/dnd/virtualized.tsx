@@ -19,12 +19,13 @@ export default function Page() {
     count: initialItems.length,
     itemSize: 40,
     overscan: 10,
+    aria: false,
   })
 
   // Sync count before render
   createEffect(
     () => items().length,
-    (count) => virtualizer.updateOptions({ count }),
+    (count) => virtualizer().updateOptions({ count }),
   )
 
   const service = useMachine(dnd.machine, {
@@ -43,15 +44,15 @@ export default function Page() {
       <main class={styles.main}>
         <div {...api().getRootProps()} class={styles.root}>
           <h3>Virtualized (500 items)</h3>
-          <div ref={ref} onScroll={virtualizer.handleScroll} class={styles.virtualViewport}>
-            <div class={styles.virtualSizer} style={{ height: `${virtualizer.getTotalSize()}px` }}>
-              <For keyed={false} each={virtualizer.getVirtualItems()}>
+          <div ref={ref} {...virtualizer().getRootProps()} class={styles.virtualViewport}>
+            <div {...virtualizer().getContentProps()} class={styles.virtualSizer}>
+              <For keyed={false} each={virtualizer().getVirtualItems()}>
                 {(vi) => {
                   const item = () => items()[vi().index]
                   return (
                     <Show when={item()}>
                       {(item) => (
-                        <div style={virtualizer.getItemStyle(vi())}>
+                        <div {...virtualizer().getItemProps(vi())}>
                           <div class={styles.virtualRowInner}>
                             <div
                               {...api().getDropIndicatorProps({ value: item().id, placement: "before" })}

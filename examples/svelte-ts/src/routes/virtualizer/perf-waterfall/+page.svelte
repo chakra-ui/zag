@@ -2,7 +2,7 @@
   import PerfMetrics from "#lib/components/virtualizer-perf-metrics.svelte"
   import type { ScrollBenchmarkMetrics } from "#lib/scroll-benchmark.ts"
   import { useWaterfallVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const DEFAULT_ITEM_COUNT = 5_000
   const OVERSCAN = 6
@@ -113,7 +113,9 @@
 
   let scrollEl: HTMLElement | null = null
 
-  const { virtualizer, init } = useWaterfallVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useWaterfallVirtualizer(() => ({
+    id,
     count: items.length,
     columnCount,
     columnGap: COLUMN_GAP,
@@ -124,19 +126,19 @@
 
   const setScrollRef = (el: HTMLElement) => {
     scrollEl = el
-    init(el)
+    vz.init(el)
   }
 
-  const layout = $derived(virtualizer.getWaterfallState())
+  const layout = $derived(vz.virtualizer.getWaterfallState())
 
   const getRuntimeStats = (): RuntimeStats => {
-    const virtualItems = virtualizer.getVirtualItems()
+    const virtualItems = vz.virtualizer.getVirtualItems()
     const visibleCount = virtualItems.filter((item) => item.isVisible).length
     return {
       renderedCount: virtualItems.length,
       visibleCount,
       overscanCount: virtualItems.length - visibleCount,
-      totalSize: virtualizer.getTotalSize(),
+      totalSize: vz.virtualizer.getTotalSize(),
     }
   }
 
@@ -223,20 +225,16 @@
       <h2 style="color: #3b82f6">@zag-js/virtualizer — WaterfallVirtualizer</h2>
       <div
         {@attach setScrollRef}
-        tabindex="0"
-        role="region"
         aria-label="Zag waterfall performance list"
-        style="height: {VIEWPORT_HEIGHT}px; overflow: auto; border: 2px solid #3b82f6; border-radius: 8px"
-        onscroll={virtualizer.handleScroll}
+        {...mergeProps(vz.virtualizer.getRootProps(), {
+          style: { height: `${VIEWPORT_HEIGHT}px`, border: "2px solid #3b82f6", borderRadius: "8px" },
+        })}
       >
-        <div style="height: {virtualizer.getTotalSize()}px; width: 100%; position: relative">
-          {#each virtualizer.getVirtualItems() as vi (items[vi.index]?.id ?? vi.index)}
+        <div {...vz.virtualizer.getContentProps()}>
+          {#each vz.virtualizer.getVirtualItems() as vi (items[vi.index]?.id ?? vi.index)}
             {@const item = items[vi.index]}
             {#if item}
-              <div
-                {@attach (el) => vi.measureElement(el)}
-                {...normalizeProps.element({ style: virtualizer.getItemStyle(vi) })}
-              >
+              <div {...vz.virtualizer.getItemProps(vi)}>
                 <article
                   style="box-sizing: border-box; height: {item.height}px; width: {layout.columnWidth}px; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: linear-gradient(180deg, rgba(241,245,249,0.7) 0%, rgba(255,255,255,1) 45%, rgba(248,250,252,1) 100%)"
                 >
@@ -259,7 +257,7 @@
         </div>
       </div>
       <p style="font-size: 13px; color: #64748b; margin-top: 8px">
-        Rendered: {virtualizer.getVirtualItems().length} items • Columns: {layout.columnCount} • Column width:
+        Rendered: {vz.virtualizer.getVirtualItems().length} items • Columns: {layout.columnCount} • Column width:
         {Math.round(layout.columnWidth)}px
       </p>
     </section>

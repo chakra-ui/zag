@@ -2,7 +2,7 @@
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
-import { normalizeProps, useMachine } from "@zag-js/vue"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { XIcon } from "lucide-vue-next"
 import { useListVirtualizer } from "~/composables/useVirtualizer"
 import "@styles/combobox.css"
@@ -16,7 +16,7 @@ const { contains } = createFilter({ sensitivity: "base" })
 
 const options = ref(comboboxData)
 
-const { virtualizer, init } = useListVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   count: options.value.length,
   itemSize: 32,
   observeScrollElementSize: true,
@@ -37,7 +37,7 @@ const service = useMachine(
     id,
     collection: collection.value,
     scrollToIndexFn(details: { index: number; immediate?: boolean }) {
-      virtualizer.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
+      virtualizer.value.scrollToIndex(details.index, { align: details.immediate ? "center" : "auto" })
     },
     onOpenChange() {
       options.value = comboboxData
@@ -67,28 +67,14 @@ const api = computed(() => combobox.connect(service, normalizeProps))
 
     <div v-bind="api.getPositionerProps()">
       <div data-testid="combobox-content" v-bind="api.getContentProps()">
-        <div v-bind="api.getListProps()" :ref="(el) => init(el as HTMLElement)" @scroll="virtualizer.handleScroll">
-          <div
-            :style="{
-              height: `${virtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative',
-            }"
-          >
+        <div v-bind="mergeProps(virtualizer.getRootProps(), api.getListProps())" :ref="rootRef">
+          <div v-bind="virtualizer.getContentProps()">
             <template v-for="vi in virtualizer.getVirtualItems()" :key="options[vi.index]?.code ?? vi.index">
               <!-- The count syncs before paint; skip rows from the previous one -->
               <div
                 v-if="options[vi.index]"
                 :data-testid="options[vi.index]!.code"
-                :aria-posinset="vi.index + 1"
-                :aria-setsize="options.length"
-                v-bind="api.getItemProps({ item: options[vi.index]! })"
-                :style="{
-                  ...virtualizer.getItemStyle(vi),
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }"
+                v-bind="mergeProps(virtualizer.getItemProps(vi), api.getItemProps({ item: options[vi.index]! }))"
               >
                 <span>{{ options[vi.index]!.label }}</span>
                 <span v-bind="api.getItemIndicatorProps({ item: options[vi.index]! })">✅</span>

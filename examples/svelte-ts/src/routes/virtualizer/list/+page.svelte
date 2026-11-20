@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
-  import { normalizeProps } from "@zag-js/svelte"
+  import { mergeProps } from "@zag-js/svelte"
 
   const generateItems = (count: number) =>
     Array.from({ length: count }, (_, i) => ({
@@ -13,7 +13,9 @@
 
   let isSmooth = $state(true)
 
-  const { virtualizer, init } = useListVirtualizer({
+  const id = $props.id()
+  const vz = useListVirtualizer({
+    id,
     count: items.length,
     estimatedItemSize: 142,
     overscan: 5,
@@ -22,8 +24,8 @@
     paddingEnd: 0,
   })
 
-  const virtualItems = $derived(virtualizer.getVirtualItems())
-  const totalSize = $derived(virtualizer.getTotalSize())
+  const virtualItems = $derived(vz.virtualizer.getVirtualItems())
+  const totalSize = $derived(vz.virtualizer.getTotalSize())
 </script>
 
 <main class="list-virtualizer">
@@ -37,42 +39,32 @@
     </label>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
-      <button type="button" onclick={() => virtualizer.scrollToIndex(0, { smooth: isSmooth })}>Scroll to Top</button>
+      <button type="button" onclick={() => vz.virtualizer.scrollToIndex(0, { smooth: isSmooth })}>Scroll to Top</button>
       <button
         type="button"
-        onclick={() => virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })}
+        onclick={() =>
+          vz.virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })}
       >
         Scroll to Middle
       </button>
-      <button type="button" onclick={() => virtualizer.scrollToIndex(items.length - 1, { smooth: isSmooth })}>
+      <button type="button" onclick={() => vz.virtualizer.scrollToIndex(items.length - 1, { smooth: isSmooth })}>
         Scroll to Bottom
       </button>
     </div>
 
     <div
-      {@attach init}
-      onscroll={virtualizer.handleScroll}
-      {...virtualizer.getContainerAriaAttrs()}
-      tabindex="0"
+      {@attach vz.init}
       aria-label="Virtualized list"
-      {...normalizeProps.element({
-        style: {
-          ...virtualizer.getContainerStyle(),
-          height: "400px",
-          border: "1px solid #ccc",
-          marginTop: "16px",
-        },
+      {...mergeProps(vz.virtualizer.getRootProps(), {
+        style: { height: "400px", border: "1px solid #ccc", marginTop: "16px" },
       })}
     >
-      <div style="height: {totalSize}px; width: 100%; position: relative">
-        {#each virtualItems as virtualItem (virtualItem.index)}
+      <div {...vz.virtualizer.getContentProps()}>
+        {#each virtualItems as virtualItem (virtualItem.key)}
           {@const item = items[virtualItem.index]}
           <div
-            data-index={virtualItem.index}
-            {...virtualizer.getItemAriaAttrs(virtualItem.index)}
-            {...normalizeProps.element({
+            {...mergeProps(vz.virtualizer.getItemProps(virtualItem), {
               style: {
-                ...virtualizer.getItemStyle(virtualItem),
                 padding: "16px",
                 backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
                 borderBottom: "1px solid #e1e5e9",

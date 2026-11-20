@@ -14,13 +14,15 @@
 
   let items = $state(initialItems)
 
-  const { virtualizer, init } = useListVirtualizer(() => ({
+  const id = $props.id()
+  const vz = useListVirtualizer(() => ({
+    id,
     count: items.length,
     itemSize: 40,
     overscan: 10,
+    aria: false,
   }))
 
-  const id = $props.id()
   const service = useMachine(dnd.machine, {
     id,
     orientation: "vertical",
@@ -35,12 +37,12 @@
 <main class={styles.main}>
   <div {...api.getRootProps()} class={styles.root}>
     <h3>Virtualized (500 items)</h3>
-    <div {@attach init} onscroll={virtualizer.handleScroll} class={styles.virtualViewport}>
-      <div class={styles.virtualSizer} style:height="{virtualizer.getTotalSize()}px">
-        {#each virtualizer.getVirtualItems() as vi (items[vi.index]?.id ?? vi.index)}
+    <div {@attach vz.init} {...vz.virtualizer.getRootProps()} class={styles.virtualViewport}>
+      <div {...vz.virtualizer.getContentProps()} class={styles.virtualSizer}>
+        {#each vz.virtualizer.getVirtualItems() as vi (items[vi.index]?.id ?? vi.index)}
           {@const item = items[vi.index]}
           {#if item}
-            <div {...normalizeProps.element({ style: virtualizer.getItemStyle(vi) })}>
+            <div {...vz.virtualizer.getItemProps(vi)}>
               <div class={styles.virtualRowInner}>
                 <div
                   {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}

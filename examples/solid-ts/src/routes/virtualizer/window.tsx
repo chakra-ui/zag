@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { For } from "solid-js"
 import { useWindowVirtualizer } from "../../hooks/use-virtualizer"
 
@@ -22,28 +23,31 @@ export default function Page() {
 
       <div
         ref={ref}
-        {...virtualizer.getContainerAriaAttrs()}
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          border: "1px solid #d1d5db",
-          "border-radius": "8px",
-          "margin-top": "16px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: {
+            width: "100%",
+            border: "1px solid #d1d5db",
+            "border-radius": "8px",
+            "margin-top": "16px",
+          },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For each={virtualizer().getVirtualItems()}>
             {(virtualItem) => (
               <div
-                data-index={virtualItem().index}
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem()),
-                  padding: "12px 16px",
-                  "border-bottom": "1px solid #e5e7eb",
-                  background: virtualItem().index % 2 === 0 ? "#f8fafc" : "#fff",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(virtualItem),
+                  () => ({
+                    style: {
+                      padding: "12px 16px",
+                      "border-bottom": "1px solid #e5e7eb",
+                      background: virtualItem.index % 2 === 0 ? "#f8fafc" : "#fff",
+                    },
+                  }),
+                )}
               >
-                {items[virtualItem().index]?.name}
+                {items[virtualItem.index]?.name}
               </div>
             )}
           </For>

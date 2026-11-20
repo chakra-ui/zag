@@ -1,3 +1,4 @@
+import { mergeProps } from "@zag-js/solid"
 import { createSignal, For, Show } from "solid-js"
 import { useListVirtualizer } from "~/hooks/use-virtualizer"
 
@@ -41,26 +42,25 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
           scrollEl = el
           ref(el)
         }}
-        onScroll={virtualizer.handleScroll}
-        tabindex={0}
         aria-label="Zag virtualizer performance list"
-        style={{
-          height: "400px",
-          overflow: "auto",
-          border: "2px solid #3b82f6",
-          "border-radius": "8px",
-        }}
+        {...mergeProps(() => virtualizer().getRootProps(), {
+          style: { height: "400px", border: "2px solid #3b82f6", "border-radius": "8px" },
+        })}
       >
-        <div style={{ height: `${virtualizer.getTotalSize()}px`, width: "100%", position: "relative" }}>
-          <For keyed={false} each={virtualizer.getVirtualItems()}>
+        <div {...virtualizer().getContentProps()}>
+          <For keyed={false} each={virtualizer().getVirtualItems()}>
             {(vi) => (
               <div
-                style={{
-                  ...virtualizer.getItemStyle(vi()),
-                  padding: "8px 12px",
-                  "border-bottom": "1px solid #e5e7eb",
-                  "background-color": vi().index % 2 === 0 ? "#f8fafc" : "#fff",
-                }}
+                {...mergeProps(
+                  () => virtualizer().getItemProps(vi()),
+                  () => ({
+                    style: {
+                      padding: "8px 12px",
+                      "border-bottom": "1px solid #e5e7eb",
+                      "background-color": vi().index % 2 === 0 ? "#f8fafc" : "#fff",
+                    },
+                  }),
+                )}
               >
                 {items[vi().index].label}
               </div>
@@ -69,7 +69,7 @@ function ZagVirtualizer(props: { onMetrics: (m: Metrics) => void }) {
         </div>
       </div>
       <p style={{ "font-size": "13px", color: "#64748b", "margin-top": "8px" }}>
-        Rendered: {virtualizer.getVirtualItems().length} items
+        Rendered: {virtualizer().getVirtualItems().length} items
       </p>
     </div>
   )

@@ -13,9 +13,9 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 
 const metrics = ref<ScrollBenchmarkMetrics | null>(null)
 
-const { virtualizer, init } = useWindowVirtualizer(() => ({
+const { virtualizer, ref: rootRef } = useWindowVirtualizer(() => ({
   count: ITEM_COUNT,
-  estimatedItemSize: ITEM_HEIGHT,
+  itemSize: ITEM_HEIGHT,
   overscan: 5,
   initialRect:
     typeof window !== "undefined"
@@ -52,20 +52,20 @@ const run = (scrollCount: number) => runWindowScrollBenchmark(scrollCount, (m) =
         <h3 style="color: #3b82f6">@zag-js/virtualizer (Window)</h3>
         <VirtualizerBenchmarkButtons @run="run" />
         <div
-          :ref="(el) => init(el as HTMLElement)"
+          :ref="rootRef"
+          v-bind="virtualizer.getRootProps()"
           :style="{
-            ...virtualizer.getContainerStyle(),
             width: '100%',
             border: '2px solid #3b82f6',
             borderRadius: '8px',
           }"
         >
-          <div :style="{ height: `${virtualizer.getTotalSize()}px`, width: '100%', position: 'relative' }">
+          <div v-bind="virtualizer.getContentProps()">
             <div
               v-for="vi in virtualizer.getVirtualItems()"
               :key="vi.index"
+              v-bind="virtualizer.getItemProps(vi)"
               :style="{
-                ...virtualizer.getItemStyle(vi),
                 padding: '8px 12px',
                 borderBottom: '1px solid #e5e7eb',
                 backgroundColor: vi.index % 2 === 0 ? '#f8fafc' : '#fff',

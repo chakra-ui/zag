@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks"
 import { useGridVirtualizer } from "../../hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/preact"
 
 const estimateRowSize = () => CELL_HEIGHT
 const estimateColumnSize = () => CELL_WIDTH
@@ -89,46 +90,39 @@ export default function Page() {
 
         <div
           ref={setScrollElementRef}
-          onScroll={virtualizer.handleScroll}
-          {...virtualizer.getContainerAriaAttrs()}
-          tabIndex={0}
           aria-label="Virtualized grid"
-          style={{
-            height: "500px",
-            width: "100%",
-            maxWidth: "900px",
-            ...virtualizer.getContainerStyle(),
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            marginTop: "16px",
-          }}
+          {...mergeProps(virtualizer.getRootProps(), {
+            style: {
+              height: "500px",
+              width: "100%",
+              maxWidth: "900px",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              marginTop: "16px",
+            },
+          })}
         >
-          <div style={{ width: totalWidth, height: totalHeight, position: "relative" }}>
+          <div {...virtualizer.getContentProps()}>
             {virtualRows.map((virtualRow) => (
-              <div
-                key={virtualRow.row}
-                ref={virtualRow.measureRow}
-                {...virtualizer.getRowAriaAttrs(virtualRow.row)}
-                style={virtualizer.getRowStyle(virtualRow)}
-              >
+              <div key={virtualRow.row} {...virtualizer.getRowProps(virtualRow)}>
                 {virtualRow.columns.map((col) => {
                   const data = generateCellData(virtualRow.row, col.column)
                   return (
                     <div
                       key={col.column}
-                      {...virtualizer.getCellAriaAttrs(virtualRow.row, col.column)}
-                      style={{
-                        ...virtualizer.getCellStyleInRow(col),
-                        backgroundColor: data.color,
-                        border: "1px solid rgba(0,0,0,0.1)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        fontWeight: virtualRow.row === 0 || col.column === 0 ? "bold" : "normal",
-                        color: virtualRow.row === 0 || col.column === 0 ? "#333" : "#666",
-                        boxSizing: "border-box",
-                      }}
+                      {...mergeProps(virtualizer.getCellProps(virtualRow, col), {
+                        style: {
+                          backgroundColor: data.color,
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "12px",
+                          fontWeight: virtualRow.row === 0 || col.column === 0 ? "bold" : "normal",
+                          color: virtualRow.row === 0 || col.column === 0 ? "#333" : "#666",
+                          boxSizing: "border-box",
+                        },
+                      })}
                     >
                       {data.value}
                     </div>
