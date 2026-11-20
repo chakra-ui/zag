@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, raf, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./checkbox.dom"
 import type { CheckboxSchema, CheckedState } from "./checkbox.types"
@@ -33,6 +33,9 @@ export const machine = createMachine<CheckboxSchema>({
       active: bindable(() => ({ defaultValue: false })),
       focused: bindable(() => ({ defaultValue: false })),
       hovered: bindable(() => ({ defaultValue: false })),
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
     }
   },
 
@@ -47,7 +50,7 @@ export const machine = createMachine<CheckboxSchema>({
     })
   },
 
-  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible", "trackRenderedElements"],
 
   on: {
     "CHECKED.TOGGLE": [
@@ -114,6 +117,25 @@ export const machine = createMachine<CheckboxSchema>({
           onFormReset() {
             context.set("checked", context.initial("checked"))
           },
+        })
+      },
+
+      trackRenderedElements({ context, scope }) {
+        return raf(() => {
+          const syncRenderedElements = () => {
+            context.set("rendered", { label: !!dom.getLabelEl(scope) })
+          }
+
+          syncRenderedElements()
+
+          const rootEl = dom.getRootEl(scope)
+          const win = scope.getWin()
+          if (!rootEl || typeof win.MutationObserver === "undefined") return
+
+          const observer = new win.MutationObserver(syncRenderedElements)
+          observer.observe(rootEl, { childList: true, subtree: true })
+
+          return () => observer.disconnect()
         })
       },
     },

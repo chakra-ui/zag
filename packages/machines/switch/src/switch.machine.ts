@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, raf, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./switch.dom"
 import type { SwitchSchema } from "./switch.types"
@@ -44,6 +44,9 @@ export const machine = createMachine<SwitchSchema>({
       hovered: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
     }
   },
 
@@ -60,7 +63,7 @@ export const machine = createMachine<SwitchSchema>({
     })
   },
 
-  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible", "trackRenderedElements"],
 
   on: {
     "CHECKED.TOGGLE": [
@@ -119,6 +122,24 @@ export const machine = createMachine<SwitchSchema>({
             const checked = context.initial("checked")
             send({ type: "CHECKED.SET", checked: !!checked, src: "form-reset" })
           },
+        })
+      },
+      trackRenderedElements({ context, scope }) {
+        return raf(() => {
+          const syncRenderedElements = () => {
+            context.set("rendered", { label: !!dom.getLabelEl(scope) })
+          }
+
+          syncRenderedElements()
+
+          const rootEl = dom.getRootEl(scope)
+          const win = scope.getWin()
+          if (!rootEl || typeof win.MutationObserver === "undefined") return
+
+          const observer = new win.MutationObserver(syncRenderedElements)
+          observer.observe(rootEl, { childList: true, subtree: true })
+
+          return () => observer.disconnect()
         })
       },
     },

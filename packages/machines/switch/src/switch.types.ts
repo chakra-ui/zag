@@ -109,6 +109,10 @@ interface PrivateContext {
    * The checked state of the switch
    */
   checked: boolean
+  /**
+   * Whether the label part is rendered
+   */
+  rendered: { label: boolean }
 }
 
 export interface SwitchSchema {
