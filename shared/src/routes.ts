@@ -241,7 +241,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "signature-pad",
     label: "Signature Pad",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "sign-document", title: "Sign Document" },
+      { slug: "undo-redo", title: "Undo and Redo" },
+    ],
   },
   {
     slug: "floating-panel",

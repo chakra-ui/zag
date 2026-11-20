@@ -52,3 +52,47 @@
   object-fit: cover;
   max-width: 100%;
 }
+
+.signature-pad-sign-document,
+.signature-pad-undo-redo {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+
+  form,
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  form {
+    gap: 16px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .error {
+    margin: 0;
+    color: var(--z-danger);
+  }
+
+  pre {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg-muted);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
