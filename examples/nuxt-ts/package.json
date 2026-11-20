@@ -6,7 +6,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt prepare && vue-tsc --noEmit -p .nuxt/tsconfig.app.json"
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",
@@ -113,6 +114,8 @@
     "@nuxt/devtools": "^3.2.4",
     "@types/form-serialize": "0.7.4",
     "@types/node": "25.9.9",
-    "nuxt": "4.4.6"
+    "nuxt": "4.4.6",
+    "typescript": "6.0.3",
+    "vue-tsc": "^3.3.14"
   }
 }

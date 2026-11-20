@@ -7,7 +7,7 @@ import "@styles/avatar.css"
 const images = avatarData.full
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
 
-const src = ref(images[0])
+const src = ref<string | undefined>(images[0])
 const showImage = ref(true)
 const setSrc = (value: string | undefined) => {
   src.value = value

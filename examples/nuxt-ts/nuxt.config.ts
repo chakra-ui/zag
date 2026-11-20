@@ -10,6 +10,12 @@ export default defineNuxtConfig({
   alias: {
     "@styles": fileURLToPath(new URL("../styles", import.meta.url)),
   },
+  // Match the repo's compiler options, so `typecheck` reports the same errors as the packages' own builds
+  typescript: {
+    tsConfig: {
+      compilerOptions: { noUncheckedIndexedAccess: false, noImplicitOverride: false },
+    },
+  },
   vite: {
     optimizeDeps: {
       include: ["@internationalized/date", "@zag-js/stringify-state > json-format-highlight"],
