@@ -249,10 +249,6 @@ export class WindowVirtualizerModel extends VirtualizerModel {
     await expect.poll(() => this.documentScrollTop()).toBeGreaterThan(value)
   }
 
-  async seeDocumentScrollTopLessThan(value: number) {
-    await expect.poll(() => this.documentScrollTop(), { timeout: 5000 }).toBeLessThan(value)
-  }
-
   clickButton(name: string) {
     return this.page.getByRole("button", { name }).click()
   }

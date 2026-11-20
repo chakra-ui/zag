@@ -254,11 +254,13 @@ test.describe("virtualizer / window", () => {
     await I.seeNoFlushSyncWarning()
     await I.checkAccessibility("main")
 
-    await I.scrollDocumentTo(400)
-    await I.seeDocumentScrollTopGreaterThan(0)
+    await I.scrollDocumentTo(2000)
+    await I.seeDocumentScrollTopGreaterThan(1000)
+    await I.dontSeeRow(0)
 
+    // Scrolls the list's first row back into view, not the document to 0
     await I.clickButton("Scroll to top")
-    await I.seeDocumentScrollTopLessThan(10)
+    await I.seeRowInViewport(0)
   })
 })
 

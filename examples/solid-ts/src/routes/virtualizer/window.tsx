@@ -17,9 +17,24 @@ export default function Page() {
   })
 
   return (
-    <main style={{ padding: "20px", width: "100%", "max-width": "960px" }}>
+    <main class="window-list-virtualizer" style={{ padding: "20px", width: "100%", "max-width": "960px" }}>
       <h1>Window Virtualizer</h1>
       <p style={{ color: "#64748b" }}>Uses the page scroll container instead of an explicit scrolling element.</p>
+
+      <div style={{ display: "flex", gap: "8px", "flex-wrap": "wrap", "margin-top": "16px" }}>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(0, { smooth: true })}>
+          Scroll to top
+        </button>
+        <button
+          type="button"
+          onClick={() => virtualizer().scrollToIndex(Math.floor(ITEM_COUNT / 2), { align: "center", smooth: true })}
+        >
+          Scroll to middle
+        </button>
+        <button type="button" onClick={() => virtualizer().scrollToIndex(ITEM_COUNT - 1, { smooth: true })}>
+          Scroll to bottom
+        </button>
+      </div>
 
       <div
         ref={ref}
