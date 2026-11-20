@@ -1,7 +1,7 @@
 import { tocControls, tocData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toc from "@zag-js/toc"
-import { createMemo, createSignal, createUniqueId, For, onCleanup, onSettled, Show } from "solid-js"
+import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -15,7 +15,7 @@ export default function Page() {
   const [mounted, setMounted] = createSignal(false)
   onSettled(() => {
     const timer = setTimeout(() => setMounted(true), 300)
-    onCleanup(() => clearTimeout(timer))
+    return () => clearTimeout(timer)
   })
 
   const service = useMachine(
