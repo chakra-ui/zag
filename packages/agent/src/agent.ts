@@ -58,6 +58,8 @@ export interface AgentAction extends AgentStep {
   label?: string | undefined
   /** What `data-agent-confirm` says the step does, when a person must approve it. */
   confirm?: string | undefined
+  /** The element the step acts on, like the button it presses, so an app can point at it before it runs. */
+  el?: Element | undefined
 }
 
 /** Decides a step: true runs it, false refuses it. A promise lets the app ask a person first. */
@@ -352,12 +354,13 @@ export function createAgent(options: CreateAgentOptions) {
   }
 
   const confirmOf = (el: Element) => el.closest("[data-agent-confirm]")?.getAttribute("data-agent-confirm") ?? undefined
-  const actionOf = (step: AgentStep, live: Live, confirm?: string): AgentAction => ({
+  const actionOf = (step: AgentStep, live: Live, confirm?: string, el: Element = live.el): AgentAction => ({
     ...step,
     args: step.args ?? [],
     component: live.kind,
     label: live.label,
     ...(confirm ? { confirm } : {}),
+    el,
   })
 
   // A press on an element marked `data-agent-confirm` runs only when a person agrees: through the bridge's own
@@ -365,7 +368,7 @@ export function createAgent(options: CreateAgentOptions) {
   async function confirmPress(target: Element, step: AgentStep, live: Live, extra: ActOptions) {
     const confirm = confirmOf(target)
     if (!confirm) return
-    const action = actionOf(step, live, confirm)
+    const action = actionOf(step, live, confirm, target)
     if (extra.allow && confirm !== confirmOf(live.el) && !(await extra.allow(action))) {
       throw new Error(`Not allowed: ${confirm}`)
     }

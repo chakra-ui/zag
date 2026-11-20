@@ -46,7 +46,7 @@ export default async function ({ open, check }) {
         document.modelContext = { registerTool: (tool) => void (tools[tool.name] = tool) }
         const unregister = window.__registerTools(window.__agent, {
           allow: (step) => {
-            asked.push([step.action, step.label, step.confirm ?? null])
+            asked.push([step.action, step.label, step.confirm ?? null, step.el?.textContent ?? null])
             return !step.confirm || approve
           },
         })
@@ -74,8 +74,8 @@ export default async function ({ open, check }) {
       assert.match(outcome.refused.error.message, /^Not allowed/)
       assert.equal(outcome.approved.ok, true, JSON.stringify(outcome.approved.error))
       assert.deepEqual(outcome.asked, [
-        ["press", "Delete project", "Deletes the project and all its files"],
-        ["press", "Delete project", "Deletes the project and all its files"],
+        ["press", "Delete project", "Deletes the project and all its files", "Delete project"],
+        ["press", "Delete project", "Deletes the project and all its files", "Delete project"],
       ])
       assert.equal(outcome.read, true)
       assert.equal(outcome.deleted, 1)
