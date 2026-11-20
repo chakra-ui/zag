@@ -49,3 +49,54 @@
     border-block: var(--grid-line-width) solid var(--grid-color);
   }
 }
+
+.image-cropper-avatar-upload {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+
+  .picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  [data-image-cropper-root] {
+    width: 100%;
+  }
+
+  [data-image-cropper-image] {
+    max-width: 100%;
+  }
+
+  .zoom {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    input {
+      flex: 1;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .avatar-preview {
+    width: 96px;
+    height: 96px;
+    border-radius: var(--z-radius-full);
+    object-fit: cover;
+  }
+}

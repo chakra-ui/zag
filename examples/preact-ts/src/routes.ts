@@ -289,6 +289,7 @@ export const routes: RouteDefinition[] = [
   { path: "/image-cropper/basic", component: lazy(() => import("./pages/image-cropper/basic")) },
   { path: "/image-cropper/circle", component: lazy(() => import("./pages/image-cropper/circle")) },
   { path: "/image-cropper/fixed", component: lazy(() => import("./pages/image-cropper/fixed")) },
+  { path: "/image-cropper/avatar-upload", component: lazy(() => import("./pages/image-cropper/avatar-upload")) },
   { path: "/infinite-scroll/basic", component: lazy(() => import("./pages/infinite-scroll/basic")) },
   { path: "/infinite-scroll/chat-reverse", component: lazy(() => import("./pages/infinite-scroll/chat-reverse")) },
   { path: "/infinite-scroll/controlled", component: lazy(() => import("./pages/infinite-scroll/controlled")) },

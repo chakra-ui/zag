@@ -72,6 +72,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "circle", title: "Circle" },
       { slug: "fixed", title: "Fixed Crop Area" },
+      { slug: "avatar-upload", title: "Avatar Upload" },
     ],
   },
   {
