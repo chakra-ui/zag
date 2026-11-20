@@ -42,6 +42,8 @@ const uppercaseRE = /\B([A-Z])/g
 function toVueStyle(style: Record<string, unknown>) {
   const normalized: Record<string, unknown> = {}
   for (const key in style) {
+    // Vue clears `undefined` style keys on every patch
+    if (style[key] === undefined) continue
     const name = vendorPrefixRE.test(key) ? `-${key.replace(uppercaseRE, "-$1").toLowerCase()}` : key
     normalized[name] = style[key]
   }
