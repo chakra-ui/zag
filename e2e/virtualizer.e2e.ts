@@ -1,4 +1,4 @@
-import { expect, test } from "./_test"
+import { expect, type Page, test } from "./_test"
 import {
   ListVirtualizerModel,
   TableVirtualizerModel,
@@ -86,6 +86,107 @@ test.describe("virtualizer / retained items", () => {
     await I.seeScrollTopLessThan(100)
     await expect(I.option("Item 1")).toBeVisible()
   })
+})
+
+const keyboardScrollCases = [
+  {
+    name: "listbox",
+    path: "/listbox/virtualized",
+    list: (page: Page) => page.getByRole("listbox"),
+    open: (page: Page) => page.getByRole("listbox").focus(),
+  },
+  {
+    name: "combobox",
+    path: "/combobox/virtualized",
+    list: (page: Page) => page.getByRole("listbox"),
+    open: async (page: Page) => {
+      await page.getByRole("combobox").click()
+      await page.getByRole("combobox").press("ArrowDown")
+    },
+  },
+  {
+    name: "select",
+    path: "/select/virtualized",
+    list: (page: Page) => page.getByRole("listbox"),
+    open: (page: Page) => page.getByRole("combobox").press("Enter"),
+  },
+  {
+    name: "menu",
+    path: "/menu/virtualized",
+    list: (page: Page) => page.getByRole("menu"),
+    open: (page: Page) => page.getByRole("button", { name: "Pick an item" }).press("Enter"),
+  },
+  {
+    name: "table",
+    path: "/virtualizer/table",
+    list: (page: Page) => page.getByRole("region", { name: "Customers" }),
+    open: (page: Page) => page.getByRole("region", { name: "Customers" }).focus(),
+  },
+] as const
+
+test.describe("virtualizer / keyboard scrolling", () => {
+  for (const { name, path, list, open } of keyboardScrollCases) {
+    test(`${name} keeps the active item fully visible`, async ({ page }) => {
+      const I = new VirtualizerModel(page, list)
+      await I.goto(path)
+      await open(page)
+      await I.seeOpen()
+
+      await I.pressKeyKeepingActiveItemVisible("ArrowDown", 15)
+      await I.pressKeyKeepingActiveItemVisible("ArrowUp", 15)
+      await I.pressKeyKeepingActiveItemVisible("PageDown", 2)
+      await I.pressKeyKeepingActiveItemVisible("PageUp", 2)
+    })
+  }
+
+  test("menu scrolls only once the active item reaches an edge", async ({ page }) => {
+    const I = new VirtualizerModel(page, (p) => p.getByRole("menu"))
+    await I.goto("/menu/virtualized")
+    await page.getByRole("button", { name: "Pick an item" }).press("Enter")
+    await I.seeOpen()
+
+    await I.pressKey("ArrowDown", 5)
+
+    await I.seeScrollTop(0)
+  })
+
+  test("table scrolls one row per arrow press", async ({ page }) => {
+    const I = new TableVirtualizerModel(page)
+    await I.goto("/virtualizer/table")
+    await I.focus()
+
+    await I.pressKeyScrollingOneItemAtATime("ArrowDown", 15)
+    await I.pressKeyScrollingOneItemAtATime("ArrowUp", 15)
+  })
+
+  test("table scrolls through columns clear of the pinned column", async ({ page }) => {
+    const I = new TableVirtualizerModel(page)
+    await I.goto("/virtualizer/table")
+    await I.focus()
+
+    await I.pressKeyKeepingActiveItemVisible("ArrowRight", 10)
+    await I.pressKeyKeepingActiveItemVisible("ArrowLeft", 10)
+  })
+
+  for (const { name, path, open } of keyboardScrollCases.filter((c) => c.name === "combobox" || c.name === "select")) {
+    test(`${name} centers the selected item when reopened`, async ({ page }) => {
+      const I = new VirtualizerModel(page, (p) => p.getByRole("listbox"))
+      await I.goto(path)
+
+      await open(page)
+      await I.seeOpen()
+
+      await I.pressKey("End")
+      await I.pressKey("ArrowUp", 6)
+      await I.pressKey("Enter")
+      await I.seeClosed()
+
+      await open(page)
+      await I.seeOpen()
+
+      await I.seeActiveItemCentered()
+    })
+  }
 })
 
 test.describe("virtualizer / table", () => {

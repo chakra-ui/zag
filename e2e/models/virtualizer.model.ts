@@ -112,6 +112,116 @@ export class VirtualizerModel extends Model {
   async seeNoFlushSyncWarning() {
     await this.dontSeeInConsole("flushSync was called from inside a lifecycle method", 3000)
   }
+
+  /**
+   * Where the highlighted, focused or active item sits within the area its scroll container leaves
+   * visible, after `scroll-padding`, a sticky header and a sticky pinned cell.
+   */
+  activeItemPlacement() {
+    return this.scroller.evaluate((root) => {
+      const id =
+        root.getAttribute("aria-activedescendant") || document.activeElement?.getAttribute("aria-activedescendant")
+
+      const item =
+        (id && document.getElementById(id)) ||
+        (root.contains(document.activeElement) && document.activeElement !== root ? document.activeElement : null) ||
+        root.querySelector("[data-highlighted], [data-active]")
+
+      if (!item) return null
+
+      let scroller = item.parentElement
+      while (
+        scroller &&
+        !(scroller.scrollHeight > scroller.clientHeight && /auto|scroll/.test(getComputedStyle(scroller).overflowY))
+      ) {
+        scroller = scroller.parentElement
+      }
+      if (!scroller) return null
+
+      const style = getComputedStyle(scroller)
+      const rect = scroller.getBoundingClientRect()
+      const itemRect = item.getBoundingClientRect()
+
+      const header = scroller.querySelector("thead")
+      const row = item.closest("tr")
+      const pinned = row
+        ? [...row.children].find((cell) => cell !== item && getComputedStyle(cell).position === "sticky")
+        : null
+
+      // Like the browser, scroll-padding only matters where the list can still scroll
+      const canScrollUp = scroller.scrollTop > 0
+      const canScrollDown = scroller.scrollTop < scroller.scrollHeight - scroller.clientHeight - 1
+      const scrollPaddingTop = canScrollUp ? parseFloat(style.scrollPaddingTop) || 0 : 0
+      const scrollPaddingBottom = canScrollDown ? parseFloat(style.scrollPaddingBottom) || 0 : 0
+
+      const top = Math.max(
+        rect.top + scroller.clientTop + scrollPaddingTop,
+        header?.getBoundingClientRect().bottom ?? -Infinity,
+      )
+      const bottom = rect.top + scroller.clientTop + scroller.clientHeight - scrollPaddingBottom
+      const left = Math.max(rect.left + scroller.clientLeft, pinned?.getBoundingClientRect().right ?? -Infinity)
+      const right = rect.left + scroller.clientLeft + scroller.clientWidth
+
+      return {
+        hiddenPixels: Math.round(
+          Math.max(0, top - itemRect.top) +
+            Math.max(0, itemRect.bottom - bottom) +
+            Math.max(0, left - itemRect.left) +
+            Math.max(0, itemRect.right - right),
+        ),
+        offsetFromCenter: Math.round((itemRect.top + itemRect.bottom) / 2 - (top + bottom) / 2),
+        itemSize: Math.round(itemRect.height),
+        atScrollEnd: !canScrollDown,
+      }
+    })
+  }
+
+  async seeActiveItemFullyVisible() {
+    await expect.poll(async () => (await this.activeItemPlacement())?.hiddenPixels).toBe(0)
+  }
+
+  /** Centered within one item, unless the list can't scroll any further. */
+  async seeActiveItemCentered() {
+    await expect
+      .poll(async () => {
+        const placement = await this.activeItemPlacement()
+        if (!placement) return false
+        return placement.atScrollEnd || Math.abs(placement.offsetFromCenter) <= placement.itemSize
+      })
+      .toBe(true)
+  }
+
+  /** Presses the key repeatedly, checking the active item stays fully visible after each press. */
+  async pressKeyKeepingActiveItemVisible(key: string, times: number) {
+    for (let i = 0; i < times; i++) {
+      await this.pressKey(key)
+      await this.seeActiveItemFullyVisible()
+    }
+  }
+
+  /** Presses the key repeatedly, checking each press scrolls by no more than one item. */
+  async pressKeyScrollingOneItemAtATime(key: string, times: number) {
+    for (let i = 0; i < times; i++) {
+      const before = await this.scrollTop()
+      await this.pressKey(key)
+      await this.seeActiveItemFullyVisible()
+
+      const placement = await this.activeItemPlacement()
+      expect(Math.abs((await this.scrollTop()) - before)).toBeLessThanOrEqual(placement!.itemSize)
+    }
+  }
+
+  async seeOpen() {
+    await expect(this.scroller).toBeVisible()
+  }
+
+  async seeClosed() {
+    await expect(this.scroller).toBeHidden()
+  }
+
+  async seeScrollTop(value: number) {
+    await expect.poll(() => this.scrollTop()).toBe(value)
+  }
 }
 
 export class ListVirtualizerModel extends VirtualizerModel {

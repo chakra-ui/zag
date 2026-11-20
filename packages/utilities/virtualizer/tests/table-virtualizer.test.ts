@@ -277,3 +277,49 @@ describe("table columns", () => {
     expect(() => new TableVirtualizer({ count: 10, itemSize: 40, columnCount: 5 })).toThrow("columnSize")
   })
 })
+
+describe("right-to-left table columns", () => {
+  const createTable = (dir: "ltr" | "rtl" = "rtl") =>
+    new TableVirtualizer({
+      count: 100,
+      itemSize: 40,
+      columnCount: 100,
+      columnSize: 100,
+      pinnedColumns: { start: 1 },
+      dir,
+      initialRect: viewport,
+    })
+
+  test("windows the same columns as left-to-right from a negative scroll position", () => {
+    const rtl = createTable("rtl")
+    const ltr = createTable("ltr")
+
+    scrollHorizontally(rtl, -1000)
+    scrollHorizontally(ltr, 1000)
+
+    expect(indexes(rtl)).toEqual(indexes(ltr))
+  })
+
+  test("scrollToColumn scrolls toward the inline end", () => {
+    const virtualizer = createTable()
+    const container = createMockScrollContainer({ viewport })
+    Object.assign(container.element, { clientWidth: 600 })
+    virtualizer.init(container.element)
+
+    virtualizer.scrollToColumn(50, { align: "start" })
+
+    expect(container.getScrollLeft()).toBe(-4900)
+    expect(indexes(virtualizer)).toContain(50)
+  })
+
+  test("scrollToColumn leaves a visible column where it is", () => {
+    const virtualizer = createTable()
+    const container = createMockScrollContainer({ viewport })
+    Object.assign(container.element, { clientWidth: 600 })
+    virtualizer.init(container.element)
+
+    virtualizer.scrollToColumn(3)
+
+    expect(container.getScrollLeft()).toBe(0)
+  })
+})

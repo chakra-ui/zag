@@ -421,6 +421,8 @@ export class TableVirtualizer extends ListVirtualizer {
 
     const max = Math.max(0, this.getTotalWidth() - element.clientWidth)
     target = Math.max(0, Math.min(max, target))
+    if (target === current) return
+
     const left = this.options.dir === "rtl" ? -target : target
     if (element.scrollTo) element.scrollTo({ left, behavior: options.smooth ? "smooth" : "auto" })
     else element.scrollLeft = left
