@@ -1,5 +1,6 @@
 import type { Required } from "@zag-js/types"
 import type { EditableSegmentType, IntlTranslations } from "../date-input.types"
+import { getSegmentLabel } from "./segments"
 
 // Locale-aware placeholders for date segments
 // Adapted from reka-ui / melt-ui (MIT license)
@@ -119,6 +120,7 @@ function getLocalePlaceholders(locale: string): LocalePlaceholder {
 }
 
 export const defaultTranslations: Required<IntlTranslations> = {
+  segmentLabel: (type, locale) => getSegmentLabel(type, locale),
   placeholder(locale) {
     const [year, month, day] = getLocalePlaceholders(locale)
     return {

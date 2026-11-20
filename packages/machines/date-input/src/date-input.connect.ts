@@ -209,7 +209,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             ? undefined
             : "numeric",
         enterKeyHint: "next",
-        "aria-label": getSegmentLabel(segment.type),
+        "aria-label": getSegmentLabel(segment.type, prop("locale"), prop("translations")),
         "aria-valuenow": segment.isPlaceholder ? undefined : segment.value,
         "aria-valuetext": segment.isPlaceholder ? segment.placeholder : segment.text,
         "aria-valuemin": segment.minValue,

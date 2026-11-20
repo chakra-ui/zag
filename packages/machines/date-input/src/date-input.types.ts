@@ -49,6 +49,10 @@ export type MaxGranularity = "year" | "month" | DateGranularity
 
 export interface IntlTranslations {
   placeholder?: ((locale: string) => Record<EditableSegmentType, string>) | undefined
+  /**
+   * The accessible label of a segment. Defaults to the locale's name for the field.
+   */
+  segmentLabel?: ((type: Exclude<SegmentType, "literal">, locale: string) => string) | undefined
 }
 
 export interface ElementIds {
