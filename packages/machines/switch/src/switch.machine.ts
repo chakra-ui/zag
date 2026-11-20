@@ -1,5 +1,11 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, raf, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import {
+  dispatchInputCheckedEvent,
+  setElementChecked,
+  trackFormControl,
+  trackPress,
+  trackRenderedParts,
+} from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./switch.dom"
 import type { SwitchSchema } from "./switch.types"
@@ -125,21 +131,11 @@ export const machine = createMachine<SwitchSchema>({
         })
       },
       trackRenderedElements({ context, scope }) {
-        return raf(() => {
-          const syncRenderedElements = () => {
-            context.set("rendered", { label: !!dom.getLabelEl(scope) })
-          }
-
-          syncRenderedElements()
-
-          const rootEl = dom.getRootEl(scope)
-          const win = scope.getWin()
-          if (!rootEl || typeof win.MutationObserver === "undefined") return
-
-          const observer = new win.MutationObserver(syncRenderedElements)
-          observer.observe(rootEl, { childList: true, subtree: true })
-
-          return () => observer.disconnect()
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
         })
       },
     },
