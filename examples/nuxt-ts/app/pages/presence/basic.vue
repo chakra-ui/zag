@@ -31,7 +31,7 @@ const setNode = (node: unknown) => {
     <div
       v-if="api.present"
       :ref="setNode"
-      data-scope="presence"
+      data-presence-root
       :data-state="api.skip ? undefined : present ? 'open' : 'closed'"
     >
       Content

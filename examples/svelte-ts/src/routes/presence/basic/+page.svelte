@@ -24,7 +24,7 @@
 <main class="presence">
   <button onclick={() => (present = !present)}>Toggle</button>
   {#if api.present}
-    <div {@attach setNode} data-scope="presence" data-state={api.skip ? undefined : present ? "open" : "closed"}>
+    <div {@attach setNode} data-presence-root data-state={api.skip ? undefined : present ? "open" : "closed"}>
       Content
     </div>
   {/if}
