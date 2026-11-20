@@ -22,6 +22,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   normalize: NormalizeProps<T>,
 ): ComboboxApi<T, V> {
   const { context, prop, state, send, scope, computed } = service
+  const rendered = context.get("rendered")
 
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
   const collection = prop("collection")
@@ -342,7 +343,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         "data-side": currentPlacementSide,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         "aria-busy": composite ? ariaAttr(loading) : undefined,
         "data-empty": dataAttr(collection.size === 0),
@@ -360,7 +361,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...parts.list.attrs,
         role: !composite ? "listbox" : undefined,
         "data-empty": dataAttr(collection.size === 0),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
         "aria-busy": !composite ? ariaAttr(loading) : undefined,
         "data-loading": dataAttr(loading),

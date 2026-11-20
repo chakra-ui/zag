@@ -13,7 +13,7 @@ const quadrantImage = `
 `
 
 async function loadQuadrantImage() {
-  await I.page.route("https://picsum.photos/**", (route) =>
+  await I.page.route("https://images.unsplash.com/**", (route) =>
     route.fulfill({
       contentType: "image/svg+xml",
       headers: { "access-control-allow-origin": "*" },
@@ -309,6 +309,25 @@ test.describe("image-cropper / resizable", () => {
     expect(rect.x).toBe(initialRect.x)
   })
 
+  test("[keyboard][rtl] should move and resize in the pressed direction", async () => {
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKey("ArrowRight")
+
+    let rect = await I.getSelectionRect()
+    expect(rect.x).toBe(initialRect.x + 1)
+    expect(rect.width).toBe(initialRect.width)
+
+    await I.pressKeyWithModifiers("ArrowRight", { alt: true })
+
+    rect = await I.getSelectionRect()
+    expect(rect.x).toBe(initialRect.x + 1)
+    expect(rect.width).toBe(initialRect.width + 1)
+  })
+
   test("[keyboard] should resize height using Alt+Arrow keys", async () => {
     const initialRect = await I.getSelectionRect()
 
@@ -490,6 +509,20 @@ test.describe("image-cropper / fixedCropArea", () => {
     const newSelectionRect = await I.getSelectionRect()
     expect(newSelectionRect.x).toBe(initialSelectionRect.x)
     expect(newSelectionRect.y).toBe(initialSelectionRect.y)
+  })
+
+  test("[keyboard][rtl] should pan the image in the pressed direction", async () => {
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    await I.focusSelection()
+    await I.pressKey("+", 3)
+
+    const { translateX: initialX } = await I.getTranslateFromMatrix(await I.getImageTransform())
+
+    await I.pressKey("ArrowRight")
+
+    const { translateX: newX } = await I.getTranslateFromMatrix(await I.getImageTransform())
+    expect(newX).toBe(initialX + 1)
   })
 
   test("[keyboard] should zoom with +/- keys", async () => {

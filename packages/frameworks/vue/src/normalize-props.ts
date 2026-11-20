@@ -1,4 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
+import { compact } from "@zag-js/utils"
 import type * as Vue from "vue"
 
 type ReservedProps = {
@@ -43,7 +44,7 @@ function toVueProp(prop: string) {
 }
 
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
-  const normalized: Dict = {}
+  const normalized: Record<string, any> = {}
   for (const key in props) {
     const value = props[key]
     if (key === "children") {
@@ -52,6 +53,9 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
       } else if (process.env.NODE_ENV !== "production" && value != null) {
         console.warn("[Vue Normalize Prop] : avoid passing non-primitive value as `children`")
       }
+    } else if (key === "style" && value && typeof value === "object") {
+      // Vue clears `undefined` style keys on every patch
+      normalized["style"] = compact(value)
     } else {
       normalized[toVueProp(key)] = props[key]
     }

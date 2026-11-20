@@ -58,9 +58,14 @@ export const machine = createMachine<FileUploadSchema>({
     multiple: ({ prop }) => prop("maxFiles") > 1,
   },
 
-  watch({ track, context, action }) {
+  watch({ track, context, action, prop, send }) {
     track([() => context.hash("acceptedFiles")], () => {
       action(["syncInputElement"])
+    })
+
+    // A disabled dropzone ignores the drag's leave and drop, so end the drag here
+    track([() => !!(prop("disabled") || prop("readOnly"))], () => {
+      if (prop("disabled") || prop("readOnly")) send({ type: "DROPZONE.DRAG_LEAVE" })
     })
   },
 

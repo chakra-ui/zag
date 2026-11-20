@@ -1,3 +1,4 @@
+import { carouselData } from "@zag-js/shared"
 import * as carousel from "@zag-js/carousel"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/preact"
@@ -28,7 +29,7 @@ function CarouselInDialog({ page, onPageChange }: { page: number; onPageChange: 
         <div {...api.getItemGroupProps()}>
           {Array.from({ length: SLIDE_COUNT }, (_, i) => (
             <div {...api.getItemProps({ index: i })} key={i}>
-              <img src={`https://picsum.photos/seed/slide-${i}/300/200`} alt={`Slide ${i}`} style={{ width: "100%" }} />
+              <img src={carouselData[i % carouselData.length]} alt={`Slide ${i}`} style={{ width: "100%" }} />
             </div>
           ))}
         </div>

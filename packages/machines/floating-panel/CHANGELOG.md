@@ -1,5 +1,22 @@
 # @zag-js/floating-panel
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3637](https://github.com/chakra-ui/zag/pull/3637)
+  [`88fbd49`](https://github.com/chakra-ui/zag/commit/88fbd49b31b97cada8f930c95cc476a8d78a5c56) Thanks
+  [@minwookshin](https://github.com/minwookshin)! - - Fix the positioner's inline `z-index` overriding the `z-index`
+  from CSS. Set `z-index: var(--z-index)` on the positioner to keep panel stacking.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+  - @zag-js/rect-utils@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

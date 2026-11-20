@@ -1,5 +1,19 @@
 # @zag-js/collection
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3585](https://github.com/chakra-ui/zag/pull/3585)
+  [`3a7857a`](https://github.com/chakra-ui/zag/commit/3a7857a9581187f84708594ceb1d75769b2cc20e) Thanks
+  [@asssslay](https://github.com/asssslay)! - - Fix mutation methods changing the wrong item when using `groupBy`.
+  - Fix typeahead skipping items when using `groupBy`.
+  - Fix `GridCollection` rows ignoring `groupBy` order.
+  - Fix `GridCollection` mutation methods returning a `ListCollection`.
+  - Improve lookup and keyboard navigation performance in large collections.
+- Updated dependencies [[`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/utils@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

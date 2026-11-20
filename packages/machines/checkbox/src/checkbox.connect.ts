@@ -11,6 +11,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): CheckboxApi<T> {
   const { send, context, prop, computed, scope } = service
+  const rendered = context.get("rendered")
   const disabled = !!prop("disabled")
   const readOnly = !!prop("readOnly")
   const required = !!prop("required")
@@ -109,7 +110,7 @@ export function connect<T extends PropTypes>(
         required: prop("required"),
         defaultChecked: checked,
         disabled: disabled,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-invalid": invalid,
         name: prop("name"),
         form: prop("form"),

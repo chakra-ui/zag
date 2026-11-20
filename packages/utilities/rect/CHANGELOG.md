@@ -1,5 +1,9 @@
 # @zag-js/rect-utils
 
+## 1.48.0
+
+No changes in this release.
+
 ## 1.47.0
 
 No changes in this release.

@@ -97,9 +97,25 @@ test.describe("floating-panel", () => {
   test("should close panel on escape", async () => {
     await I.clickTrigger()
     await I.seeContent()
+    // focus lands in a frame, and Escape is only handled on the content
+    await expect(I.content).toBeFocused()
 
     await I.pressKey("Escape")
     await I.dontSeeContent()
+  })
+
+  test("[rtl] arrow keys should move the panel in the pressed direction", async () => {
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    await I.clickTrigger()
+    await expect(I.content).toBeFocused()
+    const start = await I.getContentSize()
+
+    await I.pressKey("ArrowRight", 10)
+    await I.seeContentHasPosition(start.x + 10, start.y, 1)
+
+    await I.pressKey("ArrowLeft", 10)
+    await I.seeContentHasPosition(start.x, start.y, 1)
   })
 
   test("should restore to original size after minimize → double-click → restore flow", async () => {
@@ -235,5 +251,37 @@ test.describe("floating-panel", () => {
 
     await expect(page.getByTestId("content-A")).toHaveAttribute("data-topmost", "")
     expect(await zIndex("A")).toBeGreaterThan(await zIndex("B"))
+  })
+
+  test("respects a CSS z-index on the positioner", async ({ page }) => {
+    await I.goto("/floating-panel/stacking")
+    await page.addStyleTag({ content: ".custom-layer { z-index: 1400; }" })
+    const positioner = page.getByTestId("positioner-A")
+    await positioner.evaluate((el) => el.classList.add("custom-layer"))
+
+    await page.getByTestId("trigger-A").click()
+    await expect(positioner).toHaveCSS("z-index", "1400")
+  })
+
+  test("composes the panel stack with a CSS base z-index", async ({ page }) => {
+    await I.goto("/floating-panel/stacking")
+    await page.addStyleTag({ content: ".custom-layer { z-index: calc(1400 + var(--z-index, 0)); }" })
+    const a = page.getByTestId("positioner-A")
+    const b = page.getByTestId("positioner-B")
+    await a.evaluate((el) => el.classList.add("custom-layer"))
+    await b.evaluate((el) => el.classList.add("custom-layer"))
+
+    await page.getByTestId("trigger-A").click()
+    await page.getByTestId("trigger-B").click()
+    await expect(a).toHaveCSS("z-index", "1401")
+    await expect(b).toHaveCSS("z-index", "1402")
+    await expect(page.getByTestId("content-B")).toBeFocused()
+
+    await page.getByTestId("content-A").focus()
+    await expect(a).toHaveCSS("z-index", "1402")
+    await expect(b).toHaveCSS("z-index", "1401")
+
+    await page.getByTestId("close-A").click()
+    await expect(b).toHaveCSS("z-index", "1401")
   })
 })

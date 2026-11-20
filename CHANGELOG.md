@@ -4,6 +4,51 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.48.0](./#1.48.0) - 2026-11-13
+
+### Added
+
+- **Menu**: Add `initialFocusEl` and `finalFocusEl` props to control which element receives focus when the menu opens
+  and closes.
+
+### Fixed
+
+- **Popups**
+  - Fix opening a popover or menu while another one is open closing both, most noticeably on touch. A layer now only
+    closes the layers opened from inside it.
+  - Fix clicks inside a same-origin iframe closing the popover, menu or dialog that contains it.
+
+- **Cascade Select, Combobox, Listbox, Menu, Select**: Fix the page scrolling when the highlighted item is scrolled
+  into view.
+
+- **Collapsible**: Fix the trigger staying focusable and not announced as disabled when the collapsible is disabled.
+
+- **Collection**
+  - Fix mutation methods changing the wrong item when using `groupBy`.
+  - Fix typeahead skipping items when using `groupBy`.
+  - Fix `GridCollection` rows ignoring `groupBy` order.
+  - Fix `GridCollection` mutation methods returning a `ListCollection`.
+  - Improve lookup and keyboard navigation performance in large collections.
+
+- **Date Picker**: Fix the range date picker writing the text committed in one input into the other when focus moves
+  before the input sync runs.
+
+- **File Upload**: Fix the file upload staying in its dragging state when it becomes disabled (or read-only) during a
+  drag, which kept the trigger from opening the file picker.
+
+- **Floating Panel**: Fix the positioner's inline `z-index` overriding the `z-index` from CSS. Set
+  `z-index: var(--z-index)` on the positioner to keep panel stacking.
+
+- **Menu**: Fix focus not returning to the previously focused element when a context menu closes.
+
+- **React**: Fix a machine starting after its component unmounted, which left effects like a dialog's scroll lock in
+  place.
+
+- **Slider**: Fix stepping past `max` with a decimal `step` moving the value down a step.
+
+- **Tabs**: Fix Shift- and Alt-clicks on link triggers being prevented, so they open a new window or download the link
+  instead of selecting the tab.
+
 ## [1.47.0](./#1.47.0) - 2026-10-26
 
 ### Added

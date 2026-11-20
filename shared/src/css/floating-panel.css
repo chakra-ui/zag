@@ -1,3 +1,7 @@
+:where([data-scope="floating-panel"][data-part="positioner"]) {
+  z-index: var(--z-index);
+}
+
 [data-scope="floating-panel"][data-part="content"] {
   border: 1px solid #ebebeb;
   box-shadow:

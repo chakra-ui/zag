@@ -1,5 +1,19 @@
 # @zag-js/dismissable
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3599](https://github.com/chakra-ui/zag/pull/3599)
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix opening a popover or menu while another one is open closing
+  both, most noticeably on touch. A layer now only closes the layers opened from inside it.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/interact-outside@1.48.0
+  - @zag-js/utils@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

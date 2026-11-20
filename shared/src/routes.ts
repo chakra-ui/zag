@@ -153,6 +153,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "conditional", title: "Conditional" },
       { slug: "layout-shift", title: "Layout Shift" },
       { slug: "replaced-target", title: "Replaced Target" },
+      { slug: "late-target", title: "Late Target" },
     ],
   },
   {
@@ -200,7 +201,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "presence",
     label: "Presence",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "activity", title: "React Activity" },
+    ],
   },
   {
     slug: "autoresize",
@@ -328,6 +332,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "emoji-picker", title: "Emoji Picker" },
       { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
       { slug: "grouped", title: "Grouped" },
+      { slug: "scroll-area", title: "Scroll Area" },
     ],
   },
   {

@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 1.48.0
+
+### Patch Changes
+
+- [#3586](https://github.com/chakra-ui/zag/pull/3586)
+  [`18987a3`](https://github.com/chakra-ui/zag/commit/18987a326534cc6a6f85ee0a52201c8c6460c748) Thanks
+  [@fricklerhandwerk](https://github.com/fricklerhandwerk)! - - Fix the range date picker writing the text committed in
+  one input into the other when focus moves before the input sync runs.
+- Updated dependencies [[`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`fbd42d3`](https://github.com/chakra-ui/zag/commit/fbd42d37fd2d0b6f8fe5031451e1dc02615b93eb),
+  [`10b5bad`](https://github.com/chakra-ui/zag/commit/10b5bad00ee09c1cdc93dd9c1a7633eb88082690)]:
+  - @zag-js/dismissable@1.48.0
+  - @zag-js/dom-query@1.48.0
+  - @zag-js/utils@1.48.0
+  - @zag-js/core@1.48.0
+  - @zag-js/popper@1.48.0
+  - @zag-js/anatomy@1.48.0
+  - @zag-js/types@1.48.0
+  - @zag-js/date-utils@1.48.0
+  - @zag-js/live-region@1.48.0
+
 ## 1.47.0
 
 ### Patch Changes

@@ -20,6 +20,19 @@ test.describe("file-upload", () => {
     await I.seeDropzoneIsFocused()
   })
 
+  test("disabling the dropzone mid-drag ends the drag", async () => {
+    await I.dispatchDrag("dragover")
+    await I.seeDragging()
+
+    await I.controls.bool("disabled", true)
+    await I.dispatchDrag("dragleave")
+    await I.controls.bool("disabled", false)
+
+    await I.seeDragging(false)
+    const fileChooser = await I.openFilePicker()
+    expect(fileChooser).toBeDefined()
+  })
+
   test("should open file picker on trigger click", async () => {
     const fileChooser = await I.openFilePicker()
     expect(fileChooser).toBeDefined()

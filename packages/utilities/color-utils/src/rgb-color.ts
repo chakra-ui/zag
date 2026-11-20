@@ -2,11 +2,14 @@ import { clampValue, toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
+import { getColorArgs, parseNumber } from "./parse-utils"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
 const HEX_COLOR_REGEX = /^#[\da-f]+$/i
-const RGB_COLOR_REGEX = /^rgba?\((.*)\)$/
 const HEX_STARTING_REGEX = /[^#]/gi
+const RGB_NAMES = ["rgb", "rgba"]
+
+const toHex = (value: number) => Math.round(value).toString(16).padStart(2, "0")
 
 export class RGBColor extends Color {
   constructor(
@@ -30,14 +33,15 @@ export class RGBColor extends Color {
       colors[3] = colors[3] !== undefined ? colors[3] / 255 : undefined
     }
 
-    // matching rgb(rrr, ggg, bbb), rgba(rrr, ggg, bbb, 0.a)
-    const match = value.match(RGB_COLOR_REGEX)
-
-    if (match?.[1]) {
-      colors = match[1]
-        .split(",")
-        .map((value) => Number(value.trim()))
-        .map((num, i) => clampValue(num, 0, i < 3 ? 255 : 1))
+    // matching rgb(r, g, b[, a]) and rgb(r g b[ / a])
+    const args = getColorArgs(value, RGB_NAMES)
+    if (args) {
+      for (let i = 0; i < args.length; i++) {
+        const max = i < 3 ? 255 : 1
+        const num = parseNumber(args[i], max)
+        if (num === undefined) return
+        colors[i] = clampValue(num, 0, max)
+      }
     }
 
     //@ts-expect-error
@@ -47,26 +51,9 @@ export class RGBColor extends Color {
   toString(format: ColorStringFormat = "css") {
     switch (format) {
       case "hex":
-        return (
-          "#" +
-          (
-            this.red.toString(16).padStart(2, "0") +
-            this.green.toString(16).padStart(2, "0") +
-            this.blue.toString(16).padStart(2, "0")
-          ).toUpperCase()
-        )
+        return "#" + (toHex(this.red) + toHex(this.green) + toHex(this.blue)).toUpperCase()
       case "hexa":
-        return (
-          "#" +
-          (
-            this.red.toString(16).padStart(2, "0") +
-            this.green.toString(16).padStart(2, "0") +
-            this.blue.toString(16).padStart(2, "0") +
-            Math.round(this.alpha * 255)
-              .toString(16)
-              .padStart(2, "0")
-          ).toUpperCase()
-        )
+        return "#" + (toHex(this.red) + toHex(this.green) + toHex(this.blue) + toHex(this.alpha * 255)).toUpperCase()
       case "rgb":
         return `rgb(${this.red}, ${this.green}, ${this.blue})`
       case "css":
@@ -95,7 +82,7 @@ export class RGBColor extends Color {
   }
 
   toHexInt(): number {
-    return (this.red << 16) | (this.green << 8) | this.blue
+    return (Math.round(this.red) << 16) | (Math.round(this.green) << 8) | Math.round(this.blue)
   }
 
   /**

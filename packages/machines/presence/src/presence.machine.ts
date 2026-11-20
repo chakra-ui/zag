@@ -223,7 +223,7 @@ export const machine = createMachine<PresenceSchema>({
 
         const onCancel = (event: AnimationEvent) => {
           const target = getEventTarget(event)
-          if (target === node && !prop("present")) {
+          if (target === node && !prop("present") && !hasRunningCssAnimation(node)) {
             send({ type: "UNMOUNT", src: "animationcancel" })
           }
         }
@@ -246,6 +246,11 @@ export const machine = createMachine<PresenceSchema>({
 
 function getAnimationName(styles?: CSSStyleDeclaration | null) {
   return styles?.animationName || "none"
+}
+
+function hasRunningCssAnimation(node: HTMLElement) {
+  if (typeof node.getAnimations !== "function") return false
+  return node.getAnimations().some((animation) => "animationName" in animation && animation.playState === "running")
 }
 
 function hasRunningAnimation(node: HTMLElement | null, animationName: string) {

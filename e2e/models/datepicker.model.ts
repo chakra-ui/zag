@@ -183,6 +183,19 @@ export class DatePickerModel extends Model {
     return this.getInput(index).selectText()
   }
 
+  /** Enter in one input, then focus another in the same task */
+  commitInputAndFocus(from: number, to: number) {
+    return this.page.evaluate(
+      ([from, to]) => {
+        const input = (index: number) =>
+          document.querySelector<HTMLInputElement>(`[data-scope=date-picker][data-part=input][data-index="${index}"]`)!
+        input(from).dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }))
+        input(to).focus()
+      },
+      [from, to],
+    )
+  }
+
   async clearInput(index = 0) {
     await this.focusInput(index)
     await this.pressKey("ControlOrMeta+A")

@@ -18,7 +18,7 @@
   }
 
   .Positioner {
-    z-index: 999999;
+    z-index: calc(999999 + var(--z-index, 0));
   }
 
   .Content {

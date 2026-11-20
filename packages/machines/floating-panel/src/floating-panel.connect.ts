@@ -108,7 +108,6 @@ export function connect<T extends PropTypes>(
           isolation: "isolate",
           top: "var(--y)",
           left: "var(--x)",
-          zIndex: "var(--z-index)",
         },
       })
     },
@@ -163,7 +162,8 @@ export function connect<T extends PropTypes>(
             },
           }
 
-          const handler = keyMap[getEventKey(event, { dir: prop("dir") })]
+          // positioned with physical `left`, so arrows ignore dir
+          const handler = keyMap[getEventKey(event)]
 
           if (handler) {
             event.preventDefault()

@@ -101,7 +101,11 @@ export default function Page() {
       <main className="image-cropper">
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <img src="https://picsum.photos/seed/a/500/300" crossOrigin="anonymous" {...api.getImageProps()} />
+            <img
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+              crossOrigin="anonymous"
+              {...api.getImageProps()}
+            />
             <div {...api.getSelectionProps()}>
               {handlePositions.map((position) => (
                 <div key={position} {...api.getHandleProps({ position })}>

@@ -34,7 +34,8 @@ export function getWindowFrames(win: Window) {
 }
 
 export function getParentWindow(win: Window) {
-  const parent = win.frameElement != null ? win.parent : null
+  // The document, so its listeners run in registration order with the parent's own
+  const parent = win.frameElement != null ? win.parent.document : null
   return {
     addEventListener: (event: string, listener: any, options?: any) => {
       try {

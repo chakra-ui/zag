@@ -1,3 +1,4 @@
+import type { AnimationFrame } from "@zag-js/dom-query"
 import type { NumberParser } from "@internationalized/number"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
@@ -274,6 +275,9 @@ export interface NumberInputSchema {
   props: RequiredBy<NumberInputProps, PropsWithDefault>
   context: PrivateContext
   computed: ComputedContext
+  refs: {
+    syncFrame: AnimationFrame
+  }
   action: string
   event: EventObject
   guard: string

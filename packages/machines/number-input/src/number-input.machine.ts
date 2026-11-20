@@ -1,5 +1,6 @@
 import { memo, setup } from "@zag-js/core"
 import {
+  AnimationFrame,
   addDomEvent,
   isSafari,
   observeAttributes,
@@ -77,6 +78,12 @@ export const machine = createMachine({
     }
   },
 
+  refs() {
+    return {
+      syncFrame: AnimationFrame.create(),
+    }
+  },
+
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
     valueAsNumber: ({ context, computed, prop }) => parseValue(context.get("value"), { computed, prop }),
@@ -117,6 +124,8 @@ export const machine = createMachine({
   },
 
   effects: ["trackFormControl"],
+
+  exit: ["cancelSyncFrame"],
 
   on: {
     "VALUE.SET": {
@@ -438,16 +447,19 @@ export const machine = createMachine({
           valueAsNumber: computed("valueAsNumber"),
         })
       },
-      syncInputElement({ context, event, computed, scope }) {
+      syncInputElement({ context, event, computed, scope, refs }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        // Record cursor position before sync if not provided in event
-        // This handles external value changes while user is typing
         const sel = event.selection ?? recordCursor(inputEl, scope)
-        raf(() => {
+        const scheduledText = inputEl?.value
+        refs.get("syncFrame").request(() => {
+          if (inputEl && inputEl.value !== scheduledText) return
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })
+      },
+      cancelSyncFrame({ refs }) {
+        refs.get("syncFrame").cancel()
       },
       setFormattedValue({ context, computed, action }) {
         context.set("value", computed("formattedValue"))

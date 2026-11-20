@@ -38,7 +38,7 @@
 <main class="image-cropper">
   <div {...api.getRootProps()}>
     <div {...api.getViewportProps()}>
-      <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} alt="Cropper" />
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop" {...api.getImageProps()} alt="Cropper" />
       <div {...api.getSelectionProps()}>
         {#each handlePositions as position}
           <div {...api.getHandleProps({ position })}>

@@ -7,4 +7,5 @@ export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `switch:${ctx.id
 export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `switch:${ctx.id}:input`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
