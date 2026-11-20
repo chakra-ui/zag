@@ -15,6 +15,7 @@ export type {
   ElementIds,
   HiddenInputProps,
   HighlightChangeDetails,
+  HighlightedItemDetails,
   InputValueChangeDetails,
   InputValueChangeReason,
   IntlTranslations,
