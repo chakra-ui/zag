@@ -9,6 +9,7 @@ import {
   isFocusOutside,
   raf,
   resizeObserverBorderBox,
+  trackRenderedParts,
   waitForElement,
 } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
@@ -216,8 +217,9 @@ export const machine = createMachine<DrawerSchema>({
   states: {
     open: {
       tags: ["open"],
-      entry: ["checkRenderedElements", "setReturnFocusEl", "setInitialFocus", "deferClearDragOffset"],
+      entry: ["setReturnFocusEl", "setInitialFocus", "deferClearDragOffset"],
       effects: [
+        "trackRenderedElements",
         "trackDismissableElement",
         "preventScroll",
         "trapFocus",
@@ -507,15 +509,6 @@ export const machine = createMachine<DrawerSchema>({
         })
       },
 
-      checkRenderedElements({ context, scope }) {
-        raf(() => {
-          context.set("rendered", {
-            title: !!dom.getTitleEl(scope),
-            description: !!dom.getDescriptionEl(scope),
-          })
-        })
-      },
-
       deferClearDragOffset({ context, refs, scope }) {
         const dragOffset = context.get("dragOffset")
         if (dragOffset === null) return
@@ -720,6 +713,15 @@ export const machine = createMachine<DrawerSchema>({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getContentEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { title: () => dom.getTitleEl(scope), description: () => dom.getDescriptionEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackDrawerStack({ context, prop, computed }) {
         const stack = prop("stack")
         if (!stack) return

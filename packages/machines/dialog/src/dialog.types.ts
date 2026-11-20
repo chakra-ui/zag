@@ -138,9 +138,8 @@ export interface DialogSchema {
     returnFocusEl: HTMLElement | null
   }
   guard: "isOpenControlled"
-  effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
+  effect: "trackRenderedElements" | "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
   action:
-    | "checkRenderedElements"
     | "setInitialFocus"
     | "invokeOnClose"
     | "invokeOnOpen"

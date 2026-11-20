@@ -84,6 +84,10 @@ export interface CheckboxSchema {
     focusVisible: boolean
     hovered: boolean
     fieldsetDisabled: boolean
+    /**
+     * Whether the label part is rendered
+     */
+    rendered: { label: boolean }
   }
   computed: {
     indeterminate: boolean
