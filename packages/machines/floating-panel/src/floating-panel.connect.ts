@@ -162,7 +162,7 @@ export function connect<T extends PropTypes>(
             },
           }
 
-          // the panel is placed with physical `left`, so arrows move it physically in both directions
+          // positioned with physical `left`, so arrows ignore dir
           const handler = keyMap[getEventKey(event)]
 
           if (handler) {
