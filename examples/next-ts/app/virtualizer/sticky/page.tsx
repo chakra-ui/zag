@@ -1,7 +1,8 @@
 "use client"
 
+import { mergeProps } from "@zag-js/react"
 import type { GroupMeta } from "@zag-js/virtualizer"
-import { useRef } from "react"
+import {} from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
 const ITEMS_PER_GROUP = 50
@@ -40,8 +41,6 @@ const getGroupLabel = (index: number) => `Group ${index + 1}`
 const isGroupStart = (index: number) => index % ITEMS_PER_GROUP === 0
 
 export default function Page() {
-  const scrollOffsetRef = useRef(0)
-
   const { virtualizer, ref } = useListVirtualizer({
     count: TOTAL_ITEMS,
     estimatedItemSize: ITEM_HEIGHT,
@@ -50,7 +49,7 @@ export default function Page() {
     overscan: 5,
   })
 
-  const headerState = virtualizer.getGroupHeaderState(scrollOffsetRef.current, HEADER_HEIGHT)
+  const headerState = virtualizer.getStickyGroupHeader(HEADER_HEIGHT)
   const virtualItems = virtualizer.getVirtualItems()
 
   return (
@@ -87,28 +86,25 @@ export default function Page() {
 
         <div
           ref={ref}
-          onScroll={(e) => {
-            scrollOffsetRef.current = e.currentTarget.scrollTop
-            virtualizer.handleScroll(e)
-          }}
-          tabIndex={0}
           aria-label="Virtualized list with sticky group headers"
-          style={{ height: 400, overflow: "auto", border: "2px solid #cbd5e1", borderRadius: 8 }}
+          {...mergeProps(virtualizer.getRootProps(), {
+            style: { height: 400, border: "2px solid #cbd5e1", borderRadius: 8 },
+          })}
         >
-          <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+          <div {...virtualizer.getContentProps()}>
             {virtualItems.map((vi) => {
               const item = items[vi.index]
               const groupStart = isGroupStart(vi.index)
               return (
                 <div
                   key={vi.index}
-                  style={{
-                    ...virtualizer.getItemStyle(vi),
-                    height: vi.size,
-                    backgroundColor: COLORS[item.groupIndex],
-                    fontSize: 13,
-                    boxSizing: "border-box",
-                  }}
+                  {...mergeProps(virtualizer.getItemProps(vi), {
+                    style: {
+                      backgroundColor: COLORS[item.groupIndex],
+                      fontSize: 13,
+                      boxSizing: "border-box",
+                    },
+                  })}
                 >
                   {groupStart && (
                     <div

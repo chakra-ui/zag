@@ -3,6 +3,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useWaterfallVirtualizer } from "@/hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/react"
 
 const DEFAULT_ITEM_COUNT = 5_000
 const OVERSCAN = 6
@@ -343,17 +344,17 @@ function ZagWaterfall({
       <h2 style={{ color: "#3b82f6" }}>@zag-js/virtualizer — WaterfallVirtualizer</h2>
       <div
         ref={setRef}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Zag waterfall performance list"
-        style={{ height: VIEWPORT_HEIGHT, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: { height: VIEWPORT_HEIGHT, overflow: "auto", border: "2px solid #3b82f6", borderRadius: 8 },
+        })}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((vi) => {
             const item = items[vi.index]
             if (!item) return null
             return (
-              <div key={item.id} ref={vi.measureElement} style={virtualizer.getItemStyle(vi)}>
+              <div key={item.id} {...virtualizer.getItemProps(vi)}>
                 <Card item={item} width={layout.columnWidth} />
               </div>
             )

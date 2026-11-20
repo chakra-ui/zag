@@ -1,3 +1,4 @@
+import { isFunction } from "@zag-js/utils"
 import { AnimationFrame } from "@zag-js/dom-query"
 import { getScrollPosition, setScrollPosition, type ScrollTarget } from "./scroll-helpers"
 
@@ -33,8 +34,7 @@ export function smoothScrollTo(
   const { duration = 600, easing = easeOutCubic, scrollFunction, onComplete, onCancel } = options
 
   let cancelled = false
-  const hasRAF =
-    typeof globalThis.requestAnimationFrame === "function" && typeof globalThis.cancelAnimationFrame === "function"
+  const hasRAF = isFunction(globalThis.requestAnimationFrame) && isFunction(globalThis.cancelAnimationFrame)
   const frame = hasRAF ? AnimationFrame.create() : null
 
   const targetEl = element as ScrollTarget

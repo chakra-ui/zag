@@ -2,7 +2,7 @@
 
 import * as combobox from "@zag-js/combobox"
 import { createFilter } from "@zag-js/i18n-utils"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-react"
 import { useId, useState } from "react"
@@ -65,14 +65,8 @@ export default function Page() {
 
       <div {...api.getPositionerProps()}>
         <div data-testid="combobox-content" {...api.getContentProps()}>
-          <div {...api.getListProps()} ref={ref} onScroll={virtualizer.handleScroll}>
-            <div
-              style={{
-                height: virtualizer.getTotalSize(),
-                width: "100%",
-                position: "relative",
-              }}
-            >
+          <div {...mergeProps(virtualizer.getRootProps(), api.getListProps())} ref={ref}>
+            <div {...virtualizer.getContentProps()}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = options[vi.index]
                 // The count syncs before paint; skip rows from the previous one
@@ -81,15 +75,7 @@ export default function Page() {
                   <div
                     data-testid={item.code}
                     key={item.code}
-                    aria-posinset={vi.index + 1}
-                    aria-setsize={options.length}
-                    {...api.getItemProps({ item })}
-                    style={{
-                      ...virtualizer.getItemStyle(vi),
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
+                    {...mergeProps(virtualizer.getItemProps(vi), api.getItemProps({ item }))}
                   >
                     <span>{item.label}</span>
                     <span {...api.getItemIndicatorProps({ item })}>✅</span>

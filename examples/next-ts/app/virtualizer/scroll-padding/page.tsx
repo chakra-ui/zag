@@ -1,5 +1,6 @@
 "use client"
 
+import { mergeProps } from "@zag-js/react"
 import { useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
@@ -81,38 +82,39 @@ export default function Page() {
 
       <div
         ref={ref}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Virtualized list with scroll padding"
-        style={{
-          height: 400,
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #e2e8f0",
-          borderRadius: 8,
-          marginTop: 16,
-          boxSizing: "border-box",
-          background: `linear-gradient(to bottom, #dbeafe ${scrollPaddingStart}px, transparent ${scrollPaddingStart}px, transparent calc(100% - ${scrollPaddingEnd}px), #dbeafe calc(100% - ${scrollPaddingEnd}px))`,
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: 400,
+            width: "100%",
+            overflow: "auto",
+            border: "1px solid #e2e8f0",
+            borderRadius: 8,
+            marginTop: 16,
+            boxSizing: "border-box",
+            background: `linear-gradient(to bottom, #dbeafe ${scrollPaddingStart}px, transparent ${scrollPaddingStart}px, transparent calc(100% - ${scrollPaddingEnd}px), #dbeafe calc(100% - ${scrollPaddingEnd}px))`,
+          },
+        })}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((virtualItem) => {
             const item = items[virtualItem.index]
             return (
               <div
                 key={item.id}
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem),
-                  height: ITEM_HEIGHT,
-                  padding: "0 16px",
-                  borderBottom: "1px solid #cbd5e1",
-                  boxSizing: "border-box",
-                  backgroundColor:
-                    virtualItem.index % 2 === 0 ? "rgba(248, 250, 252, 0.92)" : "rgba(226, 232, 240, 0.92)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+                {...mergeProps(virtualizer.getItemProps(virtualItem), {
+                  style: {
+                    height: ITEM_HEIGHT,
+                    padding: "0 16px",
+                    borderBottom: "1px solid #cbd5e1",
+                    boxSizing: "border-box",
+                    backgroundColor:
+                      virtualItem.index % 2 === 0 ? "rgba(248, 250, 252, 0.92)" : "rgba(226, 232, 240, 0.92)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  },
+                })}
               >
                 <span>{item.label}</span>
                 <span style={{ color: "#64748b", fontSize: 12 }}>y: {virtualItem.start}px</span>

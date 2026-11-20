@@ -4229,6 +4229,12 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       clean-package:
         specifier: 2.2.0

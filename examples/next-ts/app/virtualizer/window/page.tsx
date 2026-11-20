@@ -1,5 +1,6 @@
 "use client"
 
+import { mergeProps } from "@zag-js/react"
 import { ClientOnly } from "@/components/client-only"
 import { useWindowVirtualizer } from "@/hooks/use-virtualizer"
 
@@ -48,40 +49,26 @@ function WindowDemo() {
 
       <div
         ref={setScrollRootRef}
-        {...virtualizer.getContainerAriaAttrs()}
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          marginTop: 20,
-          border: "1px solid #d1d5db",
-          borderRadius: 8,
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: { width: "100%", marginTop: 20, border: "1px solid #d1d5db", borderRadius: 8 },
+        })}
       >
-        <div
-          style={{
-            height: `${totalSize}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((virtualItem) => {
             const item = items[virtualItem.index]
-            const style = virtualizer.getItemStyle(virtualItem)
-
             return (
               <div
-                key={virtualItem.index}
-                data-index={virtualItem.index}
-                {...virtualizer.getItemAriaAttrs(virtualItem.index)}
-                style={{
-                  ...style,
-                  padding: "16px",
-                  backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
-                  borderBottom: "1px solid #e1e5e9",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px",
-                }}
+                key={virtualItem.key}
+                {...mergeProps(virtualizer.getItemProps(virtualItem), {
+                  style: {
+                    padding: "16px",
+                    backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
+                    borderBottom: "1px solid #e1e5e9",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  },
+                })}
               >
                 <div
                   style={{

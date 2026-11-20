@@ -1,9 +1,10 @@
-import { AnimationFrame, getComputedStyle, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, getComputedStyle, getWindow, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { createNormalizer, type NormalizeProps, type PropTypes } from "@zag-js/types"
+import { clampValue, ensure, isDev, isFunction, isNumber, isString, runIfFn } from "@zag-js/utils"
 import type {
   CSSProperties,
   InitialMeasurements,
   ItemMeasurement,
-  ItemState,
   Range,
   RangeChangeReason,
   ScrollByOptions,
@@ -16,6 +17,9 @@ import type {
   VirtualItem,
   VirtualizerOptions,
 } from "./types"
+import { isSameOption } from "./utils/options"
+import { SetupWarnings } from "./utils/dev"
+import { partSelector, trackElements } from "./utils/track-elements"
 import { IntersectionObserverManager } from "./utils/intersection-observer-manager"
 import { getScrollPosition, getScrollPositionFromEvent, setScrollPosition } from "./utils/scroll-helpers"
 import { smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
@@ -75,9 +79,14 @@ interface ScrollportInsets {
 
 const NO_INSETS: ScrollportInsets = { padding: 0, scrollPaddingStart: 0, scrollPaddingEnd: 0 }
 
-const toPx = (value: string | undefined) => Number.parseFloat(value ?? "") || 0
+export type ScrollEventLike = Event | { currentTarget: { scrollTop: number; scrollLeft: number } }
 
-export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
+let uid = 0
+const defaultNormalize = createNormalizer((props) => props)
+
+const parsePx = (value: string | undefined) => Number.parseFloat(value ?? "") || 0
+
+export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions, T extends PropTypes = PropTypes> {
   protected options: ResolvedBaseOptions & O
 
   // Measurements — lazy invalidation via dirty floor instead of Map iteration
@@ -140,16 +149,18 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private pendingInitialOffsetRaf: number | null = null
   private hasAppliedInitialOffset = false
   private isDestroyed = false
-  private static hasWarnedScaledTransform = false
 
-  // Scroll listener management
+  private setupWarnings = new SetupWarnings()
+  private hasMeasuredItems = false
+
+  /** Stamped on the elements the prop getters return */
+  readonly id: string
+  protected normalize: NormalizeProps<T>
+
   protected scrollElement: HTMLElement | null = null
-
-  /**
-   * Cached function for {@link handleScroll} getter — stable reference for `onScroll={virtualizer.handleScroll}`.
-   * (Only `subscribe` / `getSnapshot` use class fields so `useSyncExternalStore` can pass them without `.bind`.)
-   */
-  private scrollHandler?: (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void
+  private scrollCleanup: VoidFunction | undefined
+  private trackCleanup: VoidFunction | undefined
+  private indexByElement = new Map<Element, number>()
 
   /** Incremented when external-store subscribers (e.g. React useSyncExternalStore) should re-render. */
   private storeVersion = 0
@@ -179,6 +190,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       ...options,
     } as ResolvedBaseOptions & O
 
+    this.id = options.id ?? `virtualizer-${++uid}`
+    this.normalize = (options.normalizeProps ?? defaultNormalize) as NormalizeProps<T>
     this.scrollOffset = this.options.initialOffset
     this.initializeAdvancedFeatures()
     this.initializeMeasurements()
@@ -200,9 +213,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.isDestroyed = false
     this.scrollElement = scrollElement
     this.rtlScrollBehavior = null
-    if (isHTMLElement(scrollElement)) {
-      this.warnOnScaledContainer(scrollElement)
-    }
+    this.listenToScroll(scrollElement)
+    this.trackElements(scrollElement)
 
     if (this.options.observeScrollElementSize) {
       this.observeScrollElementSize(scrollElement)
@@ -210,6 +222,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     this.measure()
     this.applyInitialScrollOffset()
+
+    if (isDev() && isHTMLElement(scrollElement)) {
+      this.checkScrollElementSetup(scrollElement)
+    }
   }
 
   /** Class field — stable reference for `useSyncExternalStore(virtualizer.subscribe, …)`. */
@@ -241,18 +257,67 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
-  private warnOnScaledContainer(element: HTMLElement): void {
-    if (Virtualizer.hasWarnedScaledTransform) return
-    if (typeof process !== "undefined" && process.env?.NODE_ENV === "production") return
+  protected checkScrollElementSetup(element: HTMLElement): void {
+    if (this.hasNonIdentityScale(getComputedStyle(element).transform)) {
+      this.setupWarnings.warn("scaled-container")
+    }
+
+    // A short list that fits on screen is fine
+    const totalSize = this.getTotalSize()
+    const win = getWindow(element)
+    const windowSize = this.isHorizontal ? win.innerWidth : win.innerHeight
+    if (totalSize > windowSize && this.getScrollportSize() >= totalSize) {
+      this.setupWarnings.warn("unconstrained-container")
+    }
+  }
+
+  /** Listens to the scroll container directly, so no framework re-render can drop the listener */
+  protected listenToScroll(element: HTMLElement): void {
+    this.scrollCleanup?.()
     if (!isHTMLElement(element)) return
+    const onScroll = (event: Event) => this.handleScrollEvent(event)
+    element.addEventListener("scroll", onScroll, { passive: true })
+    this.scrollCleanup = () => element.removeEventListener("scroll", onScroll)
+  }
 
-    const transform = getComputedStyle(element).transform
-    if (!this.hasNonIdentityScale(transform)) return
+  /** Parts whose elements are found and measured automatically */
+  protected getTrackedParts(): string[] {
+    return ["item"]
+  }
 
-    Virtualizer.hasWarnedScaledTransform = true
-    console.warn(
-      "[@zag-js/virtualizer] Scaled (`transform: scale(...)`) scroll containers are not supported. Measurements and scrolling offsets can drift.",
-    )
+  private trackElements(root: HTMLElement): void {
+    this.trackCleanup?.()
+    if (!isHTMLElement(root)) return
+    const selector = this.getTrackedParts()
+      .map((part) => partSelector(part, this.id))
+      .join(",")
+    this.trackCleanup = trackElements(root, {
+      selector,
+      onAdd: (element) => this.onElementAdded(element),
+      onRemove: (element) => this.onElementRemoved(element),
+      onIndexChange: (element) => {
+        this.onElementRemoved(element)
+        this.onElementAdded(element)
+      },
+    })
+  }
+
+  protected onElementAdded(element: HTMLElement): void {
+    if (!element.hasAttribute("data-virtualizer-item")) return
+    const index = Number(element.dataset.index)
+    if (Number.isInteger(index)) this.attachItemElement(index, element)
+  }
+
+  protected onElementRemoved(element: HTMLElement): void {
+    const index = this.indexByElement.get(element)
+    if (index !== undefined) this.detachItemElement(index, element)
+  }
+
+  private checkItemsMeasured(): void {
+    if (this.hasMeasuredItems || !this.shouldMeasureItems()) return
+    if (this.options.initialMeasurements) return
+    if (this.options.count === 0) return
+    this.setupWarnings.warn("unmeasured-items")
   }
 
   private hasNonIdentityScale(transform: string | null): boolean {
@@ -324,20 +389,58 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Style Getters
   // ============================================
 
-  /** Regular method (not a class field) so subclasses can override with `super`. */
-  getContainerStyle(): CSSProperties {
+  /** Props for the scroll container. Attach the container with `init(element)`. */
+  getRootProps(): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-root": this.id,
+      "data-empty": this.options.count === 0 ? "" : undefined,
+      // Focusable so keyboard users can scroll it; a component's own tabIndex, merged after, wins
+      tabIndex: this.getRootTabIndex(),
+      ...this.getRootAria(),
+      // `--total-size` lets the container size itself, e.g. `max-height: min(400px, var(--total-size))`
+      style: { ...this.getRootStyle(), "--total-size": `${this.getTotalSize()}px` },
+    })
+  }
+
+  /** Props for the element sized to every item, which holds the rendered items */
+  getContentProps(): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-content": this.id,
+      style: this.getContentStyle(),
+    })
+  }
+
+  /** Props for a rendered item. Positions it and, unless sizes are fixed, measures it. */
+  getItemProps(virtualItem: VirtualItem): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-item": this.id,
+      "data-index": virtualItem.index,
+      ...this.getItemAria(virtualItem.index),
+      style: this.getItemStyle(virtualItem),
+    })
+  }
+
+  protected getRootAria(): Record<string, string | number> {
+    return {}
+  }
+
+  protected getRootTabIndex(): number | undefined {
+    return 0
+  }
+
+  protected getItemAria(_index: number): Record<string, string | number> {
+    return {}
+  }
+
+  protected getRootStyle(): CSSProperties {
     return {
       position: "relative",
       overflow: "auto",
       overflowAnchor: this.options.overflowAnchor,
-      willChange: "scroll-position",
-      WebkitOverflowScrolling: "touch",
-      contain: "strict",
     }
   }
 
-  /** Regular method (not a class field) so subclasses can override with `super`. */
-  getContentStyle(): CSSProperties {
+  protected getContentStyle(): CSSProperties {
     const totalSize = this.getTotalSize()
     const horizontal = this.isHorizontal
 
@@ -350,13 +453,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
-  /** Regular method (not a class field) so subclasses can override with `super`. */
-  getScrollHandler() {
-    return this.handleScroll
-  }
-
-  abstract getItemState(virtualItem: VirtualItem): ItemState
-  abstract getItemStyle(virtualItem: VirtualItem): CSSProperties
+  protected abstract getItemStyle(virtualItem: VirtualItem): CSSProperties
 
   // ============================================
   // Virtual Items
@@ -381,6 +478,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
 
     const newVirtualItems: VirtualItem[] = []
+    const hasCustomKeys = isFunction(this.options.indexToKey)
+    const seenKeys = hasCustomKeys && isDev() ? new Set<string | number>() : null
 
     // Lazy cleanup — only when cache grows too large
     const visibleCount = indexes.length
@@ -402,6 +501,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       const isRetained = i < startIndex || i > endIndex
 
       this.keyIndexCache.set(key, i)
+
+      if (seenKeys) {
+        if (seenKeys.has(key)) this.setupWarnings.warn("duplicate-key")
+        seenKeys.add(key)
+      }
 
       let cachedItem = this.virtualItemObjectCache.get(i)
 
@@ -427,7 +531,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
           isVisible,
           isOverscan,
           isRetained,
-          measureElement: this.createMeasureElement(i),
         }
 
         if (cachedItem) {
@@ -512,7 +615,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       index,
       orientation: this.isHorizontal ? "horizontal" : "vertical",
     })
-    if (typeof measured === "number" && Number.isFinite(measured) && measured > 0) {
+    if (isNumber(measured) && Number.isFinite(measured) && measured > 0) {
       return measured
     }
     return this.isHorizontal ? element.offsetWidth : element.offsetHeight
@@ -520,12 +623,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   protected getEstimatedSize(index: number, laneWidth?: number): number {
     const { estimatedItemSize } = this.options
-    return typeof estimatedItemSize === "number" ? estimatedItemSize : estimatedItemSize(index, laneWidth)
+    return isNumber(estimatedItemSize) ? estimatedItemSize : estimatedItemSize(index, laneWidth)
   }
 
   protected getScrollMargin(): number {
     const { scrollMargin } = this.options
-    return typeof scrollMargin === "function" ? scrollMargin() : scrollMargin
+    return runIfFn(scrollMargin)
   }
 
   /**
@@ -595,7 +698,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private createInitialMeasurementLookup(seeds: InitialMeasurements): Map<string | number, number> | null {
-    if (typeof this.options.keyToIndex === "function") return null
+    if (isFunction(this.options.keyToIndex)) return null
     if (!this.options.indexToKey) return null
     if (seeds instanceof Map && seeds.size === 0) return null
     if (!(seeds instanceof Map) && Object.keys(seeds).length === 0) return null
@@ -620,11 +723,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       return byUser
     }
 
-    if (typeof key === "number" && Number.isInteger(key) && key >= 0 && key < this.options.count) {
+    if (isNumber(key) && Number.isInteger(key) && key >= 0 && key < this.options.count) {
       return key
     }
 
-    if (typeof key === "string" && /^\d+$/.test(key)) {
+    if (isString(key) && /^\d+$/.test(key)) {
       const index = Number(key)
       if (index >= 0 && index < this.options.count) {
         return index
@@ -701,16 +804,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Scroll Handling
   // ============================================
 
-  get handleScroll(): (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void {
-    if (!this.scrollHandler) {
-      this.scrollHandler = (event) => {
-        this.handleScrollEvent(event)
-      }
-    }
-    return this.scrollHandler
-  }
-
-  private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
+  protected handleScrollEvent(event: ScrollEventLike): void {
     if (this.isDestroyed) return
     const horizontal = this.isHorizontal
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
@@ -737,6 +831,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.isScrolling = false
       this.resetScrollMotionContext()
       this.notifyScroll()
+      if (isDev()) this.checkItemsMeasured()
       this.options.onScrollEnd?.(this.getCurrentScrollState())
       // Attach ResizeObservers for items mounted during scroll.
       // During fast scroll, observer setup is skipped to avoid overhead.
@@ -802,7 +897,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // ============================================
 
   /** Regular method (not a class field) so subclasses can override with `super`. */
-  setViewportSize(size: number): void {
+  protected setViewportSize(size: number): void {
     if (this.isDestroyed) return
     this.viewportSize = size
     this.lastCalculatedOffset = -1
@@ -814,7 +909,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.notifyStore()
   }
 
-  setCrossAxisSize(size: number): void {
+  protected setCrossAxisSize(size: number): void {
     if (this.isDestroyed) return
     const sizeChanged = this.crossAxisSize !== size
     this.crossAxisSize = size
@@ -842,7 +937,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   getIndexAtOffset(offset: number): number | null {
     if (this.options.count === 0) return null
     const index = this.findIndexAtOffset(offset + this.getScrollMargin())
-    return Math.max(0, Math.min(this.options.count - 1, index))
+    return clampValue(index, 0, this.options.count - 1)
   }
 
   /** Discard measured sizes, keeping the scroll position. */
@@ -969,9 +1064,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const style = getComputedStyle(element)
     const axis = this.isHorizontal ? "Inline" : "Block"
     return {
-      padding: toPx(style[`padding${axis}Start`]),
-      scrollPaddingStart: toPx(style[`scrollPadding${axis}Start`]),
-      scrollPaddingEnd: toPx(style[`scrollPadding${axis}End`]),
+      padding: parsePx(style[`padding${axis}Start`]),
+      scrollPaddingStart: parsePx(style[`scrollPadding${axis}Start`]),
+      scrollPaddingEnd: parsePx(style[`scrollPadding${axis}End`]),
     }
   }
 
@@ -1089,7 +1184,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         ? { ...DEFAULT_SMOOTH_SCROLL_OPTIONS, ...smoothOptions }
         : DEFAULT_SMOOTH_SCROLL_OPTIONS
 
-    const easingFn = typeof options.easing === "function" ? options.easing : easeOutCubic
+    const easingFn = isFunction(options.easing) ? options.easing : easeOutCubic
 
     const userScrollFn =
       typeof smoothOptions === "object" && "scrollFunction" in smoothOptions
@@ -1127,11 +1222,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       ? { x: this.toRawHorizontalOffset(targetOffset, this.scrollElement) }
       : { y: targetOffset }
 
-    if (!this.scrollElement) {
-      throw new Error(
+    ensure(
+      this.scrollElement,
+      () =>
         "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before using smooth scrolling.",
-      )
-    }
+    )
 
     this.currentSmoothScroll = smoothScrollTo(this.scrollElement, target, {
       duration: options.duration,
@@ -1160,6 +1255,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   measureItem(index: number, size: number): void {
     if (this.isDestroyed || !this.shouldMeasureItems()) return
+    this.hasMeasuredItems = true
     const previousSize = this.getKnownItemSize(index) ?? this.getEstimatedSize(index)
     const delta = size - previousSize
     const shouldAdjust = this.shouldAdjustScrollOnSizeChange(index, delta)
@@ -1239,7 +1335,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * Schedule a size update via RAF batching.
    * Used for ResizeObserver callbacks (fire async, outside React commit phase).
    */
-  scheduleSizeUpdate(index: number, size: number, element?: Element): void {
+  protected scheduleSizeUpdate(index: number, size: number, element?: Element): void {
     if (this.isDestroyed) return
 
     this.pendingSizeUpdates.set(index, { size, element })
@@ -1496,10 +1592,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   getRange(): Range {
-    return this.getRenderedRange()
-  }
-
-  getRenderedRange(): Range {
     this.calculateRange()
     return { ...this.range }
   }
@@ -1514,7 +1606,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return this.findVisibleRange(viewportStart, viewportStart + this.viewportSize)
   }
 
-  forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+  protected forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
     if (this.isDestroyed) return
     this.lastCalculatedOffset = -1
     this.cachedRangeStart = -1
@@ -1567,54 +1659,44 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * Create a measureElement ref callback for a virtual item.
-   * Measures synchronously via getBoundingClientRect (fast, in React commit phase).
-   * Sets up ResizeObserver for future size changes only — initial measurement is
-   * written to itemSizeCache first, so the ResizeObserver callback short-circuits.
+   * Measures a newly rendered item right away, so the next render positions it correctly.
+   * A ResizeObserver then tracks later size changes; it is set up once scrolling stops.
    */
-  private createMeasureElement(index: number): (element: HTMLElement | null) => void {
-    return (element: HTMLElement | null) => {
-      const prevElement = this.elementsByIndex.get(index)
+  private attachItemElement(index: number, element: HTMLElement): void {
+    const prevElement = this.elementsByIndex.get(index)
+    if (prevElement && prevElement !== element) this.detachItemElement(index, prevElement)
 
-      if (prevElement && prevElement !== element) {
-        this.unobserveElement(prevElement)
-        this.elementsByIndex.delete(index)
-      }
+    this.elementsByIndex.set(index, element)
+    this.indexByElement.set(element, index)
+    this.hasMeasuredItems = true
+    this.observeElementVisibility(element, index)
+    if (!this.shouldMeasureItems()) return
 
-      if (element) {
-        this.elementsByIndex.set(index, element)
-        if (!this.shouldMeasureItems()) return
-
-        // Measure synchronously in the ref callback — updates Fenwick tree
-        // immediately for correct positioning on the next render.
-        const size = this.readMeasuredSizeFromElement(element, index)
-
-        if (size > 0) {
-          const knownSize = this.getKnownItemSize(index)
-          if (knownSize === undefined || knownSize !== size) {
-            // Write to itemSizeCache so ResizeObserver's initial callback
-            // sees the same size and becomes a no-op.
-            this.itemSizeCache.set(index, size)
-            this.measureElementSync(index, size)
-            this.onMeasurementsChanged()
-          }
-        }
-
-        // ResizeObserver handles future size changes (content resize after mount).
-        // Only set up during idle — not during fast scroll to avoid observer overhead.
-        if (!this.isScrolling) {
-          this.observeElementSize(element, index)
-        }
-      } else {
-        this.elementsByIndex.delete(index)
+    const size = this.readMeasuredSizeFromElement(element, index)
+    if (size > 0) {
+      const knownSize = this.getKnownItemSize(index)
+      if (knownSize === undefined || knownSize !== size) {
+        // Cached first, so the ResizeObserver's initial callback is a no-op
+        this.itemSizeCache.set(index, size)
+        this.measureElementSync(index, size)
+        this.onMeasurementsChanged()
       }
     }
+
+    if (!this.isScrolling) this.observeElementSize(element, index)
   }
 
-  observeElementSize(element: Element, index: number): void {
+  private detachItemElement(index: number, element: Element): void {
+    if (this.elementsByIndex.get(index) === element) this.elementsByIndex.delete(index)
+    this.indexByElement.delete(element)
+    this.unobserveElement(element)
+  }
+
+  protected observeElementSize(element: Element, index: number): void {
     if (this.isDestroyed) return
     this.unobserveElementResize(element)
     if (!this.shouldMeasureItems()) return
+    this.hasMeasuredItems = true
 
     const cleanup = resizeObserverBorderBox.observe(element, (entry) => {
       if (this.isDestroyed || !this.shouldMeasureItems()) return
@@ -1650,7 +1732,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
-  observeElementVisibility(element: Element, index: number): void {
+  protected observeElementVisibility(element: Element, index: number): void {
     if (this.isDestroyed) return
     if (!this.intersectionObserver) return
     this.intersectionObserver.observe(element, (isVisible) => {
@@ -1667,7 +1749,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
-  unobserveElement(element: Element): void {
+  protected unobserveElement(element: Element): void {
     this.unobserveElementResize(element)
     this.intersectionObserver?.unobserve(element)
   }
@@ -1676,7 +1758,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   // Smooth Scrolling API
   // ============================================
 
-  smoothScrollTo(
+  protected smoothScrollTo(
     offset: number,
     options: {
       duration?: number
@@ -1695,12 +1777,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return this.currentSmoothScroll !== null
   }
 
-  setScrollElement(element: Element): void {
-    if (isHTMLElement(element)) {
-      this.init(element)
-    }
-  }
-
   updateOptions(nextOptions: Partial<O>): void {
     if (this.isDestroyed) return
     const prev = { ...this.options }
@@ -1717,7 +1793,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // Check if anything actually changed
     let changed = false
     for (const key in nextOptions) {
-      if ((prev as any)[key] !== (this.options as any)[key]) {
+      if (!isSameOption((prev as any)[key], (this.options as any)[key])) {
         changed = true
         break
       }
@@ -1755,7 +1831,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.pendingSyncNotify = false
     this.scrollElement = null
     this.rtlScrollBehavior = null
-    delete this.scrollHandler
+    this.scrollCleanup?.()
+    this.trackCleanup?.()
+    this.scrollCleanup = undefined
+    this.trackCleanup = undefined
+    this.indexByElement.clear()
 
     if (this.scrollEndTimer) {
       clearTimeout(this.scrollEndTimer)

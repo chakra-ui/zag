@@ -21,6 +21,7 @@ export default function Page() {
     count: items.length,
     itemSize: 40,
     overscan: 10,
+    aria: false,
   })
 
   const service = useMachine(dnd.machine, {
@@ -38,13 +39,13 @@ export default function Page() {
       <main className={styles.main}>
         <div {...api.getRootProps()} className={styles.root}>
           <h3>Virtualized (500 items)</h3>
-          <div ref={ref} onScroll={virtualizer.handleScroll} className={styles.virtualViewport}>
-            <div className={styles.virtualSizer} style={{ height: virtualizer.getTotalSize() }}>
+          <div ref={ref} {...virtualizer.getRootProps()} className={styles.virtualViewport}>
+            <div {...virtualizer.getContentProps()} className={styles.virtualSizer}>
               {virtualizer.getVirtualItems().map((vi) => {
                 const item = items[vi.index]
                 if (!item) return null
                 return (
-                  <div key={item.id} style={virtualizer.getItemStyle(vi)}>
+                  <div key={item.id} {...virtualizer.getItemProps(vi)}>
                     <div className={styles.virtualRowInner}>
                       <div
                         {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}

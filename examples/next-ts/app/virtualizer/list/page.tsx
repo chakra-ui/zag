@@ -1,5 +1,6 @@
 "use client"
 
+import { mergeProps } from "@zag-js/react"
 import { useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 
@@ -56,42 +57,27 @@ export default function Page() {
 
         <div
           ref={setScrollElementRef}
-          onScroll={virtualizer.handleScroll}
-          {...virtualizer.getContainerAriaAttrs()}
-          tabIndex={0}
+          {...mergeProps(virtualizer.getRootProps(), {
+            style: { height: "400px", border: "1px solid #ccc", marginTop: "16px" },
+          })}
           aria-label="Virtualized list"
-          style={{
-            ...virtualizer.getContainerStyle(),
-            height: "400px",
-            border: "1px solid #ccc",
-            marginTop: "16px",
-          }}
         >
-          <div
-            style={{
-              height: `${totalSize}px`,
-              width: "100%",
-              position: "relative",
-            }}
-          >
+          <div {...virtualizer.getContentProps()}>
             {virtualItems.map((virtualItem) => {
               const item = items[virtualItem.index]
-              const style = virtualizer.getItemStyle(virtualItem)
-
               return (
                 <div
-                  key={virtualItem.index}
-                  data-index={virtualItem.index}
-                  {...virtualizer.getItemAriaAttrs(virtualItem.index)}
-                  style={{
-                    ...style,
-                    padding: "16px",
-                    backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
-                    borderBottom: "1px solid #e1e5e9",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                  }}
+                  key={virtualItem.key}
+                  {...mergeProps(virtualizer.getItemProps(virtualItem), {
+                    style: {
+                      padding: "16px",
+                      backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
+                      borderBottom: "1px solid #e1e5e9",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                    },
+                  })}
                 >
                   <div
                     style={{

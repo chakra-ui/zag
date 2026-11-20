@@ -1,4 +1,6 @@
+import { clampValue, invariant, isNumber, toPx } from "@zag-js/utils"
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import type { PropTypes } from "@zag-js/types"
 import { ListVirtualizer } from "./list-virtualizer"
 import type {
   CSSProperties,
@@ -9,8 +11,9 @@ import type {
   VirtualItem,
 } from "./types"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
+import { isSameOption } from "./utils/options"
+import type { ScrollEventLike } from "./virtualizer"
 
-type ScrollEvent = Parameters<ListVirtualizer["handleScroll"]>[0]
 type Edge = "start" | "end"
 type Span = { start: number; end: number }
 type ColumnBounds = { first: number; last: number }
@@ -18,6 +21,9 @@ type RowPadding = Pick<TableVirtualizerOptions, "headerSize" | "footerSize" | "s
 
 const COLUMN_KEYS = ["columnCount", "columnSize", "pinnedColumns", "columnOverscan"] as const
 type ColumnOptions = { [K in (typeof COLUMN_KEYS)[number]]: TableVirtualizerOptions[K] | undefined }
+
+const isSameOffsets = (a: Float64Array, b: Float64Array) =>
+  a.length === b.length && a.every((value, i) => value === b[i])
 
 const EMPTY_STYLE: CSSProperties = {}
 const EMPTY_RANGE: Range = { startIndex: 0, endIndex: -1 }
@@ -29,21 +35,18 @@ const RETAINED_ROW_STYLE: CSSProperties = {
   pointerEvents: "none",
 }
 
-const px = (value: number) => `${value}px`
-
 const isSameColumnOption = <K extends keyof ColumnOptions>(key: K, a: ColumnOptions[K], b: ColumnOptions[K]) => {
-  if (key !== "pinnedColumns") return a === b
+  if (key !== "pinnedColumns") return isSameOption(a, b)
   const x = a as ColumnOptions["pinnedColumns"]
   const y = b as ColumnOptions["pinnedColumns"]
   return (x?.start ?? 0) === (y?.start ?? 0) && (x?.end ?? 0) === (y?.end ?? 0)
 }
 
-export class TableVirtualizer extends ListVirtualizer {
+export class TableVirtualizer<T extends PropTypes = PropTypes> extends ListVirtualizer<T> {
   private headerSize: number
   private footerSize: number
   private userScrollPaddingStart: number
   private headerCleanup: VoidFunction | undefined
-  private tableScrollHandler: ((event: ScrollEvent) => void) | undefined
 
   // Cached so render never forces layout
   private clientWidth!: number
@@ -91,20 +94,84 @@ export class TableVirtualizer extends ListVirtualizer {
     this.updateColumnRange()
   }
 
-  override get handleScroll(): (event: ScrollEvent) => void {
-    if (!this.tableScrollHandler) {
-      const handleRowScroll = super.handleScroll
-      this.tableScrollHandler = (event) => {
-        this.readClientSize()
-        handleRowScroll(event)
-        this.scrollLeft = Math.abs(getScrollPositionFromEvent(event).scrollLeft)
-        if (this.updateColumnRange()) this.notifyStore()
-      }
-    }
-    return this.tableScrollHandler
+  protected override handleScrollEvent(event: ScrollEventLike): void {
+    this.readClientSize()
+    super.handleScrollEvent(event)
+    this.scrollLeft = Math.abs(getScrollPositionFromEvent(event).scrollLeft)
+    if (this.updateColumnRange()) this.notifyStore()
   }
 
-  override setViewportSize(size: number): void {
+  /** Props for the `<table>`. Columns switch it to a fixed layout sized to every column. */
+  getTableProps(): T["element"] {
+    return this.normalize.element({ style: this.getTableStyle() })
+  }
+
+  /** Props for the `<thead>`. Its height is measured so rows scroll clear of it. */
+  getHeaderProps(): T["element"] {
+    return this.normalize.element({ "data-virtualizer-header": this.id })
+  }
+
+  /** Props for the `<tbody>` holding the rendered rows */
+  getBodyProps(): T["element"] {
+    return this.normalize.element({ style: this.getBodyStyle() })
+  }
+
+  /** Props for a rendered row. Keeps a retained row focusable but out of the layout. */
+  getRowProps(virtualItem: VirtualItem): T["element"] {
+    return this.getItemProps(virtualItem)
+  }
+
+  /** Props for the `<tr>` reserving the space of rows before (`"start"`) or after (`"end"`) the rendered ones */
+  getRowSpacerProps(edge: Edge): T["element"] {
+    return this.normalize.element({ "aria-hidden": true, style: this.getRowSpacerStyle(edge) })
+  }
+
+  /** Props for a column's `<col>` */
+  getColumnProps(column: TableColumn): T["element"] {
+    return this.normalize.element({ style: { width: toPx(column.size) } })
+  }
+
+  /** Props for the `<col>` or cell reserving the width of columns outside the window */
+  getColumnSpacerProps(edge: Edge): T["element"] {
+    return this.normalize.element({ "aria-hidden": true, style: this.getColumnSpacerStyle(edge) })
+  }
+
+  /** Props for a cell. Pinned cells stick to their edge. */
+  getCellProps(column: TableColumn): T["element"] {
+    return this.normalize.element({
+      "aria-colindex": column.index + 1,
+      "data-pinned": column.pinned || undefined,
+      style: this.getCellStyle(column),
+    })
+  }
+
+  protected override getRootAria(): Record<string, string | number> {
+    return {}
+  }
+
+  protected override getItemAria(): Record<string, string | number> {
+    return {}
+  }
+
+  protected override getItemStyle(virtualItem: VirtualItem): CSSProperties {
+    return virtualItem.isRetained ? RETAINED_ROW_STYLE : EMPTY_STYLE
+  }
+
+  protected override getTrackedParts(): string[] {
+    return ["item", "header"]
+  }
+
+  protected override onElementAdded(element: HTMLElement): void {
+    if (element.hasAttribute("data-virtualizer-header")) this.measureHeader(element)
+    else super.onElementAdded(element)
+  }
+
+  protected override onElementRemoved(element: HTMLElement): void {
+    if (element.hasAttribute("data-virtualizer-header")) this.measureHeader(null)
+    else super.onElementRemoved(element)
+  }
+
+  protected override setViewportSize(size: number): void {
     this.clientHeight = this.scrollElement?.clientHeight || size
     super.setViewportSize(size)
   }
@@ -156,8 +223,7 @@ export class TableVirtualizer extends ListVirtualizer {
   // Rows
   // ============================================
 
-  /** Ref for the `<thead>`; keeps `headerSize` in sync with its height. */
-  measureHeaderElement = (element: HTMLElement | null): void => {
+  private measureHeader(element: HTMLElement | null): void {
     this.headerCleanup?.()
     this.headerCleanup = undefined
     if (!element || this.destroyed) return
@@ -206,35 +272,29 @@ export class TableVirtualizer extends ListVirtualizer {
     return { start: this.getMeasurement(startIndex).start, end: this.getMeasurement(endIndex).end }
   }
 
-  /** Height of the spacer row before (`"start"`) or after (`"end"`) the rendered rows. */
-  getRowSpacerStyle(edge: Edge): CSSProperties {
+  private getRowSpacerStyle(edge: Edge): CSSProperties {
     const rowsStart = this.headerSize
     const rowsEnd = this.getTotalSize() - this.footerSize
     const span = this.getRenderedSpan() ?? { start: rowsStart, end: rowsStart }
     const size = edge === "start" ? span.start - rowsStart : rowsEnd - span.end
-    return { height: px(Math.max(0, size)) }
+    return { height: toPx(Math.max(0, size)) }
   }
 
-  /** Sticky `<tbody>` that keeps rendered rows painted when scrolling outruns rendering. */
-  getBodyStyle(): CSSProperties {
+  // Sticky, so rendered rows stay painted when scrolling outruns rendering
+  private getBodyStyle(): CSSProperties {
     const span = this.getRenderedSpan()
     if (!span) return EMPTY_STYLE
     const inset = Math.min(0, this.clientHeight - (span.end - span.start))
     return {
       position: "sticky",
-      top: px(inset - this.footerSize),
-      bottom: px(inset - this.headerSize),
+      top: toPx(inset - this.footerSize),
+      bottom: toPx(inset - this.headerSize),
     }
   }
 
-  /** Keeps a retained row focusable but out of the table layout. */
-  getRowStyle(virtualItem: VirtualItem): CSSProperties {
-    return virtualItem.isRetained ? RETAINED_ROW_STYLE : EMPTY_STYLE
-  }
-
-  getTableStyle(): CSSProperties {
+  private getTableStyle(): CSSProperties {
     if (!this.hasColumns) return { borderCollapse: "collapse" }
-    return { borderCollapse: "collapse", tableLayout: "fixed", width: px(this.getTotalWidth()) }
+    return { borderCollapse: "collapse", tableLayout: "fixed", width: toPx(this.getTotalWidth()) }
   }
 
   // ============================================
@@ -259,22 +319,27 @@ export class TableVirtualizer extends ListVirtualizer {
       if (key in next) Object.assign(merged, { [key]: next[key] })
     }
     const changed = COLUMN_KEYS.some((key) => !isSameColumnOption(key, merged[key], this.columnOptions[key]))
-    if (!changed) return false
+    // A new `columnSize` callback may size columns differently, so compare the result
+    const sizeCallbackChanged = merged.columnSize !== this.columnOptions.columnSize
+    if (!changed && !sizeCallbackChanged) return false
+
+    const prevOffsets = this.columnOffsets
     this.columnOptions = merged
     this.rebuildColumns()
-    return true
+    return changed || !isSameOffsets(prevOffsets, this.columnOffsets)
   }
 
   private rebuildColumns(): void {
     const count = this.columnCount
     const { columnSize, pinnedColumns } = this.columnOptions
-    if (count > 0 && columnSize === undefined) {
-      throw new Error("[@zag-js/virtualizer] `columnSize` is required with `columnCount`.")
-    }
+    invariant(
+      count > 0 && columnSize === undefined,
+      "[@zag-js/virtualizer] `columnSize` is required with `columnCount`.",
+    )
 
     const offsets = new Float64Array(count + 1)
     for (let i = 0; i < count; i++) {
-      offsets[i + 1] = offsets[i] + (typeof columnSize === "number" ? columnSize : columnSize!(i))
+      offsets[i + 1] = offsets[i] + (isNumber(columnSize) ? columnSize : columnSize!(i))
     }
     this.columnOffsets = offsets
     this.pinnedStart = Math.min(count, pinnedColumns?.start ?? 0)
@@ -360,8 +425,7 @@ export class TableVirtualizer extends ListVirtualizer {
     return columns
   }
 
-  /** Width of the spacer column before (`"start"`) or after (`"end"`) the windowed columns. */
-  getColumnSpacerStyle(edge: Edge): CSSProperties {
+  private getColumnSpacerStyle(edge: Edge): CSSProperties {
     this.columnSpacerStyles ??= this.computeColumnSpacerStyles()
     return this.columnSpacerStyles[edge]
   }
@@ -375,24 +439,18 @@ export class TableVirtualizer extends ListVirtualizer {
     const isEmpty = endIndex < startIndex
     const startSize = isEmpty ? 0 : offsets[startIndex] - scrollableStart
     const endSize = isEmpty ? scrollableEnd - scrollableStart : scrollableEnd - offsets[endIndex + 1]
-    const spacer = (size: number): CSSProperties => ({ width: px(Math.max(0, size)), padding: 0, border: "none" })
+    const spacer = (size: number): CSSProperties => ({ width: toPx(Math.max(0, size)), padding: 0, border: "none" })
     return { start: spacer(startSize), end: spacer(endSize) }
   }
 
-  /** Width for a column's `<col>`. */
-  getColumnStyle(column: TableColumn): CSSProperties {
-    return { width: px(column.size) }
-  }
-
-  /** Sticky offsets for pinned cells; empty for other columns. */
-  getCellStyle(column: TableColumn): CSSProperties {
+  private getCellStyle(column: TableColumn): CSSProperties {
     if (!column.pinned) return EMPTY_STYLE
     let style = this.pinnedCellStyles.get(column.index)
     if (!style) {
       style =
         column.pinned === "start"
-          ? { position: "sticky", insetInlineStart: px(column.start), zIndex: 1 }
-          : { position: "sticky", insetInlineEnd: px(this.getTotalWidth() - column.end), zIndex: 1 }
+          ? { position: "sticky", insetInlineStart: toPx(column.start), zIndex: 1 }
+          : { position: "sticky", insetInlineEnd: toPx(this.getTotalWidth() - column.end), zIndex: 1 }
       this.pinnedCellStyles.set(column.index, style)
     }
     return style
@@ -420,7 +478,7 @@ export class TableVirtualizer extends ListVirtualizer {
     else if (end > current + viewportWidth) target = end - viewportWidth
 
     const max = Math.max(0, this.getTotalWidth() - element.clientWidth)
-    target = Math.max(0, Math.min(max, target))
+    target = clampValue(target, 0, max)
     if (target === current) return
 
     const left = this.options.dir === "rtl" ? -target : target

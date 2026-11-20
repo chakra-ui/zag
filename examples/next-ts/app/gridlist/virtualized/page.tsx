@@ -1,7 +1,7 @@
 "use client"
 
 import * as gridlist from "@zag-js/gridlist"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { CheckIcon } from "lucide-react"
 import { useId, useMemo } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
@@ -39,6 +39,8 @@ export default function Page() {
     count: items.length,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    // Grid rows take `aria-rowindex`, not list positions
+    aria: false,
   })
 
   const service = useMachine(gridlist.machine as gridlist.Machine<Row>, {
@@ -61,21 +63,13 @@ export default function Page() {
             <label {...api.getLabelProps()}>10,000 rows</label>
             <div
               ref={ref}
-              {...api.getContentProps()}
-              tabIndex={0}
-              onScroll={virtualizer.handleScroll}
-              style={{ height: 360, width: 480 }}
+              {...mergeProps(virtualizer.getRootProps(), api.getContentProps(), { style: { height: 360, width: 480 } })}
             >
-              <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+              <div {...virtualizer.getContentProps()}>
                 {virtualItems.map((vi) => {
                   const item = items[vi.index]
                   return (
-                    <div
-                      key={item.id}
-                      {...api.getItemProps({ item })}
-                      data-index={vi.index}
-                      style={{ ...virtualizer.getItemStyle(vi), overflowAnchor: "none" }}
-                    >
+                    <div key={item.id} {...mergeProps(virtualizer.getItemProps(vi), api.getItemProps({ item }))}>
                       <div {...api.getCellProps()}>
                         {api.hasCheckbox && (
                           <button {...api.getItemCheckboxProps({ item })}>

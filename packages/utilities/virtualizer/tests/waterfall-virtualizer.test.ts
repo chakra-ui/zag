@@ -1,7 +1,7 @@
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { WaterfallVirtualizer } from "../src/waterfall-virtualizer"
-import { createMeasuredElement } from "./test-utils"
+import { createMeasuredElement, mountItem } from "./test-utils"
 
 type WaterfallInternals = {
   readonly measuredSizeCache: Map<number, number>
@@ -108,7 +108,7 @@ describe("WaterfallVirtualizer", () => {
     expect(initial[2]?.lane).toBe(0)
     expect(initial[2]?.start).toBe(100)
 
-    initial[0]?.measureElement(createMeasuredElement(200))
+    mountItem(virtualizer, initial[0]!.index, createMeasuredElement(200))
 
     const next = virtualizer.getVirtualItems()
     expect(next[2]?.lane).toBe(1)
@@ -177,7 +177,7 @@ describe("WaterfallVirtualizer", () => {
     expect(initial).toHaveLength(6)
     const baselineCalls = [...estimateCalls]
 
-    initial[3]?.measureElement(createMeasuredElement(180))
+    mountItem(virtualizer, initial[3]!.index, createMeasuredElement(180))
     const next = virtualizer.getVirtualItems()
 
     expect(next).toHaveLength(6)
@@ -213,7 +213,7 @@ describe("WaterfallVirtualizer", () => {
     }))
     expect(allItems).toHaveLength(sizes.length)
 
-    virtualizer.setViewportSize(120)
+    ;(virtualizer as unknown as { setViewportSize(size: number): void }).setViewportSize(120)
 
     for (const offset of [0, 40, 120, 210, 280]) {
       virtualizer.scrollToOffset(offset)
@@ -234,7 +234,7 @@ describe("WaterfallVirtualizer", () => {
 
     expect(virtualizer.getWaterfallState().columnCount).toBe(2)
 
-    virtualizer.setCrossAxisSize(400)
+    ;(virtualizer as unknown as { setCrossAxisSize(size: number): void }).setCrossAxisSize(400)
 
     const state = virtualizer.getWaterfallState()
     expect(state.columnCount).toBe(3)
@@ -316,7 +316,7 @@ describe("WaterfallVirtualizer", () => {
     })
 
     const [item] = virtualizer.getVirtualItems()
-    item!.measureElement(createMeasuredElement(180))
+    mountItem(virtualizer, item!.index, createMeasuredElement(180))
 
     const internals = virtualizer as unknown as WaterfallInternals
     expect(internals.itemColumns.length).toBeGreaterThan(0)

@@ -114,3 +114,45 @@ export function createResizeObserverEntry(
     contentRect: { width: inlineSize, height: blockSize },
   } as unknown as ResizeObserverEntry
 }
+
+type ScrollEventLike = { currentTarget: { scrollTop: number; scrollLeft: number } }
+
+/** Feeds a scroll position to a virtualizer, as its own scroll listener would */
+export function simulateScroll(virtualizer: object, event: ScrollEventLike) {
+  ;(virtualizer as unknown as { handleScrollEvent: (event: ScrollEventLike) => void }).handleScrollEvent(event)
+}
+
+type Mountable = {
+  elementsByIndex?: Map<number, Element>
+  attachItemElement?: (index: number, element: Element) => void
+  detachItemElement?: (index: number, element: Element) => void
+  rowElementsByIndex?: Map<number, Element>
+  attachRowElement?: (index: number, element: Element) => void
+  detachRowElement?: (index: number, element: Element) => void
+  measureTrailing?: (element: Element | null) => void
+  measureHeader?: (element: Element | null) => void
+}
+
+/** Mounts (or with `null`, unmounts) an item's element, as the virtualizer's element tracking would */
+export function mountItem(virtualizer: object, index: number, element: Element | null) {
+  const internals = virtualizer as Mountable
+  const current = internals.elementsByIndex!.get(index)
+  if (element) internals.attachItemElement!(index, element)
+  else if (current) internals.detachItemElement!(index, current)
+}
+
+/** Mounts (or with `null`, unmounts) a grid row's element */
+export function mountRow(virtualizer: object, index: number, element: Element | null) {
+  const internals = virtualizer as Mountable
+  const current = internals.rowElementsByIndex!.get(index)
+  if (element) internals.attachRowElement!(index, element)
+  else if (current) internals.detachRowElement!(index, current)
+}
+
+export function mountTrailing(virtualizer: object, element: Element | null) {
+  ;(virtualizer as Mountable).measureTrailing!(element)
+}
+
+export function mountHeader(virtualizer: object, element: Element | null) {
+  ;(virtualizer as Mountable).measureHeader!(element)
+}

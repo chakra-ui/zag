@@ -31,7 +31,9 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
-    "@zag-js/dom-query": "workspace:*"
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

@@ -56,38 +56,38 @@ export default function Page() {
 
       <div
         ref={setScroller}
-        onScroll={virtualizer.handleScroll}
-        tabIndex={0}
         aria-label="Virtualized infinite list"
-        style={{
-          height: 420,
-          width: "100%",
-          overflow: "auto",
-          border: "1px solid #cbd5e1",
-          borderRadius: 8,
-          marginTop: 16,
-          boxSizing: "border-box",
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: 420,
+            width: "100%",
+            overflow: "auto",
+            border: "1px solid #cbd5e1",
+            borderRadius: 8,
+            marginTop: 16,
+            boxSizing: "border-box",
+          },
+        })}
       >
-        <div style={{ height: virtualizer.getTotalSize(), width: "100%", position: "relative" }}>
+        <div {...virtualizer.getContentProps()}>
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = items[virtualItem.index]
             if (!item) return null
             return (
               <div
                 key={item.id}
-                style={{
-                  ...virtualizer.getItemStyle(virtualItem),
-                  height: virtualItem.size,
-                  padding: "0 16px",
-                  borderBottom: "1px solid #e2e8f0",
-                  boxSizing: "border-box",
-                  background: virtualItem.index % 2 === 0 ? "#ffffff" : "#f1f5f9",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 16,
-                }}
+                {...mergeProps(virtualizer.getItemProps(virtualItem), {
+                  style: {
+                    padding: "0 16px",
+                    borderBottom: "1px solid #e2e8f0",
+                    boxSizing: "border-box",
+                    background: virtualItem.index % 2 === 0 ? "#ffffff" : "#f1f5f9",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 16,
+                  },
+                })}
               >
                 <strong>{item.title}</strong>
                 <span style={{ color: "#64748b", fontSize: 13 }}>{item.status}</span>

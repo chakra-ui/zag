@@ -1,7 +1,7 @@
+import type { PropTypes } from "@zag-js/types"
 import type {
   CSSProperties,
   ItemMeasurement,
-  ItemState,
   Range,
   VirtualItem,
   WaterfallLayoutState,
@@ -15,7 +15,7 @@ const DEFAULT_MIN_COLUMN_WIDTH = 240
  * Virtualizer for vertical-only waterfall/masonry layouts.
  * Items are assigned by policy (`measured` shortest-column or `preserve` stable-lane).
  */
-export class WaterfallVirtualizer extends Virtualizer<WaterfallVirtualizerOptions> {
+export class WaterfallVirtualizer<T extends PropTypes = PropTypes> extends Virtualizer<WaterfallVirtualizerOptions, T> {
   private layoutComputedUntil = -1
   private itemColumns: number[] = []
   private relayoutSourceColumns: number[] | null = null
@@ -190,21 +190,7 @@ export class WaterfallVirtualizer extends Virtualizer<WaterfallVirtualizerOption
     return nearestIndex
   }
 
-  getItemState(virtualItem: VirtualItem): ItemState {
-    const lane = virtualItem.lane
-    const laneOffset = this.columnOffsets[lane] ?? 0
-
-    return {
-      index: virtualItem.index,
-      key: virtualItem.key,
-      position: { x: laneOffset, y: virtualItem.start },
-      size: { width: this.resolvedColumnWidth, height: virtualItem.size },
-      isScrolling: this.isScrolling,
-      isVisible: virtualItem.isVisible,
-    }
-  }
-
-  getItemStyle(virtualItem: VirtualItem): CSSProperties {
+  protected getItemStyle(virtualItem: VirtualItem): CSSProperties {
     const laneOffset = this.columnOffsets[virtualItem.lane] ?? 0
     const y = virtualItem.start - this.getScrollMargin()
 

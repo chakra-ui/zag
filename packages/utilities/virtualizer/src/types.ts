@@ -1,3 +1,5 @@
+import type { NormalizeProps } from "@zag-js/types"
+
 export interface VirtualItem {
   index: number
   key: string | number
@@ -9,7 +11,6 @@ export interface VirtualItem {
   isOverscan: "before" | "after" | false
   /** Mounted only through `retainedIndexes`. */
   isRetained: boolean
-  measureElement: (element: HTMLElement | null) => void
 }
 
 /** Measured layout for one item along the scroll axis (`start`/`end` are offsets; `size` is the span). */
@@ -17,15 +18,6 @@ export interface ItemMeasurement {
   start: number
   size: number
   end: number
-}
-
-export interface ItemState {
-  index: number
-  key: string | number
-  position: { x: number; y: number }
-  size: { width: number | string; height: number | string }
-  isScrolling?: boolean
-  isVisible?: boolean
 }
 
 export type CSSProperties = Record<string, string | number | undefined>
@@ -136,6 +128,13 @@ export interface ShouldAdjustScrollOnSizeChangeContext {
 
 export interface VirtualizerOptions {
   /**
+   * Unique id, stamped on the elements the prop getters return.
+   * Pass your framework's `useId` so server-rendered markup matches.
+   */
+  id?: string | undefined
+  /** Converts props for your framework. Pass `normalizeProps` from your zag adapter. */
+  normalizeProps?: NormalizeProps<any> | undefined
+  /**
    * Get a stable key for an item at an index. This is critical for:
    * - preserving scroll position across insertions/removals
    * - chat-style "prepend older items" without scroll jump
@@ -153,8 +152,8 @@ export interface VirtualizerOptions {
   count: number
 
   /**
-   * Estimated item size (height for vertical, width for horizontal).
-   * A number is refined with the average measured size; a function is used as-is.
+   * Guess at an item's size (height, or width for horizontal lists) before it is measured.
+   * A number is refined with the average measured size; a function gives per-item guesses as-is.
    */
   estimatedItemSize: number | ((index: number, laneWidth?: number) => number)
 
@@ -270,10 +269,17 @@ export interface VirtualizerOptions {
 }
 
 export interface ListVirtualizerOptions extends Omit<VirtualizerOptions, "estimatedItemSize"> {
-  /** Exact item height (or width for horizontal lists). Skips item measurement. */
+  /** Exact size of every item (height, or width for horizontal lists). Items are not measured. */
   itemSize?: number | undefined
 
-  /** Estimate for dynamic items. Required unless `itemSize` is provided. */
+  /**
+   * Whether the prop getters add list roles, `aria-posinset` and `aria-setsize`.
+   * Set `false` when items are layout wrappers around elements that carry their own semantics.
+   * @default true
+   */
+  aria?: boolean | undefined
+
+  /** For items sized by their content, which are measured. Required unless `itemSize` is provided. */
   estimatedItemSize?: VirtualizerOptions["estimatedItemSize"]
 
   /** Optional grouping info for sticky headers */

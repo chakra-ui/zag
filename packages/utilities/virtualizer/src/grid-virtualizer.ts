@@ -1,4 +1,5 @@
-import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { isFunction, isNumber, isString, runIfFn } from "@zag-js/utils"
+import { AnimationFrame, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
   GridScrollToOptions,
@@ -9,9 +10,12 @@ import type {
   ScrollState,
   TimerId,
 } from "./types"
+import { createNormalizer, type NormalizeProps, type PropTypes } from "@zag-js/types"
+import { isSameOption } from "./utils/options"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
 import { SizeTracker } from "./utils/size-tracker"
+import { partSelector, trackElements } from "./utils/track-elements"
 
 interface GridRange {
   startRow: number
@@ -36,8 +40,6 @@ export interface VirtualRow {
   height: number
   /** Visible columns in this row */
   columns: VirtualColumn[]
-  /** Ref callback for measuring the row container's height */
-  measureRow: (element: HTMLElement | null) => void
 }
 
 /** A virtual column within a row */
@@ -75,8 +77,17 @@ const alignOffset = (start: number, size: number, current: number, viewport: num
   return Math.max(0, offset)
 }
 
-export class GridVirtualizer {
+let uid = 0
+const defaultNormalize = createNormalizer((props) => props)
+
+export class GridVirtualizer<T extends PropTypes = PropTypes> {
   private options: ResolvedOptions
+
+  /** Stamped on the elements the prop getters return */
+  readonly id: string
+  private normalize: NormalizeProps<T>
+  private scrollCleanup: VoidFunction | undefined
+  private trackCleanup: VoidFunction | undefined
 
   // Scroll state
   private scrollTop = 0
@@ -109,15 +120,13 @@ export class GridVirtualizer {
 
   // Row element tracking for measurement
   private rowElementsByIndex = new Map<number, Element>()
+  private rowIndexByElement = new Map<Element, number>()
   private rowResizeCleanups = new Map<Element, VoidFunction>()
   private pendingRowSizeUpdates = new Map<number, { size: number; element: Element | undefined }>()
   private rowSizeUpdateFrame = AnimationFrame.create()
 
   // Scroll element
   private scrollElement: Element | Window | null = null
-
-  /** Cached for {@link handleScroll} getter — stable `onScroll={virtualizer.handleScroll}`. */
-  private scrollHandler?: (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void
 
   /** For useSyncExternalStore (React) — row/col/range/viewport updates. */
   private storeVersion = 0
@@ -156,6 +165,8 @@ export class GridVirtualizer {
       ...options,
     } as ResolvedOptions
 
+    this.id = options.id ?? `grid-virtualizer-${++uid}`
+    this.normalize = (options.normalizeProps ?? defaultNormalize) as NormalizeProps<T>
     this.scrollTop = this.options.initialOffset
 
     if (options.initialRect) {
@@ -174,6 +185,8 @@ export class GridVirtualizer {
     this.isDestroyed = false
     this.scrollElement = scrollElement
     this.rtlScrollBehavior = null
+    this.listenToScroll(scrollElement)
+    this.trackRows(scrollElement)
 
     if (this.options.observeScrollElementSize) {
       this.observeScrollElementSize(scrollElement)
@@ -208,7 +221,7 @@ export class GridVirtualizer {
 
   private getScrollMargin(): number {
     const { scrollMargin } = this.options
-    return typeof scrollMargin === "function" ? scrollMargin() : scrollMargin
+    return runIfFn(scrollMargin)
   }
 
   private get isRtl(): boolean {
@@ -344,18 +357,18 @@ export class GridVirtualizer {
       return byUser
     }
 
-    if (typeof key === "number" && Number.isInteger(key) && key >= 0 && key < rowCount) {
+    if (isNumber(key) && Number.isInteger(key) && key >= 0 && key < rowCount) {
       return key
     }
 
-    if (typeof key === "string" && /^\d+$/.test(key)) {
+    if (isString(key) && /^\d+$/.test(key)) {
       const parsed = Number(key)
       if (parsed >= 0 && parsed < rowCount) {
         return parsed
       }
     }
 
-    if (typeof this.options.indexToKey === "function") {
+    if (isFunction(this.options.indexToKey)) {
       for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         if (this.options.indexToKey(rowIndex) === key) {
           return rowIndex
@@ -423,7 +436,7 @@ export class GridVirtualizer {
       index: rowIndex,
       orientation: "vertical",
     })
-    if (typeof measured === "number" && Number.isFinite(measured) && measured > 0) {
+    if (isNumber(measured) && Number.isFinite(measured) && measured > 0) {
       return measured
     }
     return element.offsetHeight
@@ -590,7 +603,6 @@ export class GridVirtualizer {
         y,
         height,
         columns,
-        measureRow: this.createMeasureRow(row),
       })
     }
 
@@ -601,7 +613,7 @@ export class GridVirtualizer {
    * Get style for a virtual row container.
    * The row is positioned absolutely with translate3d for GPU acceleration.
    */
-  getRowStyle(virtualRow: VirtualRow): CSSProperties {
+  private getRowStyle(virtualRow: VirtualRow): CSSProperties {
     return {
       position: "absolute",
       top: 0,
@@ -616,7 +628,7 @@ export class GridVirtualizer {
    * Get style for a cell within a row.
    * Cells are positioned absolutely within the row by their column x/width.
    */
-  getCellStyleInRow(column: VirtualColumn): CSSProperties {
+  private getCellStyle(column: VirtualColumn): CSSProperties {
     const x = this.isRtl ? -column.x : column.x
     return {
       position: "absolute",
@@ -632,36 +644,53 @@ export class GridVirtualizer {
    * Create a measureRow ref callback for a row.
    * Measures the row container's height (one read per row, not per cell).
    */
-  private createMeasureRow(rowIndex: number): (element: HTMLElement | null) => void {
-    return (element: HTMLElement | null) => {
-      const prevElement = this.rowElementsByIndex.get(rowIndex)
+  private listenToScroll(element: HTMLElement): void {
+    this.scrollCleanup?.()
+    if (!isHTMLElement(element)) return
+    const onScroll = (event: Event) => this.handleScrollEvent(event)
+    element.addEventListener("scroll", onScroll, { passive: true })
+    this.scrollCleanup = () => element.removeEventListener("scroll", onScroll)
+  }
 
-      if (prevElement && prevElement !== element) {
-        const cleanup = this.rowResizeCleanups.get(prevElement)
-        if (cleanup) {
-          cleanup()
-          this.rowResizeCleanups.delete(prevElement)
-        }
-        this.rowElementsByIndex.delete(rowIndex)
-      }
-
-      if (element) {
-        this.rowElementsByIndex.set(rowIndex, element)
-
-        // Sync measurement
-        const size = this.readMeasuredRowSize(element, rowIndex)
-        if (size > 0) {
-          this.measureRowSync(rowIndex, size)
-        }
-
-        // ResizeObserver for future changes (skip during scroll)
-        if (!this.isScrolling) {
-          this.observeRowSize(element, rowIndex)
-        }
-      } else {
-        this.rowElementsByIndex.delete(rowIndex)
-      }
+  private trackRows(root: HTMLElement): void {
+    this.trackCleanup?.()
+    const attach = (element: HTMLElement) => {
+      const index = Number(element.dataset.index)
+      if (Number.isInteger(index)) this.attachRowElement(index, element)
     }
+    const detach = (element: HTMLElement) => {
+      const index = this.rowIndexByElement.get(element)
+      if (index !== undefined) this.detachRowElement(index, element)
+    }
+    this.trackCleanup = trackElements(root, {
+      selector: partSelector("row", this.id),
+      onAdd: attach,
+      onRemove: detach,
+      onIndexChange: (element) => {
+        detach(element)
+        attach(element)
+      },
+    })
+  }
+
+  private attachRowElement(rowIndex: number, element: HTMLElement): void {
+    const prevElement = this.rowElementsByIndex.get(rowIndex)
+    if (prevElement && prevElement !== element) this.detachRowElement(rowIndex, prevElement)
+
+    this.rowElementsByIndex.set(rowIndex, element)
+    this.rowIndexByElement.set(element, rowIndex)
+    const size = this.readMeasuredRowSize(element, rowIndex)
+    if (size > 0) this.measureRowSync(rowIndex, size)
+
+    // Skipped during scroll; rows mounted then are observed once it ends
+    if (!this.isScrolling) this.observeRowSize(element, rowIndex)
+  }
+
+  private detachRowElement(rowIndex: number, element: Element): void {
+    if (this.rowElementsByIndex.get(rowIndex) === element) this.rowElementsByIndex.delete(rowIndex)
+    this.rowIndexByElement.delete(element)
+    this.rowResizeCleanups.get(element)?.()
+    this.rowResizeCleanups.delete(element)
   }
 
   private measureRowSync(rowIndex: number, size: number): void {
@@ -749,17 +778,56 @@ export class GridVirtualizer {
   // Styles
   // ============================================
 
-  getContainerStyle(): CSSProperties {
-    return {
-      position: "relative",
-      overflow: "auto",
-      overflowAnchor: this.options.overflowAnchor,
-      willChange: "scroll-position",
-      WebkitOverflowScrolling: "touch",
-    }
+  /** Props for the scroll container. Attach the container with `init(element)`. */
+  getRootProps(): T["element"] {
+    const { rowCount, columnCount } = this.options
+    return this.normalize.element({
+      "data-virtualizer-root": this.id,
+      "data-empty": rowCount === 0 || columnCount === 0 ? "" : undefined,
+      tabIndex: 0,
+      role: "grid",
+      "aria-rowcount": rowCount,
+      "aria-colcount": columnCount,
+      style: {
+        position: "relative",
+        overflow: "auto",
+        overflowAnchor: this.options.overflowAnchor,
+        "--total-size": `${this.getTotalHeight()}px`,
+      },
+    })
   }
 
-  getContentStyle(): CSSProperties {
+  /** Props for the element sized to the whole grid, which holds the rendered rows */
+  getContentProps(): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-content": this.id,
+      style: this.getContentStyle(),
+    })
+  }
+
+  /** Props for a rendered row. Positions it and measures its height. */
+  getRowProps(virtualRow: VirtualRow): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-row": this.id,
+      "data-index": virtualRow.row,
+      role: "row",
+      "aria-rowindex": virtualRow.row + 1,
+      style: this.getRowStyle(virtualRow),
+    })
+  }
+
+  /** Props for a cell, positioned within its row */
+  getCellProps(virtualRow: VirtualRow, column: VirtualColumn): T["element"] {
+    return this.normalize.element({
+      role: "gridcell",
+      "aria-colindex": column.column + 1,
+      "data-row": virtualRow.row,
+      "data-column": column.column,
+      style: this.getCellStyle(column),
+    })
+  }
+
+  private getContentStyle(): CSSProperties {
     return {
       position: "relative",
       flexShrink: 0,
@@ -773,22 +841,13 @@ export class GridVirtualizer {
   // Scroll handling
   // ============================================
 
-  get handleScroll(): (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }) => void {
-    if (!this.scrollHandler) {
-      this.scrollHandler = (event) => {
-        this.handleScrollEvent(event)
-      }
-    }
-    return this.scrollHandler
-  }
-
   private handleScrollEvent(event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void {
     if (this.isDestroyed) return
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
     const eventTarget =
       "currentTarget" in event &&
       event.currentTarget &&
-      typeof (event.currentTarget as { scrollLeft?: unknown }).scrollLeft === "number"
+      isNumber((event.currentTarget as { scrollLeft?: unknown }).scrollLeft)
         ? (event.currentTarget as HTMLElement)
         : null
     const nextLogicalLeft = this.toLogicalHorizontalOffset(scrollLeft, eventTarget)
@@ -816,10 +875,6 @@ export class GridVirtualizer {
     }, this.options.scrollEndDelay)
 
     this.notifyStore()
-  }
-
-  getScrollHandler() {
-    return this.handleScroll
   }
 
   // ============================================
@@ -877,7 +932,7 @@ export class GridVirtualizer {
     if (!element) return
 
     const rawScrollLeft = this.toRawHorizontalOffset(this.scrollLeft, element)
-    if (typeof element.scrollTo === "function") {
+    if (isFunction(element.scrollTo)) {
       element.scrollTo({ top: targetOffset, left: rawScrollLeft })
     } else {
       element.scrollTop = targetOffset
@@ -971,11 +1026,11 @@ export class GridVirtualizer {
 
   private scrollToPosition(scrollTop: number, scrollLeft: number, behavior: ScrollBehavior = "auto"): void {
     const element = this.scrollElement
-    if (element && typeof element.scrollTo === "function") {
-      const hasScrollLeft = typeof (element as { scrollLeft?: unknown }).scrollLeft === "number"
+    if (element && isFunction(element.scrollTo)) {
+      const hasScrollLeft = isNumber((element as { scrollLeft?: unknown }).scrollLeft)
       const left = hasScrollLeft ? this.toRawHorizontalOffset(scrollLeft, element as HTMLElement) : scrollLeft
       element.scrollTo({ top: scrollTop, left, behavior })
-      if (behavior !== "smooth") this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
+      if (behavior !== "smooth") this.handleScrollEvent({ currentTarget: { scrollTop, scrollLeft } })
       return
     }
     this.scrollTop = scrollTop
@@ -1029,6 +1084,10 @@ export class GridVirtualizer {
     if (this.isDestroyed) return
     const prevOptions = this.options
     this.options = { ...this.options, ...options } as ResolvedOptions
+    const changed = Object.keys(options).some(
+      (key) => !isSameOption(prevOptions[key as keyof ResolvedOptions], this.options[key as keyof ResolvedOptions]),
+    )
+    if (!changed) return
     if (options.dir !== undefined) {
       this.rtlScrollBehavior = null
     }
@@ -1050,7 +1109,10 @@ export class GridVirtualizer {
     this.pendingSyncNotify = false
     this.scrollElement = null
     this.rtlScrollBehavior = null
-    delete this.scrollHandler
+    this.scrollCleanup?.()
+    this.trackCleanup?.()
+    this.scrollCleanup = undefined
+    this.trackCleanup = undefined
 
     if (this.scrollEndTimer) {
       clearTimeout(this.scrollEndTimer)
@@ -1070,37 +1132,10 @@ export class GridVirtualizer {
     this.rowResizeCleanups.clear()
     this.pendingRowSizeUpdates.clear()
     this.rowElementsByIndex.clear()
+    this.rowIndexByElement.clear()
     this.rangeCache.clear()
     this.rowSizeTracker.reset(0)
     this.columnSizeTracker.reset(0)
     this.storeListeners.clear()
-  }
-
-  // ============================================
-  // ARIA
-  // ============================================
-
-  getContainerAriaAttrs() {
-    const { rowCount, columnCount } = this.options
-    return {
-      role: "grid" as const,
-      "aria-rowcount": rowCount,
-      "aria-colcount": columnCount,
-    }
-  }
-
-  getRowAriaAttrs(rowIndex: number) {
-    return {
-      role: "row" as const,
-      "aria-rowindex": rowIndex + 1,
-    }
-  }
-
-  getCellAriaAttrs(rowIndex: number, columnIndex: number) {
-    return {
-      role: "gridcell" as const,
-      "aria-rowindex": rowIndex + 1,
-      "aria-colindex": columnIndex + 1,
-    }
   }
 }

@@ -1,3 +1,4 @@
+import { isFunction } from "@zag-js/utils"
 import { isWindow } from "@zag-js/dom-query"
 
 export interface ScrollPosition {
@@ -41,7 +42,7 @@ export function setScrollPosition(target: ScrollTarget, next: ScrollPositionInpu
   }
 
   const element = target
-  if (typeof element.scrollTo === "function") {
+  if (isFunction(element.scrollTo)) {
     element.scrollTo({ top: scrollTop, left: scrollLeft })
   } else {
     element.scrollTop = scrollTop

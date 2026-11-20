@@ -1,10 +1,9 @@
 "use client"
 
-/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- Scroll regions need keyboard scrolling. */
-
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { useCallback, useRef, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/react"
 
 const ITEM_COUNT = 100_000
 const ITEM_HEIGHT = 40
@@ -49,28 +48,27 @@ function ZagVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
       />
       <div
         ref={setRef}
-        onScroll={virtualizer.handleScroll}
-        role="region"
-        tabIndex={0}
         aria-label="Zag virtualizer performance list"
-        style={{
-          height: 400,
-          overflow: "auto",
-          border: "2px solid #3b82f6",
-          borderRadius: 8,
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: {
+            height: 400,
+            overflow: "auto",
+            border: "2px solid #3b82f6",
+            borderRadius: 8,
+          },
+        })}
       >
-        <div style={virtualizer.getContentStyle()}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((vi) => (
             <div
               key={vi.key}
-              data-index={vi.index}
-              style={{
-                ...virtualizer.getItemStyle(vi),
-                padding: "8px 12px",
-                borderBottom: "1px solid #e5e7eb",
-                backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-              }}
+              {...mergeProps(virtualizer.getItemProps(vi), {
+                style: {
+                  padding: "8px 12px",
+                  borderBottom: "1px solid #e5e7eb",
+                  backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                },
+              })}
             >
               {items[vi.index].label}
             </div>

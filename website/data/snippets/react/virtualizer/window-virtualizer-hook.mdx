@@ -1,25 +1,42 @@
 ```tsx
+import { normalizeProps, type PropTypes } from "@zag-js/react"
 import {
   WindowVirtualizer,
   type WindowVirtualizerOptions,
 } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useState,
+  useSyncExternalStore,
+} from "react"
 
-export function useWindowVirtualizer(options: WindowVirtualizerOptions) {
-  const [virtualizer] = useState(() => new WindowVirtualizer(options))
-  useSyncExternalStore(virtualizer.subscribe, virtualizer.getSnapshot, () => 0)
+type Options = Omit<WindowVirtualizerOptions, "id" | "normalizeProps">
+
+export function useWindowVirtualizer(options: Options) {
+  const id = useId()
+  const [virtualizer] = useState(
+    () => new WindowVirtualizer<PropTypes>({ ...options, id, normalizeProps }),
+  )
+  useSyncExternalStore(
+    virtualizer.subscribe,
+    virtualizer.getSnapshot,
+    virtualizer.getSnapshot,
+  )
+
+  // Pass options fresh on every render; unchanged ones don't re-render
+  useLayoutEffect(() => virtualizer.updateOptions(options))
 
   const ref = useCallback(
-    (el: HTMLElement | null) => {
-      if (!el) return
-      virtualizer.init(el)
+    (element: HTMLElement | null) => {
+      if (element) virtualizer.init(element)
     },
     [virtualizer],
   )
 
-  useEffect(() => {
-    return () => virtualizer.destroy()
-  }, [virtualizer])
+  useEffect(() => () => virtualizer.destroy(), [virtualizer])
 
   return { virtualizer, ref }
 }

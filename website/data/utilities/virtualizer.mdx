@@ -1,6 +1,6 @@
 ---
 title: Virtualizer
-description: Build smooth virtualized lists, grids, and window views.
+description: Build smooth virtualized lists, tables, grids, and window views.
 package: "@zag-js/virtualizer"
 ---
 
@@ -13,9 +13,10 @@ and the virtualizer tracks the visible range
 
 **Features**
 
-- List, grid, and window virtualizers
-- Estimated sizes first, measured sizes after mount
-- Scroll-to-index with optional smooth scrolling
+- List, table, grid, window, and masonry virtualizers
+- Prop getters that position, measure, and label items in any framework
+- Items measured automatically when their size depends on their content
+- Scroll-to-index that scrolls only as far as needed
 - Stable keys for prepend/chat flows
 
 ## Installation
@@ -24,27 +25,27 @@ and the virtualizer tracks the visible range
 npm install @zag-js/virtualizer
 ```
 
-## Lifecycle
+## How it works
 
-The same loop applies to every virtualizer:
+Every virtualizer follows the same loop:
 
-1. Create the instance with a realistic estimate.
-2. Call `init(element)` when the scroll container mounts.
-3. Render the visible window inside a spacer (`getContentStyle()`).
-4. Measure mounted items when size is dynamic.
-5. Call `updateOptions` when `count` or other inputs change.
-6. Call `destroy()` on unmount.
+1. Create it with a size for its items: `itemSize` when every item is the same,
+   or `estimatedItemSize` when items are sized by their content.
+2. Call `init(element)` with the scroll container. The virtualizer listens to
+   its scroll and finds rendered items itself.
+3. Spread the prop getters: `getRootProps()` on the scroll container,
+   `getContentProps()` on the element holding the items, and
+   `getItemProps(item)` on each item from `getVirtualItems()`.
+4. Call `updateOptions` when inputs such as `count` change, and `destroy()` on
+   unmount.
 
 Subscribe with `virtualizer.subscribe` and `virtualizer.getSnapshot` (stable
-class fields, so they work with `useSyncExternalStore`).
+class fields, so they work with `useSyncExternalStore`). Pass your adapter's
+`normalizeProps` and a unique `id` when creating a virtualizer, so the props
+match your framework and server-rendered markup.
 
-When `count` (or `rowCount` / `columnCount`) changes, sync it during render.
-`useEffect` is one frame too late. Keep callbacks like `estimatedItemSize`
-stable; `updateOptions` compares by reference.
-
-```tsx
-virtualizer.updateOptions({ count: items.length })
-```
+`updateOptions` compares arrays and objects by content and keeps the latest
+callbacks without re-rendering, so you can pass options fresh on every render.
 
 ## List virtualizer
 
@@ -55,37 +56,33 @@ Use `ListVirtualizer` for feeds, logs, and chat timelines.
 <CodeSnippet id="virtualizer/list-virtualizer-usage.mdx" />
 
 `getVirtualItems()` returns `index`, `key`, `start`, `end`, `size`, `isVisible`,
-`isRetained`, and `measureElement`. Horizontal lists use
+and `isRetained` for each item to render. Horizontal lists use
 `orientation: "horizontal"` and `dir: "ltr" | "rtl"`.
 
-**Measurement.** Pass `ref={virtualItem.measureElement}` for dynamic rows, or
-`measureItem(index, size)` when you already know the size. Keep estimates close
-to reality. `estimatedItemSize` accepts a number or a function for per-item
-estimates. Measurements replace either estimate, and a number is refined with
-the average measured size so the scrollbar settles early. Set
+**Item sizes.** Set `itemSize` when every item is the same size; items are then
+never measured. Otherwise set `estimatedItemSize`, and items rendered with
+`getItemProps` are measured as they mount and whenever they resize. A number is
+refined with the average measured size, so the scrollbar settles early; a
+function gives per-item estimates as-is. Call `remeasure()` after a change that
+resizes items without changing the list, like a breakpoint or font swap. Set
 `observeScrollElementSize: true` if the scrollport can resize.
 
-For fixed rows, use `itemSize` instead of `estimatedItemSize` to skip estimation
-and measurement. It sets the exact height, or width for horizontal lists:
+**Root props.** `getRootProps()` makes the scroll container focusable for
+keyboard scrolling, sets `data-empty` when there are no items, and exposes the
+total size as `--total-size`, so a container can shrink to fit:
 
-```ts
-new ListVirtualizer({ count: 100_000, itemSize: 40 })
+```css
+.list {
+  max-height: min(400px, var(--total-size));
+}
 ```
 
-If blank rows flash during very fast scrolling, raise `overscan` to render more
-rows beyond the viewport.
-
-**Trailing content.** Attach `measureTrailingElement` to a loading row or
-end-of-list note. Its size is added to the total, and `getTrailingStyle()`
-places it after the last item:
+**Trailing content.** Spread `getTrailingProps()` on a loading row or
+end-of-list note. It's measured, added to the total, and placed after the last
+item:
 
 ```tsx
-<div
-  ref={virtualizer.measureTrailingElement}
-  style={virtualizer.getTrailingStyle()}
->
-  Loading more…
-</div>
+<div {...virtualizer.getTrailingProps()}>Loading more…</div>
 ```
 
 **Loading more.** `onEndReached` fires once each time the rendered range reaches
@@ -103,9 +100,7 @@ new ListVirtualizer({
 
 **Geometry.** `getItemMetrics(index)` returns `{ start, size, end }` for any
 item, mounted or not. `getIndexAtOffset(offset)` maps a scroll offset back to an
-index. Call `remeasure()` after a change that resizes items without changing the
-list, like a breakpoint or font swap. It discards measured sizes and keeps the
-scroll position.
+index.
 
 **Scrolling.**
 
@@ -145,8 +140,7 @@ virtualizer.getStickyGroupHeader()
 
 Render each header inside its group's first item. `estimatedGroupHeaderSize` (a
 number, or a function of the group and its index) is added to that item's
-estimate unless the group sets `headerSize`, and those items don't skew the
-average estimate.
+estimate unless the group sets `headerSize`.
 
 **Prepend / chat.** Provide `indexToKey` and `keyToIndex`, then call
 `prependItems(addedCount)` (or `updateOptions({ count })` with
@@ -157,42 +151,39 @@ change above the viewport should keep the user pinned.
 
 Use `TableVirtualizer` to virtualize a real `<table>`, so a `<colgroup>`, a
 sticky `<thead>`, and table semantics keep working. It windows rows like
-`ListVirtualizer`, with two spacer bodies reserving the space of rows outside
-the rendered range. The row body is sticky, so rows stay painted while rendering
+`ListVirtualizer`, with two spacer rows reserving the space of rows outside the
+rendered range. The row body is sticky, so rows stay painted while rendering
 catches up.
 
 ```tsx
-const virtualizer = new TableVirtualizer({ count: rows.length, estimatedItemSize: 37 })
+const { virtualizer, ref } = useTableVirtualizer({
+  count: rows.length,
+  estimatedItemSize: 37,
+})
 
-<div ref={ref} onScroll={virtualizer.handleScroll} style={{ height: 420, overflow: "auto" }}>
-  <table aria-rowcount={rows.length + 1} style={virtualizer.getTableStyle()}>
-    <thead ref={virtualizer.measureHeaderElement}>{/* sticky header cells */}</thead>
+<div ref={ref} {...virtualizer.getRootProps()} className="table-scroller">
+  <table {...virtualizer.getTableProps()}>
+    <thead {...virtualizer.getHeaderProps()}>{/* sticky header cells */}</thead>
     <tbody aria-hidden>
-      <tr style={virtualizer.getRowSpacerStyle("start")} />
+      <tr {...virtualizer.getRowSpacerProps("start")} />
     </tbody>
-    <tbody style={virtualizer.getBodyStyle()}>
+    <tbody {...virtualizer.getBodyProps()}>
       {virtualizer.getVirtualItems().map((item) => (
-        <tr
-          key={item.key}
-          ref={item.measureElement}
-          aria-rowindex={item.index + 2}
-          style={virtualizer.getRowStyle(item)}
-        >
+        <tr key={item.key} {...virtualizer.getRowProps(item)} aria-rowindex={item.index + 2}>
           {/* cells */}
         </tr>
       ))}
     </tbody>
     <tbody aria-hidden>
-      <tr style={virtualizer.getRowSpacerStyle("end")} />
+      <tr {...virtualizer.getRowSpacerProps("end")} />
     </tbody>
   </table>
 </div>
 ```
 
-`measureHeaderElement` keeps `headerSize` in sync with the `<thead>`, so rows
-scroll clear of it. Set `footerSize` for rows after the table body, like a
-loading row. `getRowStyle` keeps rows held by `retainedIndexes` focusable but
-out of the table layout.
+The `<thead>` is measured, so rows scroll clear of it. Set `footerSize` for rows
+after the table body, like a loading row. `getRowProps` keeps rows held by
+`retainedIndexes` focusable but out of the table layout.
 
 **Wide tables.** Set `columnCount` and `columnSize` (a number or a function of
 the column index) to window columns too. The table switches to
@@ -201,7 +192,7 @@ columns, a start spacer, the windowed columns, then an end spacer, in the
 `<colgroup>` and in every row:
 
 ```tsx
-const virtualizer = new TableVirtualizer({
+const { virtualizer, ref } = useTableVirtualizer({
   count: rows.length,
   estimatedItemSize: 37,
   columnCount: columns.length,
@@ -213,28 +204,29 @@ const virtualColumns = virtualizer.getVirtualColumns()
 const pinned = virtualColumns.filter((column) => column.pinned === "start")
 const windowed = virtualColumns.filter((column) => !column.pinned)
 
-<tr>
+<tr {...virtualizer.getRowProps(item)}>
   {pinned.map((column) => (
-    <th key={column.index} style={virtualizer.getCellStyle(column)}>…</th>
+    <th key={column.index} {...virtualizer.getCellProps(column)}>…</th>
   ))}
-  <td aria-hidden style={virtualizer.getColumnSpacerStyle("start")} />
+  <td {...virtualizer.getColumnSpacerProps("start")} />
   {windowed.map((column) => (
-    <td key={column.index} aria-colindex={column.index + 1}>…</td>
+    <td key={column.index} {...virtualizer.getCellProps(column)}>…</td>
   ))}
-  <td aria-hidden style={virtualizer.getColumnSpacerStyle("end")} />
+  <td {...virtualizer.getColumnSpacerProps("end")} />
 </tr>
 ```
 
-Use `getColumnStyle(column)` and `getColumnSpacerStyle()` for the matching
-`<col>` elements. Pinned columns are always rendered and `getCellStyle` sticks
+Use `getColumnProps(column)` and `getColumnSpacerProps()` for the matching
+`<col>` elements. Pinned columns are always rendered and `getCellProps` sticks
 them to their edge; give pinned header cells a higher `z-index`.
 `scrollToColumn(index, { align })` reveals a column clear of the pinned ones.
-Column sizes must be known up front; update `columnSize` to resize a column.
+Column sizes must be known up front; a new `columnSize` resizes the columns.
 
 ## Grid virtualizer
 
 Use `GridVirtualizer` when both rows and columns need windowing. It virtualizes
-**rows** and renders cells inside each visible row.
+**rows** and renders cells inside each visible row; rows are measured, columns
+use their estimates.
 
 <CodeSnippet id="virtualizer/grid-virtualizer-hook.mdx" />
 
@@ -247,8 +239,8 @@ The range reports `startRow` / `endRow` and `startColumn` / `endColumn`.
 ## Window virtualizer
 
 Use `WindowVirtualizer` when the page (`window`) is the scroll container. `init`
-still receives the list root so the virtualizer can measure its offset from the
-window. Do not attach `handleScroll` to that root.
+still receives the list root, so the virtualizer can measure its offset from the
+window and find its items.
 
 <CodeSnippet id="virtualizer/window-virtualizer-hook.mdx" />
 
@@ -262,6 +254,7 @@ Seed the first paint to avoid hydration jumps:
 
 ```ts
 new ListVirtualizer({
+  id,
   count: items.length,
   estimatedItemSize: 56,
   initialRect: { width: 1024, height: 720 },
@@ -271,26 +264,43 @@ new ListVirtualizer({
 ```
 
 `initialMeasurements` accepts a `Map` or object (by key or index).
-`disableScrollOnInit` leaves scroll restoration to the browser.
+`disableScrollOnInit` leaves scroll restoration to the browser. Pass the same
+`id` on the server and client, such as one from your framework's `useId`.
 
 ## Composition
 
-Render virtual rows inside a machine list and forward keyboard scroll:
+Virtualize a component's list by merging its props with the virtualizer's, with
+the component's last so its roles and focus handling win:
 
 ```tsx
-virtualizer.updateOptions({ count: options.length })
-
 const service = useMachine(combobox.machine, {
   collection,
   scrollToIndexFn(details) {
     virtualizer.scrollToIndex(details.index)
   },
 })
+
+<div ref={ref} {...mergeProps(virtualizer.getRootProps(), api.getListProps())}>
+  <div {...virtualizer.getContentProps()}>
+    {virtualizer.getVirtualItems().map((virtualItem) => {
+      const item = items[virtualItem.index]
+      return (
+        <div
+          key={virtualItem.key}
+          {...mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ item }))}
+        >
+          {item.label}
+        </div>
+      )
+    })}
+  </div>
+</div>
 ```
 
-Put `ref` and `onScroll={virtualizer.handleScroll}` on `getListProps()`. Spread
-`getItemProps({ item })` onto each row and merge `getItemStyle(virtualItem)`.
-Same pattern for select, listbox, menu, and tree view.
+The same pattern works for select, listbox, menu, and tree view. Item props add
+list roles with `aria-posinset` and `aria-setsize`; when items are layout
+wrappers around elements with their own semantics, or rows of a grid, pass
+`aria: false`.
 
 Use `retainedIndexes` to keep focused items and `aria-activedescendant` targets
 mounted outside the viewport without scrolling:
@@ -299,14 +309,18 @@ mounted outside the viewport without scrolling:
 virtualizer.updateOptions({ retainedIndexes: [highlightedIndex] })
 ```
 
-Works with list, window, and waterfall virtualizers, including custom
+Works with list, window, and masonry virtualizers, including custom
 `rangeExtractor` functions. Keep the set small, update indexes after filtering
 or reordering, and pass `[]` to release items. Use `scrollToIndex` to reveal
 them.
 
 ## Pitfalls
 
+- Render items inside the element passed to `init`; items elsewhere (such as a
+  portal) aren't measured.
+- Merge your own styles with `mergeProps` instead of passing a separate `style`,
+  which would replace the virtualizer's positioning.
+- Give the scroll container a fixed `height` or `max-height`. In development,
+  the virtualizer warns when it grows to fit every item.
 - `transform: scale(...)` on the scroll container is unsupported.
 - Always call `destroy()` to release observers and listeners.
-- Don't measure a node that is `display: none`.
-- Prefer `getContentStyle()` so `pointer-events` disable during scroll.

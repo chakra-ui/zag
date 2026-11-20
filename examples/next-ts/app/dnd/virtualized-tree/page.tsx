@@ -9,7 +9,7 @@ import * as tree from "@zag-js/tree-view"
 import type { VirtualItem } from "@zag-js/virtualizer"
 import styles from "@styles/dnd-virtualized-tree.module.css"
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
-import { type CSSProperties, type JSX, useId, useMemo, useState } from "react"
+import { type HTMLAttributes, type JSX, useId, useMemo, useState } from "react"
 
 interface Node {
   id: string
@@ -112,17 +112,17 @@ interface TreeNodeProps {
   dndApi: dnd.Api
   indexPath: number[]
   node: Node
-  style: CSSProperties
+  itemProps: HTMLAttributes<HTMLDivElement>
 }
 
 function TreeNode(props: TreeNodeProps): JSX.Element {
-  const { api, dndApi, indexPath, node, style } = props
+  const { api, dndApi, indexPath, node, itemProps } = props
   const nodeProps = { node, indexPath }
   const nodeState = api.getNodeState(nodeProps)
   const value = nodeState.value
 
   return (
-    <div style={style}>
+    <div {...itemProps}>
       <div className={styles.row}>
         <div
           {...dndApi.getDropIndicatorProps({ value, placement: "before" })}
@@ -259,6 +259,7 @@ export default function Page() {
     count: visibleNodeCount,
     itemSize: ROW_HEIGHT,
     overscan: 8,
+    aria: false,
   })
 
   const virtualItems = virtualizer.getVirtualItems()
@@ -293,8 +294,8 @@ export default function Page() {
             <span>drop {dndApi.dropTarget ? `${dndApi.dropTarget} ${dndApi.dropPlacement}` : "none"}</span>
           </div>
 
-          <div ref={ref} onScroll={virtualizer.handleScroll} className={styles.viewport}>
-            <div {...api.getTreeProps()} className={styles.sizer} style={{ height: virtualizer.getTotalSize() }}>
+          <div ref={ref} {...virtualizer.getRootProps()} className={styles.viewport}>
+            <div {...mergeProps(virtualizer.getContentProps(), api.getTreeProps())} className={styles.sizer}>
               {virtualItems.map((virtualItem: VirtualItem) => {
                 const item = visibleNodes[virtualItem.index]
                 if (!item) return null
@@ -308,12 +309,9 @@ export default function Page() {
                     dndApi={dndApi}
                     node={item.node}
                     indexPath={item.indexPath}
-                    style={{
-                      ...virtualizer.getItemStyle(virtualItem),
-                      height: virtualItem.size,
-                      zIndex: isDropTarget ? 2 : undefined,
-                      overflow: "visible",
-                    }}
+                    itemProps={mergeProps(virtualizer.getItemProps(virtualItem), {
+                      style: { zIndex: isDropTarget ? 2 : undefined, overflow: "visible" },
+                    })}
                   />
                 )
               })}

@@ -40,7 +40,6 @@ export function CodeBlock({ "data-title": title, ...props }: CodeBlockProps) {
         ref={ref}
         id={id}
         // scrollable code must be keyboard focusable
-        // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
         {...props}
         className={cx("prose", styles.pre, props.className)}

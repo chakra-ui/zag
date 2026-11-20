@@ -2,7 +2,7 @@ import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { ListVirtualizer } from "../src/list-virtualizer"
 import { WindowVirtualizer } from "../src/window-virtualizer"
-import { createMockScrollContainer, installAnimationFrameMock } from "./test-utils"
+import { createMockScrollContainer, installAnimationFrameMock, mountItem, mountTrailing } from "./test-utils"
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -42,7 +42,7 @@ describe("fixed-size lists", () => {
     })
     const row = {} as HTMLElement
 
-    virtualizer.getVirtualItems()[0]!.measureElement(row)
+    mountItem(virtualizer, 0, row)
 
     expect(measureElement).toHaveBeenCalledWith(row, {
       index: 0,
@@ -109,9 +109,12 @@ describe("fixed-size lists", () => {
     virtualizer.subscribe(listener)
 
     const row = {} as HTMLElement
-    virtualizer.getVirtualItems()[0]!.measureElement(row)
+    mountItem(virtualizer, 0, row)
     virtualizer.measureItem(0, 200)
-    virtualizer.observeElementSize(row, 0)
+    ;(virtualizer as unknown as { observeElementSize(element: Element, index: number): void }).observeElementSize(
+      row,
+      0,
+    )
 
     expect(measureElement).not.toHaveBeenCalled()
     expect(observe).not.toHaveBeenCalled()
@@ -129,8 +132,7 @@ describe("fixed-size lists", () => {
       initialRect: { width: 600, height: 100 },
     })
     const row = { offsetHeight: 30 } as HTMLElement
-    const ref = virtualizer.getVirtualItems()[0]!.measureElement
-    ref(row)
+    mountItem(virtualizer, 0, row)
     expect(virtualizer.getTotalSize()).toBe(210)
 
     virtualizer.updateOptions({ itemSize: 50, gap: 5 })
@@ -203,7 +205,7 @@ describe("fixed-size lists", () => {
       initialRect: { width: 120, height: 100 },
     })
 
-    expect(virtualizer.getItemStyle(virtualizer.getVirtualItems()[1]!)).toMatchObject({
+    expect(virtualizer.getItemProps(virtualizer.getVirtualItems()[1]!).style).toMatchObject({
       width: "40px",
       height: "100%",
       boxSizing: "border-box",
@@ -315,10 +317,10 @@ describe("trailing content", () => {
       getBoundingClientRect: () => ({ width: 600, height: 50 }),
     } as HTMLElement
 
-    virtualizer.measureTrailingElement(element)
+    mountTrailing(virtualizer, element)
 
     expect(virtualizer.getTotalSize()).toBe(458)
-    expect(virtualizer.getTrailingStyle().transform).toBe("translate3d(0, 400px, 0)")
+    expect(virtualizer.getTrailingProps().style.transform).toBe("translate3d(0, 400px, 0)")
 
     onResize!({
       borderBoxSize: [{ blockSize: 20, inlineSize: 600 }],
@@ -326,7 +328,7 @@ describe("trailing content", () => {
 
     expect(virtualizer.getTotalSize()).toBe(428)
 
-    virtualizer.measureTrailingElement(null)
+    mountTrailing(virtualizer, null)
 
     expect(cleanup).toHaveBeenCalled()
     expect(virtualizer.getTotalSize()).toBe(408)
@@ -443,7 +445,7 @@ describe("geometry", () => {
 describe("estimates", () => {
   const measureAll = (virtualizer: ListVirtualizer) => {
     for (const item of virtualizer.getVirtualItems()) {
-      item.measureElement({} as HTMLElement)
+      mountItem(virtualizer, item!.index, {} as HTMLElement)
     }
   }
 

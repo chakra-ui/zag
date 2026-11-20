@@ -2,27 +2,37 @@
 "@zag-js/virtualizer": major
 ---
 
-- **Breaking:** Rename `estimatedSize` to `estimatedItemSize`. It accepts a number for uniform estimates or a function
-  for per-item estimates, and a number is refined with the average measured size.
+- **Breaking:** Replace the style, ARIA and measurement helpers with prop getters (`getRootProps`, `getContentProps`,
+  `getItemProps`, and table and grid equivalents).
 
-- **Breaking:** Default `scrollToIndex` to `align: "auto"`, which scrolls only when the item isn't fully visible and to
-  the nearest edge. `GridVirtualizer`'s `scrollToCell`, `scrollToRow` and `scrollToColumn` take the same `align` option
-  with the same default. Pass `align: "start"` for the previous behavior.
+- **Breaking:** Listen to scroll in `init` and measure rendered items automatically. Remove `handleScroll` and the
+  `measure*` refs.
 
-- Fix `scrollToIndex` leaving items hidden behind a horizontal scrollbar, and account for the scroll container's CSS
-  `padding` and `scroll-padding` like `scrollIntoView` does.
+  ```diff
+  - <div ref={ref} onScroll={virtualizer.handleScroll} style={virtualizer.getContainerStyle()}>
+  -   <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
+  + <div ref={ref} {...virtualizer.getRootProps()}>
+  +   <div {...virtualizer.getContentProps()}>
+        {virtualizer.getVirtualItems().map((item) => (
+  -       <div key={item.key} ref={item.measureElement} style={virtualizer.getItemStyle(item)}>
+  +       <div key={item.key} {...virtualizer.getItemProps(item)}>
+  ```
 
-- Add `itemSize` for fixed-size lists and window virtualizers, skipping per-item estimation and measurement.
+- **Breaking:** Default `scrollToIndex` and the grid's scroll methods to `align: "auto"`.
 
-- Add `retainedIndexes` to keep focused, highlighted, or dragged items mounted outside the viewport, and `isRetained` on
-  the virtual items it holds.
+- **Breaking:** Rename `estimatedSize` to `estimatedItemSize`.
 
-- Add `TableVirtualizer` to virtualize a native `<table>`, with optional column windowing and pinned columns.
+- **Breaking:** Remove `getItemState`, `getRenderedRange`, `setScrollElement` and `getScrollHandler`.
 
-- Add `onEndReached` and `endReachedThreshold` to load the next page when the rendered range reaches the end.
+- Add `TableVirtualizer` for native tables, with column windowing and pinned columns.
 
-- Add `measureTrailingElement` and `getTrailingStyle` for content after the last item, such as a loading row.
+- Add `itemSize`, `retainedIndexes`, `onEndReached`, `getTrailingProps`, `getItemMetrics`, `getIndexAtOffset` and
+  `remeasure`.
 
-- Add `getItemMetrics`, `getIndexAtOffset` and `remeasure` for the geometry of unmounted items and layout changes.
+- Add `aria: false` for items that carry their own semantics.
 
-- Add `estimatedGroupHeaderSize` for group headers rendered inside a group's first item.
+- Add development warnings for common setup mistakes.
+
+- Fix `updateOptions` re-rendering for options rebuilt with the same content.
+
+- Fix `scrollToIndex` ignoring the scrollbar, `padding` and `scroll-padding`.

@@ -6,6 +6,8 @@ import {
   createMockScrollContainer,
   createResizeObserverEntry,
   installAnimationFrameMock,
+  simulateScroll,
+  mountRow,
 } from "./test-utils"
 
 type GridVirtualizerInternals = {
@@ -133,8 +135,8 @@ describe("GridVirtualizer", () => {
     const staleElement = createElement(20)
     const currentElement = createElement(20)
 
-    row.measureRow(staleElement)
-    row.measureRow(currentElement)
+    mountRow(virtualizer, row!.row, staleElement)
+    mountRow(virtualizer, row!.row, currentElement)
     listeners[0]?.(createResizeObserverEntry(staleElement, 80, 50))
 
     expect(notifications).toBe(0)
@@ -150,7 +152,7 @@ describe("GridVirtualizer", () => {
     })
 
     const [row] = virtualizer.getVirtualRows()
-    row.measureRow(createElement(40))
+    mountRow(virtualizer, row!.row, createElement(40))
 
     expect(virtualizer.getTotalHeight()).toBe(80)
     expect(notifications).toBe(0)
@@ -175,7 +177,7 @@ describe("GridVirtualizer", () => {
 
     let rows = virtualizer.getVirtualRows()
     expect(rows.map((row) => row.row)).toEqual([2, 3, 4])
-    expect(virtualizer.getRowStyle(rows[0]!).transform).toBe("translate3d(0, 10px, 0)")
+    expect(virtualizer.getRowProps(rows[0]!).style.transform).toBe("translate3d(0, 10px, 0)")
 
     scrollMargin = 20
     rows = virtualizer.getVirtualRows()
@@ -222,7 +224,7 @@ describe("GridVirtualizer", () => {
     const rows = virtualizer.getVirtualRows()
     const secondColumn = rows[0]!.columns[1]!
 
-    expect(virtualizer.getCellStyleInRow(secondColumn).transform).toBe("translate3d(-10px, 0, 0)")
+    expect(virtualizer.getCellProps(rows[0]!, secondColumn).style.transform).toBe("translate3d(-10px, 0, 0)")
   })
 
   test("batches row ResizeObserver measurements into one animation frame", () => {
@@ -244,7 +246,7 @@ describe("GridVirtualizer", () => {
       const rows = virtualizer.getVirtualRows()
       const elements = [createElement(20), createElement(20), createElement(20)]
       rows.forEach((row, index) => {
-        row.measureRow(elements[index]!)
+        mountRow(virtualizer, row!.row, elements[index]!)
       })
 
       listeners[0]?.(createResizeObserverEntry(elements[0]!, 30, 50))
@@ -282,7 +284,7 @@ describe("GridVirtualizer", () => {
 
       const [row] = virtualizer.getVirtualRows()
       const element = createElement(20)
-      row!.measureRow(element)
+      mountRow(virtualizer, row!.row, element)
 
       listeners[0]?.(createResizeObserverEntry(element, 50, 50))
 
@@ -304,7 +306,7 @@ describe("GridVirtualizer", () => {
     const virtualizer = createVirtualizer()
     const [row] = virtualizer.getVirtualRows()
 
-    row.measureRow(createElement(35))
+    mountRow(virtualizer, row!.row, createElement(35))
     expect(virtualizer.getTotalHeight()).toBe(75)
 
     virtualizer.updateOptions({ rowCount: 4 })
@@ -338,7 +340,7 @@ describe("GridVirtualizer", () => {
       dataset: { size: "35" },
     } as unknown as HTMLElement
 
-    row!.measureRow(element)
+    mountRow(virtualizer, row!.row, element)
     expect(virtualizer.getTotalHeight()).toBe(75)
 
     element.dataset.size = "45"
@@ -366,7 +368,7 @@ describe("GridVirtualizer", () => {
     })
 
     virtualizer.setViewportSize(50, 30)
-    virtualizer.handleScroll({
+    simulateScroll(virtualizer, {
       currentTarget: { scrollTop: 20, scrollLeft: 0 },
     })
     virtualizer.updateOptions({ rowCount: 3 })
@@ -390,11 +392,11 @@ describe("GridVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 20, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(50)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 40, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(99)
@@ -429,7 +431,7 @@ describe("GridVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 20, scrollLeft: 0 },
       })
       virtualizer.destroy()
@@ -457,7 +459,7 @@ describe("GridVirtualizer", () => {
 
     const [row] = virtualizer.getVirtualRows()
     onRangeChange.mockClear()
-    row!.measureRow(createElement(50))
+    mountRow(virtualizer, row!.row, createElement(50))
     virtualizer.destroy()
 
     await Promise.resolve()
@@ -470,7 +472,7 @@ describe("GridVirtualizer", () => {
 
     const virtualizer = createVirtualizer()
     const [row] = virtualizer.getVirtualRows()
-    row!.measureRow(createElement(30))
+    mountRow(virtualizer, row!.row, createElement(30))
 
     const internals = virtualizer as unknown as GridVirtualizerInternals
     expect(internals.rowElementsByIndex.size).toBe(1)
@@ -485,10 +487,10 @@ describe("GridVirtualizer", () => {
   test("disables native scroll anchoring on the scroll container by default", () => {
     const virtualizer = createVirtualizer()
 
-    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("none")
+    expect(virtualizer.getRootProps().style.overflowAnchor).toBe("none")
 
     virtualizer.updateOptions({ overflowAnchor: "auto" })
-    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("auto")
+    expect(virtualizer.getRootProps().style.overflowAnchor).toBe("auto")
   })
 
   test("applies initialOffset on init and retries once when clamped", () => {

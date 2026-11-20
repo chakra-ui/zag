@@ -1,3 +1,4 @@
+import type { PropTypes } from "@zag-js/types"
 import { getComputedStyle, getDocumentElement, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { ListVirtualizer } from "./list-virtualizer"
 import type {
@@ -63,7 +64,7 @@ export interface WindowVirtualizerOptions extends ListVirtualizerOptions {
  * stay in list-space regardless of where the scroll originates. Programmatic scrolling
  * (`scrollTo`, `scrollToIndex`) targets the detected scroll container or `window`.
  */
-export class WindowVirtualizer extends ListVirtualizer {
+export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirtualizer<T> {
   private windowOptions: WindowVirtualizerOptions
   private hasSetupWindowScrolling = false
   private windowScrollHandler?: VoidFunction
@@ -104,7 +105,7 @@ export class WindowVirtualizer extends ListVirtualizer {
         },
       }
 
-      this.handleScroll(mockEvent)
+      this.handleScrollEvent(mockEvent)
     }
 
     this.windowResizeHandler = () => {
@@ -229,6 +230,8 @@ export class WindowVirtualizer extends ListVirtualizer {
     return (scrollingElement.scrollTop || win.pageYOffset || 0) - windowOffset
   }
 
+  protected override checkScrollElementSetup(): void {}
+
   protected override getScrollportSize(): number {
     return this.viewportSize
   }
@@ -237,18 +240,19 @@ export class WindowVirtualizer extends ListVirtualizer {
     return { padding: 0, scrollPaddingStart: 0, scrollPaddingEnd: 0 }
   }
 
-  override getContainerStyle(): CSSProperties {
-    const baseStyle = super.getContainerStyle()
-    // Override container style for window scrolling — avoid `contain: strict` on huge in-flow content.
-    return {
-      ...baseStyle,
-      overflow: "visible",
-      position: "static",
-      contain: "none",
-    }
+  // The page scrolls, so the root stays in normal flow
+  protected override getRootStyle(): CSSProperties {
+    return { overflowAnchor: this.options.overflowAnchor }
   }
 
-  override getContentStyle(): CSSProperties {
+  // The window's scroll listener is attached in `init`
+  protected override listenToScroll(): void {}
+
+  protected override getRootTabIndex(): undefined {
+    return undefined
+  }
+
+  protected override getContentStyle(): CSSProperties {
     const baseStyle = super.getContentStyle()
     const windowOffset = this.windowOptions.windowOffset ?? 0
 
@@ -260,11 +264,6 @@ export class WindowVirtualizer extends ListVirtualizer {
     }
   }
 
-  override getScrollHandler(): typeof this.handleScroll {
-    // Window scrolling doesn't use a scroll handler on the container (scroll is on `window`).
-    return () => {}
-  }
-
   /**
    * List-space offsets are applied to `window` / the scroll parent in `scrollTo` — not to the virtualizer root
    * (which is not the scroll container and must not receive `scrollTop` = list offset).
@@ -273,7 +272,7 @@ export class WindowVirtualizer extends ListVirtualizer {
     return false
   }
 
-  override setViewportSize(_size: number): void {
+  protected override setViewportSize(_size: number): void {
     const win = this.resolveWindow()
     const horizontal = this.isHorizontal
     const target = this.scrollListenerTarget ?? win

@@ -1,7 +1,7 @@
 "use client"
 
 import * as menu from "@zag-js/menu"
-import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
 import { useListVirtualizer } from "@/hooks/use-virtualizer"
 import "@styles/menu.css"
@@ -45,26 +45,16 @@ export default function Page() {
         <Portal>
           <div {...api.getPositionerProps()}>
             <div
-              {...api.getContentProps()}
+              {...mergeProps(virtualizer.getRootProps(), api.getContentProps(), { style: { maxHeight: 320 } })}
               ref={ref}
-              onScroll={virtualizer.handleScroll}
-              style={{ maxHeight: 320, overflowY: "auto" }}
             >
-              <div
-                style={{
-                  height: virtualizer.getTotalSize(),
-                  position: "relative",
-                }}
-              >
+              <div {...virtualizer.getContentProps()}>
                 {virtualizer.getVirtualItems().map((virtualItem) => {
                   const item = items[virtualItem.index]
                   return (
                     <div
                       key={item.value}
-                      aria-posinset={virtualItem.index + 1}
-                      aria-setsize={items.length}
-                      {...api.getItemProps({ value: item.value })}
-                      style={virtualizer.getItemStyle(virtualItem)}
+                      {...mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}
                     >
                       {item.label}
                     </div>

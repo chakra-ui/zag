@@ -1,14 +1,14 @@
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { TableVirtualizer } from "../src/table-virtualizer"
-import { createMockScrollContainer } from "./test-utils"
+import { createMockScrollContainer, simulateScroll, mountHeader } from "./test-utils"
 
 afterEach(() => vi.restoreAllMocks())
 
 const viewport = { width: 600, height: 200 }
 
 const scrollHorizontally = (virtualizer: TableVirtualizer, scrollLeft: number) => {
-  virtualizer.handleScroll({ currentTarget: { scrollTop: 0, scrollLeft } })
+  simulateScroll(virtualizer, { currentTarget: { scrollTop: 0, scrollLeft } })
 }
 
 const indexes = (virtualizer: TableVirtualizer) => virtualizer.getVirtualColumns().map((column) => column.index)
@@ -25,9 +25,9 @@ describe("table rows", () => {
     virtualizer.scrollToOffset(400)
     virtualizer.getVirtualItems()
 
-    expect(virtualizer.getRowSpacerStyle("start")).toEqual({ height: "240px" })
-    expect(virtualizer.getRowSpacerStyle("end")).toEqual({ height: "3280px" })
-    expect(virtualizer.getBodyStyle()).toEqual({
+    expect(virtualizer.getRowSpacerProps("start").style).toEqual({ height: "240px" })
+    expect(virtualizer.getRowSpacerProps("end").style).toEqual({ height: "3280px" })
+    expect(virtualizer.getBodyProps().style).toEqual({
       position: "sticky",
       top: "-280px",
       bottom: "-310px",
@@ -60,12 +60,12 @@ describe("table rows", () => {
     const [retained, rendered] = virtualizer.getVirtualItems()
 
     expect(retained).toMatchObject({ index: 0, isRetained: true })
-    expect(virtualizer.getRowStyle(retained!)).toMatchObject({
+    expect(virtualizer.getRowProps(retained!).style).toMatchObject({
       position: "absolute",
     })
 
     expect(rendered).toMatchObject({ isRetained: false })
-    expect(virtualizer.getRowStyle(rendered!)).toEqual({})
+    expect(virtualizer.getRowProps(rendered!).style).toEqual({})
   })
 
   test("an empty table reserves no space", () => {
@@ -75,9 +75,9 @@ describe("table rows", () => {
       initialRect: viewport,
     })
 
-    expect(virtualizer.getRowSpacerStyle("start")).toEqual({ height: "0px" })
-    expect(virtualizer.getRowSpacerStyle("end")).toEqual({ height: "0px" })
-    expect(virtualizer.getBodyStyle()).toEqual({})
+    expect(virtualizer.getRowSpacerProps("start").style).toEqual({ height: "0px" })
+    expect(virtualizer.getRowSpacerProps("end").style).toEqual({ height: "0px" })
+    expect(virtualizer.getBodyProps().style).toEqual({})
   })
 })
 
@@ -115,7 +115,7 @@ describe("table header", () => {
       getBoundingClientRect: () => ({ width: 600, height: 36 }),
     } as HTMLElement
 
-    virtualizer.measureHeaderElement(thead)
+    mountHeader(virtualizer, thead)
 
     expect(virtualizer.getItemMetrics(0)?.start).toBe(36)
 
@@ -142,13 +142,13 @@ describe("table columns", () => {
     const virtualizer = createTable()
 
     expect(indexes(virtualizer)).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
-    expect(virtualizer.getColumnSpacerStyle("start")).toMatchObject({
+    expect(virtualizer.getColumnSpacerProps("start").style).toMatchObject({
       width: "0px",
     })
-    expect(virtualizer.getColumnSpacerStyle("end")).toMatchObject({
+    expect(virtualizer.getColumnSpacerProps("end").style).toMatchObject({
       width: "9200px",
     })
-    expect(virtualizer.getTableStyle()).toMatchObject({
+    expect(virtualizer.getTableProps().style).toMatchObject({
       tableLayout: "fixed",
       width: "10000px",
     })
@@ -163,10 +163,10 @@ describe("table columns", () => {
 
     expect(listener).toHaveBeenCalled()
     expect(indexes(virtualizer)).toEqual([0, 9, 10, 11, 12, 13, 14, 15, 16, 17])
-    expect(virtualizer.getColumnSpacerStyle("start")).toMatchObject({
+    expect(virtualizer.getColumnSpacerProps("start").style).toMatchObject({
       width: "800px",
     })
-    expect(virtualizer.getColumnSpacerStyle("end")).toMatchObject({
+    expect(virtualizer.getColumnSpacerProps("end").style).toMatchObject({
       width: "8200px",
     })
   })
@@ -197,17 +197,17 @@ describe("table columns", () => {
     const first = columns[0]!
     const last = columns[columns.length - 1]!
 
-    expect(virtualizer.getCellStyle(first)).toEqual({
+    expect(virtualizer.getCellProps(first).style).toEqual({
       position: "sticky",
       insetInlineStart: "0px",
       zIndex: 1,
     })
-    expect(virtualizer.getCellStyle(last)).toEqual({
+    expect(virtualizer.getCellProps(last).style).toEqual({
       position: "sticky",
       insetInlineEnd: "0px",
       zIndex: 1,
     })
-    expect(virtualizer.getCellStyle(columns[1]!)).toEqual({})
+    expect(virtualizer.getCellProps(columns[1]!).style).toEqual({})
   })
 
   test("scrollToColumn scrolls a column clear of pinned columns", () => {
@@ -263,14 +263,14 @@ describe("table columns", () => {
   test("returns stable styles until the column window changes", () => {
     const virtualizer = createTable()
     const [pinned] = virtualizer.getVirtualColumns()
-    const spacer = virtualizer.getColumnSpacerStyle("end")
+    const spacer = virtualizer.getColumnSpacerProps("end").style
 
-    expect(virtualizer.getCellStyle(pinned!)).toBe(virtualizer.getCellStyle(pinned!))
-    expect(virtualizer.getColumnSpacerStyle("end")).toBe(spacer)
+    expect(virtualizer.getCellProps(pinned!).style).toBe(virtualizer.getCellProps(pinned!).style)
+    expect(virtualizer.getColumnSpacerProps("end").style).toBe(spacer)
 
     scrollHorizontally(virtualizer, 1000)
 
-    expect(virtualizer.getColumnSpacerStyle("end")).not.toBe(spacer)
+    expect(virtualizer.getColumnSpacerProps("end").style).not.toBe(spacer)
   })
 
   test("requires columnSize with columnCount", () => {

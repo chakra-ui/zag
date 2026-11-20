@@ -4,6 +4,7 @@ import { useWindowVirtualizer as useTanStackWindowVirtualizer } from "@tanstack/
 import { useLayoutEffect, useRef, useState } from "react"
 import { ClientOnly } from "@/components/client-only"
 import { useWindowVirtualizer } from "@/hooks/use-virtualizer"
+import { mergeProps } from "@zag-js/react"
 
 const ITEM_COUNT = 10_000
 const ITEM_HEIGHT = 80
@@ -21,7 +22,7 @@ const items = Array.from({ length: ITEM_COUNT }, (_, i) => ({
 function ZagWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }) {
   const { virtualizer, ref } = useWindowVirtualizer({
     count: ITEM_COUNT,
-    estimatedItemSize: ITEM_HEIGHT,
+    itemSize: ITEM_HEIGHT,
     overscan: 5,
     initialRect:
       typeof window !== "undefined"
@@ -30,31 +31,27 @@ function ZagWindowVirtualizer({ onMetrics }: { onMetrics: (m: Metrics) => void }
   })
 
   const virtualItems = virtualizer.getVirtualItems()
-  const totalSize = virtualizer.getTotalSize()
-
   return (
     <div>
       <h3 style={{ color: "#3b82f6" }}>@zag-js/virtualizer (Window)</h3>
       <BenchmarkButtons onRun={(scrollCount) => runWindowScrollBenchmark(scrollCount, onMetrics)} />
       <div
         ref={ref}
-        style={{
-          ...virtualizer.getContainerStyle(),
-          width: "100%",
-          border: "2px solid #3b82f6",
-          borderRadius: 8,
-        }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          style: { width: "100%", border: "2px solid #3b82f6", borderRadius: 8 },
+        })}
       >
-        <div style={{ height: totalSize, width: "100%", position: "relative" }}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((vi) => (
             <div
               key={vi.index}
-              style={{
-                ...virtualizer.getItemStyle(vi),
-                padding: "8px 12px",
-                borderBottom: "1px solid #e5e7eb",
-                backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
-              }}
+              {...mergeProps(virtualizer.getItemProps(vi), {
+                style: {
+                  padding: "8px 12px",
+                  borderBottom: "1px solid #e5e7eb",
+                  backgroundColor: vi.index % 2 === 0 ? "#f8fafc" : "#fff",
+                },
+              })}
             >
               <strong>{items[vi.index].label}</strong>
               <div style={{ fontSize: 12, color: "#64748b" }}>{items[vi.index].description}</div>

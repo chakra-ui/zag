@@ -1,28 +1,34 @@
+import { clampValue, invariant, isFunction, isNumber } from "@zag-js/utils"
 import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,
   GroupMeta,
   ItemMeasurement,
-  ItemState,
   ListVirtualizerOptions,
   Range,
   ScrollAnchor,
   VirtualItem,
   VirtualizerOptions,
 } from "./types"
+import type { PropTypes } from "@zag-js/types"
 import { Virtualizer } from "./virtualizer"
 import { CacheManager } from "./utils/cache-manager"
 import { SizeTracker } from "./utils/size-tracker"
 
 type ResolvedListOptions = ListVirtualizerOptions & Pick<VirtualizerOptions, "estimatedItemSize">
 
-function validateItemSize(itemSize: number | undefined): void {
-  if (itemSize !== undefined && (!Number.isFinite(itemSize) || itemSize <= 0)) {
-    throw new Error("[@zag-js/virtualizer] `itemSize` must be a finite number greater than zero.")
-  }
+function validateSizes(itemSize: number | undefined, estimatedItemSize: unknown): void {
+  invariant(
+    itemSize !== undefined && (!Number.isFinite(itemSize) || itemSize <= 0),
+    "[@zag-js/virtualizer] `itemSize` must be a finite number greater than zero.",
+  )
+  invariant(
+    itemSize === undefined && !estimatedItemSize,
+    "[@zag-js/virtualizer] Provide `itemSize` or `estimatedItemSize`.",
+  )
 }
 
-export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
+export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualizer<ResolvedListOptions, T> {
   declare private sizeTracker: SizeTracker | undefined
   declare private groups: ListVirtualizerOptions["groups"] | null
   declare private groupStarts: Map<number, number> | null
@@ -33,10 +39,7 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
   private trailingCleanup: VoidFunction | undefined
 
   constructor(options: ListVirtualizerOptions) {
-    validateItemSize(options.itemSize)
-    if (options.itemSize === undefined && !options.estimatedItemSize) {
-      throw new Error("[@zag-js/virtualizer] Provide `itemSize` or `estimatedItemSize`.")
-    }
+    validateSizes(options.itemSize, options.estimatedItemSize)
     super({ ...options, estimatedItemSize: options.estimatedItemSize ?? 0 })
     if (options.initialRect) {
       const { width, height } = options.initialRect
@@ -92,10 +95,9 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
   protected getEstimatedSize(index: number): number {
     const { itemSize, estimatedItemSize } = this.options
     if (itemSize !== undefined) return itemSize
-    const size =
-      typeof estimatedItemSize === "number"
-        ? (this.refinedEstimate ?? estimatedItemSize)
-        : super.getEstimatedSize(index)
+    const size = isNumber(estimatedItemSize)
+      ? (this.refinedEstimate ?? estimatedItemSize)
+      : super.getEstimatedSize(index)
     return size + this.getGroupHeaderEstimate(index)
   }
 
@@ -105,25 +107,25 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
     const groupIndex = this.groupStarts?.get(index)
     if (groupIndex === undefined) return 0
     const group = this.groups[groupIndex]
-    return group.headerSize ?? (typeof estimate === "number" ? estimate : estimate(group, groupIndex))
+    return group.headerSize ?? (isNumber(estimate) ? estimate : estimate(group, groupIndex))
   }
 
   private getGroupHeaderSize(group: GroupMeta): number {
     if (group.headerSize !== undefined) return group.headerSize
     const estimate = this.options.estimatedGroupHeaderSize
     if (estimate === undefined) return 0
-    return typeof estimate === "number" ? estimate : estimate(group, this.groups?.indexOf(group) ?? 0)
+    return isNumber(estimate) ? estimate : estimate(group, this.groups?.indexOf(group) ?? 0)
   }
 
   protected onMeasurementsChanged(): void {
-    if (typeof this.options.estimatedItemSize !== "number" || this.options.itemSize !== undefined) return
-    if (this.refineFrame.isActive() || typeof globalThis.requestAnimationFrame !== "function") return
+    if (!isNumber(this.options.estimatedItemSize) || this.options.itemSize !== undefined) return
+    if (this.refineFrame.isActive() || !isFunction(globalThis.requestAnimationFrame)) return
     this.refineFrame.request(() => this.refineEstimate())
   }
 
   private refineEstimate(): void {
     const { estimatedItemSize } = this.options
-    if (this.destroyed || this.isScrolling || !this.sizeTracker || typeof estimatedItemSize !== "number") return
+    if (this.destroyed || this.isScrolling || !this.sizeTracker || !isNumber(estimatedItemSize)) return
 
     let total = 0
     let measured = 0
@@ -238,23 +240,7 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
     return range
   }
 
-  getItemState(virtualItem: VirtualItem): ItemState {
-    const horizontal = this.isHorizontal
-    const { index, start, size } = virtualItem
-
-    return {
-      index,
-      key: virtualItem.key,
-      position: horizontal ? { x: start, y: 0 } : { x: 0, y: start },
-      size: {
-        width: horizontal ? size : "100%",
-        height: horizontal ? "100%" : size,
-      },
-      isScrolling: this.isScrolling,
-    }
-  }
-
-  getItemStyle(virtualItem: VirtualItem): CSSProperties {
+  protected getItemStyle(virtualItem: VirtualItem): CSSProperties {
     const horizontal = this.isHorizontal
     const isRtl = this.isRtl
     const scrollMargin = this.getScrollMargin()
@@ -286,8 +272,29 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
     this.invalidateMeasurements(0)
   }
 
-  /** Ref for content after the last item, e.g. a loading row. */
-  measureTrailingElement = (element: HTMLElement | null): void => {
+  /** Props for content after the last item, such as a loading row. It is measured automatically. */
+  getTrailingProps(): T["element"] {
+    return this.normalize.element({
+      "data-virtualizer-trailing": this.id,
+      style: this.getTrailingStyle(),
+    })
+  }
+
+  protected override getTrackedParts(): string[] {
+    return ["item", "trailing"]
+  }
+
+  protected override onElementAdded(element: HTMLElement): void {
+    if (element.hasAttribute("data-virtualizer-trailing")) this.measureTrailing(element)
+    else super.onElementAdded(element)
+  }
+
+  protected override onElementRemoved(element: HTMLElement): void {
+    if (element.hasAttribute("data-virtualizer-trailing")) this.measureTrailing(null)
+    else super.onElementRemoved(element)
+  }
+
+  private measureTrailing(element: HTMLElement | null): void {
     this.trailingCleanup?.()
     this.trailingCleanup = undefined
     if (!element || this.destroyed) {
@@ -309,7 +316,7 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
     this.notifyStore()
   }
 
-  getTrailingStyle(): CSSProperties {
+  protected getTrailingStyle(): CSSProperties {
     const offset = this.getTotalSize() - this.options.paddingEnd - this.trailingSize - this.getScrollMargin()
     if (this.isHorizontal) {
       return {
@@ -373,7 +380,7 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
       const { count, itemSize, gap } = this.options
       if (count === 0) return -1
       const index = Math.ceil(Math.max(0, offset - paddingStart) / (itemSize + gap)) - 1
-      return Math.max(0, Math.min(count - 1, index))
+      return clampValue(index, 0, count - 1)
     }
 
     // Initialize size tracker if needed
@@ -442,25 +449,14 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
     return this.getGroupHeaderState(offset, headerSizeOverride)
   }
 
-  /**
-   * Get ARIA attributes for the list container
-   */
-  getContainerAriaAttrs() {
-    return {
-      role: "list" as const,
-    }
+  protected override getRootAria(): Record<string, string | number> {
+    if (this.options.aria === false) return {}
+    return { role: "list" }
   }
 
-  /**
-   * Get ARIA attributes for a list item
-   */
-  getItemAriaAttrs(index: number) {
-    const { count } = this.options
-    return {
-      role: "listitem" as const,
-      "aria-posinset": index + 1,
-      "aria-setsize": count,
-    }
+  protected override getItemAria(index: number): Record<string, string | number> {
+    if (this.options.aria === false) return {}
+    return { role: "listitem", "aria-posinset": index + 1, "aria-setsize": this.options.count }
   }
 
   /**
@@ -537,12 +533,9 @@ export class ListVirtualizer extends Virtualizer<ResolvedListOptions> {
 
   override updateOptions(nextOptions: Partial<ListVirtualizerOptions>): void {
     if (this.destroyed) return
-    validateItemSize(nextOptions.itemSize)
     const itemSize = "itemSize" in nextOptions ? nextOptions.itemSize : this.options.itemSize
     const estimate = "estimatedItemSize" in nextOptions ? nextOptions.estimatedItemSize : this.options.estimatedItemSize
-    if (itemSize === undefined && !estimate) {
-      throw new Error("[@zag-js/virtualizer] Provide `itemSize` or `estimatedItemSize`.")
-    }
+    validateSizes(itemSize, estimate)
     if ("estimatedItemSize" in nextOptions && estimate !== this.options.estimatedItemSize) {
       this.refinedEstimate = undefined
     }

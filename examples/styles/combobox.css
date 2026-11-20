@@ -119,6 +119,13 @@
   &[data-disabled] {
     opacity: var(--z-disabled-opacity);
   }
+
+  /* Virtualized rows have a fixed height */
+  &[data-virtualizer-item] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 [data-combobox-item-indicator] {

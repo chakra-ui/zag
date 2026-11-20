@@ -8,7 +8,6 @@ export type {
   GroupMeta,
   InitialMeasurements,
   ItemMeasurement,
-  ItemState,
   ListVirtualizerOptions,
   MeasureElementContext,
   Range,

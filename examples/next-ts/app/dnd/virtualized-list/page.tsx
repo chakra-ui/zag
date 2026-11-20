@@ -23,6 +23,7 @@ export default function Page() {
     count: items.length,
     itemSize: 44,
     overscan: 8,
+    aria: false,
   })
 
   const service = useMachine(dnd.machine, {
@@ -65,14 +66,14 @@ export default function Page() {
             <span className={styles.stat}>drop {lastDrop ?? "none"}</span>
           </div>
 
-          <div ref={setViewportRef} onScroll={virtualizer.handleScroll} className={styles.viewport}>
-            <div className={styles.sizer} style={{ height: virtualizer.getTotalSize() }}>
+          <div ref={setViewportRef} {...virtualizer.getRootProps()} className={styles.viewport}>
+            <div {...virtualizer.getContentProps()} className={styles.sizer}>
               {virtualItems.map((virtualItem) => {
                 const item = items[virtualItem.index]
                 if (!item) return null
 
                 return (
-                  <div key={item.id} style={virtualizer.getItemStyle(virtualItem)}>
+                  <div key={item.id} {...virtualizer.getItemProps(virtualItem)}>
                     <div className={styles.row}>
                       <div
                         {...api.getDropIndicatorProps({ value: item.id, placement: "before" })}

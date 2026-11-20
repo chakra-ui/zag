@@ -7,6 +7,8 @@ import {
   createMockScrollContainer,
   createResizeObserverEntry,
   installAnimationFrameMock,
+  simulateScroll,
+  mountItem,
 } from "./test-utils"
 
 function initialRect(height: number) {
@@ -177,7 +179,7 @@ describe("ListVirtualizer", () => {
     const items = virtualizer.getVirtualItems()
 
     expect(items.map((item) => item.lane)).toEqual([0, 0, 0])
-    expect(virtualizer.getItemStyle(items[1]!).transform).toBe("translate3d(0, 20px, 0)")
+    expect(virtualizer.getItemProps(items[1]!).style.transform).toBe("translate3d(0, 20px, 0)")
     expect(virtualizer.getTotalSize()).toBe(120)
   })
 
@@ -285,11 +287,11 @@ describe("ListVirtualizer", () => {
       expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
 
       vi.advanceTimersByTime(50)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 100, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(50)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 250, scrollLeft: 0 },
       })
 
@@ -310,7 +312,7 @@ describe("ListVirtualizer", () => {
     })
 
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0, 1, 2])
-    expect(virtualizer.getContentStyle()).toMatchObject({
+    expect(virtualizer.getContentProps().style).toMatchObject({
       width: "100px",
       height: "100%",
     })
@@ -347,14 +349,14 @@ describe("ListVirtualizer", () => {
       })
 
       const [, second] = virtualizer.getVirtualItems()
-      expect(virtualizer.getItemStyle(second!).transform).toBe("translate3d(-20px, 0, 0)")
+      expect(virtualizer.getItemProps(second!).style.transform).toBe("translate3d(-20px, 0, 0)")
 
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 0, scrollLeft: 10 },
       })
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 0, scrollLeft: 30 },
       })
       virtualizer.getVirtualItems()
@@ -402,7 +404,7 @@ describe("ListVirtualizer", () => {
 
     // Prime RTL mode detection from the attached scroll element.
     virtualizer.scrollToOffset(1)
-    virtualizer.handleScroll({
+    simulateScroll(virtualizer, {
       currentTarget: { scrollTop: 0, scrollLeft: -40 },
     })
 
@@ -431,11 +433,11 @@ describe("ListVirtualizer", () => {
       })
 
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 100, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 150, scrollLeft: 0 },
       })
       virtualizer.getVirtualItems()
@@ -474,7 +476,7 @@ describe("ListVirtualizer", () => {
       })
 
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 100, scrollLeft: 0 },
       })
       virtualizer.getVirtualItems()
@@ -482,7 +484,7 @@ describe("ListVirtualizer", () => {
       expect(contexts.at(-1)).toEqual({ velocity: 0, direction: null })
 
       vi.advanceTimersByTime(10)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 150, scrollLeft: 0 },
       })
       virtualizer.getVirtualItems()
@@ -490,7 +492,7 @@ describe("ListVirtualizer", () => {
       expect(contexts.at(-1)).toEqual({ velocity: 5, direction: "forward" })
 
       vi.advanceTimersByTime(5100)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 170, scrollLeft: 0 },
       })
       virtualizer.getVirtualItems()
@@ -521,7 +523,7 @@ describe("ListVirtualizer", () => {
     })
 
     virtualizer.init(element)
-    virtualizer.handleScroll({
+    simulateScroll(virtualizer, {
       currentTarget: { scrollTop: 20, scrollLeft: 0 },
     })
     virtualizer.updateOptions({ count: 3 })
@@ -537,7 +539,7 @@ describe("ListVirtualizer", () => {
       },
     })
     measured.init(element)
-    measured.getVirtualItems()[0]!.measureElement(createMeasuredElement(50))
+    mountItem(measured, 0, createMeasuredElement(50))
     await Promise.resolve()
 
     expect(changes.map((change) => change.reason)).toEqual(["resize", "scroll", "count", "manual", "measurement"])
@@ -560,11 +562,11 @@ describe("ListVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 20, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(50)
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 40, scrollLeft: 0 },
       })
       vi.advanceTimersByTime(99)
@@ -597,7 +599,7 @@ describe("ListVirtualizer", () => {
         onScrollEnd,
       })
 
-      virtualizer.handleScroll({
+      simulateScroll(virtualizer, {
         currentTarget: { scrollTop: 20, scrollLeft: 0 },
       })
       virtualizer.destroy()
@@ -622,7 +624,7 @@ describe("ListVirtualizer", () => {
       startIndex: 1,
       endIndex: 3,
     })
-    expect(virtualizer.getRenderedRange()).toEqual({
+    expect(virtualizer.getRange()).toEqual({
       startIndex: 0,
       endIndex: 4,
     })
@@ -663,7 +665,7 @@ describe("ListVirtualizer", () => {
     })
 
     const [item] = virtualizer.getVirtualItems()
-    expect(virtualizer.getItemStyle(item).transform).toBe("translate3d(0, -8px, 0)")
+    expect(virtualizer.getItemProps(item).style.transform).toBe("translate3d(0, -8px, 0)")
   })
 
   test("applies scrollMargin to visible and rendered range metadata", () => {
@@ -680,7 +682,7 @@ describe("ListVirtualizer", () => {
       startIndex: 2,
       endIndex: 4,
     })
-    expect(virtualizer.getRenderedRange()).toEqual({
+    expect(virtualizer.getRange()).toEqual({
       startIndex: 1,
       endIndex: 5,
     })
@@ -710,7 +712,7 @@ describe("ListVirtualizer", () => {
     })
 
     const [item] = virtualizer.getVirtualItems()
-    expect(virtualizer.getItemStyle(item).transform).toBe("translate3d(0, -8px, 0)")
+    expect(virtualizer.getItemProps(item).style.transform).toBe("translate3d(0, -8px, 0)")
 
     scrollMargin = 12
     expect(virtualizer.scrollToIndex(5, { align: "start" })).toEqual({
@@ -741,7 +743,7 @@ describe("ListVirtualizer", () => {
       startIndex: 1,
       endIndex: 4,
     })
-    expect(virtualizer.getRenderedRange()).toEqual({
+    expect(virtualizer.getRange()).toEqual({
       startIndex: 1,
       endIndex: 4,
     })
@@ -867,10 +869,10 @@ describe("ListVirtualizer", () => {
       initialRect: initialRect(30),
     })
 
-    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("none")
+    expect(virtualizer.getRootProps().style.overflowAnchor).toBe("none")
 
     virtualizer.updateOptions({ overflowAnchor: "auto" })
-    expect(virtualizer.getContainerStyle().overflowAnchor).toBe("auto")
+    expect(virtualizer.getRootProps().style.overflowAnchor).toBe("auto")
   })
 
   test("preserves a keyed visible anchor when count updates after prepend", () => {
@@ -1083,10 +1085,10 @@ describe("ListVirtualizer", () => {
     const [item] = virtualizer.getVirtualItems()
     const element = createMeasuredElement(25)
 
-    item.measureElement(element)
+    mountItem(virtualizer, item!.index, element)
     expect(virtualizer.getTotalSize()).toBe(45)
 
-    virtualizer.forceUpdate()
+    ;(virtualizer as unknown as { forceUpdate(): void }).forceUpdate()
 
     expect(virtualizer.getTotalSize()).toBe(45)
   })
@@ -1115,7 +1117,7 @@ describe("ListVirtualizer", () => {
       const elements = [createMeasuredElement(10), createMeasuredElement(10), createMeasuredElement(10)]
 
       virtualizer.getVirtualItems().forEach((item, index) => {
-        item.measureElement(elements[index]!)
+        mountItem(virtualizer, item!.index, elements[index]!)
       })
 
       listeners[0]?.(createResizeObserverEntry(elements[0]!, 20))
@@ -1158,7 +1160,7 @@ describe("ListVirtualizer", () => {
 
       const [item] = virtualizer.getVirtualItems()
       const element = createMeasuredElement(10)
-      item!.measureElement(element)
+      mountItem(virtualizer, item!.index, element)
 
       listeners[0]?.(createResizeObserverEntry(element, 40))
 
@@ -1191,7 +1193,7 @@ describe("ListVirtualizer", () => {
     const [item] = virtualizer.getVirtualItems()
     const element = createMeasuredElement(40)
 
-    item!.measureElement(element)
+    mountItem(virtualizer, item!.index, element)
     virtualizer.destroy()
 
     await Promise.resolve()
@@ -1212,7 +1214,7 @@ describe("ListVirtualizer", () => {
     })
 
     const [item] = virtualizer.getVirtualItems()
-    item!.measureElement(createMeasuredElement(40))
+    mountItem(virtualizer, item!.index, createMeasuredElement(40))
     virtualizer.destroy()
 
     await Promise.resolve()
@@ -1245,11 +1247,11 @@ describe("ListVirtualizer", () => {
       dataset: { size: "40" },
     } as unknown as HTMLElement
 
-    item!.measureElement(element)
+    mountItem(virtualizer, item!.index, element)
     expect(virtualizer.getTotalSize()).toBe(60)
 
     element.dataset.size = "55"
-    virtualizer.forceUpdate()
+    ;(virtualizer as unknown as { forceUpdate(): void }).forceUpdate()
     expect(virtualizer.getTotalSize()).toBe(75)
 
     expect(contexts.some((context) => context.orientation === "vertical")).toBe(true)
