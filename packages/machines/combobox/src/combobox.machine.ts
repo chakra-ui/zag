@@ -1114,7 +1114,7 @@ export const machine = createMachine({
         if (!optionText) return
         const isSelected = value ? context.get("value").includes(value) : false
         const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-        const message = translations.highlightedItem?.({ label: optionText, selected: isSelected })
+        const message = translations.highlightedItem({ label: optionText, selected: isSelected })
         if (message) refs.get("liveRegion")?.announce(message)
       },
       announceResults({ refs, prop }) {
