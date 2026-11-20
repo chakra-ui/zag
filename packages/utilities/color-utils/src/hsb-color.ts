@@ -1,11 +1,11 @@
-import { clampValue, mod, toFixedNumber } from "@zag-js/utils"
+import { toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSLColor } from "./hsl-color"
+import { parseHueColorArgs } from "./parse-utils"
 import { RGBColor } from "./rgb-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
-const HSB_REGEX =
-  /hsb\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%)\)|hsba\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d(.\d+)?)\)/
+const NAMES = ["hsb", "hsba"]
 
 export class HSBColor extends Color {
   constructor(
@@ -53,11 +53,8 @@ export class HSBColor extends Color {
   }
 
   static parse(value: string): HSBColor | void {
-    let m: RegExpMatchArray | null
-    if ((m = value.match(HSB_REGEX))) {
-      const [h, s, b, a] = (m[1] ?? m[2]).split(",").map((n) => Number(n.trim().replace("%", "")))
-      return new HSBColor(mod(h, 360), clampValue(s, 0, 100), clampValue(b, 0, 100), clampValue(a ?? 1, 0, 1))
-    }
+    const args = parseHueColorArgs(value, NAMES)
+    if (args) return new HSBColor(...args)
   }
 
   toString(format: ColorStringFormat = "css") {
