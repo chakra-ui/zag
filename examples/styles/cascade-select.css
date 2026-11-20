@@ -201,3 +201,41 @@
   display: inline-flex;
   color: var(--z-accent-fg);
 }
+
+.cascade-select-form {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .error {
+    margin: 0;
+    color: var(--z-danger);
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  pre {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg-muted);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

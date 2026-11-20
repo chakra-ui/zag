@@ -102,3 +102,35 @@
   font-size: var(--z-text-md);
   text-align: center;
 }
+
+.menubar-app-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint,
+  .status {
+    margin: 0;
+  }
+
+  .status {
+    color: var(--z-fg-subtle);
+  }
+
+  [data-menubar-root] {
+    display: inline-flex;
+    gap: 4px;
+  }
+}
+
+[data-menu-content] .shortcut {
+  margin-inline-start: auto;
+  padding-inline-start: 24px;
+  color: var(--z-fg-muted);
+  font-size: var(--z-text-xs);
+}
+
+[data-menu-content] .check {
+  display: inline-flex;
+  width: 16px;
+}

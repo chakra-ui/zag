@@ -52,6 +52,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "default-open", title: "Default Open" },
       { slug: "controlled", title: "Controlled" },
       { slug: "default-value", title: "Default Value" },
+      { slug: "form", title: "Form" },
     ],
   },
   {
@@ -71,6 +72,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "circle", title: "Circle" },
       { slug: "fixed", title: "Fixed Crop Area" },
+      { slug: "avatar-upload", title: "Avatar Upload" },
     ],
   },
   {
@@ -563,6 +565,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-format", title: "Controlled Format" },
+      { slug: "table-cells", title: "Table Cells" },
     ],
   },
   {
@@ -632,6 +635,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
       { slug: "vertical", title: "Vertical" },
+      { slug: "app-menu", title: "App Menu" },
     ],
   },
   {
@@ -704,6 +708,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "transform-paste", title: "Transform Paste" },
+      { slug: "invite-code", title: "Invite Code" },
     ],
   },
   {
