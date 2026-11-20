@@ -104,6 +104,20 @@ test.describe("floating-panel", () => {
     await I.dontSeeContent()
   })
 
+  test("[rtl] arrow keys should move the panel in the pressed direction", async () => {
+    await I.clickControls()
+    await I.controls.select("dir", "rtl")
+    await I.clickTrigger()
+    await expect(I.content).toBeFocused()
+    const start = await I.getContentSize()
+
+    await I.pressKey("ArrowRight", 10)
+    await I.seeContentHasPosition(start.x + 10, start.y, 1)
+
+    await I.pressKey("ArrowLeft", 10)
+    await I.seeContentHasPosition(start.x, start.y, 1)
+  })
+
   test("should restore to original size after minimize → double-click → restore flow", async () => {
     await I.clickTrigger()
     await I.seeContent()

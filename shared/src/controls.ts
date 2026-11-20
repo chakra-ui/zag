@@ -333,6 +333,7 @@ export const floatingPanelControls = defineControls({
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
   persistRect: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const signaturePadControls = defineControls({
