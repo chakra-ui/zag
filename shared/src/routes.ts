@@ -807,6 +807,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "countdown", title: "CountDown" },
       { slug: "stopwatch", title: "StopWatch" },
+      { slug: "resend-code", title: "Resend Code" },
+      { slug: "pomodoro", title: "Pomodoro" },
     ],
   },
   {

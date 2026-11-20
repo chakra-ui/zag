@@ -24,3 +24,46 @@
   display: flex;
   gap: 4px;
 }
+
+.timer-resend-code,
+.timer-pomodoro {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.timer-resend-code {
+  .code {
+    letter-spacing: 0.4em;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .sent {
+    margin: 0;
+    color: var(--z-fg-subtle);
+  }
+}
+
+.timer-pomodoro {
+  .progress {
+    width: 100%;
+    height: 8px;
+    border-radius: var(--z-radius-full);
+    background: var(--z-bg-muted);
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--z-green-600);
+  }
+}
