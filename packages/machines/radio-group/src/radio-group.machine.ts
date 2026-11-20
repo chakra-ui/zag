@@ -1,5 +1,10 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
+import {
+  dispatchInputCheckedEvent,
+  resizeObserverBorderBox,
+  trackFormControl,
+  trackRenderedParts,
+} from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import type { Rect } from "@zag-js/types"
 import * as dom from "./radio-group.dom"
@@ -21,6 +26,9 @@ export const machine = createMachine<RadioGroupSchema>({
 
   context({ prop, bindable }) {
     return {
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
@@ -71,7 +79,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   exit: ["cleanupObserver"],
 
-  effects: ["trackFormControlState", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackFocusVisible", "trackRenderedElements"],
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
@@ -113,6 +121,15 @@ export const machine = createMachine<RadioGroupSchema>({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackFormControlState({ context, scope }) {
         return trackFormControl(dom.getRootEl(scope), {
           onFieldsetDisabledChange(disabled) {

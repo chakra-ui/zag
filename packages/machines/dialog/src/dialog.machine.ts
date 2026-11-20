@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, isFocusOutside, raf } from "@zag-js/dom-query"
+import { getInitialFocus, isFocusOutside, raf, trackRenderedParts } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./dialog.dom"
@@ -62,8 +62,8 @@ export const machine = createMachine<DialogSchema>({
 
   states: {
     open: {
-      entry: ["checkRenderedElements", "setReturnFocusEl", "setInitialFocus"],
-      effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
+      entry: ["setReturnFocusEl", "setInitialFocus"],
+      effects: ["trackRenderedElements", "trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
@@ -133,6 +133,15 @@ export const machine = createMachine<DialogSchema>({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getContentEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { title: () => dom.getTitleEl(scope), description: () => dom.getDescriptionEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackDismissableElement({ scope, send, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
@@ -234,15 +243,6 @@ export const machine = createMachine<DialogSchema>({
           })
           if (!element) return
           element.focus({ preventScroll: true })
-        })
-      },
-
-      checkRenderedElements({ context, scope }) {
-        raf(() => {
-          context.set("rendered", {
-            title: !!dom.getTitleEl(scope),
-            description: !!dom.getDescriptionEl(scope),
-          })
         })
       },
 

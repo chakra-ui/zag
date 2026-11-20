@@ -16,6 +16,7 @@ import {
   raf,
   scrollToNearest,
   setCaretToEnd,
+  trackRenderedParts,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -77,6 +78,7 @@ export const machine = createMachine({
     }
   },
 
+  effects: ["trackRenderedElements"],
   exit: ["cancelFinalFocus", "cancelHighlightFrame"],
 
   context({ prop, bindable, getContext, getEvent }) {
@@ -84,6 +86,9 @@ export const machine = createMachine({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -690,6 +695,15 @@ export const machine = createMachine({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },

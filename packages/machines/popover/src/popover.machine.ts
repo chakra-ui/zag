@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, proxyTabFocus, raf, trackRenderedParts } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
@@ -100,8 +100,8 @@ export const machine = createMachine<PopoverSchema>({
     },
 
     open: {
-      entry: ["checkRenderedElements"],
       effects: [
+        "trackRenderedElements",
         "trapFocus",
         "preventScroll",
         "hideContentBelow",
@@ -146,6 +146,15 @@ export const machine = createMachine<PopoverSchema>({
       isOpenControlled: ({ prop }) => prop("open") != undefined,
     },
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getContentEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { title: () => dom.getTitleEl(scope), description: () => dom.getDescriptionEl(scope) },
+          onChange: (rendered) => context.set("renderedElements", rendered),
+        })
+      },
+
       trackPositioning({ context, prop, scope }) {
         context.set("currentPlacement", prop("positioning").placement)
         const anchorEl = dom.getAnchorEl(scope)
