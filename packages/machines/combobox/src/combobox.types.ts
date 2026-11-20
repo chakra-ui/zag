@@ -80,6 +80,11 @@ export interface SelectionDetails {
   modifiers: ModifierKeys
 }
 
+export interface HighlightedItemDetails {
+  label: string
+  selected: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -102,6 +107,11 @@ export interface IntlTranslations {
    * Set to an empty string to disable the announcement.
    */
   loading?: string | undefined
+  /**
+   * The message announced on Apple platforms when an option is highlighted.
+   * Return an empty string to disable the announcement.
+   */
+  highlightedItem?: ((details: HighlightedItemDetails) => string) | undefined
 }
 
 export interface ElementIds {
