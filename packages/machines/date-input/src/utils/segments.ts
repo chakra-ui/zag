@@ -1,6 +1,6 @@
 import { DateFormatter } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations, Segments, SegmentType } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
 
 export function needsTimeGranularity(granularity: DateGranularity): boolean {
@@ -79,20 +79,27 @@ export const PAGE_STEP = {
   fractionalSecond: undefined,
 } as const satisfies Record<keyof typeof EDITABLE_SEGMENTS, number | undefined>
 
-const SEGMENT_LABELS: Record<string, string> = {
-  era: "Era",
-  year: "Year",
-  month: "Month",
-  day: "Day",
-  hour: "Hour",
-  minute: "Minute",
-  second: "Second",
-  dayPeriod: "AM/PM",
-  timeZoneName: "Time zone",
+const fieldNamesCache = new Map<string, Intl.DisplayNames | null>()
+
+function getFieldNames(locale: string) {
+  if (!fieldNamesCache.has(locale)) {
+    try {
+      fieldNamesCache.set(locale, new Intl.DisplayNames(locale, { type: "dateTimeField" }))
+    } catch {
+      fieldNamesCache.set(locale, null)
+    }
+  }
+  return fieldNamesCache.get(locale)
 }
 
-export function getSegmentLabel(type: string): string {
-  return SEGMENT_LABELS[type] ?? type
+export function getSegmentLabel(
+  type: Exclude<SegmentType, "literal">,
+  locale: string,
+  translations?: IntlTranslations,
+): string {
+  if (translations?.segmentLabel) return translations.segmentLabel(type, locale)
+  const label = getFieldNames(locale)?.of(type) ?? type
+  return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1)
 }
 
 export const TYPE_MAPPING = {
