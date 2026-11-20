@@ -1,51 +1,52 @@
-import { expect, test } from "./_test"
+import { test } from "./_test"
+import { PresenceModel } from "./models/presence.model"
 
-const content = '[data-scope="presence"]'
+let I: PresenceModel
 
 test.describe("presence", () => {
-  test("should play the exit animation when closed during the enter animation", async ({ page }) => {
-    await page.goto("/presence/basic")
+  test.beforeEach(async ({ page }) => {
+    I = new PresenceModel(page)
+    await I.goto()
+  })
 
-    const exitAnimationEnded = await page.evaluate(
-      (selector) =>
-        new Promise<boolean>((resolve) => {
-          const toggle = document.querySelector<HTMLButtonElement>("main button")!
-          let closing = false
-          let ended = false
+  test("should unmount after the exit animation", async () => {
+    await I.clickToggle()
+    await I.seeContentIsOpen()
 
-          document.addEventListener(
-            "animationstart",
-            (event) => {
-              const target = event.target as Element
-              if (closing || !target.matches(selector) || target.getAttribute("data-state") !== "open") return
-              closing = true
-              setTimeout(() => toggle.click(), 50)
-            },
-            true,
-          )
+    await I.clickToggle()
+    await I.seeContentExitCompleted()
+  })
 
-          document.addEventListener(
-            "animationend",
-            (event) => {
-              const target = event.target as Element
-              if (target.matches(selector) && target.getAttribute("data-state") === "closed") ended = true
-            },
-            true,
-          )
+  test("should play the exit animation when closed during the enter animation", async () => {
+    await I.closeContentDuringEnter()
+    await I.seeContentExitCompleted()
+  })
 
-          const observer = new MutationObserver(() => {
-            if (document.querySelector(selector)) return
-            observer.disconnect()
-            resolve(ended)
-          })
+  test("should unmount when the exit animation is cancelled", async () => {
+    await I.clickToggle()
+    await I.seeContentIsOpen()
 
-          toggle.click()
-          requestAnimationFrame(() => observer.observe(document.body, { childList: true, subtree: true }))
-        }),
-      content,
-    )
+    await I.cancelContentExit()
+    await I.clickToggle()
+    await I.seeContentExitCancelled()
+  })
 
-    expect(exitAnimationEnded).toBe(true)
-    await expect(page.locator(content)).toHaveCount(0)
+  test("should stay mounted when reopened during the exit animation", async () => {
+    await I.clickToggle()
+    await I.seeContentIsOpen()
+
+    await I.clickToggle()
+    await I.clickToggle()
+    await I.seeContentIsOpen()
+    await I.seeContentIsMounted()
+  })
+
+  test("should settle on the last state after rapid toggling", async () => {
+    await I.toggleRapidly(9)
+    await I.seeContentIsOpen()
+    await I.seeContentIsMounted()
+
+    await I.toggleRapidly(9)
+    await I.seeContentIsUnmounted()
   })
 })
