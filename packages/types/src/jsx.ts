@@ -462,6 +462,11 @@ export namespace JSX {
      */
     "aria-describedby"?: string | undefined
     /**
+     * Defines a string value that describes or annotates the current element.
+     * @see aria-describedby.
+     */
+    "aria-description"?: string | undefined
+    /**
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      */

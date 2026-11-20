@@ -952,7 +952,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-label": translations.viewTrigger(view, hasNextView ? nextView : undefined),
+        "aria-description": hasNextView ? translations.viewTrigger(view, nextView) : undefined,
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
