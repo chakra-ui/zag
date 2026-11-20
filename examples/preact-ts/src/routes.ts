@@ -89,6 +89,7 @@ export const routes: RouteDefinition[] = [
   { path: "/color-picker/open-controlled", component: lazy(() => import("./pages/color-picker/open-controlled")) },
   { path: "/combobox/async", component: lazy(() => import("./pages/combobox/async")) },
   { path: "/combobox/basic", component: lazy(() => import("./pages/combobox/basic")) },
+  { path: "/combobox/grouped", component: lazy(() => import("./pages/combobox/grouped")) },
   { path: "/combobox/cmdk", component: lazy(() => import("./pages/combobox/cmdk")) },
   { path: "/combobox/combo-tags", component: lazy(() => import("./pages/combobox/combo-tags")) },
   { path: "/combobox/combo-textarea", component: lazy(() => import("./pages/combobox/combo-textarea")) },
