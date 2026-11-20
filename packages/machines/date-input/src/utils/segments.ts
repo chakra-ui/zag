@@ -1,6 +1,6 @@
 import { DateFormatter } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations, Segments, SegmentType } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
 
 export function needsTimeGranularity(granularity: DateGranularity): boolean {
@@ -79,38 +79,26 @@ export const PAGE_STEP = {
   fractionalSecond: undefined,
 } as const satisfies Record<keyof typeof EDITABLE_SEGMENTS, number | undefined>
 
-const SEGMENT_LABELS: Record<string, string> = {
-  era: "Era",
-  year: "Year",
-  month: "Month",
-  day: "Day",
-  hour: "Hour",
-  minute: "Minute",
-  second: "Second",
-  dayPeriod: "AM/PM",
-  timeZoneName: "Time zone",
-}
+const fieldNamesCache = new Map<string, Intl.DisplayNames | null>()
 
-const segmentLabelCache = new Map<string, Intl.DisplayNames | null>()
-
-function getFieldDisplayNames(locale: string): Intl.DisplayNames | null {
-  let displayNames = segmentLabelCache.get(locale)
-  if (displayNames === undefined) {
+function getFieldNames(locale: string) {
+  if (!fieldNamesCache.has(locale)) {
     try {
-      displayNames = new Intl.DisplayNames(locale, { type: "dateTimeField" })
+      fieldNamesCache.set(locale, new Intl.DisplayNames(locale, { type: "dateTimeField" }))
     } catch {
-      displayNames = null
+      fieldNamesCache.set(locale, null)
     }
-    segmentLabelCache.set(locale, displayNames)
   }
-  return displayNames
+  return fieldNamesCache.get(locale)
 }
 
-export function getSegmentLabel(type: string, locale?: string): string {
-  const fallback = SEGMENT_LABELS[type] ?? type
-  if (!locale || !(type in SEGMENT_LABELS)) return fallback
-  const label = getFieldDisplayNames(locale)?.of(type)
-  if (!label) return fallback
+export function getSegmentLabel(
+  type: Exclude<SegmentType, "literal">,
+  locale: string,
+  translations?: IntlTranslations,
+): string {
+  if (translations?.segmentLabel) return translations.segmentLabel(type, locale)
+  const label = getFieldNames(locale)?.of(type) ?? type
   return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1)
 }
 

@@ -588,7 +588,7 @@ export const machine = createMachine<DateInputSchema>({
         if (!segment || segment.type === "literal") return
 
         const valueText = segment.isPlaceholder ? "Empty" : segment.text
-        announcer.announce(`${getSegmentLabel(segment.type, prop("locale"))}, ${valueText}`)
+        announcer.announce(`${getSegmentLabel(segment.type, prop("locale"), prop("translations"))}, ${valueText}`)
       },
 
       // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value.
