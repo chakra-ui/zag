@@ -47,7 +47,7 @@ export function isActiveElement(element: Element | null | undefined): boolean {
   return getActiveElement(rootNode) === element
 }
 
-const TEXTAREA_SELECT_REGEX = /(textarea|select)/
+const TEXTAREA_SELECT_REGEX = /^(textarea|select)$/
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
   if (el == null || !isHTMLElement(el)) return false
