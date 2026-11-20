@@ -346,6 +346,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {
+    rendered: { label: boolean }
     value: string[]
     inputValue: string
     highlightedValue: string | null

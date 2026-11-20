@@ -70,6 +70,10 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
 
 interface PrivateContext {
   /**
+   * Whether the label part is rendered
+   */
+  rendered: { label: boolean }
+  /**
    * The value of the checked radio
    */
   value: string | null

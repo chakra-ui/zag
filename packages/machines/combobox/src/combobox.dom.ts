@@ -40,3 +40,4 @@ export const focusTriggerEl = (ctx: Scope) => {
   if (ctx.isActiveElement(triggerEl)) return
   triggerEl?.focus({ preventScroll: true })
 }
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

@@ -44,3 +44,4 @@ export const getRectById = (ctx: Scope, id: string) => {
   if (!radioEl) return
   return getOffsetRect(radioEl)
 }
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

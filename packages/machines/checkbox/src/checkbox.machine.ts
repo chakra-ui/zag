@@ -1,5 +1,11 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import {
+  dispatchInputCheckedEvent,
+  setElementChecked,
+  trackFormControl,
+  trackPress,
+  trackRenderedParts,
+} from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./checkbox.dom"
 import type { CheckboxSchema, CheckedState } from "./checkbox.types"
@@ -33,6 +39,9 @@ export const machine = createMachine<CheckboxSchema>({
       active: bindable(() => ({ defaultValue: false })),
       focused: bindable(() => ({ defaultValue: false })),
       hovered: bindable(() => ({ defaultValue: false })),
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
     }
   },
 
@@ -47,7 +56,7 @@ export const machine = createMachine<CheckboxSchema>({
     })
   },
 
-  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible", "trackRenderedElements"],
 
   on: {
     "CHECKED.TOGGLE": [
@@ -114,6 +123,15 @@ export const machine = createMachine<CheckboxSchema>({
           onFormReset() {
             context.set("checked", context.initial("checked"))
           },
+        })
+      },
+
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
         })
       },
     },

@@ -182,6 +182,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"
   props: RequiredBy<SelectProps<T>, PropsWithDefault>
   context: {
+    rendered: { label: boolean }
     currentPlacement: Placement | undefined
     value: string[]
     highlightedValue: string | null

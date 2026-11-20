@@ -8,6 +8,7 @@ import {
   raf,
   scrollToNearest,
   trackFormControl,
+  trackRenderedParts,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -41,6 +42,9 @@ export const machine = createMachine<SelectSchema>({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
@@ -168,7 +172,7 @@ export const machine = createMachine<SelectSchema>({
     },
   },
 
-  effects: ["trackFormControlState"],
+  effects: ["trackFormControlState", "trackRenderedElements"],
 
   states: {
     idle: {
@@ -445,6 +449,15 @@ export const machine = createMachine<SelectSchema>({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
