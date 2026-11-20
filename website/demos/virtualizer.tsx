@@ -1,5 +1,12 @@
+import { mergeProps, normalizeProps, type PropTypes } from "@zag-js/react"
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react"
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+  useSyncExternalStore,
+} from "react"
 import styles from "../styles/machines/virtualizer.module.css"
 
 const ITEM_COUNT = 10_000
@@ -11,9 +18,12 @@ const items = Array.from({ length: ITEM_COUNT }, (_, index) => ({
 }))
 
 function useListVirtualizer() {
+  const id = useId()
   const [virtualizer] = useState(
     () =>
-      new ListVirtualizer({
+      new ListVirtualizer<PropTypes>({
+        id,
+        normalizeProps,
         count: ITEM_COUNT,
         itemSize: ITEM_SIZE,
         overscan: 6,
@@ -48,22 +58,20 @@ export function Virtualizer() {
       </p>
       <div
         ref={ref}
-        className={styles.Viewport}
-        onScroll={virtualizer.handleScroll}
-        {...virtualizer.getContainerAriaAttrs()}
-        tabIndex={0}
-        style={{ ...virtualizer.getContainerStyle(), height: 320 }}
+        {...mergeProps(virtualizer.getRootProps(), {
+          className: styles.Viewport,
+          style: { height: 320 },
+        })}
       >
-        <div style={virtualizer.getContentStyle()}>
+        <div {...virtualizer.getContentProps()}>
           {virtualItems.map((virtualItem) => {
             const item = items[virtualItem.index]
             return (
               <div
                 key={virtualItem.key}
-                className={`${styles.Item} ${virtualItem.index % 2 ? styles.ItemAlt : ""}`}
-                data-index={virtualItem.index}
-                {...virtualizer.getItemAriaAttrs(virtualItem.index)}
-                style={virtualizer.getItemStyle(virtualItem)}
+                {...mergeProps(virtualizer.getItemProps(virtualItem), {
+                  className: `${styles.Item} ${virtualItem.index % 2 ? styles.ItemAlt : ""}`,
+                })}
               >
                 {item.label}
               </div>
