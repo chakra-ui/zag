@@ -350,6 +350,7 @@ export const routes: RouteDefinition[] = [
   { path: "/menubar/basic", component: lazy(() => import("./pages/menubar/basic")) },
   { path: "/menubar/nested", component: lazy(() => import("./pages/menubar/nested")) },
   { path: "/menubar/vertical", component: lazy(() => import("./pages/menubar/vertical")) },
+  { path: "/menubar/app-menu", component: lazy(() => import("./pages/menubar/app-menu")) },
   { path: "/meter/basic", component: lazy(() => import("./pages/meter/basic")) },
   { path: "/meter/battery", component: lazy(() => import("./pages/meter/battery")) },
   { path: "/meter/custom-range", component: lazy(() => import("./pages/meter/custom-range")) },

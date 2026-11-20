@@ -635,6 +635,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "nested", title: "Nested" },
       { slug: "vertical", title: "Vertical" },
+      { slug: "app-menu", title: "App Menu" },
     ],
   },
   {
