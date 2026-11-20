@@ -97,7 +97,6 @@ export default function Page() {
     <>
       <main>
         <div className="cascade-select-form">
-          <p className="hint">Pick a delivery region down to the state, then save. The form gets the full path.</p>
           <form
             noValidate
             onSubmit={(event) => {

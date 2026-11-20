@@ -150,7 +150,6 @@ export default function Page() {
     <>
       <main>
         <div class="menubar-app-menu">
-          <p class="hint">An editor's menu bar: shortcuts, a disabled action, toggles and a theme picker.</p>
           <MenubarContext value={() => api().getMenuContext()}>
             <div {...api().getRootProps()}>
               <ActionMenu id="file" label="File" actions={fileActions} onRun={setLastAction} />
@@ -158,10 +157,8 @@ export default function Page() {
               <ViewMenu settings={settings()} onChange={setSettings} />
             </div>
           </MenubarContext>
-          <p class="status" data-testid="last-action">
-            Last action: {lastAction()}
-          </p>
-          <p class="status" data-testid="view-state">
+          <p class="status">Last action: {lastAction()}</p>
+          <p class="status">
             Line numbers {settings().lineNumbers ? "on" : "off"} · Word wrap {settings().wordWrap ? "on" : "off"} ·
             Theme: {settings().theme}
           </p>

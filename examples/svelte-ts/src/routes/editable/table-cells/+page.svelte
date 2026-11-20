@@ -14,7 +14,7 @@
 
 <main>
   <div class="editable-table-cells">
-    <p class="hint">Double-click a name to rename it. Enter saves, Escape puts it back.</p>
+    <p class="hint">Double-click a name to rename it</p>
     <table>
       <thead>
         <tr>
@@ -31,7 +31,7 @@
         {/each}
       </tbody>
     </table>
-    <ol class="activity" data-testid="activity" aria-label="Activity" reversed>
+    <ol class="activity" aria-label="Activity" reversed>
       {#each activity as entry, index (activity.length - index)}
         <li>{entry}</li>
       {/each}

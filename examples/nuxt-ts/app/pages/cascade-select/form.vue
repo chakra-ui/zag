@@ -58,7 +58,6 @@ function onReset() {
 <template>
   <main>
     <div class="cascade-select-form">
-      <p class="hint">Pick a delivery region down to the state, then save. The form gets the full path.</p>
       <form novalidate @submit.prevent="onSubmit" @reset="onReset">
         <div v-bind="api.getRootProps()">
           <label v-bind="api.getLabelProps()">Delivery region</label>
