@@ -335,9 +335,9 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
-          // crop and pan offsets are physical (`left`, `translate`), so arrows act physically in both directions
+          const nudge = { src: "selection", shiftKey, ctrlKey, metaKey } as const
+          // offsets are physical, so arrows ignore dir
           const key = getEventKey(event)
 
           const isZoomInKey = key === "+" || key === "="
@@ -353,31 +353,22 @@ export function connect<T extends PropTypes>(
           const isArrowKey = key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight"
           if (!isArrowKey) return
 
-          // In fixed crop mode there's nothing to resize or move, plain arrow keys pan the image instead.
-          // Alt+Arrow keeps meaning "resize", which doesn't apply here, so it's a no-op.
+          // fixed crop area: arrows pan, Alt+Arrow (resize) is a no-op
           if (disabled) {
             if (altKey) return
-            send({ type: "NUDGE_PAN", key, src, shiftKey, ctrlKey, metaKey })
+            send({ type: "NUDGE_PAN", key, ...nudge })
             event.preventDefault()
             return
           }
 
           if (altKey) {
             const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
-            send({
-              type: "NUDGE_RESIZE_CROP",
-              handlePosition,
-              key,
-              src,
-              shiftKey,
-              ctrlKey,
-              metaKey,
-            })
+            send({ type: "NUDGE_RESIZE_CROP", handlePosition, key, ...nudge })
             event.preventDefault()
             return
           }
 
-          send({ type: "NUDGE_MOVE_CROP", key, src, shiftKey, ctrlKey, metaKey })
+          send({ type: "NUDGE_MOVE_CROP", key, ...nudge })
           event.preventDefault()
         },
       })
