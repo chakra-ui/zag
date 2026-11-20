@@ -12,3 +12,74 @@
     animation: scaleFadeOut 0.1s ease-in;
   }
 }
+
+.presence-notifications,
+.presence-reduced-motion {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.presence-notifications {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius-sm);
+    background: var(--z-bg);
+
+    &[data-state="closed"] {
+      animation: fadeOut 300ms ease-in forwards;
+    }
+  }
+
+  .meta {
+    color: var(--z-fg-subtle);
+    font-size: 13px;
+  }
+}
+
+.presence-reduced-motion {
+  align-items: center;
+
+  .details {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--z-border);
+    border-radius: var(--z-radius-sm);
+    transform-origin: top center;
+
+    &[data-state="open"] {
+      animation: scaleFadeIn 600ms ease-out;
+    }
+
+    &[data-state="closed"] {
+      animation: scaleFadeOut 600ms ease-in forwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &[data-state] {
+        animation: none;
+      }
+    }
+  }
+}
