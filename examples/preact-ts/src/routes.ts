@@ -227,6 +227,7 @@ export const routes: RouteDefinition[] = [
   { path: "/drawer/swipe-area", component: lazy(() => import("./pages/drawer/swipe-area")) },
   { path: "/editable/basic", component: lazy(() => import("./pages/editable/basic")) },
   { path: "/editable/controlled", component: lazy(() => import("./pages/editable/controlled")) },
+  { path: "/editable/table-cells", component: lazy(() => import("./pages/editable/table-cells")) },
   {
     path: "/editable/controlled-format",
     component: lazy(() => import("./pages/editable/controlled-format")),

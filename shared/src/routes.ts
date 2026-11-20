@@ -564,6 +564,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
       { slug: "controlled-format", title: "Controlled Format" },
+      { slug: "table-cells", title: "Table Cells" },
     ],
   },
   {

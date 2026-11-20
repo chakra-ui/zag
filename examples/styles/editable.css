@@ -21,3 +21,57 @@
   display: flex;
   gap: 0.5em;
 }
+
+.editable-table-cells {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .hint {
+    margin: 0;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--z-border);
+    text-align: start;
+  }
+
+  [data-editable-area] {
+    display: block;
+    margin: 0;
+  }
+
+  [data-editable-input] {
+    width: 100%;
+  }
+
+  [data-editable-preview] {
+    display: block;
+    cursor: text;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .activity {
+    margin: 0;
+    padding-inline-start: 20px;
+    color: var(--z-fg-subtle);
+  }
+}
