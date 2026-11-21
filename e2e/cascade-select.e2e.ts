@@ -812,6 +812,30 @@ test.describe("advanced selection behavior", () => {
 })
 
 test.describe("disabled and readonly states", () => {
+  test("should ignore a click after the open cascade select's fieldset is disabled", async ({ page }) => {
+    test.skip(process.env.FRAMEWORK !== "vue", "The Vue example places the CascadeSelect in a fieldset")
+
+    await I.controls.bool("allowParentSelection", true)
+    await I.controls.bool("closeOnSelect", false)
+    await I.clickTrigger()
+    await I.clickItem("Asia")
+    await I.seeTriggerHasText("Asia")
+    await I.seeDropdown()
+
+    const trigger = page.locator("[data-scope=cascade-select][data-part=trigger]")
+    await page.locator("fieldset[data-scope=cascade-select]").evaluate((fieldset: HTMLFieldSetElement) => {
+      fieldset.disabled = true
+    })
+    await expect(trigger).toHaveAttribute("disabled", "")
+
+    const item = I.getItem("Africa")
+    await expect(item).toBeVisible()
+    const box = (await item.boundingBox())!
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
+    await I.seeTriggerHasText("Asia")
+    await expect(item).toHaveAttribute("aria-disabled", "true")
+  })
+
   test("should not open dropdown when disabled", async () => {
     await I.controls.bool("disabled", true)
     await I.clickTriggerForced()

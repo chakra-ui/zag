@@ -46,7 +46,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
     return {
       value: itemValue,
-      disabled: collection.getNodeDisabled(item),
+      disabled: disabled || collection.getNodeDisabled(item),
       highlighted,
       selected,
       hasChildren: collection.isBranchNode(item),
