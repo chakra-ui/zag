@@ -43,7 +43,7 @@
   "dependencies": {
     "@svgr/core": "8.1.0",
     "@svgr/plugin-jsx": "8.1.0",
-    "color2k": "2.0.4"
+    "color2k": "2.2.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
