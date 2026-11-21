@@ -1,5 +1,64 @@
 # @zag-js/combobox
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`25997cd`](https://github.com/chakra-ui/zag/commit/25997cdbd517c700e3a58e91be578d9e0f8ae0d4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `getHiddenInputProps` to submit the selected value
+  in forms. With `multiple`, render one per item in `value`.
+
+  The form now submits the item's value instead of its label, and `name` and `form` move from the input to the hidden
+  input.
+
+  ```diff
+    <input {...api.getInputProps()} />
+  + <input {...api.getHiddenInputProps()} />
+  ```
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`2d136e2`](https://github.com/chakra-ui/zag/commit/2d136e2ba94f56f7cb3e6782530e167ea758eae4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add Page Up and Page Down to move the highlight by
+  `pageSize` items (default `10`), clamped at the ends. Virtualized lists scroll to reach items that are not rendered.
+
+### Patch Changes
+
+- [#3641](https://github.com/chakra-ui/zag/pull/3641)
+  [`1da747d`](https://github.com/chakra-ui/zag/commit/1da747dbc9a6de1c718423242e39912fd7a5eedc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Combobox**: Fix a controlled `inputValue` that rejects or
+  transforms an edit. The input now shows the controlled value and keeps the caret in place. Pair `inputValue` with
+  `onInputValueChange`, or use `defaultInputValue` to set only the initial value.
+
+  - **Combobox**: Fix IME composition committing the input value before the text is confirmed.
+
+  - **Editable**: Fix IME composition committing the value before the text is confirmed.
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`a62dadf`](https://github.com/chakra-ui/zag/commit/a62dadf5f592a9723b40e0ede5a4629aa0f693d6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Center the highlighted item when the list opens,
+  matching select. Keyboard navigation still scrolls to the nearest edge.
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3233e87`](https://github.com/chakra-ui/zag/commit/3233e87557747c2eaa5d550bbe7e0d1cf996b099) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a `highlightedItem` translation for the option
+  announced on highlight. Return an empty string to disable it.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1),
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

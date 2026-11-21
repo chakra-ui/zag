@@ -1,5 +1,19 @@
 # @zag-js/solid
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3652](https://github.com/chakra-ui/zag/pull/3652)
+  [`55c3d6b`](https://github.com/chakra-ui/zag/commit/55c3d6b9251c183cc924c2549fccceb30b969c67) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - Fix `mergeProps` checking for a key (`key in props`) by calling
+  every function source. A part whose children came through `mergeProps` re-created them on each machine update, losing
+  focus and DOM state.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

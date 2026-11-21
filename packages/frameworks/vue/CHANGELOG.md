@@ -1,5 +1,18 @@
 # @zag-js/vue
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`6268444`](https://github.com/chakra-ui/zag/commit/626844438b673750b1d23c19dfa13cf24bb4d0f4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix inline styles set by machines, such as the
+  positioner's `z-index`, being cleared on re-render.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @zag-js/presence
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`c507890`](https://github.com/chakra-ui/zag/commit/c50789042a4c0fa9e9b86e94c3043e9dbc95e91f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix content staying mounted when its exit animation
+  never fires `animationend`.
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`f8d54d4`](https://github.com/chakra-ui/zag/commit/f8d54d4c55958762901d415e97179f3a1868ba1f) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix closing during the enter animation skipping the
+  exit animation in Chromium and Firefox.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

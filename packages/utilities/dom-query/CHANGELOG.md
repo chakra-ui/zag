@@ -1,5 +1,16 @@
 # @zag-js/dom-query
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix `isEditableElement` treating custom elements with
+  `select` or `textarea` in their tag name as text fields, which blocked Home, End and Space in them.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87)]:
+  - @zag-js/types@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

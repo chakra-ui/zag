@@ -1,5 +1,18 @@
 # @zag-js/vanilla
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`d6772e9`](https://github.com/chakra-ui/zag/commit/d6772e92848c659080e9bdef8c5fd1a9b50c5542) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix machines resolving their props on every `prop()`
+  read. Props now resolve once until the props object changes; props with getters still resolve on each read.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

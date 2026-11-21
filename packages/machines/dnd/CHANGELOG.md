@@ -1,5 +1,22 @@
 # @zag-js/dnd
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- Updated dependencies [[`d5942ed`](https://github.com/chakra-ui/zag/commit/d5942ed9beb04c4ee43658b436986aee1f986c5b),
+  [`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1),
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/aria-hidden@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/rect-utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

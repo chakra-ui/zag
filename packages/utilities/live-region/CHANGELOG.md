@@ -1,5 +1,14 @@
 # @zag-js/live-region
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix `destroy()` removing a shared region that other
+  components still announce into.
+
 ## 2.0.0-next.4
 
 No changes in this release.
