@@ -554,6 +554,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "creatable", title: "Creatable" },
       { slug: "highlight-matches", title: "Highlight Matches" },
       { slug: "highlighted-on-mount", title: "Highlighted Item On Mount" },
+      { slug: "inline-list", title: "Inline List" },
       { slug: "grouped", title: "Grouped" },
       { slug: "scroll-area", title: "Scroll Area" },
     ],
