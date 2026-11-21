@@ -1,5 +1,30 @@
 # @zag-js/select
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`2d136e2`](https://github.com/chakra-ui/zag/commit/2d136e2ba94f56f7cb3e6782530e167ea758eae4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add Page Up and Page Down to move the highlight by
+  `pageSize` items (default `10`), clamped at the ends. Virtualized lists scroll to reach items that are not rendered.
+
+### Patch Changes
+
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1),
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

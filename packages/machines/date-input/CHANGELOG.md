@@ -1,5 +1,26 @@
 # @zag-js/date-input
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`0e7f8c4`](https://github.com/chakra-ui/zag/commit/0e7f8c43c52f0d25b0c38cd3e1efab107441b81a) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix segment labels and their announcements always being
+  in English. They now follow `locale`.
+  - Add a `segmentLabel` translation to customize segment labels.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`1ba643a`](https://github.com/chakra-ui/zag/commit/1ba643a58894dd1290ad6caf133976003f1d06b8),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1),
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/date-utils@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Minor Changes

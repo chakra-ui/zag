@@ -1,5 +1,54 @@
 # @zag-js/virtualizer
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`2d136e2`](https://github.com/chakra-ui/zag/commit/2d136e2ba94f56f7cb3e6782530e167ea758eae4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Replace the style, ARIA and measurement
+  helpers with prop getters (`getRootProps`, `getContentProps`, `getItemProps`, and table and grid equivalents).
+
+  - **Breaking:** Listen to scroll in `init` and measure rendered items automatically. Remove `handleScroll` and the
+    `measure*` refs.
+
+    ```diff
+    - <div ref={ref} onScroll={virtualizer.handleScroll} style={virtualizer.getContainerStyle()}>
+    -   <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
+    + <div ref={ref} {...virtualizer.getRootProps()}>
+    +   <div {...virtualizer.getContentProps()}>
+          {virtualizer.getVirtualItems().map((item) => (
+    -       <div key={item.key} ref={item.measureElement} style={virtualizer.getItemStyle(item)}>
+    +       <div key={item.key} {...virtualizer.getItemProps(item)}>
+    ```
+
+  - **Breaking:** Default `scrollToIndex` and the grid's scroll methods to `align: "auto"`.
+
+  - **Breaking:** Rename `estimatedSize` to `estimatedItemSize`.
+
+  - **Breaking:** Remove `getItemState`, `getRenderedRange`, `setScrollElement` and `getScrollHandler`.
+
+  - Add `TableVirtualizer` for native tables, with column windowing and pinned columns.
+
+  - Add `itemSize`, `retainedIndexes`, `onEndReached`, `getTrailingProps`, `getItemMetrics`, `getIndexAtOffset` and
+    `remeasure`.
+
+  - Add `aria: false` for items that carry their own semantics.
+
+  - Add development warnings for common setup mistakes.
+
+  - Fix `updateOptions` re-rendering for options rebuilt with the same content.
+
+  - Fix `scrollToIndex` ignoring the scrollbar, `padding` and `scroll-padding`.
+
+### Patch Changes
+
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

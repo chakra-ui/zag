@@ -1,5 +1,40 @@
 # @zag-js/menu
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`2d136e2`](https://github.com/chakra-ui/zag/commit/2d136e2ba94f56f7cb3e6782530e167ea758eae4) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add Page Up and Page Down to move the highlight by
+  `pageSize` items (default `10`), clamped at the ends. Virtualized lists scroll to reach items that are not rendered.
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`23f0a70`](https://github.com/chakra-ui/zag/commit/23f0a708c4ef1fd331dfffc259efe10032586975) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `api.removeChild(child)` to unregister a submenu
+  when it unmounts, so the parent stops tracking its stopped machine.
+  - Fix focus not returning to the parent menu when a submenu that isn't portalled closes.
+  - **Breaking:** Render the items inside `api.getListProps()`, like select and combobox. The list holds the items and
+    is the element scrolled to reveal the highlighted item, so a filter input, header or footer stays in place outside
+    it. A dev warning flags a menu without a list. With one content per trigger, pass the same `value` to
+    `getListProps({ value })` as to `getContentProps({ value })` so each list gets its own id.
+  - Fix the highlighted item not scrolling into view when navigating from a filter input.
+
+### Patch Changes
+
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/rect-utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

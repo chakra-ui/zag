@@ -1,5 +1,33 @@
 # @zag-js/date-picker
 
+## 2.0.0-next.5
+
+### Patch Changes
+
+- [`2c5f829`](https://github.com/chakra-ui/zag/commit/2c5f8292e75079e9951237cdb20d24c6d7890e84) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix day cells computing their state twice per render. Each day's
+  state is now computed once and shared by the cell and its trigger.
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Fix the view trigger's accessible name hiding its
+  visible month or year text. The `viewTrigger` translation is now the trigger's `aria-description` instead of its
+  `aria-label`, and is omitted when there's no next view.
+  - Add `aria-description` to the typed ARIA attributes.
+- Updated dependencies [[`4c6aa02`](https://github.com/chakra-ui/zag/commit/4c6aa02e42f6df3515731a91a7e8769c4bee6c87),
+  [`1ba643a`](https://github.com/chakra-ui/zag/commit/1ba643a58894dd1290ad6caf133976003f1d06b8),
+  [`f5243b2`](https://github.com/chakra-ui/zag/commit/f5243b237c987ac391762dd0af4909a7158211d1),
+  [`ac2e470`](https://github.com/chakra-ui/zag/commit/ac2e47021ce55773fd9399a18c87b6c4ff275573)]:
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/date-utils@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/live-region@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes
