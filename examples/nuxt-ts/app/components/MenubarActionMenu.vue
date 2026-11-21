@@ -32,16 +32,18 @@ const api = computed(() => menu.connect(service, normalizeProps))
   <button v-bind="api.getTriggerProps()">{{ props.label }}</button>
   <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
-      <ul v-bind="api.getContentProps()">
-        <li
-          v-for="action in props.actions"
-          :key="action.value"
-          v-bind="api.getItemProps({ value: action.value, disabled: action.disabled })"
-        >
-          {{ action.label }}
-          <kbd v-if="action.shortcut" class="shortcut">{{ action.shortcut }}</kbd>
-        </li>
-      </ul>
+      <div v-bind="api.getContentProps()">
+        <ul v-bind="api.getListProps()">
+          <li
+            v-for="action in props.actions"
+            :key="action.value"
+            v-bind="api.getItemProps({ value: action.value, disabled: action.disabled })"
+          >
+            {{ action.label }}
+            <kbd v-if="action.shortcut" class="shortcut">{{ action.shortcut }}</kbd>
+          </li>
+        </ul>
+      </div>
     </div>
   </Teleport>
 </template>

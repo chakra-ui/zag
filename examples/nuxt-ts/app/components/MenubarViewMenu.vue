@@ -45,20 +45,22 @@ const themeItem = (theme: string) => ({
   <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
-        <div v-for="option in checkboxes" :key="option.value" v-bind="api.getOptionItemProps(checkboxItem(option))">
-          <span class="check">
-            <span v-bind="api.getItemIndicatorProps(checkboxItem(option))">✓</span>
-          </span>
-          <span v-bind="api.getItemTextProps(checkboxItem(option))">{{ option.label }}</span>
-        </div>
-        <hr v-bind="api.getSeparatorProps()" />
-        <div v-bind="api.getItemGroupProps({ id: 'theme' })">
-          <span v-bind="api.getItemGroupLabelProps({ htmlFor: 'theme' })">Theme</span>
-          <div v-for="theme in themes" :key="theme" v-bind="api.getOptionItemProps(themeItem(theme))">
+        <div v-bind="api.getListProps()">
+          <div v-for="option in checkboxes" :key="option.value" v-bind="api.getOptionItemProps(checkboxItem(option))">
             <span class="check">
-              <span v-bind="api.getItemIndicatorProps(themeItem(theme))">✓</span>
+              <span v-bind="api.getItemIndicatorProps(checkboxItem(option))">✓</span>
             </span>
-            <span v-bind="api.getItemTextProps(themeItem(theme))">{{ theme }}</span>
+            <span v-bind="api.getItemTextProps(checkboxItem(option))">{{ option.label }}</span>
+          </div>
+          <hr v-bind="api.getSeparatorProps()" />
+          <div v-bind="api.getItemGroupProps({ id: 'theme' })">
+            <span v-bind="api.getItemGroupLabelProps({ htmlFor: 'theme' })">Theme</span>
+            <div v-for="theme in themes" :key="theme" v-bind="api.getOptionItemProps(themeItem(theme))">
+              <span class="check">
+                <span v-bind="api.getItemIndicatorProps(themeItem(theme))">✓</span>
+              </span>
+              <span v-bind="api.getItemTextProps(themeItem(theme))">{{ theme }}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -55,8 +55,10 @@ export default function Page() {
               <button data-testid="secondary" ref={secondaryRef}>
                 Secondary
               </button>
-              <div {...api().getItemProps({ value: "edit" })}>Edit</div>
-              <div {...api().getItemProps({ value: "duplicate" })}>Duplicate</div>
+              <div {...api().getListProps()}>
+                <div {...api().getItemProps({ value: "edit" })}>Edit</div>
+                <div {...api().getItemProps({ value: "duplicate" })}>Duplicate</div>
+              </div>
             </div>
           </div>
         </Portal>
@@ -64,8 +66,10 @@ export default function Page() {
         <Portal>
           <div {...contextApi().getPositionerProps()}>
             <div data-testid="context-content" {...contextApi().getContentProps()}>
-              <div {...contextApi().getItemProps({ value: "rename" })}>Rename</div>
-              <div {...contextApi().getItemProps({ value: "delete" })}>Delete</div>
+              <div {...contextApi().getListProps()}>
+                <div {...contextApi().getItemProps({ value: "rename" })}>Rename</div>
+                <div {...contextApi().getItemProps({ value: "delete" })}>Delete</div>
+              </div>
             </div>
           </div>
         </Portal>
@@ -73,8 +77,10 @@ export default function Page() {
         <Portal>
           <div {...noFocusApi().getPositionerProps()}>
             <div data-testid="no-focus-content" {...noFocusApi().getContentProps()}>
-              <div {...noFocusApi().getItemProps({ value: "a" })}>A</div>
-              <div {...noFocusApi().getItemProps({ value: "b" })}>B</div>
+              <div {...noFocusApi().getListProps()}>
+                <div {...noFocusApi().getItemProps({ value: "a" })}>A</div>
+                <div {...noFocusApi().getItemProps({ value: "b" })}>B</div>
+              </div>
             </div>
           </div>
         </Portal>

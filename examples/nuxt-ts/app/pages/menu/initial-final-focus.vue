@@ -41,8 +41,10 @@ const noFocusApi = computed(() => menu.connect(noFocusService, normalizeProps))
         <div v-bind="api.getContentProps()">
           <button data-testid="primary">Primary</button>
           <button ref="secondaryRef" data-testid="secondary">Secondary</button>
-          <div v-bind="api.getItemProps({ value: 'edit' })">Edit</div>
-          <div v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</div>
+          <div v-bind="api.getListProps()">
+            <div v-bind="api.getItemProps({ value: 'edit' })">Edit</div>
+            <div v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</div>
+          </div>
         </div>
       </div>
     </Teleport>
@@ -50,8 +52,10 @@ const noFocusApi = computed(() => menu.connect(noFocusService, normalizeProps))
     <Teleport to="#teleports">
       <div v-bind="contextApi.getPositionerProps()">
         <div data-testid="context-content" v-bind="contextApi.getContentProps()">
-          <div v-bind="contextApi.getItemProps({ value: 'rename' })">Rename</div>
-          <div v-bind="contextApi.getItemProps({ value: 'delete' })">Delete</div>
+          <div v-bind="contextApi.getListProps()">
+            <div v-bind="contextApi.getItemProps({ value: 'rename' })">Rename</div>
+            <div v-bind="contextApi.getItemProps({ value: 'delete' })">Delete</div>
+          </div>
         </div>
       </div>
     </Teleport>
@@ -59,8 +63,10 @@ const noFocusApi = computed(() => menu.connect(noFocusService, normalizeProps))
     <Teleport to="#teleports">
       <div v-bind="noFocusApi.getPositionerProps()">
         <div data-testid="no-focus-content" v-bind="noFocusApi.getContentProps()">
-          <div v-bind="noFocusApi.getItemProps({ value: 'a' })">A</div>
-          <div v-bind="noFocusApi.getItemProps({ value: 'b' })">B</div>
+          <div v-bind="noFocusApi.getListProps()">
+            <div v-bind="noFocusApi.getItemProps({ value: 'a' })">A</div>
+            <div v-bind="noFocusApi.getItemProps({ value: 'b' })">B</div>
+          </div>
         </div>
       </div>
     </Teleport>

@@ -36,16 +36,18 @@
 {#if api.open}
   <Portal>
     <div {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()}>
-        {#each props.actions as action (action.value)}
-          <li {...api.getItemProps({ value: action.value, disabled: action.disabled })}>
-            {action.label}
-            {#if action.shortcut}
-              <kbd class="shortcut">{action.shortcut}</kbd>
-            {/if}
-          </li>
-        {/each}
-      </ul>
+      <div {...api.getContentProps()}>
+        <ul {...api.getListProps()}>
+          {#each props.actions as action (action.value)}
+            <li {...api.getItemProps({ value: action.value, disabled: action.disabled })}>
+              {action.label}
+              {#if action.shortcut}
+                <kbd class="shortcut">{action.shortcut}</kbd>
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      </div>
     </div>
   </Portal>
 {/if}

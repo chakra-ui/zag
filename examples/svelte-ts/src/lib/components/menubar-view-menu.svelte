@@ -50,21 +50,23 @@
   <Portal>
     <div {...api.getPositionerProps()}>
       <div {...api.getContentProps()}>
-        {#each checkboxes as option (option.value)}
-          <div {...api.getOptionItemProps(checkboxItem(option))}>
-            <span class="check"><span {...api.getItemIndicatorProps(checkboxItem(option))}>✓</span></span>
-            <span {...api.getItemTextProps(checkboxItem(option))}>{option.label}</span>
-          </div>
-        {/each}
-        <hr {...api.getSeparatorProps()} />
-        <div {...api.getItemGroupProps({ id: "theme" })}>
-          <span {...api.getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
-          {#each themes as theme (theme)}
-            <div {...api.getOptionItemProps(themeItem(theme))}>
-              <span class="check"><span {...api.getItemIndicatorProps(themeItem(theme))}>✓</span></span>
-              <span {...api.getItemTextProps(themeItem(theme))}>{theme}</span>
+        <div {...api.getListProps()}>
+          {#each checkboxes as option (option.value)}
+            <div {...api.getOptionItemProps(checkboxItem(option))}>
+              <span class="check"><span {...api.getItemIndicatorProps(checkboxItem(option))}>✓</span></span>
+              <span {...api.getItemTextProps(checkboxItem(option))}>{option.label}</span>
             </div>
           {/each}
+          <hr {...api.getSeparatorProps()} />
+          <div {...api.getItemGroupProps({ id: "theme" })}>
+            <span {...api.getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
+            {#each themes as theme (theme)}
+              <div {...api.getOptionItemProps(themeItem(theme))}>
+                <span class="check"><span {...api.getItemIndicatorProps(themeItem(theme))}>✓</span></span>
+                <span {...api.getItemTextProps(themeItem(theme))}>{theme}</span>
+              </div>
+            {/each}
+          </div>
         </div>
       </div>
     </div>

@@ -48,18 +48,20 @@ function ActionMenu(props: { id: string; label: string; actions: Action[]; onRun
       <Show when={api().open}>
         <Portal>
           <div {...api().getPositionerProps()}>
-            <ul {...api().getContentProps()}>
-              <For each={props.actions}>
-                {(action) => (
-                  <li {...api().getItemProps({ value: action.value, disabled: action.disabled })}>
-                    {action.label}
-                    <Show when={action.shortcut}>
-                      <kbd class="shortcut">{action.shortcut}</kbd>
-                    </Show>
-                  </li>
-                )}
-              </For>
-            </ul>
+            <div {...api().getContentProps()}>
+              <ul {...api().getListProps()}>
+                <For each={props.actions}>
+                  {(action) => (
+                    <li {...api().getItemProps({ value: action.value, disabled: action.disabled })}>
+                      {action.label}
+                      <Show when={action.shortcut}>
+                        <kbd class="shortcut">{action.shortcut}</kbd>
+                      </Show>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>
@@ -107,29 +109,31 @@ function ViewMenu(props: { settings: ViewSettings; onChange: (settings: ViewSett
         <Portal>
           <div {...api().getPositionerProps()}>
             <div {...api().getContentProps()}>
-              <For each={checkboxes}>
-                {(option) => (
-                  <div {...api().getOptionItemProps(checkboxItem(option))}>
-                    <span class="check">
-                      <span {...api().getItemIndicatorProps(checkboxItem(option))}>✓</span>
-                    </span>
-                    <span {...api().getItemTextProps(checkboxItem(option))}>{option.label}</span>
-                  </div>
-                )}
-              </For>
-              <hr {...api().getSeparatorProps()} />
-              <div {...api().getItemGroupProps({ id: "theme" })}>
-                <span {...api().getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
-                <For each={themes}>
-                  {(theme) => (
-                    <div {...api().getOptionItemProps(themeItem(theme))}>
+              <div {...api().getListProps()}>
+                <For each={checkboxes}>
+                  {(option) => (
+                    <div {...api().getOptionItemProps(checkboxItem(option))}>
                       <span class="check">
-                        <span {...api().getItemIndicatorProps(themeItem(theme))}>✓</span>
+                        <span {...api().getItemIndicatorProps(checkboxItem(option))}>✓</span>
                       </span>
-                      <span {...api().getItemTextProps(themeItem(theme))}>{theme}</span>
+                      <span {...api().getItemTextProps(checkboxItem(option))}>{option.label}</span>
                     </div>
                   )}
                 </For>
+                <hr {...api().getSeparatorProps()} />
+                <div {...api().getItemGroupProps({ id: "theme" })}>
+                  <span {...api().getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
+                  <For each={themes}>
+                    {(theme) => (
+                      <div {...api().getOptionItemProps(themeItem(theme))}>
+                        <span class="check">
+                          <span {...api().getItemIndicatorProps(themeItem(theme))}>✓</span>
+                        </span>
+                        <span {...api().getItemTextProps(themeItem(theme))}>{theme}</span>
+                      </div>
+                    )}
+                  </For>
+                </div>
               </div>
             </div>
           </div>

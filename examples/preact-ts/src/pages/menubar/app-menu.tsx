@@ -48,14 +48,16 @@ function ActionMenu(props: { id: string; label: string; actions: Action[]; onRun
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul {...api.getContentProps()}>
-              {actions.map((action) => (
-                <li key={action.value} {...api.getItemProps({ value: action.value, disabled: action.disabled })}>
-                  {action.label}
-                  {action.shortcut && <kbd className="shortcut">{action.shortcut}</kbd>}
-                </li>
-              ))}
-            </ul>
+            <div {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                {actions.map((action) => (
+                  <li key={action.value} {...api.getItemProps({ value: action.value, disabled: action.disabled })}>
+                    {action.label}
+                    {action.shortcut && <kbd className="shortcut">{action.shortcut}</kbd>}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}
@@ -86,41 +88,43 @@ function ViewMenu(props: { settings: ViewSettings; onChange: (settings: ViewSett
         <Portal>
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              {checkboxes.map((option) => {
-                const item = {
-                  type: "checkbox" as const,
-                  value: option.value,
-                  checked: settings[option.key],
-                  onCheckedChange: (checked: boolean) => onChange({ ...settings, [option.key]: checked }),
-                }
-                return (
-                  <div key={option.value} {...api.getOptionItemProps(item)}>
-                    <span className="check">
-                      <span {...api.getItemIndicatorProps(item)}>✓</span>
-                    </span>
-                    <span {...api.getItemTextProps(item)}>{option.label}</span>
-                  </div>
-                )
-              })}
-              <hr {...api.getSeparatorProps()} />
-              <div {...api.getItemGroupProps({ id: "theme" })}>
-                <span {...api.getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
-                {themes.map((theme) => {
+              <div {...api.getListProps()}>
+                {checkboxes.map((option) => {
                   const item = {
-                    type: "radio" as const,
-                    value: theme,
-                    checked: settings.theme === theme,
-                    onCheckedChange: () => onChange({ ...settings, theme }),
+                    type: "checkbox" as const,
+                    value: option.value,
+                    checked: settings[option.key],
+                    onCheckedChange: (checked: boolean) => onChange({ ...settings, [option.key]: checked }),
                   }
                   return (
-                    <div key={theme} {...api.getOptionItemProps(item)}>
+                    <div key={option.value} {...api.getOptionItemProps(item)}>
                       <span className="check">
                         <span {...api.getItemIndicatorProps(item)}>✓</span>
                       </span>
-                      <span {...api.getItemTextProps(item)}>{theme}</span>
+                      <span {...api.getItemTextProps(item)}>{option.label}</span>
                     </div>
                   )
                 })}
+                <hr {...api.getSeparatorProps()} />
+                <div {...api.getItemGroupProps({ id: "theme" })}>
+                  <span {...api.getItemGroupLabelProps({ htmlFor: "theme" })}>Theme</span>
+                  {themes.map((theme) => {
+                    const item = {
+                      type: "radio" as const,
+                      value: theme,
+                      checked: settings.theme === theme,
+                      onCheckedChange: () => onChange({ ...settings, theme }),
+                    }
+                    return (
+                      <div key={theme} {...api.getOptionItemProps(item)}>
+                        <span className="check">
+                          <span {...api.getItemIndicatorProps(item)}>✓</span>
+                        </span>
+                        <span {...api.getItemTextProps(item)}>{theme}</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>
