@@ -47,7 +47,11 @@ export const machine = createMachine({
           context.set("hasLegend", !!scope.getById(dom.getLegendId(scope)))
         }
         sync()
-        return observeChildren(() => dom.getRootEl(scope), { defer: true, callback: sync })
+        const getRootEl = () => {
+          sync()
+          return dom.getRootEl(scope)
+        }
+        return observeChildren(getRootEl, { defer: true, callback: sync })
       },
 
       trackAncestorDisabled({ context, scope }) {
