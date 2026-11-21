@@ -169,6 +169,23 @@ describe("highlightWord / First Occurrence", () => {
       ]
     `)
   })
+
+  test("ignoring case when lowercasing changes the text length", () => {
+    // "İ".toLowerCase() is two code units long
+    expect(highlightWord({ text: "İstanbul Ankara", query: "ankara", ignoreCase: true })).toEqual([
+      { text: "İstanbul ", match: false },
+      { text: "Ankara", match: true },
+    ])
+    expect(highlightWord({ text: "İİ Ankara Yolu", query: "ANKARA", ignoreCase: true })).toEqual([
+      { text: "İİ ", match: false },
+      { text: "Ankara", match: true },
+      { text: " Yolu", match: false },
+    ])
+    expect(highlightWord({ text: "GROẞE STRAẞE", query: "straße", ignoreCase: true })).toEqual([
+      { text: "GROẞE ", match: false },
+      { text: "STRAẞE", match: true },
+    ])
+  })
 })
 
 describe("highlightWord / Multiple Occurrences", () => {
