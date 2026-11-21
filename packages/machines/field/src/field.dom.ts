@@ -7,9 +7,8 @@ export type FieldControlElement = HTMLInputElement | HTMLTextAreaElement | HTMLS
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? ctx.id
 export const getItemControlId = (ctx: Scope, item: string, target?: string) =>
   ctx.ids?.control && item === target ? ctx.ids.control : `${ctx.id}:item:${item}`
-// A control rendered without `item` keeps its own id when `target` points at an item
-export const getDirectControlId = (ctx: Scope, target?: string) =>
-  (target ? undefined : ctx.ids?.control) ?? `${ctx.id}:control`
+// A control rendered without `item` keeps its own id, even when `target` points at an item
+export const getDirectControlId = (ctx: Scope) => ctx.ids?.control ?? `${ctx.id}:control`
 export const getControlId = (ctx: Scope, target?: string) =>
   target ? getItemControlId(ctx, target, target) : getDirectControlId(ctx)
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`

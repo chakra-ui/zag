@@ -25,11 +25,11 @@ describe("getControlId", () => {
   })
 
   test("a control without an item keeps its own id when target is set", () => {
-    expect(getDirectControlId(scope, "currency")).toBe("f1:control")
+    expect(getDirectControlId(scope)).toBe("f1:control")
     expect(getItemControlId(scope, "currency", "currency")).toBe("f1:item:currency")
   })
 
-  test("ids.control applies to a control without an item when there's no target", () => {
+  test("ids.control applies to a control without an item", () => {
     const custom = {
       id: "f1",
       ids: { control: "custom-control" },

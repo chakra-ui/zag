@@ -81,7 +81,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
   }
 
   function resolveControlId(item?: string) {
-    return item ? getItemControlId(item) : dom.getDirectControlId(scope, prop("target"))
+    return item ? getItemControlId(item) : dom.getDirectControlId(scope)
   }
 
   function getControlBaseProps(props: ItemProps = {}) {
