@@ -335,7 +335,8 @@ function warnIfUnreachable(el: HTMLElement | null) {
   if (!el) return // `null` is the page, which always scrolls by keyboard
   if (warnedContainers.has(el)) return
   if (el.tabIndex >= 0) return
-  const role = el.closest("[role]")?.getAttribute("role")
+  // `presentation` and `none` carry no semantics, so look past them (e.g. a menu list inside its `role="menu"` content)
+  const role = el.closest("[role]:not([role=presentation], [role=none])")?.getAttribute("role")
   if (role && KEYBOARD_ROLE_RE.test(role)) return
   if (getFirstTabbable(el)) return
   warnedContainers.add(el)
