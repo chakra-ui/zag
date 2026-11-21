@@ -27,7 +27,7 @@ export function highlightFirst(props: HighlightWordProps): HighlightChunk[] {
 
   // match on the text itself: lowercasing it first can change its length ("İ" becomes "i̇"),
   // and then an index found in the lowercased text points at the wrong characters
-  const regex = new RegExp(escapeRegex(query as string), ignoreCase ? "i" : "")
+  const regex = new RegExp(escapeRegex(query as string), ignoreCase ? "iu" : "u")
 
   const match = text.match(regex)
   if (!match || match.index === undefined) {

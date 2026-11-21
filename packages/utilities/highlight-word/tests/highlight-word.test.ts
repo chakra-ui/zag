@@ -181,6 +181,10 @@ describe("highlightWord / First Occurrence", () => {
       { text: "Ankara", match: true },
       { text: " Yolu", match: false },
     ])
+    expect(highlightWord({ text: "GROẞE STRAẞE", query: "straße", ignoreCase: true })).toEqual([
+      { text: "GROẞE ", match: false },
+      { text: "STRAẞE", match: true },
+    ])
   })
 })
 
