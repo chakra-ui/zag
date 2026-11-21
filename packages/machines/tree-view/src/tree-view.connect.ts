@@ -62,10 +62,15 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const focusedIndexPath = focusedValue != null ? collection.getIndexPath(focusedValue) : undefined
   const tabbableValue = focusedIndexPath && !skip({ indexPath: focusedIndexPath }) ? focusedValue : firstNodeValue
 
+  // Each part of a node asks for its state, so compute it once per node per render
+  const nodeStates = new Map<string, NodeState>()
+
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
-    return {
+    const cached = nodeStates.get(value)
+    if (cached) return cached
+    const state: NodeState = {
       id: dom.getNodeId(scope, value),
       value,
       indexPath,
@@ -82,6 +87,8 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         return getCheckedState(collection, node, checkedValue)
       },
     }
+    nodeStates.set(value, state)
+    return state
   }
 
   return {
