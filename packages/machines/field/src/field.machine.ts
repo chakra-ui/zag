@@ -181,7 +181,11 @@ export const machine = createMachine({
           context.set("hasHelperText", !!scope.getById(dom.getHelperTextId(scope)))
         }
         sync()
-        return observeChildren(() => dom.getRootEl(scope), {
+        const getRootEl = () => {
+          sync()
+          return dom.getRootEl(scope)
+        }
+        return observeChildren(getRootEl, {
           defer: true,
           callback: sync,
           attributes: true,
@@ -196,7 +200,11 @@ export const machine = createMachine({
           context.set("fieldsetErrorTextId", fieldsetEl ? dom.getFieldsetErrorTextId(fieldsetEl) : null)
         }
         sync()
-        return observeChildren(getFieldsetEl, {
+        const getObservedEl = () => {
+          sync()
+          return getFieldsetEl()
+        }
+        return observeChildren(getObservedEl, {
           defer: true,
           callback: sync,
           attributes: true,
