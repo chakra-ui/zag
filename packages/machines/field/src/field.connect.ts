@@ -77,7 +77,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
   }
 
   function getItemControlId(item: string) {
-    return dom.getItemControlId(scope, item)
+    return dom.getItemControlId(scope, item, prop("target"))
   }
 
   function resolveControlId(item?: string) {
@@ -86,7 +86,7 @@ export function connect<T extends PropTypes>(service: Service<FieldSchema>, norm
 
   function getControlBaseProps(props: ItemProps = {}) {
     const rootState = getRootState()
-    const controlId = resolveControlId(props.item)
+    const controlId = props.item ? getItemControlId(props.item) : dom.getDirectControlId(scope)
     const tracked = controlId === ids.control
     return {
       ...parts.control.attrs(scope.id),
