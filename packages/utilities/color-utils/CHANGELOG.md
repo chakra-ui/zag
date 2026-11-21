@@ -1,5 +1,17 @@
 # @zag-js/color-utils
 
+## 1.49.0
+
+### Patch Changes
+
+- [`1de34cc`](https://github.com/chakra-ui/zag/commit/1de34cc76eafcac4f68616a2fadad086bcd58583) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `rgb()` percentage channels and alpha being parsed as `0`.
+  - Fix hex output containing decimals when RGB channels are fractional.
+  - Fix invalid `rgb()`, `hsl()` and `hsb()` values being parsed instead of rejected.
+  - Add support for the space-separated syntax, e.g. `rgb(255 0 0 / 50%)` and `hsl(120deg 50% 50%)`.
+- Updated dependencies []:
+  - @zag-js/utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

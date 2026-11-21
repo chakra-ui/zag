@@ -1,5 +1,14 @@
 # @zag-js/date-utils
 
+## 1.49.0
+
+### Patch Changes
+
+- [#3679](https://github.com/chakra-ui/zag/pull/3679)
+  [`2b69503`](https://github.com/chakra-ui/zag/commit/2b6950371da7e8c67cc553440f7c04a1047d9a2a) Thanks
+  [@KooYS](https://github.com/KooYS)! - - Fix the date picker week number showing `53` instead of `1` for weeks starting
+  in late December (e.g. Dec 30, 2024).
+
 ## 1.48.0
 
 No changes in this release.

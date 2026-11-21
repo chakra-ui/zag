@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 1.49.0
+
+### Patch Changes
+
+- [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix the view trigger's accessible name hiding its visible month
+  or year text. The `viewTrigger` translation is now the trigger's `aria-description` instead of its `aria-label`, and
+  is omitted when there's no next view.
+  - Add `aria-description` to the typed ARIA attributes.
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826),
+  [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c),
+  [`2b69503`](https://github.com/chakra-ui/zag/commit/2b6950371da7e8c67cc553440f7c04a1047d9a2a)]:
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/types@1.49.0
+  - @zag-js/date-utils@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/dismissable@1.49.0
+  - @zag-js/popper@1.49.0
+  - @zag-js/anatomy@1.49.0
+  - @zag-js/utils@1.49.0
+  - @zag-js/live-region@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @zag-js/switch
 
+## 1.49.0
+
+### Patch Changes
+
+- [#3676](https://github.com/chakra-ui/zag/pull/3676)
+  [`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826) Thanks
+  [@nilesh0002](https://github.com/nilesh0002)! - - Fix the hidden input's `aria-labelledby` in checkbox and switch
+  pointing to a missing element when the label part isn't rendered.
+  - Fix the content's `aria-labelledby` and `aria-describedby` in dialog, drawer and popover not updating when the title
+    or description is added or removed while open.
+  - Add `trackRenderedParts` to track which parts are in the DOM.
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826),
+  [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c)]:
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/types@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/focus-visible@1.49.0
+  - @zag-js/anatomy@1.49.0
+  - @zag-js/utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes
