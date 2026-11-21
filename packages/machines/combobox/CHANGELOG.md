@@ -1,5 +1,30 @@
 # @zag-js/combobox
 
+## 1.49.0
+
+### Patch Changes
+
+- [#3650](https://github.com/chakra-ui/zag/pull/3650)
+  [`3fbf391`](https://github.com/chakra-ui/zag/commit/3fbf391e0f021c7b80d2c0492e0822328bfc5a8b) Thanks
+  [@abu-tahir-0](https://github.com/abu-tahir-0)! - - Add a `highlightedItem` translation for the option announced on
+  highlight. Return an empty string to disable it.
+
+- [`4983a05`](https://github.com/chakra-ui/zag/commit/4983a05cc745e31ce6687d75338809d690b7987a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `aria-labelledby` pointing to a missing element when the
+  label part isn't rendered.
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826),
+  [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c)]:
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/types@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/dismissable@1.49.0
+  - @zag-js/focus-visible@1.49.0
+  - @zag-js/popper@1.49.0
+  - @zag-js/anatomy@1.49.0
+  - @zag-js/collection@1.49.0
+  - @zag-js/utils@1.49.0
+  - @zag-js/live-region@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes
