@@ -4,7 +4,6 @@ import {
   isEqualMonth,
   isEqualYear,
   isSameDay,
-  isToday,
   isWeekend,
   toCalendarDateTime,
   type DateValue,
@@ -224,10 +223,18 @@ export function connect<T extends PropTypes>(
     return cellState
   }
 
+  // A day cell and its trigger both read its state, so compute each day once per render
+  const dayCellStates = new Map<string, DayTableCellState>()
+  const dayFormatter = getDayFormatter(locale, timeZone, focusedValue)
+  const todayValue = getTodayDate(timeZone)
+
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = computed("visibleRange") } = props
 
-    const formatter = getDayFormatter(locale, timeZone, focusedValue)
+    const key = `${value.calendar.identifier}|${value}|${visibleRange.start}|${!!disabled}`
+    const cached = dayCellStates.get(key)
+    if (cached) return cached
+
     const unitDuration = getUnitDuration(computed("visibleDuration"))
     const outsideDaySelectable = prop("outsideDaySelectable")
 
@@ -259,10 +266,10 @@ export function connect<T extends PropTypes>(
       selected: isSelected,
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
       outsideRange: isOutsideRange,
-      today: isToday(value, timeZone),
+      today: isSameDay(value, todayValue),
       weekend: isWeekend(value, locale),
       value,
-      valueText: formatter.format(value.toDate(timeZone)),
+      valueText: dayFormatter.format(value.toDate(timeZone)),
       get focused() {
         return (
           focusedValue != null && isSameDay(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
@@ -283,6 +290,7 @@ export function connect<T extends PropTypes>(
       lastInHoveredRange: isLastInHoveredRange,
     }
 
+    dayCellStates.set(key, cellState)
     return cellState
   }
 
