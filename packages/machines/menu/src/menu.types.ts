@@ -47,6 +47,7 @@ export type OpenChangeReason =
   | "focus-outside"
   | "tab-key"
   | "script"
+  | "agent"
 
 export interface OpenChangeDetails {
   /**

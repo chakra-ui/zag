@@ -11,7 +11,7 @@ import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/typ
  * - `find-in-page`: the browser's find-in-page revealed a match in the content
  * - `script`: `setOpen` was called
  */
-export type OpenChangeReason = "trigger-click" | "find-in-page" | "script"
+export type OpenChangeReason = "trigger-click" | "find-in-page" | "script" | "agent"
 
 export interface OpenChangeDetails {
   open: boolean

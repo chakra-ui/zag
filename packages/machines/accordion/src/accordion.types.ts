@@ -12,7 +12,7 @@ import type { AnimationFrame } from "@zag-js/dom-query"
  * - `find-in-page`: the browser's find-in-page revealed a match in a closed item
  * - `script`: `setValue` was called
  */
-export type ValueChangeReason = "trigger-click" | "find-in-page" | "script"
+export type ValueChangeReason = "trigger-click" | "find-in-page" | "script" | "agent"
 
 export interface ValueChangeDetails {
   value: string[]

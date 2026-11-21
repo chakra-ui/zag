@@ -24,6 +24,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -341,6 +342,16 @@ export function useMachine<T extends MachineSchema>(
 
   const getStatus = useStableFn(() => statusRef.current)
 
+  // What listeners like an agent bridge hold: the latest service, through a ref.
+  const serviceRef = useRef<Service<T> | null>(null)
+  const record = useConst(() => ({
+    machine,
+    get service() {
+      return serviceRef.current!
+    },
+  }))
+  const reportedRef = useRef(false)
+
   useSafeLayoutEffect(() => {
     mountedRef.current = true
     let startedHere = false
@@ -356,11 +367,20 @@ export function useMachine<T extends MachineSchema>(
       // start the transition
       const initialState = hydratedStateRef.current ?? state.initial!
       state.invoke(initialState, started ? state.get() : INIT_STATE)
+      // strict mode can start twice in a row, so report once per mount
+      if (!reportedRef.current) {
+        reportedRef.current = true
+        reportMachine(record, true)
+      }
     })
 
     const fns = effects.current
     return () => {
       mountedRef.current = false
+      if (reportedRef.current) {
+        reportedRef.current = false
+        reportMachine(record, false)
+      }
       const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState
@@ -387,7 +407,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = useEffectSync(reconcileEffects)
 
-  return {
+  const service = {
     state: getState(),
     send,
     context: ctx,
@@ -398,6 +418,10 @@ export function useMachine<T extends MachineSchema>(
     event: getEvent(),
     getStatus,
   } as Service<T>
+
+  serviceRef.current = service
+
+  return service
 }
 
 function useLiveRef<T>(value: T) {

@@ -22,7 +22,7 @@ export interface SizeChangeDetails {
  * - `escape-key`: Escape was pressed
  * - `script`: `setOpen` was called
  */
-export type OpenChangeReason = "trigger-click" | "close-trigger" | "escape-key" | "script"
+export type OpenChangeReason = "trigger-click" | "close-trigger" | "escape-key" | "script" | "agent"
 
 export interface OpenChangeDetails {
   open: boolean
