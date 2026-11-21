@@ -16,4 +16,10 @@ describe("getWeekOfYear", () => {
     expect(week52Or53).toBeGreaterThanOrEqual(52)
     expect(week52Or53).toBeLessThanOrEqual(53)
   })
+
+  it("returns 1 for a week that starts in December but has its Thursday in January", () => {
+    expect(getWeekOfYear(new CalendarDate(2024, 12, 30), "en")).toBe(1)
+    expect(getWeekOfYear(new CalendarDate(2025, 1, 5), "en")).toBe(1)
+    expect(getWeekOfYear(new CalendarDate(2021, 1, 1), "en")).toBe(53)
+  })
 })
