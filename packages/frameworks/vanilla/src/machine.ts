@@ -38,6 +38,18 @@ import { mergeMachineProps } from "./merge-machine-props"
 
 const defer = (fn: VoidFunction) => queueMicrotask(fn)
 
+const getterCache = new WeakMap<object, boolean>()
+
+function hasGetters(props: unknown): boolean {
+  if (!props || typeof props !== "object") return false
+  let result = getterCache.get(props)
+  if (result === undefined) {
+    result = Object.values(Object.getOwnPropertyDescriptors(props)).some((descriptor) => descriptor.get)
+    getterCache.set(props, result)
+  }
+  return result
+}
+
 // Internals live in closures rather than on the class, so a minifier can shorten their names
 export class VanillaMachine<T extends MachineSchema> {
   declare scope: Scope
@@ -131,10 +143,16 @@ export class VanillaMachine<T extends MachineSchema> {
     const { id, ids, getRootNode } = runIfFn(userProps) as any
     const scope = createScope({ id, ids, getRootNode })
 
+    // Reuse while the props object is unchanged; getters must stay live
+    let lastProps: InputProps<T> | undefined
+    let lastResolved: any
     const prop: PropFn<T> = (key) => {
       const props = getUserProps()
-      const resolved: any = machine.props?.({ props: compact(props as any), scope }) ?? props
-      return resolved[key] as any
+      if (props !== lastProps || hasGetters(props)) {
+        lastResolved = machine.props?.({ props: compact(props as any), scope }) ?? props
+        lastProps = props
+      }
+      return lastResolved[key] as any
     }
 
     const context: any = machine.context?.({

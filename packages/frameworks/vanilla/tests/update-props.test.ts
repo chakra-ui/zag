@@ -184,3 +184,61 @@ describe("mergeMachineProps", () => {
     expect(previous.nested).toEqual({ value: 1 })
   })
 })
+
+describe("prop resolution", () => {
+  const withDefaults = (resolve: VoidFunction) =>
+    createMachine<any>({
+      initialState: () => "idle",
+      states: { idle: {} },
+      props({ props }) {
+        resolve()
+        return { size: "md", ...props }
+      },
+    })
+
+  test("resolves once while the props object is unchanged", () => {
+    let resolves = 0
+    const props = { id: "test", value: 1 }
+    const service = new VanillaMachine(
+      withDefaults(() => resolves++),
+      () => props,
+    )
+    resolves = 0
+
+    for (let i = 0; i < 100; i++) service.prop("value")
+
+    expect(resolves).toBe(1)
+    expect(service.prop("size")).toBe("md")
+  })
+
+  test("resolves again after updateProps", () => {
+    const service = new VanillaMachine(
+      withDefaults(() => {}),
+      { id: "test", value: 1 },
+    )
+    service.prop("value")
+
+    service.updateProps({ value: 2 })
+
+    expect(service.prop("value")).toBe(2)
+  })
+
+  test("keeps getters live on the same props object", () => {
+    let value = 1
+    const props = {
+      id: "test",
+      get value() {
+        return value
+      },
+    }
+    const service = new VanillaMachine(
+      withDefaults(() => {}),
+      () => props,
+    )
+    expect(service.prop("value")).toBe(1)
+
+    value = 2
+
+    expect(service.prop("value")).toBe(2)
+  })
+})
