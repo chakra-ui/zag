@@ -105,6 +105,7 @@ export const routes: RouteDefinition[] = [
   { path: "/combobox/external-value-change", component: lazy(() => import("./pages/combobox/external-value-change")) },
   { path: "/combobox/form", component: lazy(() => import("./pages/combobox/form")) },
   { path: "/combobox/highlighted-on-mount", component: lazy(() => import("./pages/combobox/highlighted-on-mount")) },
+  { path: "/combobox/inline-list", component: lazy(() => import("./pages/combobox/inline-list")) },
   { path: "/combobox/links", component: lazy(() => import("./pages/combobox/links")) },
   { path: "/combobox/multiple", component: lazy(() => import("./pages/combobox/multiple")) },
   { path: "/combobox/rehydrate", component: lazy(() => import("./pages/combobox/rehydrate")) },
