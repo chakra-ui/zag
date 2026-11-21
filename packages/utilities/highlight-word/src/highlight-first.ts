@@ -25,16 +25,17 @@ export function highlightFirst(props: HighlightWordProps): HighlightChunk[] {
     }))
   }
 
-  const searchText = ignoreCase ? text.toLowerCase() : text
-  const searchQuery = ignoreCase ? (typeof query === "string" ? query.toLowerCase() : query) : query
+  // match on the text itself: lowercasing it first can change its length ("İ" becomes "i̇"),
+  // and then an index found in the lowercased text points at the wrong characters
+  const regex = new RegExp(escapeRegex(query as string), ignoreCase ? "i" : "")
 
-  const start = typeof searchText === "string" ? searchText.indexOf(searchQuery as string) : -1
-
-  if (start === -1) {
+  const match = text.match(regex)
+  if (!match || match.index === undefined) {
     return [{ text, match: false }]
   }
 
-  const end = start + (searchQuery as string).length
+  const start = match.index
+  const end = start + match[0].length
   const spans = [{ start, end }]
 
   return normalizeSpan(spans, text.length).map((chunk) => ({
