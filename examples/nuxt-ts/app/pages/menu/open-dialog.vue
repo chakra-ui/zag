@@ -31,11 +31,13 @@ const dialogApi = computed(() => dialog.connect(dialogService, normalizeProps))
     </button>
     <Teleport to="#teleports">
       <div v-bind="menuApi.getPositionerProps()">
-        <ul v-bind="menuApi.getContentProps()">
-          <li v-bind="menuApi.getItemProps({ value: 'edit' })">Edit</li>
-          <li v-bind="menuApi.getItemProps({ value: 'duplicate' })">Duplicate</li>
-          <li v-bind="menuApi.getItemProps({ value: 'delete' })">Delete…</li>
-        </ul>
+        <div v-bind="menuApi.getContentProps()">
+          <ul v-bind="menuApi.getListProps()">
+            <li v-bind="menuApi.getItemProps({ value: 'edit' })">Edit</li>
+            <li v-bind="menuApi.getItemProps({ value: 'duplicate' })">Duplicate</li>
+            <li v-bind="menuApi.getItemProps({ value: 'delete' })">Delete…</li>
+          </ul>
+        </div>
       </div>
     </Teleport>
 

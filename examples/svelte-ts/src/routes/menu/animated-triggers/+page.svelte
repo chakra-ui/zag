@@ -35,9 +35,11 @@
       <Presence {...api.getViewportProps()}>
         {#each menus as item (item.value)}
           <Presence {...api.getContentProps({ value: item.value })}>
-            {#each item.items as label (label)}
-              <div {...api.getItemProps({ value: `${item.value}:${label}` })}>{label}</div>
-            {/each}
+            <div {...api.getListProps({ value: item.value })}>
+              {#each item.items as label (label)}
+                <div {...api.getItemProps({ value: `${item.value}:${label}` })}>{label}</div>
+              {/each}
+            </div>
           </Presence>
         {/each}
       </Presence>

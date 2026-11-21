@@ -43,30 +43,32 @@ export default function Page() {
       <Show when={api().open}>
         <Portal>
           <div {...api().getPositionerProps()}>
-            <div
-              {...mergeProps(
-                () => virtualizer().getRootProps(),
-                () => api().getContentProps(),
-                { style: { "max-height": "320px" } },
-              )}
-              ref={ref}
-            >
-              <div {...virtualizer().getContentProps()}>
-                <For keyed={false} each={virtualizer().getVirtualItems()}>
-                  {(virtualItem) => {
-                    const item = () => items[virtualItem().index]
-                    return (
-                      <div
-                        {...mergeProps(
-                          () => virtualizer().getItemProps(virtualItem()),
-                          () => api().getItemProps({ value: item().value }),
-                        )}
-                      >
-                        {item().label}
-                      </div>
-                    )
-                  }}
-                </For>
+            <div {...api().getContentProps()}>
+              <div
+                {...mergeProps(
+                  () => virtualizer().getRootProps(),
+                  () => api().getListProps(),
+                  { style: { "max-height": "320px" } },
+                )}
+                ref={ref}
+              >
+                <div {...virtualizer().getContentProps()}>
+                  <For keyed={false} each={virtualizer().getVirtualItems()}>
+                    {(virtualItem) => {
+                      const item = () => items[virtualItem().index]
+                      return (
+                        <div
+                          {...mergeProps(
+                            () => virtualizer().getItemProps(virtualItem()),
+                            () => api().getItemProps({ value: item().value }),
+                          )}
+                        >
+                          {item().label}
+                        </div>
+                      )
+                    }}
+                  </For>
+                </div>
               </div>
             </div>
           </div>

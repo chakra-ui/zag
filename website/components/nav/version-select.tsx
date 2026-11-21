@@ -79,42 +79,44 @@ export const VersionSelect = () => {
               outline="0"
               {...api.getContentProps()}
             >
-              {items.map((item) => (
-                <Link
-                  key={item.value}
-                  href={item.value}
-                  aria-current={item === current ? "true" : undefined}
-                  {...api.getItemProps({ value: item.value })}
-                  className={css({
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "2",
-                    h: "9",
-                    px: "2",
-                    rounded: "6px",
-                    cursor: "pointer",
-                    color: "text",
-                    _highlighted: { bg: "bg.muted", color: "text.bold" },
-                  })}
-                >
-                  <Box fontWeight="medium" color="text.bold">
-                    {item.tag}
-                  </Box>
-                  <Box fontFamily="mono" fontSize="12px" color="text.muted">
-                    {item.label}
-                  </Box>
-                  {item === current && (
-                    <Box
-                      ms="auto"
-                      display="inline-flex"
-                      color="text.bold"
-                      aria-hidden
-                    >
-                      <HiCheck size={15} />
+              <div {...api.getListProps()}>
+                {items.map((item) => (
+                  <Link
+                    key={item.value}
+                    href={item.value}
+                    aria-current={item === current ? "true" : undefined}
+                    {...api.getItemProps({ value: item.value })}
+                    className={css({
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "2",
+                      h: "9",
+                      px: "2",
+                      rounded: "6px",
+                      cursor: "pointer",
+                      color: "text",
+                      _highlighted: { bg: "bg.muted", color: "text.bold" },
+                    })}
+                  >
+                    <Box fontWeight="medium" color="text.bold">
+                      {item.tag}
                     </Box>
-                  )}
-                </Link>
-              ))}
+                    <Box fontFamily="mono" fontSize="12px" color="text.muted">
+                      {item.label}
+                    </Box>
+                    {item === current && (
+                      <Box
+                        ms="auto"
+                        display="inline-flex"
+                        color="text.bold"
+                        aria-hidden
+                      >
+                        <HiCheck size={15} />
+                      </Box>
+                    )}
+                  </Link>
+                ))}
+              </div>
             </Box>
           </div>
         </Portal>

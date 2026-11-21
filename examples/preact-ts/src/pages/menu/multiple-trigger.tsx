@@ -75,8 +75,10 @@ export default function MenuMultipleTrigger() {
       <Portal>
         <div {...api.getPositionerProps()}>
           <Presence {...api.getContentProps()}>
-            <div {...api.getItemProps({ value: "rename" })}>Rename (value: {api.triggerValue})</div>
-            <div {...api.getItemProps({ value: "delete" })}>Delete (value: {api.triggerValue})</div>
+            <div {...api.getListProps()}>
+              <div {...api.getItemProps({ value: "rename" })}>Rename (value: {api.triggerValue})</div>
+              <div {...api.getItemProps({ value: "delete" })}>Delete (value: {api.triggerValue})</div>
+            </div>
           </Presence>
         </div>
       </Portal>

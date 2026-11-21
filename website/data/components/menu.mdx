@@ -31,6 +31,9 @@ Install the menu package:
 
 <Anatomy id="menu" />
 
+Render the items, groups and separators inside `api.getListProps()`, within the
+content. Keep a filter input or arrow in the content, outside the list.
+
 ## Usage
 
 <CodeSnippet id="menu/usage.mdx" />
@@ -162,7 +165,7 @@ When you have many menu items, it can help to group related options:
 
 ```tsx
 //...
-<div {...api.getContentProps()}>
+<div {...api.getListProps()}>
   {/* ... */}
   <hr {...api.getSeparatorProps()} />
   <p {...api.getItemGroupLabelProps({ htmlFor: "account" })}>Accounts</p>
@@ -276,7 +279,9 @@ return (
     <button {...api.getTriggerProps({ value: "edit" })}>Edit</button>
     <div {...api.getPositionerProps()}>
       <div {...api.getContentProps()}>
-        {/* Menu items based on api.triggerValue */}
+        <div {...api.getListProps()}>
+          {/* Menu items based on api.triggerValue */}
+        </div>
       </div>
     </div>
   </>

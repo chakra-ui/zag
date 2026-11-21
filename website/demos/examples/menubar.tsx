@@ -31,9 +31,9 @@ function Content(props: { api: menu.Api; children: React.ReactNode }) {
   return (
     <Portal>
       <div className={styles.Positioner} {...props.api.getPositionerProps()}>
-        <ul className={menuStyles.Content} {...props.api.getContentProps()}>
-          {props.children}
-        </ul>
+        <div className={menuStyles.Content} {...props.api.getContentProps()}>
+          <ul {...props.api.getListProps()}>{props.children}</ul>
+        </div>
       </div>
     </Portal>
   )

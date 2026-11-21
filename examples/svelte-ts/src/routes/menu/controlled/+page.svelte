@@ -35,13 +35,15 @@
   <button type="button" {...api.getTriggerProps()}>Menu Trigger</button>
   <Portal>
     <div {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()}>
-        {#each items as item (item.value)}
-          <li {...api.getItemProps({ value: item.value })}>
-            {item.label}
-          </li>
-        {/each}
-      </ul>
+      <div {...api.getContentProps()}>
+        <ul {...api.getListProps()}>
+          {#each items as item (item.value)}
+            <li {...api.getItemProps({ value: item.value })}>
+              {item.label}
+            </li>
+          {/each}
+        </ul>
+      </div>
     </div>
   </Portal>
 </div>

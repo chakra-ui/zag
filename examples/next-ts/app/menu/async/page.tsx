@@ -51,42 +51,39 @@ export default function Page() {
         {api.open && (
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul
-                {...mergeProps(api.getContentProps(), {
-                  "aria-label": "Characters",
-                  style: { maxHeight: 240, overflowY: "auto" as const, width: 220 },
-                })}
-              >
-                {isInitialLoading && (
-                  <li style={{ padding: "8px 6px", fontSize: 13 }}>
-                    <output aria-live="polite">Loading…</output>
-                  </li>
-                )}
-                {listApi.error && (
-                  <li style={{ padding: "8px 6px", fontSize: 13 }}>
-                    <output>Couldn&apos;t load characters</output>
-                  </li>
-                )}
-                {!isInitialLoading && listApi.isEmpty && !listApi.error && (
-                  <li style={{ padding: "8px 6px", fontSize: 13 }}>
-                    <output>No characters found</output>
-                  </li>
-                )}
-                {listApi.items.map((item) => (
-                  <li key={item.name} {...api.getItemProps({ value: item.name, valueText: item.name })}>
-                    {item.name}
-                  </li>
-                ))}
-                {!isInitialLoading && (
-                  <LoadMore
-                    as="li"
-                    count={listApi.items.length}
-                    hasMore={listApi.hasMore}
-                    loading={listApi.isLoading}
-                    onLoadMore={() => listApi.loadMore()}
-                  />
-                )}
-              </ul>
+              <div {...mergeProps(api.getContentProps(), { "aria-label": "Characters", style: { width: 220 } })}>
+                <ul {...mergeProps(api.getListProps(), { style: { maxHeight: 240, overflowY: "auto" as const } })}>
+                  {isInitialLoading && (
+                    <li style={{ padding: "8px 6px", fontSize: 13 }}>
+                      <output aria-live="polite">Loading…</output>
+                    </li>
+                  )}
+                  {listApi.error && (
+                    <li style={{ padding: "8px 6px", fontSize: 13 }}>
+                      <output>Couldn&apos;t load characters</output>
+                    </li>
+                  )}
+                  {!isInitialLoading && listApi.isEmpty && !listApi.error && (
+                    <li style={{ padding: "8px 6px", fontSize: 13 }}>
+                      <output>No characters found</output>
+                    </li>
+                  )}
+                  {listApi.items.map((item) => (
+                    <li key={item.name} {...api.getItemProps({ value: item.name, valueText: item.name })}>
+                      {item.name}
+                    </li>
+                  ))}
+                  {!isInitialLoading && (
+                    <LoadMore
+                      as="li"
+                      count={listApi.items.length}
+                      hasMore={listApi.hasMore}
+                      loading={listApi.isLoading}
+                      onLoadMore={() => listApi.loadMore()}
+                    />
+                  )}
+                </ul>
+              </div>
             </div>
           </Portal>
         )}

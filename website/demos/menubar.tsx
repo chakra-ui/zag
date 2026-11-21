@@ -35,17 +35,19 @@ function Menu(props: MenuProps) {
       </button>
       <Portal>
         <div className={styles.Positioner} {...api.getPositionerProps()}>
-          <ul className={menuStyles.Content} {...api.getContentProps()}>
-            {props.items.map((item) => (
-              <li
-                className={menuStyles.Item}
-                key={item}
-                {...api.getItemProps({ value: item })}
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+          <div className={menuStyles.Content} {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {props.items.map((item) => (
+                <li
+                  className={menuStyles.Item}
+                  key={item}
+                  {...api.getItemProps({ value: item })}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Portal>
     </>

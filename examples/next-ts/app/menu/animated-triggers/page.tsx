@@ -38,11 +38,13 @@ export default function Page() {
           <Presence {...api.getViewportProps()}>
             {menus.map((item) => (
               <Presence key={item.value} {...api.getContentProps({ value: item.value })}>
-                {item.items.map((label) => (
-                  <div key={label} {...api.getItemProps({ value: `${item.value}:${label}` })}>
-                    {label}
-                  </div>
-                ))}
+                <div {...api.getListProps({ value: item.value })}>
+                  {item.items.map((label) => (
+                    <div key={label} {...api.getItemProps({ value: `${item.value}:${label}` })}>
+                      {label}
+                    </div>
+                  ))}
+                </div>
               </Presence>
             ))}
           </Presence>

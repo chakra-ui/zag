@@ -62,8 +62,10 @@ function Menu({ name }: { name: string }) {
       <MaybePortal>
         <div {...api.getPositionerProps()}>
           <Presence lazyMount={env.lazy} data-testid={`${name}-content`} {...api.getContentProps()}>
-            <div {...api.getItemProps({ value: "a" })}>Item A</div>
-            <div {...api.getItemProps({ value: "b" })}>Item B</div>
+            <div {...api.getListProps()}>
+              <div {...api.getItemProps({ value: "a" })}>Item A</div>
+              <div {...api.getItemProps({ value: "b" })}>Item B</div>
+            </div>
           </Presence>
         </div>
       </MaybePortal>

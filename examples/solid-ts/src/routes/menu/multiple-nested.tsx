@@ -80,23 +80,25 @@ export default function Page() {
       <Show when={root().open}>
         <Portal>
           <div {...root().getPositionerProps()}>
-            <ul data-testid="root-menu" {...root().getContentProps()}>
-              <For each={rootItems}>
-                {(item) => {
-                  const sub = submenus.find((s) => s.value === item.value)
-                  const props = createMemo(() =>
-                    item.trigger && sub
-                      ? root().getTriggerItemProps(sub.api())
-                      : root().getItemProps({ value: item.value }),
-                  )
-                  return (
-                    <li data-testid={item.value} {...props()}>
-                      {item.label}
-                    </li>
-                  )
-                }}
-              </For>
-            </ul>
+            <div data-testid="root-menu" {...root().getContentProps()}>
+              <ul {...root().getListProps()}>
+                <For each={rootItems}>
+                  {(item) => {
+                    const sub = submenus.find((s) => s.value === item.value)
+                    const props = createMemo(() =>
+                      item.trigger && sub
+                        ? root().getTriggerItemProps(sub.api())
+                        : root().getItemProps({ value: item.value }),
+                    )
+                    return (
+                      <li data-testid={item.value} {...props()}>
+                        {item.label}
+                      </li>
+                    )
+                  }}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>
@@ -106,15 +108,17 @@ export default function Page() {
           <Show when={api().open}>
             <Portal>
               <div {...api().getPositionerProps()}>
-                <ul data-testid={`submenu-${value}`} {...api().getContentProps()}>
-                  <For each={submenuItems[value] ?? []}>
-                    {(item) => (
-                      <li data-testid={item.value} {...api().getItemProps({ value: item.value })}>
-                        {item.label}
-                      </li>
-                    )}
-                  </For>
-                </ul>
+                <div data-testid={`submenu-${value}`} {...api().getContentProps()}>
+                  <ul {...api().getListProps()}>
+                    <For each={submenuItems[value] ?? []}>
+                      {(item) => (
+                        <li data-testid={item.value} {...api().getItemProps({ value: item.value })}>
+                          {item.label}
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
               </div>
             </Portal>
           </Show>

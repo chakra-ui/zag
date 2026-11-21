@@ -91,7 +91,7 @@ export default function ContextMenuMultipleTrigger() {
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul
+            <div
               {...api.getContentProps()}
               style={{
                 listStyle: "none",
@@ -104,44 +104,46 @@ export default function ContextMenuMultipleTrigger() {
                 minWidth: "160px",
               }}
             >
-              <li
-                {...api.getItemProps({ value: "open" })}
-                style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
-              >
-                Open {activeFile?.type === "folder" ? "Folder" : "File"}
-              </li>
-              <li
-                {...api.getItemProps({ value: "rename" })}
-                style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
-              >
-                Rename
-              </li>
-              <li
-                {...api.getItemProps({ value: "copy" })}
-                style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
-              >
-                Copy
-              </li>
-              <li
-                {...api.getItemProps({ value: "cut" })}
-                style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
-              >
-                Cut
-              </li>
-              <li
-                style={{
-                  height: "1px",
-                  backgroundColor: "#e5e7eb",
-                  margin: "4px 0",
-                }}
-              />
-              <li
-                {...api.getItemProps({ value: "delete" })}
-                style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px", color: "#dc2626" }}
-              >
-                Delete
-              </li>
-            </ul>
+              <ul {...api.getListProps()} style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                <li
+                  {...api.getItemProps({ value: "open" })}
+                  style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
+                >
+                  Open {activeFile?.type === "folder" ? "Folder" : "File"}
+                </li>
+                <li
+                  {...api.getItemProps({ value: "rename" })}
+                  style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
+                >
+                  Rename
+                </li>
+                <li
+                  {...api.getItemProps({ value: "copy" })}
+                  style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
+                >
+                  Copy
+                </li>
+                <li
+                  {...api.getItemProps({ value: "cut" })}
+                  style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px" }}
+                >
+                  Cut
+                </li>
+                <li
+                  style={{
+                    height: "1px",
+                    backgroundColor: "#e5e7eb",
+                    margin: "4px 0",
+                  }}
+                />
+                <li
+                  {...api.getItemProps({ value: "delete" })}
+                  style={{ padding: "8px 12px", cursor: "pointer", borderRadius: "4px", color: "#dc2626" }}
+                >
+                  Delete
+                </li>
+              </ul>
+            </div>
           </div>
         </Portal>
       </main>

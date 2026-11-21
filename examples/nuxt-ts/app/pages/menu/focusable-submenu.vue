@@ -38,20 +38,24 @@ const sub3TriggerProps = computed(() => root.value.getTriggerItemProps(sub3.valu
 
       <Teleport to="#teleports">
         <div v-bind="root.getPositionerProps()">
-          <ul data-testid="menu" v-bind="root.getContentProps()">
-            <li v-bind="root.getItemProps({ value: 'item1' })">Regular Item 1</li>
-            <li data-testid="sub1-trigger" v-bind="sub1TriggerProps">Submenu with Input 1 →</li>
-            <li data-testid="sub2-trigger" v-bind="sub2TriggerProps">Submenu with Input 2 →</li>
-            <li data-testid="sub3-trigger" v-bind="sub3TriggerProps">Submenu with Input 3 →</li>
-            <li v-bind="root.getItemProps({ value: 'item2' })">Regular Item 2</li>
-          </ul>
+          <div data-testid="menu" v-bind="root.getContentProps()">
+            <ul v-bind="root.getListProps()">
+              <li v-bind="root.getItemProps({ value: 'item1' })">Regular Item 1</li>
+              <li data-testid="sub1-trigger" v-bind="sub1TriggerProps">Submenu with Input 1 →</li>
+              <li data-testid="sub2-trigger" v-bind="sub2TriggerProps">Submenu with Input 2 →</li>
+              <li data-testid="sub3-trigger" v-bind="sub3TriggerProps">Submenu with Input 3 →</li>
+              <li v-bind="root.getItemProps({ value: 'item2' })">Regular Item 2</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="sub1.getPositionerProps()">
           <div data-testid="sub1-content" v-bind="sub1.getContentProps()">
-            <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            <div v-bind="sub1.getListProps()">
+              <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            </div>
           </div>
         </div>
       </Teleport>
@@ -59,7 +63,9 @@ const sub3TriggerProps = computed(() => root.value.getTriggerItemProps(sub3.valu
       <Teleport to="#teleports">
         <div v-bind="sub2.getPositionerProps()">
           <div data-testid="sub2-content" v-bind="sub2.getContentProps()">
-            <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            <div v-bind="sub2.getListProps()">
+              <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            </div>
           </div>
         </div>
       </Teleport>
@@ -67,7 +73,9 @@ const sub3TriggerProps = computed(() => root.value.getTriggerItemProps(sub3.valu
       <Teleport to="#teleports">
         <div v-bind="sub3.getPositionerProps()">
           <div data-testid="sub3-content" v-bind="sub3.getContentProps()">
-            <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            <div v-bind="sub3.getListProps()">
+              <input placeholder="Type here..." style="padding: 8px; margin: 8px" />
+            </div>
           </div>
         </div>
       </Teleport>

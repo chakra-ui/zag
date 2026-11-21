@@ -35,18 +35,20 @@
   <button {...api.getTriggerProps()}>Characters</button>
   {#if api.open}
     <div {...api.getPositionerProps()}>
-      <ul {...api.getContentProps()} style="max-height: 240px; overflow-y: auto">
-        {#each listApi.items as item (item.name)}
-          <li {...api.getItemProps({ value: item.name })}>{item.name}</li>
-        {/each}
-        <LoadMore
-          as="li"
-          count={listApi.items.length}
-          hasMore={listApi.hasMore}
-          loading={listApi.isLoading}
-          onLoadMore={() => listApi.loadMore()}
-        />
-      </ul>
+      <div {...api.getContentProps()}>
+        <ul {...api.getListProps()} style="max-height: 240px; overflow-y: auto">
+          {#each listApi.items as item (item.name)}
+            <li {...api.getItemProps({ value: item.name })}>{item.name}</li>
+          {/each}
+          <LoadMore
+            as="li"
+            count={listApi.items.length}
+            hasMore={listApi.hasMore}
+            loading={listApi.isLoading}
+            onLoadMore={() => listApi.loadMore()}
+          />
+        </ul>
+      </div>
     </div>
   {/if}
 </div>

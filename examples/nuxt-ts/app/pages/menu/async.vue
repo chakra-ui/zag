@@ -39,7 +39,13 @@ const isInitialLoading = computed(() => listApi.value.isLoading && listApi.value
 const contentProps = computed(() =>
   mergeProps(api.value.getContentProps(), {
     "aria-label": "Characters",
-    style: { maxHeight: "240px", overflowY: "auto", width: "220px" },
+    style: { width: "220px" },
+  }),
+)
+
+const listProps = computed(() =>
+  mergeProps(api.value.getListProps(), {
+    style: { maxHeight: "240px", overflowY: "auto" },
   }),
 )
 </script>
@@ -53,32 +59,37 @@ const contentProps = computed(() =>
       <button v-bind="api.getTriggerProps()">Characters <span v-bind="api.getIndicatorProps()">▾</span></button>
       <Teleport to="#teleports">
         <div v-if="api.open" v-bind="api.getPositionerProps()">
-          <ul v-bind="contentProps">
-            <li v-if="isInitialLoading" style="padding: 8px 6px; font-size: 13px">
-              <output aria-live="polite">Loading…</output>
-            </li>
-            <li v-if="listApi.error" style="padding: 8px 6px; font-size: 13px">
-              <output>Couldn't load characters</output>
-            </li>
-            <li v-if="!isInitialLoading && listApi.isEmpty && !listApi.error" style="padding: 8px 6px; font-size: 13px">
-              <output>No characters found</output>
-            </li>
-            <li
-              v-for="item in listApi.items"
-              :key="item.name"
-              v-bind="api.getItemProps({ value: item.name, valueText: item.name })"
-            >
-              {{ item.name }}
-            </li>
-            <LoadMore
-              v-if="!isInitialLoading"
-              as="li"
-              :count="listApi.items.length"
-              :has-more="listApi.hasMore"
-              :loading="listApi.isLoading"
-              :load-more="() => listApi.loadMore()"
-            />
-          </ul>
+          <div v-bind="contentProps">
+            <ul v-bind="listProps">
+              <li v-if="isInitialLoading" style="padding: 8px 6px; font-size: 13px">
+                <output aria-live="polite">Loading…</output>
+              </li>
+              <li v-if="listApi.error" style="padding: 8px 6px; font-size: 13px">
+                <output>Couldn't load characters</output>
+              </li>
+              <li
+                v-if="!isInitialLoading && listApi.isEmpty && !listApi.error"
+                style="padding: 8px 6px; font-size: 13px"
+              >
+                <output>No characters found</output>
+              </li>
+              <li
+                v-for="item in listApi.items"
+                :key="item.name"
+                v-bind="api.getItemProps({ value: item.name, valueText: item.name })"
+              >
+                {{ item.name }}
+              </li>
+              <LoadMore
+                v-if="!isInitialLoading"
+                as="li"
+                :count="listApi.items.length"
+                :has-more="listApi.hasMore"
+                :loading="listApi.isLoading"
+                :load-more="() => listApi.loadMore()"
+              />
+            </ul>
+          </div>
         </div>
       </Teleport>
     </div>

@@ -51,40 +51,42 @@ export default function Page() {
         <Show when={api().open}>
           <Portal>
             <div {...api().getPositionerProps()}>
-              <ul
+              <div
                 {...mergeProps(api().getContentProps(), {
                   "aria-label": "Characters",
-                  style: { "max-height": "240px", "overflow-y": "auto", width: "220px" },
+                  style: { width: "220px" },
                 })}
               >
                 <Show when={isInitialLoading()}>
-                  <li style={{ padding: "8px 6px", "font-size": "13px" }}>
+                  <div style={{ padding: "8px 6px", "font-size": "13px" }}>
                     <output aria-live="polite">Loading…</output>
-                  </li>
+                  </div>
                 </Show>
                 <Show when={listApi().error}>
-                  <li style={{ padding: "8px 6px", "font-size": "13px" }}>
+                  <div style={{ padding: "8px 6px", "font-size": "13px" }}>
                     <output>Couldn't load characters</output>
-                  </li>
+                  </div>
                 </Show>
                 <Show when={!isInitialLoading() && listApi().isEmpty && !listApi().error}>
-                  <li style={{ padding: "8px 6px", "font-size": "13px" }}>
+                  <div style={{ padding: "8px 6px", "font-size": "13px" }}>
                     <output>No characters found</output>
-                  </li>
+                  </div>
                 </Show>
-                <For each={listApi().items}>
-                  {(item) => <li {...api().getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>}
-                </For>
-                <Show when={!isInitialLoading()}>
-                  <LoadMore
-                    as="li"
-                    count={listApi().items.length}
-                    hasMore={listApi().hasMore}
-                    loading={listApi().isLoading}
-                    onLoadMore={() => listApi().loadMore()}
-                  />
-                </Show>
-              </ul>
+                <ul {...mergeProps(api().getListProps(), { style: { "max-height": "240px", "overflow-y": "auto" } })}>
+                  <For each={listApi().items}>
+                    {(item) => <li {...api().getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>}
+                  </For>
+                  <Show when={!isInitialLoading()}>
+                    <LoadMore
+                      as="li"
+                      count={listApi().items.length}
+                      hasMore={listApi().hasMore}
+                      loading={listApi().isLoading}
+                      onLoadMore={() => listApi().loadMore()}
+                    />
+                  </Show>
+                </ul>
+              </div>
             </div>
           </Portal>
         </Show>

@@ -40,16 +40,18 @@ function NestedMenu() {
       <Show when={root().open}>
         <Portal>
           <div {...root().getPositionerProps()}>
-            <ul {...root().getContentProps()}>
-              <For each={level1}>
-                {(item) => {
-                  const props = createMemo(() =>
-                    item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
-                  )
-                  return <li {...props()}>{item.label}</li>
-                }}
-              </For>
-            </ul>
+            <div {...root().getContentProps()}>
+              <ul {...root().getListProps()}>
+                <For each={level1}>
+                  {(item) => {
+                    const props = createMemo(() =>
+                      item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
+                    )
+                    return <li {...props()}>{item.label}</li>
+                  }}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>
@@ -57,16 +59,18 @@ function NestedMenu() {
       <Show when={sub().open}>
         <Portal>
           <div {...sub().getPositionerProps()}>
-            <ul {...sub().getContentProps()}>
-              <For each={level2}>
-                {(item) => {
-                  const props = createMemo(() =>
-                    item.trigger ? triggerItem2Props() : sub().getItemProps({ value: item.value }),
-                  )
-                  return <li {...props()}>{item.label}</li>
-                }}
-              </For>
-            </ul>
+            <div {...sub().getContentProps()}>
+              <ul {...sub().getListProps()}>
+                <For each={level2}>
+                  {(item) => {
+                    const props = createMemo(() =>
+                      item.trigger ? triggerItem2Props() : sub().getItemProps({ value: item.value }),
+                    )
+                    return <li {...props()}>{item.label}</li>
+                  }}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>
@@ -74,9 +78,13 @@ function NestedMenu() {
       <Show when={sub2().open}>
         <Portal>
           <div {...sub2().getPositionerProps()}>
-            <ul {...sub2().getContentProps()}>
-              <For each={level3}>{(item) => <li {...sub2().getItemProps({ value: item.value })}>{item.label}</li>}</For>
-            </ul>
+            <div {...sub2().getContentProps()}>
+              <ul {...sub2().getListProps()}>
+                <For each={level3}>
+                  {(item) => <li {...sub2().getItemProps({ value: item.value })}>{item.label}</li>}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>

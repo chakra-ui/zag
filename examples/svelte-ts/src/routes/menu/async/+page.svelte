@@ -52,40 +52,37 @@
     {#if api.open}
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul
-            {...mergeProps(api.getContentProps(), {
-              "aria-label": "Characters",
-              style: "max-height: 240px; overflow-y: auto; width: 220px",
-            })}
-          >
-            {#if isInitialLoading}
-              <li style="padding: 8px 6px; font-size: 13px">
-                <output aria-live="polite">Loading…</output>
-              </li>
-            {/if}
-            {#if listApi.error}
-              <li style="padding: 8px 6px; font-size: 13px">
-                <output>Couldn't load characters</output>
-              </li>
-            {/if}
-            {#if !isInitialLoading && listApi.isEmpty && !listApi.error}
-              <li style="padding: 8px 6px; font-size: 13px">
-                <output>No characters found</output>
-              </li>
-            {/if}
-            {#each listApi.items as item (item.name)}
-              <li {...api.getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>
-            {/each}
-            {#if !isInitialLoading}
-              <LoadMore
-                as="li"
-                count={listApi.items.length}
-                hasMore={listApi.hasMore}
-                loading={listApi.isLoading}
-                onLoadMore={() => listApi.loadMore()}
-              />
-            {/if}
-          </ul>
+          <div {...mergeProps(api.getContentProps(), { "aria-label": "Characters", style: "width: 220px" })}>
+            <ul {...mergeProps(api.getListProps(), { style: "max-height: 240px; overflow-y: auto" })}>
+              {#if isInitialLoading}
+                <li style="padding: 8px 6px; font-size: 13px">
+                  <output aria-live="polite">Loading…</output>
+                </li>
+              {/if}
+              {#if listApi.error}
+                <li style="padding: 8px 6px; font-size: 13px">
+                  <output>Couldn't load characters</output>
+                </li>
+              {/if}
+              {#if !isInitialLoading && listApi.isEmpty && !listApi.error}
+                <li style="padding: 8px 6px; font-size: 13px">
+                  <output>No characters found</output>
+                </li>
+              {/if}
+              {#each listApi.items as item (item.name)}
+                <li {...api.getItemProps({ value: item.name, valueText: item.name })}>{item.name}</li>
+              {/each}
+              {#if !isInitialLoading}
+                <LoadMore
+                  as="li"
+                  count={listApi.items.length}
+                  hasMore={listApi.hasMore}
+                  loading={listApi.isLoading}
+                  onLoadMore={() => listApi.loadMore()}
+                />
+              {/if}
+            </ul>
+          </div>
         </div>
       </Portal>
     {/if}

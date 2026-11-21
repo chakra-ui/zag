@@ -20,12 +20,14 @@ export default function Page() {
         <div {...api().getContextTriggerProps()}>Right click here</div>
         <Portal>
           <div {...api().getPositionerProps()}>
-            <ul {...api().getContentProps()}>
-              <li {...api().getItemProps({ value: "edit" })}>Edit</li>
-              <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
-              <li {...api().getItemProps({ value: "delete" })}>Delete</li>
-              <li {...api().getItemProps({ value: "export" })}>Export...</li>
-            </ul>
+            <div {...api().getContentProps()}>
+              <ul {...api().getListProps()}>
+                <li {...api().getItemProps({ value: "edit" })}>Edit</li>
+                <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
+                <li {...api().getItemProps({ value: "delete" })}>Delete</li>
+                <li {...api().getItemProps({ value: "export" })}>Export...</li>
+              </ul>
+            </div>
           </div>
         </Portal>
       </main>

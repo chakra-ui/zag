@@ -134,9 +134,11 @@ export default function Page() {
       <Portal>
         <div {...menuApi().getPositionerProps()}>
           <Presence {...menuApi().getContentProps()}>
-            <div {...menuApi().getItemProps({ value: "rename" })}>Rename "{menuApi().triggerValue}"</div>
-            <div {...menuApi().getItemProps({ value: "duplicate" })}>Duplicate</div>
-            <div {...menuApi().getItemProps({ value: "delete" })}>Delete</div>
+            <div {...menuApi().getListProps()}>
+              <div {...menuApi().getItemProps({ value: "rename" })}>Rename "{menuApi().triggerValue}"</div>
+              <div {...menuApi().getItemProps({ value: "duplicate" })}>Duplicate</div>
+              <div {...menuApi().getItemProps({ value: "delete" })}>Delete</div>
+            </div>
           </Presence>
         </div>
       </Portal>

@@ -49,23 +49,25 @@ export default function Page() {
           <Portal>
             <div {...api().getPositionerProps()}>
               <div {...api().getContentProps()}>
-                <For each={radios()}>
-                  {(item) => (
-                    <div {...api().getOptionItemProps(item)}>
-                      <span {...api().getItemIndicatorProps(item)}>✅</span>
-                      <span {...api().getItemTextProps(item)}>{item.label}</span>
-                    </div>
-                  )}
-                </For>
-                <hr {...api().getSeparatorProps()} />
-                <For each={checkboxes()}>
-                  {(item) => (
-                    <div {...api().getOptionItemProps(item)}>
-                      <span {...api().getItemIndicatorProps(item)}>✅</span>
-                      <span {...api().getItemTextProps(item)}>{item.label}</span>
-                    </div>
-                  )}
-                </For>
+                <div {...api().getListProps()}>
+                  <For each={radios()}>
+                    {(item) => (
+                      <div {...api().getOptionItemProps(item)}>
+                        <span {...api().getItemIndicatorProps(item)}>✅</span>
+                        <span {...api().getItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    )}
+                  </For>
+                  <hr {...api().getSeparatorProps()} />
+                  <For each={checkboxes()}>
+                    {(item) => (
+                      <div {...api().getOptionItemProps(item)}>
+                        <span {...api().getItemIndicatorProps(item)}>✅</span>
+                        <span {...api().getItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    )}
+                  </For>
+                </div>
               </div>
             </div>
           </Portal>

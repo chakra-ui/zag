@@ -52,37 +52,41 @@ export function NestedMenu() {
 
       <Portal>
         <div className={styles.Positioner} {...fileMenu.getPositionerProps()}>
-          <ul className={styles.Content} {...fileMenu.getContentProps()}>
-            {data.map((item) => (
-              <li
-                className={styles.Item}
-                key={item.value}
-                {...fileMenu.getItemProps({ value: item.value })}
-              >
-                {item.label}
+          <div className={styles.Content} {...fileMenu.getContentProps()}>
+            <ul {...fileMenu.getListProps()}>
+              {data.map((item) => (
+                <li
+                  className={styles.Item}
+                  key={item.value}
+                  {...fileMenu.getItemProps({ value: item.value })}
+                >
+                  {item.label}
+                </li>
+              ))}
+              <li className={styles.TriggerItem} {...shareMenuTriggerProps}>
+                Share
+                <span {...shareMenu.getIndicatorProps()}>»</span>
               </li>
-            ))}
-            <li className={styles.TriggerItem} {...shareMenuTriggerProps}>
-              Share
-              <span {...shareMenu.getIndicatorProps()}>»</span>
-            </li>
-          </ul>
+            </ul>
+          </div>
         </div>
       </Portal>
 
       <Portal>
         <div className={styles.Positioner} {...shareMenu.getPositionerProps()}>
-          <ul className={styles.Content} {...shareMenu.getContentProps()}>
-            {shareMenuData.map((item) => (
-              <li
-                className={styles.Item}
-                key={item.value}
-                {...shareMenu.getItemProps({ value: item.value })}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
+          <div className={styles.Content} {...shareMenu.getContentProps()}>
+            <ul {...shareMenu.getListProps()}>
+              {shareMenuData.map((item) => (
+                <li
+                  className={styles.Item}
+                  key={item.value}
+                  {...shareMenu.getItemProps({ value: item.value })}
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Portal>
     </div>

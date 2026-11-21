@@ -38,23 +38,33 @@
 
   <Teleport to="body">
     <div v-bind="fileMenu.getPositionerProps()">
-      <ul ref="fileMenuRef" v-bind="fileMenu.getContentProps()">
-        <li v-bind="fileMenu.getItemProps({ value: 'new-tab' })">New tab</li>
-        <li v-bind="fileMenu.getItemProps({ value: 'new-win' })">New window</li>
-        <li v-bind="shareMenuTriggerProps">Share</li>
-        <li v-bind="fileMenu.getItemProps({ value: 'print' })">Print...</li>
-        <li v-bind="fileMenu.getItemProps({ value: 'help' })">Help</li>
-      </ul>
+      <div ref="fileMenuRef" v-bind="fileMenu.getContentProps()">
+        <ul v-bind="fileMenu.getListProps()">
+          <li v-bind="fileMenu.getItemProps({ value: 'new-tab' })">New tab</li>
+          <li v-bind="fileMenu.getItemProps({ value: 'new-win' })">
+            New window
+          </li>
+          <li v-bind="shareMenuTriggerProps">Share</li>
+          <li v-bind="fileMenu.getItemProps({ value: 'print' })">Print...</li>
+          <li v-bind="fileMenu.getItemProps({ value: 'help' })">Help</li>
+        </ul>
+      </div>
     </div>
   </Teleport>
 
   <Teleport to="body">
     <div v-bind="shareMenu.getPositionerProps()">
-      <ul ref="shareMenuRef" v-bind="shareMenu.getContentProps()">
-        <li v-bind="shareMenu.getItemProps({ value: 'messages' })">Messages</li>
-        <li v-bind="shareMenu.getItemProps({ value: 'airdrop' })">Airdrop</li>
-        <li v-bind="shareMenu.getItemProps({ value: 'whatsapp' })">WhatsApp</li>
-      </ul>
+      <div ref="shareMenuRef" v-bind="shareMenu.getContentProps()">
+        <ul v-bind="shareMenu.getListProps()">
+          <li v-bind="shareMenu.getItemProps({ value: 'messages' })">
+            Messages
+          </li>
+          <li v-bind="shareMenu.getItemProps({ value: 'airdrop' })">Airdrop</li>
+          <li v-bind="shareMenu.getItemProps({ value: 'whatsapp' })">
+            WhatsApp
+          </li>
+        </ul>
+      </div>
     </div>
   </Teleport>
 </template>

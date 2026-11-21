@@ -35,12 +35,14 @@
   {#if root.open}
     <Portal>
       <div {...root.getPositionerProps()}>
-        <ul {...root.getContentProps()}>
-          {#each level1 as item (item.value)}
-            {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
-            <li {...props}>{item.label}</li>
-          {/each}
-        </ul>
+        <div {...root.getContentProps()}>
+          <ul {...root.getListProps()}>
+            {#each level1 as item (item.value)}
+              {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
+              <li {...props}>{item.label}</li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
   {/if}
@@ -48,12 +50,14 @@
   {#if sub.open}
     <Portal>
       <div {...sub.getPositionerProps()}>
-        <ul {...sub.getContentProps()}>
-          {#each level2 as item (item.value)}
-            {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
-            <li {...props}>{item.label}</li>
-          {/each}
-        </ul>
+        <div {...sub.getContentProps()}>
+          <ul {...sub.getListProps()}>
+            {#each level2 as item (item.value)}
+              {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
+              <li {...props}>{item.label}</li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
   {/if}
@@ -61,11 +65,13 @@
   {#if sub2.open}
     <Portal>
       <div {...sub2.getPositionerProps()}>
-        <ul {...sub2.getContentProps()}>
-          {#each level3 as item (item.value)}
-            <li {...sub2.getItemProps({ value: item.value })}>{item.label}</li>
-          {/each}
-        </ul>
+        <div {...sub2.getContentProps()}>
+          <ul {...sub2.getListProps()}>
+            {#each level3 as item (item.value)}
+              <li {...sub2.getItemProps({ value: item.value })}>{item.label}</li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
   {/if}

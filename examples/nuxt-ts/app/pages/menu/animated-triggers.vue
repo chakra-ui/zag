@@ -32,12 +32,14 @@ const api = computed(() => menu.connect(service, normalizeProps))
         </Presence>
         <Presence v-bind="api.getViewportProps()">
           <Presence v-for="item in menus" :key="item.value" v-bind="api.getContentProps({ value: item.value })">
-            <div
-              v-for="label in item.items"
-              :key="label"
-              v-bind="api.getItemProps({ value: `${item.value}:${label}` })"
-            >
-              {{ label }}
+            <div v-bind="api.getListProps({ value: item.value })">
+              <div
+                v-for="label in item.items"
+                :key="label"
+                v-bind="api.getItemProps({ value: `${item.value}:${label}` })"
+              >
+                {{ label }}
+              </div>
             </div>
           </Presence>
         </Presence>

@@ -30,6 +30,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
   height: 32px;
   padding: 0 8px;
   border-radius: var(--z-radius-sm);
@@ -80,6 +81,9 @@
 [data-menu-list] {
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
 [data-menu-empty] {

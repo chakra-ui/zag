@@ -251,6 +251,9 @@ export const machine = createMachine<MenuSchema>({
     "CHILD.SET": {
       actions: ["setChildMenu"],
     },
+    "CHILD.REMOVE": {
+      actions: ["removeChildMenu"],
+    },
     OPEN_AUTOFOCUS: [
       {
         guard: "isOpenControlled",
@@ -522,6 +525,7 @@ export const machine = createMachine<MenuSchema>({
         "dispatchMenubarOpen",
         "highlightFirstIfAlways",
         "warnIfFilterInputNotDialog",
+        "warnIfListMissing",
       ],
       exit: ["cancelFocusMenu", "cancelHighlightFrames"],
       on: {
@@ -728,10 +732,10 @@ export const machine = createMachine<MenuSchema>({
       trackItemsChange({ scope, send, context }) {
         let observer: MutationObserver | undefined
         const frame = raf(() => {
-          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
-          if (!contentEl || !dom.getInputEl(scope)) return
+          const listEl = dom.getListEl(scope, dom.getContentEl(scope, context.get("triggerValue")))
+          if (!listEl || !dom.getInputEl(scope)) return
           observer = new (scope.getWin().MutationObserver)(() => send({ type: "ITEMS.CHANGE" }))
-          observer.observe(contentEl, { childList: true, subtree: true })
+          observer.observe(listEl, { childList: true, subtree: true })
         })
         return () => {
           frame()
@@ -921,9 +925,8 @@ export const machine = createMachine<MenuSchema>({
           }
 
           const itemEl = scope.getById(computed("highlightedId")!)
-          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
-
-          scrollToNearest(itemEl, { rootEl: contentEl })
+          const listEl = dom.getListEl(scope, dom.getContentEl(scope, context.get("triggerValue")))
+          scrollToNearest(itemEl, { rootEl: listEl })
         }
         const rafCleanup = raf(() => {
           setInteractionModality("virtual")
@@ -931,15 +934,16 @@ export const machine = createMachine<MenuSchema>({
         })
 
         const contentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
-        const observerCleanup = observeAttributes(contentEl, {
-          defer: true,
-          attributes: ["aria-activedescendant"],
-          callback: exec,
-        })
+        const options = { defer: true, attributes: ["aria-activedescendant"], callback: exec }
+        // A filter input holds the active descendant in dialog mode
+        const cleanups = [
+          observeAttributes(contentEl, options),
+          observeAttributes(() => dom.getInputEl(scope), options),
+        ]
 
         return () => {
           rafCleanup()
-          observerCleanup()
+          cleanups.forEach((cleanup) => cleanup())
         }
       },
     },
@@ -1134,6 +1138,14 @@ export const machine = createMachine<MenuSchema>({
           console.warn("[@zag-js/menu] A menu with a filter input needs `popupType` set to `dialog`.")
         })
       },
+      warnIfListMissing({ scope, context }) {
+        if (process.env.NODE_ENV === "production") return
+        raf(() => {
+          const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+          if (!contentEl || dom.getListEl(scope, contentEl)) return
+          console.warn("[@zag-js/menu] Render the items inside `getListProps()`; the list holds and scrolls them.")
+        })
+      },
       // A submenu removed while it held focus (its trigger was filtered out) hands focus back to its parent.
       // Some frameworks blur the focused element as they remove it, so check where focus ended up.
       focusParentIfOrphaned({ refs, scope }) {
@@ -1218,12 +1230,16 @@ export const machine = createMachine<MenuSchema>({
         const target = event.target
         refs.get("focusMenuFrame").request(() => {
           const contentEl = dom.getContentEl(scope, context.get("triggerValue"))
+          const children = refs.get("children")
+          const activeEl = scope.getActiveElement()
+          // Submenus that aren't portalled sit inside this content
+          const ownsFocus = contains(contentEl, activeEl) && !dom.isTargetWithinMenuTree(activeEl, children)
           const initialFocusEl = getInitialFocus({
             root: contentEl,
             getInitialEl: prop("initialFocusEl"),
-            enabled: !contains(contentEl, scope.getActiveElement()),
+            enabled: !ownsFocus,
             filter(node) {
-              return !node.role?.startsWith("menuitem")
+              return !node.role?.startsWith("menuitem") && !dom.isTargetWithinMenuTree(node, children)
             },
           })
           if (!initialFocusEl) return
@@ -1235,7 +1251,7 @@ export const machine = createMachine<MenuSchema>({
               contentEl?.focus({ preventScroll: true })
               return
             }
-            if (source === "pointer" && dom.isFocusHeldBySubmenuOf(target, refs.get("children"))) return
+            if (source === "pointer" && dom.isFocusHeldBySubmenuOf(target, children)) return
           }
           initialFocusEl.focus({ preventScroll: true })
         })
@@ -1364,6 +1380,12 @@ export const machine = createMachine<MenuSchema>({
       setChildMenu({ refs, event }) {
         const children = refs.get("children")
         children[event.id] = event.value
+        refs.set("children", children)
+      },
+      removeChildMenu({ refs, event }) {
+        const children = refs.get("children")
+        if (children[event.id] !== event.value) return
+        delete children[event.id]
         refs.set("children", children)
       },
       closeSiblingMenus({ refs, event, scope, context }) {

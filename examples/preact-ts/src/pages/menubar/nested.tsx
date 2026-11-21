@@ -28,13 +28,15 @@ function SimpleMenu(props: SimpleMenuProps) {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul data-testid={`${props.id}:content`} {...api.getContentProps()}>
-              {props.items.map((item) => (
-                <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
-                  {item.label}
-                </li>
-              ))}
-            </ul>
+            <div data-testid={`${props.id}:content`} {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                {props.items.map((item) => (
+                  <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}
@@ -64,34 +66,38 @@ function EditMenu() {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul data-testid="edit:content" {...api.getContentProps()}>
-              <li data-testid="undo" {...api.getItemProps({ value: "undo" })}>
-                Undo
-              </li>
-              <li data-testid="redo" {...api.getItemProps({ value: "redo" })}>
-                Redo
-              </li>
-              <li data-testid="find:trigger" {...api.getTriggerItemProps(sub)}>
-                Find ▸
-              </li>
-            </ul>
+            <div data-testid="edit:content" {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                <li data-testid="undo" {...api.getItemProps({ value: "undo" })}>
+                  Undo
+                </li>
+                <li data-testid="redo" {...api.getItemProps({ value: "redo" })}>
+                  Redo
+                </li>
+                <li data-testid="find:trigger" {...api.getTriggerItemProps(sub)}>
+                  Find ▸
+                </li>
+              </ul>
+            </div>
           </div>
         </Portal>
       )}
       {sub.open && (
         <Portal>
           <div {...sub.getPositionerProps()}>
-            <ul data-testid="find:content" {...sub.getContentProps()}>
-              <li data-testid="find-text" {...sub.getItemProps({ value: "find-text" })}>
-                Find...
-              </li>
-              <li data-testid="replace" {...sub.getItemProps({ value: "replace" })}>
-                Replace...
-              </li>
-              <li data-testid="find-in-files" {...sub.getItemProps({ value: "find-in-files" })}>
-                Find in Files...
-              </li>
-            </ul>
+            <div data-testid="find:content" {...sub.getContentProps()}>
+              <ul {...sub.getListProps()}>
+                <li data-testid="find-text" {...sub.getItemProps({ value: "find-text" })}>
+                  Find...
+                </li>
+                <li data-testid="replace" {...sub.getItemProps({ value: "replace" })}>
+                  Replace...
+                </li>
+                <li data-testid="find-in-files" {...sub.getItemProps({ value: "find-in-files" })}>
+                  Find in Files...
+                </li>
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

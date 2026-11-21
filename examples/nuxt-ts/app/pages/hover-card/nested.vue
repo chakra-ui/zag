@@ -38,10 +38,12 @@ const actions = computed(() => menu.connect(menuService, normalizeProps))
 
     <Teleport v-if="actions.open" to="#teleports">
       <div v-bind="actions.getPositionerProps()">
-        <ul data-testid="menu-content" v-bind="actions.getContentProps()">
-          <li v-bind="actions.getItemProps({ value: 'follow' })">Follow</li>
-          <li v-bind="actions.getItemProps({ value: 'share' })">Share</li>
-        </ul>
+        <div data-testid="menu-content" v-bind="actions.getContentProps()">
+          <ul v-bind="actions.getListProps()">
+            <li v-bind="actions.getItemProps({ value: 'follow' })">Follow</li>
+            <li v-bind="actions.getItemProps({ value: 'share' })">Share</li>
+          </ul>
+        </div>
       </div>
     </Teleport>
   </main>

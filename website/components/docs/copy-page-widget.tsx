@@ -104,23 +104,25 @@ const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
       <Portal>
         <div className={styles.positioner} {...api.getPositionerProps()}>
           <div className={styles.content} {...api.getContentProps()}>
-            {menuItems.map((item) => {
-              const IconComponent = item.icon
-              return (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...api.getItemProps({ value: item.label })}
-                  className={styles.item}
-                >
-                  <IconComponent />
-                  <span>{item.label}</span>
-                  <HiExternalLink className={styles.external} aria-hidden />
-                </a>
-              )
-            })}
+            <div {...api.getListProps()}>
+              {menuItems.map((item) => {
+                const IconComponent = item.icon
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    {...api.getItemProps({ value: item.label })}
+                    className={styles.item}
+                  >
+                    <IconComponent />
+                    <span>{item.label}</span>
+                    <HiExternalLink className={styles.external} aria-hidden />
+                  </a>
+                )
+              })}
+            </div>
           </div>
         </div>
       </Portal>

@@ -58,24 +58,26 @@ export function AsyncMenu() {
       <button {...api().getTriggerProps()}>Characters</button>
       <Show when={api().open}>
         <div {...api().getPositionerProps()}>
-          <ul
-            {...api().getContentProps()}
-            style={{ "max-height": "240px", "overflow-y": "auto" }}
-          >
-            <For each={listApi().items}>
-              {(item) => (
-                <li {...api().getItemProps({ value: item.name })}>
-                  {item.name}
-                </li>
-              )}
-            </For>
-            <LoadMore
-              count={listApi().items.length}
-              hasMore={listApi().hasMore}
-              loading={listApi().isLoading}
-              onLoadMore={() => listApi().loadMore()}
-            />
-          </ul>
+          <div {...api().getContentProps()}>
+            <ul
+              {...api().getListProps()}
+              style={{ "max-height": "240px", "overflow-y": "auto" }}
+            >
+              <For each={listApi().items}>
+                {(item) => (
+                  <li {...api().getItemProps({ value: item.name })}>
+                    {item.name}
+                  </li>
+                )}
+              </For>
+              <LoadMore
+                count={listApi().items.length}
+                hasMore={listApi().hasMore}
+                loading={listApi().isLoading}
+                onLoadMore={() => listApi().loadMore()}
+              />
+            </ul>
+          </div>
         </div>
       </Show>
     </div>

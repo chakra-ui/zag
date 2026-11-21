@@ -477,6 +477,13 @@ export interface ViewportSize {
   height: number
 }
 
+export interface ListProps {
+  /**
+   * The trigger value of the content this list sits in. Match the content's `value` inside the viewport.
+   */
+  value?: string | undefined
+}
+
 export interface ContentProps {
   /**
    * The trigger value this content belongs to. Use one content per trigger inside the viewport.
@@ -604,6 +611,10 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   setChild: (child: MenuService) => void
   /**
+   * Function to unregister a child menu, e.g. when the submenu unmounts
+   */
+  removeChild: (child: MenuService) => void
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
@@ -647,7 +658,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   getViewportProps: () => T["element"]
   getSeparatorProps: () => T["element"]
   getInputProps: () => T["input"]
-  getListProps: () => T["element"]
+  getListProps: (props?: ListProps) => T["element"]
   getEmptyProps: () => T["element"]
   getItemProps: (options: ItemProps) => T["element"]
   getOptionItemProps: (option: OptionItemProps) => T["element"]

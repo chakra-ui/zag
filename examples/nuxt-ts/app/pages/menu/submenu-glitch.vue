@@ -38,44 +38,52 @@ const cssTriggerProps = computed(() => root.value.getTriggerItemProps(css.value)
 
       <Teleport to="#teleports">
         <div v-bind="root.getPositionerProps()">
-          <ul data-testid="menu" v-bind="root.getContentProps()">
-            <li v-bind="root.getItemProps({ value: 'new-file' })">New File</li>
-            <li data-testid="js-trigger" v-bind="jsTriggerProps">JS Frameworks →</li>
-            <li data-testid="lorem-trigger" v-bind="loremTriggerProps">Lorem Ipsum →</li>
-            <li data-testid="css-trigger" v-bind="cssTriggerProps">CSS Frameworks →</li>
-            <li v-bind="root.getItemProps({ value: 'settings' })">Settings</li>
-          </ul>
+          <div data-testid="menu" v-bind="root.getContentProps()">
+            <ul v-bind="root.getListProps()">
+              <li v-bind="root.getItemProps({ value: 'new-file' })">New File</li>
+              <li data-testid="js-trigger" v-bind="jsTriggerProps">JS Frameworks →</li>
+              <li data-testid="lorem-trigger" v-bind="loremTriggerProps">Lorem Ipsum →</li>
+              <li data-testid="css-trigger" v-bind="cssTriggerProps">CSS Frameworks →</li>
+              <li v-bind="root.getItemProps({ value: 'settings' })">Settings</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="js.getPositionerProps()">
-          <ul data-testid="js-submenu" v-bind="js.getContentProps()">
-            <li v-bind="js.getItemProps({ value: 'react' })">React</li>
-            <li v-bind="js.getItemProps({ value: 'solid' })">Solid</li>
-            <li v-bind="js.getItemProps({ value: 'vue' })">Vue</li>
-            <li v-bind="js.getItemProps({ value: 'svelte' })">Svelte</li>
-          </ul>
+          <div data-testid="js-submenu" v-bind="js.getContentProps()">
+            <ul v-bind="js.getListProps()">
+              <li v-bind="js.getItemProps({ value: 'react' })">React</li>
+              <li v-bind="js.getItemProps({ value: 'solid' })">Solid</li>
+              <li v-bind="js.getItemProps({ value: 'vue' })">Vue</li>
+              <li v-bind="js.getItemProps({ value: 'svelte' })">Svelte</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="lorem.getPositionerProps()">
-          <ul data-testid="lorem-submenu" v-bind="lorem.getContentProps()">
-            <li v-bind="lorem.getItemProps({ value: 'dolor' })">Dolor</li>
-            <li v-bind="lorem.getItemProps({ value: 'sit' })">Sit</li>
-            <li v-bind="lorem.getItemProps({ value: 'amet' })">Amet</li>
-          </ul>
+          <div data-testid="lorem-submenu" v-bind="lorem.getContentProps()">
+            <ul v-bind="lorem.getListProps()">
+              <li v-bind="lorem.getItemProps({ value: 'dolor' })">Dolor</li>
+              <li v-bind="lorem.getItemProps({ value: 'sit' })">Sit</li>
+              <li v-bind="lorem.getItemProps({ value: 'amet' })">Amet</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="css.getPositionerProps()">
-          <ul data-testid="css-submenu" v-bind="css.getContentProps()">
-            <li v-bind="css.getItemProps({ value: 'panda' })">Panda</li>
-            <li v-bind="css.getItemProps({ value: 'tailwind' })">Tailwind</li>
-            <li v-bind="css.getItemProps({ value: 'css-modules' })">CSS Modules</li>
-          </ul>
+          <div data-testid="css-submenu" v-bind="css.getContentProps()">
+            <ul v-bind="css.getListProps()">
+              <li v-bind="css.getItemProps({ value: 'panda' })">Panda</li>
+              <li v-bind="css.getItemProps({ value: 'tailwind' })">Tailwind</li>
+              <li v-bind="css.getItemProps({ value: 'css-modules' })">CSS Modules</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
     </div>

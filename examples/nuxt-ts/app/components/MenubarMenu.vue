@@ -28,16 +28,18 @@ const api = computed(() => menu.connect(service, normalizeProps))
   <button :data-testid="`${props.id}:trigger`" v-bind="api.getTriggerProps()">{{ props.label }}</button>
   <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
-      <ul :data-testid="`${props.id}:content`" v-bind="api.getContentProps()">
-        <li
-          v-for="item in props.items"
-          :key="item.value"
-          :data-testid="item.value"
-          v-bind="api.getItemProps({ value: item.value })"
-        >
-          {{ item.label }}
-        </li>
-      </ul>
+      <div :data-testid="`${props.id}:content`" v-bind="api.getContentProps()">
+        <ul v-bind="api.getListProps()">
+          <li
+            v-for="item in props.items"
+            :key="item.value"
+            :data-testid="item.value"
+            v-bind="api.getItemProps({ value: item.value })"
+          >
+            {{ item.label }}
+          </li>
+        </ul>
+      </div>
     </div>
   </Teleport>
 </template>

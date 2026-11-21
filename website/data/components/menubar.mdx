@@ -60,13 +60,15 @@ function Menu(props: { id: string; label: string; items: string[] }) {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul {...api.getContentProps()}>
-              {props.items.map((item) => (
-                <li key={item} {...api.getItemProps({ value: item })}>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                {props.items.map((item) => (
+                  <li key={item} {...api.getItemProps({ value: item })}>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

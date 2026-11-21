@@ -44,16 +44,18 @@ function NestedMenu() {
       {root.open && (
         <Portal>
           <div {...root.getPositionerProps()}>
-            <ul {...root.getContentProps()}>
-              {level1.map((item) => {
-                const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
-                return (
-                  <li key={item.value} {...props}>
-                    {item.label}
-                  </li>
-                )
-              })}
-            </ul>
+            <div {...root.getContentProps()}>
+              <ul {...root.getListProps()}>
+                {level1.map((item) => {
+                  const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
+                  return (
+                    <li key={item.value} {...props}>
+                      {item.label}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}
@@ -61,16 +63,18 @@ function NestedMenu() {
       {sub.open && (
         <Portal>
           <div {...sub.getPositionerProps()}>
-            <ul {...sub.getContentProps()}>
-              {level2.map((item) => {
-                const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
-                return (
-                  <li key={item.value} {...props}>
-                    {item.label}
-                  </li>
-                )
-              })}
-            </ul>
+            <div {...sub.getContentProps()}>
+              <ul {...sub.getListProps()}>
+                {level2.map((item) => {
+                  const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
+                  return (
+                    <li key={item.value} {...props}>
+                      {item.label}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}
@@ -78,13 +82,15 @@ function NestedMenu() {
       {sub2.open && (
         <Portal>
           <div {...sub2.getPositionerProps()}>
-            <ul {...sub2.getContentProps()}>
-              {level3.map((item) => (
-                <li key={item.value} {...sub2.getItemProps({ value: item.value })}>
-                  {item.label}
-                </li>
-              ))}
-            </ul>
+            <div {...sub2.getContentProps()}>
+              <ul {...sub2.getListProps()}>
+                {level3.map((item) => (
+                  <li key={item.value} {...sub2.getItemProps({ value: item.value })}>
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

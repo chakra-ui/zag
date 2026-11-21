@@ -26,13 +26,15 @@
     {#if api.open}
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul {...mergeProps(api.getContentProps(), { style: { maxHeight: "200px", overflowY: "auto" } })}>
-            {#each items as item (item.value)}
-              <li {...api.getItemProps({ value: item.value })}>
-                {item.label}
-              </li>
-            {/each}
-          </ul>
+          <div {...api.getContentProps()}>
+            <ul {...mergeProps(api.getListProps(), { style: { maxHeight: "200px", overflowY: "auto" } })}>
+              {#each items as item (item.value)}
+                <li {...api.getItemProps({ value: item.value })}>
+                  {item.label}
+                </li>
+              {/each}
+            </ul>
+          </div>
         </div>
       </Portal>
     {/if}

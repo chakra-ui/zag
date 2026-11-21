@@ -81,27 +81,31 @@ const getRootItemProps = (item: (typeof rootItems)[number]) => {
 
     <Teleport v-if="root.open" to="#teleports">
       <div v-bind="root.getPositionerProps()">
-        <ul data-testid="root-menu" v-bind="root.getContentProps()">
-          <li v-for="item in rootItems" :key="item.value" :data-testid="item.value" v-bind="getRootItemProps(item)">
-            {{ item.label }}
-          </li>
-        </ul>
+        <div data-testid="root-menu" v-bind="root.getContentProps()">
+          <ul v-bind="root.getListProps()">
+            <li v-for="item in rootItems" :key="item.value" :data-testid="item.value" v-bind="getRootItemProps(item)">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
       </div>
     </Teleport>
 
     <template v-for="{ value, api } in submenus" :key="value">
       <Teleport v-if="api.open" to="#teleports">
         <div v-bind="api.getPositionerProps()">
-          <ul :data-testid="`submenu-${value}`" v-bind="api.getContentProps()">
-            <li
-              v-for="item in submenuItems[value] ?? []"
-              :key="item.value"
-              :data-testid="item.value"
-              v-bind="api.getItemProps({ value: item.value })"
-            >
-              {{ item.label }}
-            </li>
-          </ul>
+          <div :data-testid="`submenu-${value}`" v-bind="api.getContentProps()">
+            <ul v-bind="api.getListProps()">
+              <li
+                v-for="item in submenuItems[value] ?? []"
+                :key="item.value"
+                :data-testid="item.value"
+                v-bind="api.getItemProps({ value: item.value })"
+              >
+                {{ item.label }}
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
     </template>

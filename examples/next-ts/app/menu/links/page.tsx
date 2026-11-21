@@ -18,25 +18,27 @@ export default function Page() {
       </button>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
-          <a {...api.getItemProps({ value: "edit" })} href="https://google.com">
-            Google
-          </a>
-          <a {...api.getItemProps({ value: "duplicate" })} href="https://bing.com">
-            Bing
-          </a>
-          <a {...api.getItemProps({ value: "delete" })} href="https://github.com" target="_blank">
-            GitHub
-          </a>
-          <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">
-            YouTube
-          </a>
-          <a {...api.getItemProps({ value: "section" })} href="#section">
-            Section
-          </a>
-          {/* oxlint-disable-next-line next/no-html-link-for-pages -- tests native link navigation */}
-          <a {...api.getItemProps({ value: "basic" })} href="/menu/basic">
-            Basic menu
-          </a>
+          <div {...api.getListProps()}>
+            <a {...api.getItemProps({ value: "edit" })} href="https://google.com">
+              Google
+            </a>
+            <a {...api.getItemProps({ value: "duplicate" })} href="https://bing.com">
+              Bing
+            </a>
+            <a {...api.getItemProps({ value: "delete" })} href="https://github.com" target="_blank">
+              GitHub
+            </a>
+            <a {...api.getItemProps({ value: "export" })} href="https://youtube.com" target="_blank">
+              YouTube
+            </a>
+            <a {...api.getItemProps({ value: "section" })} href="#section">
+              Section
+            </a>
+            {/* oxlint-disable-next-line next/no-html-link-for-pages -- tests native link navigation */}
+            <a {...api.getItemProps({ value: "basic" })} href="/menu/basic">
+              Basic menu
+            </a>
+          </div>
         </div>
       </div>
       <output data-testid="selected">{selected}</output>

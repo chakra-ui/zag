@@ -77,48 +77,50 @@ export function MenuAsync() {
       {api.open && (
         <Portal>
           <div className={styles.Positioner} {...api.getPositionerProps()}>
-            <ul
+            <div
               className={`${styles.Content} ${styles.ScrollableContent}`}
               {...mergeProps(api.getContentProps(), {
                 "aria-label": "Characters",
               })}
             >
               {isInitialLoading && (
-                <li className={styles.Status}>
+                <div className={styles.Status}>
                   <output aria-live="polite">Loading…</output>
-                </li>
+                </div>
               )}
               {listApi.error && (
-                <li className={styles.Status}>
+                <div className={styles.Status}>
                   <output>Couldn&apos;t load characters</output>
-                </li>
+                </div>
               )}
               {!isInitialLoading && listApi.isEmpty && !listApi.error && (
-                <li className={styles.Status}>
+                <div className={styles.Status}>
                   <output>No characters found</output>
-                </li>
+                </div>
               )}
-              {listApi.items.map((item) => (
-                <li
-                  className={styles.Item}
-                  key={item.name}
-                  {...api.getItemProps({
-                    value: item.name,
-                    valueText: item.name,
-                  })}
-                >
-                  {item.name}
-                </li>
-              ))}
-              {!isInitialLoading && (
-                <LoadMore
-                  count={listApi.items.length}
-                  hasMore={listApi.hasMore}
-                  loading={listApi.isLoading}
-                  onLoadMore={() => listApi.loadMore()}
-                />
-              )}
-            </ul>
+              <ul className={styles.ScrollableList} {...api.getListProps()}>
+                {listApi.items.map((item) => (
+                  <li
+                    className={styles.Item}
+                    key={item.name}
+                    {...api.getItemProps({
+                      value: item.name,
+                      valueText: item.name,
+                    })}
+                  >
+                    {item.name}
+                  </li>
+                ))}
+                {!isInitialLoading && (
+                  <LoadMore
+                    count={listApi.items.length}
+                    hasMore={listApi.hasMore}
+                    loading={listApi.isLoading}
+                    onLoadMore={() => listApi.loadMore()}
+                  />
+                )}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

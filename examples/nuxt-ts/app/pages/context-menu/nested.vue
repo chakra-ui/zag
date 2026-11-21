@@ -24,25 +24,29 @@ const triggerItemProps = computed(() => root.value.getTriggerItemProps(sub.value
     </div>
     <Teleport to="#teleports">
       <div v-bind="root.getPositionerProps()">
-        <ul v-bind="root.getContentProps()">
-          <li v-bind="root.getItemProps({ value: 'edit' })">Edit</li>
-          <li v-bind="root.getItemProps({ value: 'delete' })">Delete</li>
-          <li v-bind="root.getItemProps({ value: 'export' })">Export</li>
-          <li v-bind="triggerItemProps">
-            <div>Appearance ➡️</div>
-          </li>
-          <li v-bind="root.getItemProps({ value: 'duplicate' })">Duplicate</li>
-        </ul>
+        <div v-bind="root.getContentProps()">
+          <ul v-bind="root.getListProps()">
+            <li v-bind="root.getItemProps({ value: 'edit' })">Edit</li>
+            <li v-bind="root.getItemProps({ value: 'delete' })">Delete</li>
+            <li v-bind="root.getItemProps({ value: 'export' })">Export</li>
+            <li v-bind="triggerItemProps">
+              <div>Appearance ➡️</div>
+            </li>
+            <li v-bind="root.getItemProps({ value: 'duplicate' })">Duplicate</li>
+          </ul>
+        </div>
       </div>
     </Teleport>
 
     <Teleport to="#teleports">
       <div v-bind="sub.getPositionerProps()">
-        <ul v-bind="sub.getContentProps()">
-          <li v-bind="sub.getItemProps({ value: 'full-screen' })">Full screen</li>
-          <li v-bind="sub.getItemProps({ value: 'zoom-in' })">Zoom in</li>
-          <li v-bind="sub.getItemProps({ value: 'zoom-out' })">Zoom out</li>
-        </ul>
+        <div v-bind="sub.getContentProps()">
+          <ul v-bind="sub.getListProps()">
+            <li v-bind="sub.getItemProps({ value: 'full-screen' })">Full screen</li>
+            <li v-bind="sub.getItemProps({ value: 'zoom-in' })">Zoom in</li>
+            <li v-bind="sub.getItemProps({ value: 'zoom-out' })">Zoom out</li>
+          </ul>
+        </div>
       </div>
     </Teleport>
   </main>

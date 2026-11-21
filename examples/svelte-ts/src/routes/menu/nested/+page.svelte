@@ -40,39 +40,45 @@
 
     <Portal>
       <div {...root.getPositionerProps()}>
-        <ul data-testid="menu" {...root.getContentProps()}>
-          {#each level1 as item (item.value)}
-            {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
-            <li data-testid={item.value} {...props}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
+        <div data-testid="menu" {...root.getContentProps()}>
+          <ul {...root.getListProps()}>
+            {#each level1 as item (item.value)}
+              {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
+              <li data-testid={item.value} {...props}>
+                {item.label}
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
 
     <Portal>
       <div {...sub.getPositionerProps()}>
-        <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
-          {#each level2 as item (item.value)}
-            {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
-            <li data-testid={item.value} {...props}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
+        <div data-testid="more-tools-submenu" {...sub.getContentProps()}>
+          <ul {...sub.getListProps()}>
+            {#each level2 as item (item.value)}
+              {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
+              <li data-testid={item.value} {...props}>
+                {item.label}
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
 
     <Portal>
       <div {...sub2.getPositionerProps()}>
-        <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
-          {#each level3 as item (item.value)}
-            <li data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
+        <div data-testid="open-nested-submenu" {...sub2.getContentProps()}>
+          <ul {...sub2.getListProps()}>
+            {#each level3 as item (item.value)}
+              <li data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
+                {item.label}
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
   </div>

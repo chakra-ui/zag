@@ -70,13 +70,15 @@ interface MenuItemsProps {
 
 function MenuItems({ api, items }: MenuItemsProps) {
   return (
-    <ul {...api.getContentProps()}>
-      {items.map((item) => (
-        <li key={item.value} {...api.getItemProps(item)}>
-          {item.value}
-        </li>
-      ))}
-    </ul>
+    <div {...api.getContentProps()}>
+      <ul {...api.getListProps()}>
+        {items.map((item) => (
+          <li key={item.value} {...api.getItemProps(item)}>
+            {item.value}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 ```

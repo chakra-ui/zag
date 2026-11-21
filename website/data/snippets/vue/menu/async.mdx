@@ -69,24 +69,26 @@
   <div>
     <button v-bind="api.getTriggerProps()">Characters</button>
     <div v-if="api.open" v-bind="api.getPositionerProps()">
-      <ul
-        v-bind="api.getContentProps()"
-        style="max-height: 240px; overflow-y: auto"
-      >
-        <li
-          v-for="item in listApi.items"
-          :key="item.name"
-          v-bind="api.getItemProps({ value: item.name })"
+      <div v-bind="api.getContentProps()">
+        <ul
+          v-bind="api.getListProps()"
+          style="max-height: 240px; overflow-y: auto"
         >
-          {{ item.name }}
-        </li>
-        <LoadMore
-          :count="listApi.items.length"
-          :has-more="listApi.hasMore"
-          :loading="listApi.isLoading"
-          :load-more="() => listApi.loadMore()"
-        />
-      </ul>
+          <li
+            v-for="item in listApi.items"
+            :key="item.name"
+            v-bind="api.getItemProps({ value: item.name })"
+          >
+            {{ item.name }}
+          </li>
+          <LoadMore
+            :count="listApi.items.length"
+            :has-more="listApi.hasMore"
+            :loading="listApi.isLoading"
+            :load-more="() => listApi.loadMore()"
+          />
+        </ul>
+      </div>
     </div>
   </div>
 </template>

@@ -42,23 +42,25 @@ export function FrameworkSelect(props: { id?: string }) {
         <Portal>
           <div className={styles.positioner} {...api.getPositionerProps()}>
             <div className={styles.content} {...api.getContentProps()}>
-              {Object.entries(frameworks).map(([key, value]) => (
-                <div
-                  key={key}
-                  className={styles.item}
-                  {...api.getOptionItemProps({
-                    type: "radio",
-                    value: key,
-                    checked: key === framework,
-                  })}
-                >
-                  <value.icon aria-hidden />
-                  {value.label}
-                  {key === framework && (
-                    <HiCheck className={styles.check} aria-hidden />
-                  )}
-                </div>
-              ))}
+              <div {...api.getListProps()}>
+                {Object.entries(frameworks).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className={styles.item}
+                    {...api.getOptionItemProps({
+                      type: "radio",
+                      value: key,
+                      checked: key === framework,
+                    })}
+                  >
+                    <value.icon aria-hidden />
+                    {value.label}
+                    {key === framework && (
+                      <HiCheck className={styles.check} aria-hidden />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </Portal>

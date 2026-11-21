@@ -24,15 +24,17 @@ export function Menu(props: MenuProps) {
       <Portal>
         <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
-            {data.map((item) => (
-              <div
-                className={styles.Item}
-                key={item.value}
-                {...api.getItemProps({ value: item.value })}
-              >
-                {item.label}
-              </div>
-            ))}
+            <div {...api.getListProps()}>
+              {data.map((item) => (
+                <div
+                  className={styles.Item}
+                  key={item.value}
+                  {...api.getItemProps({ value: item.value })}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Portal>

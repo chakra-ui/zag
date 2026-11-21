@@ -19,17 +19,19 @@ export function ContextMenu(props: ContextMenuProps) {
         <div>Open context menu</div>
       </div>
       <div className={styles.Positioner} {...api.getPositionerProps()}>
-        <ul className={styles.Content} {...api.getContentProps()}>
-          {data.map((item) => (
-            <li
-              className={styles.Item}
-              key={item.value}
-              {...api.getItemProps({ value: item.value })}
-            >
-              {item.label}
-            </li>
-          ))}
-        </ul>
+        <div className={styles.Content} {...api.getContentProps()}>
+          <ul {...api.getListProps()}>
+            {data.map((item) => (
+              <li
+                className={styles.Item}
+                key={item.value}
+                {...api.getItemProps({ value: item.value })}
+              >
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )

@@ -83,7 +83,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
 
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
-        <ul
+        <div
           v-bind="api.getContentProps()"
           style="
             list-style: none;
@@ -96,38 +96,40 @@ const api = computed(() => menu.connect(service, normalizeProps))
             min-width: 160px;
           "
         >
-          <li
-            v-bind="api.getItemProps({ value: 'open' })"
-            style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
-          >
-            Open {{ activeFile?.type === "folder" ? "Folder" : "File" }}
-          </li>
-          <li
-            v-bind="api.getItemProps({ value: 'rename' })"
-            style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
-          >
-            Rename
-          </li>
-          <li
-            v-bind="api.getItemProps({ value: 'copy' })"
-            style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
-          >
-            Copy
-          </li>
-          <li
-            v-bind="api.getItemProps({ value: 'cut' })"
-            style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
-          >
-            Cut
-          </li>
-          <li style="height: 1px; background-color: #e5e7eb; margin: 4px 0" />
-          <li
-            v-bind="api.getItemProps({ value: 'delete' })"
-            style="padding: 8px 12px; cursor: pointer; border-radius: 4px; color: #dc2626"
-          >
-            Delete
-          </li>
-        </ul>
+          <ul v-bind="api.getListProps()" style="list-style: none; margin: 0; padding: 0">
+            <li
+              v-bind="api.getItemProps({ value: 'open' })"
+              style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
+            >
+              Open {{ activeFile?.type === "folder" ? "Folder" : "File" }}
+            </li>
+            <li
+              v-bind="api.getItemProps({ value: 'rename' })"
+              style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
+            >
+              Rename
+            </li>
+            <li
+              v-bind="api.getItemProps({ value: 'copy' })"
+              style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
+            >
+              Copy
+            </li>
+            <li
+              v-bind="api.getItemProps({ value: 'cut' })"
+              style="padding: 8px 12px; cursor: pointer; border-radius: 4px"
+            >
+              Cut
+            </li>
+            <li style="height: 1px; background-color: #e5e7eb; margin: 4px 0" />
+            <li
+              v-bind="api.getItemProps({ value: 'delete' })"
+              style="padding: 8px 12px; cursor: pointer; border-radius: 4px; color: #dc2626"
+            >
+              Delete
+            </li>
+          </ul>
+        </div>
       </div>
     </Teleport>
   </main>

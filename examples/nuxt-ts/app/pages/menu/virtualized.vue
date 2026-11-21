@@ -45,18 +45,20 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <p>Selected: <output aria-label="Selected item">{{ selected }}</output></p>
     <Teleport v-if="api.open" to="#teleports">
       <div v-bind="api.getPositionerProps()">
-        <div
-          v-bind="mergeProps(virtualizer.getRootProps(), api.getContentProps())"
-          :ref="rootRef"
-          style="max-height: 320px"
-        >
-          <div v-bind="virtualizer.getContentProps()">
-            <div
-              v-for="{ virtualItem, item } in getRows()"
-              :key="item.value"
-              v-bind="mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))"
-            >
-              {{ item.label }}
+        <div v-bind="api.getContentProps()">
+          <div
+            v-bind="mergeProps(virtualizer.getRootProps(), api.getListProps())"
+            :ref="rootRef"
+            style="max-height: 320px"
+          >
+            <div v-bind="virtualizer.getContentProps()">
+              <div
+                v-for="{ virtualItem, item } in getRows()"
+                :key="item.value"
+                v-bind="mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))"
+              >
+                {{ item.label }}
+              </div>
             </div>
           </div>
         </div>

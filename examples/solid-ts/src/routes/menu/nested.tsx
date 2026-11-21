@@ -42,54 +42,60 @@ export default function Page() {
 
           <Portal>
             <div {...root().getPositionerProps()}>
-              <ul data-testid="menu" {...root().getContentProps()}>
-                <For each={level1}>
-                  {(item) => {
-                    const props = createMemo(() =>
-                      item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
-                    )
+              <div data-testid="menu" {...root().getContentProps()}>
+                <ul {...root().getListProps()}>
+                  <For each={level1}>
+                    {(item) => {
+                      const props = createMemo(() =>
+                        item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
+                      )
 
-                    return (
-                      <li data-testid={item.value} {...props()}>
-                        {item.label}
-                      </li>
-                    )
-                  }}
-                </For>
-              </ul>
+                      return (
+                        <li data-testid={item.value} {...props()}>
+                          {item.label}
+                        </li>
+                      )
+                    }}
+                  </For>
+                </ul>
+              </div>
             </div>
           </Portal>
 
           <Portal>
             <div {...sub().getPositionerProps()}>
-              <ul data-testid="more-tools-submenu" {...sub().getContentProps()}>
-                <For each={level2}>
-                  {(item) => {
-                    const props = createMemo(() =>
-                      item.trigger ? triggerItem2Props() : sub().getItemProps({ value: item.value }),
-                    )
-                    return (
-                      <li data-testid={item.value} {...props}>
-                        {item.label}
-                      </li>
-                    )
-                  }}
-                </For>
-              </ul>
+              <div data-testid="more-tools-submenu" {...sub().getContentProps()}>
+                <ul {...sub().getListProps()}>
+                  <For each={level2}>
+                    {(item) => {
+                      const props = createMemo(() =>
+                        item.trigger ? triggerItem2Props() : sub().getItemProps({ value: item.value }),
+                      )
+                      return (
+                        <li data-testid={item.value} {...props}>
+                          {item.label}
+                        </li>
+                      )
+                    }}
+                  </For>
+                </ul>
+              </div>
             </div>
           </Portal>
 
           <Portal>
             <div {...sub2().getPositionerProps()}>
-              <ul data-testid="open-nested-submenu" {...sub2().getContentProps()}>
-                <For each={level3}>
-                  {(item) => (
-                    <li data-testid={item.value} {...sub2().getItemProps({ value: item.value })}>
-                      {item.label}
-                    </li>
-                  )}
-                </For>
-              </ul>
+              <div data-testid="open-nested-submenu" {...sub2().getContentProps()}>
+                <ul {...sub2().getListProps()}>
+                  <For each={level3}>
+                    {(item) => (
+                      <li data-testid={item.value} {...sub2().getItemProps({ value: item.value })}>
+                        {item.label}
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
             </div>
           </Portal>
         </div>

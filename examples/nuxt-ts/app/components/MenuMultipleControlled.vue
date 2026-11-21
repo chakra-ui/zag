@@ -24,10 +24,12 @@ const api = computed(() => menu.connect(service, normalizeProps))
   <Teleport to="#teleports">
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
-        <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
-        <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
-        <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
-        <li v-bind="api.getItemProps({ value: 'export' })">Export...</li>
+        <ul v-bind="api.getListProps()">
+          <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
+          <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
+          <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
+          <li v-bind="api.getItemProps({ value: 'export' })">Export...</li>
+        </ul>
       </div>
     </div>
   </Teleport>

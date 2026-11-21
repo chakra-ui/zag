@@ -46,23 +46,25 @@ export default function Page() {
           <Portal>
             <div {...api.getPositionerProps()}>
               <div {...api.getContentProps()}>
-                {radios.map((item) => {
-                  return (
-                    <div key={item.value} {...api.getOptionItemProps(item)}>
-                      <span {...api.getItemIndicatorProps(item)}>✅</span>
-                      <span {...api.getItemTextProps(item)}>{item.label}</span>
-                    </div>
-                  )
-                })}
-                <hr />
-                {checkboxes.map((item) => {
-                  return (
-                    <div key={item.value} {...api.getOptionItemProps(item)}>
-                      <span {...api.getItemIndicatorProps(item)}>✅</span>
-                      <span {...api.getItemTextProps(item)}>{item.label}</span>
-                    </div>
-                  )
-                })}
+                <div {...api.getListProps()}>
+                  {radios.map((item) => {
+                    return (
+                      <div key={item.value} {...api.getOptionItemProps(item)}>
+                        <span {...api.getItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    )
+                  })}
+                  <hr />
+                  {checkboxes.map((item) => {
+                    return (
+                      <div key={item.value} {...api.getOptionItemProps(item)}>
+                        <span {...api.getItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </Portal>

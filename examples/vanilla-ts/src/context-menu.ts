@@ -29,6 +29,9 @@ export class ContextMenu extends Component<menu.Props, menu.Api> {
         this.spreadProps(positioner, this.api.getPositionerProps())
         this.spreadProps(content, this.api.getContentProps())
 
+        const list = content.querySelector<HTMLElement>(".context-menu-list")
+        if (list) this.spreadProps(list, this.api.getListProps())
+
         const items = content.querySelectorAll<HTMLElement>(".context-menu-item")
         items.forEach((item) => {
           const value = item.dataset.value

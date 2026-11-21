@@ -27,15 +27,17 @@ function ContextMenu(props: { api: menu.Api }) {
       <Portal>
         <div className={styles.Positioner} {...api.getPositionerProps()}>
           <div className={styles.Content} {...api.getContentProps()}>
-            {items.map((item) => (
-              <div
-                key={item.value}
-                className={styles.Item}
-                {...api.getItemProps({ value: item.value })}
-              >
-                {item.label}
-              </div>
-            ))}
+            <div {...api.getListProps()}>
+              {items.map((item) => (
+                <div
+                  key={item.value}
+                  className={styles.Item}
+                  {...api.getItemProps({ value: item.value })}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Portal>

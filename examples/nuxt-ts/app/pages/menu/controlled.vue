@@ -40,11 +40,13 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <button type="button" v-bind="api.getTriggerProps()">Menu Trigger</button>
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
-        <ul v-bind="api.getContentProps()">
-          <li v-for="item in items" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
-            {{ item.label }}
-          </li>
-        </ul>
+        <div v-bind="api.getContentProps()">
+          <ul v-bind="api.getListProps()">
+            <li v-for="item in items" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
       </div>
     </Teleport>
   </div>

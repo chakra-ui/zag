@@ -34,11 +34,13 @@ export default function Page() {
       {menuApi.open && (
         <Portal>
           <div {...menuApi.getPositionerProps()}>
-            <ul {...menuApi.getContentProps()}>
-              <li {...menuApi.getItemProps({ value: "profile" })}>Profile</li>
-              <li {...menuApi.getItemProps({ value: "settings" })}>Settings</li>
-              <li {...menuApi.getItemProps({ value: "signout" })}>Sign out</li>
-            </ul>
+            <div {...menuApi.getContentProps()}>
+              <ul {...menuApi.getListProps()}>
+                <li {...menuApi.getItemProps({ value: "profile" })}>Profile</li>
+                <li {...menuApi.getItemProps({ value: "settings" })}>Settings</li>
+                <li {...menuApi.getItemProps({ value: "signout" })}>Sign out</li>
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

@@ -71,15 +71,17 @@ export default function Page() {
 
           <Portal>
             <div {...root().getPositionerProps()}>
-              <ul data-testid="menu" {...root().getContentProps()}>
-                <For each={rootItems}>
-                  {(item) => (
-                    <li data-testid={item.value} {...getRootItemProps(item.value)}>
-                      {item.label}
-                    </li>
-                  )}
-                </For>
-              </ul>
+              <div data-testid="menu" {...root().getContentProps()}>
+                <ul {...root().getListProps()}>
+                  <For each={rootItems}>
+                    {(item) => (
+                      <li data-testid={item.value} {...getRootItemProps(item.value)}>
+                        {item.label}
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
             </div>
           </Portal>
 
@@ -87,15 +89,17 @@ export default function Page() {
             {(sub) => (
               <Portal>
                 <div {...sub.api().getPositionerProps()}>
-                  <ul data-testid={`${sub.value}-submenu`} {...sub.api().getContentProps()}>
-                    <For each={submenuItems[sub.value]}>
-                      {(item) => (
-                        <li data-testid={item.value} {...sub.api().getItemProps({ value: item.value })}>
-                          {item.label}
-                        </li>
-                      )}
-                    </For>
-                  </ul>
+                  <div data-testid={`${sub.value}-submenu`} {...sub.api().getContentProps()}>
+                    <ul {...sub.api().getListProps()}>
+                      <For each={submenuItems[sub.value]}>
+                        {(item) => (
+                          <li data-testid={item.value} {...sub.api().getItemProps({ value: item.value })}>
+                            {item.label}
+                          </li>
+                        )}
+                      </For>
+                    </ul>
+                  </div>
                 </div>
               </Portal>
             )}

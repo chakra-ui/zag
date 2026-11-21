@@ -44,22 +44,24 @@ export default function Page() {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div
-              {...mergeProps(virtualizer.getRootProps(), api.getContentProps(), { style: { maxHeight: 320 } })}
-              ref={ref}
-            >
-              <div {...virtualizer.getContentProps()}>
-                {virtualizer.getVirtualItems().map((virtualItem) => {
-                  const item = items[virtualItem.index]
-                  return (
-                    <div
-                      key={item.value}
-                      {...mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}
-                    >
-                      {item.label}
-                    </div>
-                  )
-                })}
+            <div {...api.getContentProps()}>
+              <div
+                {...mergeProps(virtualizer.getRootProps(), api.getListProps(), { style: { maxHeight: 320 } })}
+                ref={ref}
+              >
+                <div {...virtualizer.getContentProps()}>
+                  {virtualizer.getVirtualItems().map((virtualItem) => {
+                    const item = items[virtualItem.index]
+                    return (
+                      <div
+                        key={item.value}
+                        {...mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}
+                      >
+                        {item.label}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>

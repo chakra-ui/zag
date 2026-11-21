@@ -235,6 +235,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     setChild(child) {
       send({ type: "CHILD.SET", value: child, id: child.prop("id") })
     },
+    removeChild(child) {
+      send({ type: "CHILD.REMOVE", value: child, id: child.prop("id") })
+    },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
@@ -653,7 +656,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         spellCheck: "false",
         dir: prop("dir"),
         "aria-autocomplete": "list",
-        "aria-controls": dom.getListId(scope),
+        "aria-controls": dom.getListId(scope, viewportRendered ? triggerValue : undefined),
         "aria-activedescendant": highlightedId || undefined,
         "data-highlighted": dataAttr(!highlightedId),
         onChange() {
@@ -739,10 +742,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       })
     },
 
-    getListProps() {
+    getListProps(props = {}) {
       return normalize.element({
         ...parts.list.attrs(scope.id),
-        id: dom.getListId(scope),
+        id: dom.getListId(scope, props.value),
         dir: prop("dir"),
         role: isDialog ? "menu" : "presentation",
         "aria-labelledby": isDialog ? labelledBy : undefined,

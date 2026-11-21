@@ -43,9 +43,11 @@ export default function Page() {
       </button>
       <Portal>
         <div {...api().getPositionerProps()}>
-          <ul {...api().getContentProps()}>
-            <For each={items}>{(item) => <li {...api().getItemProps({ value: item.value })}>{item.label}</li>}</For>
-          </ul>
+          <div {...api().getContentProps()}>
+            <ul {...api().getListProps()}>
+              <For each={items}>{(item) => <li {...api().getItemProps({ value: item.value })}>{item.label}</li>}</For>
+            </ul>
+          </div>
         </div>
       </Portal>
     </div>

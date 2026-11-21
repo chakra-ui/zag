@@ -96,11 +96,9 @@ export default function Page() {
 
         <Portal>
           <div {...api().getPositionerProps()}>
-            <ul
+            <div
               {...api().getContentProps()}
               style={{
-                "list-style": "none",
-                margin: 0,
                 padding: "4px",
                 "background-color": "white",
                 border: "1px solid #e5e7eb",
@@ -109,23 +107,25 @@ export default function Page() {
                 "min-width": "160px",
               }}
             >
-              <li {...api().getItemProps({ value: "open" })} style={itemStyle}>
-                Open {activeFile()?.type === "folder" ? "Folder" : "File"}
-              </li>
-              <li {...api().getItemProps({ value: "rename" })} style={itemStyle}>
-                Rename
-              </li>
-              <li {...api().getItemProps({ value: "copy" })} style={itemStyle}>
-                Copy
-              </li>
-              <li {...api().getItemProps({ value: "cut" })} style={itemStyle}>
-                Cut
-              </li>
-              <li style={{ height: "1px", "background-color": "#e5e7eb", margin: "4px 0" }} />
-              <li {...api().getItemProps({ value: "delete" })} style={{ ...itemStyle, color: "#dc2626" }}>
-                Delete
-              </li>
-            </ul>
+              <ul {...api().getListProps()} style={{ "list-style": "none", margin: 0, padding: 0 }}>
+                <li {...api().getItemProps({ value: "open" })} style={itemStyle}>
+                  Open {activeFile()?.type === "folder" ? "Folder" : "File"}
+                </li>
+                <li {...api().getItemProps({ value: "rename" })} style={itemStyle}>
+                  Rename
+                </li>
+                <li {...api().getItemProps({ value: "copy" })} style={itemStyle}>
+                  Copy
+                </li>
+                <li {...api().getItemProps({ value: "cut" })} style={itemStyle}>
+                  Cut
+                </li>
+                <li style={{ height: "1px", "background-color": "#e5e7eb", margin: "4px 0" }} />
+                <li {...api().getItemProps({ value: "delete" })} style={{ ...itemStyle, color: "#dc2626" }}>
+                  Delete
+                </li>
+              </ul>
+            </div>
           </div>
         </Portal>
       </main>

@@ -25,9 +25,13 @@ export default function Page() {
         <Show when={api().open}>
           <Portal>
             <div {...api().getPositionerProps()}>
-              <ul {...mergeProps(api().getContentProps(), { style: { "max-height": "200px", "overflow-y": "auto" } })}>
-                <For each={items}>{(item) => <li {...api().getItemProps({ value: item.value })}>{item.label}</li>}</For>
-              </ul>
+              <div {...api().getContentProps()}>
+                <ul {...mergeProps(api().getListProps(), { style: { "max-height": "200px", "overflow-y": "auto" } })}>
+                  <For each={items}>
+                    {(item) => <li {...api().getItemProps({ value: item.value })}>{item.label}</li>}
+                  </For>
+                </ul>
+              </div>
             </div>
           </Portal>
         </Show>

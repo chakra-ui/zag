@@ -65,30 +65,34 @@ export default function Page() {
 
           <Portal>
             <div {...root.getPositionerProps()}>
-              <ul data-testid="menu" {...root.getContentProps()}>
-                {rootItems.map((item) => {
-                  const sub = submenus.find((s) => s.value === item.value)
-                  const props = sub ? root.getTriggerItemProps(sub.api) : root.getItemProps({ value: item.value })
-                  return (
-                    <li key={item.value} data-testid={item.value} {...props}>
-                      {item.label}
-                    </li>
-                  )
-                })}
-              </ul>
+              <div data-testid="menu" {...root.getContentProps()}>
+                <ul {...root.getListProps()}>
+                  {rootItems.map((item) => {
+                    const sub = submenus.find((s) => s.value === item.value)
+                    const props = sub ? root.getTriggerItemProps(sub.api) : root.getItemProps({ value: item.value })
+                    return (
+                      <li key={item.value} data-testid={item.value} {...props}>
+                        {item.label}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
           </Portal>
 
           {submenus.map(({ value, api }) => (
             <Portal key={value}>
               <div {...api.getPositionerProps()}>
-                <ul data-testid={`${value}-submenu`} {...api.getContentProps()}>
-                  {submenuItems[value].map((item) => (
-                    <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
-                      {item.label}
-                    </li>
-                  ))}
-                </ul>
+                <div data-testid={`${value}-submenu`} {...api.getContentProps()}>
+                  <ul {...api.getListProps()}>
+                    {submenuItems[value].map((item) => (
+                      <li key={item.value} data-testid={item.value} {...api.getItemProps({ value: item.value })}>
+                        {item.label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </Portal>
           ))}

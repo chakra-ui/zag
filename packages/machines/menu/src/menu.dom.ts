@@ -22,7 +22,10 @@ export const getContentId = (ctx: Scope, value?: string | null) => {
 }
 export const getArrowId = (ctx: Scope) => ctx.ids?.arrow ?? `${ctx.id}:arrow`
 export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `${ctx.id}:input`
-export const getListId = (ctx: Scope) => ctx.ids?.list ?? `${ctx.id}:list`
+export const getListId = (ctx: Scope, value?: string | null) => {
+  const id = ctx.ids?.list ?? `${ctx.id}:list`
+  return value != null ? `${id}:${value}` : id
+}
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `${ctx.id}:positioner`
 export const getGroupId = (ctx: Scope, id: string) => ctx.ids?.group?.(id) ?? `${ctx.id}:group:${id}`
 
@@ -42,6 +45,8 @@ export const getLayerEl = (ctx: Scope, value?: string | null) => getViewportEl(c
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
 export const getInputEl = (ctx: Scope) => ctx.query<HTMLInputElement>(ctx.selector(parts.input))
+export const getListEl = (ctx: Scope, contentEl: HTMLElement | null) =>
+  contentEl?.querySelector<HTMLElement>(ctx.selector(parts.list)) ?? null
 
 // The menu is told its menubar's root id via the `menubar` prop; coordination events
 // are dispatched on that element. (No DOM sniffing — the relationship is declared.)
@@ -55,7 +60,7 @@ export const dispatchMenubarEvent = (menubarEl: HTMLElement, type: string, detai
 export const getItemEl = (ctx: Scope, value: string | null, triggerValue?: string | null) => {
   if (!value) return null
   const selector = `${ctx.selector(parts.item)}[data-value="${value}"]`
-  return getContentEl(ctx, triggerValue)?.querySelector<HTMLElement>(selector) ?? ctx.query(selector)
+  return getListEl(ctx, getContentEl(ctx, triggerValue))?.querySelector<HTMLElement>(selector) ?? ctx.query(selector)
 }
 export const getArrowEl = (ctx: Scope) => ctx.query(ctx.selector(parts.arrow))
 export const getContextTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.contextTrigger))
@@ -80,8 +85,8 @@ export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElemen
 export const getElements = (ctx: Scope, triggerValue?: string | null) => {
   const ownerId = CSS.escape(ctx.id!)
   const selector = `[data-menu-item="${ownerId}"]:not([data-disabled])`
-  const contentEl = getContentEl(ctx, triggerValue)
-  return contentEl ? Array.from(contentEl.querySelectorAll<HTMLElement>(selector)) : []
+  const listEl = getListEl(ctx, getContentEl(ctx, triggerValue))
+  return listEl ? Array.from(listEl.querySelectorAll<HTMLElement>(selector)) : []
 }
 
 const isMatch = (el: HTMLElement, value: string | null) => {

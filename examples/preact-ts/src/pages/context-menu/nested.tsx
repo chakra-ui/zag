@@ -25,25 +25,29 @@ export default function Demo() {
       </div>
       <Portal>
         <div {...root.getPositionerProps()}>
-          <ul {...root.getContentProps()}>
-            <li {...root.getItemProps({ value: "edit" })}>Edit</li>
-            <li {...root.getItemProps({ value: "delete" })}>Delete</li>
-            <li {...root.getItemProps({ value: "export" })}>Export</li>
-            <li {...triggerItemProps}>
-              <div>Appearance ➡️</div>
-            </li>
-            <li {...root.getItemProps({ value: "duplicate" })}>Duplicate</li>
-          </ul>
+          <div {...root.getContentProps()}>
+            <ul {...root.getListProps()}>
+              <li {...root.getItemProps({ value: "edit" })}>Edit</li>
+              <li {...root.getItemProps({ value: "delete" })}>Delete</li>
+              <li {...root.getItemProps({ value: "export" })}>Export</li>
+              <li {...triggerItemProps}>
+                <div>Appearance ➡️</div>
+              </li>
+              <li {...root.getItemProps({ value: "duplicate" })}>Duplicate</li>
+            </ul>
+          </div>
         </div>
       </Portal>
 
       <Portal>
         <div {...sub.getPositionerProps()}>
-          <ul {...sub.getContentProps()}>
-            <li {...sub.getItemProps({ value: "full-screen" })}>Full screen</li>
-            <li {...sub.getItemProps({ value: "zoom-in" })}>Zoom in</li>
-            <li {...sub.getItemProps({ value: "zoom-out" })}>Zoom out</li>
-          </ul>
+          <div {...sub.getContentProps()}>
+            <ul {...sub.getListProps()}>
+              <li {...sub.getItemProps({ value: "full-screen" })}>Full screen</li>
+              <li {...sub.getItemProps({ value: "zoom-in" })}>Zoom in</li>
+              <li {...sub.getItemProps({ value: "zoom-out" })}>Zoom out</li>
+            </ul>
+          </div>
         </div>
       </Portal>
     </main>

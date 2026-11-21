@@ -54,19 +54,21 @@
     <Portal>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
-          {#each radios as item (item.value)}
-            <div {...api.getOptionItemProps(item)}>
-              <span {...api.getItemIndicatorProps(item)}>✅</span>
-              <span {...api.getItemTextProps(item)}>{item.label}</span>
-            </div>
-          {/each}
-          <hr />
-          {#each checkboxes as item (item.value)}
-            <div {...api.getOptionItemProps(item)}>
-              <span {...api.getItemIndicatorProps(item)}>✅</span>
-              <span {...api.getItemTextProps(item)}>{item.label}</span>
-            </div>
-          {/each}
+          <div {...api.getListProps()}>
+            {#each radios as item (item.value)}
+              <div {...api.getOptionItemProps(item)}>
+                <span {...api.getItemIndicatorProps(item)}>✅</span>
+                <span {...api.getItemTextProps(item)}>{item.label}</span>
+              </div>
+            {/each}
+            <hr />
+            {#each checkboxes as item (item.value)}
+              <div {...api.getOptionItemProps(item)}>
+                <span {...api.getItemIndicatorProps(item)}>✅</span>
+                <span {...api.getItemTextProps(item)}>{item.label}</span>
+              </div>
+            {/each}
+          </div>
         </div>
       </div>
     </Portal>

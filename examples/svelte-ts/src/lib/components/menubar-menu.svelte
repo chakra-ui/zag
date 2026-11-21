@@ -28,11 +28,13 @@
 {#if api.open}
   <Portal>
     <div {...api.getPositionerProps()}>
-      <ul data-testid={`${props.id}:content`} {...api.getContentProps()}>
-        {#each props.items as item (item.value)}
-          <li data-testid={item.value} {...api.getItemProps({ value: item.value })}>{item.label}</li>
-        {/each}
-      </ul>
+      <div data-testid={`${props.id}:content`} {...api.getContentProps()}>
+        <ul {...api.getListProps()}>
+          {#each props.items as item (item.value)}
+            <li data-testid={item.value} {...api.getItemProps({ value: item.value })}>{item.label}</li>
+          {/each}
+        </ul>
+      </div>
     </div>
   </Portal>
 {/if}

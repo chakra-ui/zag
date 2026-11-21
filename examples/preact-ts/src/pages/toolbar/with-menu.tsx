@@ -30,11 +30,13 @@ function MoreActionsMenu(props: { api: toolbar.Api }) {
       {menuApi.open && (
         <Portal>
           <div {...menuApi.getPositionerProps()}>
-            <ul {...menuApi.getContentProps()}>
-              <li {...menuApi.getItemProps({ value: "help" })}>Help</li>
-              <li {...menuApi.getItemProps({ value: "shortcuts" })}>Keyboard Shortcuts</li>
-              <li {...menuApi.getItemProps({ value: "release-notes" })}>Release Notes</li>
-            </ul>
+            <div {...menuApi.getContentProps()}>
+              <ul {...menuApi.getListProps()}>
+                <li {...menuApi.getItemProps({ value: "help" })}>Help</li>
+                <li {...menuApi.getItemProps({ value: "shortcuts" })}>Keyboard Shortcuts</li>
+                <li {...menuApi.getItemProps({ value: "release-notes" })}>Release Notes</li>
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

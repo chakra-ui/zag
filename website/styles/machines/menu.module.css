@@ -74,6 +74,9 @@
 
   .ScrollableContent {
     width: 14rem;
+  }
+
+  .ScrollableList {
     max-height: 15rem;
     overflow-y: auto;
   }

@@ -80,9 +80,11 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
     <Teleport to="#teleports">
       <div v-bind="menuApi.getPositionerProps()">
         <Presence v-bind="menuApi.getContentProps()">
-          <div v-bind="menuApi.getItemProps({ value: 'rename' })">Rename "{{ menuApi.triggerValue }}"</div>
-          <div v-bind="menuApi.getItemProps({ value: 'duplicate' })">Duplicate</div>
-          <div v-bind="menuApi.getItemProps({ value: 'delete' })">Delete</div>
+          <div v-bind="menuApi.getListProps()">
+            <div v-bind="menuApi.getItemProps({ value: 'rename' })">Rename "{{ menuApi.triggerValue }}"</div>
+            <div v-bind="menuApi.getItemProps({ value: 'duplicate' })">Duplicate</div>
+            <div v-bind="menuApi.getItemProps({ value: 'delete' })">Delete</div>
+          </div>
         </Presence>
       </div>
     </Teleport>

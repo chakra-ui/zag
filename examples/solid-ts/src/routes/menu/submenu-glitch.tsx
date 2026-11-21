@@ -47,53 +47,61 @@ export default function Page() {
           {/* Root Menu */}
           <Portal>
             <div {...root().getPositionerProps()}>
-              <ul data-testid="menu" {...root().getContentProps()}>
-                <li {...root().getItemProps({ value: "new-file" })}>New File</li>
-                <li data-testid="js-trigger" {...jsTriggerProps()}>
-                  JS Frameworks →
-                </li>
-                <li data-testid="lorem-trigger" {...loremTriggerProps()}>
-                  Lorem Ipsum →
-                </li>
-                <li data-testid="css-trigger" {...cssTriggerProps()}>
-                  CSS Frameworks →
-                </li>
-                <li {...root().getItemProps({ value: "settings" })}>Settings</li>
-              </ul>
+              <div data-testid="menu" {...root().getContentProps()}>
+                <ul {...root().getListProps()}>
+                  <li {...root().getItemProps({ value: "new-file" })}>New File</li>
+                  <li data-testid="js-trigger" {...jsTriggerProps()}>
+                    JS Frameworks →
+                  </li>
+                  <li data-testid="lorem-trigger" {...loremTriggerProps()}>
+                    Lorem Ipsum →
+                  </li>
+                  <li data-testid="css-trigger" {...cssTriggerProps()}>
+                    CSS Frameworks →
+                  </li>
+                  <li {...root().getItemProps({ value: "settings" })}>Settings</li>
+                </ul>
+              </div>
             </div>
           </Portal>
 
           {/* JS Frameworks Submenu */}
           <Portal>
             <div {...js().getPositionerProps()}>
-              <ul data-testid="js-submenu" {...js().getContentProps()}>
-                <li {...js().getItemProps({ value: "react" })}>React</li>
-                <li {...js().getItemProps({ value: "solid" })}>Solid</li>
-                <li {...js().getItemProps({ value: "vue" })}>Vue</li>
-                <li {...js().getItemProps({ value: "svelte" })}>Svelte</li>
-              </ul>
+              <div data-testid="js-submenu" {...js().getContentProps()}>
+                <ul {...js().getListProps()}>
+                  <li {...js().getItemProps({ value: "react" })}>React</li>
+                  <li {...js().getItemProps({ value: "solid" })}>Solid</li>
+                  <li {...js().getItemProps({ value: "vue" })}>Vue</li>
+                  <li {...js().getItemProps({ value: "svelte" })}>Svelte</li>
+                </ul>
+              </div>
             </div>
           </Portal>
 
           {/* Lorem Ipsum Submenu */}
           <Portal>
             <div {...lorem().getPositionerProps()}>
-              <ul data-testid="lorem-submenu" {...lorem().getContentProps()}>
-                <li {...lorem().getItemProps({ value: "dolor" })}>Dolor</li>
-                <li {...lorem().getItemProps({ value: "sit" })}>Sit</li>
-                <li {...lorem().getItemProps({ value: "amet" })}>Amet</li>
-              </ul>
+              <div data-testid="lorem-submenu" {...lorem().getContentProps()}>
+                <ul {...lorem().getListProps()}>
+                  <li {...lorem().getItemProps({ value: "dolor" })}>Dolor</li>
+                  <li {...lorem().getItemProps({ value: "sit" })}>Sit</li>
+                  <li {...lorem().getItemProps({ value: "amet" })}>Amet</li>
+                </ul>
+              </div>
             </div>
           </Portal>
 
           {/* CSS Frameworks Submenu */}
           <Portal>
             <div {...css().getPositionerProps()}>
-              <ul data-testid="css-submenu" {...css().getContentProps()}>
-                <li {...css().getItemProps({ value: "panda" })}>Panda</li>
-                <li {...css().getItemProps({ value: "tailwind" })}>Tailwind</li>
-                <li {...css().getItemProps({ value: "css-modules" })}>CSS Modules</li>
-              </ul>
+              <div data-testid="css-submenu" {...css().getContentProps()}>
+                <ul {...css().getListProps()}>
+                  <li {...css().getItemProps({ value: "panda" })}>Panda</li>
+                  <li {...css().getItemProps({ value: "tailwind" })}>Tailwind</li>
+                  <li {...css().getItemProps({ value: "css-modules" })}>CSS Modules</li>
+                </ul>
+              </div>
             </div>
           </Portal>
         </div>

@@ -8,6 +8,7 @@ export * from "./menu.props"
 export type {
   MenuApi as Api,
   ContentProps,
+  ListProps,
   ContentState,
   ViewportState,
   ElementIds,

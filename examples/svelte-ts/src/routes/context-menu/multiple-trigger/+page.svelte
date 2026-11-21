@@ -73,18 +73,20 @@
 
   <Portal>
     <div {...api.getPositionerProps()}>
-      <ul {...mergeProps(api.getContentProps(), { style: contentStyle })}>
-        <li {...mergeProps(api.getItemProps({ value: "open" }), { style: itemStyle })}>
-          Open {activeFile?.type === "folder" ? "Folder" : "File"}
-        </li>
-        <li {...mergeProps(api.getItemProps({ value: "rename" }), { style: itemStyle })}>Rename</li>
-        <li {...mergeProps(api.getItemProps({ value: "copy" }), { style: itemStyle })}>Copy</li>
-        <li {...mergeProps(api.getItemProps({ value: "cut" }), { style: itemStyle })}>Cut</li>
-        <li style="height: 1px; background-color: #e5e7eb; margin: 4px 0"></li>
-        <li {...mergeProps(api.getItemProps({ value: "delete" }), { style: `${itemStyle}; color: #dc2626` })}>
-          Delete
-        </li>
-      </ul>
+      <div {...mergeProps(api.getContentProps(), { style: contentStyle })}>
+        <ul {...api.getListProps()}>
+          <li {...mergeProps(api.getItemProps({ value: "open" }), { style: itemStyle })}>
+            Open {activeFile?.type === "folder" ? "Folder" : "File"}
+          </li>
+          <li {...mergeProps(api.getItemProps({ value: "rename" }), { style: itemStyle })}>Rename</li>
+          <li {...mergeProps(api.getItemProps({ value: "copy" }), { style: itemStyle })}>Copy</li>
+          <li {...mergeProps(api.getItemProps({ value: "cut" }), { style: itemStyle })}>Cut</li>
+          <li style="height: 1px; background-color: #e5e7eb; margin: 4px 0"></li>
+          <li {...mergeProps(api.getItemProps({ value: "delete" }), { style: `${itemStyle}; color: #dc2626` })}>
+            Delete
+          </li>
+        </ul>
+      </div>
     </div>
   </Portal>
 </main>

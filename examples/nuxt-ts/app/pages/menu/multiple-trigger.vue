@@ -72,8 +72,10 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <Teleport to="#teleports">
       <div v-bind="api.getPositionerProps()">
         <Presence v-bind="api.getContentProps()">
-          <div v-bind="api.getItemProps({ value: 'rename' })">Rename (value: {{ api.triggerValue }})</div>
-          <div v-bind="api.getItemProps({ value: 'delete' })">Delete (value: {{ api.triggerValue }})</div>
+          <div v-bind="api.getListProps()">
+            <div v-bind="api.getItemProps({ value: 'rename' })">Rename (value: {{ api.triggerValue }})</div>
+            <div v-bind="api.getItemProps({ value: 'delete' })">Delete (value: {{ api.triggerValue }})</div>
+          </div>
         </Presence>
       </div>
     </Teleport>

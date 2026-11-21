@@ -48,13 +48,15 @@ function Menu() {
       <button {...api.getTriggerProps()}>Actions</button>
       <Portal container={container} getRootNode={getRootNode}>
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            {["Edit", "Duplicate", "Delete"].map((value) => (
-              <li key={value} {...api.getItemProps({ value })}>
-                {value}
-              </li>
-            ))}
-          </ul>
+          <div {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {["Edit", "Duplicate", "Delete"].map((value) => (
+                <li key={value} {...api.getItemProps({ value })}>
+                  {value}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Portal>
     </>

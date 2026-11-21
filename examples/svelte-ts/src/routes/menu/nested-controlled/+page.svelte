@@ -75,26 +75,30 @@
 
     <Portal>
       <div {...root.getPositionerProps()}>
-        <ul data-testid="menu" {...root.getContentProps()}>
-          {#each rootItems as item (item.value)}
-            <li data-testid={item.value} {...getRootItemProps(item.value)}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
+        <div data-testid="menu" {...root.getContentProps()}>
+          <ul {...root.getListProps()}>
+            {#each rootItems as item (item.value)}
+              <li data-testid={item.value} {...getRootItemProps(item.value)}>
+                {item.label}
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
 
     {#each submenus as sub (sub.value)}
       <Portal>
         <div {...sub.api.getPositionerProps()}>
-          <ul data-testid={`${sub.value}-submenu`} {...sub.api.getContentProps()}>
-            {#each submenuItems[sub.value] as item (item.value)}
-              <li data-testid={item.value} {...sub.api.getItemProps({ value: item.value })}>
-                {item.label}
-              </li>
-            {/each}
-          </ul>
+          <div data-testid={`${sub.value}-submenu`} {...sub.api.getContentProps()}>
+            <ul {...sub.api.getListProps()}>
+              {#each submenuItems[sub.value] as item (item.value)}
+                <li data-testid={item.value} {...sub.api.getItemProps({ value: item.value })}>
+                  {item.label}
+                </li>
+              {/each}
+            </ul>
+          </div>
         </div>
       </Portal>
     {/each}

@@ -35,11 +35,13 @@ const menuApi = computed(() => menu.connect(menuService, normalizeProps))
 
     <Teleport to="#teleports">
       <div v-if="menuApi.open" v-bind="menuApi.getPositionerProps()">
-        <ul v-bind="menuApi.getContentProps()">
-          <li v-bind="menuApi.getItemProps({ value: 'profile' })">Profile</li>
-          <li v-bind="menuApi.getItemProps({ value: 'settings' })">Settings</li>
-          <li v-bind="menuApi.getItemProps({ value: 'signout' })">Sign out</li>
-        </ul>
+        <div v-bind="menuApi.getContentProps()">
+          <ul v-bind="menuApi.getListProps()">
+            <li v-bind="menuApi.getItemProps({ value: 'profile' })">Profile</li>
+            <li v-bind="menuApi.getItemProps({ value: 'settings' })">Settings</li>
+            <li v-bind="menuApi.getItemProps({ value: 'signout' })">Sign out</li>
+          </ul>
+        </div>
       </div>
     </Teleport>
   </main>

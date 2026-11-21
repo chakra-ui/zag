@@ -24,20 +24,24 @@ onMounted(() => {
   <button data-testid="edit:trigger" v-bind="api.getTriggerProps()">Edit</button>
   <Teleport v-if="api.open" to="#teleports">
     <div v-bind="api.getPositionerProps()">
-      <ul data-testid="edit:content" v-bind="api.getContentProps()">
-        <li data-testid="undo" v-bind="api.getItemProps({ value: 'undo' })">Undo</li>
-        <li data-testid="redo" v-bind="api.getItemProps({ value: 'redo' })">Redo</li>
-        <li data-testid="find:trigger" v-bind="api.getTriggerItemProps(sub)">Find ▸</li>
-      </ul>
+      <div data-testid="edit:content" v-bind="api.getContentProps()">
+        <ul v-bind="api.getListProps()">
+          <li data-testid="undo" v-bind="api.getItemProps({ value: 'undo' })">Undo</li>
+          <li data-testid="redo" v-bind="api.getItemProps({ value: 'redo' })">Redo</li>
+          <li data-testid="find:trigger" v-bind="api.getTriggerItemProps(sub)">Find ▸</li>
+        </ul>
+      </div>
     </div>
   </Teleport>
   <Teleport v-if="sub.open" to="#teleports">
     <div v-bind="sub.getPositionerProps()">
-      <ul data-testid="find:content" v-bind="sub.getContentProps()">
-        <li data-testid="find-text" v-bind="sub.getItemProps({ value: 'find-text' })">Find...</li>
-        <li data-testid="replace" v-bind="sub.getItemProps({ value: 'replace' })">Replace...</li>
-        <li data-testid="find-in-files" v-bind="sub.getItemProps({ value: 'find-in-files' })">Find in Files...</li>
-      </ul>
+      <div data-testid="find:content" v-bind="sub.getContentProps()">
+        <ul v-bind="sub.getListProps()">
+          <li data-testid="find-text" v-bind="sub.getItemProps({ value: 'find-text' })">Find...</li>
+          <li data-testid="replace" v-bind="sub.getItemProps({ value: 'replace' })">Replace...</li>
+          <li data-testid="find-in-files" v-bind="sub.getItemProps({ value: 'find-in-files' })">Find in Files...</li>
+        </ul>
+      </div>
     </div>
   </Teleport>
 </template>

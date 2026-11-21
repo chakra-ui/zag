@@ -33,46 +33,52 @@ const [level1, level2, level3] = menuData
 
       <Teleport to="#teleports">
         <div v-bind="root.getPositionerProps()">
-          <ul data-testid="menu" v-bind="root.getContentProps()">
-            <li
-              v-for="item in level1"
-              :key="item.value"
-              :data-testid="item.value"
-              v-bind="item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })"
-            >
-              {{ item.label }}
-            </li>
-          </ul>
+          <div data-testid="menu" v-bind="root.getContentProps()">
+            <ul v-bind="root.getListProps()">
+              <li
+                v-for="item in level1"
+                :key="item.value"
+                :data-testid="item.value"
+                v-bind="item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })"
+              >
+                {{ item.label }}
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="sub.getPositionerProps()">
-          <ul data-testid="more-tools-submenu" v-bind="sub.getContentProps()">
-            <li
-              v-for="item in level2"
-              :key="item.value"
-              :data-testid="item.value"
-              v-bind="item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })"
-            >
-              {{ item.label }}
-            </li>
-          </ul>
+          <div data-testid="more-tools-submenu" v-bind="sub.getContentProps()">
+            <ul v-bind="sub.getListProps()">
+              <li
+                v-for="item in level2"
+                :key="item.value"
+                :data-testid="item.value"
+                v-bind="item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })"
+              >
+                {{ item.label }}
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
 
       <Teleport to="#teleports">
         <div v-bind="sub2.getPositionerProps()">
-          <ul data-testid="open-nested-submenu" v-bind="sub2.getContentProps()">
-            <li
-              v-for="item in level3"
-              :key="item.value"
-              :data-testid="item.value"
-              v-bind="sub2.getItemProps({ value: item.value })"
-            >
-              {{ item.label }}
-            </li>
-          </ul>
+          <div data-testid="open-nested-submenu" v-bind="sub2.getContentProps()">
+            <ul v-bind="sub2.getListProps()">
+              <li
+                v-for="item in level3"
+                :key="item.value"
+                :data-testid="item.value"
+                v-bind="sub2.getItemProps({ value: item.value })"
+              >
+                {{ item.label }}
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
     </div>

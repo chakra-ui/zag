@@ -33,16 +33,18 @@ function Content(props: { api: menu.Api; children?: React.ReactNode }) {
     <Portal>
       <div className={styles.Positioner} {...api.getPositionerProps()}>
         <div className={styles.Content} {...api.getContentProps()}>
-          {props.children ??
-            items.map((item) => (
-              <div
-                key={item.value}
-                className={styles.Item}
-                {...api.getItemProps({ value: item.value })}
-              >
-                {item.label}
-              </div>
-            ))}
+          <div {...api.getListProps()}>
+            {props.children ??
+              items.map((item) => (
+                <div
+                  key={item.value}
+                  className={styles.Item}
+                  {...api.getItemProps({ value: item.value })}
+                >
+                  {item.label}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </Portal>

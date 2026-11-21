@@ -41,17 +41,19 @@
   {#if api.open}
     <Portal>
       <div {...api.getPositionerProps()}>
-        <div
-          {...mergeProps(vz.virtualizer.getRootProps(), api.getContentProps(), { style: "max-height: 320px" })}
-          {@attach vz.init}
-        >
-          <div {...vz.virtualizer.getContentProps()}>
-            {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].value)}
-              {@const item = items[virtualItem.index]}
-              <div {...mergeProps(vz.virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}>
-                {item.label}
-              </div>
-            {/each}
+        <div {...api.getContentProps()}>
+          <div
+            {...mergeProps(vz.virtualizer.getRootProps(), api.getListProps(), { style: "max-height: 320px" })}
+            {@attach vz.init}
+          >
+            <div {...vz.virtualizer.getContentProps()}>
+              {#each vz.virtualizer.getVirtualItems() as virtualItem (items[virtualItem.index].value)}
+                {@const item = items[virtualItem.index]}
+                <div {...mergeProps(vz.virtualizer.getItemProps(virtualItem), api.getItemProps({ value: item.value }))}>
+                  {item.label}
+                </div>
+              {/each}
+            </div>
           </div>
         </div>
       </div>

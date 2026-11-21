@@ -36,9 +36,11 @@ export default function Page() {
             <For each={menus}>
               {(item) => (
                 <Presence {...api().getContentProps({ value: item.value })}>
-                  <For each={item.items}>
-                    {(label) => <div {...api().getItemProps({ value: `${item.value}:${label}` })}>{label}</div>}
-                  </For>
+                  <div {...api().getListProps({ value: item.value })}>
+                    <For each={item.items}>
+                      {(label) => <div {...api().getItemProps({ value: `${item.value}:${label}` })}>{label}</div>}
+                    </For>
+                  </div>
                 </Presence>
               )}
             </For>

@@ -46,43 +46,49 @@ export default function Page() {
 
           <Portal>
             <div {...root.getPositionerProps()}>
-              <ul data-testid="menu" {...root.getContentProps()}>
-                {level1.map((item) => {
-                  const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
-                  return (
-                    <li key={item.value} data-testid={item.value} {...props}>
-                      {item.label}
-                    </li>
-                  )
-                })}
-              </ul>
+              <div data-testid="menu" {...root.getContentProps()}>
+                <ul {...root.getListProps()}>
+                  {level1.map((item) => {
+                    const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
+                    return (
+                      <li key={item.value} data-testid={item.value} {...props}>
+                        {item.label}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
           </Portal>
 
           <Portal>
             <div {...sub.getPositionerProps()}>
-              <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
-                {level2.map((item) => {
-                  const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
-                  return (
-                    <li key={item.value} data-testid={item.value} {...props}>
-                      {item.label}
-                    </li>
-                  )
-                })}
-              </ul>
+              <div data-testid="more-tools-submenu" {...sub.getContentProps()}>
+                <ul {...sub.getListProps()}>
+                  {level2.map((item) => {
+                    const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
+                    return (
+                      <li key={item.value} data-testid={item.value} {...props}>
+                        {item.label}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
           </Portal>
 
           <Portal>
             <div {...sub2.getPositionerProps()}>
-              <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
-                {level3.map((item) => (
-                  <li key={item.value} data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
+              <div data-testid="open-nested-submenu" {...sub2.getContentProps()}>
+                <ul {...sub2.getListProps()}>
+                  {level3.map((item) => (
+                    <li key={item.value} data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
+                      {item.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </Portal>
         </div>

@@ -47,19 +47,21 @@ export default function Page() {
           {/* Root Menu */}
           <Portal>
             <div {...root().getPositionerProps()}>
-              <ul data-testid="menu" {...root().getContentProps()}>
-                <li {...root().getItemProps({ value: "item1" })}>Regular Item 1</li>
-                <li data-testid="sub1-trigger" {...sub1TriggerProps()}>
-                  Submenu with Input 1 →
-                </li>
-                <li data-testid="sub2-trigger" {...sub2TriggerProps()}>
-                  Submenu with Input 2 →
-                </li>
-                <li data-testid="sub3-trigger" {...sub3TriggerProps()}>
-                  Submenu with Input 3 →
-                </li>
-                <li {...root().getItemProps({ value: "item2" })}>Regular Item 2</li>
-              </ul>
+              <div data-testid="menu" {...root().getContentProps()}>
+                <ul {...root().getListProps()}>
+                  <li {...root().getItemProps({ value: "item1" })}>Regular Item 1</li>
+                  <li data-testid="sub1-trigger" {...sub1TriggerProps()}>
+                    Submenu with Input 1 →
+                  </li>
+                  <li data-testid="sub2-trigger" {...sub2TriggerProps()}>
+                    Submenu with Input 2 →
+                  </li>
+                  <li data-testid="sub3-trigger" {...sub3TriggerProps()}>
+                    Submenu with Input 3 →
+                  </li>
+                  <li {...root().getItemProps({ value: "item2" })}>Regular Item 2</li>
+                </ul>
+              </div>
             </div>
           </Portal>
 
@@ -67,7 +69,9 @@ export default function Page() {
           <Portal>
             <div {...sub1().getPositionerProps()}>
               <div data-testid="sub1-content" {...sub1().getContentProps()}>
-                <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                <div {...sub1().getListProps()}>
+                  <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                </div>
               </div>
             </div>
           </Portal>
@@ -76,7 +80,9 @@ export default function Page() {
           <Portal>
             <div {...sub2().getPositionerProps()}>
               <div data-testid="sub2-content" {...sub2().getContentProps()}>
-                <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                <div {...sub2().getListProps()}>
+                  <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                </div>
               </div>
             </div>
           </Portal>
@@ -85,7 +91,9 @@ export default function Page() {
           <Portal>
             <div {...sub3().getPositionerProps()}>
               <div data-testid="sub3-content" {...sub3().getContentProps()}>
-                <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                <div {...sub3().getListProps()}>
+                  <input placeholder="Type here..." style={{ padding: "8px", margin: "8px" }} />
+                </div>
               </div>
             </div>
           </Portal>

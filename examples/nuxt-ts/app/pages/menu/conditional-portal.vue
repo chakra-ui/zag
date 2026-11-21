@@ -22,11 +22,13 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <div :hidden="!api.open">
       <Teleport to="#teleports" :disabled="!api.open">
         <div v-bind="api.getPositionerProps()">
-          <ul v-bind="api.getContentProps()">
-            <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
-            <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
-            <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
-          </ul>
+          <div v-bind="api.getContentProps()">
+            <ul v-bind="api.getListProps()">
+              <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
+              <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
+              <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
+            </ul>
+          </div>
         </div>
       </Teleport>
     </div>

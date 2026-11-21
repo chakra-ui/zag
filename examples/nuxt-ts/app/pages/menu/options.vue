@@ -53,14 +53,16 @@ const checkboxes = computed(() =>
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
-            <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
-              <span v-bind="api.getItemIndicatorProps(item)">✅</span>
-              <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
-            </div>
-            <hr />
-            <div v-for="item in checkboxes" :key="item.value" v-bind="api.getOptionItemProps(item)">
-              <span v-bind="api.getItemIndicatorProps(item)">✅</span>
-              <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
+            <div v-bind="api.getListProps()">
+              <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
+                <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+                <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
+              </div>
+              <hr />
+              <div v-for="item in checkboxes" :key="item.value" v-bind="api.getOptionItemProps(item)">
+                <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+                <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
+              </div>
             </div>
           </div>
         </div>

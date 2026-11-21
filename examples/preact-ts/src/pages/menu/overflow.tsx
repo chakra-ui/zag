@@ -24,17 +24,19 @@ export default function Page() {
         {api.open && (
           <Portal>
             <div {...api.getPositionerProps()}>
-              <ul
-                {...mergeProps(api.getContentProps(), {
-                  style: { maxHeight: "200px", overflowY: "auto" as const },
-                })}
-              >
-                {items.map((item) => (
-                  <li key={item.value} {...api.getItemProps({ value: item.value })}>
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
+              <div {...api.getContentProps()}>
+                <ul
+                  {...mergeProps(api.getListProps(), {
+                    style: { maxHeight: "200px", overflowY: "auto" as const },
+                  })}
+                >
+                  {items.map((item) => (
+                    <li key={item.value} {...api.getItemProps({ value: item.value })}>
+                      {item.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </Portal>
         )}

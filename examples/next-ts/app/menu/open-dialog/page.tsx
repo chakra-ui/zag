@@ -37,11 +37,13 @@ export default function Page() {
         </button>
         <Portal>
           <div {...menuApi.getPositionerProps()}>
-            <ul {...menuApi.getContentProps()}>
-              <li {...menuApi.getItemProps({ value: "edit" })}>Edit</li>
-              <li {...menuApi.getItemProps({ value: "duplicate" })}>Duplicate</li>
-              <li {...menuApi.getItemProps({ value: "delete" })}>Delete…</li>
-            </ul>
+            <div {...menuApi.getContentProps()}>
+              <ul {...menuApi.getListProps()}>
+                <li {...menuApi.getItemProps({ value: "edit" })}>Edit</li>
+                <li {...menuApi.getItemProps({ value: "duplicate" })}>Duplicate</li>
+                <li {...menuApi.getItemProps({ value: "delete" })}>Delete…</li>
+              </ul>
+            </div>
           </div>
         </Portal>
 

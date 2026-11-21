@@ -22,11 +22,13 @@ const api = computed(() => menu.connect(service, normalizeProps))
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
       <Teleport v-if="api.open" to="#teleports">
         <div v-bind="api.getPositionerProps()">
-          <ul v-bind="mergeProps(api.getContentProps(), { style: { maxHeight: '200px', overflowY: 'auto' } })">
-            <li v-for="item in items" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
-              {{ item.label }}
-            </li>
-          </ul>
+          <div v-bind="api.getContentProps()">
+            <ul v-bind="mergeProps(api.getListProps(), { style: { maxHeight: '200px', overflowY: 'auto' } })">
+              <li v-for="item in items" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
+                {{ item.label }}
+              </li>
+            </ul>
+          </div>
         </div>
       </Teleport>
     </div>

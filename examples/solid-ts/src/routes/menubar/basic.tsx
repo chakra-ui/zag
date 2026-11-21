@@ -28,15 +28,17 @@ function Menu(props: MenuProps) {
       {api().open && (
         <Portal>
           <div {...api().getPositionerProps()}>
-            <ul data-testid={`${props.id}:content`} {...api().getContentProps()}>
-              <For each={props.items}>
-                {(item) => (
-                  <li data-testid={item.value} {...api().getItemProps({ value: item.value })}>
-                    {item.label}
-                  </li>
-                )}
-              </For>
-            </ul>
+            <div data-testid={`${props.id}:content`} {...api().getContentProps()}>
+              <ul {...api().getListProps()}>
+                <For each={props.items}>
+                  {(item) => (
+                    <li data-testid={item.value} {...api().getItemProps({ value: item.value })}>
+                      {item.label}
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

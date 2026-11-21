@@ -34,11 +34,13 @@ export default function Page() {
       <ConditionalPortal enabled={api().open}>
         {() => (
           <div {...api().getPositionerProps()}>
-            <ul {...api().getContentProps()}>
-              <li {...api().getItemProps({ value: "edit" })}>Edit</li>
-              <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
-              <li {...api().getItemProps({ value: "delete" })}>Delete</li>
-            </ul>
+            <div {...api().getContentProps()}>
+              <ul {...api().getListProps()}>
+                <li {...api().getItemProps({ value: "edit" })}>Edit</li>
+                <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
+                <li {...api().getItemProps({ value: "delete" })}>Delete</li>
+              </ul>
+            </div>
           </div>
         )}
       </ConditionalPortal>

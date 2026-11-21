@@ -14,12 +14,14 @@ const api = computed(() => menu.connect(service, normalizeProps))
     <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
-        <a v-bind="api.getItemProps({ value: 'edit' })" href="https://google.com">Google</a>
-        <a v-bind="api.getItemProps({ value: 'duplicate' })" href="https://bing.com">Bing</a>
-        <a v-bind="api.getItemProps({ value: 'delete' })" href="https://github.com" target="_blank">GitHub</a>
-        <a v-bind="api.getItemProps({ value: 'export' })" href="https://youtube.com" target="_blank">YouTube</a>
-        <a v-bind="api.getItemProps({ value: 'section' })" href="#section">Section</a>
-        <a v-bind="api.getItemProps({ value: 'basic' })" href="/menu/basic">Basic menu</a>
+        <div v-bind="api.getListProps()">
+          <a v-bind="api.getItemProps({ value: 'edit' })" href="https://google.com">Google</a>
+          <a v-bind="api.getItemProps({ value: 'duplicate' })" href="https://bing.com">Bing</a>
+          <a v-bind="api.getItemProps({ value: 'delete' })" href="https://github.com" target="_blank">GitHub</a>
+          <a v-bind="api.getItemProps({ value: 'export' })" href="https://youtube.com" target="_blank">YouTube</a>
+          <a v-bind="api.getItemProps({ value: 'section' })" href="#section">Section</a>
+          <a v-bind="api.getItemProps({ value: 'basic' })" href="/menu/basic">Basic menu</a>
+        </div>
       </div>
     </div>
     <output data-testid="selected">{{ selected }}</output>

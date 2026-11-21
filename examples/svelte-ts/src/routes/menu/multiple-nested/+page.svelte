@@ -88,16 +88,18 @@
   {#if root.open}
     <Portal>
       <div {...root.getPositionerProps()}>
-        <ul data-testid="root-menu" {...root.getContentProps()}>
-          {#each rootItems as item (item.value)}
-            {@const sub = submenus.find((s) => s.value === item.value)}
-            {@const props =
-              item.trigger && sub ? root.getTriggerItemProps(sub.api) : root.getItemProps({ value: item.value })}
-            <li data-testid={item.value} {...props}>
-              {item.label}
-            </li>
-          {/each}
-        </ul>
+        <div data-testid="root-menu" {...root.getContentProps()}>
+          <ul {...root.getListProps()}>
+            {#each rootItems as item (item.value)}
+              {@const sub = submenus.find((s) => s.value === item.value)}
+              {@const props =
+                item.trigger && sub ? root.getTriggerItemProps(sub.api) : root.getItemProps({ value: item.value })}
+              <li data-testid={item.value} {...props}>
+                {item.label}
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
     </Portal>
   {/if}
@@ -106,13 +108,15 @@
     {#if api.open}
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul data-testid={`submenu-${value}`} {...api.getContentProps()}>
-            {#each submenuItems[value] ?? [] as item (item.value)}
-              <li data-testid={item.value} {...api.getItemProps({ value: item.value })}>
-                {item.label}
-              </li>
-            {/each}
-          </ul>
+          <div data-testid={`submenu-${value}`} {...api.getContentProps()}>
+            <ul {...api.getListProps()}>
+              {#each submenuItems[value] ?? [] as item (item.value)}
+                <li data-testid={item.value} {...api.getItemProps({ value: item.value })}>
+                  {item.label}
+                </li>
+              {/each}
+            </ul>
+          </div>
         </div>
       </Portal>
     {/if}

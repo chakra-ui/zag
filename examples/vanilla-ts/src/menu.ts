@@ -26,6 +26,9 @@ export class Menu extends Component<menu.Props, menu.Api> {
         this.spreadProps(positioner, this.api.getPositionerProps())
         this.spreadProps(content, this.api.getContentProps())
 
+        const list = content.querySelector<HTMLElement>(".menu-list")
+        if (list) this.spreadProps(list, this.api.getListProps())
+
         const items = content.querySelectorAll<HTMLElement>(".menu-item")
         items.forEach((item) => {
           const value = item.dataset.value

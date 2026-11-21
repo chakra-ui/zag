@@ -33,13 +33,15 @@ function Menu(props: MenuProps) {
       {api.open && (
         <Portal>
           <div {...api.getPositionerProps()}>
-            <ul data-testid={`${props.id}:content`} {...api.getContentProps()}>
-              {props.items.map((item) => (
-                <li key={item.value} {...api.getItemProps({ value: item.value })}>
-                  {item.label}
-                </li>
-              ))}
-            </ul>
+            <div data-testid={`${props.id}:content`} {...api.getContentProps()}>
+              <ul {...api.getListProps()}>
+                {props.items.map((item) => (
+                  <li key={item.value} {...api.getItemProps({ value: item.value })}>
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Portal>
       )}

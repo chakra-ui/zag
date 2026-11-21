@@ -52,10 +52,12 @@ export default function Page() {
       <Show when={actions().open}>
         <Portal>
           <div {...actions().getPositionerProps()}>
-            <ul data-testid="menu-content" {...actions().getContentProps()}>
-              <li {...actions().getItemProps({ value: "follow" })}>Follow</li>
-              <li {...actions().getItemProps({ value: "share" })}>Share</li>
-            </ul>
+            <div data-testid="menu-content" {...actions().getContentProps()}>
+              <ul {...actions().getListProps()}>
+                <li {...actions().getItemProps({ value: "follow" })}>Follow</li>
+                <li {...actions().getItemProps({ value: "share" })}>Share</li>
+              </ul>
+            </div>
           </div>
         </Portal>
       </Show>
