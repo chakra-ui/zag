@@ -137,14 +137,14 @@ export class HotkeyStore {
   }
 
   addScope(scope: string): this {
-    this.state.activeScopes.add(scope)
+    this.state.activeScopes = withItem(this.state.activeScopes, scope)
     this.clearAllSequences()
     this.notifySubscribers()
     return this
   }
 
   removeScope(scope: string): this {
-    this.state.activeScopes.delete(scope)
+    this.state.activeScopes = withoutItem(this.state.activeScopes, scope)
     this.clearAllSequences()
     this.notifySubscribers()
     return this
@@ -160,9 +160,9 @@ export class HotkeyStore {
 
   toggleScope(scope: string): this {
     if (this.state.activeScopes.has(scope)) {
-      this.state.activeScopes.delete(scope)
+      this.state.activeScopes = withoutItem(this.state.activeScopes, scope)
     } else {
-      this.state.activeScopes.add(scope)
+      this.state.activeScopes = withItem(this.state.activeScopes, scope)
     }
     this.clearAllSequences()
     this.notifySubscribers()
@@ -189,6 +189,7 @@ export class HotkeyStore {
   // Command registration
   register(commands: CommandDefinition | CommandDefinition[]): this {
     const commandArray = toArray(commands)
+    this.state.commands = new Map(this.state.commands)
 
     for (const command of commandArray) {
       const scopes = command.scopes ? toArray(command.scopes) : DEFAULT_SCOPES
@@ -236,6 +237,7 @@ export class HotkeyStore {
   unregister(id: string): this {
     const command = this.state.commands.get(id)
     if (command) {
+      this.state.commands = new Map(this.state.commands)
       this.state.commands.delete(id)
       this.commandOptionOverrides.delete(id)
       this.firedCommands.delete(id)
@@ -250,7 +252,7 @@ export class HotkeyStore {
   enable(id: string): this {
     const command = this.state.commands.get(id)
     if (command) {
-      command.enabled = true
+      this.state.commands = new Map(this.state.commands).set(id, { ...command, enabled: true })
       this.updateListeners()
       this.notifySubscribers()
     }
@@ -260,7 +262,7 @@ export class HotkeyStore {
   disable(id: string): this {
     const command = this.state.commands.get(id)
     if (command) {
-      command.enabled = false
+      this.state.commands = new Map(this.state.commands).set(id, { ...command, enabled: false })
       this.updateListeners()
       this.notifySubscribers()
     }
@@ -270,7 +272,7 @@ export class HotkeyStore {
   setEnabled(id: string, enabled: boolean | (() => boolean)): this {
     const command = this.state.commands.get(id)
     if (command) {
-      command.enabled = enabled
+      this.state.commands = new Map(this.state.commands).set(id, { ...command, enabled: enabled })
       this.updateListeners()
       this.notifySubscribers()
     }
@@ -279,10 +281,10 @@ export class HotkeyStore {
 
   clear(): this {
     this.clearAllSequences()
-    this.state.commands.clear()
+    this.state.commands = new Map()
     this.commandOptionOverrides.clear()
-    this.state.pressedKeys.clear()
-    this.state.pressedCodes.clear()
+    this.state.pressedKeys = new Set()
+    this.state.pressedCodes = new Set()
     this.firedCommands.clear()
     this.hasKeyupCommands = false
     this.updateListeners()
@@ -528,9 +530,9 @@ export class HotkeyStore {
     }
 
     const eventKey = normalizeKey(event.key)
-    this.state.pressedKeys.delete(eventKey)
+    this.state.pressedKeys = withoutItem(this.state.pressedKeys, eventKey)
     if (event.code) {
-      this.state.pressedCodes.delete(event.code)
+      this.state.pressedCodes = withoutItem(this.state.pressedCodes, event.code)
     }
 
     if (this.firedCommands.size > 0) {
@@ -540,8 +542,8 @@ export class HotkeyStore {
   }
 
   private handleBlur(): void {
-    this.state.pressedKeys.clear()
-    this.state.pressedCodes.clear()
+    this.state.pressedKeys = new Set()
+    this.state.pressedCodes = new Set()
     this.firedCommands.clear()
     this.clearAllSequences()
     this.notifySubscribers()
@@ -554,9 +556,9 @@ export class HotkeyStore {
     const eventKey = normalizeKey(event.key)
 
     if (eventType === "keydown") {
-      this.state.pressedKeys.add(eventKey)
+      this.state.pressedKeys = withItem(this.state.pressedKeys, eventKey)
       if (event.code) {
-        this.state.pressedCodes.add(event.code)
+        this.state.pressedCodes = withItem(this.state.pressedCodes, event.code)
       }
       this.notifySubscribers()
     }
@@ -706,6 +708,17 @@ export class HotkeyStore {
       }
     }
   }
+}
+
+function withItem<T>(set: Set<T>, item: T): Set<T> {
+  return set.has(item) ? set : new Set(set).add(item)
+}
+
+function withoutItem<T>(set: Set<T>, item: T): Set<T> {
+  if (!set.has(item)) return set
+  const next = new Set(set)
+  next.delete(item)
+  return next
 }
 
 export function createHotkeyStore(options?: HotkeyStoreOptions): HotkeyStore {
