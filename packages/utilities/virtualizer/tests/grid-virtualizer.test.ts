@@ -162,6 +162,25 @@ describe("GridVirtualizer", () => {
     expect(notifications).toBe(1)
   })
 
+  test("notifies after measuring rows mounted while scrolling", async () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+
+    const virtualizer = createVirtualizer()
+    let notifications = 0
+    virtualizer.subscribe(() => {
+      notifications++
+    })
+
+    simulateScroll(virtualizer, { currentTarget: { scrollTop: 10, scrollLeft: 0 } })
+    const before = notifications
+
+    const [row] = virtualizer.getVirtualRows()
+    mountRow(virtualizer, row!.row, createElement(40))
+    await Promise.resolve()
+
+    expect(notifications).toBe(before + 1)
+  })
+
   test("applies function scrollMargin to vertical range, row transforms, and scroll targets", () => {
     let scrollMargin = 10
     const virtualizer = new GridVirtualizer({

@@ -697,7 +697,8 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     const changed = this.onRowMeasured(rowIndex, size)
     if (!changed) return
 
-    if (!this.isScrolling && !this.pendingSyncNotify) {
+    // Notify also while scrolling, so rows mounted mid-scroll don't paint at estimated positions
+    if (!this.pendingSyncNotify) {
       this.pendingSyncNotify = true
       queueMicrotask(() => {
         this.pendingSyncNotify = false
