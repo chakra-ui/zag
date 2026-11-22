@@ -4,6 +4,59 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.49.0](./#1.49.0) - 2026-11-22
+
+### Added
+
+- **Tour**: Add `targetTimeout` to control how long the tour waits for a step's target before ending with `not-found`
+  (defaults to 3000ms).
+
+- **Combobox**: Add a `highlightedItem` translation for the option announced on highlight. Return an empty string to
+  disable it.
+
+- **Date Input**: Add a `segmentLabel` translation to customize segment labels.
+
+- **Color Utils**: Add support for the space-separated syntax, e.g. `rgb(255 0 0 / 50%)` and `hsl(120deg 50% 50%)`.
+
+- **Types**: Add `aria-description` to the typed ARIA attributes.
+
+### Fixed
+
+- **Accessibility**
+  - Fix the hidden input's `aria-labelledby` in checkbox and switch, and the combobox's `aria-labelledby`, pointing to a
+    missing element when the label part isn't rendered.
+  - Fix the content's `aria-labelledby` and `aria-describedby` in dialog, drawer and popover not updating when the
+    title or description is added or removed while open.
+
+- **Color Utils**
+  - Fix `rgb()` percentage channels and alpha being parsed as `0`.
+  - Fix hex output containing decimals when RGB channels are fractional.
+  - Fix invalid `rgb()`, `hsl()` and `hsb()` values being parsed instead of rejected.
+
+- **Date Input**: Fix segment labels and their announcements always being in English. They now follow `locale`.
+
+- **Date Picker**
+  - Fix the view trigger's accessible name hiding its visible month or year text. The `viewTrigger` translation is now
+    the trigger's `aria-description` instead of its `aria-label`, and is omitted when there's no next view.
+  - Fix the week number showing `53` instead of `1` for weeks starting in late December (e.g. Dec 30, 2024).
+
+- **File Upload**: Fix `relativePath` missing the `/` between nested directory names in dropped folders.
+
+- **Floating Panel, Image Cropper**: Fix the arrow keys moving, resizing and panning the wrong way when `dir` is `rtl`.
+  Positions are physical, so `ArrowLeft` now always moves left and `ArrowRight` always moves right.
+
+- **Hotkeys**: Fix `store.subscribe` never firing for selectors that return `pressedKeys`, `pressedCodes`,
+  `activeScopes` or `commands`.
+
+- **Number Input**: Fix fast typing dropping keys when the input's value sync ran after a newer keystroke.
+
+- **Presence**: Fix closing during the enter animation skipping the exit animation in Chromium and Firefox.
+
+- **React**: Fix machines not picking up prop changes made while mounted inside a hidden `<Activity>` before its first
+  reveal.
+
+- **Vue**: Fix inline styles set by machines, such as the positioner's `z-index`, being cleared on re-render.
+
 ## [1.48.0](./#1.48.0) - 2026-11-13
 
 ### Added
