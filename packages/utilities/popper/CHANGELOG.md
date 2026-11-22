@@ -1,5 +1,13 @@
 # @zag-js/popper
 
+## 1.49.0
+
+### Patch Changes
+
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826)]:
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

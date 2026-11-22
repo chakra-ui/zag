@@ -1,5 +1,17 @@
 # @zag-js/hotkeys
 
+## 1.49.0
+
+### Patch Changes
+
+- [#3688](https://github.com/chakra-ui/zag/pull/3688)
+  [`fed2185`](https://github.com/chakra-ui/zag/commit/fed21859ee6c4e241ae4a76c1145169f12d354ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `store.subscribe` never firing for selectors that return
+  `pressedKeys`, `pressedCodes`, `activeScopes` or `commands`. The store now replaces these collections when they change
+  instead of mutating them in place.
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826)]:
+  - @zag-js/dom-query@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

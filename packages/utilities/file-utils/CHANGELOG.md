@@ -1,5 +1,16 @@
 # @zag-js/file-utils
 
+## 1.49.0
+
+### Patch Changes
+
+- [#3660](https://github.com/chakra-ui/zag/pull/3660)
+  [`c33c380`](https://github.com/chakra-ui/zag/commit/c33c380638684c7a4edc29088426776c2712bb26) Thanks
+  [@KooYS](https://github.com/KooYS)! - - Fix `relativePath` missing the `/` between nested directory names in dropped
+  folders.
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @zag-js/react
 
+## 1.49.0
+
+### Patch Changes
+
+- [`95cd511`](https://github.com/chakra-ui/zag/commit/95cd5111ea861e5c23927928b25f4b66100d898d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix machines not picking up prop changes made while mounted
+  inside a hidden `<Activity>` before its first reveal.
+- Updated dependencies [[`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c)]:
+  - @zag-js/types@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/store@1.49.0
+  - @zag-js/utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes

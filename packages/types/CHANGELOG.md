@@ -1,5 +1,15 @@
 # @zag-js/types
 
+## 1.49.0
+
+### Patch Changes
+
+- [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix the view trigger's accessible name hiding its visible month
+  or year text. The `viewTrigger` translation is now the trigger's `aria-description` instead of its `aria-label`, and
+  is omitted when there's no next view.
+  - Add `aria-description` to the typed ARIA attributes.
+
 ## 1.48.0
 
 No changes in this release.
