@@ -545,3 +545,58 @@ describe("key state tracking", () => {
     store.destroy()
   })
 })
+
+describe("subscribing to collections", () => {
+  const press = (type: "keydown" | "keyup", key: string, code: string) =>
+    document.dispatchEvent(new KeyboardEvent(type, { key, code, bubbles: true }))
+
+  it("should notify when pressed keys change", () => {
+    const store = createHotkeyStore({ target: document })
+    const keys: string[][] = []
+    store.subscribe(
+      (state) => state.pressedKeys,
+      (pressed) => keys.push([...pressed]),
+    )
+
+    press("keydown", "Shift", "ShiftLeft")
+    press("keydown", "Shift", "ShiftLeft")
+    press("keyup", "Shift", "ShiftLeft")
+
+    expect(keys).toEqual([["Shift"], []])
+    store.destroy()
+  })
+
+  it("should notify when commands are registered, toggled and removed", () => {
+    const store = createHotkeyStore({ target: document })
+    const enabled: Array<boolean | undefined> = []
+    store.subscribe(
+      (state) => state.commands,
+      (commands) => enabled.push(commands.get("save")?.enabled as boolean | undefined),
+    )
+
+    store.register({ id: "save", hotkey: "mod+s", action: vi.fn() })
+    store.disable("save")
+    store.enable("save")
+    store.unregister("save")
+
+    expect(enabled).toEqual([true, false, true, undefined])
+    store.destroy()
+  })
+
+  it("should notify when the active scopes change", () => {
+    const store = createHotkeyStore({ target: document })
+    const scopes: string[][] = []
+    store.subscribe(
+      (state) => state.activeScopes,
+      (active) => scopes.push([...active]),
+    )
+
+    store.addScope("editor")
+    store.addScope("editor")
+    store.toggleScope("editor")
+    store.removeScope("missing")
+
+    expect(scopes).toEqual([["*", "editor"], ["*"]])
+    store.destroy()
+  })
+})
