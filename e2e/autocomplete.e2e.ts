@@ -197,6 +197,14 @@ test.describe("autocomplete", () => {
     await I.seeSubmitted("Canada")
   })
 
+  test("[keyboard] Tab closes the list and leaves in one press", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await I.pressKey("Tab")
+    await I.dontSeeDropdown()
+    await I.dontSeeInputIsFocused()
+  })
+
   test("[pointer] clicking a suggestion fills it in and keeps focus", async () => {
     await I.type("ca")
     await I.clickItem("Canada")

@@ -412,10 +412,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               event.preventDefault()
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
-
+              // read before sending: some adapters apply the revert synchronously
               const hasHighlight = highlightedValue != null
               const willBeRejected = computed("isCustomValue") && !prop("allowCustomValue")
+
+              send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               if (open && (hasHighlight || willBeRejected)) {
                 event.preventDefault()
@@ -516,6 +517,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...parts.content.attrs(scope.id),
         dir: prop("dir"),
         id: dom.getContentId(scope),
+        tabIndex: -1,
         role: isDialogPopup ? "dialog" : "presentation",
         hidden: !contentState.open,
         "data-state": contentState.open ? "open" : "closed",
@@ -551,6 +553,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...parts.list.attrs(scope.id),
         id: dom.getListId(scope),
         role: "listbox",
+        tabIndex: -1,
         "data-empty": dataAttr(contentState.empty),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") ? true : undefined,

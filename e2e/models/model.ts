@@ -134,16 +134,24 @@ export class Model {
     return new Promise<void>((resolve) => setTimeout(resolve, time))
   }
 
-  // Let work deferred to animation frames run
-  waitForFrames(count = 2) {
+  private afterNextPaint() {
     return this.page.evaluate(
-      (count) =>
-        new Promise<void>((resolve) => {
-          const next = (n: number) => (n === 0 ? resolve() : requestAnimationFrame(() => next(n - 1)))
-          next(count)
-        }),
-      count,
+      () => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))),
     )
+  }
+
+  /** Focus is on the element and nothing deferred moves it away */
+  async seeElementStaysFocused(testId: string) {
+    await this.seeElementIsFocused(testId)
+    await this.afterNextPaint()
+    await this.seeElementIsFocused(testId)
+  }
+
+  /** The field shows the value and nothing deferred overwrites it */
+  protected async seeKeepsValue(locator: Locator, value: string) {
+    await expect(locator).toHaveValue(value)
+    await this.afterNextPaint()
+    await expect(locator).toHaveValue(value)
   }
 
   seeElementIsFocused(testId: string) {

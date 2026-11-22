@@ -96,14 +96,12 @@ test.describe("color-picker", () => {
   test("[channel input] text typed after a swatch click is not overwritten", async () => {
     await I.clickTrigger()
     await I.clickSwatchThenTypeInAlpha(0, "0.5")
-    await I.waitForFrames()
-    await I.seeAlphaInputHasValue("0.5")
+    await I.seeAlphaInputKeepsValue("0.5")
   })
 
   test("[channel input] text typed right after a commit is not overwritten", async () => {
     await I.commitAlphaThenType("0.3", "0.35")
-    await I.waitForFrames()
-    await I.seeAlphaInputHasValue("0.35")
+    await I.seeAlphaInputKeepsValue("0.35")
   })
 
   test("[channel input] closing mid-edit without a blur leaves no stale text", async () => {
@@ -206,8 +204,7 @@ test.describe("color-picker / focus moved on value change", () => {
   test("should keep focus where onValueChange moved it", async () => {
     await I.clickTrigger()
     await I.clickSwatch(1)
-    await I.waitForFrames()
-    await I.seeElementIsFocused("next-field")
+    await I.seeElementStaysFocused("next-field")
   })
 })
 

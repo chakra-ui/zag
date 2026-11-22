@@ -42,9 +42,8 @@ export const getItemEl = (ctx: Scope, value: string | null) => {
 
 export const focusInputEl = (ctx: Scope) => {
   const inputEl = getInputEl(ctx)
-  if (!ctx.isActiveElement(inputEl)) {
-    inputEl?.focus({ preventScroll: true })
-  }
+  if (ctx.isActiveElement(inputEl)) return
+  inputEl?.focus({ preventScroll: true })
   setCaretToEnd(inputEl)
 }
 export const focusTriggerEl = (ctx: Scope) => {

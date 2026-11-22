@@ -655,7 +655,12 @@ const service = useMachine(combobox.machine, {
 | `item-select`   | An item was clicked or selected with `Enter`                 |
 | `clear-trigger` | The clear trigger was pressed                                |
 | `chip-delete`   | A chip was deleted                                           |
+| `input-clear`   | The text of a single selection was emptied                   |
+| `escape-key`    | `Escape` brought back the value emptying the text cleared    |
 | `script`        | Changed programmatically, such as `setValue` or `clearValue` |
+
+With a single selection, emptying the text clears the value, and `Escape` brings
+it back while the list is open.
 
 ### Form usage
 

@@ -115,7 +115,6 @@ export const machine = createMachine({
           prop("onHighlightChange")?.({ highlightedValue: value, highlightedItem })
         },
       })),
-      // The suggestion shown in the input, not yet the value
       preview: bindable<string | null>(() => ({ defaultValue: null })),
       highlightedItem: bindable(() => ({
         defaultValue: prop("collection").find(prop("highlightedValue") ?? prop("defaultHighlightedValue")),
@@ -472,7 +471,6 @@ export const machine = createMachine({
         const preview = context.get("preview")
         if (preview == null) return
         context.set("preview", null)
-        // a completion keeps the typed casing until accepted, then takes the item's
         const label = prop("collection").stringify(context.get("highlightedValue"))
         const sameText = label?.toLocaleLowerCase() === preview.toLocaleLowerCase()
         context.set("value", label && sameText ? label : preview)
@@ -491,13 +489,12 @@ export const machine = createMachine({
       clearHighlightedValue({ context }) {
         context.set("highlightedValue", null)
       },
-      // runs before the value changes, to compare the edit with the previous text
+      // runs before setInputValue, to compare with the previous text
       startSuggesting({ context, refs, computed, event }) {
         refs.set("suggesting", true)
         const typing = !event.composing && isTypingAtEnd(context.get("value"), event.selection)
         refs.set("completing", computed("inlineCompletion") && typing)
       },
-      // The user moved the highlight, so a pending suggestion must not override it
       stopSuggesting({ refs }) {
         refs.set("suggesting", false)
         refs.set("completing", false)
@@ -509,7 +506,6 @@ export const machine = createMachine({
           context.set("highlightedValue", prop("collection").firstValue)
         })
       },
-      // Completes the typed text with the first match, else follows `autoHighlight`
       highlightSuggestion({ context, prop, refs, scope }) {
         refs.get("highlightFrame").request(() => {
           const collection = prop("collection")

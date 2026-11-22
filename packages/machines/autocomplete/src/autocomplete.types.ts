@@ -287,7 +287,6 @@ export interface AutocompleteSchema<T extends CollectionItem = CollectionItem> {
     resultsRegion: LiveRegion | null
     /** Whether the highlight should follow the first suggestion as the list changes */
     suggesting: boolean
-    /** Whether the typed text should be completed with the first matching suggestion */
     completing: boolean
     highlightFrame: AnimationFrame
     initialFocusFrame: AnimationFrame

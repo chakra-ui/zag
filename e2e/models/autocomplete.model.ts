@@ -96,6 +96,10 @@ export class AutocompleteModel extends Model {
     await expect(this.content).not.toBeVisible()
   }
 
+  dontSeeInputIsFocused = async () => {
+    await expect(this.input).not.toBeFocused()
+  }
+
   seeInputIsFocused = async () => {
     await expect(this.input).toBeFocused()
   }

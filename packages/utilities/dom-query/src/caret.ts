@@ -199,7 +199,6 @@ export function setCaretToEnd(input: HTMLInputElement | HTMLTextAreaElement | nu
   } catch {}
 }
 
-/** Selects the text from `start` to the end, so typing replaces it */
 export function selectTextFrom(input: HTMLInputElement | HTMLTextAreaElement | null, start: number) {
   if (!input) return
   try {

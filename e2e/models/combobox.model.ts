@@ -55,12 +55,12 @@ export class ComboboxModel extends Model {
   }
 
   private get items() {
-    const options = "[data-combobox-item]:not([data-disabled])"
+    const options = "[data-combobox-item]:not([data-disabled]):not([hidden])"
     return this.page.locator(options)
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-combobox-item]`, { hasText: text })
+    return this.page.locator("[data-combobox-item]:not([hidden])", { hasText: text })
   }
 
   get highlightedItem() {
@@ -99,14 +99,20 @@ export class ComboboxModel extends Model {
     await expect(this.content).toBeVisible()
   }
 
+  closeByClickingOutside = async () => {
+    await expect(async () => {
+      await this.clickOutside()
+      await expect(this.content).toBeHidden({ timeout: 500 })
+    }).toPass()
+  }
+
   dontSeeDropdown = async () => {
     await expect(this.content).not.toBeVisible()
   }
 
-  /** Item texts in order. Matched at the end, after the indicator */
   seeItems = async (texts: string[]) => {
     const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-    await expect(this.items).toHaveText(texts.map((text) => new RegExp(`${escape(text)}$`)))
+    await expect(this.items).toHaveText(texts.map((text) => new RegExp(`^\\W*${escape(text)}\\W*$`)))
   }
 
   seeNumberOfItems = async (count: number) => {
@@ -148,6 +154,10 @@ export class ComboboxModel extends Model {
 
   seeInputHasValue = async (value: string) => {
     await expect(this.input).toHaveValue(value)
+  }
+
+  dontSeeInputIsFocused = async () => {
+    await expect(this.input).not.toBeFocused()
   }
 
   seeInputIsFocused = async () => {
@@ -205,8 +215,69 @@ export class ComboboxModel extends Model {
     await expect(this.input).toHaveAttribute("aria-activedescendant", id!)
   }
 
+  seeHighlightedItem = async () => {
+    await expect(this.highlightedItem).toBeVisible()
+  }
+
+  dontSeeItem = async (text: string) => {
+    await expect(this.getItem(text)).not.toBeVisible()
+  }
+
+  fillInput = async (text: string) => {
+    await this.input.fill("")
+    await this.input.pressSequentially(text)
+  }
+
+  get list() {
+    return this.page.locator("[data-combobox-list]")
+  }
+
+  scrollListToBottom = async () => {
+    await this.list.evaluate((el) => (el.scrollTop = el.scrollHeight))
+  }
+
+  private listScrollTop = () => this.list.evaluate((el) => el.scrollTop)
+
+  seeListIsScrolled = async () => {
+    await expect.poll(this.listScrollTop).toBeGreaterThan(0)
+  }
+
+  seeListIsScrolledToTop = async () => {
+    await expect.poll(this.listScrollTop).toBe(0)
+  }
+
+  seeListIsBusy = async () => {
+    await expect(this.list).toHaveAttribute("aria-busy", "true")
+  }
+
+  dontSeeListIsBusy = async () => {
+    await expect(this.list).not.toHaveAttribute("aria-busy")
+  }
+
+  async waitForNewPage(action: () => Promise<unknown>) {
+    const [newPage] = await Promise.all([this.page.context().waitForEvent("page"), action()])
+    return newPage
+  }
+
+  clickItemWithModifiers = async (text: string, modifiers: Array<"Alt" | "ControlOrMeta" | "Shift">) => {
+    await this.getItem(text).click({ modifiers })
+  }
+
+  seeSelection = async (expected: Record<string, unknown>) => {
+    const read = async () => JSON.parse((await this.testId("selection").textContent()) ?? "null")
+    await expect.poll(read).toMatchObject(expected)
+  }
+
+  seeSelectedText = async (text: string, id = "selected-items") => {
+    await expect(this.testId(id)).toContainText(text)
+  }
+
+  dontSeeSelectedText = async (text: string, id = "selected-items") => {
+    await expect(this.testId(id)).not.toContainText(text)
+  }
+
   dontSeeHighlightedItem = async () => {
-    expect(await this.highlightedItem.count()).toBe(0)
+    await expect(this.highlightedItem).toHaveCount(0)
   }
 
   get valueText() {

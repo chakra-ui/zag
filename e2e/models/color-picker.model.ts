@@ -162,6 +162,10 @@ export class ColorPickerModel extends Model {
     return expect(this.alphaInput).toHaveValue(value)
   }
 
+  seeAlphaInputKeepsValue(value: string) {
+    return this.seeKeepsValue(this.alphaInput, value)
+  }
+
   seeValueText(value: string) {
     return expect(this.valueText).toContainText(value)
   }

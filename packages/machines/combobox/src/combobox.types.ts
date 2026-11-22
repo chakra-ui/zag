@@ -16,7 +16,13 @@ import type { LiveRegion } from "@zag-js/live-region"
  * - `clear-trigger`: the clear trigger was pressed
  * - `script`: `setValue`, `selectValue` or `clearValue` was called
  */
-export type ValueChangeReason = "item-select" | "clear-trigger" | "chip-delete" | "script"
+export type ValueChangeReason =
+  | "item-select"
+  | "clear-trigger"
+  | "chip-delete"
+  | "input-clear" // Emptying the text cleared a single selection
+  | "escape-key" // Escape brought back a value cleared by emptying the text
+  | "script"
 
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
@@ -438,6 +444,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     chipFocusFrame: AnimationFrame
     autoHighlightPending: boolean
     createController: AbortController | null
+    clearedValue: { value: string[]; label: string; items: (readonly [string, CollectionItem])[] } | null
   }
   computed: {
     isCustomValue: boolean

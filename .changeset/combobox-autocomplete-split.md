@@ -29,3 +29,12 @@
 
 - Render the select-all and create options with the item part, marked `data-type="select-all"` and `data-type="create"`;
   regular items get `data-type="item"`.
+
+- Fix Tab stopping on a scrolling list instead of leaving the field.
+
+- **Breaking:** Clear a single selection when its text is emptied. `Escape` brings it back while the list is open.
+  `onValueChange` reports `"input-clear"` and `"escape-key"`.
+
+- Fix `Escape` needing a second press to restore the chosen label over typed text.
+
+- Fix `Enter` submitting the form in Vue when the typed text would be rejected.

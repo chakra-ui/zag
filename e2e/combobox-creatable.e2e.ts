@@ -14,6 +14,7 @@ test.describe("combobox / creatable", () => {
     await I.seeItems(['Create "Perf"'])
 
     await I.clickItem('Create "Perf"')
+    await I.dontSeeDropdown()
     await I.seeInputHasValue("Perf")
 
     await I.clickTrigger()

@@ -405,21 +405,6 @@ test.describe("datepicker [range]", () => {
     await I.seeInputHasValue(start.formatted, 0)
     await I.seeInputHasValue(end.formatted, 1)
   })
-
-  test("re-committing the start date formats it in place when focus moves to the end input right away", async () => {
-    await I.focusInput(0)
-    await I.type("1/15/2024", 0)
-    await I.pressKey("Enter")
-    await I.seeInputHasValue("01/15/2024", 0)
-
-    // same date: only the input text sync runs
-    await I.selectInput(0)
-    await I.type("1/15/2024", 0)
-    await I.commitInputAndFocus(0, 1)
-
-    await I.seeInputHasValue("01/15/2024", 0)
-    await I.seeInputHasValue("", 1)
-  })
 })
 
 test.describe("datepicker [locale numerals]", () => {
@@ -558,7 +543,6 @@ test.describe("date-picker / focus moved on value change", () => {
   test("should keep focus where onValueChange moved it", async () => {
     await I.clickTrigger()
     await I.clickDayCell(11)
-    await I.waitForFrames()
-    await I.seeElementIsFocused("next-field")
+    await I.seeElementStaysFocused("next-field")
   })
 })

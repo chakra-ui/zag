@@ -31,7 +31,6 @@ export const getItemEl = (ctx: Scope, value: string | null) => {
   return query(getContentEl(ctx), selector)
 }
 
-// Leaves the caret alone when already focused, so typing and completions keep their place
 export const focusInputEl = (ctx: Scope) => {
   const inputEl = getInputEl(ctx)
   if (ctx.isActiveElement(inputEl)) return
@@ -50,7 +49,6 @@ export const setInputText = (ctx: Scope, value: string, typed?: InputSelection) 
   else setCaretToEnd(inputEl)
 }
 
-/** Shows a completion with the part after the typed text selected, so typing replaces it */
 export const setInputCompletion = (ctx: Scope, text: string, typedLength: number) => {
   const inputEl = getInputEl(ctx)
   if (!inputEl) return

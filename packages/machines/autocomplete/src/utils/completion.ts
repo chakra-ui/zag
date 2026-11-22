@@ -5,7 +5,6 @@ export interface Completion {
   label: string
 }
 
-/** The first enabled item whose label starts with the text */
 export function findCompletion<T extends CollectionItem>(
   collection: ListCollection<T>,
   text: string,

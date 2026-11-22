@@ -4,7 +4,7 @@ import {
   resolveSelectedItems,
   type CollectionItem,
 } from "@zag-js/collection"
-import { setup, type Params } from "@zag-js/core"
+import { setup, type Params, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
@@ -38,6 +38,18 @@ import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
 const { and, not } = guards
+
+function escapeWith(closeActions: string[]): Transition<ComboboxSchema, never>[] {
+  const revertsText = and("isCustomValue", not("allowCustomValue"))
+  return [
+    { guard: and("isOpenControlled", "hasClearedValue"), actions: ["restoreClearedValue", "invokeOnClose"] },
+    { guard: and("isOpenControlled", revertsText), actions: ["revertInputValue", "invokeOnClose"] },
+    { guard: "isOpenControlled", actions: ["invokeOnClose"] },
+    { guard: "hasClearedValue", target: "closed.focused", actions: ["restoreClearedValue", ...closeActions] },
+    { guard: revertsText, target: "closed.focused", actions: ["revertInputValue", ...closeActions] },
+    { target: "closed.focused", actions: closeActions },
+  ]
+}
 
 /**
  * How long the input and results must stay unchanged before the result count is announced
@@ -93,6 +105,7 @@ export const machine = createMachine({
       chipFocusFrame: AnimationFrame.create(),
       autoHighlightPending: false,
       createController: null,
+      clearedValue: null,
     }
   },
 
@@ -277,6 +290,9 @@ export const machine = createMachine({
     "INPUT_VALUE.SET": {
       actions: ["setInputValue"],
     },
+    "INPUT.EMPTY": {
+      actions: ["clearValueFromInput"],
+    },
     "POSITIONING.SET": {
       actions: ["reposition"],
     },
@@ -296,7 +312,7 @@ export const machine = createMachine({
       states: {
         idle: {
           tags: ["idle"],
-          entry: ["scrollToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue", "forgetClearedValue"],
           on: {
             "CONTROLLED.OPEN": {
               target: "open.interacting",
@@ -343,7 +359,7 @@ export const machine = createMachine({
 
         focused: {
           tags: ["focused"],
-          entry: ["scrollToTop", "clearHighlightedValue"],
+          entry: ["scrollToTop", "clearHighlightedValue", "forgetClearedValue"],
           exit: ["cancelFinalFocus"],
           on: {
             "CONTROLLED.OPEN": [
@@ -358,15 +374,27 @@ export const machine = createMachine({
             "INPUT.CHANGE": [
               {
                 guard: and("isOpenControlled", "openOnChange"),
-                actions: ["setInputValue", "reconcileInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
+                actions: [
+                  "setInputValue",
+                  "reconcileInputValue",
+                  "checkEmptyInput",
+                  "invokeOnOpen",
+                  "highlightFirstItemIfNeeded",
+                ],
               },
               {
                 guard: "openOnChange",
                 target: "open.suggesting",
-                actions: ["setInputValue", "reconcileInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
+                actions: [
+                  "setInputValue",
+                  "reconcileInputValue",
+                  "checkEmptyInput",
+                  "invokeOnOpen",
+                  "highlightFirstItemIfNeeded",
+                ],
               },
               {
-                actions: ["setInputValue", "reconcileInputValue"],
+                actions: ["setInputValue", "reconcileInputValue", "checkEmptyInput"],
               },
             ],
             "LAYER.INTERACT_OUTSIDE": {
@@ -620,7 +648,13 @@ export const machine = createMachine({
             },
             "INPUT.CHANGE": {
               target: "suggesting",
-              actions: ["clearHighlightedValue", "setInputValue", "reconcileInputValue", "scrollToTop"],
+              actions: [
+                "clearHighlightedValue",
+                "setInputValue",
+                "reconcileInputValue",
+                "checkEmptyInput",
+                "scrollToTop",
+              ],
             },
             "ITEM.POINTER_MOVE": {
               actions: ["setHighlightedValue"],
@@ -628,16 +662,7 @@ export const machine = createMachine({
             "ITEM.POINTER_LEAVE": {
               actions: ["clearHighlightedValue"],
             },
-            "LAYER.ESCAPE": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed.focused",
-                actions: ["invokeOnClose", "setFinalFocus"],
-              },
-            ],
+            "LAYER.ESCAPE": escapeWith(["invokeOnClose", "setFinalFocus"]),
           },
         },
 
@@ -683,18 +708,9 @@ export const machine = createMachine({
               actions: ["highlightPrevPage"],
             },
             "INPUT.CHANGE": {
-              actions: ["setInputValue", "reconcileInputValue", "scrollToTop"],
+              actions: ["setInputValue", "reconcileInputValue", "checkEmptyInput", "scrollToTop"],
             },
-            "LAYER.ESCAPE": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed.focused",
-                actions: ["invokeOnClose"],
-              },
-            ],
+            "LAYER.ESCAPE": escapeWith(["invokeOnClose"]),
             "ITEM.POINTER_MOVE": {
               target: "interacting",
               actions: ["setHighlightedValue"],
@@ -713,6 +729,7 @@ export const machine = createMachine({
       isInputValueEmpty: ({ computed }) => computed("isInputValueEmpty"),
       autoHighlight: ({ prop }) => !!prop("autoHighlight"),
       isCustomValue: ({ computed }) => computed("isCustomValue"),
+      hasClearedValue: ({ refs }) => refs.get("clearedValue") != null,
       allowCustomValue: ({ prop }) => !!prop("allowCustomValue"),
       hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
@@ -1049,11 +1066,38 @@ export const machine = createMachine({
         refs.get("reconcileFrame").request(() => {
           const value = context.get("inputValue")
           if (value === event.value) return
+          const inputEl = dom.getInputEl(scope)
+          const caretMoved = inputEl?.value === value && inputEl.selectionStart !== value.length
+          if (caretMoved) return
           dom.syncInputValue(scope, value, event.selection)
         })
       },
       clearInputValue({ context }) {
         context.set("inputValue", "")
+      },
+      checkEmptyInput({ context, prop, event, send }) {
+        if (event.composing || event.value !== "") return
+        if (prop("multiple") || prop("selectionBehavior") !== "replace") return
+        if (!context.get("value").length) return
+        send({ type: "INPUT.EMPTY", src: "input-clear" })
+      },
+      clearValueFromInput({ context, refs, computed }) {
+        const value = context.get("value")
+        const map = context.get("selectedItemMap")
+        const items = value.flatMap((v) => (map.has(v) ? [[v, map.get(v)!] as const] : []))
+        refs.set("clearedValue", { value, label: computed("valueAsString"), items })
+        context.set("value", [])
+      },
+      restoreClearedValue({ context, refs }) {
+        const cleared = refs.get("clearedValue")
+        if (!cleared) return
+        refs.set("clearedValue", null)
+        context.set("selectedItemMap", new Map([...context.get("selectedItemMap"), ...cleared.items]))
+        context.set("value", cleared.value)
+        context.set("inputValue", cleared.label)
+      },
+      forgetClearedValue({ refs }) {
+        refs.set("clearedValue", null)
       },
       revertInputValue({ context, prop, computed }) {
         const inputValue = match(prop("selectionBehavior"), {
