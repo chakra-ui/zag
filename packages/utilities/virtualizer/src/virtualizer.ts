@@ -1307,11 +1307,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     if (!changed) return
 
-    // During scroll, the next handleScroll → calculateRange picks up the updated
-    // Fenwick tree. No extra notification needed — avoids double flushSync per frame.
-    // During idle (initial mount), schedule a single batched notification so positions
-    // correct without waiting for a scroll event.
-    if (!this.isScrolling && !this.pendingSyncNotify) {
+    // Notify once per batch, also while scrolling: items mounted during a fast scroll
+    // would otherwise paint at their estimated positions until scrolling stops.
+    if (!this.pendingSyncNotify) {
       this.pendingSyncNotify = true
       queueMicrotask(() => {
         this.pendingSyncNotify = false

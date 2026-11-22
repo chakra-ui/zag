@@ -1093,6 +1093,28 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getTotalSize()).toBe(45)
   })
 
+  test("notifies after measuring items mounted while scrolling", async () => {
+    const virtualizer = new ListVirtualizer({
+      count: 100,
+      estimatedItemSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(30),
+    })
+    let notifications = 0
+    virtualizer.subscribe(() => {
+      notifications++
+    })
+
+    simulateScroll(virtualizer, { currentTarget: { scrollTop: 500, scrollLeft: 0 } })
+    const before = notifications
+
+    const [first] = virtualizer.getVirtualItems()
+    mountItem(virtualizer, first!.index, createMeasuredElement(40))
+    await Promise.resolve()
+
+    expect(notifications).toBe(before + 1)
+  })
+
   test("batches ResizeObserver measurements into one animation frame", () => {
     const listeners: Array<(entry: ResizeObserverEntry) => void> = []
     vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation((_element, listener) => {
