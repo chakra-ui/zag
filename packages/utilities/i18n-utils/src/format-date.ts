@@ -49,6 +49,11 @@ function pad(num: number, length: number) {
   return String(num).padStart(length, "0")
 }
 
+// `toLocaleString` ignores "2-digit" for minutes and seconds when no hour is formatted
+function padLocale(num: number, locale: string) {
+  return num.toLocaleString(locale, { minimumIntegerDigits: 2, useGrouping: false })
+}
+
 function zone(str: string) {
   return str.split(/AM|PM/)[1].trim()
 }
@@ -166,7 +171,7 @@ function getFormat(date: Date, options: FormatDateOptions) {
     case "mo":
       return ordinal(date.toLocaleString(locale, { minute: "numeric" }))
     case "mm":
-      return date.toLocaleString(locale, { minute: "2-digit" })
+      return padLocale(date.getMinutes(), locale)
 
     // second
     case "s":
@@ -174,7 +179,7 @@ function getFormat(date: Date, options: FormatDateOptions) {
     case "so":
       return ordinal(date.toLocaleString(locale, { second: "numeric" }))
     case "ss":
-      return date.toLocaleString(locale, { second: "2-digit" })
+      return padLocale(date.getSeconds(), locale)
 
     // timestamp
     case "T":
