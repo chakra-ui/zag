@@ -35,7 +35,7 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
 
 <template>
   <main class="cascade-select">
-    <div v-bind="api.getRootProps()">
+    <fieldset v-bind="api.getRootProps()" style="border: 0; margin: 0; padding: 0">
       <label v-bind="api.getLabelProps()">Select a location</label>
 
       <div v-bind="api.getControlProps()">
@@ -61,7 +61,7 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
           </div>
         </div>
       </Teleport>
-    </div>
+    </fieldset>
 
     <div style="margin-top: 350px">
       <h3>Highlighted Value:</h3>
