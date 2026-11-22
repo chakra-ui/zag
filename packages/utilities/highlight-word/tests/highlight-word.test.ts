@@ -403,6 +403,18 @@ describe("highlightWord / Multiple Occurrences", () => {
     `)
   })
 
+  test("query with only empty items", () => {
+    const result = highlightWord({ text: "The fox", query: ["", ""], matchAll: true })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The fox",
+        },
+      ]
+    `)
+  })
+
   test("not exact match partial words", () => {
     const result = highlightWord({
       text: "The quickly brown fox quick runs",
