@@ -1,5 +1,20 @@
 # @zag-js/number-input
 
+## 1.49.0
+
+### Patch Changes
+
+- [`e8e6f24`](https://github.com/chakra-ui/zag/commit/e8e6f241c8a986d9bc986c03ce7c9955452e2a3f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix fast typing dropping keys when the input's value sync ran
+  after a newer keystroke.
+- Updated dependencies [[`23e2c35`](https://github.com/chakra-ui/zag/commit/23e2c35b773702c0209e09f14db1280286c97826),
+  [`e9254a1`](https://github.com/chakra-ui/zag/commit/e9254a1b7d0f86b95b33c25c1488abd5f36b477c)]:
+  - @zag-js/dom-query@1.49.0
+  - @zag-js/types@1.49.0
+  - @zag-js/core@1.49.0
+  - @zag-js/anatomy@1.49.0
+  - @zag-js/utils@1.49.0
+
 ## 1.48.0
 
 ### Patch Changes
