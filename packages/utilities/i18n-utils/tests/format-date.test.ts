@@ -68,6 +68,13 @@ describe("formatDate", () => {
     expect(run("mm")).toMatchInlineSnapshot(`"15"`)
   })
 
+  test("pads single-digit minutes and seconds", () => {
+    const date = new Date(2022, 0, 1, 4, 5, 7)
+    expect(formatDate(date, "mm", "en-US")).toBe("05")
+    expect(formatDate(date, "ss", "en-US")).toBe("07")
+    expect(formatDate(date, "HH:mm:ss", "en-US")).toBe("04:05:07")
+  })
+
   test("format quarter", () => {
     expect(run("Q")).toMatchInlineSnapshot(`"1"`)
     expect(run("Qo")).toMatchInlineSnapshot(`"1st"`)
