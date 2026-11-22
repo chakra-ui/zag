@@ -2,7 +2,7 @@
 
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
-import { ListCollection } from "@zag-js/collection"
+import { createListCollection } from "@zag-js/collection"
 import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import styles from "@styles/dnd-list.module.css"
@@ -14,7 +14,7 @@ type FolderItem = { id: string; kind: "folder"; name: string; children: FileItem
 type Item = FileItem | FolderItem
 
 function createList<T extends { id: string; name: string }>(items: T[]) {
-  return new ListCollection({
+  return createListCollection({
     items,
     itemToValue: (item) => item.id,
     itemToString: (item) => item.name,

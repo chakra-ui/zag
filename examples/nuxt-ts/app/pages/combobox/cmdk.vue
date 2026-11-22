@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PageListCollection } from "@zag-js/collection"
+import { createPageListCollection, type PageListCollection } from "@zag-js/collection"
 import * as dialog from "@zag-js/dialog"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { commandData } from "@zag-js/shared"
@@ -9,7 +9,7 @@ import "@styles/cmdk.css"
 type Item = commandData.PageItem
 
 const createCollection = () =>
-  new PageListCollection<Item>({
+  createPageListCollection<Item>({
     items: commandData.pageItems,
     itemToValue: (item) => item.value,
     itemToString: (item) => item.label,

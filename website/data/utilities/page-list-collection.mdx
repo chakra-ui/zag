@@ -21,9 +21,9 @@ Pass every item, on every page, as a flat list. An item with a `parent` lives on
 its parent's page. `items` holds the items on the open page.
 
 ```ts
-import { PageListCollection } from "@zag-js/collection"
+import { createPageListCollection } from "@zag-js/collection"
 
-const pages = new PageListCollection({
+const pages = createPageListCollection({
   items: [
     { value: "theme", label: "Change theme" },
     { value: "light", label: "Light", parent: "theme" },

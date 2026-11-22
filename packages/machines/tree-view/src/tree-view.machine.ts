@@ -1,4 +1,4 @@
-import type { TreeNode } from "@zag-js/collection"
+import { toggleTreeChecked } from "@zag-js/collection"
 import type { Params } from "@zag-js/core"
 import { createGuards, createMachine } from "@zag-js/core"
 import { AnimationFrame, getByTypeahead, setElementValue } from "@zag-js/dom-query"
@@ -6,9 +6,8 @@ import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
-import { toggleBranchChecked } from "./utils/checked-state"
 import { expandBranches } from "./utils/expand-branch"
-import { skipFn } from "./utils/visit-skip"
+import { createTreeState } from "./utils/tree-state"
 
 const { and } = createGuards<TreeViewSchema>()
 
@@ -95,6 +94,7 @@ export const machine = createMachine<TreeViewSchema>({
 
   refs() {
     return {
+      treeState: createTreeState(),
       typeaheadState: { ...getByTypeahead.defaultOptions },
       pendingAborts: new Map(),
       focusNodeFrame: AnimationFrame.create(),
@@ -107,16 +107,11 @@ export const machine = createMachine<TreeViewSchema>({
     isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
     isCheckboxMode: ({ prop }) => prop("checkedValue") !== undefined || prop("defaultCheckedValue") !== undefined,
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar.length > 0,
-    visibleNodes: ({ prop, context }) => {
-      const nodes: { node: TreeNode; indexPath: number[] }[] = []
-      prop("collection").visit({
-        skip: skipFn({ prop, context }),
-        onEnter: (node, indexPath) => {
-          nodes.push({ node, indexPath })
-        },
-      })
-      return nodes
-    },
+    visibleTree: ({ prop, context, refs }) =>
+      refs.get("treeState").visible(prop("collection"), context.get("expandedValue")),
+    visibleNodes: ({ computed }) => computed("visibleTree").nodes,
+    checkedStates: ({ prop, context, refs }) =>
+      refs.get("treeState").checked(prop("collection"), context.get("checkedValue")),
   },
 
   on: {
@@ -258,6 +253,7 @@ export const machine = createMachine<TreeViewSchema>({
       },
     },
     renaming: {
+      exit: ["cancelRenameFrames"],
       entry: ["syncRenameInput", "focusRenameInput"],
       on: {
         "RENAME.SUBMIT": {
@@ -336,9 +332,9 @@ export const machine = createMachine<TreeViewSchema>({
         context.set("selectedValue", [])
       },
       focusTreeFirstNode(params) {
-        const { prop, scope, refs } = params
+        const { prop, scope, refs, computed } = params
         const collection = prop("collection")
-        const firstNode = collection.getFirstNode(undefined, { skip: skipFn(params) })
+        const firstNode = computed("visibleTree").getFirstNode()
         if (!firstNode) return
         const firstValue = collection.getNodeValue(firstNode)
         const scrolled = scrollToNode(params, firstValue)
@@ -346,18 +342,19 @@ export const machine = createMachine<TreeViewSchema>({
         else dom.focusNode(scope, firstValue)
       },
       focusTreeLastNode(params) {
-        const { prop, scope, refs } = params
+        const { prop, scope, refs, computed } = params
         const collection = prop("collection")
-        const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
+        const lastNode = computed("visibleTree").getLastNode()
+        if (!lastNode) return
         const lastValue = collection.getNodeValue(lastNode)
         const scrolled = scrollToNode(params, lastValue)
         if (scrolled) refs.get("focusNodeFrame").request(() => dom.focusNode(scope, lastValue))
         else dom.focusNode(scope, lastValue)
       },
       focusTreeNextNode(params) {
-        const { event, prop, scope, refs } = params
+        const { event, prop, scope, refs, computed } = params
         const collection = prop("collection")
-        const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
+        const nextNode = computed("visibleTree").getNextNode(event.id)
         if (!nextNode) return
         const nextValue = collection.getNodeValue(nextNode)
         const scrolled = scrollToNode(params, nextValue)
@@ -365,9 +362,9 @@ export const machine = createMachine<TreeViewSchema>({
         else dom.focusNode(scope, nextValue)
       },
       focusTreePrevNode(params) {
-        const { event, prop, scope, refs } = params
+        const { event, prop, scope, refs, computed } = params
         const collection = prop("collection")
-        const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
+        const prevNode = computed("visibleTree").getPreviousNode(event.id)
         if (!prevNode) return
         const prevValue = collection.getNodeValue(prevNode)
         const scrolled = scrollToNode(params, prevValue)
@@ -431,24 +428,24 @@ export const machine = createMachine<TreeViewSchema>({
       extendSelectionToNode(params) {
         const { context, event, prop, computed } = params
         const collection = prop("collection")
-        const anchorValue = first(context.get("selectedValue")) || collection.getNodeValue(collection.getFirstNode())
+        const firstNode = computed("visibleTree").getFirstNode()
+        const anchorValue = first(context.get("selectedValue")) || (firstNode && collection.getNodeValue(firstNode))
+        if (anchorValue == null) return
         const targetValue = event.id
 
         let values: string[] = [anchorValue, targetValue]
 
         let hits = 0
-        const visibleNodes = computed("visibleNodes")
-        visibleNodes.forEach(({ node }) => {
-          const nodeValue = collection.getNodeValue(node)
+        for (const nodeValue of computed("visibleTree").values()) {
           if (hits === 1) values.push(nodeValue)
           if (nodeValue === anchorValue || nodeValue === targetValue) hits++
-        })
+        }
         context.set("selectedValue", uniq(values))
       },
       extendSelectionToNextNode(params) {
-        const { context, event, prop } = params
+        const { context, event, prop, computed } = params
         const collection = prop("collection")
-        const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
+        const nextNode = computed("visibleTree").getNextNode(event.id)
         if (!nextNode) return
 
         const values = new Set(context.get("selectedValue"))
@@ -465,9 +462,9 @@ export const machine = createMachine<TreeViewSchema>({
         context.set("selectedValue", Array.from(values))
       },
       extendSelectionToPrevNode(params) {
-        const { context, event, prop } = params
+        const { context, event, prop, computed } = params
         const collection = prop("collection")
-        const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
+        const prevNode = computed("visibleTree").getPreviousNode(event.id)
         if (!prevNode) return
 
         const values = new Set(context.get("selectedValue"))
@@ -483,40 +480,26 @@ export const machine = createMachine<TreeViewSchema>({
 
         context.set("selectedValue", Array.from(values))
       },
-      extendSelectionToFirstNode(params) {
-        const { context, prop } = params
-        const collection = prop("collection")
+      extendSelectionToFirstNode({ context, computed }) {
         const currentSelection = first(context.get("selectedValue"))
         const values: string[] = []
 
-        collection.visit({
-          skip: skipFn(params),
-          onEnter: (node) => {
-            const nodeValue = collection.getNodeValue(node)
-            values.push(nodeValue)
-            if (nodeValue === currentSelection) {
-              return "stop"
-            }
-          },
-        })
+        for (const nodeValue of computed("visibleTree").values()) {
+          values.push(nodeValue)
+          if (nodeValue === currentSelection) break
+        }
 
         context.set("selectedValue", values)
       },
-      extendSelectionToLastNode(params) {
-        const { context, prop } = params
-        const collection = prop("collection")
+      extendSelectionToLastNode({ context, computed }) {
         const currentSelection = first(context.get("selectedValue"))
         const values: string[] = []
         let current = false
 
-        collection.visit({
-          skip: skipFn(params),
-          onEnter: (node) => {
-            const nodeValue = collection.getNodeValue(node)
-            if (nodeValue === currentSelection) current = true
-            if (current) values.push(nodeValue)
-          },
-        })
+        for (const nodeValue of computed("visibleTree").values()) {
+          if (nodeValue === currentSelection) current = true
+          if (current) values.push(nodeValue)
+        }
 
         context.set("selectedValue", values)
       },
@@ -528,7 +511,7 @@ export const machine = createMachine<TreeViewSchema>({
       toggleChecked({ context, event, prop }) {
         const collection = prop("collection")
         context.set("checkedValue", (prev) =>
-          event.isBranch ? toggleBranchChecked(collection, event.value, prev) : addOrRemove(prev, event.value),
+          event.isBranch ? toggleTreeChecked(collection, prev, event.value) : addOrRemove(prev, event.value),
         )
       },
       setChecked({ context, event }) {
@@ -623,6 +606,10 @@ export const machine = createMachine<TreeViewSchema>({
           inputEl.select()
         })
       },
+      cancelRenameFrames({ refs }) {
+        refs.get("renameSyncFrame").cancel()
+        refs.get("renameFocusFrame").cancel()
+      },
       cancelFrames({ refs }) {
         refs.get("focusNodeFrame").cancel()
         refs.get("renameSyncFrame").cancel()
@@ -637,20 +624,16 @@ function scrollToNode(params: Params<TreeViewSchema>, value: string): boolean {
   const scrollToIndexFn = prop("scrollToIndexFn")
   if (!scrollToIndexFn) return false
 
-  const collection = prop("collection")
-  const visibleNodes = computed("visibleNodes")
+  const visibleTree = computed("visibleTree")
+  const index = visibleTree.getIndex(value)
+  if (index == null) return false
 
-  for (let i = 0; i < visibleNodes.length; i++) {
-    const { node, indexPath } = visibleNodes[i]
-    if (collection.getNodeValue(node) !== value) continue
-    scrollToIndexFn({
-      index: i,
-      node,
-      indexPath,
-      getElement: () => scope.getById(dom.getNodeId(scope, value)),
-    })
-    return true
-  }
-
-  return false
+  const { node, indexPath } = visibleTree.getNode(value)!
+  scrollToIndexFn({
+    index,
+    node,
+    indexPath,
+    getElement: () => scope.getById(dom.getNodeId(scope, value)),
+  })
+  return true
 }

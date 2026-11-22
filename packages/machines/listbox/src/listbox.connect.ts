@@ -1,4 +1,10 @@
-import { isGridCollection, type CollectionItem, type ListCollection } from "@zag-js/collection"
+import {
+  isGridCollection,
+  type CollectionItem,
+  type ListCollection,
+  getSelectAllCoverage,
+  selectAllValues,
+} from "@zag-js/collection"
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
@@ -19,7 +25,7 @@ import { getInteractionModality } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./listbox.anatomy"
-import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./listbox.dom"
 import type {
   ContentState,
@@ -68,14 +74,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     return listCollection().navigate({ before: hasSelectAll ? [SELECT_ALL_VALUE] : [] })
   }
 
+  let selectAllState: SelectAllState | undefined
   function getSelectAllState(): SelectAllState {
+    if (selectAllState) return selectAllState
     const { enabled, checked, indeterminate } = getSelectAllCoverage(listCollection(), value)
-    return {
+    selectAllState = {
       checked,
       indeterminate,
       highlighted: highlightedValue === SELECT_ALL_VALUE,
       disabled: !!disabled || enabled.length === 0,
     }
+    return selectAllState
   }
 
   // Grids page by rows to keep the column
@@ -84,20 +93,28 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     return isGridCollection(collection) ? pageSize * collection.columnCount : pageSize
   }
 
+  // Each part of an item asks for its state, so compute it once per item per render
+  const itemStates = new Map<unknown, ItemState>()
+  let selectedValues: Set<string> | undefined
+
   function getItemState(props: ItemProps): ItemState {
+    const cached = itemStates.get(props.item)
+    if (cached) return cached
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     const highlighted = highlightedValue === value
-    return {
+    const state: ItemState = {
       value,
       disabled: Boolean(disabled || itemDisabled),
       focused: highlighted && focused,
       focusVisible: highlighted && focusVisible,
       // deprecated
       highlighted: highlighted && (inputState.focused ? focused : focusVisible),
-      selected: context.get("value").includes(value),
+      selected: (selectedValues ??= new Set(context.get("value"))).has(value),
     }
+    itemStates.set(props.item, state)
+    return state
   }
 
   function getContentState(): ContentState {

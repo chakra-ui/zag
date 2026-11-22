@@ -1,9 +1,9 @@
 import {
-  ListCollection,
   createSelectedItemMap,
   deriveSelectionState,
   resolveSelectedItems,
   updateSelectedItemMap,
+  createListCollection,
 } from "../src"
 
 type Item = { label: string; value: string }
@@ -14,7 +14,7 @@ const items: Item[] = [
   { label: "Solid", value: "solid" },
 ]
 
-const collection = new ListCollection<Item>({
+const collection = createListCollection<Item>({
   items,
   itemToValue: (item) => item.value,
   itemToString: (item) => item.label,
@@ -28,7 +28,7 @@ describe("Selection Map", () => {
   })
 
   it("falls back to selected item map when collection misses value", () => {
-    const filteredCollection = new ListCollection<Item>({
+    const filteredCollection = createListCollection<Item>({
       items: [items[1]],
       itemToValue: (item) => item.value,
       itemToString: (item) => item.label,

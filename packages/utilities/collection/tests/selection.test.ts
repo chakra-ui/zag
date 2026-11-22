@@ -1,6 +1,6 @@
-import { ListCollection, Selection } from "../src"
+import { Selection, createListCollection } from "../src"
 
-const collection = new ListCollection({
+const collection = createListCollection({
   items: [
     { id: "1", value: "1" },
     { id: "2", value: "2" },
@@ -94,5 +94,15 @@ describe("Selection", () => {
         "6",
       }
     `)
+  })
+
+  test("disabled items can't be selected", () => {
+    const list = createListCollection({ items: [{ value: "a" }, { value: "b", disabled: true }] })
+    for (const mode of ["single", "multiple"] as const) {
+      const selection = new Selection()
+      selection.selectionMode = mode
+      expect(selection.canSelect(list, "b")).toBe(false)
+      expect(selection.canSelect(list, "a")).toBe(true)
+    }
   })
 })

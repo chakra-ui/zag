@@ -1,11 +1,17 @@
-import { type FilePathTreeNode, TreeCollection, type TreeCollectionOptions, filePathToTree } from "@zag-js/collection"
+import {
+  type FilePathTreeNode,
+  type TreeCollection,
+  createTreeCollection,
+  type TreeCollectionOptions,
+  filePathToTree,
+} from "@zag-js/collection"
 
 export const collection = <T>(options: TreeCollectionOptions<T>): TreeCollection<T> => {
-  return new TreeCollection(options)
+  return createTreeCollection(options)
 }
 
 collection.empty = (): TreeCollection => {
-  return new TreeCollection({ rootNode: { children: [] } })
+  return createTreeCollection({ rootNode: { children: [] } })
 }
 
 export function filePathCollection(paths: string[]): TreeCollection<FilePathTreeNode> {

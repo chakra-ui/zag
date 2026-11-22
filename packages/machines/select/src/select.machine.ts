@@ -1,4 +1,4 @@
-import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
+import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems, toggleSelectAll } from "@zag-js/collection"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
@@ -24,7 +24,7 @@ import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
 import { trackAlignItemWithTrigger } from "./align-with-trigger"
 import { collection } from "./select.collection"
-import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./select.dom"
 import type { CollectionItem, OpenChangeReason, SelectSchema, ValueChangeReason } from "./select.types"
 

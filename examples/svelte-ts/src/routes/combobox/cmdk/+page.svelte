@@ -1,7 +1,7 @@
 <script lang="ts">
   import ComboboxCommandMenu from "#lib/components/combobox-command-menu.svelte"
   import Portal from "#lib/components/portal.svelte"
-  import { PageListCollection } from "@zag-js/collection"
+  import { createPageListCollection, type PageListCollection } from "@zag-js/collection"
   import * as dialog from "@zag-js/dialog"
   import { createHotkeyStore } from "@zag-js/hotkeys"
   import { commandData } from "@zag-js/shared"
@@ -11,7 +11,7 @@
   type Item = commandData.PageItem
 
   const createCollection = () =>
-    new PageListCollection<Item>({
+    createPageListCollection<Item>({
       items: commandData.pageItems,
       itemToValue: (item) => item.value,
       itemToString: (item) => item.label,

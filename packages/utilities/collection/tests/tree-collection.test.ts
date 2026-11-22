@@ -1,5 +1,5 @@
 import { omit } from "@zag-js/utils"
-import { filePathToTree, flattenedToTree, TreeCollection } from "../src/tree-collection"
+import { filePathToTree, flattenedToTree, createTreeCollection, type TreeCollection } from "../src"
 import { diagram } from "./tree-diagram"
 
 interface Node {
@@ -34,7 +34,7 @@ const draw = (node: Node) => {
 }
 
 beforeEach(() => {
-  tree = new TreeCollection({
+  tree = createTreeCollection({
     nodeToChildren: (node) => node.children ?? [],
     rootNode,
   })
@@ -137,7 +137,7 @@ describe("tree / traversal", () => {
 
   it("one branch scenario", () => {
     // Test case with only one branch - the last node should be the deepest last child
-    const oneBranchTree = new TreeCollection({
+    const oneBranchTree = createTreeCollection({
       nodeToChildren: (node) => node.children ?? [],
       rootNode: {
         value: "ROOT",
@@ -282,7 +282,7 @@ describe("tree / traversal", () => {
   })
 
   it("skips disabled nodes", () => {
-    const tree = new TreeCollection({
+    const tree = createTreeCollection({
       nodeToChildren: (node) => node.children,
       rootNode: {
         value: "ROOT",
@@ -576,7 +576,7 @@ describe("tree / siblings", () => {
   })
 
   it("skips disabled siblings", () => {
-    const tree = new TreeCollection({
+    const tree = createTreeCollection({
       nodeToChildren: (node) => node.children,
       rootNode: {
         value: "ROOT",
@@ -639,7 +639,7 @@ describe("tree / flatten", () => {
   let complexTreeCollection: TreeCollection<TestNode>
 
   beforeEach(() => {
-    complexTreeCollection = new TreeCollection({
+    complexTreeCollection = createTreeCollection({
       nodeToChildren: (node) => node.children ?? [],
       rootNode: complexTree,
     })
@@ -795,7 +795,7 @@ describe("tree / flatten", () => {
   })
 
   it("handles empty tree", () => {
-    const emptyTree = new TreeCollection({
+    const emptyTree = createTreeCollection({
       nodeToChildren: (node) => node.children ?? [],
       rootNode: { value: "EMPTY", children: [] },
     })
@@ -834,7 +834,7 @@ describe("tree / flatten", () => {
       ],
     }
 
-    const deepTreeCollection = new TreeCollection({
+    const deepTreeCollection = createTreeCollection({
       nodeToChildren: (node) => node?.children ?? [],
       rootNode: deepTree,
     })

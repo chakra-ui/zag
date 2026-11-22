@@ -16,32 +16,20 @@ export interface CollectionSearchOptions {
 export type CollectionItem = any
 
 export interface CollectionMethods<T extends CollectionItem = CollectionItem> {
-  /**
-   * The value of the item
-   */
+  /** The value of the item */
   itemToValue: (item: T) => string
-  /**
-   * The label of the item
-   */
+  /** The label of the item */
   itemToString: (item: T) => string
-  /**
-   * Whether the item is disabled
-   */
+  /** Whether the item is disabled */
   isItemDisabled: (item: T) => boolean
 }
 
 export interface CollectionOptions<T extends CollectionItem = CollectionItem> extends Partial<CollectionMethods<T>> {
-  /**
-   * The options of the select
-   */
+  /** The options of the select */
   items: Iterable<T> | Readonly<Iterable<T>>
-  /**
-   * Function to group items
-   */
+  /** Function to group items */
   groupBy?: ((item: T, index: number) => string) | undefined
-  /**
-   * Function to sort items
-   */
+  /** Function to sort items */
   groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc" | undefined
 }
 
@@ -62,6 +50,8 @@ export interface TreeCollectionMethods<T> {
 }
 
 export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
+  /** Rebuild a node after editing children stored in a custom field. */
+  nodeToCreate?: ((node: T, children: T[]) => T) | undefined
   rootNode: T
 }
 

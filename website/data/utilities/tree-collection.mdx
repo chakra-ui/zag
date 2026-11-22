@@ -18,7 +18,7 @@ const collection = tree.collection({ rootNode }) // TreeCollection
 const files = tree.filePathCollection(["src/index.ts", "package.json"])
 ```
 
-To use the class on its own:
+To use the collection on its own:
 
 ```bash
 npm install @zag-js/collection
@@ -29,9 +29,9 @@ npm install @zag-js/collection
 Pass a single root node. Its children are the top-level items.
 
 ```ts
-import { TreeCollection } from "@zag-js/collection"
+import { createTreeCollection } from "@zag-js/collection"
 
-const tree = new TreeCollection({
+const tree = createTreeCollection({
   rootNode: {
     value: "ROOT",
     label: "",
@@ -63,6 +63,12 @@ other shapes with these options. They work like the
 
 Set `childrenCount` on nodes whose children load later. Those count as branches
 before they have children.
+
+Create the collection at module scope when the data is static. If the data
+changes, memoize the collection in your framework and recreate it when the data
+changes. Tree view reuses its visible rows and checked states while the
+collection instance stays the same. Creating a new collection on every render
+rebuilds the index and invalidates those caches.
 
 ## Paths
 
@@ -117,7 +123,10 @@ const next = tree.getNextNode("src", {
 
 ## Update a tree
 
-Each returns a new `TreeCollection`.
+Each returns a new `TreeCollection` when it changes the tree. Keep the original
+collection for reads against the original structure. For custom children fields,
+pass `nodeToCreate(node, children)` so edits can write the new children back to
+that field.
 
 | Method                              | Change                                                                      |
 | ----------------------------------- | --------------------------------------------------------------------------- |

@@ -1,5 +1,5 @@
 import { isEqual } from "@zag-js/utils"
-import type { ListCollection } from "./list-collection"
+import type { ListCollection } from "./list/collection"
 
 /**
  * The mode of the selection.
@@ -19,33 +19,33 @@ export class Selection extends Set<string> {
     super(values)
   }
 
-  copy = (): Selection => {
+  copy(): Selection {
     const clone = new Selection([...this])
     return this.sync(clone)
   }
 
-  private sync = (other: Selection): Selection => {
+  private sync(other: Selection): Selection {
     other.selectionMode = this.selectionMode
     other.deselectable = this.deselectable
     return other
   }
 
-  isEmpty = (): boolean => {
+  isEmpty(): boolean {
     return this.size === 0
   }
 
-  isSelected = (value: string | null): boolean => {
+  isSelected(value: string | null): boolean {
     if (this.selectionMode === "none" || value == null) {
       return false
     }
     return this.has(value)
   }
 
-  canSelect = (collection: ListCollection, value: string): boolean => {
-    return this.selectionMode !== "none" || !collection.getItemDisabled(collection.find(value))
+  canSelect(collection: ListCollection, value: string): boolean {
+    return this.selectionMode !== "none" && !collection.getItemDisabled(collection.find(value))
   }
 
-  firstSelectedValue = (collection: ListCollection): string | null => {
+  firstSelectedValue(collection: ListCollection): string | null {
     let firstValue: string | null = null
     for (let value of this) {
       if (!firstValue || collection.compareValue(value, firstValue) < 0) {
@@ -55,7 +55,7 @@ export class Selection extends Set<string> {
     return firstValue
   }
 
-  lastSelectedValue = (collection: ListCollection): string | null => {
+  lastSelectedValue(collection: ListCollection): string | null {
     let lastValue: string | null = null
     for (let value of this) {
       if (!lastValue || collection.compareValue(value, lastValue) > 0) {
@@ -65,12 +65,12 @@ export class Selection extends Set<string> {
     return lastValue
   }
 
-  extendSelection = (
+  extendSelection(
     collection: ListCollection,
     anchorValue: string,
     targetValue: string,
     currentValue?: string | null,
-  ): Selection => {
+  ): Selection {
     if (this.selectionMode === "none") {
       return this
     }
@@ -96,7 +96,7 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  toggleSelection = (collection: ListCollection, value: string): Selection => {
+  toggleSelection(collection: ListCollection, value: string): Selection {
     if (this.selectionMode === "none") {
       return this
     }
@@ -115,7 +115,7 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  replaceSelection = (collection: ListCollection, value: string | null): Selection => {
+  replaceSelection(collection: ListCollection, value: string | null): Selection {
     if (this.selectionMode === "none") {
       return this
     }
@@ -132,7 +132,7 @@ export class Selection extends Set<string> {
     return this.sync(selection)
   }
 
-  setSelection = (values: Iterable<string>): Selection => {
+  setSelection(values: Iterable<string>): Selection {
     if (this.selectionMode === "none") {
       return this
     }
@@ -150,7 +150,7 @@ export class Selection extends Set<string> {
     return this.sync(selection)
   }
 
-  clearSelection = (): Selection => {
+  clearSelection(): Selection {
     const selection = this.copy()
     if (selection.deselectable && selection.size > 0) {
       selection.clear()
@@ -158,7 +158,7 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  select = (collection: ListCollection, value: string, forceToggle?: boolean): Selection => {
+  select(collection: ListCollection, value: string, forceToggle?: boolean): Selection {
     if (this.selectionMode === "none") {
       return this
     }
@@ -176,13 +176,13 @@ export class Selection extends Set<string> {
     }
   }
 
-  deselect = (value: string): Selection => {
+  deselect(value: string): Selection {
     const selection = this.copy()
     selection.delete(value)
     return selection
   }
 
-  isEqual = (other: Selection): boolean => {
+  isEqual(other: Selection): boolean {
     return isEqual(Array.from(this), Array.from(other))
   }
 }

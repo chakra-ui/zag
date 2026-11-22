@@ -1,4 +1,4 @@
-import { ListCollection } from "@zag-js/collection"
+import { createListCollection } from "@zag-js/collection"
 import * as dnd from "@zag-js/dnd"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { GripVerticalIcon } from "lucide-preact"
@@ -10,7 +10,7 @@ import styles from "@styles/dnd-list.module.css"
 type Item = { id: string; name: string }
 
 function createList(items: Item[]) {
-  return new ListCollection({
+  return createListCollection({
     items,
     itemToValue: (item) => item.id,
     itemToString: (item) => item.name,

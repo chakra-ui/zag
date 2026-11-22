@@ -18,7 +18,7 @@ import * as listbox from "@zag-js/listbox"
 const collection = listbox.gridCollection({ items, columnCount: 4 }) // GridCollection
 ```
 
-To use the class on its own:
+To use the collection on its own:
 
 ```bash
 npm install @zag-js/collection
@@ -29,9 +29,9 @@ npm install @zag-js/collection
 Pass the items and `columnCount`. Items fill the grid row by row.
 
 ```ts
-import { GridCollection } from "@zag-js/collection"
+import { createGridCollection } from "@zag-js/collection"
 
-const grid = new GridCollection({
+const grid = createGridCollection({
   items: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
   columnCount: 4,
 })
@@ -56,7 +56,7 @@ and `isItemDisabled`. See
 `getRows()` chunks the items into rows.
 
 ```tsx title="emoji-grid.tsx"
-import { GridCollection } from "@zag-js/collection"
+import { type GridCollection } from "@zag-js/collection"
 
 interface Emoji {
   value: string

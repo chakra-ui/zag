@@ -1,11 +1,19 @@
-export { GridCollection, isGridCollection, type GridCollectionOptions } from "./grid-collection"
-export { isListCollection, ListCollection, type ListNavigateOptions, type ListNavigation } from "./list-collection"
+export { createGridCollection, isGridCollection, type GridCollection, type GridCollectionOptions } from "./list/grid"
 export {
+  createListCollection,
+  isListCollection,
+  type ListCollection,
+  type ListNavigateOptions,
+  type ListNavigation,
+} from "./list/collection"
+export {
+  createPageListCollection,
   isPageListCollection,
-  PageListCollection,
+  type PageListCollection,
   type PageListCollectionOptions,
   type PageRestore,
-} from "./page-list-collection"
+} from "./list/page"
+export { getSelectAllCoverage, selectAllValues, toggleSelectAll, type SelectAllCoverage } from "./list/select-all"
 export {
   createSelectedItemMap,
   deriveSelectionState,
@@ -14,7 +22,7 @@ export {
   type SelectionMapCollection,
 } from "./selection-map"
 export { Selection, type SelectionMode } from "./selection"
-export { filePathToTree, flattenedToTree, TreeCollection } from "./tree-collection"
+export { getTreeCheckedStates, toggleTreeChecked, type TreeCheckedState } from "./tree/checked"
 export type {
   CollectionItem,
   CollectionMethods,
@@ -31,3 +39,5 @@ export type {
   TreeSkipFn,
   ValuePath,
 } from "./types"
+export { createTreeCollection, type TreeCollection } from "./tree/collection"
+export { filePathToTree, flattenedToTree } from "./tree/conversion"

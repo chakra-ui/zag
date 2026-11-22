@@ -1,6 +1,6 @@
 ```html
 <script setup>
-  import { ListCollection } from "@zag-js/collection"
+  import { createListCollection } from "@zag-js/collection"
   import * as dnd from "@zag-js/dnd"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
   import { computed, ref } from "vue"
@@ -12,7 +12,7 @@
   ]
 
   function createList(items) {
-    return new ListCollection({
+    return createListCollection({
       items,
       itemToValue: (item) => item.id,
       itemToString: (item) => item.name,

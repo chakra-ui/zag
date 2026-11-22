@@ -13,10 +13,12 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { add, match, mergeWithDefault, uniq } from "@zag-js/utils"
+import { add, isEqual, match, mergeWithDefault, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type {
+  CheckedState,
+  CheckedValueMap,
   IntlTranslations,
   NodeIndicatorProps,
   NodeProps,
@@ -25,7 +27,6 @@ import type {
   TreeViewApi,
   TreeViewService,
 } from "./tree-view.types"
-import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
 const defaultTranslations: Required<IntlTranslations> = {
   treeLabel: "Tree View",
@@ -36,7 +37,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   service: TreeViewService<V>,
   normalize: NormalizeProps<T>,
 ): TreeViewApi<T, V> {
-  const { context, scope, computed, prop, send } = service
+  const { context, scope, computed, prop, send, refs } = service
   const collection = prop("collection")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
@@ -50,44 +51,48 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const renamingValue = context.get("renamingValue")
   const isCheckboxMode = computed("isCheckboxMode")
 
-  const skip = ({ indexPath }: { indexPath: number[] }) => {
-    const paths = collection.getValuePath(indexPath).slice(0, -1)
-    return paths.some((value) => !expandedValue.includes(value))
-  }
+  const expandedSet = refs.get("treeState").expanded(expandedValue)
+  const selectedSet = refs.get("treeState").selected(selectedValue)
 
-  const firstNode = collection.getFirstNode(undefined, { skip })
+  let checkedStates: Map<string, CheckedState> | undefined
+  const getCheckedStates = () => (checkedStates ??= computed("checkedStates"))
+
+  const visibleTree = computed("visibleTree")
+  const firstNode = visibleTree.getFirstNode()
   const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
 
   // Fall back to the first row when the focused node is missing or collapsed, so the tree stays tabbable
-  const focusedIndexPath = focusedValue != null ? collection.getIndexPath(focusedValue) : undefined
-  const tabbableValue = focusedIndexPath && !skip({ indexPath: focusedIndexPath }) ? focusedValue : firstNodeValue
+  const tabbableValue =
+    focusedValue != null && visibleTree.getIndex(focusedValue) != null ? focusedValue : firstNodeValue
 
   // Each part of a node asks for its state, so compute it once per node per render
-  const nodeStates = new Map<string, NodeState>()
+  const nodeStates = new Map<TreeNode, NodeState>()
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
-    const cached = nodeStates.get(value)
-    if (cached) return cached
+    const cached = nodeStates.get(node)
+    if (cached && isEqual(cached.indexPath, indexPath)) return cached
     const state: NodeState = {
       id: dom.getNodeId(scope, value),
       value,
       indexPath,
-      valuePath: collection.getValuePath(indexPath),
-      disabled: Boolean(node.disabled),
+      get valuePath() {
+        return collection.getValuePath(indexPath)
+      },
+      disabled: collection.getNodeDisabled(node),
       focused: tabbableValue === value,
-      selected: selectedValue.includes(value),
-      expanded: expandedValue.includes(value),
+      selected: selectedSet.has(value),
+      expanded: expandedSet.has(value),
       loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
       renaming: renamingValue === value,
       get checked() {
-        return getCheckedState(collection, node, checkedValue)
+        return isCheckboxMode ? (getCheckedStates().get(value) ?? false) : false
       },
     }
-    nodeStates.set(value, state)
+    nodeStates.set(node, state)
     return state
   }
 
@@ -106,7 +111,18 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       send({ type: "CHECKED.CLEAR" })
     },
     getCheckedMap() {
-      return getCheckedValueMap(collection, checkedValue)
+      const states = getCheckedStates()
+      const map: CheckedValueMap = new Map()
+      const nodes = collection.findNodes(collection.getValues())
+      for (const node of nodes) {
+        if (node === collection.rootNode) continue
+        const value = collection.getNodeValue(node)
+        map.set(value, {
+          type: collection.isBranchNode(node) ? "branch" : "leaf",
+          checked: states.get(value) ?? false,
+        })
+      }
+      return map
     },
     expand(value) {
       send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
@@ -405,8 +421,10 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
     getNodeProps(props) {
       const nodeState = getNodeState(props)
-      const siblings = collection.getSiblingNodes(props.indexPath)
-      const posInSet = props.indexPath[props.indexPath.length - 1] + 1
+      const { indexPath } = props
+      const siblings = collection.getSiblingNodes(indexPath)
+      const position = indexPath[indexPath.length - 1]
+      const posInSet = position == null ? undefined : position + 1
       return normalize.element({
         ...parts.node.attrs(scope.id),
         id: nodeState.id,
@@ -417,7 +435,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         tabIndex: nodeState.focused ? 0 : -1,
         "data-focus": dataAttr(nodeState.focused),
         "aria-level": nodeState.depth,
-        "aria-setsize": siblings.length,
+        "aria-setsize": siblings.length || undefined,
         "aria-posinset": posInSet,
         "aria-current": nodeState.selected ? "true" : undefined,
         "aria-selected": nodeState.disabled ? undefined : nodeState.selected,

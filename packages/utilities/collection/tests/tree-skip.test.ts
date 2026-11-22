@@ -1,4 +1,4 @@
-import { TreeCollection } from "../src/tree-collection"
+import { createTreeCollection, type TreeCollection } from "../src"
 
 interface Item {
   id: string
@@ -10,7 +10,7 @@ let tree: TreeCollection<Item>
 
 beforeEach(() => {
   // @ts-expect-error
-  tree = new TreeCollection({
+  tree = createTreeCollection({
     nodeToValue: (node) => node.id,
     nodeToString: (node) => node.name,
     rootNode: {

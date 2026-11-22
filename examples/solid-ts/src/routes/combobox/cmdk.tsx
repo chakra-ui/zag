@@ -1,4 +1,4 @@
-import { PageListCollection } from "@zag-js/collection"
+import { createPageListCollection, type PageListCollection } from "@zag-js/collection"
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
 import { createFuzzySearch } from "@zag-js/fuzzy"
@@ -13,7 +13,7 @@ import "@styles/cmdk.css"
 type Item = commandData.PageItem
 
 const createCollection = () =>
-  new PageListCollection<Item>({
+  createPageListCollection<Item>({
     items: commandData.pageItems,
     itemToValue: (item) => item.value,
     itemToString: (item) => item.label,

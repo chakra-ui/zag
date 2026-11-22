@@ -19,7 +19,7 @@ import * as select from "@zag-js/select"
 const collection = select.collection({ items }) // ListCollection
 ```
 
-To use the class on its own:
+To use the collection on its own:
 
 ```bash
 npm install @zag-js/collection
@@ -28,9 +28,9 @@ npm install @zag-js/collection
 ## Create a collection
 
 ```ts
-import { ListCollection } from "@zag-js/collection"
+import { createListCollection } from "@zag-js/collection"
 
-const collection = new ListCollection({
+const collection = createListCollection({
   items: [
     { label: "Apple", value: "apple" },
     { label: "Banana", value: "banana", disabled: true },
@@ -53,7 +53,7 @@ interface Country {
   available: boolean
 }
 
-const collection = new ListCollection<Country>({
+const collection = createListCollection<Country>({
   items: countries,
   itemToValue: (item) => item.code,
   itemToString: (item) => item.name,
@@ -78,7 +78,7 @@ Values must be unique. The collection indexes items by value.
 pairs to render.
 
 ```ts
-const collection = new ListCollection({
+const collection = createListCollection({
   items: [
     { label: "Apple", value: "apple", type: "Fruit" },
     { label: "Carrot", value: "carrot", type: "Vegetable" },

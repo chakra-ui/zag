@@ -1,4 +1,4 @@
-import { GridCollection } from "../src"
+import { createGridCollection, isGridCollection, type GridCollection } from "../src"
 
 interface Item {
   label: string
@@ -32,7 +32,7 @@ const items: Item[] = [
 let grid: GridCollection<Item>
 
 beforeEach(() => {
-  grid = new GridCollection({
+  grid = createGridCollection({
     items,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
@@ -84,15 +84,15 @@ describe("grid collection", () => {
 
   test("edits keep the grid", () => {
     const next = grid.append({ label: "Extra", value: "extra" }).setItems(items.slice(0, 4))
-    expect(next).toBeInstanceOf(GridCollection)
+    expect(isGridCollection(next)).toBe(true)
     expect(next.columnCount).toBe(grid.columnCount)
     expect(next.getRowCount()).toBe(Math.ceil(4 / grid.columnCount))
   })
 
   test("copy keeps the grid type", () => {
-    const grid = new GridCollection({ items, columnCount: 3 })
+    const grid = createGridCollection({ items, columnCount: 3 })
     const next = grid.update("vue", { label: "Vue 3", value: "vue3" })
-    expect(next).toBeInstanceOf(GridCollection)
+    expect(isGridCollection(next)).toBe(true)
     expectTypeOf(next).toEqualTypeOf<GridCollection<Item>>()
     expect(next.columnCount).toBe(3)
     expect(next.getCell(0, 1)?.value).toBe("vue3")
@@ -110,14 +110,14 @@ describe("grid collection", () => {
   })
 
   test("copy keeps the current column count", () => {
-    const grid = new GridCollection({ items, columnCount: 2 })
+    const grid = createGridCollection({ items, columnCount: 2 })
     grid.columnCount = 4
     expect(grid.copy().columnCount).toBe(4)
     expect(grid.append({ label: "Zig", value: "zig" }).columnCount).toBe(4)
   })
 
   test("rows follow grouped order", () => {
-    const grouped = new GridCollection({
+    const grouped = createGridCollection({
       items: [
         { label: "A1", value: "a1", group: "a" },
         { label: "B1", value: "b1", group: "b" },
@@ -133,5 +133,13 @@ describe("grid collection", () => {
     ])
     expect(grouped.getValueCell("a2")).toEqual({ row: 0, column: 1 })
     expect(grouped.getNextRowValue("a1")).toBe("b1")
+  })
+
+  test("rows follow a changed column count", () => {
+    const grid = createGridCollection({ items, columnCount: 2 })
+    grid.getRows()
+    grid.columnCount = 3
+    expect(grid.getRows()[0]).toHaveLength(3)
+    expect(grid.getRows()[1][0]).toBe(grid.getCell(1, 0))
   })
 })

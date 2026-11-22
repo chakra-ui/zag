@@ -1,3 +1,4 @@
+import { getSelectAllCoverage, selectAllValues } from "@zag-js/collection"
 import type { Service } from "@zag-js/core"
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
@@ -33,7 +34,7 @@ import type {
   SelectSchema,
   TriggerState,
 } from "./select.types"
-import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 
 // ArrowLeft/Right/Home/End cycle the closed select's value; ArrowUp/Down open it instead.
 const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
@@ -86,26 +87,37 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  // Each part of an item asks for its state, so compute it once per item per render
+  const itemStates = new Map<unknown, ItemState>()
+  let selectedValues: Set<string> | undefined
+
   function getItemState(props: ItemProps): ItemState {
+    const cached = itemStates.get(props.item)
+    if (cached) return cached
     const _disabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
-    return {
+    const state: ItemState = {
       value,
       disabled: Boolean(disabled || _disabled),
       highlighted: highlightedValue === value,
-      selected: context.get("value").includes(value),
+      selected: (selectedValues ??= new Set(context.get("value"))).has(value),
     }
+    itemStates.set(props.item, state)
+    return state
   }
 
+  let selectAllState: SelectAllState | undefined
   function getSelectAllState(): SelectAllState {
+    if (selectAllState) return selectAllState
     const { enabled, checked, indeterminate } = getSelectAllCoverage(collection, context.get("value"))
-    return {
+    selectAllState = {
       checked,
       indeterminate,
       highlighted: highlightedValue === SELECT_ALL_VALUE,
       disabled: !!disabled || enabled.length === 0,
     }
+    return selectAllState
   }
 
   function getRootState(): RootState {

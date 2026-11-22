@@ -1,9 +1,14 @@
-import { ListCollection, type CollectionItem, type CollectionOptions } from "@zag-js/collection"
+import {
+  type CollectionItem,
+  type CollectionOptions,
+  createListCollection,
+  type ListCollection,
+} from "@zag-js/collection"
 
 export const collection = <T extends CollectionItem>(options: CollectionOptions<T>): ListCollection<T> => {
-  return new ListCollection(options)
+  return createListCollection(options)
 }
 
 collection.empty = (): ListCollection<CollectionItem> => {
-  return new ListCollection<CollectionItem>({ items: [] })
+  return createListCollection<CollectionItem>({ items: [] })
 }

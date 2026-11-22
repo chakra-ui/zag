@@ -3,6 +3,7 @@ import {
   deriveSelectionState,
   resolveSelectedItems,
   type CollectionItem,
+  toggleSelectAll,
 } from "@zag-js/collection"
 import { setup, type Params, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
@@ -33,7 +34,7 @@ import type {
   ValueChangeReason,
 } from "./combobox.types"
 import { CREATE_VALUE, isItemLabel, isPinnedValue } from "./utils/pinned"
-import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 

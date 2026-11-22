@@ -4,7 +4,7 @@
   import * as dnd from "@zag-js/dnd"
   import styles from "@styles/dnd-list.module.css"
   import { FolderIcon, GripVerticalIcon } from "lucide-svelte"
-  import { ListCollection } from "@zag-js/collection"
+  import { createListCollection } from "@zag-js/collection"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
 
   type FileItem = { id: string; kind: "file"; name: string }
@@ -12,7 +12,7 @@
   type Item = FileItem | FolderItem
 
   function createList<T extends { id: string; name: string }>(items: T[]) {
-    return new ListCollection({
+    return createListCollection({
       items,
       itemToValue: (item) => item.id,
       itemToString: (item) => item.name,

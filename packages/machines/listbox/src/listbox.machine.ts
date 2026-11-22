@@ -6,13 +6,14 @@ import {
   resolveSelectedItems,
   type CollectionItem,
   type ListCollection,
+  toggleSelectAll,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollToNearest } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
-import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 

@@ -59,18 +59,26 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  // Each part of an item asks for its state, so compute it once per item per render
+  const itemStates = new Map<unknown, ItemState>()
+  let selectedValues: Set<string> | undefined
+
   function getItemState(props: ItemProps): ItemState {
+    const cached = itemStates.get(props.item)
+    if (cached) return cached
     const itemDisabled = collection.getItemDisabled(props.item)
     const v = collection.getItemValue(props.item)
     ensure(v, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     const rowFocused = focusedValue === v
-    return {
+    const state: ItemState = {
       value: v,
       disabled: Boolean(disabled || itemDisabled),
       focused: rowFocused && focused,
       focusVisible: rowFocused && focusVisible,
-      selected: value.includes(v),
+      selected: (selectedValues ??= new Set(value)).has(v),
     }
+    itemStates.set(props.item, state)
+    return state
   }
 
   function getContentState(): ContentState {

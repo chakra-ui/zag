@@ -1,4 +1,4 @@
-import { ListCollection } from "@zag-js/collection"
+import { createListCollection } from "@zag-js/collection"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as dnd from "@zag-js/dnd"
 import { Folder, GripVertical } from "lucide-solid"
@@ -12,7 +12,7 @@ type FolderItem = { id: string; kind: "folder"; name: string; children: FileItem
 type Item = FileItem | FolderItem
 
 function createList<T extends { id: string; name: string }>(items: T[]) {
-  return new ListCollection({
+  return createListCollection({
     items,
     itemToValue: (item) => item.id,
     itemToString: (item) => item.name,

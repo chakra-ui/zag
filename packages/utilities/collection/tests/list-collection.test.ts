@@ -1,4 +1,5 @@
-import { ListCollection } from "../src"
+import { createListCollection } from "../src"
+import { ListCollection } from "../src/list/collection"
 
 interface Item {
   label: string
@@ -20,7 +21,7 @@ const items: Item[] = [
 let list: ListCollection
 
 beforeEach(() => {
-  list = new ListCollection({
+  list = createListCollection({
     items: items,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
@@ -194,7 +195,7 @@ describe("list collection", () => {
   })
 
   test("group entries", () => {
-    const collection = new ListCollection<{
+    const collection = createListCollection<{
       label: string
       value: string
       type: string
@@ -262,7 +263,7 @@ describe("list collection", () => {
   ]
 
   test("group by", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
     })
@@ -310,7 +311,7 @@ describe("list collection", () => {
   })
 
   test("group by / sort groups", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
       groupSort: ["runtime", "framework"],
@@ -359,7 +360,7 @@ describe("list collection", () => {
   })
 
   test("indexOf with grouped collection", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
       groupSort: ["runtime", "framework"],
@@ -374,7 +375,7 @@ describe("list collection", () => {
   })
 
   test("at with grouped collection", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
       groupSort: ["runtime", "framework"],
@@ -419,7 +420,7 @@ describe("list collection", () => {
   })
 
   test("update, upsert, insert and move with grouped collection", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
     })
@@ -435,7 +436,7 @@ describe("list collection", () => {
   })
 
   test("search with grouped collection follows the grouped order", () => {
-    const list = new ListCollection({
+    const list = createListCollection({
       items: [
         { label: "Apple", value: "apple", type: "fruit" },
         { label: "Avocado", value: "avocado", type: "vegetable" },
@@ -454,7 +455,7 @@ describe("list collection", () => {
   })
 
   test("grouped caches rebuild when items is reassigned", () => {
-    const list = new ListCollection({ items: groupItems, groupBy: (item) => item.type })
+    const list = createListCollection({ items: groupItems, groupBy: (item) => item.type })
     expect(list.at(0)?.value).toBe("react")
     expect(list.indexOf("vue")).toBe(1)
 
@@ -468,7 +469,7 @@ describe("list collection", () => {
   })
 
   test("indexOf stays correct past the lookup map threshold", () => {
-    const list = new ListCollection({ items: [...items, { label: "Dup", value: "react" }] })
+    const list = createListCollection({ items: [...items, { label: "Dup", value: "react" }] })
     for (let i = 0; i < 6; i++) {
       expect(list.indexOf("react")).toBe(0)
       expect(list.indexOf("angular")).toBe(3)
@@ -654,5 +655,11 @@ describe("list collection / navigate", () => {
     expect(nav.has("vue")).toBe(true)
     expect(nav.has("all")).toBe(false)
     expect(nav.has(null)).toBe(false)
+  })
+
+  test("moveBefore and moveAfter ignore values that aren't in the list", () => {
+    const list = createListCollection({ items: ["a", "b", "c", "d"] })
+    expect(list.moveBefore("b", "d", "missing").items).toEqual(["a", "d", "b", "c"])
+    expect(list.moveAfter("a", "missing", "c").items).toEqual(["a", "c", "b", "d"])
   })
 })

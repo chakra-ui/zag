@@ -1,30 +1,20 @@
 import { hasProp, isObject } from "@zag-js/utils"
-import { ListCollection } from "./list-collection"
-import type { CollectionItem, CollectionOptions } from "./types"
+import { ListCollection } from "./collection"
+import type { CollectionItem, CollectionOptions } from "../types"
 
 export interface PageListCollectionOptions<T extends CollectionItem = CollectionItem> extends CollectionOptions<T> {
-  /**
-   * All the items, on every page. An item whose parent is another item lives on that item's page.
-   */
+  /** All the items, on every page. An item whose parent is another item lives on that item's page. */
   items: Iterable<T> | Readonly<Iterable<T>>
-  /**
-   * The value of the item's parent, or `null` for a top-level item
-   */
+  /** The value of the item's parent, or `null` for a top-level item */
   itemToParent?: ((item: T) => string | null | undefined) | undefined
-  /**
-   * Whether the item opens a page even without children, e.g. one that loads its items
-   */
+  /** Whether the item opens a page even without children, e.g. one that loads its items */
   isItemPage?: ((item: T) => boolean) | undefined
-  /**
-   * The value of the page to open, or `null` for the top level
-   */
+  /** The value of the page to open, or `null` for the top level */
   page?: string | null | undefined
 }
 
 export interface PageRestore {
-  /**
-   * The query to show on the page, as it was when the user left it
-   */
+  /** The query to show on the page, as it was when the user left it */
   query: string
   /**
    * The item to highlight: the one the user came from when going back or up.
@@ -90,7 +80,7 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return this.options as PageListCollectionOptions<T>
   }
 
-  private with = (state: Partial<PageState<T>>, items?: T[]) => {
+  private with(state: Partial<PageState<T>>, items?: T[]) {
     const options: InternalOptions<T> = {
       ...this.pageOptions,
       [INTERNAL]: { state: { ...this.state, ...state }, items },
@@ -98,80 +88,59 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return new PageListCollection(options)
   }
 
-  // copies keep the pages
   protected override createCollection(items: T[]): PageListCollection<T> {
     return this.with({}, items)
   }
 
-  /**
-   * The value of the open page, or `null` at the top level
-   */
+  /** The value of the open page, or `null` at the top level */
   get page(): string | null {
     return this.state.page
   }
 
-  /**
-   * The item of the open page, or `null` at the top level
-   */
+  /** The item of the open page, or `null` at the top level */
   get pageItem(): T | null {
     return this.getItem(this.state.page)
   }
 
-  /**
-   * What to restore after the last `back` or `up`: the page's query and the item to highlight
-   */
+  /** What to restore after the last `back` or `up`: the page's query and the item to highlight */
   get restore(): PageRestore {
     return this.state.restore
   }
 
-  /**
-   * Whether there's a page to go back to
-   */
+  /** Whether there's a page to go back to */
   get canGoBack(): boolean {
     return this.state.history.length > 0
   }
 
-  /**
-   * All the items, on every page
-   */
+  /** All the items, on every page */
   get allItems(): T[] {
     return this.state.tree.items
   }
 
-  /**
-   * Get an item on any page by its value
-   */
-  getItem = (value: string | null | undefined): T | null => {
+  /** Get an item on any page by its value */
+  getItem(value: string | null | undefined): T | null {
     if (value == null) return null
     return this.state.tree.byValue.get(value) ?? null
   }
 
-  /**
-   * Get the value of the item's parent, or `null` when it's top-level
-   */
-  getParentValue = (item: T): string | null => {
+  /** Get the value of the item's parent, or `null` when it's top-level */
+  getParentValue(item: T): string | null {
     return parentOf(this.pageOptions, this.state.tree.byValue, item)
   }
 
-  /**
-   * Whether the item opens a page
-   */
-  isPage = (item: T): boolean => {
+  /** Whether the item opens a page */
+  isPage(item: T): boolean {
     const isItemPage = this.pageOptions.isItemPage ?? fallback.isItemPage
     return this.state.tree.children.has(this.getItemValue(item) ?? "") || isItemPage(item)
   }
 
-  /**
-   * Get the items on a page, the open one by default. `null` is the top level.
-   */
-  getChildren = (page: string | null = this.state.page): T[] => {
+  /** Get the items on a page, the open one by default. `null` is the top level. */
+  getChildren(page: string | null = this.state.page): T[] {
     return this.state.tree.children.get(page) ?? []
   }
 
-  /**
-   * Get the items on a page and all its nested pages, in depth-first order, e.g. for deep search
-   */
-  getDescendants = (page: string | null = this.state.page): T[] => {
+  /** Get the items on a page and all its nested pages, in depth-first order, e.g. for deep search */
+  getDescendants(page: string | null = this.state.page): T[] {
     const seen = new Set<T>()
     const visit = (items: T[] | undefined) => {
       for (const item of items ?? []) {
@@ -184,10 +153,8 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return [...seen]
   }
 
-  /**
-   * Get the item's ancestors, from the top level down to its parent, below the open page
-   */
-  getAncestors = (item: T, page: string | null = this.state.page): T[] => {
+  /** Get the item's ancestors, from the top level down to its parent, below the open page */
+  getAncestors(item: T, page: string | null = this.state.page): T[] {
     const path: T[] = []
     let parent = this.getItem(this.getParentValue(item))
     while (parent && this.getItemValue(parent) !== page && !path.includes(parent)) {
@@ -197,10 +164,8 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return path
   }
 
-  /**
-   * Get the pages from the top level to a page, the open one by default, e.g. for breadcrumbs
-   */
-  getPath = (page: string | null = this.state.page): T[] => {
+  /** Get the pages from the top level to a page, the open one by default, e.g. for breadcrumbs */
+  getPath(page: string | null = this.state.page): T[] {
     const item = this.getItem(page)
     return item ? [...this.getAncestors(item, null), item] : []
   }
@@ -209,36 +174,30 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
    * Open a page, or the top level for `null`, and remember `query` for the page being left.
    * Returns the same collection when nothing changes.
    */
-  setPage = (page: string | null, query = ""): PageListCollection<T> => {
+  setPage(page: string | null, query = ""): PageListCollection<T> {
     return this.go(page, query, "push") ?? this
   }
 
-  /**
-   * Go back to the previous page in the history. Returns the same collection when there's none.
-   */
-  back = (query = ""): PageListCollection<T> => {
+  /** Go back to the previous page in the history. Returns the same collection when there's none. */
+  back(query = ""): PageListCollection<T> {
     const { history } = this.state
     if (!history.length) return this
     return this.go(history[history.length - 1], query, "back") ?? this
   }
 
-  /**
-   * Go up to the parent page. Returns the same collection at the top level.
-   */
-  up = (query = ""): PageListCollection<T> => {
+  /** Go up to the parent page. Returns the same collection at the top level. */
+  up(query = ""): PageListCollection<T> {
     const item = this.pageItem
     if (!item) return this
     return this.go(this.getParentValue(item), query, "up") ?? this
   }
 
-  /**
-   * Go to the top level, or the given page, and forget the history
-   */
-  reset = (page: string | null = null): PageListCollection<T> => {
+  /** Go to the top level, or the given page, and forget the history */
+  reset(page: string | null = null): PageListCollection<T> {
     return this.with({ page: resolvePage(this.state.tree, page), history: [], queries: new Map(), restore: NO_RESTORE })
   }
 
-  private go = (page: string | null, query: string, mode: "push" | "back" | "up"): PageListCollection<T> | null => {
+  private go(page: string | null, query: string, mode: "push" | "back" | "up"): PageListCollection<T> | null {
     const { page: current, history } = this.state
     if (page === current) return null
     if (page != null && !this.getItem(page)) return null
@@ -252,15 +211,10 @@ export class PageListCollection<T extends CollectionItem = CollectionItem> exten
     return this.with({ page, history: nextHistory, queries, restore: this.getRestore(page, queries, mode) })
   }
 
-  private getRestore = (
-    page: string | null,
-    queries: ReadonlyMap<string | null, string>,
-    mode: string,
-  ): PageRestore => {
-    // back: the page as it was left, highlighting the item that opened the current page (even after a deep-search jump)
+  private getRestore(page: string | null, queries: ReadonlyMap<string | null, string>, mode: string): PageRestore {
+    // back: highlight the item that opened the page we left, even after a deep-search jump
     if (mode === "back") return { query: queries.get(page) ?? "", highlightedValue: this.state.page }
 
-    // up the path: restore the query and highlight the page we came from
     const path = this.getPath()
     const depth = page == null ? 0 : path.findIndex((item) => this.getItemValue(item) === page) + 1
     const from = page == null || depth > 0 ? path[depth] : undefined
@@ -294,6 +248,12 @@ function createState<T>(options: PageListCollectionOptions<T>): PageState<T> {
 
   const tree = { items, byValue, children }
   return { tree, page: resolvePage(tree, options.page), history: [], queries: new Map(), restore: NO_RESTORE }
+}
+
+export function createPageListCollection<T extends CollectionItem = CollectionItem>(
+  options: PageListCollectionOptions<T>,
+): PageListCollection<T> {
+  return new PageListCollection(options)
 }
 
 export function isPageListCollection(v: unknown): v is PageListCollection<any> {

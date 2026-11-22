@@ -74,10 +74,10 @@ export function createSelectedItemMap<T extends CollectionItem>({
   selectedItems: T[]
   collection: SelectionMapCollection<T>
 }): Map<string, T> {
-  return updateSelectedItemMap({
-    selectedItemMap: new Map(),
-    values: selectedItems.map((item) => collection.getItemValue(item)!).filter(Boolean),
-    selectedItems,
-    collection,
-  })
+  const map = new Map<string, T>()
+  for (const item of selectedItems) {
+    const value = collection.getItemValue(item)
+    if (value) map.set(value, item)
+  }
+  return map
 }

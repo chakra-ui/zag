@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { ListCollection, PageListCollection } from "../src"
+import { createPageListCollection, isListCollection, isPageListCollection } from "../src"
 
 interface Item {
   value: string
@@ -26,7 +26,7 @@ const items: Item[] = [
   item("orphan", "missing"),
 ]
 
-const create = () => new PageListCollection({ items })
+const create = () => createPageListCollection({ items })
 const values = (list: Item[]) => list.map((item) => item.value)
 
 describe("PageListCollection / structure", () => {
@@ -39,7 +39,7 @@ describe("PageListCollection / structure", () => {
 
   test("is a list collection of the open page", () => {
     const collection = create().setPage("theme")
-    expect(collection).toBeInstanceOf(ListCollection)
+    expect(isListCollection(collection)).toBe(true)
     expect(collection.firstValue).toBe("light")
     expect(collection.getNextValue("light")).toBe("contrast")
     expect(collection.find("high")).toBeNull()
@@ -47,8 +47,8 @@ describe("PageListCollection / structure", () => {
   })
 
   test("opens the initial page", () => {
-    expect(new PageListCollection({ items, page: "contrast" }).items.map((i) => i.value)).toEqual(["high"])
-    expect(new PageListCollection({ items, page: "nope" }).page).toBeNull()
+    expect(createPageListCollection({ items, page: "contrast" }).items.map((i) => i.value)).toEqual(["high"])
+    expect(createPageListCollection({ items, page: "nope" }).page).toBeNull()
   })
 
   test("children, descendants, ancestors and path", () => {
@@ -73,7 +73,7 @@ describe("PageListCollection / structure", () => {
 
   test("setItems keeps the page and history", () => {
     const collection = create().setPage("theme").setItems([items[3]])
-    expect(collection).toBeInstanceOf(PageListCollection)
+    expect(isPageListCollection(collection)).toBe(true)
     expect(collection.page).toBe("theme")
     expect(values(collection.items)).toEqual(["contrast"])
     expect(collection.back().page).toBeNull()
@@ -81,14 +81,14 @@ describe("PageListCollection / structure", () => {
 
   test("edits keep the page and the class", () => {
     const collection = create().setPage("theme").append(item("extra")).remove("dark")
-    expect(collection).toBeInstanceOf(PageListCollection)
+    expect(isPageListCollection(collection)).toBe(true)
     expect(collection.page).toBe("theme")
     expect(values(collection.items)).toEqual(["light", "contrast", "extra"])
     expect(collection.back().page).toBeNull()
   })
 
   test("custom accessors", () => {
-    const collection = new PageListCollection({
+    const collection = createPageListCollection({
       items: [{ id: "a" }, { id: "b", up: "a" }],
       itemToValue: (item) => item.id,
       itemToParent: (item) => item.up,
@@ -97,7 +97,7 @@ describe("PageListCollection / structure", () => {
   })
 
   test("a custom parent accessor can return null for the top level", () => {
-    const collection = new PageListCollection({
+    const collection = createPageListCollection({
       items: [item("a"), item("b", "a")],
       itemToParent: () => null,
     })
@@ -105,7 +105,7 @@ describe("PageListCollection / structure", () => {
   })
 
   test("survives cycles", () => {
-    const collection = new PageListCollection({
+    const collection = createPageListCollection({
       items: [item("a", "b"), item("b", "a")],
     })
     expect(collection.items).toEqual([])

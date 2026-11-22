@@ -1,3 +1,4 @@
+import { getSelectAllCoverage, selectAllValues } from "@zag-js/collection"
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   ariaAttr,
@@ -34,7 +35,7 @@ import type {
 } from "./combobox.types"
 import { defaultTranslations } from "./combobox.translations"
 import { CREATE_VALUE } from "./utils/pinned"
-import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -92,16 +93,24 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     send({ type: "CHIP.DELETE", value, focusValue, src: "chip-delete" })
   }
 
+  // Each part of an item asks for its state, so compute it once per item per render
+  const itemStates = new Map<unknown, ItemState>()
+  let selectedValues: Set<string> | undefined
+
   function getItemState(props: ItemProps): ItemState {
+    const cached = itemStates.get(props.item)
+    if (cached) return cached
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
-    return {
+    const state: ItemState = {
       value,
       disabled: Boolean(disabled || itemDisabled),
       highlighted: highlightedValue === value,
-      selected: context.get("value").includes(value),
+      selected: (selectedValues ??= new Set(context.get("value"))).has(value),
     }
+    itemStates.set(props.item, state)
+    return state
   }
 
   function getRootState(): RootState {
@@ -125,14 +134,17 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     }
   }
 
+  let selectAllState: SelectAllState | undefined
   function getSelectAllState(): SelectAllState {
+    if (selectAllState) return selectAllState
     const { enabled, checked, indeterminate } = getSelectAllCoverage(collection, context.get("value"))
-    return {
+    selectAllState = {
       checked,
       indeterminate,
       highlighted: highlightedValue === SELECT_ALL_VALUE,
       disabled: disabled || enabled.length === 0,
     }
+    return selectAllState
   }
 
   function getCreateItemState(): CreateItemState {

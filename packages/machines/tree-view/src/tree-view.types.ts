@@ -1,8 +1,9 @@
-import type { TreeCollection, TreeNode } from "@zag-js/collection"
-import type { IndexPath, ValuePath } from "@zag-js/collection"
+import { type TreeCollection, type TreeNode, type IndexPath, type ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { AnimationFrame, TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { VisibleTree } from "./utils/visible-tree"
+import type { createTreeState } from "./utils/tree-state"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -151,7 +152,7 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    */
   translations?: IntlTranslations | undefined
   /**
-   * The tree collection data
+   * The indexed tree snapshot. Create a new collection when the tree structure changes.
    */
   collection?: TreeCollection<T> | undefined
   /**
@@ -289,6 +290,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     renamingValue: string | null
   }
   refs: {
+    treeState: ReturnType<typeof createTreeState<T>>
     typeaheadState: TypeaheadState
     pendingAborts: Map<string, AbortController>
     focusNodeFrame: AnimationFrame
@@ -296,6 +298,8 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     renameFocusFrame: AnimationFrame
   }
   computed: {
+    visibleTree: VisibleTree<T>
+    checkedStates: Map<string, CheckedState>
     isTypingAhead: boolean
     isMultipleSelection: boolean
     isCheckboxMode: boolean
@@ -441,6 +445,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
   /**
    * Returns the visible nodes as a flat array of nodes and their index path.
    * Useful for rendering virtualized tree views.
+   * The result is cached; treat the array and its index paths as read-only.
    */
   getVisibleNodes: () => VisibleNode<V>[]
   /**
