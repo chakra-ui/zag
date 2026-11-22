@@ -1,0 +1,800 @@
+---
+title: Autocomplete
+description:
+  "An accessible autocomplete: a text input that suggests completions as you
+  type, with keyboard navigation and inline completion."
+package: "@zag-js/autocomplete"
+---
+
+An autocomplete is a text input that suggests completions as the user types
+
+> The value is the text. Suggestions only help fill it in, anything typed is
+> valid, and a form submits the text. When the value must be an item from the
+> list (a country, an assignee, a set of labels), use
+> [Combobox](/components/react/combobox).
+
+<Resources pkg="@zag-js/autocomplete" />
+
+<Showcase id="Autocomplete" />
+
+**Features**
+
+- Supports list, inline and combined completion modes
+- Supports grouped, disabled and link suggestions
+- Supports async suggestions with loading announcements
+- Supports native form submission, including search forms
+- Supports mouse, touch, and keyboard interactions
+
+## Installation
+
+Install the autocomplete package:
+
+<CodeSnippet id="autocomplete/installation.mdx" />
+
+## Anatomy
+
+<Anatomy id="autocomplete" />
+
+## Usage
+
+The autocomplete package exports these functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `collection` - Creates a [list collection](/utilities/list-collection) from
+  your suggestions.
+
+The machine doesn't filter. Keep the text in state, filter your items with it,
+and pass the result as the collection.
+
+<CodeSnippet id="autocomplete/usage.mdx" />
+
+### Autocomplete or combobox
+
+Both show a list as the user types. They differ in what the value is.
+
+| Autocomplete                                    | Combobox                                        |
+| ----------------------------------------------- | ----------------------------------------------- |
+| The value is the text (`string`)                | The value is one or more items (`string[]`)     |
+| Any text is valid                               | Text that matches no item is discarded on close |
+| Choosing a suggestion writes its label to input | Choosing an item selects it                     |
+| A form submits the text                         | A form submits the item values                  |
+| Search boxes, addresses, free-form fields       | Countries, assignees, labels                    |
+
+### Initial value
+
+Set `defaultValue` to prefill the input.
+
+<Example id="AutocompleteInitialValue">
+
+```tsx {4}
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  defaultValue: "Ma",
+})
+```
+
+</Example>
+
+### Controlled autocomplete
+
+Use `value` and `onValueChange` to control the text. Ignoring a change keeps the
+previous text in the input.
+
+<Example id="AutocompleteControlled">
+
+```tsx
+const [value, setValue] = useState("")
+
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  value,
+  onValueChange(details) {
+    // details => { value: string; reason?: ValueChangeReason }
+    if (details.value.length > 12) return
+    setValue(details.value)
+  },
+})
+```
+
+</Example>
+
+### Listening for value changes
+
+`details.reason` says what changed the text.
+
+<Example id="AutocompleteValueChange">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  onValueChange(details) {
+    console.log(details.value, details.reason)
+  },
+})
+```
+
+</Example>
+
+| Reason             | Meaning                                              |
+| ------------------ | ---------------------------------------------------- |
+| `input-change`     | The user typed                                       |
+| `item-select`      | A suggestion was clicked or chosen with `Enter`      |
+| `interact-outside` | Focus left while a suggestion was shown in the input |
+| `clear-trigger`    | The clear trigger was pressed                        |
+| `script`           | Changed with `api.setValue` or `api.clearValue`      |
+
+### Filtering suggestions
+
+Use `createFilter` from `@zag-js/i18n-utils` for locale-aware matching that
+ignores case and accents.
+
+```tsx
+import { createFilter } from "@zag-js/i18n-utils"
+
+const { contains, startsWith } = createFilter({ sensitivity: "base" })
+
+const items = fruits.filter((fruit) => contains(fruit, value))
+```
+
+To match on extra terms without changing the text written to the input, check
+them in your filter. Choosing an item still writes its label.
+
+```tsx
+const items = labels.filter(
+  (item) =>
+    contains(item.label, value) ||
+    item.keywords.some((keyword) => startsWith(keyword, value)),
+)
+```
+
+### Custom object format
+
+By default, the collection expects items with `label` and `value` properties.
+For other shapes, pass `itemToString`, `itemToValue` and `isItemDisabled`.
+`itemToString` is the text written to the input when the item is chosen.
+
+```tsx
+const collection = autocomplete.collection({
+  items: countries,
+  itemToString: (item) => item.name,
+  itemToValue: (item) => item.code,
+  isItemDisabled: (item) => item.disabled,
+})
+```
+
+### Completion modes
+
+Set `mode` to choose how suggestions relate to the text. It maps to
+`aria-autocomplete` on the input.
+
+- `list` (default): the list shows suggestions that match the text.
+- `both`: like `list`, and typing fills in the rest of the first suggestion that
+  starts with the text, with the added part selected.
+- `inline`: typing fills in the rest of the first match, and the list isn't
+  filtered.
+- `none`: the list isn't filtered, and the input only changes when a suggestion
+  is chosen.
+
+<Example id="AutocompleteModes">
+
+```tsx {4}
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  mode: "both",
+})
+```
+
+</Example>
+
+With `both` and `inline`, the filled-in text isn't the value yet. Keep typing to
+replace it, or press `Backspace` to remove it. `End`, `ArrowRight`, `Enter` or
+clicking outside accepts it, and `Escape` restores the typed text. The arrow
+keys show the highlighted suggestion in the input the same way.
+
+> With `inline` and `none`, pass every item to the collection instead of
+> filtering by the text.
+
+### Auto highlight
+
+Set `autoHighlight` to highlight the first suggestion as the user types, so
+`Enter` chooses it right away. Set `loopFocus` to `false` to stop the arrow keys
+at either end of the list.
+
+<Example id="AutocompleteAutoHighlight">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  autoHighlight: true,
+  loopFocus: false,
+})
+```
+
+</Example>
+
+### Opening on click
+
+By default, suggestions open when the user types or presses an arrow key. Set
+`openOnClick` to also open them when the input is clicked, which is useful when
+there are suggestions to show before typing.
+
+<Example id="AutocompleteOpenOnClick">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  openOnClick: true,
+  onOpenChange(details) {
+    // details => { open: boolean; reason?: OpenChangeReason }
+    console.log(details)
+  },
+})
+```
+
+</Example>
+
+Use `openOnChange` and `openOnKeyPress` to turn off opening on typing or on the
+arrow keys. `openOnChange` also takes a function, so you can open only once the
+text is long enough.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  openOnChange: (details) => details.value.length >= 2,
+})
+```
+
+### Controlled open
+
+Use `open` and `onOpenChange` to control whether the suggestions show, or
+`defaultOpen` for an uncontrolled initial state.
+
+<Example id="AutocompleteControlledOpen">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+  },
+})
+```
+
+</Example>
+
+### Clear and trigger buttons
+
+Render `getClearTriggerProps` to empty the input. It is hidden while the input
+is empty and returns focus to the input. Render `getTriggerProps` to open the
+suggestions without typing.
+
+<Example id="AutocompleteClearTrigger">
+
+```tsx
+<div {...api.getControlProps()}>
+  <input {...api.getInputProps()} />
+  <button {...api.getClearTriggerProps()}>✕</button>
+  <button {...api.getTriggerProps()}>▼</button>
+</div>
+```
+
+</Example>
+
+Both buttons are skipped by `Tab`, since the keyboard reaches the same actions
+from the input.
+
+### Disabled and read-only
+
+Set `disabled` to prevent focus and changes. A disabled input submits nothing.
+Set `readOnly` to keep the input focusable and submitted while blocking changes.
+
+<Example id="AutocompleteDisabled">
+
+```tsx {4}
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  disabled: true,
+})
+```
+
+</Example>
+
+### Disabled suggestions
+
+Pass `isItemDisabled` to the collection. Disabled suggestions are skipped by the
+arrow keys and can't be chosen.
+
+<Example id="AutocompleteDisabledItem">
+
+```tsx {3}
+const collection = autocomplete.collection({
+  items: countries,
+  isItemDisabled: (item) => item.disabled,
+})
+```
+
+</Example>
+
+### Listening for highlight changes
+
+Use `onHighlightChange` to react when a suggestion is highlighted with the
+pointer or keyboard. Use `highlightedValue` and `defaultHighlightedValue` to
+control it.
+
+<Example id="AutocompleteHighlight">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null; highlightedItem: CollectionItem | null }
+    console.log(details.highlightedValue)
+  },
+})
+```
+
+</Example>
+
+### Listening for selection
+
+Use `onSelect` to react when a suggestion is chosen. `itemValue` tells apart
+suggestions that share a label.
+
+<Example id="AutocompleteSelection">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  onSelect(details) {
+    // details => { itemValue: string; value: string; modifiers: ModifierKeys }
+    console.log(details.itemValue, details.value)
+  },
+})
+```
+
+</Example>
+
+### Grouping suggestions
+
+Pass `groupBy` to the collection and render each group with `getItemGroupProps`
+and `getItemGroupLabelProps`. Use `getSeparatorProps` between groups.
+
+<Example id="AutocompleteGrouped">
+
+```tsx
+const collection = autocomplete.collection({
+  items,
+  groupBy: (item) => item.type,
+})
+
+<div {...api.getListProps()}>
+  {collection.group().map(([type, items], index) => (
+    <Fragment key={type}>
+      {index > 0 && <hr {...api.getSeparatorProps()} />}
+      <div {...api.getItemGroupProps({ id: type })}>
+        <div {...api.getItemGroupLabelProps({ htmlFor: type })}>{type}</div>
+        {items.map((item) => (
+          <div key={item.value} {...api.getItemProps({ item })}>
+            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </Fragment>
+  ))}
+</div>
+```
+
+</Example>
+
+Filter the items before grouping, so groups with no matches drop out.
+
+### Icons and descriptions
+
+Put extra content next to `getItemTextProps`, and mark decorative content
+`aria-hidden`. The text written to the input comes from the collection, not the
+markup.
+
+<Example id="AutocompleteRichItems">
+
+```tsx
+<li {...api.getItemProps({ item })}>
+  <Icon aria-hidden />
+  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+  <span aria-hidden>{item.description}</span>
+</li>
+```
+
+</Example>
+
+### Positioning
+
+Use `positioning` to control where the suggestions appear. They match the
+input's width and open below it by default.
+
+<Example id="AutocompletePositioning">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  positioning: { placement: "top-start" },
+})
+```
+
+</Example>
+
+Call `api.reposition()` when the anchor moves without a scroll or resize.
+
+### Animating the suggestions
+
+The content has `data-state="open"` while shown and is `hidden` when closed, so
+animate the entry with a keyframe. Use `--transform-origin` to scale from the
+input.
+
+```css
+[data-autocomplete-content] {
+  transform-origin: var(--transform-origin);
+
+  &[data-state="open"] {
+    animation: fade-in 150ms ease-out;
+  }
+}
+```
+
+### Usage within forms
+
+The input is the form control. Set `name` so the form submits the text, and
+`required` to block an empty submit. Text doesn't have to match a suggestion.
+
+<Example id="AutocompleteForm">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  name: "country",
+  required: true,
+})
+```
+
+</Example>
+
+`Enter` with no suggestion highlighted closes the list and lets the form submit.
+`Enter` on a highlighted suggestion only chooses it.
+
+If the input sits outside the form element, set `form` to the form's id.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  name: "country",
+  form: "checkout-form",
+})
+```
+
+### Search forms
+
+Set `submitOnSelect` to submit the form as soon as a suggestion is chosen, as a
+search box does. `Enter` on the typed text submits it as well.
+
+<Example id="AutocompleteSearch">
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  name: "q",
+  submitOnSelect: true,
+})
+
+<form role="search" onSubmit={search}>
+  <div {...api.getRootProps()}>
+    <label {...api.getLabelProps()}>Search docs</label>
+    <div {...api.getControlProps()}>
+      <input {...api.getInputProps()} type="search" />
+    </div>
+  </div>
+</form>
+```
+
+</Example>
+
+### Linking suggestions
+
+Render suggestions as anchors to build a jump-to menu. `Enter` on a highlighted
+link follows it. Pass `navigate` to route with your framework's router instead.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  navigate(details) {
+    // details => { value: string; node: HTMLAnchorElement; href: string; modifiers: ModifierKeys }
+    router.push(details.href)
+  },
+})
+
+<a href={item.href} {...api.getItemProps({ item })}>
+  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+</a>
+```
+
+### Programmatic control
+
+The `api` exposes methods to drive the autocomplete from outside.
+
+```tsx
+api.setValue("Mango") // set the text
+api.clearValue() // empty the text
+api.selectValue("mango") // choose a suggestion by its value
+api.setHighlightedValue("mango") // highlight a suggestion, or `null` to clear
+api.setOpen(true) // show or hide the suggestions
+api.focus() // focus the input
+```
+
+### Accessibility labels
+
+Use `translations` to customize the trigger and clear button labels.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  translations: {
+    triggerLabel: "Show countries",
+    clearTriggerLabel: "Clear country",
+  },
+})
+```
+
+### Announcements
+
+Once the text and suggestions settle, the autocomplete announces the count to
+screen readers ("3 suggestions", "1 suggestion", or "No suggestions"). On Apple
+platforms it also announces the highlighted suggestion.
+
+Pass `loading` while suggestions load. The list gets `aria-busy="true"`, the
+loading message is announced instead of the count, and "No suggestions" waits
+until loading ends.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  loading: isFetching,
+  translations: {
+    resultsCount: (count) => `${count} cities found`,
+    noResults: "No cities found",
+    loading: "Searching cities",
+    highlightedItem: ({ label }) => label,
+  },
+})
+```
+
+> Set a message to an empty string (or return `""` from a function) to turn that
+> announcement off.
+
+Render `getEmptyProps` inside the content for a visible empty message. It hides
+itself while there are suggestions or while `loading` is set.
+
+## Recipes
+
+### Async suggestions
+
+Pair the autocomplete with the [async list](/utilities/async-list) to fetch
+suggestions as the user types. The async list aborts stale requests and tracks
+loading.
+
+<Example id="AutocompleteAsync">
+
+```tsx
+import * as asyncList from "@zag-js/async-list"
+
+const listService = useMachine(asyncList.machine, {
+  // keep the last results while the next query loads
+  keepPreviousItems: true,
+  async load({ signal, filter }) {
+    if (!filter?.trim()) return { items: [] }
+    const res = await fetch(`/api/cities?q=${filter}`, { signal })
+    return { items: await res.json() }
+  },
+})
+
+const list = asyncList.connect(listService)
+
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection: autocomplete.collection({ items: list.items }),
+  loading: list.isLoading,
+  onValueChange({ value, reason }) {
+    // choosing a city fills the input; that shouldn't search again
+    if (reason === "item-select") return
+    list.setFilter(value)
+  },
+})
+```
+
+</Example>
+
+### Recent searches
+
+Show one list while the input is empty and search everything once the user
+types. Add `openOnClick` so the recent list shows on click.
+
+<Example id="AutocompleteRecent">
+
+```tsx
+const showRecent = value.trim() === ""
+const items = showRecent ? recent : topics.filter((t) => contains(t, value))
+
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection: autocomplete.collection({ items }),
+  openOnClick: true,
+  value,
+  onValueChange: (details) => setValue(details.value),
+})
+```
+
+</Example>
+
+Wrap the recent list in `getItemGroupProps` with a "Recent searches" label so
+screen readers hear why the suggestions differ.
+
+### Highlighting matches
+
+Use [highlight word](/utilities/highlight-word) to mark the typed text inside
+each suggestion.
+
+<Example id="AutocompleteHighlightMatches">
+
+```tsx
+import { highlightWord } from "@zag-js/highlight-word"
+
+;<span {...api.getItemTextProps({ item })}>
+  {highlightWord({ text: item, query: api.value, ignoreCase: true }).map(
+    (chunk, index) =>
+      chunk.match ? <mark key={index}>{chunk.text}</mark> : chunk.text,
+  )}
+</span>
+```
+
+</Example>
+
+### Fuzzy matching
+
+Use [fuzzy](/utilities/fuzzy) to match suggestions even when the text skips
+letters, ranked best first. Keywords let a suggestion match terms it doesn't
+show.
+
+```tsx
+import { createFuzzySearch } from "@zag-js/fuzzy"
+
+const fuzzy = createFuzzySearch({
+  itemToString: (item) => item.title,
+  itemToKeywords: (item) => [item.category],
+})
+
+const items = value ? fuzzy.search(docs, value) : docs
+```
+
+Pair it with `getFuzzyMatchRanges` and `highlightRanges` to highlight the
+matched letters.
+
+### Limiting results
+
+Slice the matches before building the collection, and tell the user how many are
+hidden.
+
+<Example id="AutocompleteLimit">
+
+```tsx
+const matches = countries.filter((item) => contains(item.label, value))
+const items = matches.slice(0, 8)
+const hidden = matches.length - items.length
+
+<div {...api.getContentProps()}>
+  <ul {...api.getListProps()}>{/* items */}</ul>
+  {hidden > 0 && <div role="status">{hidden} more. Keep typing to narrow them.</div>}
+</div>
+```
+
+</Example>
+
+### Large lists
+
+For thousands of suggestions, render only the visible rows with the
+[virtualizer](/utilities/virtualizer) and pass `scrollToIndexFn`, so keyboard
+navigation scrolls rows that aren't mounted into view.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  scrollToIndexFn(details) {
+    virtualizer.scrollToIndex(details.index, {
+      align: details.immediate ? "center" : "auto",
+    })
+  },
+})
+```
+
+### Completing inside a textarea
+
+To suggest completions after a trigger character (such as `@`), spread
+`getInputProps` on a textarea and drive the suggestions yourself:
+
+- Set `openOnChange` and `openOnKeyPress` to `false`, and call `api.setOpen`
+  when the trigger is typed.
+- Filter by the text after the trigger, not the whole value.
+- Anchor the suggestions to the caret with `positioning.getAnchorRect`.
+- In `onSelect`, replace the query with the chosen label and call `api.setValue`
+  with the full text.
+
+```tsx
+const service = useMachine(autocomplete.machine, {
+  id: useId(),
+  collection,
+  autoHighlight: true,
+  openOnChange: false,
+  openOnKeyPress: false,
+  positioning: {
+    placement: "bottom-start",
+    sameWidth: false,
+    getAnchorRect: () => getCaretRect(textareaRef.current),
+  },
+  onSelect(details) {
+    const next = replaceQuery(textareaRef.current, details.value)
+    // the label is written first; swap in the full text after
+    requestAnimationFrame(() => api.setValue(next))
+  },
+})
+```
+
+## Methods and Properties
+
+### Machine context
+
+The autocomplete machine exposes the following context properties:
+
+<ContextTable name="autocomplete" />
+
+### Machine API
+
+The autocomplete `api` exposes the following methods:
+
+<ApiTable name="autocomplete" />
+
+### Data attributes
+
+Each part has a `data-autocomplete-<part>` attribute. Combine it with the state
+attributes below to style each state.
+
+<DataAttrTable name="autocomplete" />
+
+### CSS variables
+
+<CssVarTable name="autocomplete" />
+
+## Accessibility
+
+Adheres to the
+[Combobox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/).
+
+### Keyboard interactions
+
+<KeyboardTable name="autocomplete" />

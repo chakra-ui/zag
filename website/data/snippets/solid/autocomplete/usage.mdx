@@ -1,0 +1,60 @@
+```jsx
+import * as autocomplete from "@zag-js/autocomplete"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createSignal, createUniqueId, For } from "solid-js"
+
+const fruits = ["Apple", "Banana", "Cherry", "Grape", "Mango", "Orange"]
+
+export function Autocomplete() {
+  const [value, setValue] = createSignal("")
+
+  const items = createMemo(() =>
+    fruits.filter((fruit) =>
+      fruit.toLowerCase().includes(value().toLowerCase()),
+    ),
+  )
+
+  const collection = createMemo(() =>
+    autocomplete.collection({ items: items() }),
+  )
+
+  const service = useMachine(autocomplete.machine, {
+    id: createUniqueId(),
+    get collection() {
+      return collection()
+    },
+    get value() {
+      return value()
+    },
+    onValueChange: (details) => setValue(details.value),
+  })
+
+  const api = createMemo(() => autocomplete.connect(service, normalizeProps))
+
+  return (
+    <div>
+      <div {...api().getRootProps()}>
+        <label {...api().getLabelProps()}>Fruit</label>
+        <div {...api().getControlProps()}>
+          <input {...api().getInputProps()} />
+          <button {...api().getClearTriggerProps()}>✕</button>
+        </div>
+      </div>
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
+          <div {...api().getEmptyProps()}>No fruits found</div>
+          <ul {...api().getListProps()}>
+            <For each={items()}>
+              {(item) => (
+                <li {...api().getItemProps({ item })}>
+                  <span {...api().getItemTextProps({ item })}>{item}</span>
+                </li>
+              )}
+            </For>
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

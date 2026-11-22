@@ -1,5 +1,6 @@
+import { SELECT_ALL_VALUE } from "./utils/select-all"
 import type { Scope } from "@zag-js/core"
-import { contains, getComputedStyle } from "@zag-js/dom-query"
+import { contains, getComputedStyle, isOverflowElement } from "@zag-js/dom-query"
 import { parts } from "./select.anatomy"
 
 // ID generators — kept for ARIA attributes in connect
@@ -23,6 +24,19 @@ export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
 export const getHiddenSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getHiddenSelectId(ctx))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
+// Items from the collection, not select-all
+const getOptionSelector = (ctx: Scope) => `${ctx.selector(parts.item)}[data-type="item"]`
+
+/** The element that scrolls the items: a scrolling wrapper inside the list, or the list itself */
+export const getScrollEl = (ctx: Scope) => {
+  const listEl = getListEl(ctx)
+  let el = listEl?.querySelector<HTMLElement>(getOptionSelector(ctx))?.parentElement
+  while (el && el !== listEl) {
+    if (isOverflowElement(el)) return el
+    el = el.parentElement
+  }
+  return listEl
+}
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
 export const getClearTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.clearTrigger))
@@ -163,14 +177,19 @@ export function computeScrollArrowVisibility(scroller: HTMLElement | null): Scro
   return "none"
 }
 export const getItemEls = (ctx: Scope) => {
-  return Array.from(ctx.queryAll(ctx.selector(parts.item))) as HTMLElement[]
+  return Array.from(ctx.queryAll(getOptionSelector(ctx))) as HTMLElement[]
 }
 export const getEnabledItemElFromTarget = (ctx: Scope, target: EventTarget | null) => {
   const el = (target as Element | null)?.closest?.<HTMLElement>(ctx.selector(parts.item))
   if (!el || el.hasAttribute("data-disabled") || !contains(getContentEl(ctx), el)) return null
   return el
 }
+export const getSelectAllEl = (ctx: Scope) => ctx.query(`${ctx.selector(parts.item)}[data-type="select-all"]`)
 export const getItemEl = (ctx: Scope, id: string | number | null) => {
   if (id == null) return null
+  if (id === SELECT_ALL_VALUE) return getSelectAllEl(ctx)
   return ctx.query(`${ctx.selector(parts.item)}[data-value="${id}"]`)
 }
+
+/** Whether a pinned option is rendered and showing, so the keyboard can reach it */
+export const isShown = (el: HTMLElement | null) => !!el && !el.hidden

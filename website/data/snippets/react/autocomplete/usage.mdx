@@ -1,0 +1,48 @@
+```tsx
+import * as autocomplete from "@zag-js/autocomplete"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useState, useId } from "react"
+
+const fruits = ["Apple", "Banana", "Cherry", "Grape", "Mango", "Orange"]
+
+export function Autocomplete() {
+  const [value, setValue] = useState("")
+
+  const items = fruits.filter((fruit) =>
+    fruit.toLowerCase().includes(value.toLowerCase()),
+  )
+
+  const service = useMachine(autocomplete.machine, {
+    id: useId(),
+    collection: autocomplete.collection({ items }),
+    value,
+    onValueChange: (details) => setValue(details.value),
+  })
+
+  const api = autocomplete.connect(service, normalizeProps)
+
+  return (
+    <div>
+      <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Fruit</label>
+        <div {...api.getControlProps()}>
+          <input {...api.getInputProps()} />
+          <button {...api.getClearTriggerProps()}>✕</button>
+        </div>
+      </div>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          <div {...api.getEmptyProps()}>No fruits found</div>
+          <ul {...api.getListProps()}>
+            {items.map((item) => (
+              <li key={item} {...api.getItemProps({ item })}>
+                <span {...api.getItemTextProps({ item })}>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

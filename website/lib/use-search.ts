@@ -118,7 +118,7 @@ export function useSearch(): UseSearchReturn {
   const combobox_service = useMachine(combobox.machine, {
     id: "search-combobox",
     placeholder: "Search the docs",
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     // results always show inside the dialog, so Escape belongs to the dialog
     inline: true,
     selectionBehavior: "clear",

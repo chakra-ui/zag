@@ -133,7 +133,7 @@
       const target = immediate && rows[rowIndex - 1]?.type === "group" ? rowIndex - 1 : rowIndex
       vz.virtualizer.scrollToIndex(target, { align: immediate ? "center" : "auto" })
     },
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     selectionBehavior: "clear",
     onInputValueChange({ inputValue }) {
       query = inputValue

@@ -216,6 +216,25 @@ export interface ItemState {
   focusVisible: boolean
 }
 
+export interface SelectAllState {
+  /**
+   * Whether every enabled item is selected
+   */
+  checked: boolean
+  /**
+   * Whether some enabled items are selected, but not all
+   */
+  indeterminate: boolean
+  /**
+   * Whether the option is highlighted
+   */
+  highlighted: boolean
+  /**
+   * Whether there's nothing to select
+   */
+  disabled: boolean
+}
+
 export interface ItemGroupProps {
   id: string
 }
@@ -327,7 +346,7 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   selectValue: (value: string) => void
   /**
-   * Function to select all values.
+   * Function to select all enabled values.
    *
    * **Note**: This should only be called when the selectionMode is `multiple` or `extended`.
    * Otherwise, an exception will be thrown.
@@ -375,4 +394,13 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   getItemIndicatorProps: (props: ItemProps) => T["element"]
   getItemGroupProps: (props: ItemGroupProps) => T["element"]
   getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
+  /**
+   * Returns the state of the select-all option
+   */
+  getSelectAllState: () => SelectAllState
+  /**
+   * Props for an option that selects every enabled item, or unselects them all.
+   * Requires `multiple` or `extended` selection and a list layout.
+   */
+  getSelectAllProps: () => T["element"]
 }

@@ -20,7 +20,7 @@ const service = useMachine(
     collection: collection.value,
     popupType: "dialog",
     selectionBehavior: "clear",
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     onOpenChange() {
       options.value = selectData
     },

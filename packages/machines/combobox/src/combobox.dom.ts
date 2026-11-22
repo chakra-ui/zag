@@ -17,8 +17,11 @@ export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
   ctx.ids?.itemGroupLabel?.(id) ?? `${ctx.id}:optgroup-label:${id}`
 export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `${ctx.id}:hidden-input`
 export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `${ctx.id}:option:${id}`
+export const getChipId = (ctx: Scope, value: string) => ctx.ids?.chip?.(value) ?? `${ctx.id}:chip:${value}`
 
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getChipGroupEl = (ctx: Scope) => ctx.query(ctx.selector(parts.chipGroup))
+export const getChipEls = (ctx: Scope) => ctx.queryAll(ctx.selector(parts.chip))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getListEl = (ctx: Scope) => ctx.query(ctx.selector(parts.list))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
@@ -27,6 +30,10 @@ export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.posi
 export const getControlEl = (ctx: Scope) => ctx.query(ctx.selector(parts.control))
 export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger))
 export const getClearTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.clearTrigger))
+export const getSelectAllEl = (ctx: Scope) => ctx.query(`${ctx.selector(parts.item)}[data-type="select-all"]`)
+
+/** Whether a pinned option is rendered and showing, so the keyboard can reach it */
+export const isShown = (el: HTMLElement | null) => !!el && !el.hidden
 export const getItemEl = (ctx: Scope, value: string | null) => {
   if (value == null) return null
   const selector = `[role=option][data-value="${CSS.escape(value)}"]`

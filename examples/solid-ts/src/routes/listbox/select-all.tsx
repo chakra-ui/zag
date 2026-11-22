@@ -18,6 +18,7 @@ export default function Page() {
 
   const api = createMemo(() => listbox.connect(service, normalizeProps))
   const allSelected = () => api().value.length === collection.size
+  const selectAll = createMemo(() => api().getSelectAllState())
 
   return (
     <>
@@ -39,6 +40,13 @@ export default function Page() {
               </div>
             </div>
             <ul {...api().getListProps()}>
+              {/* An option, so the keyboard reaches it before the items */}
+              <li {...api().getSelectAllProps()}>
+                <span class="listbox-item-body">{selectAll().checked ? "Unselect all" : "Select all"}</span>
+                <span class="listbox-check" aria-hidden="true">
+                  {selectAll().checked ? "✓" : selectAll().indeterminate ? "–" : ""}
+                </span>
+              </li>
               <For each={listboxData.notifications}>
                 {(item) => (
                   <li {...api().getItemProps({ item, highlightOnHover: true })}>

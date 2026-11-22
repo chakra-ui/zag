@@ -120,3 +120,10 @@ export function getNextCursorPosition(oldValue: string, newValue: string, oldPos
 
   return newValue.length
 }
+
+/** Whether an edit added text at the end, with the caret collapsed there */
+export function isTypingAtEnd(previousValue: string, selection: InputSelection | undefined): boolean {
+  if (!selection) return false
+  const { start, end, value } = selection
+  return value.length > previousValue.length && start === end && end === value.length
+}

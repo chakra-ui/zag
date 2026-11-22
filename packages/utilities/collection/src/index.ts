@@ -1,5 +1,5 @@
 export { GridCollection, isGridCollection, type GridCollectionOptions } from "./grid-collection"
-export { isListCollection, ListCollection } from "./list-collection"
+export { isListCollection, ListCollection, type ListNavigateOptions, type ListNavigation } from "./list-collection"
 export {
   isPageListCollection,
   PageListCollection,

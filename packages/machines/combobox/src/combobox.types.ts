@@ -16,7 +16,7 @@ import type { LiveRegion } from "@zag-js/live-region"
  * - `clear-trigger`: the clear trigger was pressed
  * - `script`: `setValue`, `selectValue` or `clearValue` was called
  */
-export type ValueChangeReason = "item-select" | "clear-trigger" | "script"
+export type ValueChangeReason = "item-select" | "clear-trigger" | "chip-delete" | "script"
 
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
@@ -92,6 +92,28 @@ export interface SelectionDetails {
   modifiers: ModifierKeys
 }
 
+export interface CreateDetails {
+  /**
+   * The trimmed text to create an item from
+   */
+  inputValue: string
+  /**
+   * Aborted when the list closes or the text changes
+   */
+  signal: AbortSignal
+}
+
+export interface CreateItemFailedDetails {
+  /**
+   * The text the create was started with
+   */
+  inputValue: string
+  /**
+   * The reason the create failed
+   */
+  error: Error
+}
+
 export interface HighlightedItemDetails {
   label: string
   selected: boolean
@@ -104,6 +126,15 @@ export interface HighlightedItemDetails {
 export interface IntlTranslations {
   triggerLabel?: string | undefined
   clearTriggerLabel?: string | undefined
+  /**
+   * The label of a chip's delete trigger
+   */
+  deleteChipTriggerLabel?: ((label: string) => string) | undefined
+  /**
+   * The message announced when a chip is deleted.
+   * Return an empty string to disable the announcement.
+   */
+  chipDeleted?: ((label: string) => string) | undefined
   /**
    * The message announced to screen readers when the results settle after typing.
    * Return an empty string to disable the announcement.
@@ -124,6 +155,14 @@ export interface IntlTranslations {
    * Return an empty string to disable the announcement.
    */
   highlightedItem?: ((details: HighlightedItemDetails) => string) | undefined
+  /**
+   * The message announced when an async create starts
+   */
+  creatingItem?: ((inputValue: string) => string) | undefined
+  /**
+   * The message announced when an async create fails
+   */
+  createItemFailed?: ((details: CreateItemFailedDetails) => string) | undefined
 }
 
 export interface HiddenInputProps {
@@ -147,6 +186,7 @@ export type ElementIds = Partial<{
   hiddenInput: string
   itemGroup: (id: string | number) => string
   itemGroupLabel: (id: string | number) => string
+  chip: (value: string) => string
 }>
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
@@ -223,20 +263,16 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   defaultValue?: string[] | undefined
   /**
-   * Defines the auto-completion behavior of the combobox.
-   *
-   * - `autohighlight`: The first focused item is highlighted as the user types
-   * - `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated
-   *
-   * @default "none"
+   * Whether to highlight the first item as the user types
+   * @default false
    */
-  inputBehavior?: "autohighlight" | "autocomplete" | "none" | undefined
+  autoHighlight?: boolean | undefined
   /**
    * The behavior of the combobox input when an item is selected
    *
    * - `replace`: The selected item string is set as the input value
    * - `clear`: The input value is cleared
-   * - `preserve`: The input value is preserved
+   * - `preserve`: The input value is kept as typed
    *
    * @default "replace"
    */
@@ -259,12 +295,6 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Whether to allow typing custom values in the input
    */
   allowCustomValue?: boolean | undefined
-  /**
-   * Whether to always submit on Enter key press, even if popup is open.
-   * Useful for single-field autocomplete forms where Enter should submit the form.
-   * @default false
-   */
-  alwaysSubmitOnEnter?: boolean | undefined
   /**
    * Whether to loop the keyboard navigation through the items
    * @default true
@@ -301,6 +331,11 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Function called when the popup is opened
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
+  /**
+   * Function called when the create option is chosen. Return the new item's value, or a
+   * Promise of it, to select it.
+   */
+  onCreate?: ((details: CreateDetails) => string | void | PromiseLike<string | void>) | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -366,7 +401,6 @@ type PropsWithDefault =
   | "positioning"
   | "openOnClick"
   | "openOnChange"
-  | "inputBehavior"
   | "collection"
   | "selectionBehavior"
   | "closeOnSelect"
@@ -390,27 +424,30 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItemMap: Map<string, T>
+    createPending: boolean
+    createError: Error | undefined
   }
   refs: {
     liveRegion: LiveRegion | null
+    chipRegion: LiveRegion | null
     resultsRegion: LiveRegion | null
     finalFocusFrame: AnimationFrame
     highlightFrame: AnimationFrame
     initialFocusFrame: AnimationFrame
-    autofillFrame: AnimationFrame
     reconcileFrame: AnimationFrame
+    chipFocusFrame: AnimationFrame
     autoHighlightPending: boolean
+    createController: AbortController | null
   }
   computed: {
     isCustomValue: boolean
     isInputValueEmpty: boolean
     isInteractive: boolean
-    autoComplete: boolean
-    autoHighlight: boolean
     hasSelectedItems: boolean
     selectedItems: T[]
     valueAsString: string
     hiddenInputValue: string
+    createVisible: boolean
   }
   event: EventObject
   action: string
@@ -532,6 +569,66 @@ export interface ContentState {
   loading: boolean
 }
 
+export interface ChipProps {
+  /**
+   * The selected item the chip shows
+   */
+  item: CollectionItem
+}
+
+export interface ChipState {
+  /**
+   * The value of the item
+   */
+  value: string
+  /**
+   * Whether the chip can't be deleted
+   */
+  disabled: boolean
+}
+
+export interface SelectAllState {
+  /**
+   * Whether every selectable item is selected
+   */
+  checked: boolean
+  /**
+   * Whether some selectable items are selected, but not all
+   */
+  indeterminate: boolean
+  /**
+   * Whether the option is highlighted
+   */
+  highlighted: boolean
+  /**
+   * Whether there's nothing to select
+   */
+  disabled: boolean
+}
+
+export interface CreateItemState {
+  /**
+   * Whether the input has text that no item is labelled with
+   */
+  visible: boolean
+  /**
+   * Whether the option is highlighted
+   */
+  highlighted: boolean
+  /**
+   * The trimmed text the option creates an item from
+   */
+  inputValue: string
+  /**
+   * Whether an async create is running
+   */
+  pending: boolean
+  /**
+   * The error from the last async create
+   */
+  error: Error | undefined
+}
+
 export interface ItemGroupProps {
   id: string
 }
@@ -607,6 +704,10 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   clearValue: (value?: string) => void
   /**
+   * Function to select every selectable item in the collection. Requires `multiple`.
+   */
+  selectAll: VoidFunction
+  /**
    * Function to focus on the combobox input
    */
   focus: VoidFunction
@@ -671,6 +772,39 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   getItemIndicatorProps: (props: ItemProps) => T["element"]
   getItemGroupProps: (props: ItemGroupProps) => T["element"]
   getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
+  getSeparatorProps: () => T["element"]
+  /**
+   * Returns the state of the select-all option
+   */
+  getSelectAllState: () => SelectAllState
+  /**
+   * Props for an option that selects every item, or unselects them all. Requires `multiple`.
+   */
+  getSelectAllProps: () => T["element"]
+  /**
+   * Returns the state of the create option
+   */
+  getCreateItemState: () => CreateItemState
+  /**
+   * Props for an option that creates an item from the typed text. Requires `onCreate`.
+   */
+  getCreateItemProps: () => T["element"]
+  /**
+   * Props for the element around the chips. With `multiple`, render one chip per selected item.
+   */
+  getChipGroupProps: () => T["element"]
+  /**
+   * Returns the state of a chip
+   */
+  getChipState: (props: ChipProps) => ChipState
+  /**
+   * Props for a chip showing a selected item
+   */
+  getChipProps: (props: ChipProps) => T["element"]
+  /**
+   * Props for the button that deletes a chip
+   */
+  getChipDeleteTriggerProps: (props: ChipProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

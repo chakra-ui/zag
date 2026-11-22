@@ -74,6 +74,86 @@
     }
   },
   "async-list": {},
+  "autocomplete": {
+    "Root": {
+      "data-autocomplete-root": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-autocomplete-label": "<uid>",
+      "data-required": "Present when required",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Control": {
+      "data-autocomplete-control": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Input": {
+      "data-autocomplete-input": "<uid>",
+      "data-invalid": "Present when invalid",
+      "data-state": "\"open\" | \"closed\"",
+      "data-autofocus": ""
+    },
+    "Trigger": {
+      "data-autocomplete-trigger": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "ClearTrigger": {
+      "data-autocomplete-clear-trigger": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-focus": "Present when focused",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Positioner": {
+      "data-autocomplete-positioner": "<uid>",
+      "data-nested": "Present when this layer is open inside another layer of the same type, like a dialog in a dialog",
+      "data-has-nested": "Present when a layer of the same type is open inside this one"
+    },
+    "Content": {
+      "data-autocomplete-content": "<uid>",
+      "data-state": "\"open\" | \"closed\"",
+      "data-placement": "The placement of the content",
+      "data-side": "The side of the trigger that the content is positioned on",
+      "data-empty": "Present when the content is empty",
+      "data-loading": "Present when loading",
+      "data-nested": "Present when this layer is open inside another layer of the same type, like a dialog in a dialog",
+      "data-has-nested": "Present when a layer of the same type is open inside this one"
+    },
+    "List": {
+      "data-autocomplete-list": "<uid>",
+      "data-empty": "Present when the content is empty",
+      "data-loading": "Present when loading"
+    },
+    "Item": {
+      "data-autocomplete-item": "<uid>",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled",
+      "data-value": "The value of the item"
+    },
+    "ItemText": {
+      "data-autocomplete-item-text": "<uid>",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled"
+    }
+  },
   "avatar": {
     "Root": {
       "data-avatar-root": "<uid>",
@@ -510,6 +590,7 @@
     },
     "Item": {
       "data-combobox-item": "<uid>",
+      "data-type": "\"item\"",
       "data-highlighted": "Present when highlighted",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
@@ -528,6 +609,36 @@
     "ItemGroup": {
       "data-combobox-item-group": "<uid>",
       "data-empty": "Present when the content is empty"
+    },
+    "SelectAll": {
+      "data-combobox-item": "<uid>",
+      "data-type": "\"select-all\"",
+      "data-disabled": "Present when disabled",
+      "data-highlighted": "Present when highlighted",
+      "data-state": "\"checked\" | \"indeterminate\" | \"unchecked\"",
+      "data-value": "The value of the item"
+    },
+    "CreateItem": {
+      "data-combobox-item": "<uid>",
+      "data-type": "\"create\"",
+      "data-highlighted": "Present when highlighted",
+      "data-loading": "Present when loading",
+      "data-invalid": "Present when invalid",
+      "data-value": "The value of the item"
+    },
+    "ChipGroup": {
+      "data-combobox-chip-group": "<uid>",
+      "data-disabled": "Present when disabled"
+    },
+    "Chip": {
+      "data-combobox-chip": "<uid>",
+      "data-value": "The value of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "ChipDeleteTrigger": {
+      "data-combobox-chip-delete-trigger": "<uid>",
+      "data-value": "The value of the item",
+      "data-disabled": "Present when disabled"
     }
   },
   "date-input": {
@@ -1201,11 +1312,20 @@
     },
     "Item": {
       "data-listbox-item": "<uid>",
+      "data-type": "\"item\"",
       "data-value": "The value of the item",
       "data-selected": "Present when selected",
       "data-layout": "",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-orientation": "The orientation of the item",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled"
+    },
+    "SelectAll": {
+      "data-listbox-item": "<uid>",
+      "data-type": "\"select-all\"",
+      "data-value": "The value of the item",
+      "data-state": "\"checked\" | \"indeterminate\" | \"unchecked\"",
       "data-highlighted": "Present when highlighted",
       "data-disabled": "Present when disabled"
     },
@@ -2018,8 +2138,17 @@
     },
     "Item": {
       "data-select-item": "<uid>",
+      "data-type": "\"item\"",
       "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled"
+    },
+    "SelectAll": {
+      "data-select-item": "<uid>",
+      "data-type": "\"select-all\"",
+      "data-value": "The value of the item",
+      "data-state": "\"checked\" | \"indeterminate\" | \"unchecked\"",
       "data-highlighted": "Present when highlighted",
       "data-disabled": "Present when disabled"
     },

@@ -67,7 +67,7 @@ export default function Page() {
     id: comboboxId,
     popupType: "dialog",
     openOnClick: true,
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     positioning: {
       sameWidth: false,
     },

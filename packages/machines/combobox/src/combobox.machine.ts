@@ -19,9 +19,9 @@ import {
   setCaretToEnd,
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion, type LiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, isBoolean, isEqual, match, mergeWithDefault, remove } from "@zag-js/utils"
+import { addOrRemove, isBoolean, isEqual, isPromiseLike, match, mergeWithDefault, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import { defaultTranslations } from "./combobox.translations"
@@ -32,6 +32,8 @@ import type {
   Placement,
   ValueChangeReason,
 } from "./combobox.types"
+import { CREATE_VALUE, isItemLabel, isPinnedValue } from "./utils/pinned"
+import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
@@ -57,8 +59,6 @@ export const machine = createMachine({
       defaultInputValue: "",
       closeOnSelect: !props.multiple,
       allowCustomValue: false,
-      alwaysSubmitOnEnter: false,
-      inputBehavior: "none",
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
       openOnChange: true,
@@ -85,16 +85,20 @@ export const machine = createMachine({
     return {
       liveRegion: null,
       resultsRegion: null,
+      chipRegion: null,
       finalFocusFrame: AnimationFrame.create(),
       highlightFrame: AnimationFrame.create(),
       initialFocusFrame: AnimationFrame.create(),
-      autofillFrame: AnimationFrame.create(),
       reconcileFrame: AnimationFrame.create(),
+      chipFocusFrame: AnimationFrame.create(),
       autoHighlightPending: false,
+      createController: null,
     }
   },
 
-  exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight", "cancelFrames"],
+  exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight", "cancelFrames", "cancelCreate"],
+
+  effects: ["trackChipRegion"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
@@ -140,7 +144,11 @@ export const machine = createMachine({
 
           const event = getEvent()
           const reason = (event.previousEvent || event).src as ValueChangeReason | undefined
-          prop("onValueChange")?.({ value, items: proposed.selectedItems, reason })
+          prop("onValueChange")?.({
+            value,
+            items: proposed.selectedItems,
+            reason,
+          })
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
@@ -148,7 +156,10 @@ export const machine = createMachine({
         value: prop("highlightedValue"),
         onChange(value) {
           const item = prop("collection").find(value)
-          prop("onHighlightChange")?.({ highlightedValue: value, highlightedItem: item })
+          prop("onHighlightChange")?.({
+            highlightedValue: value,
+            highlightedItem: item,
+          })
         },
       })),
       inputValue: bindable<string>(() => {
@@ -158,9 +169,9 @@ export const machine = createMachine({
         if (!inputValue.trim() && !prop("multiple")) {
           const valueAsString = prop("collection").stringifyMany(value)
           inputValue = match(prop("selectionBehavior"), {
-            preserve: inputValue || valueAsString,
             replace: valueAsString,
             clear: "",
+            preserve: inputValue || valueAsString,
           })
         }
 
@@ -179,6 +190,12 @@ export const machine = createMachine({
         const highlightedItem = prop("collection").find(highlightedValue)
         return { defaultValue: highlightedItem }
       }),
+      createPending: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      createError: bindable<Error | undefined>(() => ({
+        defaultValue: undefined,
+      })),
       selectedItemMap: bindable<Map<string, CollectionItem>>(() => {
         return {
           defaultValue: createSelectedItemMap({
@@ -193,8 +210,6 @@ export const machine = createMachine({
   computed: {
     isInputValueEmpty: ({ context }) => context.get("inputValue").length === 0,
     isInteractive: ({ prop }) => !(prop("readOnly") || prop("disabled")),
-    autoComplete: ({ prop }) => prop("inputBehavior") === "autocomplete",
-    autoHighlight: ({ prop }) => prop("inputBehavior") === "autohighlight",
     hasSelectedItems: ({ context }) => context.get("value").length > 0,
     selectedItems: ({ context, prop }) =>
       resolveSelectedItems({
@@ -208,6 +223,14 @@ export const machine = createMachine({
       prop("allowCustomValue") && computed("isCustomValue")
         ? context.get("inputValue")
         : (context.get("value")[0] ?? ""),
+    // Typed text that no item is labelled with
+    createVisible: ({ context, computed, prop }) => {
+      if (!prop("onCreate") || !computed("isInteractive")) return false
+      if (context.get("createPending")) return true
+      const text = context.get("inputValue").trim()
+      if (!text || text === computed("valueAsString")) return false
+      return !isItemLabel(prop("collection"), text)
+    },
   },
 
   watch({ context, prop, track, action, send }) {
@@ -215,17 +238,17 @@ export const machine = createMachine({
       action(["syncSelectedItems", "syncHiddenInput"])
     })
     track([() => context.get("inputValue")], () => {
-      action(["syncInputValue", "syncHiddenInput", "announceResults"])
+      action(["syncInputValue", "syncHiddenInput", "announceResults", "cancelCreate"])
     })
     track([() => context.get("highlightedValue")], () => {
-      action(["syncHighlightedItem", "autofillInputValue", "announceHighlightedItem"])
+      action(["syncHighlightedItem", "announceHighlightedItem"])
     })
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
     track([() => prop("collection").toString()], () => {
       send({ type: "CHILDREN_CHANGE" })
-      action(["announceResults"])
+      action(["resolveSelectedItems", "announceResults"])
     })
     track([() => prop("loading")], () => {
       action(["announceResults"])
@@ -244,6 +267,9 @@ export const machine = createMachine({
     },
     "ITEM.CLEAR": {
       actions: ["clearItem"],
+    },
+    "CHIP.DELETE": {
+      actions: ["deleteChip", "focusChip"],
     },
     "VALUE.SET": {
       actions: ["setValue"],
@@ -374,17 +400,6 @@ export const machine = createMachine({
               },
             ],
             "INPUT.ARROW_DOWN": [
-              // == group 1 ==
-              {
-                guard: and("isOpenControlled", "autoComplete"),
-                actions: ["invokeOnOpen"],
-              },
-              {
-                guard: "autoComplete",
-                target: "open.interacting",
-                actions: ["invokeOnOpen"],
-              },
-              // == group 2 ==
               {
                 guard: "isOpenControlled",
                 actions: ["highlightFirstOrSelectedItem", "invokeOnOpen"],
@@ -395,17 +410,6 @@ export const machine = createMachine({
               },
             ],
             "INPUT.ARROW_UP": [
-              // == group 1 ==
-              {
-                guard: and("isOpenControlled", "autoComplete"),
-                actions: ["invokeOnOpen"],
-              },
-              {
-                guard: "autoComplete",
-                target: "open.interacting",
-                actions: ["invokeOnOpen"],
-              },
-              // == group 2 ==
               {
                 guard: "isOpenControlled",
                 actions: ["highlightLastOrSelectedItem", "invokeOnOpen"],
@@ -436,7 +440,7 @@ export const machine = createMachine({
     open: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      exit: ["cancelHighlightFrame"],
+      exit: ["cancelHighlightFrame", "cancelCreate"],
       effects: [
         "trackFocusVisible",
         "scrollToHighlightedItem",
@@ -456,6 +460,10 @@ export const machine = createMachine({
           },
         ],
         "INPUT.ENTER": [
+          {
+            guard: "isCreateHighlighted",
+            actions: ["createItem"],
+          },
           // == group 1 ==
           {
             guard: and("isOpenControlled", "isCustomValue", not("hasHighlightedItem"), not("allowCustomValue")),
@@ -482,6 +490,10 @@ export const machine = createMachine({
         ],
         "ITEM.CLICK": [
           {
+            guard: "isCreateEvent",
+            actions: ["createItem"],
+          },
+          {
             guard: and("isOpenControlled", "closeOnSelect"),
             actions: ["selectItem", "invokeOnClose"],
           },
@@ -494,6 +506,31 @@ export const machine = createMachine({
             actions: ["selectItem"],
           },
         ],
+        "CREATE.SUCCESS": [
+          {
+            guard: not("isCurrentCreate"),
+          },
+          {
+            guard: not("hasCreatedValue"),
+            actions: ["endCreate"],
+          },
+          {
+            guard: and("isOpenControlled", "closeOnSelect"),
+            actions: ["endCreate", "selectCreatedItem", "invokeOnClose"],
+          },
+          {
+            guard: "closeOnSelect",
+            target: "closed.focused",
+            actions: ["endCreate", "selectCreatedItem", "invokeOnClose", "setFinalFocus"],
+          },
+          {
+            actions: ["endCreate", "selectCreatedItem"],
+          },
+        ],
+        "CREATE.ERROR": {
+          guard: "isCurrentCreate",
+          actions: ["failCreate"],
+        },
         "TRIGGER.CLICK": [
           {
             guard: "isOpenControlled",
@@ -575,35 +612,16 @@ export const machine = createMachine({
             "INPUT.PAGE_UP": {
               actions: ["highlightPrevPage"],
             },
-            "INPUT.ARROW_DOWN": [
-              {
-                guard: and("autoComplete", "isLastItemHighlighted"),
-                actions: ["clearHighlightedValue", "scrollToTop"],
-              },
-              {
-                actions: ["highlightNextItem"],
-              },
-            ],
-            "INPUT.ARROW_UP": [
-              {
-                guard: and("autoComplete", "isFirstItemHighlighted"),
-                actions: ["clearHighlightedValue"],
-              },
-              {
-                actions: ["highlightPrevItem"],
-              },
-            ],
-            "INPUT.CHANGE": [
-              {
-                guard: "autoComplete",
-                target: "suggesting",
-                actions: ["setInputValue", "reconcileInputValue", "scrollToTop"],
-              },
-              {
-                target: "suggesting",
-                actions: ["clearHighlightedValue", "setInputValue", "reconcileInputValue", "scrollToTop"],
-              },
-            ],
+            "INPUT.ARROW_DOWN": {
+              actions: ["highlightNextItem"],
+            },
+            "INPUT.ARROW_UP": {
+              actions: ["highlightPrevItem"],
+            },
+            "INPUT.CHANGE": {
+              target: "suggesting",
+              actions: ["clearHighlightedValue", "setInputValue", "reconcileInputValue", "scrollToTop"],
+            },
             "ITEM.POINTER_MOVE": {
               actions: ["setHighlightedValue"],
             },
@@ -611,15 +629,6 @@ export const machine = createMachine({
               actions: ["clearHighlightedValue"],
             },
             "LAYER.ESCAPE": [
-              {
-                guard: and("isOpenControlled", "autoComplete"),
-                actions: ["syncInputValue", "invokeOnClose"],
-              },
-              {
-                guard: "autoComplete",
-                target: "closed.focused",
-                actions: ["syncInputValue", "invokeOnClose"],
-              },
               {
                 guard: "isOpenControlled",
                 actions: ["invokeOnClose"],
@@ -702,10 +711,7 @@ export const machine = createMachine({
   implementations: {
     guards: {
       isInputValueEmpty: ({ computed }) => computed("isInputValueEmpty"),
-      autoComplete: ({ computed, prop }) => computed("autoComplete") && !prop("multiple"),
-      autoHighlight: ({ computed }) => computed("autoHighlight"),
-      isFirstItemHighlighted: ({ prop, context }) => prop("collection").firstValue === context.get("highlightedValue"),
-      isLastItemHighlighted: ({ prop, context }) => prop("collection").lastValue === context.get("highlightedValue"),
+      autoHighlight: ({ prop }) => !!prop("autoHighlight"),
       isCustomValue: ({ computed }) => computed("isCustomValue"),
       allowCustomValue: ({ prop }) => !!prop("allowCustomValue"),
       hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
@@ -722,8 +728,13 @@ export const machine = createMachine({
       },
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
       autoFocus: ({ prop }) => !!prop("autoFocus"),
-      isHighlightedItemRemoved: ({ prop, context }) => !prop("collection").has(context.get("highlightedValue")),
+      isHighlightedItemRemoved: (params) => !navigate(params).has(params.context.get("highlightedValue")),
       hasCollectionItems: ({ prop }) => prop("collection").size > 0,
+      isCreateHighlighted: ({ context }) => context.get("highlightedValue") === CREATE_VALUE,
+      isCreateEvent: ({ event }) => event.value === CREATE_VALUE,
+      // A cancelled create's result is dropped
+      isCurrentCreate: ({ refs, event }) => event.controller === refs.get("createController"),
+      hasCreatedValue: ({ event }) => event.value != null,
     },
 
     effects: {
@@ -740,7 +751,13 @@ export const machine = createMachine({
           },
           defer: true,
           getRootNode: scope.getRootNode,
-          exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
+          // Moving into the chips isn't leaving the combobox
+          exclude: () => [
+            dom.getInputEl(scope),
+            dom.getTriggerEl(scope),
+            dom.getClearTriggerEl(scope),
+            dom.getChipGroupEl(scope),
+          ],
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
           onInteractOutside: prop("onInteractOutside"),
@@ -750,9 +767,22 @@ export const machine = createMachine({
             send({ type: "LAYER.ESCAPE", src: "escape-key" })
           },
           onDismiss() {
-            send({ type: "LAYER.INTERACT_OUTSIDE", src: "interact-outside", restoreFocus: false })
+            send({
+              type: "LAYER.INTERACT_OUTSIDE",
+              src: "interact-outside",
+              restoreFocus: false,
+            })
           },
         })
+      },
+      // Chips can be deleted while the list is closed, so their region lives as long as the combobox
+      trackChipRegion({ refs, scope }) {
+        const chipRegion = createLiveRegion({ level: "polite", document: scope.getDoc() })
+        refs.set("chipRegion", chipRegion)
+        return () => {
+          chipRegion.destroy()
+          refs.set("chipRegion", null)
+        }
       },
       trackLiveRegion({ refs, scope }) {
         const root = () => dom.getRootEl(scope)
@@ -802,8 +832,9 @@ export const machine = createMachine({
 
           const listEl = dom.getListEl(scope)
 
+          // Pinned options aren't virtualized rows, so they scroll like any element
           const scrollToIndexFn = prop("scrollToIndexFn")
-          if (scrollToIndexFn) {
+          if (scrollToIndexFn && !isPinnedValue(highlightedValue)) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
             scrollToIndexFn({
               index: highlightedIndex,
@@ -865,8 +896,13 @@ export const machine = createMachine({
         const { context, event, prop } = params
         const collection = prop("collection")
 
-        // check if item is valid
         const highlightedValue = context.get("highlightedValue")
+        if (isPinnedValue(highlightedValue)) {
+          choosePinned(params, highlightedValue!)
+          return
+        }
+
+        // check if item is valid
         if (!highlightedValue || !collection.has(highlightedValue)) return
 
         // select item
@@ -880,9 +916,9 @@ export const machine = createMachine({
 
         // set input value
         const inputValue = match(prop("selectionBehavior"), {
-          preserve: context.get("inputValue"),
           replace: collection.stringifyMany(nextValue),
           clear: "",
+          preserve: context.get("inputValue"),
         })
         context.set("inputValue", inputValue)
       },
@@ -895,7 +931,7 @@ export const machine = createMachine({
           const listEl = dom.getListEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
-          if (scrollToIndexFn) {
+          if (scrollToIndexFn && !isPinnedValue(highlightedValue)) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
             scrollToIndexFn({
               index: highlightedIndex,
@@ -911,18 +947,40 @@ export const machine = createMachine({
       selectItem(params) {
         const { context, event, flush, prop } = params
         if (event.value == null) return
+        if (isPinnedValue(event.value)) {
+          flush(() => choosePinned(params, event.value))
+          return
+        }
         flush(() => {
           const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
-          prop("onSelect")?.({ value: nextValue, itemValue: event.value, modifiers: getModifierKeys(event.modifiers) })
+          prop("onSelect")?.({
+            value: nextValue,
+            itemValue: event.value,
+            modifiers: getModifierKeys(event.modifiers),
+          })
           context.set("value", nextValue)
 
           // set input value
           const inputValue = match(prop("selectionBehavior"), {
-            preserve: context.get("inputValue"),
             replace: prop("collection").stringifyMany(nextValue),
             clear: "",
+            preserve: context.get("inputValue"),
           })
           context.set("inputValue", inputValue)
+        })
+      },
+      deleteChip({ context, prop, refs, event }) {
+        const item = context.get("selectedItemMap").get(event.value)
+        const label = (item && prop("collection").stringifyItem(item)) || event.value
+        context.set("value", remove(context.get("value"), event.value))
+        const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+        announce(refs.get("chipRegion"), translations.chipDeleted(label))
+      },
+      // After the chip is gone, focus the one beside it, or the input
+      focusChip({ refs, scope, event }) {
+        refs.get("chipFocusFrame").request(() => {
+          const chipEl = event.focusValue != null ? scope.getById(dom.getChipId(scope, event.focusValue)) : null
+          ;(chipEl ?? dom.getInputEl(scope))?.focus({ preventScroll: true })
         })
       },
       clearItem(params) {
@@ -934,9 +992,9 @@ export const machine = createMachine({
 
           // set input value
           const inputValue = match(prop("selectionBehavior"), {
-            preserve: context.get("inputValue"),
             replace: prop("collection").stringifyMany(nextValue),
             clear: "",
+            preserve: context.get("inputValue"),
           })
           context.set("inputValue", inputValue)
         })
@@ -961,8 +1019,8 @@ export const machine = createMachine({
       },
       cancelFrames({ refs }) {
         refs.get("initialFocusFrame").cancel()
-        refs.get("autofillFrame").cancel()
         refs.get("reconcileFrame").cancel()
+        refs.get("chipFocusFrame").cancel()
       },
       cancelHighlightFrame({ refs }) {
         refs.get("highlightFrame").cancel()
@@ -998,11 +1056,10 @@ export const machine = createMachine({
         context.set("inputValue", "")
       },
       revertInputValue({ context, prop, computed }) {
-        const selectionBehavior = prop("selectionBehavior")
-        const inputValue = match(selectionBehavior, {
+        const inputValue = match(prop("selectionBehavior"), {
           replace: computed("hasSelectedItems") ? computed("valueAsString") : "",
-          preserve: context.get("inputValue"),
           clear: "",
+          preserve: context.get("inputValue"),
         })
         context.set("inputValue", inputValue)
       },
@@ -1013,9 +1070,9 @@ export const machine = createMachine({
 
           // set input value
           const inputValue = match(prop("selectionBehavior"), {
-            preserve: context.get("inputValue"),
             replace: prop("collection").stringifyMany(event.value),
             clear: "",
+            preserve: context.get("inputValue"),
           })
           context.set("inputValue", inputValue)
         })
@@ -1027,9 +1084,9 @@ export const machine = createMachine({
 
           // set input value
           const inputValue = match(prop("selectionBehavior"), {
-            preserve: context.get("inputValue"),
             replace: prop("collection").stringifyMany([]),
             clear: "",
+            preserve: context.get("inputValue"),
           })
           context.set("inputValue", inputValue)
         })
@@ -1052,16 +1109,25 @@ export const machine = createMachine({
       invokeOnOpen({ prop, event, context }) {
         if (prop("inline")) return
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: true, reason, value: context.get("value") })
+        prop("onOpenChange")?.({
+          open: true,
+          reason,
+          value: context.get("value"),
+        })
       },
       invokeOnClose({ prop, event, context }) {
         if (prop("inline")) return
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
+        prop("onOpenChange")?.({
+          open: false,
+          reason,
+          value: context.get("value"),
+        })
       },
-      highlightFirstItem({ context, prop, scope, refs }) {
+      highlightFirstItem(params) {
+        const { context, scope, refs } = params
         const fn = () => {
-          const value = prop("collection").firstValue
+          const value = navigate(params).first
           if (value) context.set("highlightedValue", value)
         }
         // wait a frame if the content is not mounted yet
@@ -1069,12 +1135,14 @@ export const machine = createMachine({
         else refs.get("highlightFrame").request(fn)
       },
       // runs after the collection changes; an explicit highlight before it runs cancels it
-      autoHighlightFirstItem({ context, prop, scope, refs }) {
+      autoHighlightFirstItem(params) {
+        const { context, scope, refs } = params
         refs.set("autoHighlightPending", true)
         const fn = () => {
           if (!refs.get("autoHighlightPending")) return
           refs.set("autoHighlightPending", false)
-          const value = prop("collection").firstValue
+          // the first match, or create when nothing matches; never select-all
+          const value = navigate(params, { selectAll: false }).first
           if (value) context.set("highlightedValue", value)
         }
         if (dom.getContentEl(scope)) queueMicrotask(fn)
@@ -1083,41 +1151,28 @@ export const machine = createMachine({
       cancelAutoHighlight({ refs }) {
         refs.set("autoHighlightPending", false)
       },
-      highlightFirstItemIfNeeded({ computed, action }) {
-        if (!computed("autoHighlight")) return
-        action(["highlightFirstItem"])
+      highlightFirstItemIfNeeded({ prop, action }) {
+        if (!prop("autoHighlight")) return
+        action(["autoHighlightFirstItem"])
       },
-      highlightLastItem({ context, prop, scope, refs }) {
+      highlightLastItem(params) {
+        const { context, scope, refs } = params
         const fn = () => {
-          const value = prop("collection").lastValue
+          const value = navigate(params).last
           if (value) context.set("highlightedValue", value)
         }
         // wait a frame if the content is not mounted yet
         if (dom.getContentEl(scope)) queueMicrotask(fn)
         else refs.get("highlightFrame").request(fn)
       },
-      highlightNextItem({ context, prop }) {
-        let value: string | null = null
-        const highlightedValue = context.get("highlightedValue")
-        const collection = prop("collection")
-        if (highlightedValue) {
-          value = collection.getNextValue(highlightedValue)
-          if (!value && prop("loopFocus")) value = collection.firstValue
-        } else {
-          value = collection.firstValue
-        }
+      highlightNextItem(params) {
+        const { context, prop } = params
+        const value = navigate(params).next(context.get("highlightedValue"), !!prop("loopFocus"))
         if (value) context.set("highlightedValue", value)
       },
-      highlightPrevItem({ context, prop }) {
-        let value: string | null = null
-        const highlightedValue = context.get("highlightedValue")
-        const collection = prop("collection")
-        if (highlightedValue) {
-          value = collection.getPreviousValue(highlightedValue)
-          if (!value && prop("loopFocus")) value = collection.lastValue
-        } else {
-          value = collection.lastValue
-        }
+      highlightPrevItem(params) {
+        const { context, prop } = params
+        const value = navigate(params).prev(context.get("highlightedValue"), !!prop("loopFocus"))
         if (value) context.set("highlightedValue", value)
       },
       highlightNextPage({ context, prop }) {
@@ -1142,36 +1197,28 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightFirstOrSelectedItem({ context, prop, computed, refs }) {
+      highlightFirstOrSelectedItem(params) {
+        const { context, prop, computed, refs } = params
         refs.get("highlightFrame").request(() => {
           let value: string | null = null
           if (computed("hasSelectedItems")) {
             value = prop("collection").sort(context.get("value"))[0]
           } else {
-            value = prop("collection").firstValue
+            value = navigate(params).first
           }
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightLastOrSelectedItem({ context, prop, computed, refs }) {
+      highlightLastOrSelectedItem(params) {
+        const { context, prop, computed, refs } = params
         refs.get("highlightFrame").request(() => {
-          const collection = prop("collection")
           let value: string | null = null
           if (computed("hasSelectedItems")) {
-            value = collection.sort(context.get("value"))[0]
+            value = prop("collection").sort(context.get("value"))[0]
           } else {
-            value = collection.lastValue
+            value = navigate(params).last
           }
           if (value) context.set("highlightedValue", value)
-        })
-      },
-      autofillInputValue({ context, computed, prop, event, scope, refs }) {
-        const inputEl = dom.getInputEl(scope)
-        const collection = prop("collection")
-        if (!computed("autoComplete") || !inputEl || !event.keypress) return
-        const valueText = collection.stringify(context.get("highlightedValue"))
-        refs.get("autofillFrame").request(() => {
-          inputEl.value = valueText || context.get("inputValue")
         })
       },
       syncSelectedItems(params) {
@@ -1182,26 +1229,113 @@ export const machine = createMachine({
           const selectedItemMap = context.get("selectedItemMap")
 
           // sync selected item cache based on value
-          const next = deriveSelectionState({ values: value, collection, selectedItemMap })
+          const next = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
           context.set("selectedItemMap", next.nextSelectedItemMap)
 
           // set input value
           const inputValue = match(prop("selectionBehavior"), {
-            preserve: context.get("inputValue"),
             replace: collection.stringifyMany(value),
             clear: "",
+            preserve: context.get("inputValue"),
           })
           context.set("inputValue", inputValue)
         })
+      },
+      createItem({ context, prop, refs, send, event }) {
+        if (context.get("createPending")) return
+        const inputValue = context.get("inputValue").trim()
+        const controller = new AbortController()
+        refs.set("createController", controller)
+        context.set("createError", undefined)
+
+        const result = prop("onCreate")?.({
+          inputValue,
+          signal: controller.signal,
+        })
+        const modifiers = getModifierKeys(event.modifiers)
+        const resolve = (value: string | void) =>
+          send({
+            type: "CREATE.SUCCESS",
+            value,
+            inputValue,
+            controller,
+            modifiers,
+            src: "item-select",
+          })
+        if (!isPromiseLike(result)) return resolve(result)
+
+        context.set("createPending", true)
+        const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+        announce(refs.get("resultsRegion"), translations.creatingItem(inputValue))
+        result.then(resolve, (reason: unknown) => {
+          const error = reason instanceof Error ? reason : new Error(String(reason))
+          send({ type: "CREATE.ERROR", error, inputValue, controller })
+        })
+      },
+      cancelCreate({ context, refs }) {
+        refs.get("createController")?.abort()
+        refs.set("createController", null)
+        context.set("createPending", false)
+        context.set("createError", undefined)
+      },
+      endCreate({ context, refs }) {
+        refs.set("createController", null)
+        context.set("createPending", false)
+      },
+      failCreate({ context, prop, refs, event }) {
+        refs.set("createController", null)
+        context.set("createPending", false)
+        context.set("createError", event.error)
+        const translations = mergeWithDefault(defaultTranslations, prop("translations"))
+        announce(
+          refs.get("liveRegion"),
+          translations.createItemFailed({
+            inputValue: event.inputValue,
+            error: event.error,
+          }),
+        )
+      },
+      selectCreatedItem({ context, prop, event }) {
+        const created = event.value as string | undefined
+        if (created == null) return
+        const collection = prop("collection")
+        const value = context.get("value")
+        const multiple = prop("multiple")
+        const nextValue = multiple ? (value.includes(created) ? value : [...value, created]) : [created]
+        prop("onSelect")?.({
+          value: nextValue,
+          itemValue: created,
+          modifiers: event.modifiers,
+        })
+        context.set("value", nextValue)
+        // The created item may not be in the collection yet
+        const text = event.inputValue as string
+        const replace = multiple ? [collection.stringifyMany(value), text].filter(Boolean).join(", ") : text
+        context.set("inputValue", match(prop("selectionBehavior"), { replace, clear: "", preserve: text }))
+      },
+      // Resolves values selected before their item reached the collection
+      resolveSelectedItems({ context, prop, action }) {
+        const collection = prop("collection")
+        const selectedItemMap = context.get("selectedItemMap")
+        const resolved = context.get("value").some((value) => !selectedItemMap.has(value) && collection.has(value))
+        if (resolved) action(["syncSelectedItems"])
       },
       syncHighlightedItem({ context, prop }) {
         const item = prop("collection").find(context.get("highlightedValue"))
         context.set("highlightedItem", item)
       },
-      announceHighlightedItem({ context, prop, refs }) {
+      announceHighlightedItem({ context, prop, refs, scope }) {
         if (!isApple()) return
         const value = context.get("highlightedValue")
-        const optionText = value ? prop("collection").stringifyItem(prop("collection").find(value)) : null
+        const optionText = isPinnedValue(value)
+          ? dom.getItemEl(scope, value)?.textContent?.trim()
+          : value
+            ? prop("collection").stringifyItem(prop("collection").find(value))
+            : null
         // nothing is highlighted anymore (the results emptied, say), so drop the
         // last announcement rather than leave it describing an item that is gone
         if (!optionText) {
@@ -1210,7 +1344,10 @@ export const machine = createMachine({
         }
         const isSelected = value ? context.get("value").includes(value) : false
         const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-        const message = translations.highlightedItem({ label: optionText, selected: isSelected })
+        const message = translations.highlightedItem({
+          label: optionText,
+          selected: isSelected,
+        })
         if (message) refs.get("liveRegion")?.announce(message)
       },
       announceResults({ refs, prop }) {
@@ -1220,11 +1357,41 @@ export const machine = createMachine({
         refs.get("resultsRegion")?.cancel()
       },
       toggleVisibility({ event, send, prop }) {
-        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+        send({
+          type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
+          previousEvent: event,
+        })
       },
     },
   },
 })
+
+type NavigateParams = Pick<Params<ComboboxSchema>, "prop" | "scope" | "computed">
+
+/** Keyboard order: select-all (when rendered), the items, then create (when shown) */
+function navigate({ prop, scope, computed }: NavigateParams, { selectAll = true } = {}) {
+  const hasSelectAll = selectAll && prop("multiple") && dom.isShown(dom.getSelectAllEl(scope))
+  return prop("collection").navigate({
+    before: hasSelectAll ? [SELECT_ALL_VALUE] : [],
+    after: computed("createVisible") ? [CREATE_VALUE] : [],
+  })
+}
+
+/** Chooses the select-all option. The create option goes through `createItem`. */
+function choosePinned({ context, prop }: Pick<Params<ComboboxSchema>, "context" | "prop">, pinned: string) {
+  if (pinned !== SELECT_ALL_VALUE) return
+  const collection = prop("collection")
+  const nextValue = toggleSelectAll(collection, context.get("value"))
+  context.set("value", nextValue)
+  context.set(
+    "inputValue",
+    match(prop("selectionBehavior"), {
+      replace: collection.stringifyMany(nextValue),
+      clear: "",
+      preserve: context.get("inputValue"),
+    }),
+  )
+}
 
 function getOpenChangeReason(event: ComboboxSchema["event"]): OpenChangeReason | undefined {
   return (event.previousEvent || event).src
@@ -1235,4 +1402,8 @@ function getResultsMessage(prop: Params<ComboboxSchema>["prop"]) {
   if (prop("loading")) return translations.loading
   const count = prop("collection").size
   return count === 0 ? translations.noResults : translations.resultsCount(count)
+}
+
+function announce(region: LiveRegion | null, message: string) {
+  if (message) region?.announce(message)
 }

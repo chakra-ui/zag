@@ -2,6 +2,7 @@ export { anatomy } from "./listbox.anatomy"
 export { collection, gridCollection } from "./listbox.collection"
 export { connect } from "./listbox.connect"
 export { machine } from "./listbox.machine"
+export { SELECT_ALL_VALUE } from "./utils/select-all"
 export * from "./listbox.props"
 export type {
   ListboxApi as Api,
@@ -16,6 +17,7 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
+  SelectAllState,
   ListState,
   ScrollToIndexDetails,
   SelectionDetails,

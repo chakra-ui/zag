@@ -28,10 +28,12 @@ import type {
   ItemState,
   RootState,
   ScrollArrowProps,
+  SelectAllState,
   SelectApi,
   SelectSchema,
   TriggerState,
 } from "./select.types"
+import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
 
 // ArrowLeft/Right/Home/End cycle the closed select's value; ArrowUp/Down open it instead.
 const CYCLE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"])
@@ -96,6 +98,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     }
   }
 
+  function getSelectAllState(): SelectAllState {
+    const { enabled, checked, indeterminate } = getSelectAllCoverage(collection, context.get("value"))
+    return {
+      checked,
+      indeterminate,
+      highlighted: highlightedValue === SELECT_ALL_VALUE,
+      disabled: !!disabled || enabled.length === 0,
+    }
+  }
+
   function getRootState(): RootState {
     return { open, disabled: !!disabled, invalid, readOnly, required, focused }
   }
@@ -153,7 +165,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       send({ type: "VALUE.SET", value, src: "script" })
     },
     selectAll() {
-      send({ type: "VALUE.SET", value: collection.getValues(), src: "script" })
+      send({ type: "VALUE.SET", value: selectAllValues(collection, context.get("value")), src: "script" })
     },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
@@ -366,6 +378,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         id: dom.getItemId(scope, itemState.value),
         role: "option",
         ...parts.item.attrs(scope.id),
+        "data-type": "item",
         dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
@@ -393,6 +406,46 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           // keyboard-driven scroll fires pointerleave without any pointer input
           if (getInteractionModality() !== "pointer") return
 
+          send({ type: "ITEM.POINTER_LEAVE" })
+        },
+      })
+    },
+
+    getSelectAllState,
+    getSelectAllProps() {
+      const selectAllState = getSelectAllState()
+      const checkedState = selectAllState.checked
+        ? "checked"
+        : selectAllState.indeterminate
+          ? "indeterminate"
+          : "unchecked"
+      return normalize.element({
+        ...parts.item.attrs(scope.id),
+        "data-type": "select-all",
+        id: dom.getItemId(scope, SELECT_ALL_VALUE),
+        role: "option",
+        dir: prop("dir"),
+        hidden: !prop("multiple"),
+        "data-value": SELECT_ALL_VALUE,
+        "aria-selected": selectAllState.checked,
+        "aria-checked": selectAllState.indeterminate ? "mixed" : selectAllState.checked,
+        "data-state": checkedState,
+        "data-highlighted": dataAttr(selectAllState.highlighted),
+        "data-disabled": dataAttr(selectAllState.disabled),
+        "aria-disabled": ariaAttr(selectAllState.disabled),
+        onPointerMove(event) {
+          if (selectAllState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
+          if (selectAllState.highlighted) return
+          send({ type: "ITEM.POINTER_MOVE", value: SELECT_ALL_VALUE })
+        },
+        onClick(event) {
+          if (event.defaultPrevented || selectAllState.disabled) return
+          send({ type: "ITEM.CLICK", src: "item-select", value: SELECT_ALL_VALUE })
+        },
+        onPointerLeave(event) {
+          if (selectAllState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
           send({ type: "ITEM.POINTER_LEAVE" })
         },
       })

@@ -22,13 +22,7 @@ export default function Page() {
 
   const api = select.connect(service, normalizeProps)
 
-  const allSelected = api.value.length === collection.size
-  const someSelected = api.value.length > 0 && !allSelected
-
-  const toggleAll = () => {
-    if (allSelected) api.clearValue()
-    else api.selectAll()
-  }
+  const selectAll = api.getSelectAllState()
 
   return (
     <main className="select">
@@ -46,28 +40,25 @@ export default function Page() {
         <Portal>
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
-              <label data-select-select-all="">
-                <input
-                  type="checkbox"
-                  checked={allSelected}
-                  onChange={toggleAll}
-                  ref={(el) => {
-                    if (el) el.indeterminate = someSelected
-                  }}
-                />
-                <span>{allSelected ? "Deselect all" : "Select all"}</span>
-                <span data-select-select-all-count="">
-                  {api.value.length} / {collection.size}
-                </span>
-              </label>
-
               <div {...api.getListProps()}>
-                {selectData.map((item) => (
-                  <div key={item.value} {...api.getItemProps({ item })}>
-                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                  </div>
-                ))}
+                {/* Stays in view: only the items below it scroll */}
+                <div {...api.getSelectAllProps()}>
+                  <span className="select-check" aria-hidden>
+                    {selectAll.checked ? "✓" : selectAll.indeterminate ? "–" : ""}
+                  </span>
+                  <span>{selectAll.checked ? "Deselect all" : "Select all"}</span>
+                  <span data-select-select-all-count="">
+                    {api.value.length} / {collection.size}
+                  </span>
+                </div>
+                <div className="select-items">
+                  {selectData.map((item) => (
+                    <div key={item.value} {...api.getItemProps({ item })}>
+                      <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

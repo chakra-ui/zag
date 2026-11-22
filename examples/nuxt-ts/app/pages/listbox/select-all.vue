@@ -15,6 +15,7 @@ const service = useMachine(listbox.machine as listbox.Machine<ListboxOption>, {
 
 const api = computed(() => listbox.connect(service, normalizeProps))
 const allSelected = computed(() => api.value.value.length === collection.size)
+const selectAll = computed(() => api.value.getSelectAllState())
 </script>
 
 <template>
@@ -30,6 +31,13 @@ const allSelected = computed(() => api.value.value.length === collection.size)
           </div>
         </div>
         <ul v-bind="api.getListProps()">
+          <!-- An option, so the keyboard reaches it before the items -->
+          <li v-bind="api.getSelectAllProps()">
+            <span class="listbox-item-body">{{ selectAll.checked ? "Unselect all" : "Select all" }}</span>
+            <span class="listbox-check" aria-hidden="true">
+              {{ selectAll.checked ? "✓" : selectAll.indeterminate ? "–" : "" }}
+            </span>
+          </li>
           <li
             v-for="item in listboxData.notifications"
             :key="item.value"

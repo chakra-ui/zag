@@ -2,6 +2,7 @@ const base = "https://www.w3.org/WAI/ARIA/apg/patterns"
 
 export const apgPatterns: Record<string, { label: string; url: string }> = {
   "@zag-js/accordion": { label: "accordion", url: `${base}/accordion/` },
+  "@zag-js/autocomplete": { label: "combobox", url: `${base}/combobox/` },
   "@zag-js/carousel": { label: "carousel", url: `${base}/carousel/` },
   "@zag-js/checkbox": { label: "checkbox", url: `${base}/checkbox/` },
   "@zag-js/collapsible": { label: "disclosure", url: `${base}/disclosure/` },

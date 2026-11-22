@@ -7,7 +7,11 @@ package: "@zag-js/combobox"
 ---
 
 A combobox is an input with a popup that lets you select a value from a
-collection
+collection.
+
+> The value is an item from the list, and the text only searches it. If the
+> value is the text itself, like a search box, use
+> [Autocomplete](/components/react/autocomplete).
 
 <Resources pkg="@zag-js/combobox" />
 
@@ -15,12 +19,12 @@ collection
 
 **Features**
 
-- Supports selecting multiple values
-- Supports disabled options
-- Supports custom user input values
-- Supports mouse, touch, and keyboard interactions
-- Supports opening the combobox listbox with arrow keys, including automatically
-  focusing the first or last item accordingly
+- Single or multiple selection, with removable chips
+- Groups, separators, and select-all options
+- Creating items from the typed text, synchronously or on a server
+- Custom values, disabled items, and links as items
+- Works with virtualized lists and async results
+- Announces result counts and loading to screen readers
 
 ## Installation
 
@@ -38,6 +42,9 @@ Use `combobox.collection` to create a
 [list collection](/utilities/list-collection) from your items.
 
 <CodeSnippet id="combobox/usage.mdx" />
+
+The combobox doesn't filter items itself. Filter them in `onInputValueChange`
+and pass the result as the collection.
 
 ### Initial value
 
@@ -92,8 +99,7 @@ const service = useMachine(combobox.machine, {
 
 ### Controlled input
 
-Use `inputValue` and `onInputValueChange` when you want to filter options as you
-type.
+Use `inputValue` and `onInputValueChange` to control the text in the input.
 
 <Example id="ComboboxFiltering">
 
@@ -104,8 +110,81 @@ const service = useMachine(combobox.machine, {
   inputValue,
   onInputValueChange({ inputValue }) {
     setInputValue(inputValue)
-    setOptions(filterItems(inputValue))
   },
+})
+```
+
+</Example>
+
+### Filtering items
+
+Filter in `onInputValueChange`. Check `reason`: selecting an item fills the
+input with its label, which isn't a query.
+
+Use `createFilter` from `@zag-js/i18n-utils` to match with the user's locale,
+ignoring case and accents. To match text that isn't in the label, like a local
+name or a username, test extra keywords too.
+
+<Example id="ComboboxFilter">
+
+```tsx
+import { createFilter } from "@zag-js/i18n-utils"
+
+const { contains } = createFilter({ sensitivity: "base" })
+
+const [query, setQuery] = useState("")
+
+const collection = combobox.collection({
+  items: countries.filter((item) =>
+    [item.label, ...item.keywords].some((text) => contains(text, query)),
+  ),
+})
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  onInputValueChange({ inputValue, reason }) {
+    setQuery(reason === "input-change" ? inputValue : "")
+  },
+})
+```
+
+</Example>
+
+`createFilter` also returns `startsWith` and `endsWith`.
+
+### Highlighting matches
+
+Mark the part of each label that matches the query. Use
+[highlight word](/utilities/highlight-word) to split the label into chunks.
+
+<Example id="ComboboxHighlightMatches">
+
+```tsx
+import { highlightWord } from "@zag-js/highlight-word"
+
+;<span {...api.getItemTextProps({ item })}>
+  {highlightWord({ text: item.label, query, ignoreCase: true }).map(
+    (chunk, index) =>
+      chunk.match ? <mark key={index}>{chunk.text}</mark> : chunk.text,
+  )}
+</span>
+```
+
+</Example>
+
+### Auto highlight
+
+Set `autoHighlight` to highlight the first item as the user types, so `Enter`
+selects it right away.
+
+<Example id="ComboboxAutoHighlight">
+
+```tsx {4}
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  autoHighlight: true,
 })
 ```
 
@@ -113,7 +192,8 @@ const service = useMachine(combobox.machine, {
 
 ### Multiple selection
 
-Set `multiple` to `true` to allow selecting multiple values.
+Set `multiple` to `true` to allow selecting multiple values. The input clears
+after each selection.
 
 <Example id="ComboboxMultiple">
 
@@ -129,69 +209,211 @@ const service = useMachine(combobox.machine, {
 
 ### Custom object format
 
-By default, the combobox collection expects an array of items with `label` and
-`value` properties. To use a custom object format, pass the `itemToString` and
-`itemToValue` properties to the collection function.
+By default, the collection expects items with `label` and `value` properties.
+For other shapes, pass these to the collection:
 
-- `itemToString` — A function that returns the string representation of an item.
-  Used to compare items when filtering.
-- `itemToValue` — A function that returns the unique value of an item.
-- `isItemDisabled` — A function that returns the disabled state of an item.
+- `itemToString` — the item's label, used for the input and announcements.
+- `itemToValue` — the item's unique value, used for `value` and form submission.
+- `isItemDisabled` — whether the item is disabled.
 
 <Example id="ComboboxCustomObject">
 
 ```tsx
 const collection = combobox.collection({
-  // custom object format
   items: [
     { id: 1, fruit: "Banana", available: true, quantity: 10 },
     { id: 2, fruit: "Apple", available: false, quantity: 5 },
     { id: 3, fruit: "Orange", available: true, quantity: 3 },
     //...
   ],
-  // convert item to string
-  itemToString(item) {
-    return item.fruit
-  },
-  // convert item to value
-  itemToValue(item) {
-    return item.id
-  },
-  // convert item to disabled state
-  isItemDisabled(item) {
-    return !item.available || item.quantity === 0
-  },
-})
-
-// use the collection
-const service = useMachine(combobox.machine, {
-  id: useId(),
-  collection,
+  itemToString: (item) => item.fruit,
+  itemToValue: (item) => String(item.id),
+  isItemDisabled: (item) => !item.available || item.quantity === 0,
 })
 ```
 
 </Example>
 
+`value` holds the item values (here, the IDs). Read the full objects from
+`api.selectedItems` or `details.items` in `onValueChange`.
+
+### Groups and separators
+
+Pass `groupBy` to the collection and render `collection.group()`. Wrap each
+group in `getItemGroupProps` and label it with `getItemGroupLabelProps`, using
+the same id. Use `getSeparatorProps` to divide them.
+
+<Example id="ComboboxGroups">
+
+```tsx
+const collection = combobox.collection({
+  items: cities,
+  groupBy: (item) => item.region,
+})
+
+<div {...api.getListProps()}>
+  {collection.group().map(([region, items], index) => (
+    <Fragment key={region}>
+      {index > 0 && <hr {...api.getSeparatorProps()} />}
+      <div {...api.getItemGroupProps({ id: region })}>
+        <div {...api.getItemGroupLabelProps({ htmlFor: region })}>{region}</div>
+        {items.map((item) => (
+          <div key={item.value} {...api.getItemProps({ item })}>
+            {item.label}
+          </div>
+        ))}
+      </div>
+    </Fragment>
+  ))}
+</div>
+```
+
+</Example>
+
+Groups with no matching items drop out of `collection.group()` as you filter.
+
+### Empty state
+
+Render `getEmptyProps` inside the content and fill it when there are no items.
+Keep the element rendered: it's a live region, so its text is announced. The
+content and list also get `data-empty`.
+
+```tsx
+<div {...api.getContentProps()}>
+  <div {...api.getEmptyProps()}>
+    {api.collection.size === 0 && "No countries found"}
+  </div>
+  <div {...api.getListProps()}>{/* items */}</div>
+</div>
+```
+
 ### Selected values display
 
-By default, selected values are shown in the input. For multiple selection, it
-is often better to render selected values outside the combobox.
-
-To do that:
-
-- Set the `selectionBehavior` to `clear`, which clears the input value when an
-  item is selected.
-- Set the `multiple` property to `true` to allow selecting multiple values.
-- Render the selected values outside the combobox.
+By default, the selected label is shown in the input. With `multiple`, render
+the selected values outside the input instead, using `api.selectedItems`.
 
 <Example id="ComboboxSelectedOutside">
 
-```tsx {4-6}
+```tsx {4-5}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
   selectionBehavior: "clear",
   multiple: true,
+})
+```
+
+</Example>
+
+### Keep the text after choosing
+
+Set `selectionBehavior` to `"preserve"` to keep the typed text when an item is
+chosen. With `multiple`, users can choose several matches without retyping.
+
+```tsx {4}
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  selectionBehavior: "preserve",
+  multiple: true,
+})
+```
+
+> With single selection, the text can differ from the value. When the text is
+> the value, use [Autocomplete](/components/react/autocomplete).
+
+### Chips
+
+With `multiple`, show each selected item as a removable chip. Put the chips and
+the input inside `getChipGroupProps`.
+
+<Example id="ComboboxChips">
+
+```tsx
+<div {...api.getControlProps()}>
+  <div {...api.getChipGroupProps()}>
+    {api.selectedItems.map((item) => (
+      <span key={item.value} {...api.getChipProps({ item })}>
+        {item.label}
+        <button {...api.getChipDeleteTriggerProps({ item })}>✕</button>
+      </span>
+    ))}
+    <input {...api.getInputProps()} />
+  </div>
+</div>
+```
+
+</Example>
+
+Deleting a chip calls `onValueChange` with `reason: "chip-delete"`. Clicking the
+empty space in the chip group focuses the input.
+
+| Key                                | Action                                       |
+| ---------------------------------- | -------------------------------------------- |
+| `ArrowLeft` at the start of input  | Focuses the last chip                        |
+| `Backspace` in an empty input      | Focuses the last chip; press again to delete |
+| `ArrowLeft` / `ArrowRight`         | Moves between chips                          |
+| `Home` / `End`                     | Focuses the first or last chip               |
+| `Backspace` / `Delete` on a chip   | Deletes it and focuses a neighbor            |
+| `Escape`, `Enter`, `Space`, typing | Returns to the input                         |
+| `ArrowDown` / `ArrowUp` on a chip  | Returns to the input and opens the list      |
+
+For free-form tags that aren't in a list, use the
+[tags input](/components/react/tags-input) instead.
+
+### Select all
+
+With `multiple`, render `getSelectAllProps` before the items. It's first in
+keyboard order, selects every enabled item in the collection (so only the
+matches while filtering), and unselects them once they all are. Use
+`getSelectAllState` for its checked or indeterminate state. It renders as an
+item with `data-type="select-all"`, so item styles apply.
+
+<Example id="ComboboxSelectAll">
+
+```tsx
+const selectAll = api.getSelectAllState()
+
+<div {...api.getListProps()}>
+  <div {...api.getSelectAllProps()}>
+    {selectAll.indeterminate ? "–" : selectAll.checked ? "✓" : ""}
+    {selectAll.checked ? "Unselect all" : "Select all"}
+  </div>
+  {items.map((item) => (
+    <div key={item.value} {...api.getItemProps({ item })}>
+      {item.label}
+    </div>
+  ))}
+</div>
+```
+
+</Example>
+
+To select everything from outside the list, call `api.selectAll()`. While the
+option is highlighted, `highlightedValue` is `combobox.SELECT_ALL_VALUE`.
+
+### Limiting selections
+
+To cap a multiple selection, control `value` and disable the unselected items
+once the limit is reached. Selected items stay enabled so they can be removed.
+
+<Example id="ComboboxMaxSelected">
+
+```tsx
+const [value, setValue] = useState<string[]>([])
+const full = value.length >= 3
+
+const collection = combobox.collection({
+  items,
+  isItemDisabled: (item) => full && !value.includes(item.value),
+})
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  multiple: true,
+  value,
+  onValueChange: (details) => setValue(details.value),
 })
 ```
 
@@ -213,7 +435,8 @@ const service = useMachine(combobox.machine, {
 
 ### Disabled items
 
-Pass `isItemDisabled` to disable specific options.
+Pass `isItemDisabled` to the collection to disable specific items. The keyboard
+skips them and they can't be selected.
 
 <Example id="ComboboxDisabledItem">
 
@@ -231,10 +454,42 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
+### Read-only state
+
+Set `readOnly` to `true` to make the combobox read-only. It stays focusable and
+submits its value, but doesn't open or change.
+
+<Example id="ComboboxReadOnly">
+
+```tsx {2}
+const service = useMachine(combobox.machine, {
+  readOnly: true,
+})
+```
+
+</Example>
+
+### Required and invalid
+
+Set `required` and `invalid` for form validation and UI state.
+
+<Example id="ComboboxInvalid">
+
+```tsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  required: true,
+  invalid: false,
+})
+```
+
+</Example>
+
 ### Close on select
 
-By default, the menu closes when an option is selected with pointer or enter
-key. Set `closeOnSelect` to `false` to keep it open.
+The popup closes after a selection, except with `multiple`. Set `closeOnSelect`
+to change that.
 
 <Example id="ComboboxKeepOpen">
 
@@ -259,7 +514,7 @@ const service = useMachine(combobox.machine, {
   collection,
   open,
   onOpenChange(details) {
-    // details => { open: boolean; reason?: string; value: string[] }
+    // details => { open: boolean; reason?: OpenChangeReason; value: string[] }
     setOpen(details.open)
   },
 })
@@ -267,23 +522,14 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
-```tsx
-const service = useMachine(combobox.machine, {
-  id: useId(),
-  collection,
-  defaultOpen: true,
-})
-```
-
 ### Trigger behavior
 
 Use these props to fine-tune when the popup opens:
 
-- `openOnClick` to open when the input is clicked
-- `openOnChange` to control opening on input changes
-- `openOnKeyPress` to control opening on arrow key press
-- `inputBehavior` to set how typing and keyboard navigation affect
-  highlight/input
+- `openOnClick` opens it when the input is clicked (default `false`)
+- `openOnChange` opens it as the user types (default `true`); pass a function to
+  decide per change
+- `openOnKeyPress` opens it on `ArrowDown` / `ArrowUp` (default `true`)
 
 <Example id="ComboboxOpenBehavior">
 
@@ -292,9 +538,8 @@ const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
   openOnClick: true,
-  openOnChange: false,
-  openOnKeyPress: false,
-  inputBehavior: "autohighlight",
+  // Wait for two characters before suggesting
+  openOnChange: ({ inputValue }) => inputValue.length >= 2,
 })
 ```
 
@@ -310,7 +555,7 @@ Use `positioning` to control how the popup is placed.
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
-  positioning: { placement: "bottom-start" },
+  positioning: { placement: "top-start" },
 })
 ```
 
@@ -327,54 +572,6 @@ menu. The list isn't positioned or dismissed on outside interaction, and
 ```tsx
 const service = useMachine(combobox.machine, {
   inline: true,
-})
-```
-
-</Example>
-
-### Submit on Enter
-
-Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even
-while the popup is open.
-
-<Example>
-
-```tsx
-const service = useMachine(combobox.machine, {
-  id: useId(),
-  collection,
-  alwaysSubmitOnEnter: true,
-})
-```
-
-</Example>
-
-### Read-only state
-
-Set `readOnly` to `true` to make the combobox read-only.
-
-<Example id="ComboboxReadOnly">
-
-```tsx {2}
-const service = useMachine(combobox.machine, {
-  readOnly: true,
-})
-```
-
-</Example>
-
-### Required and invalid
-
-Set `required` and `invalid` for form validation and UI state.
-
-<Example id="ComboboxInvalid">
-
-```tsx
-const service = useMachine(combobox.machine, {
-  id: useId(),
-  collection,
-  required: true,
-  invalid: false,
 })
 ```
 
@@ -426,7 +623,7 @@ const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
   onSelect(details) {
-    // details => { value: string[]; itemValue: string }
+    // details => { value: string[]; itemValue: string; modifiers: ModifierKeys }
     console.log(details.itemValue)
   },
 })
@@ -453,11 +650,12 @@ const service = useMachine(combobox.machine, {
 
 `details.reason` says what caused the change.
 
-| Reason          | Meaning                                      |
-| --------------- | -------------------------------------------- |
-| `item-select`   | An item was clicked or selected with `Enter` |
-| `clear-trigger` | The clear trigger was pressed                |
-| `script`        | Changed programmatically, such as `setValue` |
+| Reason          | Meaning                                                      |
+| --------------- | ------------------------------------------------------------ |
+| `item-select`   | An item was clicked or selected with `Enter`                 |
+| `clear-trigger` | The clear trigger was pressed                                |
+| `chip-delete`   | A chip was deleted                                           |
+| `script`        | Changed programmatically, such as `setValue` or `clearValue` |
 
 ### Form usage
 
@@ -489,9 +687,6 @@ per item.
 }
 ```
 
-With `allowCustomValue`, typed text that doesn't match an item is submitted as
-is.
-
 If the combobox sits outside the form element, set `form` to the form's id.
 
 ```tsx
@@ -504,8 +699,8 @@ const service = useMachine(combobox.machine, {
 
 ### Custom values
 
-By default, the combobox only allows values from the collection. Set
-`allowCustomValue` to `true` to allow custom values.
+By default, text that doesn't match an item is discarded when the popup closes.
+Set `allowCustomValue` to keep it as the value, and submit it as is in a form.
 
 <Example id="ComboboxCustomValue">
 
@@ -517,27 +712,123 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
+### Creating items
+
+Pass `onCreate` and render `getCreateItemProps` at the end of the list. The
+option shows while the input has text that no item is labelled with, and the
+arrow keys reach it after the items. It renders as an item with
+`data-type="create"`. Add the item to your collection in `onCreate` and return
+its value to select it.
+
+<Example id="ComboboxCreate">
+
+```tsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  onCreate({ inputValue }) {
+    const item = { label: inputValue, value: inputValue.toLowerCase() }
+    setItems((prev) => [...prev, item])
+    return item.value
+  },
+})
+
+const api = combobox.connect(service, normalizeProps)
+const create = api.getCreateItemState()
+
+<div {...api.getListProps()}>
+  {items.map((item) => (
+    <div key={item.value} {...api.getItemProps({ item })}>
+      {item.label}
+    </div>
+  ))}
+  <div {...api.getCreateItemProps()}>Create "{create.inputValue}"</div>
+</div>
+```
+
+</Example>
+
+While the option is highlighted, `highlightedValue` is `combobox.CREATE_VALUE`.
+
+### Creating items on a server
+
+Return a Promise from `onCreate`. While it runs, `getCreateItemState().pending`
+is `true` and the option gets `data-loading`. If it rejects, `error` holds the
+reason until the text changes.
+
+Closing the list or editing the text aborts `signal`, and the result is ignored.
+
+<Example id="ComboboxCreateAsync">
+
+```tsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  async onCreate({ inputValue, signal }) {
+    const item = await createLabel(inputValue, { signal })
+    setItems((prev) => [...prev, item])
+    return item.value
+  },
+})
+
+const create = api.getCreateItemState()
+
+<div {...api.getCreateItemProps()}>
+  {create.pending
+    ? `Creating "${create.inputValue}"…`
+    : `Create "${create.inputValue}"`}
+  {create.error && <span>{create.error.message}</span>}
+</div>
+```
+
+</Example>
+
+### Items as links
+
+Render items as `<a>` elements to navigate. Pressing `Enter` on a highlighted
+link clicks it. With a client-side router, pass `navigate` to handle it instead.
+
+```tsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  navigate({ href }) {
+    router.push(href)
+  },
+})
+
+{
+  items.map((item) => (
+    <a key={item.href} href={item.href} {...api.getItemProps({ item })}>
+      {item.label}
+    </a>
+  ))
+}
+```
+
 ### List wrapper
 
-Render the items inside `getListProps()`. The list carries the `listbox` role,
-and the content is only a container.
+Render the items inside `getListProps()`. The list carries the `listbox` role
+and is the scroll container; the content is only a container.
 
-Set `popupType` to `"dialog"` when the content holds other widgets, like the
-input or tabs. The content then becomes a `dialog`.
+### Input inside the popup
 
-When the input moves into the content, open the combobox from a trigger and pass
-`focusable: true` so the trigger can receive focus.
+To build a searchable select, open the combobox from a trigger and move the
+input into the content:
 
-<Example>
+- Set `popupType` to `"dialog"`, so the content becomes a `dialog`.
+- Pass `focusable: true` to `getTriggerProps`, so the trigger stays in the tab
+  order and shows the value.
+
+<Example id="ComboboxInputInPopup">
 
 ```tsx
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
   popupType: "dialog",
+  selectionBehavior: "clear",
 })
-
-// ...
 
 <div {...api.getControlProps()}>
   <button {...api.getTriggerProps({ focusable: true })}>
@@ -561,11 +852,58 @@ const service = useMachine(combobox.machine, {
 
 </Example>
 
+### Virtualizing long lists
+
+For thousands of items, render only the visible rows with the
+[virtualizer](/utilities/virtualizer). Pass `scrollToIndexFn` so keyboard
+navigation scrolls to rows that aren't rendered, and merge the virtualizer's
+props with the list and item props.
+
+<Example id="ComboboxVirtualized">
+
+```tsx
+const { virtualizer, ref } = useListVirtualizer({
+  count: items.length,
+  itemSize: 32,
+})
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  scrollToIndexFn(details) {
+    virtualizer.scrollToIndex(details.index, {
+      align: details.immediate ? "center" : "auto",
+    })
+  },
+})
+
+<div ref={ref} {...mergeProps(virtualizer.getRootProps(), api.getListProps())}>
+  <div {...virtualizer.getContentProps()}>
+    {virtualizer.getVirtualItems().map((virtualItem) => {
+      const item = items[virtualItem.index]
+      return (
+        <div
+          key={item.value}
+          {...mergeProps(virtualizer.getItemProps(virtualItem), api.getItemProps({ item }))}
+        >
+          {item.label}
+        </div>
+      )
+    })}
+  </div>
+</div>
+```
+
+</Example>
+
+`useListVirtualizer` is the hook from the
+[virtualizer docs](/utilities/virtualizer). Select-all and create options aren't
+virtualized rows; they scroll like any other element.
+
 ### Accessibility labels
 
-Use `translations` to customize the trigger and clear button labels.
-
-<Example>
+Use `translations` to customize the labels of the trigger, clear trigger, and
+chip delete triggers.
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -574,11 +912,10 @@ const service = useMachine(combobox.machine, {
   translations: {
     triggerLabel: "Open countries",
     clearTriggerLabel: "Clear selection",
+    deleteChipTriggerLabel: (label) => `Remove ${label}`,
   },
 })
 ```
-
-</Example>
 
 ### Announcements
 
@@ -603,10 +940,46 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-> Set a message to an empty string (or return `""` from `resultsCount`) to turn
-> that announcement off.
+Other messages you can customize:
+
+- `chipDeleted(label)` — when a chip is deleted
+- `creatingItem(inputValue)` — when an async create starts
+- `createItemFailed({ inputValue, error })` — when an async create fails
+- `highlightedItem({ label, selected })` — when an option is highlighted, on
+  Apple platforms
+
+> Set a message to an empty string (or return `""` from a function) to turn that
+> announcement off.
 
 ## Recipes
+
+### Recent items
+
+Show a short list while the input is empty, and search everything once the user
+types. Set `openOnClick` so the recent items appear on focus.
+
+<Example id="ComboboxRecentItems">
+
+```tsx
+const [query, setQuery] = useState("")
+
+const collection = combobox.collection({
+  items: query
+    ? countries.filter((item) => contains(item.label, query))
+    : recentCountries,
+})
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  openOnClick: true,
+  onInputValueChange({ inputValue, reason }) {
+    setQuery(reason === "input-change" ? inputValue : "")
+  },
+})
+```
+
+</Example>
 
 ### Command palette
 
@@ -676,20 +1049,54 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-Only show the empty message once the search has settled. Keep the empty part
-rendered, since it announces its text to screen readers.
+Only show the empty message once the search has settled.
 
 ```tsx
-<div {...api.getContentProps()}>
-  <div {...api.getEmptyProps()}>
-    {list.isEmpty && !list.isLoading && "No results"}
-  </div>
-  <div {...api.getListProps()}>{/* items */}</div>
+<div {...api.getEmptyProps()}>
+  {list.isEmpty && !list.isLoading && "No results"}
 </div>
 ```
 
-To paginate, return a `cursor` from `load` and call `list.loadMore()` from
-[infinite scroll](/utilities/infinite-scroll) at the end of the list.
+This works with `multiple` too: selected items stay in `api.selectedItems` after
+they drop out of the results.
+
+### Loading more results
+
+To paginate, return a `cursor` from `load` and put an
+[infinite scroll](/utilities/infinite-scroll) sentinel at the end of the list.
+Set `loopFocus: false` so `ArrowDown` on the last item doesn't wrap past the
+next page.
+
+```tsx
+import * as infiniteScroll from "@zag-js/infinite-scroll"
+
+const scrollService = useMachine(infiniteScroll.machine, {
+  id: useId(),
+  count: list.items.length,
+  hasMore: list.hasMore,
+  loading: list.isLoading,
+  onLoadMore: () => list.loadMore(),
+})
+
+const scroll = infiniteScroll.connect(scrollService, normalizeProps)
+
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  loopFocus: false,
+  // Only the first page counts as a search
+  loading: list.isLoading && !list.isLoadingMore,
+})
+
+<div {...api.getListProps()}>
+  {list.items.map((item) => (
+    <div key={item.id} {...api.getItemProps({ item })}>
+      {item.name}
+    </div>
+  ))}
+  <div {...scroll.getSentinelProps()} />
+</div>
+```
 
 ## Methods and Properties
 

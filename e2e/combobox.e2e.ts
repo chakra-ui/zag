@@ -256,6 +256,135 @@ test.describe("combobox", () => {
     await I.seeInputHasValue("")
   })
 
+  test("[selection=replace] should show the chosen label", async () => {
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Malawi")
+  })
+
+  test("[selection=preserve] should keep the typed text after choosing", async () => {
+    await I.controls.select("selectionBehavior", "preserve")
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("mal")
+
+    await I.clickOutside()
+    await I.seeInputHasValue("mal")
+
+    await I.clickTrigger()
+    await I.seeItemIsChecked("Malawi")
+  })
+
+  test("[selection=preserve][multiple] should keep the text to choose several matches", async () => {
+    await I.controls.bool("multiple")
+    await I.controls.select("selectionBehavior", "preserve")
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+
+    await I.seeInputHasValue("mal")
+    await I.seeItemIsChecked("Malawi")
+    await I.seeItemIsChecked("Malaysia")
+  })
+
+  test("[selection=clear][multiple] should clear the text after each choice", async () => {
+    await I.controls.bool("multiple")
+    await I.controls.select("selectionBehavior", "clear")
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("")
+  })
+
+  test("[disabled] should not open or take input", async () => {
+    await I.controls.bool("disabled")
+    await I.seeInputIsDisabled()
+    await I.clickTrigger({ force: true })
+    await I.dontSeeDropdown()
+  })
+
+  test("[readOnly] should not open or change the text", async () => {
+    await I.controls.bool("readOnly")
+    await I.seeInputIsReadOnly()
+    await I.focusInput()
+    await I.type("mal")
+    await I.seeInputHasValue("")
+    await I.pressKey("ArrowDown")
+    await I.dontSeeDropdown()
+  })
+
+  test("[keyboard] Escape closes the list, then a second Escape restores the chosen label", async () => {
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Malawi")
+
+    await I.pressKey("ControlOrMeta+A")
+    await I.pressKey("Backspace")
+    await I.seeInputHasValue("")
+
+    await I.pressKey("Escape")
+    await I.dontSeeDropdown()
+    await I.pressKey("Escape")
+    await I.seeInputHasValue("Malawi")
+  })
+
+  test("[keyboard] Tab closes the list without choosing", async () => {
+    await I.controls.bool("autoHighlight", false)
+    await I.type("mal")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
+
+    await I.pressKey("Tab")
+    await I.dontSeeDropdown()
+    await I.seeInputHasValue("")
+  })
+
+  test("[pointer] clicking outside reverts unmatched text", async () => {
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Malawi")
+
+    await I.pressKey("ControlOrMeta+A")
+    await I.type("zzz")
+    await I.seeDropdown()
+    await I.clickOutside()
+    await I.dontSeeDropdown()
+    await I.seeInputHasValue("Malawi")
+  })
+
+  test("[pointer] the trigger closes an open list", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await I.clickTrigger()
+    await I.dontSeeDropdown()
+  })
+
+  test("[pointer] clicking the label focuses the input without opening", async () => {
+    await I.clickLabel()
+    await I.seeInputIsFocused()
+    await I.dontSeeDropdown()
+  })
+
+  test("reopening after a choice shows every item with the choice highlighted", async () => {
+    await I.type("mal")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Malawi")
+
+    await I.clickTrigger()
+    await I.seeItem("Zambia")
+    await I.seeItemIsHighlighted("Malawi")
+  })
+
+  test("[a11y] aria-activedescendant follows the highlight after filtering", async () => {
+    await I.type("mal")
+    await I.seeItemIsHighlighted("Malawi")
+    await I.seeActiveDescendantIsHighlighted()
+
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malaysia")
+    await I.seeActiveDescendantIsHighlighted()
+  })
+
   test("[callback] onValueChange should include selected item in items", async () => {
     await I.clickTrigger()
     await I.clickItem("Zambia")
@@ -283,14 +412,14 @@ test.describe("combobox", () => {
   })
 
   test("[no value] enter behavior for custom values", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
     await I.type("foo")
     await I.pressKey("Enter")
     await I.seeInputHasValue("")
   })
 
   test("[value] enter reverts the value", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
     await I.type("mal")
     await I.clickItem("Malawi")
 
@@ -387,45 +516,6 @@ test.describe("combobox", () => {
   })
 })
 
-test.describe("combobox / autocomplete", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new ComboboxModel(page)
-    await I.goto()
-    await I.controls.select("inputBehavior", "autocomplete")
-  })
-
-  test("[keyboard] should autocomplete", async () => {
-    await I.type("mal")
-    await I.dontSeeHighlightedItem()
-    await I.pressKey("ArrowDown")
-    await I.seeItemIsHighlighted("Malawi")
-    await I.pressKey("Enter")
-    await I.seeInputHasValue("Malawi")
-    await I.dontSeeDropdown()
-  })
-
-  test("[keyboard / loop] should loop through the options and previous input value", async () => {
-    await I.type("mal")
-    await I.pressKey("ArrowDown", 5)
-    await I.seeItemIsHighlighted("Malta")
-
-    // at the end of the list, press arrow down to return to previous input value
-    await I.pressKey("ArrowDown")
-    await I.seeInputHasValue("mal")
-
-    // no option should be selected
-    await I.dontSeeHighlightedItem()
-  })
-
-  test("[pointer] hovering an option should not update input value", async () => {
-    await I.clickTrigger()
-    await I.type("mal")
-
-    await I.hoverItem("Malawi")
-    await I.seeInputHasValue("mal")
-  })
-})
-
 test.describe("combobox / form", () => {
   test.beforeEach(async ({ page }) => {
     I = new ComboboxModel(page)
@@ -433,7 +523,7 @@ test.describe("combobox / form", () => {
   })
 
   test("[keyboard] Enter on highlighted item selects and does not submit form", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
 
     await I.focusInput()
     await I.pressKey("ArrowDown")
@@ -446,7 +536,7 @@ test.describe("combobox / form", () => {
   })
 
   test("[no highlight / rejected value] Enter does not submit when typed value won't be accepted", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
 
     await I.focusInput()
     await I.type("z")
@@ -458,7 +548,7 @@ test.describe("combobox / form", () => {
   })
 
   test("[autoHighlight] Enter selects auto-highlighted item and does not submit", async () => {
-    await I.controls.select("inputBehavior", "autohighlight")
+    await I.controls.bool("autoHighlight", true)
 
     await I.focusInput()
     await I.type("z")
@@ -470,7 +560,7 @@ test.describe("combobox / form", () => {
   })
 
   test("[allowCustomValue + highlight] Enter selects highlighted item and does not submit", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
     await I.controls.bool("allowCustomValue", true)
 
     await I.focusInput()
@@ -484,7 +574,7 @@ test.describe("combobox / form", () => {
   })
 
   test("[allowCustomValue] Enter submits custom value on first press", async () => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
     await I.controls.bool("allowCustomValue", true)
 
     await I.focusInput()
@@ -494,20 +584,6 @@ test.describe("combobox / form", () => {
     await I.pressKey("Enter")
     await I.seeSubmitCount(1)
     await I.seeLastSubmit("my custom country")
-  })
-
-  test("[alwaysSubmitOnEnter / highlight] Enter selects highlighted item and submits form", async () => {
-    await I.controls.select("inputBehavior", "none")
-    await I.controls.bool("alwaysSubmitOnEnter", true)
-
-    await I.focusInput()
-    await I.pressKey("ArrowDown")
-    await I.seeItemIsHighlighted("Zambia")
-
-    await I.pressKey("Enter")
-    await I.seeInputHasValue("Zambia")
-    await I.seeSubmitCount(1)
-    await I.seeLastSubmit("ZA")
   })
 
   test("submits the selected item's value, not its label", async ({ page }) => {
@@ -520,8 +596,22 @@ test.describe("combobox / form", () => {
     await I.seeLastSubmit("ZA")
   })
 
+  test("[required] blocks submitting until an item is chosen", async () => {
+    await I.controls.bool("required")
+    await I.clickSubmit()
+    await I.seeSubmitCount(0)
+
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Zambia")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("Zambia")
+    await I.clickSubmit()
+    await I.seeSubmitCount(1)
+  })
+
   test("[allowCustomValue] submits typed text over a previous selection", async ({ page }) => {
-    await I.controls.select("inputBehavior", "none")
+    await I.controls.bool("autoHighlight", false)
     await I.controls.bool("allowCustomValue", true)
 
     await I.focusInput()
@@ -532,20 +622,6 @@ test.describe("combobox / form", () => {
     await page.getByRole("combobox", { name: "Select country" }).fill("Atlantis")
     await I.pressKey("Enter")
     await I.seeLastSubmit("Atlantis")
-  })
-
-  test("[alwaysSubmitOnEnter + allowCustomValue] Enter submits custom value with no highlight", async () => {
-    await I.controls.select("inputBehavior", "none")
-    await I.controls.bool("alwaysSubmitOnEnter", true)
-    await I.controls.bool("allowCustomValue", true)
-
-    await I.focusInput()
-    await I.type("my custom country")
-    await I.dontSeeHighlightedItem()
-
-    await I.pressKey("Enter")
-    await I.seeSubmitCount(1)
-    await I.seeLastSubmit("my custom country")
   })
 })
 
@@ -567,6 +643,20 @@ test.describe("combobox / multiple", () => {
 
     await I.pressKey("Enter")
     await I.dontSeeValueText()
+  })
+
+  test("deselecting with Enter keeps the highlight, and ArrowDown continues from it", async () => {
+    await I.type("mal")
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeItemIsChecked("Malawi")
+
+    await I.pressKey("Enter")
+    await I.seeItemIsNotChecked("Malawi")
+    await I.seeItemIsHighlighted("Malawi")
+
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malaysia")
   })
 
   test("[removeSelected=true] should not toggle the same item", async () => {
@@ -608,6 +698,161 @@ test.describe("combobox / multiple", () => {
       .locator('input[type="hidden"][name="countries"]')
       .evaluateAll((els) => els.map((el) => (el as HTMLInputElement).value))
     expect(values).toEqual(["ZA", "BN"])
+  })
+})
+
+test.describe("combobox / chips", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox/chips")
+  })
+
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
+  })
+
+  test("should render a chip per selected item", async () => {
+    await I.seeChips(["United States", "Canada"])
+
+    await I.type("nig")
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+
+    await I.seeChips(["United States", "Canada", "Nigeria"])
+    await I.seeInputHasValue("")
+  })
+
+  test("ArrowLeft at the start of the input should move into the chips", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeChipIsFocused("Canada")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeChipIsFocused("United States")
+
+    // stays on the first chip
+    await I.pressKey("ArrowLeft")
+    await I.seeChipIsFocused("United States")
+
+    await I.pressKey("ArrowRight")
+    await I.seeChipIsFocused("Canada")
+
+    await I.pressKey("ArrowRight")
+    await I.seeInputIsFocused()
+  })
+
+  test("ArrowLeft should move the caret before moving into the chips", async () => {
+    await I.type("ca")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeInputIsFocused()
+    await I.seeCaretAt(1)
+
+    await I.pressKey("ArrowLeft")
+    await I.seeInputIsFocused()
+    await I.seeCaretAt(0)
+
+    await I.pressKey("ArrowLeft")
+    await I.seeChipIsFocused("Canada")
+    await I.seeInputHasValue("ca")
+  })
+
+  test("Home and End should move to the first and last chip", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Home")
+    await I.seeChipIsFocused("United States")
+
+    await I.pressKey("End")
+    await I.seeChipIsFocused("Canada")
+  })
+
+  test("Backspace on a chip should delete it and focus the previous chip", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Backspace")
+
+    await I.seeChips(["United States"])
+    await I.seeChipIsFocused("United States")
+
+    // deleting the last chip returns focus to the input
+    await I.pressKey("Backspace")
+    await I.seeChips([])
+    await I.seeInputIsFocused()
+  })
+
+  test("Delete on a chip should delete it and focus the next chip", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft", 2)
+    await I.pressKey("Delete")
+
+    await I.seeChips(["Canada"])
+    await I.seeChipIsFocused("Canada")
+  })
+
+  test("Backspace in an empty input should focus the last chip, then delete it", async () => {
+    await I.focusInput()
+    await I.pressKey("Backspace")
+
+    await I.seeChips(["United States", "Canada"])
+    await I.seeChipIsFocused("Canada")
+
+    await I.pressKey("Backspace")
+    await I.seeChips(["United States"])
+    await I.seeChipIsFocused("United States")
+  })
+
+  test("deleting a chip should announce it", async () => {
+    await I.clickChipDeleteTrigger("Canada")
+    await I.seeChips(["United States"])
+    await expect(I.liveRegion("polite")).toContainText("Canada deleted")
+  })
+
+  test("Backspace in an input with text should edit the text", async () => {
+    await I.type("ca")
+    await I.pressKey("Backspace")
+
+    await I.seeInputHasValue("c")
+    await I.seeChips(["United States", "Canada"])
+  })
+
+  test("clicking a delete trigger should delete its chip", async () => {
+    await I.clickChipDeleteTrigger("United States")
+
+    await I.seeChips(["Canada"])
+    await I.seeInputIsFocused()
+  })
+
+  test("typing on a chip should type into the input", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("j")
+
+    await I.seeInputIsFocused()
+    await I.seeInputHasValue("j")
+  })
+
+  test("Escape on a chip should return to the input", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Escape")
+
+    await I.seeInputIsFocused()
+    await I.seeChips(["United States", "Canada"])
+  })
+
+  test("pressing the space around the chips should focus the input", async () => {
+    await I.clickChipGroupSpace()
+    await I.seeInputIsFocused()
+  })
+
+  test("ArrowDown on a chip should open the list", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("ArrowDown")
+
+    await I.seeInputIsFocused()
+    await I.seeDropdown()
   })
 })
 
@@ -803,6 +1048,31 @@ test.describe("combobox / grouped", () => {
       await I.pressKey("ArrowDown")
       await I.seeItemIsHighlighted(item)
     }
+  })
+
+  test("arrow keys skip a disabled item", async () => {
+    // "c" shows Avocado, Broccoli, Carrot, the disabled Celery, then Apricot and Cherry
+    await I.type("c")
+    await I.seeItemIsHighlighted("Avocado")
+    await I.pressKey("ArrowDown", 2)
+    await I.seeItemIsHighlighted("Carrot")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Apricot")
+  })
+
+  test("hovering a disabled item keeps the highlight", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Apple")
+    await I.hoverItem("Celery")
+    await I.seeItemIsHighlighted("Apple")
+  })
+
+  test("clicking a disabled item does not choose it", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Celery", { force: true })
+    await I.seeDropdown()
+    await I.seeInputHasValue("")
   })
 
   test("should navigate filtered items in grouped order", async () => {

@@ -18,6 +18,7 @@
 
   const api = $derived(listbox.connect(service, normalizeProps))
   const allSelected = $derived(api.value.length === collection.size)
+  const selectAll = $derived(api.getSelectAllState())
 </script>
 
 <main class="listbox">
@@ -32,6 +33,13 @@
         </div>
       </div>
       <ul {...api.getListProps()}>
+        <!-- An option, so the keyboard reaches it before the items -->
+        <li {...api.getSelectAllProps()}>
+          <span class="listbox-item-body">{selectAll.checked ? "Unselect all" : "Select all"}</span>
+          <span class="listbox-check" aria-hidden="true">
+            {selectAll.checked ? "✓" : selectAll.indeterminate ? "–" : ""}
+          </span>
+        </li>
         {#each listboxData.notifications as item (item.value)}
           <li {...api.getItemProps({ item, highlightOnHover: true })}>
             <div class="listbox-item-body">

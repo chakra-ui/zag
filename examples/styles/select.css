@@ -177,6 +177,10 @@
     background: var(--z-highlight);
   }
 
+  &[hidden] {
+    display: none;
+  }
+
   &[data-disabled] {
     opacity: var(--z-disabled-opacity);
   }
@@ -213,19 +217,48 @@
   }
 }
 
-[data-select-select-all] {
+/* With select-all, only the items scroll, so it stays at the top */
+[data-select-list]:has(> [data-type="select-all"]) {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+
+  > .select-items {
+    min-height: 0;
+    padding: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 1.5rem;
+  }
+}
+
+[data-select-item][data-type="select-all"] {
   flex-shrink: 0;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
   width: 100%;
-  gap: 8px;
   height: 36px;
   padding: 0 12px;
   border-bottom: 1px solid var(--z-border);
   border-radius: 0;
   background: var(--z-bg-subtle);
-  font-weight: 400;
+  user-select: none;
+
+  &[data-highlighted] {
+    background: var(--z-highlight);
+  }
+}
+
+.select-check {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--z-border-emphasis);
+  border-radius: var(--z-radius-xs);
+  color: var(--z-accent-fg);
+  font-size: 12px;
+  line-height: 14px;
 }
 
 [data-select-select-all-count] {

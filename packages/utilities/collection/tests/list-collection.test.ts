@@ -608,3 +608,51 @@ describe("list collection", () => {
     `)
   })
 })
+
+describe("list collection / navigate", () => {
+  test("enabled values", () => {
+    expect(list.getEnabledValues()).toEqual(["react", "vue", "angular"])
+  })
+
+  test("without extra values, matches the items", () => {
+    const nav = list.navigate()
+    expect([nav.first, nav.last]).toEqual(["react", "angular"])
+    expect(nav.next("vue")).toBe("angular")
+    expect(nav.next("angular")).toBeNull()
+    expect(nav.next("angular", true)).toBe("react")
+  })
+
+  test("walks before, the items, then after", () => {
+    const nav = list.navigate({ before: ["all"], after: ["create"] })
+    expect([nav.first, nav.last]).toEqual(["all", "create"])
+
+    const forward = [nav.first]
+    while (forward.length < 6) forward.push(nav.next(forward[forward.length - 1]))
+    expect(forward).toEqual(["all", "react", "vue", "angular", "create", null])
+
+    expect(nav.prev("react")).toBe("all")
+    expect(nav.prev("all")).toBeNull()
+    expect(nav.prev("all", true)).toBe("create")
+    expect(nav.next("create", true)).toBe("all")
+  })
+
+  test("null starts at the ends", () => {
+    const nav = list.navigate({ before: ["all"] })
+    expect(nav.next(null)).toBe("all")
+    expect(nav.prev(null)).toBe("angular")
+  })
+
+  test("empty collection still reaches the extra values", () => {
+    const nav = list.copy([]).navigate({ before: ["all"], after: ["create"] })
+    expect(nav.next("all")).toBe("create")
+    expect(nav.prev("create")).toBe("all")
+  })
+
+  test("has", () => {
+    const nav = list.navigate({ after: ["create"] })
+    expect(nav.has("create")).toBe(true)
+    expect(nav.has("vue")).toBe(true)
+    expect(nav.has("all")).toBe(false)
+    expect(nav.has(null)).toBe(false)
+  })
+})

@@ -11,6 +11,7 @@ import { Clipboard } from "./clipboard"
 import { Collapsible } from "./collapsible"
 import { ColorPicker } from "./color-picker"
 import { Combobox } from "./combobox"
+import { Autocomplete } from "./autocomplete"
 import { ContextMenu } from "./context-menu"
 import { DateInput } from "./date-input"
 import { DatePicker } from "./date-picker"
@@ -194,13 +195,27 @@ const components = {
         disabled: false,
         readOnly: false,
         loopFocus: false,
-        inputBehavior: {
-          default: "autohighlight",
-          options: ["autohighlight", "autocomplete", "none"],
-        },
+        autoHighlight: true,
         selectionBehavior: {
           default: "replace",
-          options: ["replace", "clear", "preserve"],
+          options: ["replace", "clear"],
+        },
+      }}
+    />
+  ),
+  Autocomplete: () => (
+    <Playground
+      name="autocomplete"
+      component={Autocomplete}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        autoHighlight: false,
+        openOnClick: false,
+        loopFocus: true,
+        mode: {
+          default: "list",
+          options: ["list", "both", "inline", "none"],
         },
       }}
     />

@@ -20,6 +20,7 @@
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/async-list": "workspace:*",
+    "@zag-js/autocomplete": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/cascade-select": "workspace:*",

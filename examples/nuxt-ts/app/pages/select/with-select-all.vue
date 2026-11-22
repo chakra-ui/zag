@@ -21,13 +21,7 @@ const service = useMachine(select.machine as select.Machine<Item>, {
 
 const api = computed(() => select.connect(service, normalizeProps))
 
-const allSelected = computed(() => api.value.value.length === collection.size)
-const someSelected = computed(() => api.value.value.length > 0 && !allSelected.value)
-
-const toggleAll = () => {
-  if (allSelected.value) api.value.clearValue()
-  else api.value.selectAll()
-}
+const selectAll = computed(() => api.value.getSelectAllState())
 </script>
 
 <template>
@@ -46,16 +40,20 @@ const toggleAll = () => {
       <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
-            <label data-select-select-all="">
-              <input type="checkbox" :checked="allSelected" :indeterminate="someSelected" @change="toggleAll" />
-              <span>{{ allSelected ? "Deselect all" : "Select all" }}</span>
-              <span data-select-select-all-count="">{{ api.value.length }} / {{ collection.size }}</span>
-            </label>
-
             <div v-bind="api.getListProps()">
-              <div v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-                <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
-                <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+              <!-- Stays in view: only the items below it scroll -->
+              <div v-bind="api.getSelectAllProps()">
+                <span class="select-check" aria-hidden="true">
+                  {{ selectAll.checked ? "✓" : selectAll.indeterminate ? "–" : "" }}
+                </span>
+                <span>{{ selectAll.checked ? "Deselect all" : "Select all" }}</span>
+                <span data-select-select-all-count="">{{ api.value.length }} / {{ collection.size }}</span>
+              </div>
+              <div class="select-items">
+                <div v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+                  <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+                  <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+                </div>
               </div>
             </div>
           </div>

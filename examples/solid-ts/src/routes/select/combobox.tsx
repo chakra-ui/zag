@@ -21,7 +21,7 @@ export default function Page() {
     collection: collection(),
     popupType: "dialog",
     selectionBehavior: "clear",
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     onOpenChange() {
       setOptions(selectData)
     },

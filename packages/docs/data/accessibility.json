@@ -55,6 +55,50 @@
       }
     ]
   },
+  "autocomplete": {
+    "keyboard": [
+      {
+        "keys": ["ArrowDown"],
+        "description": "When closed, opens the suggestions and highlights the first one (nothing is highlighted in `both` or `inline` mode).\nWhen open, highlights the next suggestion."
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "When closed, opens the suggestions and highlights the last one (nothing is highlighted in `both` or `inline` mode).\nWhen open, highlights the previous suggestion."
+      },
+      {
+        "keys": ["Alt + ArrowDown"],
+        "description": "Opens the suggestions without highlighting one."
+      },
+      {
+        "keys": ["Alt + ArrowUp"],
+        "description": "Closes the suggestions."
+      },
+      {
+        "keys": ["PageDown", "PageUp"],
+        "description": "When open, moves the highlight by `pageSize` suggestions."
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "Moves the caret to the start or end of the text.\nIn `both` or `inline` mode, `End` also accepts the filled-in suggestion."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "In `both` or `inline` mode, accepts the filled-in suggestion."
+      },
+      {
+        "keys": ["Backspace"],
+        "description": "In `both` or `inline` mode, removes the filled-in suggestion and keeps the typed text."
+      },
+      {
+        "keys": ["Enter"],
+        "description": "Writes the highlighted suggestion to the input and closes the suggestions.\nWith nothing highlighted, closes the suggestions and lets the form submit."
+      },
+      {
+        "keys": ["Escape"],
+        "description": "Closes the suggestions and restores the typed text."
+      }
+    ]
+  },
   "checkbox": {
     "keyboard": [
       {
@@ -812,6 +856,14 @@
       {
         "keys": ["Esc"],
         "description": "Closes the combobox"
+      },
+      {
+        "keys": ["ArrowLeft", "ArrowRight"],
+        "description": "With chips, moves from the start of the input to the last chip, then between chips."
+      },
+      {
+        "keys": ["Backspace", "Delete"],
+        "description": "On a chip, deletes it. In an empty input, focuses the last chip so a second press deletes it."
       }
     ]
   },

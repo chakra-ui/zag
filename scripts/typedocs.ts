@@ -18,8 +18,8 @@ function getDefaultValue(property: Symbol) {
 }
 
 function getDescription(property: Symbol, typeChecker?: TypeChecker) {
-  // @ts-expect-error - ts-morph types are inconsistent
-  const [description] = property.compilerSymbol.getDocumentationComment(typeChecker)
+  // TypeScript's own checker: it looks up inherited docs when a property has none
+  const [description] = property.compilerSymbol.getDocumentationComment(typeChecker?.compilerObject)
   return description?.text
 }
 

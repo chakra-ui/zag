@@ -5,12 +5,14 @@ import {
   isGridCollection,
   resolveSelectedItems,
   type CollectionItem,
+  type ListCollection,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollToNearest } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
+import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
@@ -244,8 +246,9 @@ export const machine = createMachine({
 
           const listEl = dom.getListEl(scope)
 
+          // select-all isn't a virtualized row, so it scrolls like any element
           const scrollToIndexFn = prop("scrollToIndexFn")
-          if (scrollToIndexFn) {
+          if (scrollToIndexFn && highlightedValue !== SELECT_ALL_VALUE) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
             scrollToIndexFn?.({
               index: highlightedIndex,
@@ -287,6 +290,12 @@ export const machine = createMachine({
         const value = event.value ?? context.get("highlightedValue")
 
         const collection = prop("collection")
+        if (value === SELECT_ALL_VALUE) {
+          if (!computed("multiple")) return
+          const listCollection = collection as ListCollection<CollectionItem>
+          context.set("value", toggleSelectAll(listCollection, context.get("value")))
+          return
+        }
         if (value == null || !collection.has(value)) return
 
         const selection = computed("selection")
@@ -307,6 +316,8 @@ export const machine = createMachine({
       },
 
       selectWithKeyboard({ context, prop, event, computed, refs }) {
+        // moving onto select-all neither selects nor anchors a range
+        if (event.value === SELECT_ALL_VALUE) return
         const selection = computed("selection")
         const collection = prop("collection")
         const anchorValue = refs.get("anchorValue")
@@ -462,7 +473,7 @@ export const machine = createMachine({
         }
 
         // if highlighted value is no longer in collection, clear it
-        if (highlightedValue != null && !collection.has(highlightedValue)) {
+        if (highlightedValue != null && highlightedValue !== SELECT_ALL_VALUE && !collection.has(highlightedValue)) {
           queueMicrotask(() => {
             context.set("highlightedValue", null)
           })

@@ -90,6 +90,7 @@ export const allComponents = {
   "toggle-group": ToggleGroupAnatomy,
   toggle: ToggleAnatomy,
   accordion: AccordionAnatomy,
+  autocomplete: ComboboxAnatomy,
   avatar: AvatarAnatomy,
   carousel: CarouselAnatomy,
   checkbox: CheckboxAnatomy,

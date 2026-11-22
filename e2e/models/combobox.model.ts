@@ -75,8 +75,8 @@ export class ComboboxModel extends Model {
     await this.input.click({ force: true })
   }
 
-  clickTrigger = async () => {
-    await this.trigger.click()
+  clickTrigger = async (options?: { force?: boolean }) => {
+    await this.trigger.click(options)
   }
 
   clickClearTrigger = async () => {
@@ -84,11 +84,11 @@ export class ComboboxModel extends Model {
   }
 
   hoverItem = async (text: string) => {
-    await this.getItem(text).hover()
+    await this.getItem(text).hover({ force: true })
   }
 
-  clickItem = async (text: string) => {
-    await this.getItem(text).click()
+  clickItem = async (text: string, options?: { force?: boolean }) => {
+    await this.getItem(text).click(options)
   }
 
   focusInput = async () => {
@@ -152,6 +152,57 @@ export class ComboboxModel extends Model {
 
   seeInputIsFocused = async () => {
     await expect(this.input).toBeFocused()
+  }
+
+  private get chips() {
+    return this.page.locator("[data-combobox-chip]")
+  }
+
+  getChip = (label: string) => {
+    return this.chips.filter({ hasText: label })
+  }
+
+  seeChips = async (labels: string[]) => {
+    await expect(this.chips).toHaveText(labels)
+  }
+
+  seeChipIsFocused = async (label: string) => {
+    await expect(this.getChip(label)).toBeFocused()
+  }
+
+  /** Presses the chip group's padding, beside the chips */
+  clickChipGroupSpace = async () => {
+    await this.page.locator("[data-combobox-chip-group]").click({ position: { x: 2, y: 2 } })
+  }
+
+  clickChipDeleteTrigger = async (label: string) => {
+    await this.page.getByRole("button", { name: `Delete ${label}` }).click()
+  }
+
+  clickLabel = async () => {
+    await this.page.locator("[data-combobox-label]").click()
+  }
+
+  clickSubmit = async () => {
+    await this.page.getByRole("button", { name: "Submit" }).click()
+  }
+
+  seeItem = async (text: string) => {
+    await expect(this.getItem(text)).toBeVisible()
+  }
+
+  seeInputIsDisabled = async () => {
+    await expect(this.input).toBeDisabled()
+  }
+
+  seeInputIsReadOnly = async () => {
+    await expect(this.input).toHaveAttribute("readonly", "")
+  }
+
+  /** `aria-activedescendant` points at the highlighted option */
+  seeActiveDescendantIsHighlighted = async () => {
+    const id = await this.highlightedItem.getAttribute("id")
+    await expect(this.input).toHaveAttribute("aria-activedescendant", id!)
   }
 
   dontSeeHighlightedItem = async () => {

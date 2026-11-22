@@ -57,10 +57,6 @@ export class HoverCardModel extends Model {
     return this.page.locator(`[data-hover-card-content][data-value="${value}"]`)
   }
 
-  get positioner() {
-    return this.page.locator("[data-hover-card-positioner]")
-  }
-
   get viewport() {
     return this.page.locator("[data-hover-card-viewport]")
   }

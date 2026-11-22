@@ -1,5 +1,5 @@
 import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -24,6 +24,7 @@ import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
 import { trackAlignItemWithTrigger } from "./align-with-trigger"
 import { collection } from "./select.collection"
+import { SELECT_ALL_VALUE, toggleSelectAll } from "./utils/select-all"
 import * as dom from "./select.dom"
 import type { CollectionItem, OpenChangeReason, SelectSchema, ValueChangeReason } from "./select.types"
 
@@ -557,8 +558,8 @@ export const machine = createMachine<SelectSchema>({
       multiple: ({ prop }) => !!prop("multiple"),
       hasSelectedItems: ({ computed }) => !!computed("hasSelectedItems"),
       hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
-      isFirstItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").firstValue,
-      isLastItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").lastValue,
+      isFirstItemHighlighted: (params) => params.context.get("highlightedValue") === navigate(params).first,
+      isLastItemHighlighted: (params) => params.context.get("highlightedValue") === navigate(params).last,
       closeOnSelect: ({ prop, event }) => !!(event.closeOnSelect ?? prop("closeOnSelect")),
       restoreFocus: ({ event }) => restoreFocusFn(event),
       // guard assertions (for controlled mode)
@@ -657,7 +658,7 @@ export const machine = createMachine<SelectSchema>({
 
       trackScrollArrowVisibility({ context, scope }) {
         const exec = () => {
-          const next = dom.computeScrollArrowVisibility(dom.getListEl(scope))
+          const next = dom.computeScrollArrowVisibility(dom.getScrollEl(scope))
           context.set("scrollArrowVisibility", next)
         }
 
@@ -668,7 +669,7 @@ export const machine = createMachine<SelectSchema>({
         // Defer listener attachment — listEl may not exist until React commits
         const cancelFrame = raf(() => {
           exec()
-          listEl = dom.getListEl(scope)
+          listEl = dom.getScrollEl(scope)
           if (!listEl) return
           unobserveResize = resizeObserverContentBox.observe(listEl, exec)
           listEl.addEventListener("scroll", exec, { passive: true })
@@ -730,10 +731,11 @@ export const machine = createMachine<SelectSchema>({
           const modality = getInteractionModality()
           if (modality === "pointer") return
 
-          const listEl = dom.getListEl(scope)
+          const scrollEl = dom.getScrollEl(scope)
 
+          // select-all isn't a virtualized row, so it scrolls like any element
           const scrollToIndexFn = prop("scrollToIndexFn")
-          if (scrollToIndexFn) {
+          if (scrollToIndexFn && highlightedValue !== SELECT_ALL_VALUE) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
             scrollToIndexFn?.({
               index: highlightedIndex,
@@ -744,8 +746,10 @@ export const machine = createMachine<SelectSchema>({
           }
 
           const itemEl = dom.getItemEl(scope, highlightedValue)
-          if (immediate) scrollIntoView(itemEl, { rootEl: listEl, block: "center" })
-          else scrollToNearest(itemEl, { rootEl: listEl })
+          // An option outside the scroller, like a fixed select-all, is always in view
+          if (!itemEl || !scrollEl?.contains(itemEl)) return
+          if (immediate) scrollIntoView(itemEl, { rootEl: scrollEl, block: "center" })
+          else scrollToNearest(itemEl, { rootEl: scrollEl })
         }
 
         // The positioner's max-height lands a frame or two after the content mounts. Until it does the
@@ -755,7 +759,7 @@ export const machine = createMachine<SelectSchema>({
         const scrollWhenScrollable = () => {
           // Alignment already scrolled the selected item to the trigger
           if (context.get("aligned") || refs.get("alignedToTrigger")) return
-          const el = dom.getListEl(scope)
+          const el = dom.getScrollEl(scope)
           if (el && !isScrollable(el) && attempts++ < MAX_SCROLL_ATTEMPTS) {
             cleanupRaf = raf(scrollWhenScrollable)
             return
@@ -799,18 +803,20 @@ export const machine = createMachine<SelectSchema>({
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
 
-      highlightPreviousItem({ context, prop }) {
+      highlightPreviousItem(params) {
+        const { context, prop } = params
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
-        const value = prop("collection").getPreviousValue(highlightedValue, 1, prop("loopFocus"))
+        const value = navigate(params).prev(highlightedValue, !!prop("loopFocus"))
         if (value == null) return
         context.set("highlightedValue", value)
       },
 
-      highlightNextItem({ context, prop }) {
+      highlightNextItem(params) {
+        const { context, prop } = params
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
-        const value = prop("collection").getNextValue(highlightedValue, 1, prop("loopFocus"))
+        const value = navigate(params).next(highlightedValue, !!prop("loopFocus"))
         if (value == null) return
         context.set("highlightedValue", value)
       },
@@ -833,14 +839,12 @@ export const machine = createMachine<SelectSchema>({
         if (value) context.set("highlightedValue", value)
       },
 
-      highlightFirstItem({ context, prop }) {
-        const value = prop("collection").firstValue
-        context.set("highlightedValue", value)
+      highlightFirstItem(params) {
+        params.context.set("highlightedValue", navigate(params).first)
       },
 
-      highlightLastItem({ context, prop }) {
-        const value = prop("collection").lastValue
-        context.set("highlightedValue", value)
+      highlightLastItem(params) {
+        params.context.set("highlightedValue", navigate(params).last)
       },
 
       setInitialFocus({ prop, scope, refs }) {
@@ -893,6 +897,10 @@ export const machine = createMachine<SelectSchema>({
 
       selectHighlightedItem({ context, prop, event }) {
         let value = event.value ?? context.get("highlightedValue")
+        if (value === SELECT_ALL_VALUE) {
+          context.set("value", toggleSelectAll(prop("collection"), context.get("value")))
+          return
+        }
         if (value == null || !prop("collection").has(value)) return
 
         prop("onSelect")?.({ value })
@@ -906,15 +914,19 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      highlightComputedFirstItem({ context, prop, computed }) {
-        const collection = prop("collection")
-        const value = computed("hasSelectedItems") ? collection.sort(context.get("value"))[0] : collection.firstValue
+      highlightComputedFirstItem(params) {
+        const { context, prop, computed } = params
+        const value = computed("hasSelectedItems")
+          ? prop("collection").sort(context.get("value"))[0]
+          : navigate(params).first
         context.set("highlightedValue", value)
       },
 
-      highlightComputedLastItem({ context, prop, computed }) {
-        const collection = prop("collection")
-        const value = computed("hasSelectedItems") ? collection.sort(context.get("value"))[0] : collection.lastValue
+      highlightComputedLastItem(params) {
+        const { context, prop, computed } = params
+        const value = computed("hasSelectedItems")
+          ? prop("collection").sort(context.get("value"))[0]
+          : navigate(params).last
         context.set("highlightedValue", value)
       },
 
@@ -1028,7 +1040,7 @@ export const machine = createMachine<SelectSchema>({
         if (!handlers) {
           handlers = dom.createAutoScroll({
             placement,
-            getScroller: () => dom.getListEl(scope),
+            getScroller: () => dom.getScrollEl(scope),
             getItems: () => (prop("scrollToIndexFn") ? [] : dom.getItemEls(scope)),
             getWin: () => scope.getWin(),
             onStep: () => refs.get("autoGrow")?.(),
@@ -1056,7 +1068,7 @@ export const machine = createMachine<SelectSchema>({
             getElement: () => dom.getItemEl(scope, firstValue),
           })
         } else {
-          dom.getListEl(scope)?.scrollTo(0, 0)
+          dom.getScrollEl(scope)?.scrollTo(0, 0)
         }
       },
 
@@ -1166,4 +1178,10 @@ function restoreFocusFn(event: Record<string, any>) {
 function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
   const focusVisible = event.focusVisible ?? event.previousEvent?.focusVisible
   return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
+}
+
+/** Keyboard order: select-all (when rendered), then the items */
+function navigate({ prop, scope }: Pick<Params<SelectSchema>, "prop" | "scope">) {
+  const hasSelectAll = prop("multiple") && dom.isShown(dom.getSelectAllEl(scope))
+  return prop("collection").navigate({ before: hasSelectAll ? [SELECT_ALL_VALUE] : [] })
 }

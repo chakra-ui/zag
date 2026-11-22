@@ -1,6 +1,11 @@
 <script lang="ts" module>
   import { getCaretPosition } from "@zag-js/dom-query"
 
+  interface Item {
+    code: string
+    label: string
+  }
+
   const defaultTriggers = ["@", "#"]
 
   function getTriggerOffset(element: HTMLTextAreaElement | null, triggers = defaultTriggers) {
@@ -52,23 +57,23 @@
 <script lang="ts">
   import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import Toolbar from "#lib/components/toolbar.svelte"
-  import * as combobox from "@zag-js/combobox"
+  import * as autocomplete from "@zag-js/autocomplete"
   import { raf } from "@zag-js/dom-query"
   import { createFilter } from "@zag-js/i18n-utils"
   import { comboboxData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
-  import "@styles/combobox.css"
+  import "@styles/autocomplete.css"
 
   const { contains } = createFilter({ sensitivity: "base" })
 
-  let options = $state.raw(comboboxData)
+  let value = $state("")
   let searchValue = $state("")
-  // Read in callbacks without tracking
-  let searchValueRef = ""
+
+  const items = $derived(comboboxData.filter((item) => contains(item.label, searchValue)))
 
   const collection = $derived(
-    combobox.collection({
-      items: options,
+    autocomplete.collection<Item>({
+      items,
       itemToValue: (item) => item.code,
       itemToString: (item) => item.label,
     }),
@@ -76,47 +81,42 @@
 
   let ref: HTMLTextAreaElement | null = null
 
-  $effect(() => {
-    const result = comboboxData.filter((item) => contains(item.label, searchValue))
-    options = result
-  })
-
   const id = $props.id()
-  const service = useMachine(combobox.machine, () => ({
+  const service = useMachine(autocomplete.machine as autocomplete.Machine<Item>, (): autocomplete.Props<Item> => ({
     id,
     collection,
-    onOpenChange() {
-      options = comboboxData
+    value,
+    onValueChange(details) {
+      value = details.value
     },
-    inputBehavior: "autohighlight" as const,
-    selectionBehavior: "preserve" as const,
+    autoHighlight: true,
     openOnKeyPress: false,
     openOnChange: false,
-    allowCustomValue: true,
     positioning: {
       sameWidth: false,
-      placement: "bottom-start" as const,
+      placement: "bottom-start",
       gutter: 16,
       getAnchorRect() {
         return getAnchorRect(ref)
       },
     },
-    onValueChange({ value }) {
+    onSelect(details) {
       const textarea = ref
       if (!textarea) return
-      const valueAsString = collection.stringifyMany(value)
       const offset = getTriggerOffset(textarea)
-      const inputValue = replaceValue(offset, searchValueRef, valueAsString)(textarea.value)
+      const nextValue = replaceValue(offset, getSearchValue(textarea), details.value)(textarea.value)
+      // selecting writes the label into the value; swap in the full text after
       raf(() => {
-        api.setInputValue(inputValue)
+        api.setValue(nextValue)
+        searchValue = ""
       })
     },
   }))
 
-  const api = $derived(combobox.connect(service, normalizeProps))
+  const api = $derived(autocomplete.connect(service, normalizeProps))
 </script>
 
-<main class="combobox">
+<main class="autocomplete">
   <div {...api.getRootProps()}>
     <span>Search value: {searchValue || "-"}</span>
     <!-- svelte-ignore a11y_label_has_associated_control -->
@@ -126,7 +126,7 @@
       {...mergeProps(api.getInputProps(), {
         rows: 5,
         placeholder: "Type @ to see completion",
-        style: "width: 400px; padding: 4px",
+        style: "width: 400px; padding: 4px; border: 1px solid var(--z-border)",
         onscroll() {
           api.reposition()
         },
@@ -150,24 +150,23 @@
           }
 
           searchValue = nextSearchValue
-          searchValueRef = nextSearchValue
         },
       })}></textarea>
   </div>
 
   <div {...api.getPositionerProps()}>
     <div {...api.getContentProps()}>
-      <div {...api.getListProps()}>
-        {#each options as item (item.code)}
-          <div {...api.getItemProps({ item })}>
-            {item.label}
-          </div>
+      <ul {...api.getListProps()}>
+        {#each items as item (item.code)}
+          <li {...api.getItemProps({ item })}>
+            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          </li>
         {/each}
-      </div>
+      </ul>
     </div>
   </div>
 </main>
 
 <Toolbar viz>
-  <StateVisualizer state={service} omit={["collection", "nextEvents"]} />
+  <StateVisualizer state={service} omit={["collection"]} />
 </Toolbar>

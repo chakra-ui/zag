@@ -49,22 +49,30 @@ export const switchControls = defineControls({
 })
 
 export const comboboxControls = defineControls({
-  inputBehavior: {
-    type: "select",
-    defaultValue: "autohighlight",
-    options: ["autohighlight", "autocomplete", "none"] as const,
-  },
+  autoHighlight: { type: "boolean", defaultValue: true },
   selectionBehavior: {
     type: "select",
     defaultValue: "replace",
     options: ["replace", "clear", "preserve"] as const,
   },
   disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
   allowCustomValue: { type: "boolean", defaultValue: false },
-  alwaysSubmitOnEnter: { type: "boolean", defaultValue: false },
+})
+
+export const autocompleteControls = defineControls({
+  mode: { type: "select", options: ["list", "both", "inline", "none"] as const, defaultValue: "list" },
+  autoHighlight: { type: "boolean", defaultValue: false },
+  openOnClick: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: true },
+  submitOnSelect: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
 })
 
 export const editableControls = defineControls({

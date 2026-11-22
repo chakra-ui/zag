@@ -19,7 +19,7 @@
     collection,
     popupType: "dialog" as const,
     selectionBehavior: "clear" as const,
-    inputBehavior: "autohighlight" as const,
+    autoHighlight: true,
     onOpenChange() {
       options = selectData
     },

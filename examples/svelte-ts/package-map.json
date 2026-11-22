@@ -6,6 +6,7 @@
   "@zag-js/aria-hidden": "../../packages/utilities/aria-hidden/src",
   "@zag-js/async-list": "../../packages/machines/async-list/src",
   "@zag-js/auto-resize": "../../packages/utilities/auto-resize/src",
+  "@zag-js/autocomplete": "../../packages/machines/autocomplete/src",
   "@zag-js/avatar": "../../packages/machines/avatar/src",
   "@zag-js/carousel": "../../packages/machines/carousel/src",
   "@zag-js/cascade-select": "../../packages/machines/cascade-select/src",

@@ -2,7 +2,7 @@ import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ChevronsUpDownIcon } from "lucide-solid"
-import { createMemo, createUniqueId, For, createTrackedEffect } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { Portal } from "@solidjs/web"
 import "@styles/select.css"
 
@@ -23,18 +23,7 @@ export default function Page() {
 
   const api = createMemo(() => select.connect(service, normalizeProps))
 
-  const allSelected = () => api().value.length === collection.size
-  const someSelected = () => api().value.length > 0 && !allSelected()
-
-  const toggleAll = () => {
-    if (allSelected()) api().clearValue()
-    else api().selectAll()
-  }
-
-  let checkboxRef: HTMLInputElement | undefined
-  createTrackedEffect(() => {
-    if (checkboxRef) checkboxRef.indeterminate = someSelected()
-  })
+  const selectAll = createMemo(() => api().getSelectAllState())
 
   return (
     <main class="select">
@@ -52,23 +41,27 @@ export default function Page() {
         <Portal>
           <div {...api().getPositionerProps()}>
             <div {...api().getContentProps()}>
-              <label data-select-select-all="">
-                <input ref={checkboxRef} type="checkbox" checked={allSelected()} onChange={toggleAll} />
-                <span>{allSelected() ? "Deselect all" : "Select all"}</span>
-                <span data-select-select-all-count="">
-                  {api().value.length} / {collection.size}
-                </span>
-              </label>
-
               <div {...api().getListProps()}>
-                <For each={selectData}>
-                  {(item) => (
-                    <div {...api().getItemProps({ item })}>
-                      <span {...api().getItemTextProps({ item })}>{item.label}</span>
-                      <span {...api().getItemIndicatorProps({ item })}>✓</span>
-                    </div>
-                  )}
-                </For>
+                {/* Stays in view: only the items below it scroll */}
+                <div {...api().getSelectAllProps()}>
+                  <span class="select-check" aria-hidden="true">
+                    {selectAll().checked ? "✓" : selectAll().indeterminate ? "–" : ""}
+                  </span>
+                  <span>{selectAll().checked ? "Deselect all" : "Select all"}</span>
+                  <span data-select-select-all-count="">
+                    {api().value.length} / {collection.size}
+                  </span>
+                </div>
+                <div class="select-items">
+                  <For each={selectData}>
+                    {(item) => (
+                      <div {...api().getItemProps({ item })}>
+                        <span {...api().getItemTextProps({ item })}>{item.label}</span>
+                        <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                      </div>
+                    )}
+                  </For>
+                </div>
               </div>
             </div>
           </div>

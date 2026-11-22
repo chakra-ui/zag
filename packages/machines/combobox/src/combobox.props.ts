@@ -5,6 +5,7 @@ import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, ComboboxProps } fr
 export const props = createProps<ComboboxProps>()([
   "allowCustomValue",
   "autoFocus",
+  "autoHighlight",
   "closeOnSelect",
   "collection",
   "defaultHighlightedValue",
@@ -19,7 +20,6 @@ export const props = createProps<ComboboxProps>()([
   "id",
   "inline",
   "ids",
-  "inputBehavior",
   "inputValue",
   "invalid",
   "loading",
@@ -31,7 +31,7 @@ export const props = createProps<ComboboxProps>()([
   "onHighlightChange",
   "onInputValueChange",
   "onInteractOutside",
-  "onOpenChange",
+  "onCreate",
   "onOpenChange",
   "onPointerDownOutside",
   "onSelect",
@@ -50,7 +50,6 @@ export const props = createProps<ComboboxProps>()([
   "selectionBehavior",
   "translations",
   "value",
-  "alwaysSubmitOnEnter",
 ])
 export const splitProps = createSplitProps<Partial<ComboboxProps>>(props)
 

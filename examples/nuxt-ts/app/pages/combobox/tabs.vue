@@ -67,7 +67,7 @@ const service = useMachine(
     id: comboboxId,
     popupType: "dialog" as const,
     openOnClick: true,
-    inputBehavior: "autohighlight" as const,
+    autoHighlight: true,
     positioning: {
       sameWidth: false,
     },
@@ -149,8 +149,7 @@ const inputProps = computed(() =>
           </div>
 
           <div v-if="!items.length" class="no-results">
-            No item found for &quot;<strong>{{ inputValue }}</strong
-            >&quot;
+            No item found for &quot;<strong>{{ inputValue }}</strong>&quot;
           </div>
 
           <div v-for="category in categories" :key="category" v-bind="tabApi.getContentProps({ value: category })">

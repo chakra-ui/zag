@@ -1,4 +1,4 @@
-import { isGridCollection, type CollectionItem } from "@zag-js/collection"
+import { isGridCollection, type CollectionItem, type ListCollection } from "@zag-js/collection"
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
@@ -19,8 +19,17 @@ import { getInteractionModality } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./listbox.anatomy"
+import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
 import * as dom from "./listbox.dom"
-import type { ContentState, ItemProps, ItemState, ListboxApi, ListboxSchema, ListState } from "./listbox.types"
+import type {
+  ContentState,
+  ItemProps,
+  ItemState,
+  ListboxApi,
+  ListboxSchema,
+  ListState,
+  SelectAllState,
+} from "./listbox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   service: Service<ListboxSchema<V>>,
@@ -50,6 +59,24 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
+
+  const listCollection = () => collection as ListCollection<CollectionItem>
+
+  // Keyboard order: select-all (when rendered), then the items. Grids move by rows, so they skip it.
+  function navigate() {
+    const hasSelectAll = computed("multiple") && !isGridCollection(collection) && dom.isShown(dom.getSelectAllEl(scope))
+    return listCollection().navigate({ before: hasSelectAll ? [SELECT_ALL_VALUE] : [] })
+  }
+
+  function getSelectAllState(): SelectAllState {
+    const { enabled, checked, indeterminate } = getSelectAllCoverage(listCollection(), value)
+    return {
+      checked,
+      indeterminate,
+      highlighted: highlightedValue === SELECT_ALL_VALUE,
+      disabled: !!disabled || enabled.length === 0,
+    }
+  }
 
   // Grids page by rows to keep the column
   function getPageStep() {
@@ -110,7 +137,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       if (!computed("multiple")) {
         throw new Error("[zag-js] Cannot select all items in a single-select listbox")
       }
-      send({ type: "VALUE.SET", value: collection.getValues() })
+      send({ type: "VALUE.SET", value: selectAllValues(listCollection(), value) })
     },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
@@ -249,6 +276,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         id: dom.getItemId(scope, itemState.value),
         role: "option",
         ...parts.item.attrs(scope.id),
+        "data-type": "item",
         dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
@@ -282,6 +310,45 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             shiftKey: event.shiftKey,
             metaKey: isCtrlOrMetaKey(event),
           })
+        },
+      })
+    },
+
+    getSelectAllState,
+    getSelectAllProps() {
+      const selectAllState = getSelectAllState()
+      const checkedState = selectAllState.checked
+        ? "checked"
+        : selectAllState.indeterminate
+          ? "indeterminate"
+          : "unchecked"
+      return normalize.element({
+        ...parts.item.attrs(scope.id),
+        "data-type": "select-all",
+        id: dom.getItemId(scope, SELECT_ALL_VALUE),
+        role: "option",
+        dir: prop("dir"),
+        hidden: !computed("multiple") || isGridCollection(collection),
+        "data-value": SELECT_ALL_VALUE,
+        "aria-selected": selectAllState.checked,
+        "aria-checked": selectAllState.indeterminate ? "mixed" : selectAllState.checked,
+        "data-state": checkedState,
+        "data-highlighted": dataAttr(selectAllState.highlighted),
+        "data-disabled": dataAttr(selectAllState.disabled),
+        "aria-disabled": ariaAttr(selectAllState.disabled),
+        onPointerMove(event) {
+          if (selectAllState.disabled || event.pointerType !== "mouse") return
+          if (getInteractionModality() !== "pointer") return
+          if (selectAllState.highlighted) return
+          send({ type: "ITEM.POINTER_MOVE", value: SELECT_ALL_VALUE })
+        },
+        onMouseDown(event) {
+          event.preventDefault()
+          dom.getListEl(scope)?.focus()
+        },
+        onClick(event) {
+          if (event.defaultPrevented || selectAllState.disabled) return
+          send({ type: "ITEM.CLICK", value: SELECT_ALL_VALUE })
         },
       })
     },
@@ -347,19 +414,18 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const shiftKey = event.shiftKey
+          const loop = !!prop("loopFocus")
 
+          // A grid moves by rows; a list moves through the select-all option too
           const keyMap: EventKeyMap = {
             ArrowUp(event) {
               if (!isGridCollection(collection) && prop("orientation") === "horizontal") return
               let nextValue: string | null = null
-              if (isGridCollection(collection) && highlightedValue) {
-                nextValue = collection.getPreviousRowValue(highlightedValue)
-              } else if (highlightedValue) {
-                nextValue = collection.getPreviousValue(highlightedValue)
-              }
-
-              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
-                nextValue = collection.lastValue
+              if (isGridCollection(collection)) {
+                if (highlightedValue) nextValue = collection.getPreviousRowValue(highlightedValue)
+                if (!nextValue && (loop || !highlightedValue)) nextValue = collection.lastValue
+              } else {
+                nextValue = navigate().prev(highlightedValue, loop)
               }
 
               if (!nextValue) return
@@ -371,14 +437,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             ArrowDown(event) {
               if (!isGridCollection(collection) && prop("orientation") === "horizontal") return
               let nextValue: string | null = null
-              if (isGridCollection(collection) && highlightedValue) {
-                nextValue = collection.getNextRowValue(highlightedValue)
-              } else if (highlightedValue) {
-                nextValue = collection.getNextValue(highlightedValue)
-              }
-
-              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
-                nextValue = collection.firstValue
+              if (isGridCollection(collection)) {
+                if (highlightedValue) nextValue = collection.getNextRowValue(highlightedValue)
+                if (!nextValue && (loop || !highlightedValue)) nextValue = collection.firstValue
+              } else {
+                nextValue = navigate().next(highlightedValue, loop)
               }
 
               if (!nextValue) return
@@ -388,10 +451,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
             ArrowLeft() {
               if (!isGridCollection(collection) && prop("orientation") === "vertical") return
-              let nextValue = highlightedValue ? collection.getPreviousValue(highlightedValue) : null
-              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
-                nextValue = collection.lastValue
-              }
+              const nextValue = navigate().prev(highlightedValue, loop)
               if (!nextValue) return
               event.preventDefault()
               send({ type: "NAVIGATE", value: nextValue, shiftKey })
@@ -399,10 +459,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
             ArrowRight() {
               if (!isGridCollection(collection) && prop("orientation") === "vertical") return
-              let nextValue = highlightedValue ? collection.getNextValue(highlightedValue) : null
-              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
-                nextValue = collection.firstValue
-              }
+              const nextValue = navigate().next(highlightedValue, loop)
               if (!nextValue) return
               event.preventDefault()
               send({ type: "NAVIGATE", value: nextValue, shiftKey })
@@ -411,13 +468,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             Home(event) {
               if (isEditableElement(target)) return
               event.preventDefault()
-              let nextValue = collection.firstValue
+              const nextValue = navigate().first
               send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
             End(event) {
               if (isEditableElement(target)) return
               event.preventDefault()
-              let nextValue = collection.lastValue
+              const nextValue = navigate().last
               send({ type: "NAVIGATE", value: nextValue, shiftKey })
             },
             PageDown(event) {
@@ -444,7 +501,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             a(event) {
               if (isCtrlOrMetaKey(event) && computed("multiple") && !prop("disallowSelectAll")) {
                 event.preventDefault()
-                send({ type: "VALUE.SET", value: collection.getValues() })
+                send({ type: "VALUE.SET", value: selectAllValues(listCollection(), value) })
               }
             },
             Space(event) {

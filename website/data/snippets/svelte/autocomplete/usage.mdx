@@ -1,0 +1,51 @@
+```svelte
+<script lang="ts">
+  import * as autocomplete from "@zag-js/autocomplete"
+  import { useMachine, normalizeProps, portal } from "@zag-js/svelte"
+
+  const fruits = ["Apple", "Banana", "Cherry", "Grape", "Mango", "Orange"]
+
+  let value = $state("")
+
+  const items = $derived(fruits.filter((fruit) => fruit.toLowerCase().includes(value.toLowerCase())))
+
+  const collection = $derived(autocomplete.collection({ items }))
+
+  const id = $props.id()
+
+  const service = useMachine(autocomplete.machine, {
+    id,
+    get collection() {
+      return collection
+    },
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+
+  const api = $derived(autocomplete.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Fruit</label>
+  <div {...api.getControlProps()}>
+    <input {...api.getInputProps()} />
+    <button {...api.getClearTriggerProps()}>✕</button>
+  </div>
+</div>
+<div use:portal {...api.getPositionerProps()}>
+  <div {...api.getContentProps()}>
+    <div {...api.getEmptyProps()}>No fruits found</div>
+    <ul {...api.getListProps()}>
+      {#each items as item (item)}
+        <li {...api.getItemProps({ item })}>
+          <span {...api.getItemTextProps({ item })}>{item}</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</div>
+```

@@ -1,0 +1,60 @@
+```html
+<script setup>
+  import * as autocomplete from "@zag-js/autocomplete"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, ref } from "vue"
+
+  const fruits = ["Apple", "Banana", "Cherry", "Grape", "Mango", "Orange"]
+
+  const value = ref("")
+
+  const items = computed(() =>
+    fruits.filter((fruit) =>
+      fruit.toLowerCase().includes(value.value.toLowerCase()),
+    ),
+  )
+
+  const collectionRef = computed(() =>
+    autocomplete.collection({ items: items.value }),
+  )
+
+  const service = useMachine(autocomplete.machine, {
+    id: "1",
+    get collection() {
+      return collectionRef.value
+    },
+    get value() {
+      return value.value
+    },
+    onValueChange(details) {
+      value.value = details.value
+    },
+  })
+
+  const api = computed(() => autocomplete.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Fruit</label>
+    <div v-bind="api.getControlProps()">
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getClearTriggerProps()">✕</button>
+    </div>
+  </div>
+  <div v-bind="api.getPositionerProps()">
+    <div v-bind="api.getContentProps()">
+      <div v-bind="api.getEmptyProps()">No fruits found</div>
+      <ul v-bind="api.getListProps()">
+        <li
+          v-for="item in items"
+          :key="item"
+          v-bind="api.getItemProps({ item })"
+        >
+          <span v-bind="api.getItemTextProps({ item })">{{ item }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+```

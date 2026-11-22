@@ -16,19 +16,28 @@ const initialItems = ["Bug", "Feature", "Enhancement", "Documentation"].map(toIt
 
 const { contains } = createFilter({ sensitivity: "base" })
 
+// Fake server: slow, abortable, and rejects labels starting with "x"
+function saveLabel(label: string, signal: AbortSignal) {
+  return new Promise<Item>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      if (/^x/i.test(label)) reject(new Error(`"${label}" is reserved`))
+      else resolve(toItem(label))
+    }, 800)
+    signal.addEventListener("abort", () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    })
+  })
+}
+
 const items = ref(initialItems)
 const query = ref("")
 
-const search = computed(() => query.value.trim())
-const filtered = computed(() => items.value.filter((item) => contains(item.label, search.value)))
-// The "Create" option is the new item itself, so selecting it needs no extra mapping
-const exists = computed(() => items.value.some((item) => item.label.toLowerCase() === search.value.toLowerCase()))
-const newItem = computed(() => (search.value && !exists.value ? toItem(search.value) : null))
-const options = computed(() => (newItem.value ? [...filtered.value, newItem.value] : filtered.value))
+const filtered = computed(() => items.value.filter((item) => contains(item.label, query.value.trim())))
 
 const collection = computed(() =>
   combobox.collection({
-    items: options.value,
+    items: filtered.value,
     itemToValue: (item) => item.value,
     itemToString: (item) => item.label,
   }),
@@ -41,24 +50,25 @@ const service = useMachine(
   computed(() => ({
     id,
     collection: collection.value,
-    allowCustomValue: true,
+    autoHighlight: true,
     onOpenChange({ open, reason }) {
       // Show every item, unless it opened because the user typed
       if (open && reason !== "input-change") query.value = ""
     },
     onInputValueChange({ inputValue, reason }) {
-      if (reason === "input-change") query.value = inputValue
+      if (reason !== "input-change") return
+      query.value = inputValue
     },
-    onValueChange({ items: selected }) {
-      const [item] = selected as Item[]
-      if (item && !items.value.some((existing) => existing.value === item.value)) {
-        items.value = [...items.value, item]
-      }
+    async onCreate({ inputValue, signal }) {
+      const item = await saveLabel(inputValue, signal)
+      items.value = [...items.value, item]
+      return item.value
     },
   })),
 )
 
 const api = computed(() => combobox.connect(service, normalizeProps))
+const create = computed(() => api.value.getCreateItemState())
 </script>
 
 <template>
@@ -73,12 +83,17 @@ const api = computed(() => combobox.connect(service, normalizeProps))
         </button>
       </div>
     </div>
+    <pre data-testid="value">value: {{ JSON.stringify(api.value) }}</pre>
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
         <div v-bind="api.getListProps()">
-          <div v-for="item in options" :key="item.value" v-bind="api.getItemProps({ item })">
-            <span v-bind="api.getItemIndicatorProps({ item })">✅</span>
-            <span>{{ item.value === newItem?.value ? `Create "${item.label}"` : item.label }}</span>
+          <div v-for="item in filtered" :key="item.value" v-bind="api.getItemProps({ item })">
+            <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+          </div>
+          <div v-bind="api.getCreateItemProps()">
+            <span>{{ create.pending ? `Creating "${create.inputValue}"…` : `Create "${create.inputValue}"` }}</span>
+            <span v-if="create.error" class="combobox-create-error">{{ create.error.message }}</span>
           </div>
         </div>
       </div>

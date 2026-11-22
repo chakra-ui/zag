@@ -67,7 +67,7 @@
     id: `${id}-combobox`,
     popupType: "dialog" as const,
     openOnClick: true,
-    inputBehavior: "autohighlight" as const,
+    autoHighlight: true,
     positioning: {
       sameWidth: false,
     },

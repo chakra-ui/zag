@@ -68,7 +68,7 @@ export default function Page() {
     id: useId(),
     popupType: "dialog",
     openOnClick: true,
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     positioning: {
       sameWidth: false,
     },

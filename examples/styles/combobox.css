@@ -47,6 +47,69 @@
   }
 }
 
+[data-combobox-control]:has([data-combobox-chip-group]) {
+  height: auto;
+  min-height: var(--z-control-h);
+}
+
+[data-combobox-chip-group] {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 4px;
+
+  > [data-combobox-input] {
+    min-width: 80px;
+    height: 24px;
+    padding-inline: 4px;
+  }
+}
+
+[data-combobox-chip] {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 24px;
+  padding-inline: 8px 2px;
+  border-radius: var(--z-radius-xs);
+  background: var(--z-bg-subtle);
+  font-size: var(--z-text-sm);
+  outline: none;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--z-accent);
+  }
+
+  &[data-disabled] {
+    padding-inline-end: 8px;
+  }
+}
+
+[data-combobox-chip-delete-trigger] {
+  display: inline-flex;
+  padding: 2px;
+  border: none;
+  border-radius: var(--z-radius-xs);
+  background: transparent;
+  color: var(--z-fg-muted);
+
+  &:hover {
+    background: var(--z-highlight);
+  }
+
+  &[data-disabled] {
+    display: none;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 [data-combobox-input] {
   flex: 1;
   min-width: 0;
@@ -114,6 +177,10 @@
 
   &[data-highlighted] {
     background: var(--z-highlight);
+  }
+
+  &[hidden] {
+    display: none;
   }
 
   &[data-disabled] {
@@ -234,4 +301,40 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+
+[data-combobox-item][data-type="select-all"] {
+  font-weight: 500;
+}
+
+.combobox-check {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--z-border-emphasis);
+  border-radius: var(--z-radius-xs);
+  color: var(--z-accent-fg);
+  font-size: 12px;
+  line-height: 14px;
+}
+
+[data-combobox-separator] {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid var(--z-border);
+}
+
+[data-combobox-item][data-type="create"] {
+  flex-wrap: wrap;
+
+  &[data-loading] {
+    color: var(--z-fg-muted);
+  }
+}
+
+.combobox-create-error {
+  flex-basis: 100%;
+  color: var(--z-danger-fg);
+  font-size: var(--z-text-xs);
 }

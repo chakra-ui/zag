@@ -45,7 +45,7 @@ function Command(props: CommandProps) {
     inputValue: query,
     placeholder: pages.pageItem ? `Search ${pages.pageItem.label}...` : "Type a command or search...",
     loopFocus: false,
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     selectionBehavior: "clear",
     onInputValueChange({ inputValue }) {
       props.onQueryChange(inputValue)

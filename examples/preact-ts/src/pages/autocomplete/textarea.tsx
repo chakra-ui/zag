@@ -1,51 +1,43 @@
-"use client"
-
-import * as combobox from "@zag-js/combobox"
+import * as autocomplete from "@zag-js/autocomplete"
 import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
-import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
-import { useEffect, useId, useMemo, useRef, useState } from "react"
-import { StateVisualizer } from "@/components/state-visualizer"
-import { Toolbar } from "@/components/toolbar"
-import "@styles/combobox.css"
+import type { ComponentProps } from "preact"
+import { useId, useRef, useState } from "preact/hooks"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import "@styles/autocomplete.css"
+
+interface Item {
+  code: string
+  label: string
+}
 
 const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
-  const [options, setOptions] = useState(comboboxData)
-
+  const [value, setValue] = useState("")
   const [searchValue, setSearchValue] = useState("")
-  const searchValueRef = useRef("")
-
-  const collection = useMemo(
-    () =>
-      combobox.collection({
-        items: options,
-        itemToValue: (item) => item.code,
-        itemToString: (item) => item.label,
-      }),
-    [options],
-  )
 
   const ref = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
-    const result = comboboxData.filter((item) => contains(item.label, searchValue))
-    setOptions(result)
-  }, [searchValue])
+  const items = comboboxData.filter((item) => contains(item.label, searchValue))
 
-  const service = useMachine(combobox.machine, {
+  const collection = autocomplete.collection<Item>({
+    items,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
+  })
+
+  const service = useMachine(autocomplete.machine as autocomplete.Machine<Item>, {
     id: useId(),
     collection,
-    onOpenChange() {
-      setOptions(comboboxData)
-    },
-    inputBehavior: "autohighlight",
-    selectionBehavior: "preserve",
+    value,
+    onValueChange: (details) => setValue(details.value),
+    autoHighlight: true,
     openOnKeyPress: false,
     openOnChange: false,
-    allowCustomValue: true,
     positioning: {
       sameWidth: false,
       placement: "bottom-start",
@@ -54,25 +46,26 @@ export default function Page() {
         return getAnchorRect(ref.current)
       },
     },
-    onValueChange({ value }) {
+    onSelect(details) {
       const textarea = ref.current
       if (!textarea) return
-      const valueAsString = collection.stringifyMany(value)
       const offset = getTriggerOffset(textarea)
-      const inputValue = replaceValue(offset, searchValueRef.current, valueAsString)(textarea.value)
+      const nextValue = replaceValue(offset, getSearchValue(textarea), details.value)(textarea.value)
+      // selecting writes the label into the value; swap in the full text after
       raf(() => {
-        api.setInputValue(inputValue)
+        api.setValue(nextValue)
+        setSearchValue("")
       })
     },
   })
 
-  const api = combobox.connect(service, normalizeProps)
+  const api = autocomplete.connect(service, normalizeProps)
 
-  const textareaProps = api.getInputProps() as unknown as React.ComponentProps<"textarea">
+  const textareaProps = api.getInputProps() as unknown as ComponentProps<"textarea">
 
   return (
     <>
-      <main className="combobox">
+      <main className="autocomplete">
         <div {...api.getRootProps()}>
           <span>Search value: {searchValue || "-"}</span>
           <label {...api.getLabelProps()}>Select country</label>
@@ -81,7 +74,7 @@ export default function Page() {
             {...mergeProps(textareaProps, {
               rows: 5,
               placeholder: "Type @ to see completion",
-              style: { width: 400, padding: 4 },
+              style: { width: 400, padding: 4, border: "1px solid var(--z-border)" },
               onScroll() {
                 api.reposition()
               },
@@ -104,7 +97,6 @@ export default function Page() {
                 }
 
                 setSearchValue(searchValue)
-                searchValueRef.current = searchValue
               },
             })}
           />
@@ -112,19 +104,19 @@ export default function Page() {
 
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>
-            <div {...api.getListProps()}>
-              {options.map((item) => (
-                <div key={item.code} {...api.getItemProps({ item })}>
-                  {item.label}
-                </div>
+            <ul {...api.getListProps()}>
+              {items.map((item) => (
+                <li key={item.code} {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={service} omit={["collection", "nextEvents"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

@@ -115,7 +115,7 @@ export function CommandPalette(props: CommandPaletteProps) {
     scrollToIndexFn(details) {
       scrollToIndexRef.current?.(details.index, !!details.immediate)
     },
-    inputBehavior: "autohighlight",
+    autoHighlight: true,
     selectionBehavior: "clear",
     onInputValueChange({ inputValue }) {
       setQuery(inputValue)

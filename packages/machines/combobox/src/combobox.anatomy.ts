@@ -15,6 +15,10 @@ export const anatomy = createAnatomy("combobox").parts(
   "label",
   "list",
   "positioner",
+  "separator",
   "trigger",
+  "chipGroup",
+  "chip",
+  "chipDeleteTrigger",
 )
 export const parts = anatomy.build()

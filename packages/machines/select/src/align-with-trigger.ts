@@ -355,7 +355,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
 
     const positionerEl = dom.getPositionerEl(scope)
     const contentEl = dom.getContentEl(scope)
-    const listEl = dom.getListEl(scope)
+    const listEl = dom.getScrollEl(scope)
     if (!positionerEl || !contentEl || !listEl) return
 
     const isTopPositioned = positionerEl.style.top === "0px"
@@ -431,7 +431,7 @@ export function trackAlignItemWithTrigger(scope: Scope, options: TrackAlignItemO
       triggerEl: dom.getTriggerEl(scope),
       positionerEl: dom.getPositionerEl(scope),
       contentEl: dom.getContentEl(scope),
-      scrollerEl: dom.getListEl(scope),
+      scrollerEl: dom.getScrollEl(scope),
       valueTextEl: dom.getValueTextEl(scope),
       selectedItemTextEl: dom.getSelectedItemTextEl(scope),
       dir: options.dir,

@@ -78,6 +78,7 @@ export const tabs: SidebarTab[] = [
         label: "Forms & Inputs",
         items: docs("components", [
           { label: "Angle Slider", id: "angle-slider" },
+          { label: "Autocomplete", id: "autocomplete", new: true },
           { label: "Cascade Select", id: "cascade-select" },
           { label: "Checkbox", id: "checkbox" },
           { label: "Color Picker", id: "color-picker" },

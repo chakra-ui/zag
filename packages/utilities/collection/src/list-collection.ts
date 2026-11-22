@@ -305,6 +305,48 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
   }
 
   /**
+   * Returns the values of the enabled items
+   */
+  getEnabledValues = (): string[] => {
+    const values: string[] = []
+    for (const item of this.items) {
+      if (this.getItemDisabled(item)) continue
+      const value = this.getItemValue(item)
+      if (value != null) values.push(value)
+    }
+    return values
+  }
+
+  /**
+   * Returns keyboard navigation over the enabled items, with extra values before and after them
+   */
+  navigate = (options: ListNavigateOptions = {}): ListNavigation => {
+    const { before = [], after = [] } = options
+    const first = before[0] ?? this.firstValue ?? after[0] ?? null
+    const last = after[after.length - 1] ?? this.lastValue ?? before[before.length - 1] ?? null
+
+    const step = (value: string, dir: 1 | -1): string | null => {
+      const head = dir === 1 ? before : [...after].reverse()
+      const tail = dir === 1 ? after : [...before].reverse()
+      const edge = dir === 1 ? this.firstValue : this.lastValue
+      const i = head.indexOf(value)
+      if (i !== -1) return head[i + 1] ?? edge ?? tail[0] ?? null
+      const j = tail.indexOf(value)
+      if (j !== -1) return tail[j + 1] ?? null
+      const next = dir === 1 ? this.getNextValue(value) : this.getPreviousValue(value)
+      return next ?? tail[0] ?? null
+    }
+
+    return {
+      first,
+      last,
+      has: (value) => value != null && (before.includes(value) || after.includes(value) || this.has(value)),
+      next: (value, loop = false) => (value == null ? first : (step(value, 1) ?? (loop ? first : null))),
+      prev: (value, loop = false) => (value == null ? last : (step(value, -1) ?? (loop ? last : null))),
+    }
+  }
+
+  /**
    * Get the index of an item based on its key.
    */
   indexOf = (value: string | null): number => {
@@ -601,4 +643,23 @@ function move<T>(items: T[], indices: number[], toIndex: number): T[] {
   }
   toIndex = Math.max(0, toIndex - indices.filter((i) => i < toIndex).length)
   return [...items.slice(0, toIndex), ...itemsToMove, ...items.slice(toIndex)]
+}
+
+export interface ListNavigateOptions {
+  /**
+   * Values reached before the first item, such as a select-all option
+   */
+  before?: string[] | undefined
+  /**
+   * Values reached after the last item, such as a create option
+   */
+  after?: string[] | undefined
+}
+
+export interface ListNavigation {
+  first: string | null
+  last: string | null
+  has: (value: string | null) => boolean
+  next: (value: string | null, loop?: boolean) => string | null
+  prev: (value: string | null, loop?: boolean) => string | null
 }

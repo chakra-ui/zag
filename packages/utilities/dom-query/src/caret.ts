@@ -198,3 +198,12 @@ export function setCaretToEnd(input: HTMLInputElement | HTMLTextAreaElement | nu
     input.setSelectionRange(len, len)
   } catch {}
 }
+
+/** Selects the text from `start` to the end, so typing replaces it */
+export function selectTextFrom(input: HTMLInputElement | HTMLTextAreaElement | null, start: number) {
+  if (!input) return
+  try {
+    if (input.ownerDocument.activeElement !== input) return
+    input.setSelectionRange(start, input.value.length)
+  } catch {}
+}

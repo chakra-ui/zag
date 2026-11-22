@@ -108,9 +108,9 @@
   }
 
   .Content {
+    display: flex;
+    flex-direction: column;
     width: var(--reference-width, 16rem);
-    max-height: 15rem;
-    overflow-y: auto;
     margin: 0;
     padding: 0.3125rem;
     border: 1px solid var(--colors-border);
@@ -128,8 +128,11 @@
 
     &[data-inline] {
       width: 100%;
-      max-height: 12rem;
       box-shadow: none;
+    }
+
+    &[hidden] {
+      display: none;
     }
 
     &:focus {
@@ -137,7 +140,28 @@
     }
   }
 
-  .Item {
+  .List {
+    max-height: 15rem;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style-type: none;
+
+    [data-inline] > & {
+      max-height: 12rem;
+    }
+  }
+
+  .VirtualList {
+    height: min(15rem, var(--total-size));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    outline: none;
+  }
+
+  .Item,
+  .CreateItem {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -155,6 +179,149 @@
     &[data-disabled] {
       opacity: 0.45;
       cursor: not-allowed;
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .CreateItem {
+    flex-wrap: wrap;
+    row-gap: 0.125rem;
+
+    &[data-loading] {
+      color: var(--colors-fg-muted);
+      cursor: progress;
+    }
+  }
+
+  .CreateError {
+    flex-basis: 100%;
+    color: var(--colors-red-500);
+    font-size: 0.75rem;
+  }
+
+  .Check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+
+  .ItemGroupLabel {
+    padding: 0.375rem 0.625rem 0.25rem;
+    color: var(--colors-fg-subtle);
+    font-size: 0.75rem;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  .Separator {
+    margin-block: 0.25rem;
+    border: 0;
+    border-top: 1px solid var(--colors-border);
+  }
+
+  .Mark {
+    background: transparent;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .ChipGroup {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    padding-block: 0.25rem;
+
+    & > input {
+      min-width: 5rem;
+      height: 1.5rem;
+    }
+  }
+
+  .Chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    height: 1.5rem;
+    padding-inline: 0.5rem 0.125rem;
+    border-radius: 6px;
+    background: var(--colors-accent-tint);
+    color: var(--colors-accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    outline: none;
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--colors-accent);
+    }
+
+    &[data-disabled] {
+      padding-inline-end: 0.5rem;
+    }
+  }
+
+  .Control .ChipDeleteTrigger {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 4px;
+    color: inherit;
+    font-size: 0.875rem;
+
+    &[data-disabled] {
+      display: none;
+    }
+  }
+
+  .Control:has(.ChipGroup) {
+    height: auto;
+    min-height: 2.25rem;
+  }
+
+  .SelectTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 2.25rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--colors-border-strong);
+    border-radius: 8px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .PopupInput {
+    height: 2rem;
+    margin-bottom: 0.3125rem;
+    padding-inline: 0.5rem;
+    border: 1px solid var(--colors-border);
+    border-radius: 6px;
+    background: var(--colors-bg-control);
+    color: var(--colors-fg);
+    font-size: 0.875rem;
+
+    &:focus {
+      outline: 2px solid var(--colors-accent);
+      outline-offset: -1px;
     }
   }
 

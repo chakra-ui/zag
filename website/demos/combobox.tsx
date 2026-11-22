@@ -58,17 +58,19 @@ export function Combobox(props: ComboboxProps) {
       <Portal>
         <div className={styles.Positioner} {...api.getPositionerProps()}>
           {options.length > 0 && (
-            <ul className={styles.Content} {...api.getContentProps()}>
-              {options.map((item, index) => (
-                <li
-                  className={styles.Item}
-                  key={`${item.code}:${index}`}
-                  {...api.getItemProps({ item })}
-                >
-                  {item.label}
-                </li>
-              ))}
-            </ul>
+            <div className={styles.Content} {...api.getContentProps()}>
+              <ul className={styles.List} {...api.getListProps()}>
+                {options.map((item, index) => (
+                  <li
+                    className={styles.Item}
+                    key={`${item.code}:${index}`}
+                    {...api.getItemProps({ item })}
+                  >
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </Portal>

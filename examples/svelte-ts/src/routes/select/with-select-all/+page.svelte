@@ -23,13 +23,7 @@
 
   const api = $derived(select.connect(service, normalizeProps))
 
-  const allSelected = $derived(api.value.length === collection.size)
-  const someSelected = $derived(api.value.length > 0 && !allSelected)
-
-  const toggleAll = () => {
-    if (allSelected) api.clearValue()
-    else api.selectAll()
-  }
+  const selectAll = $derived(api.getSelectAllState())
 </script>
 
 <main class="select">
@@ -48,21 +42,25 @@
     <Portal>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
-          <label data-select-select-all="">
-            <input type="checkbox" checked={allSelected} onchange={toggleAll} indeterminate={someSelected} />
-            <span>{allSelected ? "Deselect all" : "Select all"}</span>
-            <span data-select-select-all-count="">
-              {api.value.length} / {collection.size}
-            </span>
-          </label>
-
           <div {...api.getListProps()}>
-            {#each selectData as item (item.value)}
-              <div {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>✓</span>
-              </div>
-            {/each}
+            <!-- Stays in view: only the items below it scroll -->
+            <div {...api.getSelectAllProps()}>
+              <span class="select-check" aria-hidden="true">
+                {selectAll.checked ? "✓" : selectAll.indeterminate ? "–" : ""}
+              </span>
+              <span>{selectAll.checked ? "Deselect all" : "Select all"}</span>
+              <span data-select-select-all-count="">
+                {api.value.length} / {collection.size}
+              </span>
+            </div>
+            <div class="select-items">
+              {#each selectData as item (item.value)}
+                <div {...api.getItemProps({ item })}>
+                  <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                </div>
+              {/each}
+            </div>
           </div>
         </div>
       </div>

@@ -1,24 +1,30 @@
-import * as combobox from "@zag-js/combobox"
+import * as autocomplete from "@zag-js/autocomplete"
 import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
-import { For, createEffect, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, createMemo, createSignal, createUniqueId } from "solid-js"
 import type { JSX } from "@solidjs/web"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
-import "@styles/combobox.css"
+import "@styles/autocomplete.css"
+
+interface Item {
+  code: string
+  label: string
+}
 
 const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
-  const [options, setOptions] = createSignal(comboboxData)
-
+  const [value, setValue] = createSignal("")
   const [searchValue, setSearchValue] = createSignal("")
 
+  const items = createMemo(() => comboboxData.filter((item) => contains(item.label, searchValue())))
+
   const collection = createMemo(() =>
-    combobox.collection({
-      items: options(),
+    autocomplete.collection<Item>({
+      items: items(),
       itemToValue: (item) => item.code,
       itemToString: (item) => item.label,
     }),
@@ -26,23 +32,16 @@ export default function Page() {
 
   let ref: HTMLTextAreaElement | undefined
 
-  createEffect(searchValue, (searchValue) => {
-    setOptions(comboboxData.filter((item) => contains(item.label, searchValue)))
-  })
-
   const id = createUniqueId()
 
-  const service = useMachine(combobox.machine, (): combobox.Props => ({
+  const service = useMachine(autocomplete.machine as autocomplete.Machine<Item>, (): autocomplete.Props<Item> => ({
     id,
     collection: collection(),
-    onOpenChange() {
-      setOptions(comboboxData)
-    },
-    inputBehavior: "autohighlight",
-    selectionBehavior: "preserve",
+    value: value(),
+    onValueChange: (details) => setValue(details.value),
+    autoHighlight: true,
     openOnKeyPress: false,
     openOnChange: false,
-    allowCustomValue: true,
     positioning: {
       sameWidth: false,
       placement: "bottom-start",
@@ -51,25 +50,26 @@ export default function Page() {
         return getAnchorRect(ref ?? null)
       },
     },
-    onValueChange({ value }) {
+    onSelect(details) {
       const textarea = ref
       if (!textarea) return
-      const valueAsString = collection().stringifyMany(value)
       const offset = getTriggerOffset(textarea)
-      const inputValue = replaceValue(offset, searchValue(), valueAsString)(textarea.value)
+      const nextValue = replaceValue(offset, getSearchValue(textarea), details.value)(textarea.value)
+      // selecting writes the label into the value; swap in the full text after
       raf(() => {
-        api().setInputValue(inputValue)
+        api().setValue(nextValue)
+        setSearchValue("")
       })
     },
   }))
 
-  const api = createMemo(() => combobox.connect(service, normalizeProps))
+  const api = createMemo(() => autocomplete.connect(service, normalizeProps))
 
   const textareaProps = () => api().getInputProps() as unknown as JSX.TextareaHTMLAttributes<HTMLTextAreaElement>
 
   return (
     <>
-      <main class="combobox">
+      <main class="autocomplete">
         <div {...api().getRootProps()}>
           <span>Search value: {searchValue() || "-"}</span>
           <label {...api().getLabelProps()}>Select country</label>
@@ -78,7 +78,7 @@ export default function Page() {
             {...mergeProps(textareaProps, {
               rows: 5,
               placeholder: "Type @ to see completion",
-              style: { width: "400px", padding: "4px" },
+              style: { width: "400px", padding: "4px", border: "1px solid var(--z-border)" },
               onScroll() {
                 api().reposition()
               },
@@ -108,17 +108,21 @@ export default function Page() {
 
         <div {...api().getPositionerProps()}>
           <div {...api().getContentProps()}>
-            <div {...api().getListProps()}>
-              <For keyed={false} each={options()}>
-                {(item) => <div {...api().getItemProps({ item: item() })}>{item().label}</div>}
+            <ul {...api().getListProps()}>
+              <For keyed={false} each={items()}>
+                {(item) => (
+                  <li {...api().getItemProps({ item: item() })}>
+                    <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
+                  </li>
+                )}
               </For>
-            </div>
+            </ul>
           </div>
         </div>
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={service} omit={["collection", "nextEvents"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

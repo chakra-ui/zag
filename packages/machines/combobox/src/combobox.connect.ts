@@ -13,22 +13,28 @@ import {
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure, mergeWithDefault } from "@zag-js/utils"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
 import type {
+  ChipProps,
+  ChipState,
   CollectionItem,
   ComboboxApi,
   ComboboxService,
   ContentState,
+  CreateItemState,
   ItemProps,
   ItemState,
   RootState,
+  SelectAllState,
   TriggerProps,
   TriggerState,
 } from "./combobox.types"
 import { defaultTranslations } from "./combobox.translations"
+import { CREATE_VALUE } from "./utils/pinned"
+import { getSelectAllState as getSelectAllCoverage, SELECT_ALL_VALUE, selectAllValues } from "./utils/select-all"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
@@ -65,6 +71,27 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   // State getters: pure, serializable per-part state, independent of `normalize`
   // -----------------------------------------------------------------------------
 
+  function getChipState(props: ChipProps): ChipState {
+    return {
+      value: collection.getItemValue(props.item) ?? "",
+      disabled: !interactive,
+    }
+  }
+
+  // Focus a chip by value, or the input when there's none
+  function focusChip(value: string | null | undefined) {
+    const el = value != null ? scope.getById(dom.getChipId(scope, value)) : dom.getInputEl(scope)
+    el?.focus({ preventScroll: true })
+  }
+
+  function getChipValues() {
+    return dom.getChipEls(scope).map((el) => el.dataset.value!)
+  }
+
+  function deleteChip(value: string, focusValue: string | null) {
+    send({ type: "CHIP.DELETE", value, focusValue, src: "chip-delete" })
+  }
+
   function getItemState(props: ItemProps): ItemState {
     const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
@@ -95,6 +122,46 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       side: currentPlacementSide,
       empty: collection.size === 0,
       loading,
+    }
+  }
+
+  function getSelectAllState(): SelectAllState {
+    const { enabled, checked, indeterminate } = getSelectAllCoverage(collection, context.get("value"))
+    return {
+      checked,
+      indeterminate,
+      highlighted: highlightedValue === SELECT_ALL_VALUE,
+      disabled: disabled || enabled.length === 0,
+    }
+  }
+
+  function getCreateItemState(): CreateItemState {
+    return {
+      visible: computed("createVisible"),
+      highlighted: highlightedValue === CREATE_VALUE,
+      inputValue: context.get("inputValue").trim(),
+      pending: context.get("createPending"),
+      error: context.get("createError"),
+    }
+  }
+
+  // Pinned options take the pointer and clicks the way items do
+  function getPinnedHandlers(value: string, optionDisabled: boolean, highlighted: boolean) {
+    return {
+      onPointerMove() {
+        if (optionDisabled || highlighted) return
+        if (getInteractionModality() !== "pointer") return
+        send({ type: "ITEM.POINTER_MOVE", value })
+      },
+      onPointerLeave() {
+        if (optionDisabled) return
+        if (getInteractionModality() !== "pointer") return
+        send({ type: "ITEM.POINTER_LEAVE", value })
+      },
+      onClick(event: JSX.MouseEvent<HTMLElement>) {
+        if (isContextMenuEvent(event) || optionDisabled) return
+        send({ type: "ITEM.CLICK", src: "item-select", value, modifiers: getModifierKeys(event) })
+      },
     }
   }
 
@@ -134,6 +201,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     },
     setInputValue(value, reason = "script") {
       send({ type: "INPUT_VALUE.SET", value, src: reason })
+    },
+    selectAll() {
+      if (!prop("multiple")) return
+      send({ type: "VALUE.SET", value: selectAllValues(collection, context.get("value")), src: "script" })
     },
     clearValue(value) {
       if (value != null) {
@@ -238,7 +309,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         type: "text",
         role: "combobox",
         defaultValue: context.get("inputValue"),
-        "aria-autocomplete": computed("autoComplete") ? "both" : "list",
+        "aria-autocomplete": "list",
         "aria-controls": `${dom.getListId(scope)} ${dom.getContentId(scope)}`,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
@@ -288,6 +359,24 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           const keypress = true
 
           const keymap: EventKeyMap = {
+            // With the caret at the start, move into the chips
+            ArrowLeft(event) {
+              const inputEl = event.currentTarget as HTMLInputElement
+              if (inputEl.selectionStart !== 0 || inputEl.selectionEnd !== 0) return
+              const chipValues = getChipValues()
+              if (!chipValues.length) return
+              event.preventDefault()
+              focusChip(chipValues[chipValues.length - 1])
+            },
+            // In an empty input, focus the last chip; Backspace again deletes it
+            Backspace(event) {
+              const inputEl = event.currentTarget as HTMLInputElement
+              if (inputEl.value) return
+              const lastValue = getChipValues().at(-1)
+              if (lastValue == null) return
+              event.preventDefault()
+              focusChip(lastValue)
+            },
             ArrowDown(event) {
               if (!openOnKeyPress && !open) return
               send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress, src: "arrow-key" })
@@ -326,10 +415,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               send({ type: "INPUT.ENTER", keypress, src: "item-select", modifiers: getModifierKeys(event) })
 
               const hasHighlight = highlightedValue != null
-              const alwaysSubmit = prop("alwaysSubmitOnEnter")
               const willBeRejected = computed("isCustomValue") && !prop("allowCustomValue")
 
-              if (open && !alwaysSubmit && (hasHighlight || willBeRejected)) {
+              if (open && (hasHighlight || willBeRejected)) {
                 event.preventDefault()
               }
 
@@ -502,6 +590,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
       return normalize.element({
         ...parts.item.attrs(scope.id),
+        "data-type": "item",
         dir: prop("dir"),
         id: dom.getItemId(scope, value),
         role: "option",
@@ -574,6 +663,176 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         id: dom.getItemGroupLabelId(scope, htmlFor),
         role: "presentation",
+      })
+    },
+
+    getSeparatorProps() {
+      return normalize.element({
+        ...parts.separator.attrs(scope.id),
+        dir: prop("dir"),
+        role: "separator",
+        "aria-orientation": "horizontal",
+      })
+    },
+
+    getSelectAllState,
+    getSelectAllProps() {
+      const selectAllState = getSelectAllState()
+      const checkedState = selectAllState.checked
+        ? "checked"
+        : selectAllState.indeterminate
+          ? "indeterminate"
+          : "unchecked"
+      return normalize.element({
+        ...parts.item.attrs(scope.id),
+        "data-type": "select-all",
+        dir: prop("dir"),
+        id: dom.getItemId(scope, SELECT_ALL_VALUE),
+        role: "option",
+        tabIndex: -1,
+        hidden: !prop("multiple"),
+        "aria-selected": selectAllState.checked,
+        "aria-checked": selectAllState.indeterminate ? "mixed" : selectAllState.checked,
+        "aria-disabled": ariaAttr(selectAllState.disabled),
+        "data-disabled": dataAttr(selectAllState.disabled),
+        "data-highlighted": dataAttr(selectAllState.highlighted),
+        "data-state": checkedState,
+        "data-value": SELECT_ALL_VALUE,
+        ...getPinnedHandlers(SELECT_ALL_VALUE, selectAllState.disabled, selectAllState.highlighted),
+      })
+    },
+
+    getCreateItemState,
+    getCreateItemProps() {
+      const createState = getCreateItemState()
+      return normalize.element({
+        ...parts.item.attrs(scope.id),
+        "data-type": "create",
+        dir: prop("dir"),
+        id: dom.getItemId(scope, CREATE_VALUE),
+        role: "option",
+        tabIndex: -1,
+        hidden: !createState.visible,
+        "aria-selected": false,
+        "aria-busy": ariaAttr(createState.pending),
+        "data-highlighted": dataAttr(createState.highlighted),
+        "data-loading": dataAttr(createState.pending),
+        "data-invalid": dataAttr(!!createState.error),
+        "data-value": CREATE_VALUE,
+        ...getPinnedHandlers(CREATE_VALUE, disabled, createState.highlighted),
+      })
+    },
+
+    getChipGroupProps() {
+      return normalize.element({
+        ...parts.chipGroup.attrs(scope.id),
+        dir: prop("dir"),
+        // A toolbar keeps screen readers in focus mode while arrowing between chips
+        role: context.get("value").length ? "toolbar" : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        "data-disabled": dataAttr(disabled),
+        onMouseDown(event) {
+          // Pressing the space around the chips focuses the input
+          if (disabled || event.target !== event.currentTarget || !isLeftClick(event)) return
+          event.preventDefault()
+          dom.getInputEl(scope)?.focus({ preventScroll: true })
+        },
+      })
+    },
+
+    getChipState,
+    getChipProps(props) {
+      const chipState = getChipState(props)
+      const { value } = chipState
+      return normalize.element({
+        ...parts.chip.attrs(scope.id),
+        dir: prop("dir"),
+        id: dom.getChipId(scope, value),
+        tabIndex: -1,
+        "data-value": value,
+        "aria-disabled": ariaAttr(chipState.disabled),
+        "data-disabled": dataAttr(chipState.disabled),
+        onKeyDown(event) {
+          if (event.defaultPrevented || event.currentTarget !== event.target) return
+          const chipValues = getChipValues()
+          const index = chipValues.indexOf(value)
+          const prev = chipValues[index - 1] ?? null
+          const next = chipValues[index + 1] ?? null
+
+          const keymap: EventKeyMap = {
+            ArrowLeft() {
+              if (prev != null) focusChip(prev)
+            },
+            ArrowRight() {
+              focusChip(next)
+            },
+            Home() {
+              focusChip(chipValues[0])
+            },
+            End() {
+              focusChip(chipValues[chipValues.length - 1])
+            },
+            Backspace() {
+              if (!chipState.disabled) deleteChip(value, prev ?? next)
+            },
+            Delete() {
+              if (!chipState.disabled) deleteChip(value, next ?? prev)
+            },
+            Enter() {
+              focusChip(null)
+            },
+            Escape() {
+              focusChip(null)
+            },
+            Space() {
+              focusChip(null)
+            },
+            ArrowDown() {
+              focusChip(null)
+              send({ type: "INPUT.ARROW_DOWN", keypress: true, src: "arrow-key" })
+            },
+            ArrowUp() {
+              focusChip(null)
+              send({ type: "INPUT.ARROW_UP", keypress: true, src: "arrow-key" })
+            },
+          }
+
+          const exec = keymap[getEventKey(event, { dir: prop("dir") })]
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            return
+          }
+
+          // Typing goes to the input
+          if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+            focusChip(null)
+          }
+        },
+      })
+    },
+
+    getChipDeleteTriggerProps(props) {
+      const chipState = getChipState(props)
+      const { value } = chipState
+      const label = collection.stringifyItem(props.item) ?? value
+      return normalize.button({
+        ...parts.chipDeleteTrigger.attrs(scope.id),
+        dir: prop("dir"),
+        type: "button",
+        tabIndex: -1,
+        disabled: chipState.disabled,
+        "aria-label": translations.deleteChipTriggerLabel(label),
+        "data-value": value,
+        "data-disabled": dataAttr(chipState.disabled),
+        onPointerDown(event) {
+          // Keep focus where it is
+          event.preventDefault()
+        },
+        onClick(event) {
+          if (event.defaultPrevented || chipState.disabled) return
+          deleteChip(value, null)
+        },
       })
     },
   }

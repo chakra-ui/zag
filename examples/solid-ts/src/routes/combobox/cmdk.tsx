@@ -47,7 +47,7 @@ function Command(props: CommandProps) {
     inputValue: props.query,
     placeholder: props.pages.pageItem ? `Search ${props.pages.pageItem.label}...` : "Type a command or search...",
     loopFocus: false,
-    inputBehavior: "autohighlight" as const,
+    autoHighlight: true,
     selectionBehavior: "clear" as const,
     onInputValueChange({ inputValue }: combobox.InputValueChangeDetails) {
       props.onQueryChange(inputValue)

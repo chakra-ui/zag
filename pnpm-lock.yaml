@@ -286,6 +286,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
@@ -611,6 +614,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
@@ -936,6 +942,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
@@ -1258,6 +1267,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
@@ -1562,6 +1574,9 @@ importers:
       '@zag-js/auto-resize':
         specifier: workspace:*
         version: link:../../packages/utilities/auto-resize
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
@@ -2445,6 +2460,43 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/autocomplete:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
@@ -4284,6 +4336,9 @@ importers:
       '@zag-js/async-list':
         specifier: workspace:*
         version: link:../packages/machines/async-list
+      '@zag-js/autocomplete':
+        specifier: workspace:*
+        version: link:../packages/machines/autocomplete
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../packages/machines/avatar

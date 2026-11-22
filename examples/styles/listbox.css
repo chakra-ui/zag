@@ -77,6 +77,10 @@
     background: var(--z-highlight);
   }
 
+  &[hidden] {
+    display: none;
+  }
+
   &[data-disabled] {
     opacity: var(--z-disabled-opacity);
   }
@@ -411,4 +415,22 @@
   &[data-state="checked"] .listbox-item-icon {
     display: none;
   }
+}
+
+[data-listbox-item][data-type="select-all"] {
+  border-bottom: 1px solid var(--z-border);
+  border-radius: 0;
+  font-weight: 500;
+}
+
+.listbox-check {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--z-border-emphasis);
+  border-radius: var(--z-radius-xs);
+  color: var(--z-accent-fg);
+  font-size: 12px;
+  line-height: 14px;
 }

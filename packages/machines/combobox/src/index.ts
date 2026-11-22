@@ -3,6 +3,8 @@ export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
+export { CREATE_VALUE } from "./utils/pinned"
+export { SELECT_ALL_VALUE } from "./utils/select-all"
 export * from "./combobox.props"
 export type {
   ComboboxApi as Api,
@@ -12,6 +14,12 @@ export type {
   CollectionItem,
   CollectionOptions,
   ContentState,
+  CreateDetails,
+  CreateItemFailedDetails,
+  ChipProps,
+  ChipState,
+  CreateItemState,
+  SelectAllState,
   ElementIds,
   HiddenInputProps,
   HighlightChangeDetails,

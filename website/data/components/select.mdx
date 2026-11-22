@@ -80,6 +80,45 @@ const service = useMachine(select.machine, {
 
 </Example>
 
+### Select all
+
+With `multiple`, render `getSelectAllProps` before the items. It comes first in
+keyboard order, selects every enabled item, and unselects them once they all
+are. Use `getSelectAllState` to show checked, unchecked or indeterminate. It
+renders as an item with `data-type="select-all"`, so item styles apply.
+
+```tsx
+const selectAll = api.getSelectAllState()
+
+<div {...api.getListProps()}>
+  <div {...api.getSelectAllProps()}>
+    {selectAll.checked ? "Deselect all" : "Select all"}
+  </div>
+  {items.map((item) => (
+    <div key={item.value} {...api.getItemProps({ item })}>{item.label}</div>
+  ))}
+</div>
+```
+
+To keep it in view while the items scroll, wrap the items in a scrolling element
+inside the list. The select scrolls that element instead of the list.
+
+```tsx
+<div
+  {...api.getListProps()}
+  style={{ display: "flex", flexDirection: "column" }}
+>
+  <div {...api.getSelectAllProps()}>Select all</div>
+  <div style={{ overflowY: "auto" }}>
+    {items.map((item) => (
+      <div key={item.value} {...api.getItemProps({ item })}>
+        {item.label}
+      </div>
+    ))}
+  </div>
+</div>
+```
+
 ### Controlled value
 
 Use `value` and `onValueChange` for controlled selection.

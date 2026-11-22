@@ -285,6 +285,214 @@
       }
     }
   },
+  "autocomplete": {
+    "api": {
+      "focused": {
+        "type": "boolean",
+        "description": "Whether the input is focused"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the suggestions are open"
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Whether the suggestions are loading"
+      },
+      "value": {
+        "type": "string",
+        "description": "The text of the input"
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Sets the text of the input"
+      },
+      "clearValue": {
+        "type": "VoidFunction",
+        "description": "Clears the text of the input"
+      },
+      "highlightedValue": {
+        "type": "string | null",
+        "description": "The value of the highlighted suggestion"
+      },
+      "highlightedItem": {
+        "type": "V | null",
+        "description": "The highlighted suggestion"
+      },
+      "setHighlightedValue": {
+        "type": "(value: string | null) => void",
+        "description": "Highlights a suggestion, or clears the highlight with `null`"
+      },
+      "selectValue": {
+        "type": "(value: string) => void",
+        "description": "Chooses a suggestion, writing its text to the input"
+      },
+      "collection": {
+        "type": "ListCollection<V>",
+        "description": "The suggestions"
+      },
+      "setOpen": {
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
+        "description": "Opens or closes the suggestions"
+      },
+      "focus": {
+        "type": "VoidFunction",
+        "description": "Focuses the input"
+      },
+      "reposition": {
+        "type": "(options?: Partial<PositioningOptions>) => void",
+        "description": "Repositions the suggestions"
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds | undefined",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "collection": {
+        "type": "ListCollection<T> | undefined",
+        "description": "The suggestions"
+      },
+      "value": {
+        "type": "string | undefined",
+        "description": "The controlled text of the input"
+      },
+      "defaultValue": {
+        "type": "string | undefined",
+        "description": "The initial text of the input. Use when you don't need to control it.",
+        "defaultValue": "\"\""
+      },
+      "onValueChange": {
+        "type": "((details: ValueChangeDetails) => void) | undefined",
+        "description": "Called when the text changes"
+      },
+      "mode": {
+        "type": "AutocompleteMode | undefined",
+        "description": "How suggestions relate to the text",
+        "defaultValue": "\"list\""
+      },
+      "autoHighlight": {
+        "type": "boolean | undefined",
+        "description": "Whether to highlight the first suggestion as the user types",
+        "defaultValue": "false"
+      },
+      "open": {
+        "type": "boolean | undefined",
+        "description": "The controlled open state"
+      },
+      "defaultOpen": {
+        "type": "boolean | undefined",
+        "description": "The initial open state. Use when you don't need to control it."
+      },
+      "onOpenChange": {
+        "type": "((details: OpenChangeDetails) => void) | undefined",
+        "description": "Called when the suggestions open or close"
+      },
+      "openOnClick": {
+        "type": "boolean | undefined",
+        "description": "Whether to open on click of the input",
+        "defaultValue": "false"
+      },
+      "openOnChange": {
+        "type": "boolean | ((details: ValueChangeDetails) => boolean) | undefined",
+        "description": "Whether to open when the text changes",
+        "defaultValue": "true"
+      },
+      "openOnKeyPress": {
+        "type": "boolean | undefined",
+        "description": "Whether to open on arrow key press",
+        "defaultValue": "true"
+      },
+      "highlightedValue": {
+        "type": "string | null | undefined",
+        "description": "The controlled highlighted suggestion"
+      },
+      "defaultHighlightedValue": {
+        "type": "string | null | undefined",
+        "description": "The initial highlighted suggestion"
+      },
+      "onHighlightChange": {
+        "type": "((details: HighlightChangeDetails<T>) => void) | undefined",
+        "description": "Called when a suggestion is highlighted with the pointer or keyboard"
+      },
+      "onSelect": {
+        "type": "((details: SelectionDetails) => void) | undefined",
+        "description": "Called when a suggestion is chosen"
+      },
+      "submitOnSelect": {
+        "type": "boolean | undefined",
+        "description": "Whether choosing a suggestion submits the input's form, as a search box does",
+        "defaultValue": "false"
+      },
+      "loopFocus": {
+        "type": "boolean | undefined",
+        "description": "Whether keyboard navigation loops",
+        "defaultValue": "true"
+      },
+      "pageSize": {
+        "type": "number | undefined",
+        "description": "Number of items Page Up / Page Down moves the highlight by",
+        "defaultValue": "10"
+      },
+      "positioning": {
+        "type": "PositioningOptions | undefined",
+        "description": "The positioning options of the suggestions"
+      },
+      "name": {
+        "type": "string | undefined",
+        "description": "The `name` of the input, so a form submits the text"
+      },
+      "form": {
+        "type": "string | undefined",
+        "description": "The id of the form the input belongs to"
+      },
+      "autoFocus": {
+        "type": "boolean | undefined",
+        "description": "Whether to focus the input on mount"
+      },
+      "loading": {
+        "type": "boolean | undefined",
+        "description": "Whether the suggestions are loading"
+      },
+      "translations": {
+        "type": "IntlTranslations | undefined",
+        "description": "The localized strings"
+      },
+      "scrollToIndexFn": {
+        "type": "((details: ScrollToIndexDetails) => void) | undefined",
+        "description": "Function to scroll to a specific index"
+      },
+      "navigate": {
+        "type": "((details: NavigateDetails) => void) | null | undefined",
+        "description": "Function to navigate when a link suggestion is chosen"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\" | undefined",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "(() => ShadowRoot | Document | Node) | undefined",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "((event: PointerDownOutsideEvent) => void) | undefined",
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      "onFocusOutside": {
+        "type": "((event: FocusOutsideEvent) => void) | undefined",
+        "description": "Function called when the focus is moved outside the component"
+      },
+      "onInteractOutside": {
+        "type": "((event: InteractOutsideEvent) => void) | undefined",
+        "description": "Function called when an interaction happens outside the component"
+      }
+    }
+  },
   "avatar": {
     "api": {
       "status": {
@@ -1253,6 +1461,10 @@
         "type": "(value?: string) => void",
         "description": "Function to clear the value of the combobox"
       },
+      "selectAll": {
+        "type": "VoidFunction",
+        "description": "Function to select every selectable item in the collection. Requires `multiple`."
+      },
       "focus": {
         "type": "VoidFunction",
         "description": "Function to focus on the combobox input"
@@ -1300,6 +1512,38 @@
       "getTriggerState": {
         "type": "(props?: TriggerProps) => TriggerState",
         "description": "Returns the state of the trigger"
+      },
+      "getSelectAllState": {
+        "type": "() => SelectAllState",
+        "description": "Returns the state of the select-all option"
+      },
+      "getSelectAllProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Props for an option that selects every item, or unselects them all. Requires `multiple`."
+      },
+      "getCreateItemState": {
+        "type": "() => CreateItemState",
+        "description": "Returns the state of the create option"
+      },
+      "getCreateItemProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Props for an option that creates an item from the typed text. Requires `onCreate`."
+      },
+      "getChipGroupProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Props for the element around the chips. With `multiple`, render one chip per selected item."
+      },
+      "getChipState": {
+        "type": "(props: ChipProps) => ChipState",
+        "description": "Returns the state of a chip"
+      },
+      "getChipProps": {
+        "type": "(props: ChipProps) => T[\"element\"]",
+        "description": "Props for a chip showing a selected item"
+      },
+      "getChipDeleteTriggerProps": {
+        "type": "(props: ChipProps) => T[\"button\"]",
+        "description": "Props for the button that deletes a chip"
       }
     },
     "context": {
@@ -1369,14 +1613,14 @@
         "description": "The initial value of the combobox's selected items when rendered.\nUse when you don't need to control the value of the combobox's selected items.",
         "defaultValue": "[]"
       },
-      "inputBehavior": {
-        "type": "\"autohighlight\" | \"autocomplete\" | \"none\" | undefined",
-        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused item is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated",
-        "defaultValue": "\"none\""
+      "autoHighlight": {
+        "type": "boolean | undefined",
+        "description": "Whether to highlight the first item as the user types",
+        "defaultValue": "false"
       },
       "selectionBehavior": {
         "type": "\"clear\" | \"replace\" | \"preserve\" | undefined",
-        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is preserved",
+        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is kept as typed",
         "defaultValue": "\"replace\""
       },
       "autoFocus": {
@@ -1397,15 +1641,15 @@
         "type": "boolean | undefined",
         "description": "Whether to allow typing custom values in the input"
       },
-      "alwaysSubmitOnEnter": {
-        "type": "boolean | undefined",
-        "description": "Whether to always submit on Enter key press, even if popup is open.\nUseful for single-field autocomplete forms where Enter should submit the form.",
-        "defaultValue": "false"
-      },
       "loopFocus": {
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation through the items",
         "defaultValue": "true"
+      },
+      "pageSize": {
+        "type": "number | undefined",
+        "description": "Number of items Page Up / Page Down moves the highlight by",
+        "defaultValue": "10"
       },
       "positioning": {
         "type": "PositioningOptions | undefined",
@@ -1431,6 +1675,10 @@
       "onOpenChange": {
         "type": "((details: OpenChangeDetails) => void) | undefined",
         "description": "Function called when the popup is opened"
+      },
+      "onCreate": {
+        "type": "((details: CreateDetails) => string | void | PromiseLike<string | void>) | undefined",
+        "description": "Function called when the create option is chosen. Return the new item's value, or a\nPromise of it, to select it."
       },
       "translations": {
         "type": "IntlTranslations | undefined",
@@ -3923,7 +4171,7 @@
       },
       "selectAll": {
         "type": "VoidFunction",
-        "description": "Function to select all values.\n\n**Note**: This should only be called when the selectionMode is `multiple` or `extended`.\nOtherwise, an exception will be thrown."
+        "description": "Function to select all enabled values.\n\n**Note**: This should only be called when the selectionMode is `multiple` or `extended`.\nOtherwise, an exception will be thrown."
       },
       "setValue": {
         "type": "(value: string[]) => void",
@@ -3952,6 +4200,14 @@
       "getListState": {
         "type": "() => ListState",
         "description": "Returns the state of the list"
+      },
+      "getSelectAllState": {
+        "type": "() => SelectAllState",
+        "description": "Returns the state of the select-all option"
+      },
+      "getSelectAllProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Props for an option that selects every enabled item, or unselects them all.\nRequires `multiple` or `extended` selection and a list layout."
       }
     },
     "context": {
@@ -4005,6 +4261,11 @@
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation through the options",
         "defaultValue": "false"
+      },
+      "pageSize": {
+        "type": "number | undefined",
+        "description": "Number of items Page Up / Page Down moves the highlight by",
+        "defaultValue": "10"
       },
       "selectionMode": {
         "type": "SelectionMode | undefined",
@@ -4220,6 +4481,10 @@
         "type": "(child: MenuService) => void",
         "description": "Function to register a child menu. This is used for submenus"
       },
+      "removeChild": {
+        "type": "(child: MenuService) => void",
+        "description": "Function to unregister a child menu, e.g. when the submenu unmounts"
+      },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
@@ -4290,6 +4555,11 @@
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation.",
         "defaultValue": "false"
+      },
+      "pageSize": {
+        "type": "number | undefined",
+        "description": "Number of items Page Up / Page Down moves the highlight by",
+        "defaultValue": "10"
       },
       "initialFocusEl": {
         "type": "(() => MaybeElement | false) | undefined",
@@ -6489,7 +6759,7 @@
       },
       "selectAll": {
         "type": "VoidFunction",
-        "description": "Function to select all values"
+        "description": "Function to select all enabled values"
       },
       "setValue": {
         "type": "(value: string[]) => void",
@@ -6538,6 +6808,14 @@
       "getContentState": {
         "type": "() => ContentState",
         "description": "Returns the state of the content"
+      },
+      "getSelectAllState": {
+        "type": "() => SelectAllState",
+        "description": "Returns the state of the select-all option"
+      },
+      "getSelectAllProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Props for an option that selects every enabled item, or unselects them all. Requires `multiple`."
       }
     },
     "context": {
@@ -6626,6 +6904,11 @@
         "type": "boolean | undefined",
         "description": "Whether to loop the keyboard navigation through the options",
         "defaultValue": "false"
+      },
+      "pageSize": {
+        "type": "number | undefined",
+        "description": "Number of items Page Up / Page Down moves the highlight by",
+        "defaultValue": "10"
       },
       "multiple": {
         "type": "boolean | undefined",

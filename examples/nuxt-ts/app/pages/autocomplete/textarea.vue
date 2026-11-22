@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import * as combobox from "@zag-js/combobox"
+import * as autocomplete from "@zag-js/autocomplete"
 import { getCaretPosition, raf } from "@zag-js/dom-query"
 import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
-import "@styles/combobox.css"
+import "@styles/autocomplete.css"
+
+interface Item {
+  code: string
+  label: string
+}
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -55,64 +60,62 @@ function replaceValue(offset: number, searchValue: string, displayValue: string)
   }
 }
 
-const options = ref(comboboxData)
+const value = ref("")
 const searchValue = ref("")
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
+const items = computed(() => comboboxData.filter((item) => contains(item.label, searchValue.value)))
+
 const collection = computed(() =>
-  combobox.collection({
-    items: options.value,
+  autocomplete.collection<Item>({
+    items: items.value,
     itemToValue: (item) => item.code,
     itemToString: (item) => item.label,
   }),
 )
 
-watch(searchValue, (value) => {
-  options.value = comboboxData.filter((item) => contains(item.label, value))
-})
-
 const id = useId()
 const service = useMachine(
-  combobox.machine,
-  computed(() => ({
+  autocomplete.machine as autocomplete.Machine<Item>,
+  computed<autocomplete.Props<Item>>(() => ({
     id,
     collection: collection.value,
-    onOpenChange() {
-      options.value = comboboxData
+    value: value.value,
+    onValueChange: (details) => {
+      value.value = details.value
     },
-    inputBehavior: "autohighlight" as const,
-    selectionBehavior: "preserve" as const,
+    autoHighlight: true,
     openOnKeyPress: false,
     openOnChange: false,
-    allowCustomValue: true,
     positioning: {
       sameWidth: false,
-      placement: "bottom-start" as const,
+      placement: "bottom-start",
       gutter: 16,
       getAnchorRect() {
         return getAnchorRect(textareaRef.value)
       },
     },
-    onValueChange({ value }: combobox.ValueChangeDetails) {
+    onSelect(details) {
       const textarea = textareaRef.value
       if (!textarea) return
-      const valueAsString = collection.value.stringifyMany(value)
       const offset = getTriggerOffset(textarea)
-      const inputValue = replaceValue(offset, searchValue.value, valueAsString)(textarea.value)
+      const nextValue = replaceValue(offset, getSearchValue(textarea), details.value)(textarea.value)
+      // selecting writes the label into the value; swap in the full text after
       raf(() => {
-        api.value.setInputValue(inputValue)
+        api.value.setValue(nextValue)
+        searchValue.value = ""
       })
     },
   })),
 )
 
-const api = computed(() => combobox.connect(service, normalizeProps))
+const api = computed(() => autocomplete.connect(service, normalizeProps))
 
 const textareaProps = computed(() =>
   mergeProps(api.value.getInputProps() as Record<string, any>, {
     rows: 5,
     placeholder: "Type @ to see completion",
-    style: { width: "400px", padding: "4px" },
+    style: { width: "400px", padding: "4px", border: "1px solid var(--z-border)" },
     onScroll() {
       api.value.reposition()
     },
@@ -127,22 +130,22 @@ const textareaProps = computed(() =>
     onInput(event: Event) {
       const target = event.currentTarget as HTMLTextAreaElement
       const trigger = getTrigger(target)
-      const value = getSearchValue(target)
+      const nextSearchValue = getSearchValue(target)
 
       if (trigger) {
         api.value.setOpen(true)
-      } else if (!value) {
+      } else if (!nextSearchValue) {
         api.value.setOpen(false)
       }
 
-      searchValue.value = value
+      searchValue.value = nextSearchValue
     },
   }),
 )
 </script>
 
 <template>
-  <main class="combobox">
+  <main class="autocomplete">
     <div v-bind="api.getRootProps()">
       <span>Search value: {{ searchValue || "-" }}</span>
       <label v-bind="api.getLabelProps()">Select country</label>
@@ -151,16 +154,16 @@ const textareaProps = computed(() =>
 
     <div v-bind="api.getPositionerProps()">
       <div v-bind="api.getContentProps()">
-        <div v-bind="api.getListProps()">
-          <div v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
-            {{ item.label }}
-          </div>
-        </div>
+        <ul v-bind="api.getListProps()">
+          <li v-for="item in items" :key="item.code" v-bind="api.getItemProps({ item })">
+            <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </main>
 
   <Toolbar viz>
-    <StateVisualizer :state="service" :omit="['collection', 'nextEvents']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
   </Toolbar>
 </template>

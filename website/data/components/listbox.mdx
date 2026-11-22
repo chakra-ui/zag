@@ -151,6 +151,28 @@ const service = useMachine(listbox.machine, {
 
 </Example>
 
+### Select-all option
+
+With `multiple` or `extended` selection in a list layout, render
+`getSelectAllProps` before the items. It comes first in keyboard order, selects
+every enabled item, and unselects them once they all are. Moving onto it with
+the arrow keys doesn't change the selection. Use `getSelectAllState` to show
+checked, unchecked or indeterminate. It renders as an item with
+`data-type="select-all"`, so item styles apply.
+
+```tsx
+const selectAll = api.getSelectAllState()
+
+<ul {...api.getListProps()}>
+  <li {...api.getSelectAllProps()}>
+    {selectAll.checked ? "Unselect all" : "Select all"}
+  </li>
+  {items.map((item) => (
+    <li key={item.value} {...api.getItemProps({ item })}>{item.label}</li>
+  ))}
+</ul>
+```
+
 ### Disable select-all
 
 Set `disallowSelectAll` to disable `Cmd/Ctrl + A` selection.

@@ -3,6 +3,7 @@ export { anatomy } from "./select.anatomy"
 export { collection } from "./select.collection"
 export { connect } from "./select.connect"
 export { machine } from "./select.machine"
+export { SELECT_ALL_VALUE } from "./utils/select-all"
 export * from "./select.props"
 export type {
   SelectApi as Api,
@@ -20,6 +21,7 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
+  SelectAllState,
   OpenChangeDetails,
   OpenChangeReason,
   PositioningOptions,
