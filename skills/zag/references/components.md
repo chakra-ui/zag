@@ -9,6 +9,7 @@ is `react`, `vue`, `svelte` or `solid`. Preact uses the React page.
 | ----------------- | ------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Accordion         | `accordion`         | `@zag-js/accordion`       | An accessible accordion with expandable sections, single or multiple open panels, and arrow key navigation between headers.        |
 | Angle Slider      | `angle-slider`      | `@zag-js/angle-slider`    | A circular dial for picking an angle in degrees, with pointer dragging, keyboard steps and optional snapping to marks.             |
+| Autocomplete      | `autocomplete`      | `@zag-js/autocomplete`    | An accessible autocomplete: a text input that suggests completions as you type, with keyboard navigation and inline completion.    |
 | Avatar            | `avatar`            | `@zag-js/avatar`          | An avatar that shows a user's image and falls back to initials or an icon while the image loads or when it fails.                  |
 | Carousel          | `carousel`          | `@zag-js/carousel`        | An accessible carousel built on CSS scroll snap, with slide indicators, autoplay, looping and multiple slides per view.            |
 | Cascade Select    | `cascade-select`    | `@zag-js/cascade-select`  | A select for hierarchical data, where users pick a value by drilling through nested levels of options with mouse or keyboard.      |
@@ -75,13 +76,12 @@ Each utility's page is at `{docs}/utilities/{slug}.md`.
 | Dismissable          | `dismissable`          | `@zag-js/dismissable`     | Close layers on Escape, outside clicks and outside focus.                                                                 |
 | Drag and Drop        | `dnd`                  | `@zag-js/dnd`             | Sort, move and nest items while you own the data.                                                                         |
 | Focus Trap           | `focus-trap`           | `@zag-js/focus-trap`      | Using the Focus Trap utility in your project.                                                                             |
-| Fuzzy                | `fuzzy`                | `@zag-js/fuzzy`           | Using the fuzzy search utility in your project.                                                                           |
 | Grid collection      | `grid-collection`      | `@zag-js/collection`      | A list collection laid out in rows and columns, for grid keyboard navigation.                                             |
-| Highlight word       | `highlight-word`       | `@zag-js/highlight-word`  | Split text into matching and non-matching chunks to highlight search results.                                             |
 | Hotkeys              | `hotkeys`              | `@zag-js/hotkeys`         | Using the hotkeys utility in your project.                                                                                |
-| i18n                 | `i18n`                 | `@zag-js/i18n-utils`      | Cached locale-aware formatters, text filters and locale direction helpers.                                                |
+| i18n                 | `i18n`                 | `@zag-js/i18n-utils`      | Cached locale-aware formatters and locale direction helpers.                                                              |
 | Infinite Scroll      | `infinite-scroll`      | `@zag-js/infinite-scroll` | Load the next page when the user scrolls near the edge.                                                                   |
 | List collection      | `list-collection`      | `@zag-js/collection`      | A flat list of items with lookup, navigation and immutable updates.                                                       |
 | Page list collection | `page-list-collection` | `@zag-js/collection`      | A list collection for nested pages of items, like a command menu.                                                         |
+| Search               | `search`               | `@zag-js/utils`           | Fuzzy search, locale-aware filtering, match highlighting and typeahead.                                                   |
 | Tree collection      | `tree-collection`      | `@zag-js/collection`      | A tree of nodes with paths, traversal and immutable updates.                                                              |
-| Virtualizer          | `virtualizer`          | `@zag-js/virtualizer`     | Build smooth virtualized lists, grids, and window views.                                                                  |
+| Virtualizer          | `virtualizer`          | `@zag-js/virtualizer`     | Build smooth virtualized lists, tables, grids, and window views.                                                          |

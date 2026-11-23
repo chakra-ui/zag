@@ -1,5 +1,5 @@
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import * as tree from "@zag-js/tree-view"
 import { ChevronDownIcon, ChevronRightIcon, FileIcon, FolderIcon, XIcon } from "lucide-preact"

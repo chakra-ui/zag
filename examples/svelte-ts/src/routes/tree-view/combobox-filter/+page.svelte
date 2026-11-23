@@ -3,7 +3,7 @@
   import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import Toolbar from "#lib/components/toolbar.svelte"
   import * as combobox from "@zag-js/combobox"
-  import { createFilter } from "@zag-js/i18n-utils"
+  import { createFilter } from "@zag-js/utils/search"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
   import styles from "@styles/tree-view-combobox-filter.module.css"

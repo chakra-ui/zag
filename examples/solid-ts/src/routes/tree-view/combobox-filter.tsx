@@ -1,5 +1,5 @@
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tree from "@zag-js/tree-view"
 import styles from "@styles/tree-view-combobox-filter.module.css"

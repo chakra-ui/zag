@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import * as tree from "@zag-js/tree-view"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronDownIcon, XIcon } from "lucide-vue-next"
@@ -218,9 +218,7 @@ const inputProps = computed(() =>
         </div>
       </div>
 
-      <p :class="styles.selection">
-        Selected: <strong>{{ selectedLabel ?? "none" }}</strong>
-      </p>
+      <p :class="styles.selection">Selected: <strong>{{ selectedLabel ?? "none" }}</strong></p>
 
       <Teleport to="#teleports">
         <div v-bind="comboboxApi.getPositionerProps()" :class="styles.positioner">

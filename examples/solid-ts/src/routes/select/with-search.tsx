@@ -1,4 +1,4 @@
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import * as select from "@zag-js/select"
 import { selectData } from "@zag-js/shared"
 import { ChevronsUpDownIcon } from "lucide-solid"

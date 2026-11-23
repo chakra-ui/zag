@@ -30,7 +30,7 @@ the new collection (see [frameworks.md](frameworks.md)).
 The combobox doesn't filter for you. Filter in `onInputValueChange` and build the collection from the result:
 
 ```tsx
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 
 const { contains } = createFilter({ sensitivity: "base" })
 const [items, setItems] = useState(countries)

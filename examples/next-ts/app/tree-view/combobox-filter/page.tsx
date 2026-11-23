@@ -3,7 +3,7 @@
 import { StateVisualizer } from "@/components/state-visualizer"
 import { Toolbar } from "@/components/toolbar"
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import styles from "@styles/tree-view-combobox-filter.module.css"

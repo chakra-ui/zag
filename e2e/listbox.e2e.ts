@@ -171,7 +171,7 @@ test.describe("listbox", () => {
     await I.clickItem({ value: "AD" })
 
     await I.type("united")
-    await I.seeItemIsHighlighted("United Kingdom")
+    await I.seeItemIsHighlighted("United Arab Emirates")
 
     // the range still starts at the clicked item, not the item typeahead jumped to
     await I.clickItem({ value: "AF" }, { modifiers: ["Shift"] })

@@ -8,7 +8,7 @@
   import { useListVirtualizer } from "#lib/use-virtualizer.svelte.ts"
   import * as combobox from "@zag-js/combobox"
   import type * as dialog from "@zag-js/dialog"
-  import { createFilter } from "@zag-js/i18n-utils"
+  import { createFilter } from "@zag-js/utils/search"
   import { componentRoutesData, exampleRoutes, getComponentExamples } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-svelte"

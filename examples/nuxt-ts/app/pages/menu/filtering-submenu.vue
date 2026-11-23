@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import * as menu from "@zag-js/menu"
 import { menuFilterData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"

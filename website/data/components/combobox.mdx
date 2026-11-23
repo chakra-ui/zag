@@ -121,14 +121,14 @@ const service = useMachine(combobox.machine, {
 Filter in `onInputValueChange`. Check `reason`: selecting an item fills the
 input with its label, which isn't a query.
 
-Use `createFilter` from `@zag-js/i18n-utils` to match with the user's locale,
+Use `createFilter` from `@zag-js/utils/search` to match with the user's locale,
 ignoring case and accents. To match text that isn't in the label, like a local
 name or a username, test extra keywords too.
 
 <Example id="ComboboxFilter">
 
 ```tsx
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 
 const { contains } = createFilter({ sensitivity: "base" })
 
@@ -156,12 +156,13 @@ const service = useMachine(combobox.machine, {
 ### Highlighting matches
 
 Mark the part of each label that matches the query. Use
-[highlight word](/utilities/highlight-word) to split the label into chunks.
+[`highlightWord`](/utilities/search#highlighting) to split the label into
+chunks.
 
 <Example id="ComboboxHighlightMatches">
 
 ```tsx
-import { highlightWord } from "@zag-js/highlight-word"
+import { highlightWord } from "@zag-js/utils/search"
 
 ;<span {...api.getItemTextProps({ item })}>
   {highlightWord({ text: item.label, query, ignoreCase: true }).map(

@@ -1,6 +1,6 @@
 import * as autocomplete from "@zag-js/autocomplete"
 import { getCaretPosition, raf } from "@zag-js/dom-query"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/preact"
 import { comboboxData } from "@zag-js/shared"
 import type { ComponentProps } from "preact"

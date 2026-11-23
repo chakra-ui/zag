@@ -1,11 +1,9 @@
+import type { TypeaheadState } from "@zag-js/utils/search"
 // ==============================
 // Grid and List Collections
 // ==============================
 
-export interface CollectionSearchState {
-  keysSoFar: string
-  timer: number
-}
+export type CollectionSearchState = TypeaheadState
 
 export interface CollectionSearchOptions {
   state: CollectionSearchState

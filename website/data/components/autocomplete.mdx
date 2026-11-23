@@ -129,11 +129,11 @@ const service = useMachine(autocomplete.machine, {
 
 ### Filtering suggestions
 
-Use `createFilter` from `@zag-js/i18n-utils` for locale-aware matching that
+Use `createFilter` from `@zag-js/utils/search` for locale-aware matching that
 ignores case and accents.
 
 ```tsx
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 
 const { contains, startsWith } = createFilter({ sensitivity: "base" })
 
@@ -657,13 +657,13 @@ screen readers hear why the suggestions differ.
 
 ### Highlighting matches
 
-Use [highlight word](/utilities/highlight-word) to mark the typed text inside
-each suggestion.
+Use [`highlightWord`](/utilities/search#highlighting) to mark the typed text
+inside each suggestion.
 
 <Example id="AutocompleteHighlightMatches">
 
 ```tsx
-import { highlightWord } from "@zag-js/highlight-word"
+import { highlightWord } from "@zag-js/utils/search"
 
 ;<span {...api.getItemTextProps({ item })}>
   {highlightWord({ text: item, query: api.value, ignoreCase: true }).map(
@@ -677,12 +677,12 @@ import { highlightWord } from "@zag-js/highlight-word"
 
 ### Fuzzy matching
 
-Use [fuzzy](/utilities/fuzzy) to match suggestions even when the text skips
-letters, ranked best first. Keywords let a suggestion match terms it doesn't
-show.
+Use [fuzzy search](/utilities/search#fuzzy-search) to match suggestions even
+when the text skips letters, ranked best first. Keywords let a suggestion match
+terms it doesn't show.
 
 ```tsx
-import { createFuzzySearch } from "@zag-js/fuzzy"
+import { createFuzzySearch } from "@zag-js/utils/search"
 
 const fuzzy = createFuzzySearch({
   itemToString: (item) => item.title,

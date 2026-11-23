@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { highlightWord } from "../src"
+import { highlightWord } from "../../src/search"
 
 describe("highlightWord / First Occurrence", () => {
   test("works", () => {
@@ -102,8 +102,21 @@ describe("highlightWord / First Occurrence", () => {
     `)
   })
 
-  test("throw when query is array and matchAll is false", () => {
-    expect(() => highlightWord({ text: "Hello world", query: ["rld", "llo"], matchAll: false })).toThrow()
+  test("highlights the first match of any term when matchAll is false", () => {
+    const result = highlightWord({ text: "Hello world", query: ["rld", "llo"], matchAll: false })
+    expect(result).toEqual([
+      { text: "He", match: false },
+      { text: "llo", match: true },
+      { text: " world", match: false },
+    ])
+  })
+
+  test("keeps match indexes when lowercasing changes the text length", () => {
+    const result = highlightWord({ text: "İstanbul cat", query: "cat", ignoreCase: true })
+    expect(result).toEqual([
+      { text: "İstanbul ", match: false },
+      { text: "cat", match: true },
+    ])
   })
 
   test("not exact match partial words", () => {

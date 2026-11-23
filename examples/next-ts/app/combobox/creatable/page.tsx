@@ -1,7 +1,7 @@
 "use client"
 
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { XIcon } from "lucide-react"
 import { useId, useState } from "react"

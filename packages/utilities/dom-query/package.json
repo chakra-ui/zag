@@ -35,6 +35,7 @@
     "clean-package": "2.2.0"
   },
   "dependencies": {
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   }
 }

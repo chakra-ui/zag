@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { selectData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import "@styles/select.css"

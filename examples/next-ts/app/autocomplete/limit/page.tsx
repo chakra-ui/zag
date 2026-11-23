@@ -1,7 +1,7 @@
 "use client"
 
 import * as autocomplete from "@zag-js/autocomplete"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { useId, useState } from "react"

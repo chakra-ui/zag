@@ -2,7 +2,7 @@
 
 import * as autocomplete from "@zag-js/autocomplete"
 import { getCaretPosition, raf } from "@zag-js/dom-query"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { useId, useRef, useState } from "react"

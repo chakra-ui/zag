@@ -166,7 +166,6 @@ export const tabs: SidebarTab[] = [
         label: "Data",
         items: docs("utilities", [
           { label: "Async List", id: "async-list" },
-          { label: "Fuzzy", id: "fuzzy", new: true },
           { label: "Infinite Scroll", id: "infinite-scroll", new: true },
           { label: "Virtualizer", id: "virtualizer", new: true },
         ]),
@@ -187,8 +186,8 @@ export const tabs: SidebarTab[] = [
       {
         label: "Text",
         items: docs("utilities", [
-          { label: "Highlight Word", id: "highlight-word", new: true },
           { label: "i18n", id: "i18n", new: true },
+          { label: "Search", id: "search", new: true },
         ]),
       },
       {

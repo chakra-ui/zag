@@ -1,5 +1,5 @@
 import * as autocomplete from "@zag-js/autocomplete"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { normalizeProps, useMachine } from "@zag-js/preact"
 import { autocompleteControls, comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-preact"

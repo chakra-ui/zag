@@ -1,4 +1,4 @@
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { componentRoutesData, getComponentExamples } from "@zag-js/shared"
 import { ArrowRightIcon, SearchIcon } from "lucide-solid"
 import { createMemo, createSignal, For, Show } from "solid-js"

@@ -41,6 +41,7 @@
     "./color": "./src/color/index.ts",
     "./file": "./src/file/index.ts",
     "./date": "./src/date/index.ts",
+    "./search": "./src/search/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

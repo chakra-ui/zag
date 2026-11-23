@@ -1,7 +1,6 @@
 ---
 title: i18n
-description:
-  Cached locale-aware formatters, text filters and locale direction helpers.
+description: Cached locale-aware formatters and locale direction helpers.
 package: "@zag-js/i18n-utils"
 ---
 
@@ -104,31 +103,6 @@ formatTime("25:00", "en-US") // null
 | `amLabel`     | `string`         | locale's |
 | `pmLabel`     | `string`         | locale's |
 
-## Text filtering
-
-`createFilter` compares strings with an `Intl.Collator` set to search. With
-`sensitivity: "base"`, case and accents are ignored.
-
-```ts
-import { createFilter } from "@zag-js/i18n-utils"
-
-const filter = createFilter({ locale: "en-US", sensitivity: "base" })
-
-filter.contains("Café au lait", "cafe") // true
-filter.startsWith("Ärger", "ar") // true
-filter.endsWith("Résumé", "ume") // true
-```
-
-Use it to filter combobox items:
-
-```ts
-const items = countries.filter((country) =>
-  filter.contains(country.label, inputValue),
-)
-```
-
-An empty query matches every string.
-
 ## Text sorting
 
 `createCollator` returns a cached `Intl.Collator`.
@@ -221,12 +195,6 @@ function formatTime(
   options?: FormatTimeOptions,
 ): string | null
 
-function createFilter(options?: FilterOptions): {
-  startsWith(string: string, substring: string): boolean
-  endsWith(string: string, substring: string): boolean
-  contains(string: string, substring: string): boolean
-}
-
 function createCollator(
   locale?: string,
   options?: Intl.CollatorOptions,
@@ -241,5 +209,4 @@ function getDefaultLocale(): Locale
 function trackLocale(options?: LocaleOptions): () => void
 ```
 
-`FilterOptions` is `Intl.CollatorOptions` plus `locale`. `Locale` is
-`{ locale: string; dir: "ltr" | "rtl" }`.
+`Locale` is `{ locale: string; dir: "ltr" | "rtl" }`.

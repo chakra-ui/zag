@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
 import { contains } from "@zag-js/dom-query"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { comboboxData } from "@zag-js/shared"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"

@@ -2,7 +2,7 @@
   import Highlight from "#lib/components/highlight.svelte"
   import type { PageListCollection } from "@zag-js/collection"
   import * as combobox from "@zag-js/combobox"
-  import { createFuzzySearch } from "@zag-js/fuzzy"
+  import { createFuzzySearch } from "@zag-js/utils/search"
   import type { commandData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { untrack } from "svelte"

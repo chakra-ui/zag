@@ -29,16 +29,19 @@ Some adapters need a newer framework:
 Some utility packages moved into `@zag-js/utils`, and collections are now
 created with functions.
 
-| v1                                  | v2                                         |
-| ----------------------------------- | ------------------------------------------ |
-| `@zag-js/color-utils`               | `@zag-js/utils/color`                      |
-| `@zag-js/file-utils`                | `@zag-js/utils/file`                       |
-| `@zag-js/date-utils`                | `@zag-js/utils/date`                       |
-| Number helpers from `@zag-js/utils` | `@zag-js/utils/number` (still in the root) |
-| `new ListCollection(options)`       | `createListCollection(options)`            |
-| `new GridCollection(options)`       | `createGridCollection(options)`            |
-| `new PageListCollection(options)`   | `createPageListCollection(options)`        |
-| `new TreeCollection(options)`       | `createTreeCollection(options)`            |
+| v1                                       | v2                                         |
+| ---------------------------------------- | ------------------------------------------ |
+| `@zag-js/color-utils`                    | `@zag-js/utils/color`                      |
+| `@zag-js/file-utils`                     | `@zag-js/utils/file`                       |
+| `@zag-js/date-utils`                     | `@zag-js/utils/date`                       |
+| `@zag-js/fuzzy`                          | `@zag-js/utils/search`                     |
+| `@zag-js/highlight-word`                 | `@zag-js/utils/search`                     |
+| `createFilter` from `@zag-js/i18n-utils` | `@zag-js/utils/search`                     |
+| Number helpers from `@zag-js/utils`      | `@zag-js/utils/number` (still in the root) |
+| `new ListCollection(options)`            | `createListCollection(options)`            |
+| `new GridCollection(options)`            | `createGridCollection(options)`            |
+| `new PageListCollection(options)`        | `createPageListCollection(options)`        |
+| `new TreeCollection(options)`            | `createTreeCollection(options)`            |
 
 The collection class names are now types only.
 

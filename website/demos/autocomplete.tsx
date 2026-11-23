@@ -1,5 +1,5 @@
 import * as autocomplete from "@zag-js/autocomplete"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 import styles from "../styles/machines/autocomplete.module.css"

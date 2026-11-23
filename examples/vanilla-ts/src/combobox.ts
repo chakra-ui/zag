@@ -1,5 +1,5 @@
 import * as combobox from "@zag-js/combobox"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { comboboxData } from "@zag-js/shared"
 import { Component } from "./component"
 import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"

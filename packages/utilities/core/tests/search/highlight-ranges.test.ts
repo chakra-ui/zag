@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { highlightRanges } from "../src"
+import { highlightRanges } from "../../src/search"
 
 const marked = (text: string, ranges: { start: number; end: number }[]) =>
   highlightRanges({ text, ranges })

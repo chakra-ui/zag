@@ -2,7 +2,7 @@
   import StateVisualizer from "#lib/components/state-visualizer.svelte"
   import Toolbar from "#lib/components/toolbar.svelte"
   import * as combobox from "@zag-js/combobox"
-  import { createFilter } from "@zag-js/i18n-utils"
+  import { createFilter } from "@zag-js/utils/search"
   import * as scrollArea from "@zag-js/scroll-area"
   import { comboboxData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"

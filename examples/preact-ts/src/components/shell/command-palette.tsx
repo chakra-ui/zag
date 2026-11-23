@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { mergeProps, normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { componentRoutesData, exampleRoutes, getComponentExamples } from "@zag-js/shared"
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CornerDownLeftIcon, SearchIcon } from "lucide-preact"

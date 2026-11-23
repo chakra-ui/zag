@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { listboxControls, selectData } from "@zag-js/shared"

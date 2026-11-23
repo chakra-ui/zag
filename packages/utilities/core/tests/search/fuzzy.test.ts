@@ -1,12 +1,5 @@
 import { describe, expect, test } from "vitest"
-import {
-  createFuzzyMatcher,
-  createFuzzySearch,
-  fuzzyScore,
-  getFuzzyMatchRanges,
-  prepareFuzzyTarget,
-  rankItems,
-} from "../src"
+import { createFuzzySearch, fuzzyScore, getFuzzyMatchRanges, rankItems } from "../../src/search"
 
 const highlight = (text: string, query: string) =>
   getFuzzyMatchRanges(text, query)
@@ -67,13 +60,6 @@ describe("fuzzyScore", () => {
     expect(fuzzyScore("Toggle dark theme", "theme dark")).toBeGreaterThan(0)
     expect(fuzzyScore("Preferences", "dark theme", ["dark", "theme"])).toBeGreaterThan(0)
     expect(fuzzyScore("Toggle dark theme", "theme xyz")).toBe(0)
-  })
-})
-
-describe("createFuzzyMatcher", () => {
-  test("scores prepared targets like fuzzyScore", () => {
-    const match = createFuzzyMatcher("ofl")
-    expect(match(prepareFuzzyTarget("Open file", ["launch"]))).toBe(fuzzyScore("Open file", "ofl", ["launch"]))
   })
 })
 

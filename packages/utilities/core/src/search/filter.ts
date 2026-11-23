@@ -1,5 +1,3 @@
-import { i18nCache } from "./cache"
-
 export interface FilterReturn {
   startsWith(string: string, substring: string): boolean
   endsWith(string: string, substring: string): boolean
@@ -10,17 +8,30 @@ export interface FilterOptions extends Intl.CollatorOptions {
   locale?: string | undefined
 }
 
-const collatorCache = i18nCache(Intl.Collator)
+const collators = new Map<string, Intl.Collator>()
 
+function getCollator(locale: string, options: Intl.CollatorOptions) {
+  const key = locale + JSON.stringify(Object.entries(options).sort())
+  let collator = collators.get(key)
+  if (!collator) {
+    collator = new Intl.Collator(locale, options)
+    collators.set(key, collator)
+  }
+  return collator
+}
+
+/**
+ * Creates locale-aware string matchers backed by `Intl.Collator`.
+ * With `sensitivity: "base"`, they ignore case and accents.
+ */
 export function createFilter(options?: FilterOptions): FilterReturn {
-  const { locale, ...rest } = options || {}
-  const collator = collatorCache(locale || "en-US", { usage: "search", ...rest })
+  const { locale = "en-US", ...rest } = options || {}
+  const collator = getCollator(locale, { usage: "search", ...rest })
+  const ignorePunctuation = collator.resolvedOptions().ignorePunctuation
 
   function normalize(string: string) {
     string = string.normalize("NFC")
-    if (collator.resolvedOptions().ignorePunctuation) {
-      string = string.replace(/\p{P}/gu, "")
-    }
+    if (ignorePunctuation) string = string.replace(/\p{P}/gu, "")
     return string
   }
 
@@ -42,20 +53,13 @@ export function createFilter(options?: FilterOptions): FilterReturn {
     if (substring.length === 0) return true
     string = normalize(string)
     substring = normalize(substring)
-    let scan = 0
-    let sliceLen = substring.length
-    for (; scan + sliceLen <= string.length; scan++) {
-      let slice = string.slice(scan, scan + sliceLen)
-      if (collator.compare(substring, slice) === 0) {
-        return true
-      }
+    // equal text always compares equal, so skip the scan on an exact hit
+    if (string.includes(substring)) return true
+    for (let scan = 0; scan + substring.length <= string.length; scan++) {
+      if (collator.compare(substring, string.slice(scan, scan + substring.length)) === 0) return true
     }
     return false
   }
 
-  return {
-    startsWith,
-    endsWith,
-    contains,
-  }
+  return { startsWith, endsWith, contains }
 }

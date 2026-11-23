@@ -1,6 +1,6 @@
 import * as asyncList from "@zag-js/async-list"
 import * as autocomplete from "@zag-js/autocomplete"
-import { createFilter } from "@zag-js/i18n-utils"
+import { createFilter } from "@zag-js/utils/search"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { Fragment, useId, useMemo, useState } from "react"
 import styles from "../../styles/machines/autocomplete.module.css"

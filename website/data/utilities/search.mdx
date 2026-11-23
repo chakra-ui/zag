@@ -1,0 +1,149 @@
+---
+title: Search
+description:
+  Fuzzy search, locale-aware filtering, match highlighting and typeahead.
+package: "@zag-js/utils"
+---
+
+Find and highlight text: fuzzy search, locale-aware filtering, match
+highlighting and typeahead
+
+<Resources pkg="@zag-js/utils" />
+
+## Installation
+
+```bash
+npm install @zag-js/utils
+```
+
+Import from the `search` entrypoint:
+
+```ts
+import { createFuzzySearch, highlightWord } from "@zag-js/utils/search"
+```
+
+## Fuzzy search
+
+`createFuzzySearch` returns the matching items, best match first. Matches favor
+consecutive letters and word starts, and ignore case and accents. Each
+space-separated word can match on its own, so "theme dark" matches "Toggle dark
+theme".
+
+```ts
+import { createFuzzySearch } from "@zag-js/utils/search"
+
+const fuzzy = createFuzzySearch({
+  itemToString: (item) => item.label,
+  itemToKeywords: (item) => item.keywords,
+})
+
+const results = fuzzy.search(items, query)
+```
+
+Keywords rank slightly below the text. Item text is cached, and when the query
+only grows, only the previous matches are searched.
+
+> Pass a new array when the items change, or call `fuzzy.clear()` after changing
+> them in place.
+
+To score one string, use `fuzzyScore`. It returns 0 (no match) to 1 (exact).
+
+```ts
+fuzzyScore("Open File", "of") // 0.84
+fuzzyScore("Preferences", "settings", ["settings", "options"])
+```
+
+To rank with your own scorer, use `rankItems`. Items scoring 0 are dropped, and
+ties keep their order.
+
+```ts
+const results = rankItems(items, (item) => myScore(item, query))
+```
+
+## Filtering
+
+`createFilter` matches with an `Intl.Collator`. With `sensitivity: "base"`, case
+and accents are ignored. An empty query matches every string.
+
+```ts
+import { createFilter } from "@zag-js/utils/search"
+
+const filter = createFilter({ locale: "en-US", sensitivity: "base" })
+
+filter.contains("Café au lait", "cafe") // true
+filter.startsWith("Ärger", "ar") // true
+filter.endsWith("Résumé", "ume") // true
+```
+
+## Highlighting
+
+`highlightWord` splits text into chunks, marking where the query occurs. The
+chunks keep the casing of `text`.
+
+```ts
+import { highlightWord } from "@zag-js/utils/search"
+
+highlightWord({ text: "Hello World", query: "world", ignoreCase: true })
+// [{ text: "Hello ", match: false }, { text: "World", match: true }]
+```
+
+- `ignoreCase`: match any case. Defaults to `false`.
+- `matchAll`: highlight every match, not just the first. Defaults to `true` for
+  an array query.
+- `exactMatch`: match whole words only, with Unicode word boundaries.
+
+Pass an array to highlight several terms. Special characters match literally.
+
+For fuzzy matches, pass `getFuzzyMatchRanges` to `highlightRanges`:
+
+```tsx
+import { getFuzzyMatchRanges, highlightRanges } from "@zag-js/utils/search"
+
+const chunks = highlightRanges({
+  text: item.label,
+  ranges: getFuzzyMatchRanges(item.label, query),
+})
+
+chunks.map((chunk) => (chunk.match ? <mark>{chunk.text}</mark> : chunk.text))
+```
+
+## Typeahead
+
+`typeahead` finds the next item whose text starts with the keys typed so far,
+ignoring case and accents. Repeating one key cycles through the items that start
+with it. The typed keys reset after `timeout` (350ms).
+
+```ts
+import {
+  createTypeaheadState,
+  isTypeaheadKey,
+  typeahead,
+} from "@zag-js/utils/search"
+
+const state = createTypeaheadState()
+
+function onKeyDown(event: KeyboardEvent) {
+  if (!isTypeaheadKey(event)) return
+  const item = typeahead({
+    state,
+    key: event.key,
+    items,
+    activeIndex,
+    itemToString: (item) => item.label,
+    isItemDisabled: (item) => item.disabled,
+  })
+}
+```
+
+## Combobox
+
+Search, then pass the results to the combobox collection.
+
+```ts
+const collection = combobox.collection({
+  items: fuzzy.search(items, inputValue),
+})
+```
+
+For a command menu with nested pages, use it with a
+[`PageListCollection`](/utilities/page-list-collection).

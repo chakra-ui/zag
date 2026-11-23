@@ -364,15 +364,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/fuzzy':
-        specifier: workspace:*
-        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -683,15 +677,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/fuzzy':
-        specifier: workspace:*
-        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -1002,15 +990,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/fuzzy':
-        specifier: workspace:*
-        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -1318,15 +1300,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/fuzzy':
-        specifier: workspace:*
-        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -1616,15 +1592,9 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/fuzzy':
-        specifier: workspace:*
-        version: link:../../packages/utilities/fuzzy
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -1929,9 +1899,6 @@ importers:
       '@zag-js/gridlist':
         specifier: workspace:*
         version: link:../../packages/machines/gridlist
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
       '@zag-js/hotkeys':
         specifier: workspace:*
         version: link:../../packages/utilities/hotkeys
@@ -4043,6 +4010,9 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -4063,18 +4033,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/fuzzy:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/highlight-word:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -4430,6 +4388,9 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../packages/types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../packages/utilities/core
       '@zag-js/virtualizer':
         specifier: workspace:*
         version: link:../packages/utilities/virtualizer

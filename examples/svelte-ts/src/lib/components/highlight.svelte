@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { getFuzzyMatchRanges } from "@zag-js/fuzzy"
-  import { highlightRanges, highlightWord } from "@zag-js/highlight-word"
+  import { getFuzzyMatchRanges, highlightRanges, highlightWord } from "@zag-js/utils/search"
 
   interface Props {
     text: string

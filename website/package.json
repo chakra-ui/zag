@@ -82,6 +82,7 @@
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*",
     "@zag-js/virtualizer": "workspace:*",
     "fumadocs-core": "16.17.1",
     "fumadocs-mdx": "15.4.7",

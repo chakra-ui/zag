@@ -1,4 +1,5 @@
 import { isEqual } from "@zag-js/utils/object"
+import { typeahead } from "@zag-js/utils/search"
 import type { CollectionItem, CollectionOptions, CollectionSearchOptions } from "../types"
 
 const own = Object.prototype.hasOwnProperty
@@ -275,37 +276,19 @@ export class ListCollection<T extends CollectionItem = CollectionItem, Self = ne
     return this.items.findIndex((item) => this.getItemValue(item) === value)
   }
 
-  private getByText(text: string, current: string | null): T | undefined {
-    const currentIndex = current != null ? this.indexOf(current) : -1
-    const isSingleKey = text.length === 1
-    const items = this.getOrderedItems()
-    const query = text.toLowerCase()
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[(currentIndex + i + 1) % items.length]
-      if (isSingleKey && this.getItemValue(item) === current) continue
-      if (this.getItemDisabled(item)) continue
-      if (this.stringifyItem(item)?.toLowerCase().startsWith(query)) return item
-    }
-    return undefined
-  }
-
   /** Search for a value based on a query */
   search(queryString: string, options: CollectionSearchOptions): string | null {
-    const { state, currentValue, timeout = 350 } = options
-
-    const search = state.keysSoFar + queryString
-    const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0])
-    const value = this.getItemValue(this.getByText(isRepeated ? search[0] : search, currentValue))
-
-    const update = (keys: string) => {
-      state.keysSoFar = keys
-      clearTimeout(state.timer)
-      state.timer = keys ? +setTimeout(() => update(""), timeout) : -1
-    }
-
-    update(search)
-    return value
+    const { state, currentValue, timeout } = options
+    const item = typeahead({
+      state,
+      key: queryString,
+      items: this.getOrderedItems(),
+      activeIndex: currentValue != null ? this.indexOf(currentValue) : -1,
+      timeout,
+      itemToString: (item) => this.stringifyItem(item) ?? "",
+      isItemDisabled: (item) => this.getItemDisabled(item),
+    })
+    return this.getItemValue(item)
   }
 
   [Symbol.iterator](): Iterator<T> {

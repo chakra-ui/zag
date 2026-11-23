@@ -1,7 +1,7 @@
 import { createPageListCollection, type PageListCollection } from "@zag-js/collection"
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
-import { createFuzzySearch } from "@zag-js/fuzzy"
+import { createFuzzySearch } from "@zag-js/utils/search"
 import { createHotkeyStore } from "@zag-js/hotkeys"
 import { normalizeProps, Portal, useMachine } from "@zag-js/preact"
 import { commandData } from "@zag-js/shared"
