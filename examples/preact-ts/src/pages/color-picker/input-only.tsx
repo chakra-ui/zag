@@ -17,7 +17,7 @@ export default function Page() {
     <main className="color-picker">
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>
-          Text color: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+          Text color <span {...api.getValueTextProps()}>{api.valueAsString}</span>
         </label>
 
         <div {...api.getControlProps()}>

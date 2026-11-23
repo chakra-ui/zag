@@ -369,6 +369,12 @@ export const colorPickerControls = defineControls({
     options: ["hsba", "hsla", "rgba", "oklab", "oklch"] as const,
     defaultValue: "hsla",
   },
+  gamut: {
+    type: "select",
+    options: ["none", "srgb", "p3"] as const,
+    defaultValue: "none",
+    transformValue: (value) => (value === "none" ? false : value),
+  },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 

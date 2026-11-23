@@ -33,7 +33,7 @@ const onFormChange = (e: Event) => {
       <input v-bind="api.getHiddenInputProps()" />
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">
-          OKLab (wide gamut): <span data-testid="value-text">{{ api.valueAsString }}</span>
+          OKLab (wide gamut) <span data-testid="value-text">{{ api.valueAsString }}</span>
         </label>
 
         <div v-bind="api.getControlProps()">
@@ -83,11 +83,12 @@ const onFormChange = (e: Event) => {
                 <div v-bind="api.getChannelSliderThumbProps({ channel: 'alpha' })" />
               </div>
 
-              <div v-if="api.format === 'oklab'" style="display: flex; width: 100%; flex-wrap: wrap; gap: 6px">
-                <span>L</span> <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /> <span>a</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'a' })" /> <span>b</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'b' })" /> <span>A</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
+              <div v-if="api.format === 'oklab'" class="color-picker-channel-inputs">
+                <label>L <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /></label> <label
+                  >a <input v-bind="api.getChannelInputProps({ channel: 'a' })"
+                /></label> <label>b <input v-bind="api.getChannelInputProps({ channel: 'b' })" /></label> <label
+                  >A <input v-bind="api.getChannelInputProps({ channel: 'alpha' })"
+                /></label>
               </div>
 
               <p data-testid="value-text">{{ api.valueAsString }}</p>

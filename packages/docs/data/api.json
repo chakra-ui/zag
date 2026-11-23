@@ -1279,6 +1279,15 @@
         "type": "ElementIds | undefined",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
+      "gamut": {
+        "type": "ColorGamut | false | undefined",
+        "description": "The colors the value can hold. A color outside it becomes the closest one inside, with the same lightness and hue.\n`false` allows any color.",
+        "defaultValue": "false"
+      },
+      "translations": {
+        "type": "IntlTranslations | undefined",
+        "description": "The localized labels of the color picker's parts, for assistive technology"
+      },
       "value": {
         "type": "Color | undefined",
         "description": "The controlled color value of the color picker"
@@ -8847,7 +8856,7 @@
       },
       "getVisibleNodes": {
         "type": "() => VisibleNode<V>[]",
-        "description": "Returns the visible nodes as a flat array of nodes and their index path.\nUseful for rendering virtualized tree views."
+        "description": "Returns the visible nodes as a flat array of nodes and their index path.\nUseful for rendering virtualized tree views.\nThe result is cached; treat the array and its index paths as read-only."
       },
       "expand": {
         "type": "(value?: string[]) => void",
@@ -8901,7 +8910,7 @@
       },
       "collection": {
         "type": "TreeCollection<T> | undefined",
-        "description": "The tree collection data"
+        "description": "The indexed tree snapshot. Create a new collection when the tree structure changes."
       },
       "ids": {
         "type": "ElementIds | undefined",

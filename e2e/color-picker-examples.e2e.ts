@@ -24,6 +24,10 @@ test.describe("color-picker / swatches", () => {
     await I.seeHexInputHasValue("#EF4444")
     await I.seeTriggerIsFocused()
   })
+
+  test("the trigger is named after the label, then its own label", async () => {
+    await I.seeTriggerHasName("Brand color select color. current color is rgba(59, 130, 246, 1)")
+  })
 })
 
 test.describe("color-picker / swatch-only", () => {
@@ -224,6 +228,16 @@ test.describe("color-picker / input-only", () => {
     await I.commitHex("#00ff00")
     await I.seeColorValueText("rgba(0, 255, 0, 1)")
   })
+
+  test("the eye dropper is enabled where the browser supports it", async () => {
+    await I.seeEyeDropperIsSupported()
+  })
+
+  test("the eye dropper is disabled where the browser lacks it", async () => {
+    await I.removeEyeDropperSupport()
+    await I.goto("/color-picker/input-only")
+    await I.seeEyeDropperIsUnsupported()
+  })
 })
 
 test.describe("color-picker / swatches-with-trigger", () => {
@@ -250,5 +264,44 @@ test.describe("color-picker / swatches-with-trigger", () => {
   test("should select a preset swatch", async () => {
     await I.clickSwatchByValue("#EF4444")
     await I.seeColorValueText("rgba(239, 68, 68, 1)")
+  })
+})
+
+test.describe("color-picker / oklch gamut", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ColorPickerModel(page)
+    await I.goto("/color-picker/oklch")
+  })
+
+  test("without a gamut, a typed chroma is kept", async () => {
+    await I.clickTrigger()
+    await I.seeAreaThumbIsFocused()
+    await I.commitContentChannel("chroma", "0.4")
+    await I.seeContentChannelInputHasValue("chroma", "0.4")
+  })
+
+  test("an sRGB gamut brings a typed chroma inside sRGB", async () => {
+    await I.selectGamut("srgb")
+    await I.clickTrigger()
+    await I.seeAreaThumbIsFocused()
+    await I.commitContentChannel("chroma", "0.4")
+    await I.seeContentChannelInputHasValue("chroma", "0.193")
+  })
+
+  test("a P3 gamut keeps more chroma than sRGB", async () => {
+    await I.selectGamut("p3")
+    await I.clickTrigger()
+    await I.seeAreaThumbIsFocused()
+    await I.commitContentChannel("chroma", "0.4")
+    await I.seeContentChannelInputHasValue("chroma", "0.218")
+  })
+
+  test("the slider thumb follows the pointer past the edge, then settles on the value", async () => {
+    await I.selectGamut("srgb")
+    await I.clickTrigger()
+    await I.holdChannelSliderAt("chroma", 0.9)
+    await I.seeChannelThumbAt("chroma", 0.9)
+    await I.releasePointer()
+    await I.seeChannelThumbAt("chroma", 0.386)
   })
 })

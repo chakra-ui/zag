@@ -1,5 +1,5 @@
-import { parseColor, type Color } from "@zag-js/utils/color"
-import { createGuards, createMachine, type Params, type Scope } from "@zag-js/core"
+import { parseColor, toGamut, type Color } from "@zag-js/utils/color"
+import { createGuards, createMachine, type Params, type Scope, type Transition, type TransitionMap } from "@zag-js/core"
 import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
@@ -17,7 +17,14 @@ import type { Orientation } from "@zag-js/types"
 import { tryCatch } from "@zag-js/utils/functions"
 import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
-import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel, OpenChangeReason } from "./color-picker.types"
+import type {
+  ColorChannel,
+  ColorFormat,
+  ColorPickerSchema,
+  ExtendedColorChannel,
+  OpenChangeReason,
+  Platform,
+} from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
 import { prefixHex } from "./utils/is-valid-hex"
 
@@ -30,6 +37,17 @@ const hashObject = (obj: Record<string, number>): string => {
 }
 
 const DEFAULT_COLOR = parse("#000000")
+
+const OPEN: Transition<ColorPickerSchema>[] = [
+  { guard: "isOpenControlled", actions: ["invokeOnOpen"] },
+  { target: "open", actions: ["invokeOnOpen", "setInitialFocus"] },
+]
+
+const OPEN_ON: TransitionMap<ColorPickerSchema> = {
+  "CONTROLLED.OPEN": { target: "open", actions: ["setInitialFocus"] },
+  OPEN,
+  "TRIGGER.CLICK": OPEN,
+}
 
 export const machine = createMachine<ColorPickerSchema>({
   props({ props }) {
@@ -68,7 +86,7 @@ export const machine = createMachine<ColorPickerSchema>({
         defaultValue: null,
       })),
       value: bindable<Color>(() => ({
-        defaultValue: prop("defaultValue").toFormat(prop("format") ?? prop("defaultFormat")),
+        defaultValue: fitGamut(prop, prop("defaultValue").toFormat(prop("format") ?? prop("defaultFormat"))),
         value: prop("value")?.toFormat(prop("format") ?? prop("defaultFormat")),
         isEqual(a, b) {
           return b != null && a.isEqual(b)
@@ -96,8 +114,10 @@ export const machine = createMachine<ColorPickerSchema>({
       activeOrientation: bindable<Orientation | null>(() => ({ defaultValue: null })),
       editedColor: bindable<Color | null>(() => ({ defaultValue: null })),
       areaDragPosition: bindable<{ x: number; y: number } | null>(() => ({ defaultValue: null })),
+      sliderDragPercent: bindable<number | null>(() => ({ defaultValue: null })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
       restoreFocus: bindable<boolean>(() => ({ defaultValue: true })),
+      platform: bindable<Platform>(() => ({ defaultValue: { supportsEyeDropper: false } })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
@@ -119,7 +139,7 @@ export const machine = createMachine<ColorPickerSchema>({
     },
   },
 
-  effects: ["trackFormControl"],
+  effects: ["trackFormControl", "detectPlatform"],
 
   entry: ["syncFormatSelectElement"],
 
@@ -161,30 +181,7 @@ export const machine = createMachine<ColorPickerSchema>({
     idle: {
       tags: ["closed"],
       on: {
-        "CONTROLLED.OPEN": {
-          target: "open",
-          actions: ["setInitialFocus"],
-        },
-        OPEN: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
-          },
-        ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
-          },
-        ],
+        ...OPEN_ON,
         "CHANNEL_INPUT.FOCUS": {
           target: "focused",
           actions: ["setActiveChannel"],
@@ -196,30 +193,7 @@ export const machine = createMachine<ColorPickerSchema>({
       id: "color-picker-focused",
       tags: ["closed", "focused"],
       on: {
-        "CONTROLLED.OPEN": {
-          target: "open",
-          actions: ["setInitialFocus"],
-        },
-        OPEN: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
-          },
-        ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
-          },
-        ],
+        ...OPEN_ON,
         "CHANNEL_INPUT.FOCUS": {
           actions: ["setActiveChannel"],
         },
@@ -289,55 +263,18 @@ export const machine = createMachine<ColorPickerSchema>({
                 actions: ["invokeOnClose"],
               },
             ],
-            "AREA.POINTER_DOWN": {
+            POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
+              actions: ["setActiveChannel", "setColorFromPoint", "focusThumb"],
             },
             "AREA.FOCUS": {
               actions: ["setActiveChannel"],
             },
-            "CHANNEL_SLIDER.POINTER_DOWN": {
-              target: "dragging",
-              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
-            },
             "CHANNEL_SLIDER.FOCUS": {
               actions: ["setActiveChannel"],
             },
-            "AREA.ARROW_LEFT": {
-              actions: ["decrementAreaXChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.ARROW_RIGHT": {
-              actions: ["incrementAreaXChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.ARROW_UP": {
-              actions: ["incrementAreaYChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.ARROW_DOWN": {
-              actions: ["decrementAreaYChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.PAGE_UP": {
-              actions: ["incrementAreaYChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.PAGE_DOWN": {
-              actions: ["decrementAreaYChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.HOME": {
-              actions: ["decrementAreaXChannel", "invokeOnChangeEnd"],
-            },
-            "AREA.END": {
-              actions: ["incrementAreaXChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.INCREMENT": {
-              actions: ["incrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.DECREMENT": {
-              actions: ["decrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.HOME": {
-              actions: ["setChannelToMin", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.END": {
-              actions: ["setChannelToMax", "invokeOnChangeEnd"],
+            "CHANNEL.STEP": {
+              actions: ["stepChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_INPUT.BLUR": {
               actions: ["setChannelColorFromInput"],
@@ -363,17 +300,10 @@ export const machine = createMachine<ColorPickerSchema>({
           exit: ["clearActiveChannel"],
           effects: ["trackPointerMove", "disableTextSelection"],
           on: {
-            "AREA.POINTER_MOVE": {
-              actions: ["setAreaColorFromPoint", "focusAreaThumb"],
+            POINTER_MOVE: {
+              actions: ["setColorFromPoint", "focusThumb"],
             },
-            "AREA.POINTER_UP": {
-              target: "idle",
-              actions: ["invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.POINTER_MOVE": {
-              actions: ["setChannelColorFromPoint", "focusChannelThumb"],
-            },
-            "CHANNEL_SLIDER.POINTER_UP": {
+            POINTER_UP: {
               target: "idle",
               actions: ["invokeOnChangeEnd"],
             },
@@ -431,6 +361,9 @@ export const machine = createMachine<ColorPickerSchema>({
           },
         })
       },
+      detectPlatform({ context, scope }) {
+        context.set("platform", { supportsEyeDropper: "EyeDropper" in scope.getWin() })
+      },
       trackFormControl({ context, scope, send }) {
         const inputEl = dom.getHiddenInputEl(scope)
         return trackFormControl(inputEl, {
@@ -442,15 +375,13 @@ export const machine = createMachine<ColorPickerSchema>({
           },
         })
       },
-      trackPointerMove({ context, scope, event, send }) {
+      trackPointerMove({ scope, event, send }) {
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point }) {
-            const type = context.get("activeId") === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
-            send({ type, point, format: event.format, orientation: context.get("activeOrientation") ?? undefined })
+            send({ type: "POINTER_MOVE", point, format: event.format })
           },
           onPointerUp() {
-            const type = context.get("activeId") === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
-            send({ type })
+            send({ type: "POINTER_UP" })
           },
         })
       },
@@ -493,39 +424,38 @@ export const machine = createMachine<ColorPickerSchema>({
         context.set("activeId", null)
         context.set("activeOrientation", null)
         context.set("areaDragPosition", null)
+        context.set("sliderDragPercent", null)
       },
-      setAreaColorFromPoint(params) {
+      setColorFromPoint(params) {
         const { context, event, scope, prop } = params
-        const { xChannel, yChannel } = event.channel || context.get("activeChannel")
+        const id = context.get("activeId")
+        const dir = prop("dir")
 
-        const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
+        if (id === "area") {
+          const { xChannel, yChannel } = context.get("activeChannel")!
+          const percent = dom.getAreaValueFromPoint(scope, event.point, dir)
+          if (!percent) return
+          context.set("areaDragPosition", percent)
+          editColor(params, event.format, (color) =>
+            color
+              .withChannelValue(xChannel!, color.getChannelPercentValue(xChannel!, percent.x))
+              .withChannelValue(yChannel!, color.getChannelPercentValue(yChannel!, 1 - percent.y)),
+          )
+          return
+        }
+
+        const channel = id as ColorChannel
+        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, dir)
         if (!percent) return
-
-        context.set("areaDragPosition", { x: percent.x, y: percent.y })
-
+        const sliderPercent = context.get("activeOrientation") === "vertical" ? percent.y : percent.x
+        context.set("sliderDragPercent", sliderPercent)
         editColor(params, event.format, (color) =>
-          color
-            .withChannelValue(xChannel, color.getChannelPercentValue(xChannel, percent.x))
-            .withChannelValue(yChannel, color.getChannelPercentValue(yChannel, 1 - percent.y)),
+          color.withChannelValue(channel, color.getChannelPercentValue(channel, sliderPercent)),
         )
       },
-      setChannelColorFromPoint(params) {
-        const { context, event, scope, prop } = params
-        const channel = event.channel || context.get("activeId")
-
-        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
-        if (!percent) return
-
-        const orientation = event.orientation || context.get("activeOrientation") || "horizontal"
-        const channelPercent = orientation === "horizontal" ? percent.x : percent.y
-
-        editColor(params, event.format, (color) =>
-          color.withChannelValue(channel, color.getChannelPercentValue(channel, channelPercent)),
-        )
-      },
-      setValue({ context, event }) {
+      setValue({ context, event, prop }) {
         const format = context.get("format")
-        context.set("value", event.value.toFormat(format))
+        context.set("value", fitGamut(prop, event.value.toFormat(format)))
       },
       setFormat({ context, event }) {
         context.set("format", event.format)
@@ -548,88 +478,45 @@ export const machine = createMachine<ColorPickerSchema>({
       },
       setChannelColorFromInput({ context, event, scope, prop, refs }) {
         const { channel, isTextField, value } = event
-        const currentAlpha = context.get("value").getChannelValue("alpha")
+        const current = context.get("value")
+        const format = context.get("format")
+        const alpha = current.getChannelValue("alpha")
 
-        // handle other text channels
         let color: Color
-
-        // handle alpha channel
         if (channel === "alpha") {
-          //
-          let valueAsNumber = parseFloat(value)
-          valueAsNumber = Number.isNaN(valueAsNumber) ? currentAlpha : valueAsNumber
-          color = context.get("value").withChannelValue("alpha", valueAsNumber)
-          //
+          const n = parseFloat(value)
+          color = current.withChannelValue("alpha", Number.isNaN(n) ? alpha : n)
         } else if (isTextField) {
-          //
           color = tryCatch(
-            () => {
-              const parseValue = channel === "hex" ? prefixHex(value) : value
-              return parse(parseValue).withChannelValue("alpha", currentAlpha).toFormat(context.get("format"))
-            },
-            () => context.get("value"),
+            () =>
+              parse(channel === "hex" ? prefixHex(value) : value)
+                .withChannelValue("alpha", alpha)
+                .toFormat(format),
+            () => current,
           )
-          //
         } else {
-          //
-          const current = context.get("value").toFormat(context.get("format"))
-          const valueAsNumber = Number.isNaN(value) ? current.getChannelValue(channel) : value
-          color = current.withChannelValue(channel, valueAsNumber)
-          //
+          const inFormat = current.toFormat(format)
+          color = Number.isNaN(value) ? inFormat : inFormat.withChannelValue(channel, value)
         }
 
-        // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-        syncChannelInputs(refs, scope, context.get("value"), color)
-
-        // set new color
+        color = fitGamut(prop, color)
+        syncChannelInputs(refs, scope, current, color)
         context.set("value", color)
-
-        // invoke change end
-        prop("onValueChangeEnd")?.({
-          value: color,
-          valueAsString: color.toString(context.get("format")),
+        prop("onValueChangeEnd")?.({ value: color, valueAsString: color.toString(format) })
+      },
+      stepChannel(params) {
+        const { channel, format, step, bound } = params.event
+        editColor(params, format, (color) => {
+          if (!bound) return color.incrementChannel(channel, step)
+          const { minValue, maxValue } = color.getChannelRange(channel)
+          return color.withChannelValue(channel, bound === "min" ? minValue : maxValue)
         })
       },
-      incrementChannel(params) {
-        const { channel, format, step } = params.event
-        editColor(params, format, (color) => color.incrementChannel(channel, step))
-      },
-      decrementChannel(params) {
-        const { channel, format, step } = params.event
-        editColor(params, format, (color) => color.decrementChannel(channel, step))
-      },
-      incrementAreaXChannel(params) {
-        const { channel, step } = params.event
-        editColor(params, undefined, (color) => color.incrementChannel(channel.xChannel, step))
-      },
-      decrementAreaXChannel(params) {
-        const { channel, step } = params.event
-        editColor(params, undefined, (color) => color.decrementChannel(channel.xChannel, step))
-      },
-      incrementAreaYChannel(params) {
-        const { channel, step } = params.event
-        editColor(params, undefined, (color) => color.incrementChannel(channel.yChannel, step))
-      },
-      decrementAreaYChannel(params) {
-        const { channel, step } = params.event
-        editColor(params, undefined, (color) => color.decrementChannel(channel.yChannel, step))
-      },
-      setChannelToMax(params) {
-        const { channel, format } = params.event
-        editColor(params, format, (color) => color.withChannelValue(channel, color.getChannelRange(channel).maxValue))
-      },
-      setChannelToMin(params) {
-        const { channel, format } = params.event
-        editColor(params, format, (color) => color.withChannelValue(channel, color.getChannelRange(channel).minValue))
-      },
-      focusAreaThumb({ scope, refs }) {
+      focusThumb({ context, scope, refs }) {
+        const id = context.get("activeId")
         refs.get("focusFrame").request(() => {
-          dom.getAreaThumbEl(scope)?.focus({ preventScroll: true })
-        })
-      },
-      focusChannelThumb({ event, scope, refs }) {
-        refs.get("focusFrame").request(() => {
-          dom.getChannelSliderThumbEl(scope, event.channel)?.focus({ preventScroll: true })
+          const el = id === "area" ? dom.getAreaThumbEl(scope) : dom.getChannelSliderThumbEl(scope, id as ColorChannel)
+          el?.focus({ preventScroll: true })
         })
       },
       setInitialFocus({ prop, scope, refs }) {
@@ -714,13 +601,18 @@ function getReturnFocusOptions(event: Record<string, any>): FocusOptions {
   return focusVisible ? { preventScroll: true, focusVisible: true } : { preventScroll: true }
 }
 
+function fitGamut(prop: Params<ColorPickerSchema>["prop"], color: Color) {
+  const gamut = prop("gamut")
+  return gamut ? toGamut(color, gamut) : color
+}
+
 function editColor(
-  { context, computed }: Pick<Params<ColorPickerSchema>, "context" | "computed">,
+  { context, computed, prop }: Pick<Params<ColorPickerSchema>, "context" | "computed" | "prop">,
   format: ColorFormat | undefined,
   edit: (color: Color) => Color,
 ) {
   const color = format ? context.get("value").toFormat(format) : computed("areaValue")
   const next = edit(color)
   context.set("editedColor", next)
-  context.set("value", next.toFormat(context.get("format")))
+  context.set("value", fitGamut(prop, next.toFormat(context.get("format"))))
 }

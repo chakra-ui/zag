@@ -38,6 +38,8 @@ export const props = createProps<ColorPickerProps>()([
   "value",
   "defaultValue",
   "invalid",
+  "translations",
+  "gamut",
   "openAutoFocus",
 ])
 

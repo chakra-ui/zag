@@ -39,7 +39,7 @@
         <div class="color-picker-channel-inputs">
           {#each channels as channel (channel)}
             <label>
-              {channel}
+              {channel[0].toUpperCase()}
               <input {...api.getChannelInputProps({ channel })} />
             </label>
           {/each}

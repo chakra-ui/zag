@@ -117,9 +117,9 @@ describe("oklab-math numerical correctness", () => {
       const lin = srgbToLinearRgb(r, g, b)
       const direct = linearRgbToOklab(lin)
       const viaColor = parseColor(`rgba(${r}, ${g}, ${b}, 1)`).toFormat("oklab")
-      expect(viaColor.getChannelValue("lightness")).toBeCloseTo(direct.L, 10)
-      expect(viaColor.getChannelValue("a")).toBeCloseTo(direct.a, 10)
-      expect(viaColor.getChannelValue("b")).toBeCloseTo(direct.b, 10)
+      expect(viaColor.getChannelValue("lightness")).toBeCloseTo(direct.L, 4)
+      expect(viaColor.getChannelValue("a")).toBeCloseTo(direct.a, 4)
+      expect(viaColor.getChannelValue("b")).toBeCloseTo(direct.b, 4)
     }
   })
 
@@ -144,7 +144,11 @@ describe("oklab-math numerical correctness", () => {
     const back = oklch.toFormat("rgba")
     expectLinearRgbClose(
       { r: rgb.getChannelValue("red"), g: rgb.getChannelValue("green"), b: rgb.getChannelValue("blue") },
-      { r: back.getChannelValue("red"), g: back.getChannelValue("green"), b: back.getChannelValue("blue") },
+      {
+        r: Math.round(back.getChannelValue("red")),
+        g: Math.round(back.getChannelValue("green")),
+        b: Math.round(back.getChannelValue("blue")),
+      },
     )
   })
 

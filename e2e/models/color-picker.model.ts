@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test"
 import { Model } from "./model"
 import { part, rect } from "../_utils"
 
-type Channel = "red" | "green" | "blue" | "alpha" | "hue" | "saturation" | "lightness" | "brightness"
+type Channel = "red" | "green" | "blue" | "alpha" | "hue" | "saturation" | "lightness" | "brightness" | "chroma"
 
 export class ColorPickerModel extends Model {
   constructor(public page: Page) {
@@ -202,6 +202,67 @@ export class ColorPickerModel extends Model {
     await this.page.mouse.down()
     await this.page.mouse.move(trackBox.x + trackBox.width * percent, trackBox.midY, { steps: 10 })
     await this.page.mouse.up()
+  }
+
+  async holdChannelSliderAt(channel: Channel, percent: number) {
+    const thumbBox = await rect(this.channelThumb(channel))
+    const trackBox = await rect(this.page.locator(`[data-color-picker-channel-slider-track][data-channel=${channel}]`))
+    await this.page.mouse.move(thumbBox.midX, thumbBox.midY)
+    await this.page.mouse.down()
+    await this.page.mouse.move(trackBox.x + trackBox.width * percent, trackBox.midY, { steps: 10 })
+  }
+
+  releasePointer() {
+    return this.page.mouse.up()
+  }
+
+  async seeChannelThumbAt(channel: Channel, percent: number) {
+    const track = this.page.locator(`[data-color-picker-channel-slider-track][data-channel=${channel}]`)
+    await expect
+      .poll(async () => {
+        const [thumbBox, trackBox] = await Promise.all([rect(this.channelThumb(channel)), rect(track)])
+        return (thumbBox.midX - trackBox.x) / trackBox.width
+      })
+      .toBeCloseTo(percent, 1)
+  }
+
+  async selectGamut(gamut: "none" | "srgb" | "p3") {
+    await this.clickControls()
+    await this.controls.select("gamut", gamut)
+  }
+
+  async commitContentChannel(channel: Channel, value: string) {
+    const input = this.content.locator(`input[data-channel=${channel}]`)
+    await input.fill(value)
+    await input.press("Enter")
+  }
+
+  seeContentChannelInputHasValue(channel: Channel, value: string) {
+    return expect(this.content.locator(`input[data-channel=${channel}]`)).toHaveValue(value)
+  }
+
+  seeTriggerHasName(name: string) {
+    return expect(this.trigger.first()).toHaveAccessibleName(name)
+  }
+
+  private get eyeDropperTrigger() {
+    return this.page.locator(part("color-picker", "eye-dropper-trigger")).first()
+  }
+
+  removeEyeDropperSupport() {
+    return this.page.addInitScript(() => {
+      delete (window as any).EyeDropper
+    })
+  }
+
+  async seeEyeDropperIsUnsupported() {
+    await expect(this.eyeDropperTrigger).toBeDisabled()
+    await expect(this.eyeDropperTrigger).toHaveAttribute("data-unsupported", "")
+  }
+
+  async seeEyeDropperIsSupported() {
+    await expect(this.eyeDropperTrigger).toBeEnabled()
+    await expect(this.eyeDropperTrigger).not.toHaveAttribute("data-unsupported")
   }
 
   clickTrigger() {

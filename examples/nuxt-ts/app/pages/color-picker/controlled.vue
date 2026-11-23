@@ -39,7 +39,7 @@ const api = computed(() => colorPicker.connect(service, normalizeProps))
       <input v-bind="api.getHiddenInputProps()" />
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">
-          Select Color: <span data-testid="value-text">{{ api.valueAsString }}</span>
+          Select Color <span data-testid="value-text">{{ api.valueAsString }}</span>
         </label>
 
         <div v-bind="api.getControlProps()">
@@ -70,25 +70,28 @@ const api = computed(() => colorPicker.connect(service, normalizeProps))
                 <div v-bind="api.getChannelSliderThumbProps({ channel: 'alpha' })" />
               </div>
 
-              <div v-if="api.format.startsWith('hsl')" style="display: flex; width: 100%">
-                <span>H</span> <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /> <span>S</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'saturation' })" /> <span>L</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /> <span>A</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
+              <div v-if="api.format.startsWith('hsl')" class="color-picker-channel-inputs">
+                <label>H <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /></label> <label
+                  >S <input v-bind="api.getChannelInputProps({ channel: 'saturation' })"
+                /></label> <label>L <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /></label> <label
+                  >A <input v-bind="api.getChannelInputProps({ channel: 'alpha' })"
+                /></label>
               </div>
 
-              <div v-if="api.format.startsWith('rgb')" style="display: flex; width: 100%">
-                <span>R</span> <input v-bind="api.getChannelInputProps({ channel: 'red' })" /> <span>G</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'green' })" /> <span>B</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'blue' })" /> <span>A</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
+              <div v-if="api.format.startsWith('rgb')" class="color-picker-channel-inputs">
+                <label>R <input v-bind="api.getChannelInputProps({ channel: 'red' })" /></label> <label
+                  >G <input v-bind="api.getChannelInputProps({ channel: 'green' })"
+                /></label> <label>B <input v-bind="api.getChannelInputProps({ channel: 'blue' })" /></label> <label
+                  >A <input v-bind="api.getChannelInputProps({ channel: 'alpha' })"
+                /></label>
               </div>
 
-              <div v-if="api.format.startsWith('hsb')" style="display: flex; width: 100%">
-                <span>H</span> <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /> <span>S</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'saturation' })" /> <span>B</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'brightness' })" /> <span>A</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
+              <div v-if="api.format.startsWith('hsb')" class="color-picker-channel-inputs">
+                <label>H <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /></label> <label
+                  >S <input v-bind="api.getChannelInputProps({ channel: 'saturation' })"
+                /></label> <label
+                  >B <input v-bind="api.getChannelInputProps({ channel: 'brightness' })"
+                /></label> <label>A <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" /></label>
               </div>
 
               <div style="display: flex; gap: 10px; align-items: center">

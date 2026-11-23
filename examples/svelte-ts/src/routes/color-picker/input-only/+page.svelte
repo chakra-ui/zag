@@ -18,7 +18,7 @@
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>
-      Text color: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+      Text color <span {...api.getValueTextProps()}>{api.valueAsString}</span>
     </label>
 
     <div {...api.getControlProps()}>

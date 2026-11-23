@@ -23,7 +23,7 @@ const saveSwatch = () => {
   <main class="color-picker">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">
-        Highlight: <span v-bind="api.getValueTextProps()">{{ api.valueAsString }}</span>
+        Highlight <span v-bind="api.getValueTextProps()">{{ api.valueAsString }}</span>
       </label>
 
       <div v-bind="api.getSwatchGroupProps()" class="color-picker-swatches">

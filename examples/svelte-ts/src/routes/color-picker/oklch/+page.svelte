@@ -37,7 +37,7 @@
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>
-        OKLCH (wide gamut): <span data-testid="value-text">{api.valueAsString}</span>
+        OKLCH (wide gamut) <span data-testid="value-text">{api.valueAsString}</span>
       </label>
 
       <div {...api.getControlProps()}>
@@ -83,6 +83,11 @@
               <div {...api.getChannelSliderThumbProps({ channel: "hue" })}></div>
             </div>
 
+            <div {...api.getChannelSliderProps({ channel: "chroma", format: "oklch" })}>
+              <div {...api.getChannelSliderTrackProps({ channel: "chroma", format: "oklch" })}></div>
+              <div {...api.getChannelSliderThumbProps({ channel: "chroma", format: "oklch" })}></div>
+            </div>
+
             <div {...api.getChannelSliderProps({ channel: "alpha" })}>
               <div {...api.getTransparencyGridProps({ size: "12px" })}></div>
               <div {...api.getChannelSliderTrackProps({ channel: "alpha" })}></div>
@@ -90,11 +95,11 @@
             </div>
 
             {#if api.format === "oklch"}
-              <div style="display: flex; width: 100%; flex-wrap: wrap; gap: 6px">
-                <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} />
-                <span>C</span> <input {...api.getChannelInputProps({ channel: "chroma" })} />
-                <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-                <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+              <div class="color-picker-channel-inputs">
+                <label>L <input {...api.getChannelInputProps({ channel: "lightness" })} /></label>
+                <label>C <input {...api.getChannelInputProps({ channel: "chroma" })} /></label>
+                <label>H <input {...api.getChannelInputProps({ channel: "hue" })} /></label>
+                <label>A <input {...api.getChannelInputProps({ channel: "alpha" })} /></label>
               </div>
             {/if}
 

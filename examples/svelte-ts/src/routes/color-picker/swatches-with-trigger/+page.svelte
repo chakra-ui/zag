@@ -24,7 +24,7 @@
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>
-      Highlight: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+      Highlight <span {...api.getValueTextProps()}>{api.valueAsString}</span>
     </label>
 
     <div {...api.getSwatchGroupProps()} class="color-picker-swatches">

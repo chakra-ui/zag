@@ -34,7 +34,7 @@
     <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>
-        Select Color: <span data-testid="value-text">{api.valueAsString}</span>
+        Select Color <span data-testid="value-text">{api.valueAsString}</span>
       </label>
 
       <div {...api.getControlProps()}>

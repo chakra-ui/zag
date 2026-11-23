@@ -12,7 +12,7 @@
     <div class="color-picker">
       <input class="color-picker-hidden-input" type="hidden" />
       <div class="color-picker-root">
-        <label class="color-picker-label"> Select Color: <span class="color-picker-value-text"></span> </label>
+        <label class="color-picker-label"> Select Color <span class="color-picker-value-text"></span> </label>
 
         <div class="color-picker-control">
           <button class="color-picker-trigger">
@@ -42,11 +42,11 @@
                 <div class="color-picker-alpha-thumb"></div>
               </div>
 
-              <div style="display: flex; width: 100%; gap: 4px; align-items: center">
-                <span>H</span> <input class="color-picker-hue-input" /> <span>S</span>
-                <input class="color-picker-saturation-input" /> <span>L</span>
-                <input class="color-picker-lightness-input" /> <span>A</span>
-                <input class="color-picker-channel-alpha-input" />
+              <div class="color-picker-channel-inputs">
+                <label>H <input class="color-picker-hue-input" /></label>
+                <label>S <input class="color-picker-saturation-input" /></label>
+                <label>L <input class="color-picker-lightness-input" /></label>
+                <label>A <input class="color-picker-channel-alpha-input" /></label>
               </div>
 
               <div style="display: flex; gap: 10px; align-items: center">

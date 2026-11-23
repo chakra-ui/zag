@@ -1,5 +1,5 @@
-import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/utils/color"
-import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
+import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorGamut, ColorType } from "@zag-js/utils/color"
+import type { SrgbGamutPath as GamutOverlayData } from "@zag-js/utils/color"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
@@ -64,6 +64,37 @@ export interface FormatChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface Platform {
+  /** Whether the browser supports the EyeDropper API */
+  supportsEyeDropper: boolean
+}
+
+export interface AreaThumbLabelDetails {
+  /** The translated name of the x channel */
+  xLabel: string
+  /** The translated name of the y channel */
+  yLabel: string
+}
+
+export interface IntlTranslations {
+  /** The trigger's label, given the current color as text */
+  triggerLabel?: ((valueAsString: string) => string) | undefined
+  /** A channel's name, used by its slider thumb, input and the area thumb */
+  channelLabel?: ((channel: ExtendedColorChannel) => string) | undefined
+  /** The area thumb's label, given the names of its two channels */
+  areaThumbLabel?: ((details: AreaThumbLabelDetails) => string) | undefined
+  /** How assistive technology describes the area thumb's role */
+  areaThumbRoleDescription?: string | undefined
+  /** The eye dropper trigger's label */
+  eyeDropperTriggerLabel?: string | undefined
+  /** A swatch trigger's label, given its color as hex */
+  swatchTriggerLabel?: ((valueAsString: string) => string) | undefined
+  /** The format trigger's label, given the format it switches to */
+  formatTriggerLabel?: ((nextFormat: ColorFormat) => string) | undefined
+  /** The format select's label */
+  formatSelectLabel?: string | undefined
+}
+
 export interface ElementIds {
   root?: string | undefined
   control?: string | undefined
@@ -87,6 +118,16 @@ export interface ColorPickerProps extends CommonProperties, LocaleProperties, In
    * The ids of the elements in the color picker. Useful for composition.
    */
   ids?: ElementIds | undefined
+  /**
+   * The colors the value can hold. A color outside it becomes the closest one inside, with the same lightness and hue.
+   * `false` allows any color.
+   * @default false
+   */
+  gamut?: ColorGamut | false | undefined
+  /**
+   * The localized labels of the color picker's parts, for assistive technology
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The controlled color value of the color picker
    */
@@ -203,9 +244,14 @@ export type ColorPickerSchema = {
     activeOrientation: Orientation | null
     editedColor: Color | null
     areaDragPosition: { x: number; y: number } | null
+    sliderDragPercent: number | null
     fieldsetDisabled: boolean
     currentPlacement: PositioningOptions["placement"] | undefined
     restoreFocus: boolean
+    /**
+     * The detected platform, read after mount (all false during SSR)
+     */
+    platform: Platform
   }
   refs: {
     focusFrame: AnimationFrame
@@ -485,4 +531,4 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
  * -----------------------------------------------------------------------------*/
 
 export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType, PositioningOptions }
-export type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
+export type { GamutOverlayData }

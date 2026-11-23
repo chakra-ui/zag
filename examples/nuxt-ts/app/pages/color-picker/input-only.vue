@@ -17,7 +17,7 @@ const api = computed(() => colorPicker.connect(service, normalizeProps))
   <main class="color-picker">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">
-        Text color: <span v-bind="api.getValueTextProps()">{{ api.valueAsString }}</span>
+        Text color <span v-bind="api.getValueTextProps()">{{ api.valueAsString }}</span>
       </label>
 
       <div v-bind="api.getControlProps()">

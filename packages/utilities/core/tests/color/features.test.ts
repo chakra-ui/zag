@@ -7,7 +7,7 @@ import {
   isInSrgbGamut,
   mixColors,
   parseColor,
-  toSrgbGamut,
+  toGamut,
 } from "../../src/color"
 
 const hex = (value: string) => parseColor(value).toString("hex")
@@ -68,13 +68,25 @@ describe("color / operations", () => {
 
   test("gamut mapping keeps the format and lands inside sRGB", () => {
     const vivid = parseColor("oklch(0.7 0.4 150)")
-    const mapped = toSrgbGamut(vivid)
+    const mapped = toGamut(vivid)
     expect(mapped.getFormat()).toBe("oklch")
     expect(isInSrgbGamut(mapped)).toBe(true)
     // The search keeps the hue; the final clip can move it a few degrees
     expect(Math.abs(mapped.getChannelValue("hue") - 150)).toBeLessThan(5)
     const inside = parseColor("oklch(0.6 0.05 150)")
-    expect(toSrgbGamut(inside)).toBe(inside)
+    expect(toGamut(inside)).toBe(inside)
+  })
+
+  test("gamut mapping to P3 keeps more chroma than sRGB", () => {
+    const vivid = parseColor("oklch(0.7 0.4 150)")
+    const srgb = toGamut(vivid, "srgb").getChannelValue("chroma")
+    const p3 = toGamut(vivid, "p3").getChannelValue("chroma")
+    expect(p3).toBeGreaterThan(srgb)
+    expect(p3).toBeLessThan(0.4)
+
+    const p3Green = parseColor("color(display-p3 0 1 0)").toFormat("oklch")
+    expect(toGamut(p3Green, "p3")).toBe(p3Green)
+    expect(isInSrgbGamut(toGamut(p3Green, "srgb"))).toBe(true)
   })
 })
 

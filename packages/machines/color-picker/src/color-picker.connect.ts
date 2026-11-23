@@ -1,4 +1,11 @@
-import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/utils/color"
+import {
+  getChannelGradient,
+  getChannelThumbColor,
+  getColorAreaGradient,
+  getSrgbGamutPath,
+  isInSrgbGamut,
+  normalizeColor,
+} from "@zag-js/utils/color"
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   getEventKey,
@@ -10,8 +17,9 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import { ariaAttr, dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import * as dom from "./color-picker.dom"
 import type {
@@ -21,21 +29,56 @@ import type {
   ColorPickerApi,
   ContentState,
   GamutOverlayProps,
+  ExtendedColorChannel,
+  IntlTranslations,
   RootState,
   SwatchTriggerProps,
   SwatchTriggerState,
   TriggerState,
 } from "./color-picker.types"
-import { getChannelDisplayColor } from "./utils/get-channel-display-color"
-import { getChannelLabel } from "./utils/get-channel-label"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
-import { getGamutOverlayData } from "./utils/get-gamut-overlay-path"
-import { getSliderBackground } from "./utils/get-slider-background"
+
+const channelLabels: Record<ExtendedColorChannel, string> = {
+  hue: "Hue",
+  saturation: "Saturation",
+  brightness: "Brightness",
+  lightness: "Lightness",
+  red: "Red",
+  green: "Green",
+  blue: "Blue",
+  a: "A",
+  b: "B",
+  chroma: "Chroma",
+  alpha: "Alpha",
+  hex: "Hex",
+  css: "CSS color",
+}
+
+const defaultTranslations: Required<IntlTranslations> = {
+  triggerLabel: (valueAsString) => `select color. current color is ${valueAsString}`,
+  channelLabel: (channel) => channelLabels[channel],
+  areaThumbLabel: ({ xLabel, yLabel }) => `${xLabel} and ${yLabel}`,
+  areaThumbRoleDescription: "2d slider",
+  eyeDropperTriggerLabel: "Pick a color from the screen",
+  swatchTriggerLabel: (valueAsString) => `select ${valueAsString} as the color`,
+  formatTriggerLabel: (nextFormat) => `change color format to ${nextFormat}`,
+  formatSelectLabel: "change color format",
+}
 
 function getDefaultDevicePixelRatio(): number {
-  if (typeof globalThis === "undefined") return 1
   const dpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio
-  return typeof dpr === "number" && Number.isFinite(dpr) ? dpr : 1
+  return Number.isFinite(dpr) ? dpr! : 1
+}
+
+const AREA_KEYS: Record<string, { axis: "x" | "y"; direction: number; page?: boolean }> = {
+  ArrowUp: { axis: "y", direction: 1 },
+  ArrowDown: { axis: "y", direction: -1 },
+  ArrowLeft: { axis: "x", direction: -1 },
+  ArrowRight: { axis: "x", direction: 1 },
+  PageUp: { axis: "y", direction: 1, page: true },
+  PageDown: { axis: "y", direction: -1, page: true },
+  Home: { axis: "x", direction: -1, page: true },
+  End: { axis: "x", direction: 1, page: true },
 }
 
 export function connect<T extends PropTypes>(
@@ -48,6 +91,7 @@ export function connect<T extends PropTypes>(
   const value = context.get("value")
   const format = context.get("format")
   const locale = prop("locale")
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const areaValue = computed("areaValue")
   const valueAsString = computed("valueAsString")
@@ -58,6 +102,14 @@ export function connect<T extends PropTypes>(
   const required = !!prop("required")
   const interactive = computed("interactive")
 
+  const dir = prop("dir")
+  const fieldAttrs = {
+    "data-disabled": dataAttr(disabled),
+    "data-readonly": dataAttr(readOnly),
+    "data-invalid": dataAttr(invalid),
+  }
+
+  const eyeDropperSupported = context.get("platform").supportsEyeDropper
   const dragging = state.hasTag("dragging")
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
@@ -71,9 +123,14 @@ export function connect<T extends PropTypes>(
   }
 
   function resolveGamutOverlay(props: GamutOverlayProps = {}) {
+    if (format !== "oklch" && format !== "oklab") return null
+    const { xChannel, yChannel } = getAreaChannels(props)
+    if (xChannel !== "saturation" || yChannel !== "brightness") return null
     const pixelRatio = props.pixelRatio ?? getDefaultDevicePixelRatio()
-    return getGamutOverlayData(areaValue, getAreaChannels(props), format, { pixelRatio })
+    return getSrgbGamutPath(areaValue.getChannelValue("hue"), pixelRatio)
   }
+
+  const getAreaGradient = (props: AreaProps) => getColorAreaGradient(areaValue, { ...getAreaChannels(props), dir })
 
   const currentPlacement = context.get("currentPlacement")
   const currentPlacementSide = currentPlacement ? getPlacementSide(currentPlacement) : undefined
@@ -87,7 +144,7 @@ export function connect<T extends PropTypes>(
   // -----------------------------------------------------------------------------
 
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
-    const color = normalizeColor(props.value).toFormat(context.get("format"))
+    const color = normalizeColor(props.value).toFormat(format)
     return {
       value: color,
       valueAsString: color.toString("hex"),
@@ -166,13 +223,10 @@ export function connect<T extends PropTypes>(
 
     getRootState,
     getRootProps() {
-      const rootState = getRootState()
       return normalize.element({
         ...parts.root.attrs(scope.id),
-        dir: prop("dir"),
-        "data-disabled": dataAttr(rootState.disabled),
-        "data-readonly": dataAttr(rootState.readOnly),
-        "data-invalid": dataAttr(rootState.invalid),
+        dir: dir,
+        ...fieldAttrs,
         style: {
           "--value": value.toString("css"),
         },
@@ -182,12 +236,10 @@ export function connect<T extends PropTypes>(
     getLabelProps() {
       return normalize.element({
         ...parts.label.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        ...fieldAttrs,
         "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
@@ -201,10 +253,8 @@ export function connect<T extends PropTypes>(
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs(scope.id),
-        dir: prop("dir"),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
+        dir: dir,
+        ...fieldAttrs,
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
       })
@@ -216,11 +266,11 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.trigger.attrs(scope.id),
         id: dom.getTriggerId(scope),
-        dir: prop("dir"),
+        dir: dir,
         disabled: triggerState.disabled,
-        "aria-label": `select color. current color is ${valueAsString}`,
+        "aria-label": translations.triggerLabel(valueAsString),
         "aria-controls": dom.getContentId(scope),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": `${dom.getLabelId(scope)} ${dom.getTriggerId(scope)}`,
         "aria-haspopup": prop("inline") ? undefined : "dialog",
         "data-disabled": dataAttr(triggerState.disabled),
         "data-readonly": dataAttr(triggerState.readOnly),
@@ -248,7 +298,7 @@ export function connect<T extends PropTypes>(
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         ...getDismissableLayerAttrs(layer),
         style: {
           ...popperStyles.floating,
@@ -263,7 +313,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.content.attrs(scope.id),
         id: dom.getContentId(scope),
-        dir: prop("dir"),
+        dir: dir,
         role: prop("inline") ? undefined : "dialog",
         tabIndex: -1,
         "data-placement": contentState.placement,
@@ -278,7 +328,7 @@ export function connect<T extends PropTypes>(
     getValueTextProps() {
       return normalize.element({
         ...parts.valueText.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
       })
@@ -286,18 +336,12 @@ export function connect<T extends PropTypes>(
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaStyles } = getColorAreaGradient(areaValue, {
-        xChannel,
-        yChannel,
-        dir: prop("dir"),
-      })
+      const { areaStyles } = getAreaGradient(props)
 
       return normalize.element({
         ...parts.area.attrs(scope.id),
         role: "group",
-        "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
+        ...fieldAttrs,
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -306,7 +350,7 @@ export function connect<T extends PropTypes>(
           const point = getEventPoint(event)
           const channel = { xChannel, yChannel }
 
-          send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
+          send({ type: "POINTER_DOWN", point, channel, id: "area" })
           event.preventDefault()
         },
         style: {
@@ -319,18 +363,11 @@ export function connect<T extends PropTypes>(
     },
 
     getAreaBackgroundProps(props = {}) {
-      const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaGradientStyles } = getColorAreaGradient(areaValue, {
-        xChannel,
-        yChannel,
-        dir: prop("dir"),
-      })
+      const { areaGradientStyles } = getAreaGradient(props)
 
       return normalize.element({
         ...parts.areaBackground.attrs(scope.id),
-        "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
+        ...fieldAttrs,
         style: {
           position: "relative",
           touchAction: "none",
@@ -364,19 +401,12 @@ export function connect<T extends PropTypes>(
       const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const dragPos = context.get("areaDragPosition")
-      const isRtl = prop("dir") === "rtl"
-
-      let xPercent: number
-      let yPercent: number
-      if (dragPos) {
-        xPercent = dragPos.x
-        yPercent = dragPos.y
-      } else {
-        xPercent = areaValue.getChannelValuePercent(xChannel)
-        yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+      const { x, y } = context.get("areaDragPosition") ?? {
+        x: areaValue.getChannelValuePercent(xChannel),
+        y: 1 - areaValue.getChannelValuePercent(yChannel),
       }
-      const finalXPercent = isRtl ? 1 - xPercent : xPercent
+      const xLabel = translations.channelLabel(xChannel)
+      const yLabel = translations.channelLabel(yChannel)
 
       const xRange = areaValue.getChannelRange(xChannel)
       const yRange = areaValue.getChannelRange(yChannel)
@@ -386,24 +416,22 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.areaThumb.attrs(scope.id),
         id: dom.getAreaThumbId(scope),
-        dir: prop("dir"),
+        dir: dir,
         tabIndex: disabled ? undefined : 0,
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        ...fieldAttrs,
         role: "slider",
         "aria-disabled": ariaAttr(disabled),
         "aria-invalid": ariaAttr(invalid),
         "aria-valuemin": xRange.minValue,
         "aria-valuemax": xRange.maxValue,
         "aria-valuenow": areaValue.getChannelValue(xChannel),
-        "aria-label": `${getChannelLabel(xChannel)} and ${getChannelLabel(yChannel)}`,
-        "aria-roledescription": "2d slider",
-        "aria-valuetext": `${getChannelLabel(xChannel)} ${areaValue.formatChannelValue(xChannel, locale)}, ${getChannelLabel(yChannel)} ${areaValue.formatChannelValue(yChannel, locale)}`,
+        "aria-label": translations.areaThumbLabel({ xLabel, yLabel }),
+        "aria-roledescription": translations.areaThumbRoleDescription,
+        "aria-valuetext": `${xLabel} ${areaValue.formatChannelValue(xChannel, locale)}, ${yLabel} ${areaValue.formatChannelValue(yChannel, locale)}`,
         style: {
           position: "absolute",
-          left: `${finalXPercent * 100}%`,
-          top: `${yPercent * 100}%`,
+          left: `${(dir === "rtl" ? 1 - x : x) * 100}%`,
+          top: `${y * 100}%`,
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
@@ -418,49 +446,15 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event)
-
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "AREA.ARROW_UP", channel, step })
-            },
-            ArrowDown() {
-              send({ type: "AREA.ARROW_DOWN", channel, step })
-            },
-            ArrowLeft() {
-              send({ type: "AREA.ARROW_LEFT", channel, step })
-            },
-            ArrowRight() {
-              send({ type: "AREA.ARROW_RIGHT", channel, step })
-            },
-            PageUp() {
-              send({ type: "AREA.PAGE_UP", channel, step: yRange.pageSize })
-            },
-            PageDown() {
-              send({ type: "AREA.PAGE_DOWN", channel, step: yRange.pageSize })
-            },
-            Home() {
-              send({ type: "AREA.HOME", channel, step: xRange.pageSize })
-            },
-            End() {
-              send({ type: "AREA.END", channel, step: xRange.pageSize })
-            },
-            Escape(event) {
-              event.stopPropagation()
-            },
-          }
-
-          const exec =
-            keyMap[
-              getEventKey(event, {
-                dir: prop("dir"),
-              })
-            ]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          const key = getEventKey(event, { dir })
+          if (key === "Escape") event.stopPropagation()
+          const move = AREA_KEYS[key]
+          if (move) {
+            const isX = move.axis === "x"
+            const step = move.page ? (isX ? xRange : yRange).pageSize : getEventStep(event)
+            send({ type: "CHANNEL.STEP", channel: isX ? xChannel : yChannel, step: move.direction * step })
+          } else if (key !== "Escape") return
+          event.preventDefault()
         },
       })
     },
@@ -497,7 +491,7 @@ export function connect<T extends PropTypes>(
           if (isModifierKey(event)) return
 
           const point = getEventPoint(event)
-          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, format, point, id: channel, orientation })
+          send({ type: "POINTER_DOWN", channel, format, point, id: channel, orientation })
 
           event.preventDefault()
         },
@@ -520,12 +514,11 @@ export function connect<T extends PropTypes>(
         style: {
           position: "relative",
           forcedColorAdjust: "none",
-          backgroundImage: getSliderBackground({
-            orientation,
+          backgroundImage: getChannelGradient(
+            normalizedValue,
             channel,
-            dir: prop("dir"),
-            value: normalizedValue,
-          }),
+            orientation === "vertical" ? "top" : dir === "rtl" ? "left" : "right",
+          ),
         },
       })
     },
@@ -562,20 +555,18 @@ export function connect<T extends PropTypes>(
       const channelRange = normalizedValue.getChannelRange(channel)
       const channelValue = normalizedValue.getChannelValue(channel)
 
-      const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
-      const isRtl = prop("dir") === "rtl"
-      const finalOffset = orientation === "horizontal" && isRtl ? 1 - offset : offset
-
+      const dragPercent = context.get("activeId") === channel ? context.get("sliderDragPercent") : null
+      const offset = dragPercent ?? normalizedValue.getChannelValuePercent(channel)
       const placementStyles =
         orientation === "horizontal"
-          ? { left: `${finalOffset * 100}%`, top: "50%" }
+          ? { left: `${(dir === "rtl" ? 1 - offset : offset) * 100}%`, top: "50%" }
           : { top: `${(1 - offset) * 100}%`, left: "50%" }
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs(scope.id),
         id: dom.getChannelSliderThumbId(scope, channel),
         role: "slider",
-        "aria-label": getChannelLabel(channel),
+        "aria-label": translations.channelLabel(channel),
         tabIndex: disabled ? undefined : 0,
         "data-channel": channel,
         "data-disabled": dataAttr(disabled),
@@ -590,7 +581,7 @@ export function connect<T extends PropTypes>(
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(areaValue, channel).toString("css"),
+          background: getChannelThumbColor(areaValue, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
@@ -606,24 +597,16 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          const move = getEventMove(event, { dir: prop("dir") })
+          const move = getEventMove(event, { dir: dir })
           if (!move) return
 
           if ("bound" in move) {
-            send({ type: move.bound === "min" ? "CHANNEL_SLIDER.HOME" : "CHANNEL_SLIDER.END", channel, format })
+            send({ type: "CHANNEL.STEP", channel, format, bound: move.bound })
           } else {
             // Page keys move a page; Shift moves ten steps
-            const step = event.key.startsWith("Page")
-              ? channelRange.pageSize
-              : move.size === "large"
-                ? channelRange.step * 10
-                : channelRange.step
-            send({
-              type: move.direction > 0 ? "CHANNEL_SLIDER.INCREMENT" : "CHANNEL_SLIDER.DECREMENT",
-              channel,
-              format,
-              step,
-            })
+            const { pageSize, step } = channelRange
+            const size = event.key.startsWith("Page") ? pageSize : move.size === "large" ? step * 10 : step
+            send({ type: "CHANNEL.STEP", channel, format, step: move.direction * size })
           }
           event.preventDefault()
         },
@@ -639,17 +622,15 @@ export function connect<T extends PropTypes>(
 
       return normalize.input({
         ...parts.channelInput.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         type: isTextField ? "text" : "number",
         "data-channel": channel,
-        "aria-label": getChannelLabel(channel),
+        "aria-label": translations.channelLabel(channel),
         "aria-invalid": ariaAttr(invalid),
         spellCheck: false,
         autoComplete: "off",
         disabled: disabled,
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
+        ...fieldAttrs,
         readOnly: readOnly,
         defaultValue: draft?.channel === channel ? draft.value : getChannelValue(value, channel),
         min: channelRange?.minValue,
@@ -735,12 +716,12 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.eyeDropperTrigger.attrs(scope.id),
         type: "button",
-        dir: prop("dir"),
-        disabled: disabled,
-        "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(invalid),
-        "data-readonly": dataAttr(readOnly),
-        "aria-label": "Pick a color from the screen",
+        dir: dir,
+        disabled: disabled || !eyeDropperSupported,
+        ...fieldAttrs,
+        "data-disabled": dataAttr(disabled || !eyeDropperSupported),
+        "data-unsupported": dataAttr(!eyeDropperSupported),
+        "aria-label": translations.eyeDropperTriggerLabel,
         onClick() {
           if (!interactive) return
           send({ type: "EYEDROPPER.CLICK" })
@@ -762,9 +743,9 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.swatchTrigger.attrs(scope.id),
         disabled: swatchState.disabled,
-        dir: prop("dir"),
+        dir: dir,
         type: "button",
-        "aria-label": `select ${swatchState.valueAsString} as the color`,
+        "aria-label": translations.swatchTriggerLabel(swatchState.valueAsString),
         "aria-pressed": swatchState.checked,
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
@@ -784,7 +765,7 @@ export function connect<T extends PropTypes>(
       const swatchState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatchIndicator.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         hidden: !swatchState.checked,
       })
     },
@@ -795,7 +776,7 @@ export function connect<T extends PropTypes>(
       const color = swatchState.value.toString(respectAlpha ? "css" : "hex")
       return normalize.element({
         ...parts.swatch.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
         style: {
@@ -809,9 +790,9 @@ export function connect<T extends PropTypes>(
     getFormatTriggerProps() {
       return normalize.button({
         ...parts.formatTrigger.attrs(scope.id),
-        dir: prop("dir"),
+        dir: dir,
         type: "button",
-        "aria-label": `change color format to ${getNextFormat(format)}`,
+        "aria-label": translations.formatTriggerLabel(getNextFormat(format)),
         onClick(event) {
           if (event.currentTarget.disabled) return
           const nextFormat = getNextFormat(format)
@@ -823,8 +804,8 @@ export function connect<T extends PropTypes>(
     getFormatSelectProps() {
       return normalize.select({
         ...parts.formatSelect.attrs(scope.id),
-        "aria-label": "change color format",
-        dir: prop("dir"),
+        "aria-label": translations.formatSelectLabel,
+        dir: dir,
         defaultValue: format,
         disabled: disabled,
         onChange(event) {
@@ -837,14 +818,10 @@ export function connect<T extends PropTypes>(
 }
 
 const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab", "oklch"]
-const formatRegex = new RegExp(`^(${formats.join("|")})$`)
 
-function getNextFormat(format: ColorFormat) {
-  const index = formats.indexOf(format)
-  return formats[index + 1] ?? formats[0]
-}
+const getNextFormat = (format: ColorFormat) => formats[(formats.indexOf(format) + 1) % formats.length]
 
 function assertFormat(format: string) {
-  if (formatRegex.test(format)) return format as ColorFormat
+  if (formats.includes(format as ColorFormat)) return format as ColorFormat
   throw new Error(`Unsupported color format: ${format}`)
 }

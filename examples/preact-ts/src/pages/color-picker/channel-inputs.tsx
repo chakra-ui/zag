@@ -41,7 +41,7 @@ export default function Page() {
             <div className="color-picker-channel-inputs">
               {channels.map((channel) => (
                 <label key={channel}>
-                  {channel}
+                  {channel[0].toUpperCase()}
                   <input {...api.getChannelInputProps({ channel })} />
                 </label>
               ))}

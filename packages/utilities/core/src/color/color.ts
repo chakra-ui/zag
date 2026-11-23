@@ -54,10 +54,10 @@ const spec = (
 
 const PERCENT_FORMAT: Intl.NumberFormatOptions = { style: "percent" }
 const OK_FORMAT: Intl.NumberFormatOptions = { style: "decimal", maximumFractionDigits: 4 }
-const HUE = spec(0, 360, 1, 15, { style: "unit", unit: "degree", unitDisplay: "narrow" })
+const HUE = spec(0, 360, 1, 15, { style: "unit", unit: "degree", unitDisplay: "narrow", maximumFractionDigits: 2 })
 const PERCENT = spec(0, 100, 1, 10, PERCENT_FORMAT, { scale: 100 })
 const ALPHA = spec(0, 1, 0.01, 0.1, PERCENT_FORMAT)
-const BYTE = spec(0, 255, 1, 17, { style: "decimal" })
+const BYTE = spec(0, 255, 1, 17, { style: "decimal", maximumFractionDigits: 0 })
 const OK_ALPHA = spec(0, 1, 0.01, 0.1, OK_FORMAT)
 const OK_LIGHTNESS = spec(0, 1, 0.001, 0.05, OK_FORMAT)
 const OK_AB = spec(-0.4, 0.4, 0.001, 0.02, OK_FORMAT)
@@ -68,7 +68,7 @@ const hex = (v: number) => Math.round(v).toString(16).padStart(2, "0")
 
 /** `hsl(h, s%, l%)` and `hsb(h, s%, b%)`, with alpha for the `a` spelling and css */
 const hueCss = (name: string) => (v: Vec3, alpha: number, format: ColorStringFormat) => {
-  const body = `${v[0]}, ${f2(v[1])}%, ${f2(v[2])}%`
+  const body = `${f2(v[0])}, ${f2(v[1])}%, ${f2(v[2])}%`
   if (format === name) return `${name}(${body})`
   if (format === name + "a" || (format === "css" && name === "hsl")) return `${name}a(${body}, ${alpha})`
 }
@@ -89,8 +89,9 @@ const SPACES: Record<ColorFormat, Space> = {
       if (format === "hex" || format === "hexa") {
         return "#" + (hex(r) + hex(g) + hex(b) + (format === "hexa" ? hex(alpha * 255) : "")).toUpperCase()
       }
-      if (format === "rgb") return `rgb(${r}, ${g}, ${b})`
-      if (format === "css" || format === "rgba") return `rgba(${r}, ${g}, ${b}, ${alpha})`
+      const body = [r, g, b].map(Math.round).join(", ")
+      if (format === "rgb") return `rgb(${body})`
+      if (format === "css" || format === "rgba") return `rgba(${body}, ${alpha})`
     },
   },
   hsla: {
@@ -142,6 +143,9 @@ const FORMAT_OF: Partial<Record<ColorStringFormat, ColorFormat>> = {
   hsb: "hsba",
 }
 
+// Values are kept at full precision and read at 4 decimals, so conversions leave no float noise
+const read = (n: number) => toFixedNumber(n, 4)
+
 const formatters = new Map<string, Intl.NumberFormat>()
 const getFormatter = (locale: string, options: Intl.NumberFormatOptions) => {
   const key = locale + JSON.stringify(options)
@@ -150,7 +154,6 @@ const getFormatter = (locale: string, options: Intl.NumberFormatOptions) => {
   return formatter
 }
 
-/** Hue, the smallest and largest channel, and chroma of RGB channels from 0 to 1 */
 function hueOf(r: number, g: number, b: number) {
   const min = Math.min(r, g, b)
   const max = Math.max(r, g, b)
@@ -158,98 +161,65 @@ function hueOf(r: number, g: number, b: number) {
   let hue = 0
   if (chroma !== 0) {
     hue = max === r ? (g - b) / chroma + (g < b ? 6 : 0) : max === g ? (b - r) / chroma + 2 : (r - g) / chroma + 4
-    hue /= 6
   }
-  return { hue: hue * 360, min, max, chroma }
+  return { hue: hue * 60, min, max, chroma }
 }
 
-/** HSB from RGB channels from 0 to 1, rounded to `digits` */
-function rgbToHsb(r: number, g: number, b: number, alpha: number, digits: number) {
-  const { hue, max, chroma } = hueOf(r, g, b)
-  const round = (v: number) => toFixedNumber(v, digits)
-  return new ColorValue(
-    "hsba",
-    [round(hue), round(max === 0 ? 0 : (chroma / max) * 100), round(max * 100)],
-    round(alpha),
-  )
+const hueRgb = (channel: (n: number) => number, offsets: Vec3) => offsets.map((n) => channel(n)) as Vec3
+
+const hslToRgb = ([h, s, l]: Vec3) => {
+  const [S, L] = [s / 100, l / 100]
+  const a = S * Math.min(L, 1 - L)
+  return hueRgb((n, k = (n + h / 30) % 12) => L - a * Math.max(Math.min(k - 3, 9 - k, 1), -1), [0, 8, 4])
 }
 
-function rgbToHsl(r: number, g: number, b: number, alpha: number) {
+const hsbToRgb = ([h, s, b]: Vec3) => {
+  const [S, B] = [s / 100, b / 100]
+  return hueRgb((n, k = (n + h / 60) % 6) => B - S * B * Math.max(Math.min(k, 4 - k, 1), 0), [5, 3, 1])
+}
+
+const rgbToHsl = ([r, g, b]: Vec3): Vec3 => {
   const { hue, min, max, chroma } = hueOf(r, g, b)
-  const lightness = (max + min) / 2
-  const saturation = chroma === 0 ? 0 : chroma / (lightness < 0.5 ? max + min : 2 - max - min)
-  return new ColorValue("hsla", [f2(hue), f2(saturation * 100), f2(lightness * 100)], f2(alpha))
+  const l = (max + min) / 2
+  return [hue, chroma === 0 ? 0 : (chroma / (l < 0.5 ? max + min : 2 - max - min)) * 100, l * 100]
 }
 
-/** RGB from a hue color: `channel` gives each RGB channel (0-1) from its offset */
-const hueToRgb = (alpha: number, channel: (n: number) => number, offsets: Vec3) =>
-  new ColorValue("rgba", offsets.map((n) => Math.round(channel(n) * 255)) as Vec3, f2(alpha))
-
-function oklabToRgb(lab: Vec3, alpha: number) {
-  const rgb = oklabToLinearRgb(lab).map((c) => Math.round(clamp01(fromLinear(c)) * 255)) as Vec3
-  return new ColorValue("rgba", rgb, f4(alpha))
+const rgbToHsb = ([r, g, b]: Vec3): Vec3 => {
+  const { hue, max, chroma } = hueOf(r, g, b)
+  return [hue, max === 0 ? 0 : (chroma / max) * 100, max * 100]
 }
 
-// Wider than RGB's 0-255 integers, so OKLab to HSB keeps its precision
-const oklabToHsb = (lab: Vec3, alpha: number) => {
-  const [r, g, b] = oklabToLinearRgb(lab).map((c) => clamp01(fromLinear(c)))
-  return rgbToHsb(r, g, b, alpha, 4)
+const clip = (rgb: Vec3) => rgb.map(clamp01) as Vec3
+const labToRgb = (lab: Vec3) => oklabToLinearRgb(lab).map(fromLinear) as Vec3
+const rgbToLab = (rgb: Vec3) => linearRgbToOklab(rgb.map(toLinear) as Vec3)
+
+const HUB: Record<ColorFormat, [to: (v: Vec3) => Vec3, from: (rgb: Vec3) => Vec3]> = {
+  rgba: [(v) => v.map((c) => c / 255) as Vec3, (rgb) => clip(rgb).map((c) => c * 255) as Vec3],
+  hsla: [hslToRgb, (rgb) => rgbToHsl(clip(rgb))],
+  hsba: [hsbToRgb, (rgb) => rgbToHsb(clip(rgb))],
+  oklab: [labToRgb, rgbToLab],
+  oklch: [
+    ([L, H, C]) => labToRgb(oklchToOklab([L, C, H])),
+    (rgb) => {
+      const [L, C, H] = oklabToOklch(rgbToLab(rgb))
+      return [L, H, C]
+    },
+  ],
 }
 
-/** Converts the values of a color in one space to another space. Each pair rounds the way it always has. */
-function convert(from: ColorFormat, v: Vec3, alpha: number, to: ColorFormat): ColorType {
-  switch (from) {
-    case "rgba": {
-      if (to === "hsba") return rgbToHsb(v[0] / 255, v[1] / 255, v[2] / 255, alpha, 2)
-      if (to === "hsla") return rgbToHsl(v[0] / 255, v[1] / 255, v[2] / 255, alpha)
-      const lab = new ColorValue("oklab", linearRgbToOklab(v.map((c) => toLinear(c / 255)) as Vec3), f4(alpha))
-      return to === "oklab" ? lab : lab.toFormat(to)
-    }
-    case "hsla": {
-      const [h, s, l] = [v[0], v[1] / 100, v[2] / 100]
-      if (to === "hsba") {
-        const brightness = l + s * Math.min(l, 1 - l)
-        const saturation = brightness === 0 ? 0 : 2 * (1 - l / brightness)
-        return new ColorValue("hsba", [f2(h), f2(saturation * 100), f2(brightness * 100)], f2(alpha))
-      }
-      const a = s * Math.min(l, 1 - l)
-      const rgb = hueToRgb(
-        alpha,
-        (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1),
-        [0, 8, 4],
-      )
-      return to === "rgba" ? rgb : rgb.toFormat(to)
-    }
-    case "hsba": {
-      const [h, s, b] = [v[0], v[1] / 100, v[2] / 100]
-      if (to === "hsla") {
-        const lightness = b * (1 - s / 2)
-        const saturation = lightness === 0 || lightness === 1 ? 0 : (b - lightness) / Math.min(lightness, 1 - lightness)
-        return new ColorValue("hsla", [f2(h), f2(saturation * 100), f2(lightness * 100)], f2(alpha))
-      }
-      const rgb = hueToRgb(
-        alpha,
-        (n, k = (n + h / 60) % 6) => b - s * b * Math.max(Math.min(k, 4 - k, 1), 0),
-        [5, 3, 1],
-      )
-      return to === "rgba" ? rgb : rgb.toFormat(to)
-    }
-    case "oklab": {
-      if (to === "oklch") {
-        const [L, C, H] = oklabToOklch(v)
-        return new ColorValue("oklch", [L, H, C], f4(alpha))
-      }
-      if (to === "hsba") return oklabToHsb(v, alpha)
-      const rgb = oklabToRgb(v, alpha)
-      return to === "rgba" ? rgb : rgb.toFormat(to)
-    }
-    case "oklch": {
-      const lab = oklchToOklab([v[0], v[2], v[1]])
-      if (to === "hsba") return oklabToHsb(lab, alpha)
-      const color = new ColorValue("oklab", lab, f4(alpha))
-      return to === "oklab" ? color : color.toFormat(to)
-    }
+function hslHsb(v: Vec3, to: ColorFormat): Vec3 {
+  const [h, s, x] = [v[0], v[1] / 100, v[2] / 100]
+  if (to === "hsba") {
+    const b = x + s * Math.min(x, 1 - x)
+    return [h, b === 0 ? 0 : 2 * (1 - x / b) * 100, b * 100]
   }
+  const l = x * (1 - s / 2)
+  return [h, l === 0 || l === 1 ? 0 : ((x - l) / Math.min(l, 1 - l)) * 100, l * 100]
+}
+
+function convert(from: ColorFormat, v: Vec3, alpha: number, to: ColorFormat): ColorType {
+  const values = from[0] === "h" && to[0] === "h" ? hslHsb(v, to) : HUB[to][1](HUB[from][0](v))
+  return new ColorValue(to, values, alpha)
 }
 
 /** A color in one of the supported spaces. Public as `ColorType`; the class itself stays internal. */
@@ -297,7 +267,8 @@ export class ColorValue implements ColorType {
 
   toJSON(): Record<string, number> {
     const [a, b, c, alpha] = SPACES[this.f].json
-    return { [a]: this.v[0], [b]: this.v[1], [c]: this.v[2], [alpha]: this.alpha }
+    const [x, y, z] = this.v.map(read)
+    return { [a]: x, [b]: y, [c]: z, [alpha]: this.alpha }
   }
 
   toHexInt(): number {
@@ -314,7 +285,7 @@ export class ColorValue implements ColorType {
     if (channel === "alpha") return this.alpha
     const index = SPACES[this.f].ch.indexOf(channel)
     if (index < 0) throw new Error("Unsupported color channel: " + channel)
-    return this.v[index]
+    return read(this.v[index])
   }
 
   withChannelValue(channel: ColorChannel, value: number): ColorType {

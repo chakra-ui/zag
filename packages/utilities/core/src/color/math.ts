@@ -53,6 +53,12 @@ const D50_WHITE: Vec3 = [0.3457 / 0.3585, 1, (1 - 0.3457 - 0.3585) / 0.3585]
 const KAPPA = 24389 / 27
 const EPSILON = 216 / 24389
 
+const SRGB_P3 = [
+  0.8224619687143625, 0.17753803128563778, 0, 0.033194198850961636, 0.9668058011490384, 0, 0.01708263072112004,
+  0.07239744066396346, 0.9105199286149167,
+]
+
+export const linearRgbToP3 = (rgb: Vec3) => mul(SRGB_P3, rgb).map(fromLinear) as Vec3
 export const xyzToLinearRgb = (xyz: Vec3) => mul(XYZ_SRGB, xyz)
 export const xyzD50ToLinearRgb = (xyz: Vec3) => xyzToLinearRgb(mul(D50_D65, xyz))
 export const p3ToLinearRgb = (p3: Vec3) => mul(P3_SRGB, p3.map(toLinear) as Vec3)

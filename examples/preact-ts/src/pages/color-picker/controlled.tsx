@@ -37,7 +37,7 @@ export default function Page() {
         <input {...api.getHiddenInputProps()} />
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>
-            Select Color: <span data-testid="value-text">{api.valueAsString}</span>
+            Select Color <span data-testid="value-text">{api.valueAsString}</span>
           </label>
 
           <div {...api.getControlProps()}>

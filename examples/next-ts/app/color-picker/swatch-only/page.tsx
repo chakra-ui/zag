@@ -21,7 +21,7 @@ export default function Page() {
     <main className="color-picker">
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>
-          Label color: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+          Label color <span {...api.getValueTextProps()}>{api.valueAsString}</span>
         </label>
 
         <div {...api.getSwatchGroupProps()} className="color-picker-swatches">

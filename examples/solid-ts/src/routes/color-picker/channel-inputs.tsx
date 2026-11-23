@@ -38,7 +38,7 @@ export default function Page() {
               <For each={channels()}>
                 {(channel) => (
                   <label>
-                    {channel}
+                    {channel[0].toUpperCase()}
                     <input {...api().getChannelInputProps({ channel })} />
                   </label>
                 )}

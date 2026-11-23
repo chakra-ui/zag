@@ -23,7 +23,7 @@ export default function Page() {
     <main className="color-picker">
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>
-          Highlight: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+          Highlight <span {...api.getValueTextProps()}>{api.valueAsString}</span>
         </label>
 
         <div {...api.getSwatchGroupProps()} className="color-picker-swatches">

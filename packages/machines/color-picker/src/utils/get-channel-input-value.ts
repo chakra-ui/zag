@@ -1,4 +1,5 @@
 import { getChannelColor, type Color, type ColorChannel, type ColorChannelRange } from "@zag-js/utils/color"
+import { decimalsOf, toFixedNumber } from "@zag-js/utils/number"
 import type { ExtendedColorChannel } from "../color-picker.types"
 
 /** The text a channel input shows, rounded to the channel's step */
@@ -8,9 +9,7 @@ export function getChannelValue(color: Color, channel: ExtendedColorChannel | nu
   const owner = getChannelColor(color, channel)
   const value = owner.getChannelValue(channel)
   const { step } = owner.getChannelRange(channel)
-  if (step >= 1) return Math.round(value).toString()
-  const decimals = Math.min(4, Math.max(0, Math.ceil(-Math.log10(step))))
-  return parseFloat(value.toFixed(decimals)).toString()
+  return String(toFixedNumber(value, Math.min(4, decimalsOf(step))))
 }
 
 // #000000 to #FFFFFF as integers

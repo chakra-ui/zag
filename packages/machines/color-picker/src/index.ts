@@ -34,4 +34,6 @@ export type {
   ExtendedColorChannel,
   GamutOverlayData,
   GamutOverlayProps,
+  AreaThumbLabelDetails,
+  IntlTranslations,
 } from "./color-picker.types"

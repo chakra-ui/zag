@@ -135,6 +135,16 @@ cube in linear RGB space. When `false`, your OKLab/OKLCH **string** may still be
 wide-gamut while **hex** or 8-bit **RGBA** outputs **clamp**—use this flag for
 badges, tooltips, or warnings.
 
+Set `gamut` to keep the value displayable. A color outside the gamut becomes the
+closest one inside, with the same lightness and hue.
+
+```tsx
+const service = useMachine(colorPicker.machine, {
+  format: "oklch",
+  gamut: "srgb", // or "p3"
+})
+```
+
 ### Initial format
 
 Use `defaultFormat` to set the initial output format.
@@ -310,6 +320,22 @@ const service = useMachine(colorPicker.machine, {
 
 Use `api.getChannelValueText(channel)` to show the same formatted value, like
 `80 %` for alpha in German.
+
+### Accessibility labels
+
+Use `translations` to localize the labels screen readers announce, like the
+trigger, the channel names and the eye dropper.
+
+```tsx
+const service = useMachine(colorPicker.machine, {
+  translations: {
+    triggerLabel: (valueAsString) => `Farbe wählen, aktuell ${valueAsString}`,
+    channelLabel: (channel) => channelNames[channel],
+    areaThumbLabel: ({ xLabel, yLabel }) => `${xLabel} und ${yLabel}`,
+    eyeDropperTriggerLabel: "Farbe vom Bildschirm wählen",
+  },
+})
+```
 
 ### Color preview
 

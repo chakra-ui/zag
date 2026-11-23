@@ -20,7 +20,7 @@
   <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.getLabelProps()}>
-      Label color: <span {...api.getValueTextProps()}>{api.valueAsString}</span>
+      Label color <span {...api.getValueTextProps()}>{api.valueAsString}</span>
     </label>
 
     <div {...api.getSwatchGroupProps()} class="color-picker-swatches">

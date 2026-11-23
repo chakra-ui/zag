@@ -36,7 +36,7 @@ const channels = computed(() => formats.find((format) => format.value === api.va
 
           <div class="color-picker-channel-inputs">
             <label v-for="channel in channels" :key="channel">
-              {{ channel }}
+              {{ channel[0].toUpperCase() }}
               <input v-bind="api.getChannelInputProps({ channel })" />
             </label>
           </div>

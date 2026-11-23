@@ -37,7 +37,7 @@ export default function Page() {
           <input {...api().getHiddenInputProps()} />
           <div {...api().getRootProps()}>
             <label {...api().getLabelProps()}>
-              OKLab (wide gamut): <span data-testid="value-text">{api().valueAsString}</span>
+              OKLab (wide gamut) <span data-testid="value-text">{api().valueAsString}</span>
             </label>
 
             <div {...api().getControlProps()}>
@@ -92,11 +92,19 @@ export default function Page() {
                   </div>
 
                   <Show when={api().format === "oklab"}>
-                    <div style={{ display: "flex", width: "100%", "flex-wrap": "wrap", gap: "6px" }}>
-                      <span>L</span> <input {...api().getChannelInputProps({ channel: "lightness" })} />
-                      <span>a</span> <input {...api().getChannelInputProps({ channel: "a" })} />
-                      <span>b</span> <input {...api().getChannelInputProps({ channel: "b" })} />
-                      <span>A</span> <input {...api().getChannelInputProps({ channel: "alpha" })} />
+                    <div class="color-picker-channel-inputs">
+                      <label>
+                        L <input {...api().getChannelInputProps({ channel: "lightness" })} />
+                      </label>
+                      <label>
+                        a <input {...api().getChannelInputProps({ channel: "a" })} />
+                      </label>
+                      <label>
+                        b <input {...api().getChannelInputProps({ channel: "b" })} />
+                      </label>
+                      <label>
+                        A <input {...api().getChannelInputProps({ channel: "alpha" })} />
+                      </label>
                     </div>
                   </Show>
 

@@ -53,29 +53,29 @@
           </div>
 
           {#if api.format.startsWith("hsl")}
-            <div style="display: flex; width: 100%">
-              <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-              <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-              <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} />
-              <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+            <div class="color-picker-channel-inputs">
+              <label>H <input {...api.getChannelInputProps({ channel: "hue" })} /></label>
+              <label>S <input {...api.getChannelInputProps({ channel: "saturation" })} /></label>
+              <label>L <input {...api.getChannelInputProps({ channel: "lightness" })} /></label>
+              <label>A <input {...api.getChannelInputProps({ channel: "alpha" })} /></label>
             </div>
           {/if}
 
           {#if api.format.startsWith("rgb")}
-            <div style="display: flex; width: 100%">
-              <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} />
-              <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} />
-              <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} />
-              <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+            <div class="color-picker-channel-inputs">
+              <label>R <input {...api.getChannelInputProps({ channel: "red" })} /></label>
+              <label>G <input {...api.getChannelInputProps({ channel: "green" })} /></label>
+              <label>B <input {...api.getChannelInputProps({ channel: "blue" })} /></label>
+              <label>A <input {...api.getChannelInputProps({ channel: "alpha" })} /></label>
             </div>
           {/if}
 
           {#if api.format.startsWith("hsb")}
-            <div style="display: flex; width: 100%">
-              <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
-              <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
-              <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} />
-              <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+            <div class="color-picker-channel-inputs">
+              <label>H <input {...api.getChannelInputProps({ channel: "hue" })} /></label>
+              <label>S <input {...api.getChannelInputProps({ channel: "saturation" })} /></label>
+              <label>B <input {...api.getChannelInputProps({ channel: "brightness" })} /></label>
+              <label>A <input {...api.getChannelInputProps({ channel: "alpha" })} /></label>
             </div>
           {/if}
         </div>

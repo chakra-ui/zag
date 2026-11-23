@@ -1,3 +1,5 @@
+import { ColorValue } from "./color"
+import { isDisplayP3HsvInSrgbGamut } from "./math"
 import type { ColorChannel, ColorType } from "./types"
 
 interface GradientOptions {
@@ -146,4 +148,64 @@ export function getChannelGradient(color: ColorType, channel: ColorChannel, side
       ? ` in ${format}`
       : ""
   return `linear-gradient(to ${side}${space}, ${stops.map(at).join(", ")})`
+}
+
+/** The color a channel's slider thumb shows: the full hue for hue, the opaque color for the rest */
+export function getChannelThumbColor(color: ColorType, channel: ColorChannel): ColorType {
+  if (channel === "alpha") return color
+  if (channel === "hue" && color.getFormat() !== "oklch") {
+    return new ColorValue("hsla", [color.getChannelValue("hue"), 100, 50], 1)
+  }
+  return color.withChannelValue("alpha", 1)
+}
+
+export interface SrgbGamutPath {
+  /** SVG path in a 0-100 box */
+  path: string
+  /** Where to put an "sRGB" label, near the bottom of the line */
+  labelPosition: { x: number; y: number }
+}
+
+const gamutRows = (pixelRatio: number) => Math.min(200, Math.round(80 * Math.max(1, pixelRatio)))
+
+/**
+ * The line where colors leave sRGB on a saturation (x) by brightness (y) plane of `hue`, reading the plane as
+ * Display P3. Each row binary-searches the highest saturation still inside sRGB.
+ */
+export function getSrgbGamutPath(hue: number, pixelRatio = 1): SrgbGamutPath | null {
+  const rows = gamutRows(pixelRatio)
+  const points: { x: number; y: number }[] = []
+
+  for (let i = 0; i <= rows; i++) {
+    const brightness = i / rows
+    if (brightness < 0.01) continue
+
+    let lo = 0
+    let hi = 1
+    for (let j = 0; j < 20; j++) {
+      const mid = (lo + hi) / 2
+      if (isDisplayP3HsvInSrgbGamut(hue, mid, brightness)) lo = mid
+      else hi = mid
+    }
+    points.push({ x: Math.min(lo * 100, 100), y: 100 - brightness * 100 })
+  }
+
+  if (points.length < 2) return null
+
+  const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ")
+
+  const labelY = 96
+  let labelX = points[0].x
+  if (points[0].y >= labelY) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i]
+      const b = points[i + 1]
+      if ((a.y >= labelY && b.y <= labelY) || (a.y <= labelY && b.y >= labelY)) {
+        labelX = a.x + ((labelY - a.y) / (b.y - a.y)) * (b.x - a.x)
+        break
+      }
+    }
+  }
+
+  return { path, labelPosition: { x: Math.min(labelX - 16, 99), y: labelY } }
 }

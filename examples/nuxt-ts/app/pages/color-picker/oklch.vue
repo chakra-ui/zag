@@ -33,7 +33,7 @@ const onFormChange = (e: Event) => {
       <input v-bind="api.getHiddenInputProps()" />
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">
-          OKLCH (wide gamut): <span data-testid="value-text">{{ api.valueAsString }}</span>
+          OKLCH (wide gamut) <span data-testid="value-text">{{ api.valueAsString }}</span>
         </label>
 
         <div v-bind="api.getControlProps()">
@@ -77,17 +77,23 @@ const onFormChange = (e: Event) => {
                 <div v-bind="api.getChannelSliderThumbProps({ channel: 'hue' })" />
               </div>
 
+              <div v-bind="api.getChannelSliderProps({ channel: 'chroma', format: 'oklch' })">
+                <div v-bind="api.getChannelSliderTrackProps({ channel: 'chroma', format: 'oklch' })" />
+                <div v-bind="api.getChannelSliderThumbProps({ channel: 'chroma', format: 'oklch' })" />
+              </div>
+
               <div v-bind="api.getChannelSliderProps({ channel: 'alpha' })">
                 <div v-bind="api.getTransparencyGridProps({ size: '12px' })" />
                 <div v-bind="api.getChannelSliderTrackProps({ channel: 'alpha' })" />
                 <div v-bind="api.getChannelSliderThumbProps({ channel: 'alpha' })" />
               </div>
 
-              <div v-if="api.format === 'oklch'" style="display: flex; width: 100%; flex-wrap: wrap; gap: 6px">
-                <span>L</span> <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /> <span>C</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'chroma' })" /> <span>H</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /> <span>A</span>
-                <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
+              <div v-if="api.format === 'oklch'" class="color-picker-channel-inputs">
+                <label>L <input v-bind="api.getChannelInputProps({ channel: 'lightness' })" /></label> <label
+                  >C <input v-bind="api.getChannelInputProps({ channel: 'chroma' })"
+                /></label> <label>H <input v-bind="api.getChannelInputProps({ channel: 'hue' })" /></label> <label
+                  >A <input v-bind="api.getChannelInputProps({ channel: 'alpha' })"
+                /></label>
               </div>
 
               <p data-testid="value-text">{{ api.valueAsString }}</p>

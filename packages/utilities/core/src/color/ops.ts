@@ -1,12 +1,26 @@
 // Operations on any color, as standalone functions so a bundle keeps only the ones it uses.
 import { clampValue, mod } from "../number"
 import { ColorValue } from "./color"
-import { clamp01, fromLinear, linearRgbToOklab, oklabToLinearRgb, oklchToOklab, toLinear, type Vec3 } from "./math"
+import {
+  clamp01,
+  fromLinear,
+  isLinearRgbInSrgbGamut,
+  linearRgbToOklab,
+  linearRgbToP3,
+  oklabToLinearRgb,
+  oklchToOklab,
+  p3ToLinearRgb,
+  toLinear,
+  type Vec3,
+} from "./math"
 import type { ColorFormat, ColorType } from "./types"
 
 const valuesOf = (color: ColorType) => color.getChannels().map((c) => color.getChannelValue(c)) as Vec3
 const oklabOf = (color: ColorType) => valuesOf(color.toFormat("oklab"))
 const distance = (a: Vec3, b: Vec3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])
+
+/** Whether a color fits in sRGB, the range every screen shows */
+export const isInSrgbGamut = (color: ColorType) => isLinearRgbInSrgbGamut(oklabToLinearRgb(oklabOf(color)))
 
 /** How different two colors look (ΔEOK). About 0.02 is the smallest difference most people notice. */
 export const getColorDistance = (a: ColorType, b: ColorType) => distance(oklabOf(a), oklabOf(b))
@@ -70,25 +84,35 @@ const EPSILON = 0.0001
 // How far past an edge still counts as inside, so round-trips don't fall out of gamut
 const TOLERANCE = 0.000075
 
-const toSrgb = (lab: Vec3) => oklabToLinearRgb(lab).map(fromLinear) as Vec3
-const inSrgb = (rgb: Vec3) => rgb.every((v) => v >= -TOLERANCE && v <= 1 + TOLERANCE)
-const clip = (rgb: Vec3) => rgb.map(clamp01) as Vec3
-const labOfSrgb = (rgb: Vec3) => linearRgbToOklab(rgb.map(toLinear) as Vec3)
+export type ColorGamut = "srgb" | "p3"
 
-/** The color itself when it fits sRGB, or the closest color that does, in the color's own format (CSS Color 4) */
-export function toSrgbGamut(color: ColorType): ColorType {
+// OKLab to the gamut's gamma-encoded RGB, and back
+const GAMUTS: Record<ColorGamut, [to: (lab: Vec3) => Vec3, from: (rgb: Vec3) => Vec3]> = {
+  srgb: [(lab) => oklabToLinearRgb(lab).map(fromLinear) as Vec3, (rgb) => linearRgbToOklab(rgb.map(toLinear) as Vec3)],
+  p3: [(lab) => linearRgbToP3(oklabToLinearRgb(lab)), (rgb) => linearRgbToOklab(p3ToLinearRgb(rgb))],
+}
+
+const inRange = (rgb: Vec3) => rgb.every((v) => v >= -TOLERANCE && v <= 1 + TOLERANCE)
+const clip = (rgb: Vec3) => rgb.map(clamp01) as Vec3
+
+/**
+ * The color itself when it fits the gamut, or the closest color that does, keeping its lightness and hue
+ * (CSS Color 4 gamut mapping). Returned in the color's own format.
+ */
+export function toGamut(color: ColorType, gamut: ColorGamut = "srgb"): ColorType {
+  const [toRgb, toLab] = GAMUTS[gamut]
   const format = color.getFormat()
   const alpha = color.getChannelValue("alpha")
   const [L, H, C] = valuesOf(color.toFormat("oklch"))
-  const result = (rgb: Vec3) => new ColorValue("oklab", labOfSrgb(rgb), alpha).toFormat(format)
+  const result = (rgb: Vec3) => new ColorValue("oklab", toLab(rgb), alpha).toFormat(format)
 
   if (L >= 1) return result([1, 1, 1])
   if (L <= 0) return result([0, 0, 0])
   const at = (chroma: number) => oklchToOklab([L, chroma, H])
-  if (inSrgb(toSrgb(at(C)))) return color
+  if (inRange(toRgb(at(C)))) return color
 
-  let clipped = clip(toSrgb(at(C)))
-  if (distance(labOfSrgb(clipped), at(C)) < JND) return result(clipped)
+  let clipped = clip(toRgb(at(C)))
+  if (distance(toLab(clipped), at(C)) < JND) return result(clipped)
 
   let min = 0
   let max = C
@@ -96,12 +120,12 @@ export function toSrgbGamut(color: ColorType): ColorType {
   while (max - min > EPSILON) {
     const chroma = (min + max) / 2
     const current = at(chroma)
-    if (minInGamut && inSrgb(toSrgb(current))) {
+    if (minInGamut && inRange(toRgb(current))) {
       min = chroma
       continue
     }
-    clipped = clip(toSrgb(current))
-    const e = distance(labOfSrgb(clipped), current)
+    clipped = clip(toRgb(current))
+    const e = distance(toLab(clipped), current)
     if (e >= JND) max = chroma
     else if (JND - e < EPSILON) break
     else {
