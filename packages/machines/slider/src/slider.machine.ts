@@ -55,6 +55,7 @@ export const machine = createMachine<SliderSchema>({
       dir: "ltr",
       thumbAlignment: "contain",
       origin: "start",
+      scale: "linear",
       orientation: "horizontal",
       thumbCollisionBehavior: "none",
       minStepsBetweenThumbs,
@@ -118,8 +119,8 @@ export const machine = createMachine<SliderSchema>({
     isInteractive: ({ prop, computed }) => !(prop("readOnly") || computed("isDisabled")),
     hasMeasuredThumbSize: ({ context }) => context.get("thumbSize") != null,
     valuePercent: memo(
-      ({ context, prop }) => [context.get("value"), prop("min"), prop("max")],
-      ([value, min, max]) => value.map((value) => 100 * getValuePercent(value, min, max)),
+      ({ context, prop }) => [context.get("value"), prop("min"), prop("max"), prop("scale")],
+      ([value, min, max, scale]) => value.map((value) => 100 * getValuePercent(value, min, max, scale)),
     ),
   },
 

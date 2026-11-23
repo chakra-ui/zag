@@ -1,5 +1,14 @@
 import type { Params } from "@zag-js/core"
-import { clampValue, getValuePercent, getValueRanges, setValueAtIndex, snapValueToStep } from "@zag-js/utils/number"
+import {
+  clampPercent,
+  clampValue,
+  getPercentValue,
+  getValuePercent,
+  getValueRanges,
+  setValueAtIndex,
+  snapValueToStep,
+  type NumberScale,
+} from "@zag-js/utils/number"
 import type { Size } from "@zag-js/types"
 import type { SliderOrigin, SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 
@@ -184,10 +193,22 @@ export function constrainValue(params: Pick<Ctx, "context" | "prop">, value: num
 }
 
 export function stepThumb(params: Pick<Ctx, "context" | "prop">, delta: number, index?: number) {
-  const { context } = params
+  const { context, prop } = params
   const idx = index ?? context.get("focusedIndex")
   const values = context.get("value")
-  return setValueAtIndex(values, idx, constrainValue(params, values[idx] + delta, idx))
+  const value = values[idx]
+  const scale = prop("scale")
+
+  let next = value + delta
+  if (scale !== "linear") {
+    // Keys move along the track, so each press moves the thumb the same distance
+    const distance = Math.abs(delta) >= prop("largeStep") ? 0.1 : 0.01
+    const percent = getValuePercent(value, prop("min"), prop("max"), scale) + Math.sign(delta) * distance
+    const scaled = getPercentValue(clampPercent(percent), prop("min"), prop("max"), prop("step"), scale)
+    if (scaled !== value) next = scaled
+  }
+
+  return setValueAtIndex(values, idx, constrainValue(params, next, idx))
 }
 
 export function getClosestIndex(
@@ -252,9 +273,14 @@ export function selectMovableThumb(
 }
 
 /** Resolves the `origin` prop to a percent position (0-100) within `min`-`max`. */
-export function getOriginPercent(origin: SliderOrigin, min: number, max: number): number {
+export function getOriginPercent(
+  origin: SliderOrigin,
+  min: number,
+  max: number,
+  scale: NumberScale = "linear",
+): number {
   if (typeof origin === "number") {
-    return clampValue(100 * getValuePercent(origin, min, max), 0, 100)
+    return clampValue(100 * getValuePercent(origin, min, max, scale), 0, 100)
   }
   switch (origin) {
     case "end":
@@ -271,7 +297,7 @@ export function getFillSpan(params: Pick<Ctx, "computed" | "prop">): [number, nu
   const { computed, prop } = params
   const percents = computed("valuePercent")
   if (percents.length > 1) return [percents[0], percents[percents.length - 1]]
-  const origin = getOriginPercent(prop("origin"), prop("min"), prop("max"))
+  const origin = getOriginPercent(prop("origin"), prop("min"), prop("max"), prop("scale"))
   const value = percents[0]
   return value < origin ? [value, origin] : [origin, value]
 }

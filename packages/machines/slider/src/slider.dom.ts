@@ -47,7 +47,7 @@ export const getPointValue = (params: Params<SliderSchema>, point: Point) => {
     percent = prop("dir") === "rtl" ? 1 - x : x
   }
 
-  return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
+  return getPercentValue(percent, prop("min"), prop("max"), prop("step"), prop("scale"))
 }
 
 export const dispatchChangeEvent = (ctx: Scope, value: number[]) => {

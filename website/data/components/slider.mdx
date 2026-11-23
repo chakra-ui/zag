@@ -123,6 +123,30 @@ const service = useMachine(slider.machine, {
 
 </Example>
 
+### Log scale
+
+Set `scale` to `"log"` when the range spans orders of magnitude, like volume,
+frequency or zoom. Each ratio then gets the same track length, so the middle of
+a 20–20,000 Hz slider is 632 Hz instead of 10,010 Hz. `min` must be positive.
+
+```tsx
+const service = useMachine(slider.machine, {
+  min: 20,
+  max: 20000,
+  scale: "log",
+})
+```
+
+On a non-linear scale, arrow keys move 1% of the track and `PageUp`/`PageDown`
+10%. For your own curve, pass `to` and `from`, which map values into an even
+space and back:
+
+```tsx
+const service = useMachine(slider.machine, {
+  scale: { to: Math.sqrt, from: (position) => position * position },
+})
+```
+
 ### Value changes
 
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`

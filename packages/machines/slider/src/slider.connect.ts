@@ -37,11 +37,11 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
   const interactive = computed("isInteractive")
 
   function getValuePercentFn(value: number) {
-    return getValuePercent(value, prop("min"), prop("max"))
+    return getValuePercent(value, prop("min"), prop("max"), prop("scale"))
   }
 
   function getPercentValueFn(percent: number) {
-    return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
+    return getPercentValue(percent, prop("min"), prop("max"), prop("step"), prop("scale"))
   }
 
   // -----------------------------------------------------------------------------

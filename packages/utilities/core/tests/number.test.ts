@@ -1,5 +1,6 @@
 import {
   decrementValue,
+  getPercentValue,
   getValuePercent,
   incrementValue,
   roundToStepPrecision,
@@ -90,5 +91,30 @@ describe("snapValueToStep", () => {
 
   test("rounds a midpoint up", () => {
     expect(snapValueToStep(0.8, 0.05, 7.35, 0.1)).toBe(0.85)
+  })
+})
+
+describe("scale", () => {
+  test("a log scale puts the geometric middle at the center", () => {
+    expect(getValuePercent(Math.sqrt(20 * 20000), 20, 20000, "log")).toBeCloseTo(0.5, 10)
+    expect(getPercentValue(0.5, 20, 20000, 1, "log")).toBe(632)
+  })
+
+  test("a log scale maps the ends and stays inside the range", () => {
+    expect(getValuePercent(20, 20, 20000, "log")).toBe(0)
+    expect(getValuePercent(20000, 20, 20000, "log")).toBe(1)
+    expect(getValuePercent(0, 20, 20000, "log")).toBe(0)
+    expect(getPercentValue(1, 20, 20000, 1, "log")).toBe(20000)
+  })
+
+  test("a custom scale maps through its own curve", () => {
+    const sqrt = { to: Math.sqrt, from: (p: number) => p * p }
+    expect(getValuePercent(25, 0, 100, sqrt)).toBe(0.5)
+    expect(getPercentValue(0.5, 0, 100, 1, sqrt)).toBe(25)
+  })
+
+  test("linear is unchanged", () => {
+    expect(getValuePercent(25, 0, 100)).toBe(0.25)
+    expect(getPercentValue(0.25, 0, 100, 1)).toBe(25)
   })
 })

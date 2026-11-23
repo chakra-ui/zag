@@ -796,6 +796,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "in-popover", title: "With Popover" },
       { slug: "tooltip", title: "With Tooltip" },
       { slug: "dragging-indicator", title: "Dragging Indicator" },
+      { slug: "log-scale", title: "Log Scale" },
     ],
   },
   {

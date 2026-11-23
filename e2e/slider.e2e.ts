@@ -277,3 +277,40 @@ test.describe("slider / stacked thumbs", () => {
     await I.seeThumbIsFocused(0)
   })
 })
+
+test.describe("slider / log scale", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SliderModel(page)
+    await I.goto("/slider/log-scale")
+  })
+
+  test("places the value along the scale", async () => {
+    await I.seeThumbValue(0, 440)
+    // 440 Hz sits at 44.75% of a 20 Hz – 20 kHz log track
+    await I.seeFillPercent({ start: 0, end: 55.25 })
+  })
+
+  test("a press at the middle of the track picks the geometric middle", async () => {
+    await I.mousedownAt({ x: 0.5 })
+    await I.page.mouse.up()
+    await I.seeThumbValue(0, 632)
+  })
+
+  test("arrow keys move 1% of the track and page keys 10%", async () => {
+    await I.focusThumb()
+    await I.pressKey("ArrowRight")
+    await I.seeThumbValue(0, 471)
+    await I.pressKey("ArrowLeft")
+    await I.seeThumbValue(0, 440)
+    await I.pressKey("PageUp")
+    await I.seeThumbValue(0, 878)
+  })
+
+  test("Home and End reach the ends", async () => {
+    await I.focusThumb()
+    await I.pressKey("End")
+    await I.seeThumbValue(0, 20000)
+    await I.pressKey("Home")
+    await I.seeThumbValue(0, 20)
+  })
+})

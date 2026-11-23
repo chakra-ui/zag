@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { NumberScale } from "@zag-js/utils/number"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -140,6 +141,13 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   largeStep?: number | undefined
   /**
+   * How values spread along the track. `"log"` gives each ratio the same length (for volume, frequency or zoom,
+   * with a positive `min`); pass `to` and `from` for your own curve. On a non-linear scale, arrow keys move 1% of
+   * the track and `PageUp`/`PageDown` 10%.
+   * @default "linear"
+   */
+  scale?: NumberScale | undefined
+  /**
    * The minimum permitted steps between multiple thumbs.
    *
    * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
@@ -196,6 +204,7 @@ type PropsWithDefault =
   | "orientation"
   | "defaultValue"
   | "origin"
+  | "scale"
   | "thumbAlignment"
   | "minStepsBetweenThumbs"
   | "thumbCollisionBehavior"

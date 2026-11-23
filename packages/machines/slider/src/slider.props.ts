@@ -14,6 +14,7 @@ export const props = createProps<SliderProps>()([
   "ids",
   "invalid",
   "largeStep",
+  "scale",
   "max",
   "min",
   "minStepsBetweenThumbs",

@@ -14,13 +14,33 @@ export const isValueWithinRange = (v: number, vmin: number | null | undefined, v
 export const clampValue = (v: number, vmin: number, vmax: number) => min(max(nan(v), vmin), vmax)
 export const clampPercent = (v: number) => clampValue(v, 0, 1)
 
+/**
+ * How a range spreads along a track: evenly (`"linear"`), by ratio (`"log"`, for volume, frequency or zoom, with a
+ * positive minimum), or through your own `to` and `from`, which map values into an even space and back.
+ */
+export type NumberScale = "linear" | "log" | { to: (value: number) => number; from: (position: number) => number }
+
+const LOG_SCALE = { to: Math.log, from: Math.exp }
+const scaleFns = (scale: Exclude<NumberScale, "linear">) => (scale === "log" ? LOG_SCALE : scale)
+
 /** Where a value sits between bounds, from 0 to 1. An empty range is 0. */
-export const getValuePercent = (v: number, vmin: number, vmax: number) =>
-  vmax === vmin ? 0 : (nan(v) - vmin) / (vmax - vmin)
+export const getValuePercent = (v: number, vmin: number, vmax: number, scale: NumberScale = "linear") => {
+  if (vmax === vmin) return 0
+  if (scale === "linear") return (nan(v) - vmin) / (vmax - vmin)
+  const { to } = scaleFns(scale)
+  const low = to(vmin)
+  return (to(clampValue(nan(v), vmin, vmax)) - low) / (to(vmax) - low)
+}
 
 /** The value at a fraction of the range, on the step grid. */
-export const getPercentValue = (p: number, vmin: number, vmax: number, step: number) =>
-  clampValue(snapToGrid(p * (vmax - vmin) + vmin, vmin, step, round), vmin, vmax)
+export const getPercentValue = (p: number, vmin: number, vmax: number, step: number, scale: NumberScale = "linear") => {
+  let v = p * (vmax - vmin) + vmin
+  if (scale !== "linear") {
+    const { to, from } = scaleFns(scale)
+    v = from(to(vmin) + p * (to(vmax) - to(vmin)))
+  }
+  return clampValue(snapToGrid(v, vmin, step, round), vmin, vmax)
+}
 
 /** Decimal places a number is written with, including exponent notation like `1e-7`. */
 export const decimalsOf = (v: number) => {

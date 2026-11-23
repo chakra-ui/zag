@@ -53,7 +53,7 @@ function toInset(percent: number, extent: number) {
 
 export function getThumbOffset(params: Pick<Ctx, "context" | "prop">, value: number) {
   const { prop } = params
-  const percent = getValuePercent(value, prop("min"), prop("max")) * 100
+  const percent = getValuePercent(value, prop("min"), prop("max"), prop("scale")) * 100
   const inset = toInset(percent, getThumbExtent(params))
   return inset ? `calc(${percent}% - ${inset}px)` : `${percent}%`
 }

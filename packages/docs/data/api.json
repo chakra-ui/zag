@@ -7224,6 +7224,11 @@
         "description": "The step value of the slider when the `Shift` key is held, or the\n`PageUp`/`PageDown` keys are used.",
         "defaultValue": "10 * step"
       },
+      "scale": {
+        "type": "NumberScale | undefined",
+        "description": "How values spread along the track. `\"log\"` gives each ratio the same length (for volume, frequency or zoom,\nwith a positive `min`); pass `to` and `from` for your own curve. On a non-linear scale, arrow keys move 1% of\nthe track and `PageUp`/`PageDown` 10%.",
+        "defaultValue": "\"linear\""
+      },
       "minStepsBetweenThumbs": {
         "type": "number | undefined",
         "description": "The minimum permitted steps between multiple thumbs.\n\n`minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.\n\n- `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`\n- `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`",
