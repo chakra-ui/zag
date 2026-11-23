@@ -176,6 +176,25 @@ test.describe("slider", () => {
   })
 })
 
+test.describe("slider / off-grid max", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new SliderModel(page)
+    await I.goto()
+    await I.clickControls()
+    await I.controls.num("step", "3")
+  })
+
+  test("End and Home land on the step grid", async () => {
+    await I.focusThumb()
+    await I.pressKey("End")
+    await I.seeThumbValue(0, 99)
+    await I.pressKey("ArrowLeft")
+    await I.seeThumbValue(0, 96)
+    await I.pressKey("Home")
+    await I.seeThumbValue(0, 0)
+  })
+})
+
 test.describe("slider / disabled thumb", () => {
   // values [20, 50, 80]; the middle thumb is disabled
   test.beforeEach(async ({ page }) => {

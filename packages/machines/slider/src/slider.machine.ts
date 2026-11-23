@@ -386,13 +386,13 @@ export const machine = createMachine<SliderSchema>({
         const { context } = params
         const index = context.get("focusedIndex")
         const { min } = getRangeAtIndex(params, index)
-        context.set("value", (prev) => setValueAtIndex(prev, index, min))
+        context.set("value", (prev) => setValueAtIndex(prev, index, constrainValue(params, min, index)))
       },
       setFocusedThumbToMax(params) {
         const { context } = params
         const index = context.get("focusedIndex")
         const { max } = getRangeAtIndex(params, index)
-        context.set("value", (prev) => setValueAtIndex(prev, index, max))
+        context.set("value", (prev) => setValueAtIndex(prev, index, constrainValue(params, max, index)))
       },
       setValueAtIndex(params) {
         const { context, event } = params
