@@ -2054,8 +2054,8 @@ importers:
   packages/frameworks/solid:
     dependencies:
       '@solid-primitives/keyed':
-        specifier: ^1.5.3
-        version: 1.5.3(solid-js@1.9.19)
+        specifier: ^3.0.0
+        version: 3.0.0(@solidjs/web@2.0.3(solid-js@1.9.19))(solid-js@1.9.19)
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -7257,10 +7257,17 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@solid-primitives/keyed@1.5.3':
-    resolution: {integrity: sha512-zNadtyYBhJSOjXtogkGHmRxjGdz9KHc8sGGVAGlUABkE8BED2tbIZoxkwSqzOwde8OcUEH0bb5DLZUWIMvyBSA==}
+  '@solid-primitives/keyed@3.0.0':
+    resolution: {integrity: sha512-9C2d5kCpFh/XWPw5vmomxeEhzy6tMToIq47qx36C1kjPD4u0Cj6wV1ESDJi1sIwN9fsT09PXxSKzj2MnL1Ngqg==}
     peerDependencies:
-      solid-js: ^1.6.12
+      '@solidjs/web': ^2.0.0
+      solid-js: ^2.0.0
+
+  '@solid-primitives/utils@7.0.1':
+    resolution: {integrity: sha512-g5gcdsAF/lI2Pa/U+Hrj4FzE2CUCQiu7QCFcNrmX8jAPJvf8qOOYEA3DjcHHUCcIW2HSo9T5MEXkfYdZ9m5J4w==}
+    peerDependencies:
+      '@solidjs/web': ^2.0.0
+      solid-js: ^2.0.0
 
   '@solidjs/meta@0.29.4':
     resolution: {integrity: sha512-zdIWBGpR9zGx1p1bzIPqF5Gs+Ks/BH8R6fWhmUa/dcK1L2rUC8BAcZJzNRYBQv74kScf1TSOs0EY//Vd/I0V8g==}
@@ -7286,6 +7293,12 @@ packages:
     peerDependenciesMeta:
       '@solidjs/router':
         optional: true
+
+  '@solidjs/web@2.0.3':
+    resolution: {integrity: sha512-XYl9JGOtQ8yJSZRnd6uC+5gYXsYvnIRNxhn89m+F1v6D4d4ZFdTJY2Lq/8XJ3YcjckkCrK/mNfd3kIiqqgnG7w==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      solid-js: ^2.0.3
 
   '@speed-highlight/core@1.2.24':
     resolution: {integrity: sha512-qeW2e1l78afw8VhRPfPQ1Gjj+KU5XFQ/OFV5ti6eTa9bruO7mJyZtA4vw0ofqmA3tKCkROE9xLk3VZoeRc98nw==}
@@ -15325,8 +15338,15 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@solid-primitives/keyed@1.5.3(solid-js@1.9.19)':
+  '@solid-primitives/keyed@3.0.0(@solidjs/web@2.0.3(solid-js@1.9.19))(solid-js@1.9.19)':
     dependencies:
+      '@solid-primitives/utils': 7.0.1(@solidjs/web@2.0.3(solid-js@1.9.19))(solid-js@1.9.19)
+      '@solidjs/web': 2.0.3(solid-js@1.9.19)
+      solid-js: 1.9.19
+
+  '@solid-primitives/utils@7.0.1(@solidjs/web@2.0.3(solid-js@1.9.19))(solid-js@1.9.19)':
+    dependencies:
+      '@solidjs/web': 2.0.3(solid-js@1.9.19)
       solid-js: 1.9.19
 
   '@solidjs/meta@0.29.4(solid-js@1.9.17)':
@@ -15372,6 +15392,13 @@ snapshots:
       solid-js: 1.9.19
     optionalDependencies:
       '@solidjs/router': 0.16.1(solid-js@1.9.19)
+
+  '@solidjs/web@2.0.3(solid-js@1.9.19)':
+    dependencies:
+      csstype: 3.2.4
+      seroval: 1.8.2
+      seroval-plugins: 1.8.0(seroval@1.8.2)
+      solid-js: 1.9.19
 
   '@speed-highlight/core@1.2.24': {}
 
