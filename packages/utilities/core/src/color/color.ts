@@ -1,4 +1,5 @@
 import { clampValue, getPercentValue, getValuePercent, mod, snapValueToStep, toFixedNumber } from "../number"
+import { formatNumber } from "../i18n/format-number"
 import {
   clamp01,
   fromLinear,
@@ -145,14 +146,6 @@ const FORMAT_OF: Partial<Record<ColorStringFormat, ColorFormat>> = {
 
 // Values are kept at full precision and read at 4 decimals, so conversions leave no float noise
 const read = (n: number) => toFixedNumber(n, 4)
-
-const formatters = new Map<string, Intl.NumberFormat>()
-const getFormatter = (locale: string, options: Intl.NumberFormatOptions) => {
-  const key = locale + JSON.stringify(options)
-  let formatter = formatters.get(key)
-  if (!formatter) formatters.set(key, (formatter = new Intl.NumberFormat(locale, options)))
-  return formatter
-}
 
 function hueOf(r: number, g: number, b: number) {
   const min = Math.min(r, g, b)
@@ -304,7 +297,7 @@ export class ColorValue implements ColorType {
 
   formatChannelValue(channel: ColorChannel, locale: string): string {
     const { format, scale = 1 } = this.spec(channel)
-    return getFormatter(locale, format).format(this.getChannelValue(channel) / scale)
+    return formatNumber(this.getChannelValue(channel) / scale, locale, format)
   }
 
   getChannelValuePercent(channel: ColorChannel, valueToCheck?: number): number {

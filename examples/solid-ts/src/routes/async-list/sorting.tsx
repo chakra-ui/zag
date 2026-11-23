@@ -1,5 +1,5 @@
 import * as asyncList from "@zag-js/async-list"
-import { createCollator } from "@zag-js/i18n-utils"
+import { createCollator } from "@zag-js/utils/i18n"
 import { useMachine } from "@zag-js/solid"
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, LoaderCircleIcon } from "lucide-solid"
 import { createMemo, For, Show } from "solid-js"

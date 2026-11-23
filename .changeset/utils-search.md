@@ -1,6 +1,5 @@
 ---
 "@zag-js/utils": major
-"@zag-js/i18n-utils": major
 "@zag-js/dom-query": minor
 "@zag-js/collection": minor
 ---

@@ -1,4 +1,4 @@
-import { formatRelativeTime } from "../src"
+import { formatRelativeTime } from "../../src/i18n"
 import MockDate from "mockdate"
 
 beforeAll(() => {

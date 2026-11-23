@@ -373,9 +373,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -686,9 +683,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -999,9 +993,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -1309,9 +1300,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -1601,9 +1589,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -1905,9 +1890,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../../packages/machines/image-cropper
@@ -2880,9 +2862,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../utilities/i18n-utils
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../utilities/live-region
@@ -3204,9 +3183,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../utilities/i18n-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3985,6 +3961,9 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
+      mockdate:
+        specifier: ^3.0.5
+        version: 3.0.5
 
   packages/utilities/dismissable:
     dependencies:
@@ -4047,19 +4026,6 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
-
-  packages/utilities/i18n-utils:
-    dependencies:
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../dom-query
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-      mockdate:
-        specifier: ^3.0.5
-        version: 3.0.5
 
   packages/utilities/interact-outside:
     dependencies:
@@ -4271,9 +4237,6 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../packages/utilities/i18n-utils
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../packages/machines/image-cropper

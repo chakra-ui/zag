@@ -1,4 +1,4 @@
-import { formatTime } from "../src/format-time"
+import { formatTime } from "../../src/i18n"
 
 const normalize = (value: string | null) => value?.replace(/\u00a0|\u202f/g, " ") ?? value
 

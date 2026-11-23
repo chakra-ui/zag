@@ -42,11 +42,13 @@
     "./file": "./src/file/index.ts",
     "./date": "./src/date/index.ts",
     "./search": "./src/search/index.ts",
+    "./i18n": "./src/i18n/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {
     "@internationalized/date": "3.12.4",
-    "clean-package": "2.2.0"
+    "clean-package": "2.2.0",
+    "mockdate": "^3.0.5"
   },
   "peerDependencies": {
     "@internationalized/date": ">=3.0.0"

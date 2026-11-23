@@ -1,5 +1,5 @@
 import type { SortDescriptor, SortDirection } from "@zag-js/async-list"
-import { createCollator } from "@zag-js/i18n-utils"
+import { createCollator } from "@zag-js/utils/i18n"
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, LoaderCircleIcon } from "lucide-preact"
 import { useAsyncList } from "../../hooks/use-async-list"
 import "@styles/async-list.css"

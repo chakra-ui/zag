@@ -1,5 +1,5 @@
-import { getWindow } from "@zag-js/dom-query"
-import { getDefaultLocale, type Locale } from "./locale"
+import { getDefaultLocale } from "./locale"
+import type { Locale } from "./locale"
 
 export interface LocaleOptions {
   locale?: string | undefined
@@ -16,7 +16,9 @@ export function trackLocale(options: LocaleOptions = {}) {
     onLocaleChange?.(getDefaultLocale())
   }
 
-  const win = getRootNode ? getWindow(getRootNode()) : window
+  const node = getRootNode?.()
+  const doc = node?.nodeType === 9 ? (node as Document) : node?.ownerDocument
+  const win = doc?.defaultView ?? window
 
   win.addEventListener("languagechange", handleLocaleChange)
 

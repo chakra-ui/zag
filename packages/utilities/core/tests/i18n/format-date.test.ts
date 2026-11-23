@@ -1,4 +1,4 @@
-import { formatDate } from "../src/format-date"
+import { formatDate } from "../../src/i18n"
 
 const date = new Date(2022, 0, 1, 4, 15, 30)
 const run = (format: string, timeZone?: string) => formatDate(date, format, "en-US", timeZone)
@@ -54,10 +54,10 @@ describe("formatDate", () => {
   })
 
   test("format hour", () => {
-    expect(run("h")).toMatchInlineSnapshot(`"4 AM"`)
+    expect(run("h")).toMatchInlineSnapshot(`"4"`)
     expect(run("ho")).toMatchInlineSnapshot(`"4th"`)
-    expect(run("hh")).toMatchInlineSnapshot(`"04 AM"`)
-    expect(run("H")).toMatchInlineSnapshot(`"04"`)
+    expect(run("hh")).toMatchInlineSnapshot(`"04"`)
+    expect(run("H")).toMatchInlineSnapshot(`"4"`)
     expect(run("Ho")).toMatchInlineSnapshot(`"4th"`)
     expect(run("HH")).toMatchInlineSnapshot(`"04"`)
   })
@@ -89,6 +89,29 @@ describe("formatDate", () => {
     expect(run("EEEE")).toMatchInlineSnapshot(`"Saturday"`)
     expect(run("EEEEE")).toMatchInlineSnapshot(`"S"`)
     expect(run("EEEEEE")).toMatchInlineSnapshot(`"Sa"`)
+  })
+
+  test("pads single-digit minutes and seconds", () => {
+    const date = new Date(2022, 0, 1, 16, 5, 7)
+    expect(formatDate(date, "hh:mm:ss a", "en-US")).toBe("04:05:07 PM")
+  })
+
+  test("format era", () => {
+    expect(run("G")).toBe("AD")
+    expect(run("GGGG")).toBe("Anno Domini")
+  })
+
+  test("format day period", () => {
+    expect(run("a")).toBe("AM")
+    expect(run("aaaa")).toBe("am")
+  })
+
+  test("format timezone in a 24-hour locale", () => {
+    expect(formatDate(date, "z", "de-DE", "UTC")).toBe("GMT+0")
+  })
+
+  test("leaves text that isn't a token", () => {
+    expect(run("Today is EEEE")).toBe("Today is Saturday")
   })
 
   test.skip("format timezone", () => {

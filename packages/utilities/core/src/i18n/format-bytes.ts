@@ -33,7 +33,7 @@ export interface FormatBytesOptions {
   unitDisplay?: "long" | "short" | "narrow" | undefined
 }
 
-export const formatBytes = (bytes: number, locale = "en-US", options: FormatBytesOptions = {}) => {
+export function formatBytes(bytes: number, locale = "en-US", options: FormatBytesOptions = {}): string {
   if (Number.isNaN(bytes)) return ""
   if (bytes === 0) return "0 B"
 
@@ -42,26 +42,15 @@ export const formatBytes = (bytes: number, locale = "en-US", options: FormatByte
   const factor = unitSystem === "binary" ? 1024 : 1000
   const prefix = unit === "bit" ? bitPrefixes : bytePrefixes
 
-  // Handle negative values
-  const isNegative = bytes < 0
-  const absoluteBytes = Math.abs(bytes)
-
-  // Find the appropriate unit using iterative division
-  let value = absoluteBytes
+  let value = Math.abs(bytes)
   let index = 0
-
   while (value >= factor && index < prefix.length - 1) {
     value /= factor
     index++
   }
 
-  // Apply precision
-  const v = parseFloat(value.toPrecision(precision))
-
-  // Restore sign if negative
-  const finalValue = isNegative ? -v : v
-
-  return formatNumber(finalValue, locale, {
+  const rounded = parseFloat(value.toPrecision(precision))
+  return formatNumber(bytes < 0 ? -rounded : rounded, locale, {
     style: "unit",
     unit: prefix[index] + unit,
     unitDisplay,

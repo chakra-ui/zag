@@ -1,5 +1,6 @@
 export { createFilter, type FilterOptions, type FilterReturn } from "./filter"
-export { createFuzzySearch, fuzzyScore, getFuzzyMatchRanges, rankItems } from "./fuzzy"
+export { createFuzzySearch, fuzzyScore, rankItems } from "./fuzzy"
+export { getFuzzyMatchRanges } from "./fuzzy-ranges"
 export { highlightRanges, highlightWord } from "./highlight"
 export {
   createTypeaheadState,

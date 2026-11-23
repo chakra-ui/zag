@@ -1,6 +1,6 @@
 import { contains, dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getFileEntries } from "@zag-js/utils/file"
-import { formatBytes } from "@zag-js/i18n-utils"
+import { formatBytes } from "@zag-js/utils/i18n"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { flatArray } from "@zag-js/utils/array"
 import { mergeWithDefault } from "@zag-js/utils/object"

@@ -78,7 +78,7 @@ Each utility's page is at `{docs}/utilities/{slug}.md`.
 | Focus Trap           | `focus-trap`           | `@zag-js/focus-trap`      | Using the Focus Trap utility in your project.                                                                             |
 | Grid collection      | `grid-collection`      | `@zag-js/collection`      | A list collection laid out in rows and columns, for grid keyboard navigation.                                             |
 | Hotkeys              | `hotkeys`              | `@zag-js/hotkeys`         | Using the hotkeys utility in your project.                                                                                |
-| i18n                 | `i18n`                 | `@zag-js/i18n-utils`      | Cached locale-aware formatters and locale direction helpers.                                                              |
+| i18n                 | `i18n`                 | `@zag-js/utils`           | Cached locale-aware formatters and locale direction helpers.                                                              |
 | Infinite Scroll      | `infinite-scroll`      | `@zag-js/infinite-scroll` | Load the next page when the user scrolls near the edge.                                                                   |
 | List collection      | `list-collection`      | `@zag-js/collection`      | A flat list of items with lookup, navigation and immutable updates.                                                       |
 | Page list collection | `page-list-collection` | `@zag-js/collection`      | A list collection for nested pages of items, like a command menu.                                                         |

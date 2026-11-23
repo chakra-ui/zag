@@ -1,5 +1,5 @@
 /* eslint-disable no-irregular-whitespace */
-import { formatBytes, type FormatBytesOptions } from "../src"
+import { formatBytes, type FormatBytesOptions } from "../../src/i18n"
 
 describe("formatBytes", () => {
   describe("edge cases", () => {

@@ -114,6 +114,16 @@
           "default": "./dist/search/index.js"
         }
       },
+      "./i18n": {
+        "import": {
+          "types": "./dist/i18n/index.d.mts",
+          "default": "./dist/i18n/index.mjs"
+        },
+        "require": {
+          "types": "./dist/i18n/index.d.ts",
+          "default": "./dist/i18n/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

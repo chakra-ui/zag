@@ -49,7 +49,6 @@
     "@zag-js/gridlist": "workspace:*",
     "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
-    "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/image-cropper": "workspace:*",
     "@zag-js/infinite-scroll": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",

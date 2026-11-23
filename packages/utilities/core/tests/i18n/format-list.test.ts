@@ -1,4 +1,4 @@
-import { formatList } from "../src/format-list"
+import { formatList } from "../../src/i18n"
 
 const items = ["react", "svelte", "vue"]
 

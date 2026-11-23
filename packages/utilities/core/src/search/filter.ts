@@ -1,3 +1,5 @@
+import { createCollator } from "../i18n/collator"
+
 export interface FilterReturn {
   startsWith(string: string, substring: string): boolean
   endsWith(string: string, substring: string): boolean
@@ -8,25 +10,13 @@ export interface FilterOptions extends Intl.CollatorOptions {
   locale?: string | undefined
 }
 
-const collators = new Map<string, Intl.Collator>()
-
-function getCollator(locale: string, options: Intl.CollatorOptions) {
-  const key = locale + JSON.stringify(Object.entries(options).sort())
-  let collator = collators.get(key)
-  if (!collator) {
-    collator = new Intl.Collator(locale, options)
-    collators.set(key, collator)
-  }
-  return collator
-}
-
 /**
  * Creates locale-aware string matchers backed by `Intl.Collator`.
  * With `sensitivity: "base"`, they ignore case and accents.
  */
 export function createFilter(options?: FilterOptions): FilterReturn {
   const { locale = "en-US", ...rest } = options || {}
-  const collator = getCollator(locale, { usage: "search", ...rest })
+  const collator = createCollator(locale, { usage: "search", ...rest })
   const ignorePunctuation = collator.resolvedOptions().ignorePunctuation
 
   function normalize(string: string) {
