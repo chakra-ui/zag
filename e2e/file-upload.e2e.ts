@@ -165,3 +165,44 @@ test.describe("file-upload", () => {
     expect(tracker.count).toBe(1)
   })
 })
+
+test.describe("file-upload / drag status", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new FileUploadModel(page)
+    await I.goto()
+    await I.clickControls()
+  })
+
+  test("files of an accepted type are marked as acceptable", async () => {
+    await I.controls.text("accept", "image/*")
+    await I.dispatchDrag("dragover", [{ name: "photo.png", type: "image/png" }])
+    await I.seeDragStatus("accept")
+  })
+
+  test("a file of a type that accept rules out is marked as rejected", async () => {
+    await I.controls.text("accept", "image/*")
+    await I.dispatchDrag("dragover", [{ name: "doc.pdf", type: "application/pdf" }])
+    await I.seeDragStatus("reject")
+  })
+
+  test("more files than maxFiles are marked as rejected", async () => {
+    await I.dispatchDrag("dragover", [
+      { name: "a.txt", type: "text/plain" },
+      { name: "b.txt", type: "text/plain" },
+    ])
+    await I.seeDragStatus("reject")
+  })
+
+  test("dropping clears the status", async () => {
+    await I.uploadFileViaDragAndDrop(path.join(__dirname, "fixtures/text.txt"))
+    await I.seeItem("text.txt")
+    await I.seeDragStatus(null)
+  })
+
+  test("leaving the dropzone clears the status", async () => {
+    await I.dispatchDrag("dragover")
+    await I.seeDragStatus("accept")
+    await I.dispatchDrag("dragleave")
+    await I.seeDragStatus(null)
+  })
+})

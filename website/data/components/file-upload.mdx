@@ -284,6 +284,17 @@ const service = useMachine(fileUpload.machine, {
 
 </Example>
 
+### Drag status
+
+While dragging, the dropzone gets `data-drag-reject` when a file's type isn't in
+`accept` or there are too many files, and `data-drag-accept` otherwise.
+
+```css
+[data-file-upload-dropzone][data-drag-reject] {
+  border-color: red;
+}
+```
+
 ### Disable drag and drop
 
 Set `allowDrop` to `false` to disable drag and drop.

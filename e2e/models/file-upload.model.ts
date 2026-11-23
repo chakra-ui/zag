@@ -92,12 +92,23 @@ export class FileUploadModel extends Model {
     return await fileChooserPromise
   }
 
-  dispatchDrag(type: "dragover" | "dragleave") {
-    return this.getDropzone().evaluate((el, type) => {
-      const dataTransfer = new DataTransfer()
-      dataTransfer.items.add(new File(["text"], "text.txt", { type: "text/plain" }))
-      el.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
-    }, type)
+  dispatchDrag(type: "dragover" | "dragleave", files = [{ name: "text.txt", type: "text/plain" }]) {
+    return this.getDropzone().evaluate(
+      (el, { type, files }) => {
+        const dataTransfer = new DataTransfer()
+        for (const file of files) dataTransfer.items.add(new File(["x"], file.name, { type: file.type }))
+        el.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
+      },
+      { type, files },
+    )
+  }
+
+  async seeDragStatus(status: "accept" | "reject" | null) {
+    const dropzone = this.getDropzone()
+    for (const name of ["accept", "reject"]) {
+      if (name === status) await expect(dropzone).toHaveAttribute(`data-drag-${name}`, "")
+      else await expect(dropzone).not.toHaveAttribute(`data-drag-${name}`)
+    }
   }
 
   async seeDragging(dragging = true) {

@@ -19,6 +19,16 @@
 [data-file-upload-dropzone][data-dragging] {
   border-color: blue;
   background-color: lightblue;
+
+  &[data-drag-accept] {
+    border-color: var(--z-accent);
+    background-color: var(--z-accent-subtle);
+  }
+
+  &[data-drag-reject] {
+    border-color: var(--z-danger);
+    background-color: var(--z-danger-subtle);
+  }
 }
 
 [data-file-upload-dropzone][data-invalid] {

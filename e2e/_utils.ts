@@ -48,6 +48,11 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectOption(value)
     },
+    text: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.fill(value)
+      await page.keyboard.press("Enter")
+    },
     date: async (id: string, value: string) => {
       const el = page.locator(testid(id))
       await el.fill(value)

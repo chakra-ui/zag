@@ -172,6 +172,10 @@ interface Context {
    * Whether files are currently being transformed
    */
   transforming: boolean
+  /**
+   * Whether the files being dragged look acceptable, from their types and count
+   */
+  dragStatus: "accept" | "reject" | null
 }
 
 type Computed = {
@@ -239,6 +243,14 @@ export interface RootState {
    * Whether the user is dragging something over the root element
    */
   dragging: boolean
+  /**
+   * Whether the dragged files look acceptable, from their types and count
+   */
+  dragAccept: boolean
+  /**
+   * Whether a dragged file has a type `accept` rules out, or there are too many
+   */
+  dragReject: boolean
 }
 
 export interface DropzoneState {
@@ -254,6 +266,14 @@ export interface DropzoneState {
    * Whether the user is dragging something over the dropzone element
    */
   dragging: boolean
+  /**
+   * Whether the dragged files look acceptable, from their types and count
+   */
+  dragAccept: boolean
+  /**
+   * Whether a dragged file has a type `accept` rules out, or there are too many
+   */
+  dragReject: boolean
   /**
    * Whether the file input is invalid
    */

@@ -44,6 +44,8 @@ export function connect<T extends PropTypes>(
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const dragging = state.matches("dragging")
+  const dragAccept = dragging && context.get("dragStatus") === "accept"
+  const dragReject = dragging && context.get("dragStatus") === "reject"
   const focused = state.matches("focused") && !disabled
 
   const acceptedFiles = context.get("acceptedFiles")
@@ -54,11 +56,11 @@ export function connect<T extends PropTypes>(
   // -----------------------------------------------------------------------------
 
   function getRootState(): RootState {
-    return { disabled, readOnly, dragging }
+    return { disabled, readOnly, dragging, dragAccept, dragReject }
   }
 
   function getDropzoneState(): DropzoneState {
-    return { disabled, readOnly, dragging, invalid: !!prop("invalid") }
+    return { disabled, readOnly, dragging, dragAccept, dragReject, invalid: !!prop("invalid") }
   }
 
   function getTriggerState(): TriggerState {
@@ -141,6 +143,8 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(rootState.disabled),
         "data-readonly": dataAttr(rootState.readOnly),
         "data-dragging": dataAttr(rootState.dragging),
+        "data-drag-accept": dataAttr(rootState.dragAccept),
+        "data-drag-reject": dataAttr(rootState.dragReject),
       })
     },
 
@@ -158,6 +162,8 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(dropzoneState.disabled),
         "data-readonly": dataAttr(dropzoneState.readOnly),
         "data-dragging": dataAttr(dropzoneState.dragging),
+        "data-drag-accept": dataAttr(dropzoneState.dragAccept),
+        "data-drag-reject": dataAttr(dropzoneState.dragReject),
         onKeyDown(event) {
           if (disabled || readOnly) return
           if (event.defaultPrevented) return
@@ -197,8 +203,8 @@ export function connect<T extends PropTypes>(
           const hasFiles = isEventWithFiles(event)
           if (!hasFiles) return
 
-          const count = event.dataTransfer.items.length
-          send({ type: "DROPZONE.DRAG_OVER", count })
+          const items = Array.from(event.dataTransfer.items).filter((item) => item.kind === "file")
+          send({ type: "DROPZONE.DRAG_OVER", count: items.length, types: items.map((item) => item.type) })
         },
         onDragLeave(event) {
           if (disabled || readOnly) return

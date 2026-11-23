@@ -97,6 +97,22 @@ export function createFileTypeValidator(accept: string[] | string | undefined) {
   }
 }
 
+/**
+ * Whether a dragged file's MIME type can match `accept`. A drag exposes types but not names, so an empty type, or
+ * an extension rule with an unknown type, counts as a match.
+ */
+export function isAcceptedDragType(type: string, accept: string[] | string | undefined): boolean {
+  const matchers = parseAccept(accept)
+  const mime = type.split(";")[0].trim().toLowerCase()
+  if (!matchers || !mime) return true
+  if (matchers.mimes.includes(mime)) return true
+  if (matchers.baseMimes.includes(mime.slice(0, mime.indexOf("/")))) return true
+  return matchers.extensions.some((ext) => {
+    const extMime = getFileMimeType(ext)
+    return !extMime || extMime === mime
+  })
+}
+
 export function isValidFileType(file: File, accept: string | undefined): [boolean, FileError | null] {
   return createFileTypeValidator(accept)(file)
 }

@@ -1,12 +1,12 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
-import { getAcceptAttrString, isFileEqual } from "@zag-js/utils/file"
+import { getAcceptAttrString, isAcceptedDragType, isFileEqual } from "@zag-js/utils/file"
 import { createLiveRegion } from "@zag-js/live-region"
 import { callAll } from "@zag-js/utils/functions"
 import { warn } from "@zag-js/utils/guard"
 import * as dom from "./file-upload.dom"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
-import { announce, getEventFiles, setInputFiles } from "./file-upload.utils"
+import { announce, getEventFiles, isFilesWithinRange, setInputFiles } from "./file-upload.utils"
 
 export const machine = createMachine<FileUploadSchema>({
   props({ props }) {
@@ -59,6 +59,9 @@ export const machine = createMachine<FileUploadSchema>({
       })),
       transforming: bindable<boolean>(() => ({
         defaultValue: false,
+      })),
+      dragStatus: bindable<"accept" | "reject" | null>(() => ({
+        defaultValue: null,
       })),
     }
   },
@@ -116,6 +119,7 @@ export const machine = createMachine<FileUploadSchema>({
         },
         "DROPZONE.DRAG_OVER": {
           target: "dragging",
+          actions: ["setDragStatus"],
         },
       },
     },
@@ -132,10 +136,12 @@ export const machine = createMachine<FileUploadSchema>({
         },
         "DROPZONE.DRAG_OVER": {
           target: "dragging",
+          actions: ["setDragStatus"],
         },
       },
     },
     dragging: {
+      exit: ["clearDragStatus"],
       on: {
         "DROPZONE.DROP": {
           target: "idle",
@@ -177,6 +183,16 @@ export const machine = createMachine<FileUploadSchema>({
     },
 
     actions: {
+      setDragStatus(params) {
+        const { context, event, computed } = params
+        const types: string[] = event.types ?? []
+        const tooMany = !isFilesWithinRange(params, event.count, context.get("acceptedFiles"))
+        const rejected = tooMany || types.some((type) => !isAcceptedDragType(type, computed("acceptAttr")))
+        context.set("dragStatus", rejected ? "reject" : "accept")
+      },
+      clearDragStatus({ context }) {
+        context.set("dragStatus", null)
+      },
       syncInputElement({ scope, context }) {
         queueMicrotask(() => {
           const inputEl = dom.getHiddenInputEl(scope)
