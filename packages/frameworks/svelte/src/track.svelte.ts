@@ -1,4 +1,4 @@
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import { untrack } from "svelte"
 
 const access = (value: any) => {

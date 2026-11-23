@@ -1,5 +1,5 @@
 import { createProps } from "@zag-js/types"
-import { createSplitProps } from "@zag-js/utils"
+import { createSplitProps } from "@zag-js/utils/object"
 import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, SelectProps } from "./select.types"
 
 export const props = createProps<SelectProps>()([

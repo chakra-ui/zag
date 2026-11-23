@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { ariaAttr, dataAttr, isAndroid, isApple, isComposingEvent, recordCursor } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./editable.anatomy"
 import * as dom from "./editable.dom"
 import type { EditableApi, EditableSchema, IntlTranslations, RootState } from "./editable.types"

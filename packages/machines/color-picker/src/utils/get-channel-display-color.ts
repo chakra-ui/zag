@@ -1,4 +1,4 @@
-import { parseColor, type Color, type ColorChannel } from "@zag-js/color-utils"
+import { parseColor, type Color, type ColorChannel } from "@zag-js/utils/color"
 
 export function getChannelDisplayColor(color: Color, channel: ColorChannel) {
   const fmt = color.getFormat()

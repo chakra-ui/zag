@@ -2,7 +2,8 @@ import type { Scope } from "@zag-js/core"
 import { contains, getComputedStyle, getDocument, getScale, getWindow, isWebKit } from "@zag-js/dom-query"
 import { getPlacement, type Placement, type PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/types"
-import { clampValue, noop, toPx } from "@zag-js/utils"
+import { noop } from "@zag-js/utils/functions"
+import { clampValue, toPx } from "@zag-js/utils/number"
 import * as dom from "./select.dom"
 
 /* -----------------------------------------------------------------------------

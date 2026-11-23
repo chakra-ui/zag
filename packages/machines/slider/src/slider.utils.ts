@@ -1,5 +1,5 @@
 import type { Params } from "@zag-js/core"
-import { clampValue, getValuePercent, getValueRanges, setValueAtIndex, snapValueToStep } from "@zag-js/utils"
+import { clampValue, getValuePercent, getValueRanges, setValueAtIndex, snapValueToStep } from "@zag-js/utils/number"
 import type { Size } from "@zag-js/types"
 import type { SliderOrigin, SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 

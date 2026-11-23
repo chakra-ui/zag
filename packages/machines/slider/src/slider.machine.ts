@@ -6,16 +6,16 @@ import {
   trackFormControl,
   trackPointerMove,
 } from "@zag-js/dom-query"
+import { isEqual } from "@zag-js/utils/object"
+import { callAll } from "@zag-js/utils/functions"
 import {
-  callAll,
   clampValue,
   getValuePercent,
   getValueRanges,
-  isEqual,
   isValueWithinRange,
   setValueAtIndex,
   snapValueToStep,
-} from "@zag-js/utils"
+} from "@zag-js/utils/number"
 import * as dom from "./slider.dom"
 import type { SliderSchema, ValueChangeReason } from "./slider.types"
 import {

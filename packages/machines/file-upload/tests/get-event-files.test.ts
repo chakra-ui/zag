@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { getFileKey, isFileEqual } from "@zag-js/file-utils"
+import { getFileKey, isFileEqual } from "@zag-js/utils/file"
 import { getEventFiles } from "../src/file-upload.utils"
 
 const file = (name: string, size = 10, type = "text/plain") => ({ name, size, type }) as File

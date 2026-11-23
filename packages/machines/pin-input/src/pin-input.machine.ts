@@ -1,6 +1,8 @@
 import { setup } from "@zag-js/core"
 import { AnimationFrame, dispatchInputValueEvent } from "@zag-js/dom-query"
-import { ensureProps, isEqual, setValueAtIndex, warn } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
+import { ensureProps, warn } from "@zag-js/utils/guard"
+import { setValueAtIndex } from "@zag-js/utils/number"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 

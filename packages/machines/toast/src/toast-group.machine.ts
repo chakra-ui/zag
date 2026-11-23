@@ -1,7 +1,7 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
-import { uuid } from "@zag-js/utils"
+import { uuid } from "@zag-js/utils/functions"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
 

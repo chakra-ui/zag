@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
-import { compact, noop } from "@zag-js/utils"
+import { noop } from "@zag-js/utils/functions"
+import { compact } from "@zag-js/utils/object"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import type { Layer, LayerDismissEvent, LayerSnapshot, LayerType } from "../src/layer-stack"
 import { layerStack } from "../src/layer-stack"

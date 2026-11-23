@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { FileError, FileMimeType } from "@zag-js/file-utils"
+import type { FileError, FileMimeType } from "@zag-js/utils/file"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"

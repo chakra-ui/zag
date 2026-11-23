@@ -157,11 +157,11 @@ export const machine = createMachine<AngleSliderSchema>({
         context.set("value", clampAngle(event.value))
       },
       decrementValue({ context, event, prop }) {
-        const value = snapAngleToStep(context.get("value") - event.step, event.step ?? prop("step"))
+        const value = snapAngleToStep(context.get("value") - event.step, prop("step"))
         context.set("value", value)
       },
       incrementValue({ context, event, prop }) {
-        const value = snapAngleToStep(context.get("value") + event.step, event.step ?? prop("step"))
+        const value = snapAngleToStep(context.get("value") + event.step, prop("step"))
         context.set("value", value)
       },
       focusThumb({ scope, refs }) {

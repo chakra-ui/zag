@@ -1,6 +1,6 @@
 import { ariaAttr, dataAttr, getNativeEvent, isLeftClick, isVirtualClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./password-input.anatomy"
 import * as dom from "./password-input.dom"
 import type { IntlTranslations, PasswordInputApi, PasswordInputService, RootState } from "./password-input.types"

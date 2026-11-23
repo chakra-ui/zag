@@ -1,5 +1,5 @@
-import { dataAttr, getEventKey, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, getEventMove, getEventPoint, getNativeEvent, isLeftClick } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderApi, AngleSliderService, MarkerProps, MarkerState, RootState } from "./angle-slider.types"
@@ -170,39 +170,16 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (!interactive) return
 
-          const step = getEventStep(event) * prop("step")
+          const move = getEventMove(event, { dir: prop("dir") })
+          if (!move) return
 
-          const keyMap: EventKeyMap = {
-            ArrowLeft() {
-              send({ type: "THUMB.ARROW_DEC", step })
-            },
-            ArrowUp() {
-              send({ type: "THUMB.ARROW_DEC", step })
-            },
-            ArrowRight() {
-              send({ type: "THUMB.ARROW_INC", step })
-            },
-            ArrowDown() {
-              send({ type: "THUMB.ARROW_INC", step })
-            },
-            Home() {
-              send({ type: "THUMB.HOME" })
-            },
-            End() {
-              send({ type: "THUMB.END" })
-            },
+          if ("bound" in move) {
+            send({ type: move.bound === "min" ? "THUMB.HOME" : "THUMB.END" })
+          } else {
+            const step = move.size === "large" ? prop("step") * 10 : prop("step")
+            send({ type: move.direction > 0 ? "THUMB.ARROW_INC" : "THUMB.ARROW_DEC", step })
           }
-
-          const key = getEventKey(event, {
-            dir: prop("dir"),
-            orientation: "horizontal",
-          })
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          event.preventDefault()
         },
         style: {
           rotate: `var(--angle)`,

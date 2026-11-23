@@ -2,7 +2,7 @@ import {
   ariaAttr,
   dataAttr,
   getEventPoint,
-  getEventStepValue,
+  getEventMove,
   getNativeEvent,
   getWindow,
   isComposingEvent,
@@ -15,8 +15,9 @@ import {
   setCaretToEnd,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { mergeWithDefault, roundToDpr, toPx } from "@zag-js/utils"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { roundToDpr, toPx } from "@zag-js/utils/number"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import { defaultTranslations } from "./number-input.translations"
@@ -223,53 +224,27 @@ export function connect<T extends PropTypes>(
           if (readOnly) return
           if (isComposingEvent(event)) return
 
-          const step = getEventStepValue(event, {
-            step: prop("step"),
-            largeStep: prop("largeStep"),
-            smallStep: prop("smallStep"),
-          })
-
-          const keyMap: EventKeyMap<HTMLInputElement> = {
-            ArrowUp() {
-              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            ArrowDown() {
-              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            PageUp() {
-              send({ type: "INPUT.ARROW_UP", step, src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            PageDown() {
-              send({ type: "INPUT.ARROW_DOWN", step, src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            Home() {
-              if (isModifierKey(event) || min == null) return
-              send({ type: "INPUT.HOME", src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            End() {
-              if (isModifierKey(event) || max == null) return
-              send({ type: "INPUT.END", src: "keyboard" })
-              event.preventDefault()
-              event.stopPropagation()
-            },
-            Enter(event) {
-              const selection = recordCursor(event.currentTarget)
-              send({ type: "INPUT.ENTER", selection, src: "keyboard" })
-            },
+          if (event.key === "Enter") {
+            const selection = recordCursor(event.currentTarget)
+            send({ type: "INPUT.ENTER", selection, src: "keyboard" })
+            return
           }
 
-          const exec = keyMap[event.key]
-          exec?.(event)
+          // Left and Right keep moving the caret
+          const move = getEventMove(event, { arrows: "vertical" })
+          if (!move) return
+
+          if ("bound" in move) {
+            // Ctrl or Cmd with Home and End still moves the caret, and an open bound has nowhere to go
+            if (isModifierKey(event) || (move.bound === "min" ? min : max) == null) return
+            send({ type: move.bound === "min" ? "INPUT.HOME" : "INPUT.END", src: "keyboard" })
+          } else {
+            const step =
+              move.size === "large" ? prop("largeStep") : move.size === "small" ? prop("smallStep") : prop("step")
+            send({ type: move.direction > 0 ? "INPUT.ARROW_UP" : "INPUT.ARROW_DOWN", step, src: "keyboard" })
+          }
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },

@@ -1,4 +1,4 @@
-import { clampValue } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
 import type { ResolvedSnapPoint, SnapPoint } from "../drawer.types"
 
 export interface ResolveSnapPointOptions {

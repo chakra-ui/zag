@@ -1,5 +1,7 @@
 import type { Required } from "@zag-js/types"
-import { compact, hasProp, runIfFn, uuid, warn } from "@zag-js/utils"
+import { runIfFn, uuid } from "@zag-js/utils/functions"
+import { hasProp, warn } from "@zag-js/utils/guard"
+import { compact } from "@zag-js/utils/object"
 import type {
   Options,
   ToastQueuePriority,

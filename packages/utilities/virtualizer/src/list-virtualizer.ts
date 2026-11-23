@@ -1,4 +1,5 @@
-import { clampValue, invariant, isFunction, isNumber } from "@zag-js/utils"
+import { isFunction, isNumber, invariant } from "@zag-js/utils/guard"
+import { clampValue } from "@zag-js/utils/number"
 import { AnimationFrame, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,

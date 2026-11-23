@@ -1,5 +1,5 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
 import type { DrawerStack, DrawerStackApi, DrawerStackSnapshot } from "./drawer.types"
 
 type DrawerEntry = {

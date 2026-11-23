@@ -1,4 +1,4 @@
-import { isNumber } from "@zag-js/utils"
+import { isNumber } from "@zag-js/utils/guard"
 import type { Pages } from "./pagination.types"
 
 export const range = (start: number, end: number) => {

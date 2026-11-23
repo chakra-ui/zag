@@ -1,4 +1,4 @@
-import type { ColorChannel } from "@zag-js/color-utils"
+import type { ColorChannel } from "@zag-js/utils/color"
 import type { Scope } from "@zag-js/core"
 import { getRelativePoint, queryAll } from "@zag-js/dom-query"
 import type { Direction, Point } from "@zag-js/types"

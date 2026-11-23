@@ -1,5 +1,5 @@
 import { createProps } from "@zag-js/types"
-import { createSplitProps } from "@zag-js/utils"
+import { createSplitProps } from "@zag-js/utils/object"
 import type { SignaturePadProps } from "./signature-pad.types"
 
 export const props = createProps<SignaturePadProps>()([

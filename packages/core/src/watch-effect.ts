@@ -1,4 +1,4 @@
-import type { Teardown, TeardownReason } from "@zag-js/utils"
+import type { Teardown, TeardownReason } from "@zag-js/types"
 
 const $watchEffect = Symbol.for("zag.watchEffect")
 

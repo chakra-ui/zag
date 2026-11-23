@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { createFormatter, createParser, formatValue, parseValue, snapToStep } from "../src/number-input.utils"
+import { createFormatter, createParser, formatNumber, formatValue, parseValue } from "../src/number-input.utils"
 
 const setup = (locale: string, formatOptions?: Intl.NumberFormatOptions) => {
   const formatter = createFormatter(locale, formatOptions)
@@ -34,18 +34,21 @@ describe("without formatOptions", () => {
   })
 })
 
-describe("snapToStep", () => {
-  test("rounds toward where the step came from", () => {
-    expect(snapToStep(6.5, 0, 1, 1)).toBe(6)
-    expect(snapToStep(4.5, 0, 1, -1)).toBe(5)
+describe("createFormatter / step decimals", () => {
+  const show = (value: number, options: Intl.NumberFormatOptions, step: number) =>
+    formatNumber(value, createFormatter("en-US", options, step), options)
+
+  test("shows the step's decimals past Intl's default of three", () => {
+    expect(show(0.0001, { useGrouping: true }, 0.0001)).toBe("0.0001")
+    expect(show(0.0001, { style: "percent" }, 0.0001)).toBe("0.01%")
   })
 
-  test("keeps a value already on the grid despite float noise", () => {
-    expect(snapToStep(0.1 + 0.2, 0, 0.1, 1)).toBe(0.3)
-    expect(snapToStep(0.7 - 0.1, 0, 0.1, -1)).toBe(0.6)
+  test("never shows fewer decimals than Intl would", () => {
+    expect(show(1.5, { style: "currency", currency: "USD" }, 1)).toBe("$1.50")
+    expect(show(1234, { style: "currency", currency: "JPY" }, 1)).toBe("¥1,234")
   })
 
-  test("measures the grid from the base", () => {
-    expect(snapToStep(2, 0.5, 1, 1)).toBe(1.5)
+  test("keeps a maximum of your own", () => {
+    expect(show(1.23456, { maximumFractionDigits: 1 }, 0.0001)).toBe("1.2")
   })
 })

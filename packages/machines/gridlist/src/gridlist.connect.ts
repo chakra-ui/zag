@@ -14,7 +14,7 @@ import {
   isInteractiveDescendant,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils/guard"
 import { parts } from "./gridlist.anatomy"
 import * as dom from "./gridlist.dom"
 import type {

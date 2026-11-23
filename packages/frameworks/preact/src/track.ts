@@ -1,4 +1,4 @@
-import { noop } from "@zag-js/utils"
+import { noop } from "@zag-js/utils/functions"
 import { useEffect, useLayoutEffect, useRef } from "preact/hooks"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {

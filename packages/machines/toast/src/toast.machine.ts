@@ -1,6 +1,7 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, AnimationFrame, AnimationFrameTimeout, contains, raf } from "@zag-js/dom-query"
-import { callAll, ensureProps, warn } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils/functions"
+import { ensureProps, warn } from "@zag-js/utils/guard"
 import * as dom from "./toast.dom"
 import type { ToastSchema } from "./toast.types"
 import { getToastDuration, setHeight } from "./toast.utils"

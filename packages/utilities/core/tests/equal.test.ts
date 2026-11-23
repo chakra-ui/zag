@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { isEqual } from "../src/equal"
+import { isEqual } from "../src/object"
 
 describe("isEqual", () => {
   test("should return true for equal primitive values", () => {

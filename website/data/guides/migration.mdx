@@ -24,6 +24,29 @@ Some adapters need a newer framework:
 - **Solid:** `solid-js` and `@solidjs/web` `>=2.0.0-rc.19`
 - **Preact:** `preact` `>=11`. `preact/compat` is no longer needed.
 
+## Utility packages
+
+Some utility packages moved into `@zag-js/utils`, and collections are now
+created with functions.
+
+| v1                                  | v2                                         |
+| ----------------------------------- | ------------------------------------------ |
+| `@zag-js/color-utils`               | `@zag-js/utils/color`                      |
+| `@zag-js/file-utils`                | `@zag-js/utils/file`                       |
+| `@zag-js/date-utils`                | `@zag-js/utils/date`                       |
+| Number helpers from `@zag-js/utils` | `@zag-js/utils/number` (still in the root) |
+| `new ListCollection(options)`       | `createListCollection(options)`            |
+| `new GridCollection(options)`       | `createGridCollection(options)`            |
+| `new PageListCollection(options)`   | `createPageListCollection(options)`        |
+| `new TreeCollection(options)`       | `createTreeCollection(options)`            |
+
+The collection class names are now types only.
+
+`@zag-js/utils/color` exports `Color` as a type. The `OklabColor` and
+`OklchColor` classes and the OKLab math helpers that `@zag-js/color-utils`
+exported are removed; use `parseColor` and the color's `toFormat` and
+`getChannelValue` instead.
+
 ## Run the codemod
 
 The codemod applies most of this guide for you: selectors in stylesheets,
@@ -435,3 +458,7 @@ These compile without changes but behave differently.
   `oppositeDirectionMap` and `ScalingOptions` are removed.
 - `@zag-js/utils`: `isEqual` compares functions by reference and only reads an
   object's own properties.
+- `@zag-js/utils`: `fromLength`, `isValueAtMax`, `isValueAtMin`,
+  `getNextStepValue`, `getPreviousStepValue`, `getValueSetterAtIndex`,
+  `getClosestValue`, `getClosestValueIndex`, `getMinValueAtIndex`,
+  `getMaxValueAtIndex`, `getValueTransformer` and `roundValue` are removed.

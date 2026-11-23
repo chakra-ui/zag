@@ -5,7 +5,9 @@ import {
   type InteractOutsideHandlers,
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
-import { warn, type MaybeFunction, type TeardownReason } from "@zag-js/utils"
+import type { TeardownReason } from "@zag-js/types"
+import type { MaybeFunction } from "@zag-js/utils/functions"
+import { warn } from "@zag-js/utils/guard"
 import { trackEscapeKeydown } from "./escape-keydown"
 import {
   isPointerBlocking,

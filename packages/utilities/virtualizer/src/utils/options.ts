@@ -1,4 +1,4 @@
-import { isFunction, isObject } from "@zag-js/utils"
+import { isFunction, isObject } from "@zag-js/utils/guard"
 
 const isShallowEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) return true

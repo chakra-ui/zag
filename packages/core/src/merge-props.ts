@@ -1,4 +1,5 @@
-import { callAll, isString } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils/functions"
+import { isString } from "@zag-js/utils/guard"
 
 interface Props {
   [key: string | symbol]: any

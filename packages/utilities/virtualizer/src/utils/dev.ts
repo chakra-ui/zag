@@ -1,4 +1,4 @@
-import { warn } from "@zag-js/utils"
+import { warn } from "@zag-js/utils/guard"
 
 export type SetupWarning = "scaled-container" | "unconstrained-container" | "unmeasured-items" | "duplicate-key"
 

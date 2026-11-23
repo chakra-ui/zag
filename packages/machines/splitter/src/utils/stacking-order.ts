@@ -1,5 +1,5 @@
 import { getAncestorElements, getComputedStyle, getParentElement } from "@zag-js/dom-query"
-import { ensure, hasProp } from "@zag-js/utils"
+import { hasProp, ensure } from "@zag-js/utils/guard"
 
 /**
  * Determine which of two nodes appears in front of the other —

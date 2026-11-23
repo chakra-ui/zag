@@ -8,7 +8,8 @@ import {
   resizeObserverBorderBox,
 } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
+import { callAll } from "@zag-js/utils/functions"
 import * as dom from "./tabs.dom"
 import type { Params } from "@zag-js/core"
 import type { ActivationDirection } from "@zag-js/types"

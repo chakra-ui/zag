@@ -31,7 +31,10 @@ import {
   matchesState,
   resolveStateValue,
 } from "@zag-js/core"
-import { compact, ensure, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
+import { toArray } from "@zag-js/utils/array"
+import { identity, runIfFn } from "@zag-js/utils/functions"
+import { ensure, isFunction, isString, warn } from "@zag-js/utils/guard"
+import { compact, isEqual } from "@zag-js/utils/object"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"

@@ -13,7 +13,7 @@ import {
 } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import * as dom from "./drawer.dom"
 import { drawerRegistry } from "./drawer.registry"
 import type { DrawerSchema, NestedDrawerMetrics, OpenChangeReason, ResolvedSnapPoint } from "./drawer.types"

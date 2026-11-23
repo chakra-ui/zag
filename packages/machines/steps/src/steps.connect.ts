@@ -1,5 +1,5 @@
 import { dataAttr, getEventKey } from "@zag-js/dom-query"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./steps.anatomy"
 import * as dom from "./steps.dom"

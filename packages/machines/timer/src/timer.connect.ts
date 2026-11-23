@@ -1,6 +1,7 @@
 import type { Service } from "@zag-js/core"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { match, mergeWithDefault } from "@zag-js/utils"
+import { match } from "@zag-js/utils/functions"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./timer.anatomy"
 import * as dom from "./timer.dom"
 import type { ActionTriggerProps, ActionTriggerState, IntlTranslations, TimerApi, TimerSchema } from "./timer.types"

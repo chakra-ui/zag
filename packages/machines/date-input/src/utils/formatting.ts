@@ -1,7 +1,7 @@
 import { DateFormatter, toCalendarDateTime, type Calendar } from "@internationalized/date"
 import type { PropFn } from "@zag-js/core"
-import { constrainSegments, getTodayDate } from "@zag-js/date-utils"
-import type { DateGranularity } from "@zag-js/date-utils"
+import { constrainSegments, getTodayDate } from "@zag-js/utils/date"
+import type { DateGranularity } from "@zag-js/utils/date"
 import type { DateInputSchema, DateValue } from "../date-input.types"
 import { needsTimeGranularity } from "./segments"
 

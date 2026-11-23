@@ -1,5 +1,5 @@
 import type { Style } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils/guard"
 import type { DragState, PanelData, PanelSize } from "../splitter.types"
 import { toCssPanelSize } from "./size"
 

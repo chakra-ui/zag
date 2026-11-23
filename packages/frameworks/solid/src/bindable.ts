@@ -1,5 +1,5 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { createEffect, createMemo, createSignal, type Accessor, onCleanup, untrack } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {

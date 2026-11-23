@@ -313,9 +313,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -328,9 +325,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -361,9 +355,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -641,9 +632,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -656,9 +644,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -689,9 +674,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -969,9 +951,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -984,9 +963,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -1017,9 +993,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -1294,9 +1267,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -1309,9 +1279,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -1342,9 +1309,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -1601,9 +1565,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -1616,9 +1577,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -1649,9 +1607,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -1926,9 +1881,6 @@ importers:
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../../packages/machines/combobox
@@ -1941,9 +1893,6 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../../packages/machines/dialog
@@ -1968,9 +1917,6 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
@@ -2208,6 +2154,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../types
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../utilities/core
@@ -2663,9 +2612,6 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../utilities/color-utils
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -2734,9 +2680,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../utilities/date-utils
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2765,9 +2708,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../utilities/date-utils
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
@@ -2973,9 +2913,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../utilities/file-utils
       '@zag-js/i18n-utils':
         specifier: workspace:*
         version: link:../../utilities/i18n-utils
@@ -3316,9 +3253,6 @@ importers:
 
   packages/machines/number-input:
     dependencies:
-      '@internationalized/number':
-        specifier: 3.6.9
-        version: 3.6.9
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -3335,6 +3269,9 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
     devDependencies:
+      '@internationalized/number':
+        specifier: 3.6.9
+        version: 3.6.9
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3563,9 +3500,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../utilities/date-utils
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -4076,23 +4010,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/color-utils:
-    dependencies:
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   packages/utilities/core:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/date-utils:
     devDependencies:
       '@internationalized/date':
         specifier: 3.12.4
@@ -4109,6 +4027,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../interact-outside
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
@@ -4126,19 +4047,6 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
-
-  packages/utilities/file-utils:
-    dependencies:
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../i18n-utils
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-      vitest:
-        specifier: ^5.0.0
-        version: 5.0.3(@types/node@26.6.6)(jsdom@31.0.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
 
   packages/utilities/focus-trap:
     dependencies:

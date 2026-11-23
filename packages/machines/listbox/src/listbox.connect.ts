@@ -23,7 +23,7 @@ import {
 } from "@zag-js/dom-query"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils/guard"
 import { parts } from "./listbox.anatomy"
 import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./listbox.dom"

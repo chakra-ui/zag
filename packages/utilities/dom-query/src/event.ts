@@ -117,6 +117,38 @@ export function getNativeEvent<E>(event: E): NativeEvent<E> {
   return (event as any).nativeEvent ?? event
 }
 
+/** A step in a direction, or a jump to a bound */
+export type EventMove = { direction: 1 | -1; size: "step" | "large" | "small" } | { bound: "min" | "max" }
+
+export interface EventMoveOptions extends EventKeyOptions {
+  /**
+   * Which arrow keys move the value
+   * @default "all"
+   */
+  arrows?: "all" | "horizontal" | "vertical" | undefined
+}
+
+/**
+ * The move a key asks of a numeric control, as the slider and spinbutton patterns describe it:
+ * arrows step (larger with Shift, smaller with Alt), Page keys take a large step, Home and End jump.
+ */
+export function getEventMove(
+  event: Pick<KeyboardEvent, "key" | "shiftKey" | "altKey"> & { isComposing?: boolean },
+  options: EventMoveOptions = {},
+): EventMove | null {
+  if (event.isComposing) return null
+  const key = getEventKey(event, options)
+  if (key === "Home") return { bound: "min" }
+  if (key === "End") return { bound: "max" }
+  if (key === "PageUp" || key === "PageDown") return { direction: key === "PageUp" ? 1 : -1, size: "large" }
+  const { arrows = "all" } = options
+  const vertical = arrows === "horizontal" ? 0 : key === "ArrowUp" ? 1 : key === "ArrowDown" ? -1 : 0
+  const horizontal = arrows === "vertical" ? 0 : key === "ArrowRight" ? 1 : key === "ArrowLeft" ? -1 : 0
+  const direction = vertical || horizontal
+  if (!direction) return null
+  return { direction, size: event.shiftKey ? "large" : event.altKey ? "small" : "step" }
+}
+
 const pageKeys = new Set(["PageUp", "PageDown"])
 const arrowKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"])
 
@@ -124,35 +156,6 @@ export function getEventStep(event: Pick<KeyboardEvent, "key" | "shiftKey">) {
   const isPageKey = pageKeys.has(event.key)
   const isSkipKey = isPageKey || (event.shiftKey && arrowKeys.has(event.key))
   return isSkipKey ? 10 : 1
-}
-
-interface EventStepOptions {
-  /**
-   * The default step amount (no modifier key pressed)
-   */
-  step: number
-  /**
-   * The step amount when `Shift` or `PageUp`/`PageDown` is used
-   */
-  largeStep: number
-  /**
-   * The step amount when `Alt` is used. When omitted, the `Alt` key
-   * has no effect and the default `step` is used.
-   */
-  smallStep?: number | undefined
-}
-
-export function getEventStepValue(
-  event: Pick<KeyboardEvent, "key" | "shiftKey" | "altKey">,
-  options: EventStepOptions,
-): number {
-  const { step, largeStep, smallStep } = options
-  const isArrowKey = arrowKeys.has(event.key)
-  if (smallStep != null && event.altKey && isArrowKey) {
-    return smallStep
-  }
-  const isLargeStep = pageKeys.has(event.key) || (event.shiftKey && isArrowKey)
-  return isLargeStep ? largeStep : step
 }
 
 export function getEventPoint(event: any, type: "page" | "client" = "client"): { x: number; y: number } {

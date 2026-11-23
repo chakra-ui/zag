@@ -27,7 +27,10 @@ import {
   resolveStateValue,
   watchEffect,
 } from "@zag-js/core"
-import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
+import { toArray } from "@zag-js/utils/array"
+import { noop } from "@zag-js/utils/functions"
+import { ensure, isFunction, isString, warn } from "@zag-js/utils/guard"
+import { compact, isEqual } from "@zag-js/utils/object"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { useBindable } from "./bindable"
 import { flushSync } from "./flush-sync"

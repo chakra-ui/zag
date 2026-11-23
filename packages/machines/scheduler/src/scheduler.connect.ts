@@ -9,7 +9,7 @@ import {
   type CalendarDateTime,
 } from "@internationalized/date"
 import type { Service } from "@zag-js/core"
-import { getMonthDays, getMonthNames, getWeekDays } from "@zag-js/date-utils"
+import { getMonthDays, getMonthNames, getWeekDays } from "@zag-js/utils/date"
 import {
   dataAttr,
   getEventKey,
@@ -19,7 +19,7 @@ import {
   isEditableElement,
   isLeftClick,
 } from "@zag-js/dom-query"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./scheduler.anatomy"
 import * as dom from "./scheduler.dom"

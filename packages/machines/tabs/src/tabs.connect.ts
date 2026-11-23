@@ -12,7 +12,7 @@ import {
   isSafari,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
 import type {

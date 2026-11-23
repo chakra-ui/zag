@@ -1,5 +1,5 @@
 import { createProps } from "@zag-js/types"
-import { createSplitProps } from "@zag-js/utils"
+import { createSplitProps } from "@zag-js/utils/object"
 import type { ItemProps, RadioGroupProps } from "./radio-group.types"
 
 export const props = createProps<RadioGroupProps>()([

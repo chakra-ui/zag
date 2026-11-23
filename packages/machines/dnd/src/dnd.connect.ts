@@ -1,6 +1,6 @@
 import { dataAttr, getEventKey, getEventPoint, isLeftClick, MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./dnd.anatomy"
 import * as dom from "./dnd.dom"
 import type {

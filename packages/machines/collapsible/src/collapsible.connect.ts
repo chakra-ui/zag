@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import * as dom from "./collapsible.dom"
 import type { CollapsibleApi, CollapsibleSchema, ContentState, RootState } from "./collapsible.types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 
 export function connect<T extends PropTypes>(
   service: Service<CollapsibleSchema>,

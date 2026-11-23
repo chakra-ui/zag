@@ -1,6 +1,6 @@
 import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
-import { getValuePercent, toPx } from "@zag-js/utils"
+import { getValuePercent, toPx } from "@zag-js/utils/number"
 import type { SliderSchema } from "./slider.types"
 import { getFillSpan, getThumbExtent } from "./slider.utils"
 

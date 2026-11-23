@@ -1,4 +1,4 @@
-import { isPlainObject } from "@zag-js/utils"
+import { isPlainObject } from "@zag-js/utils/guard"
 
 const { defineProperty, getOwnPropertyDescriptor, getOwnPropertyDescriptors } = Object
 

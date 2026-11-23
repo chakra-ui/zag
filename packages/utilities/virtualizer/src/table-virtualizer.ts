@@ -1,4 +1,5 @@
-import { clampValue, invariant, isNumber, toPx } from "@zag-js/utils"
+import { isNumber, invariant } from "@zag-js/utils/guard"
+import { clampValue, toPx } from "@zag-js/utils/number"
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { PropTypes } from "@zag-js/types"
 import { ListVirtualizer } from "./list-virtualizer"

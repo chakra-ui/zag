@@ -1,5 +1,5 @@
 import { getComputedStyle, getParentNode, isHTMLElement, isRootElement } from "@zag-js/dom-query"
-import { warn } from "@zag-js/utils"
+import { warn } from "@zag-js/utils/guard"
 import type { Edge, Orientation } from "./infinite-scroll.types"
 
 const SCROLLABLE_OVERFLOW_RE = /auto|scroll|overlay/

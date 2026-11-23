@@ -1,0 +1,760 @@
+{
+  "id": "autocomplete",
+  "initial": "closed",
+  "states": [
+    {
+      "id": "closed",
+      "label": "closed",
+      "parent": null,
+      "initial": true
+    },
+    {
+      "id": "closed.idle",
+      "label": "idle",
+      "parent": "closed",
+      "initial": true
+    },
+    {
+      "id": "closed.focused",
+      "label": "focused",
+      "parent": "closed",
+      "initial": false
+    },
+    {
+      "id": "open",
+      "label": "open",
+      "parent": null,
+      "initial": false
+    }
+  ],
+  "transitions": [
+    {
+      "from": "*",
+      "to": null,
+      "event": "HIGHLIGHTED_VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "ITEM.SELECT",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "POSITIONING.SET",
+      "guard": null
+    },
+    {
+      "from": "*",
+      "to": null,
+      "event": "VALUE.SET",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "inlineCompletion && isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "inlineCompletion"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "inlineCompletion && isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.ARROW_UP",
+      "guard": "inlineCompletion"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": "closed.idle",
+      "event": "INPUT.BLUR",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": "isOpenControlled && openOnChange"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.CHANGE",
+      "guard": "openOnChange"
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "INPUT.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "INPUT.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": "closed.idle",
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.focused",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.focused",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "open",
+      "event": "CONTROLLED.OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "INPUT.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open",
+      "event": "INPUT.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "closed.focused",
+      "event": "INPUT.FOCUS",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "OPEN",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open",
+      "event": "OPEN",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "closed.idle",
+      "to": "open",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "closed.idle",
+      "to": "closed.focused",
+      "event": "VALUE.CLEAR",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isSuggesting && (autoHighlight || isCompleting)"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CHILDREN_CHANGE",
+      "guard": "isHighlightedItemRemoved"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "CLOSE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "CONTROLLED.CLOSE",
+      "guard": "restoreFocus"
+    },
+    {
+      "from": "open",
+      "to": "closed.idle",
+      "event": "CONTROLLED.CLOSE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": "inlineCompletion && isLastItemHighlighted"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ARROW_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": "inlineCompletion && isFirstItemHighlighted"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ARROW_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": "autoHighlight"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.CHANGE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": "hasHighlightedItem && isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "INPUT.ENTER",
+      "guard": "hasHighlightedItem"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.ENTER",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "INPUT.ENTER",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.PAGE_DOWN",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "INPUT.PAGE_UP",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "ITEM.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.POINTER_LEAVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "ITEM.POINTER_MOVE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "LAYER.ESCAPE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "LAYER.ESCAPE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.idle",
+      "event": "LAYER.INTERACT_OUTSIDE",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "PREVIEW.COMMIT",
+      "guard": "hasPreview"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "TRIGGER.CLICK",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "TRIGGER.CLICK",
+      "guard": null
+    },
+    {
+      "from": "open",
+      "to": null,
+      "event": "VALUE.CLEAR",
+      "guard": "isOpenControlled"
+    },
+    {
+      "from": "open",
+      "to": "closed.focused",
+      "event": "VALUE.CLEAR",
+      "guard": null
+    }
+  ],
+  "layouts": {
+    "right": {
+      "width": 1013,
+      "height": 400,
+      "states": {
+        "closed": {
+          "x": 512,
+          "y": 152,
+          "w": 428,
+          "h": 188
+        },
+        "closed.idle": {
+          "x": 838,
+          "y": 239,
+          "w": 78,
+          "h": 44
+        },
+        "closed.focused": {
+          "x": 536,
+          "y": 228,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 48,
+          "y": 110,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed.focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.CHANGE",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "+4 more"
+          ],
+          "points": [
+            [637, 239],
+            [647, 239],
+            [647, 196],
+            [971, 196],
+            [971, 128],
+            [126, 128]
+          ],
+          "label": {
+            "x": 256,
+            "y": 135,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "closed.idle",
+          "events": ["INPUT.BLUR", "LAYER.INTERACT_OUTSIDE"],
+          "lines": ["INPUT.BLUR", "LAYER.INTERACT_OUTSIDE"],
+          "points": [
+            [637, 250],
+            [838, 250]
+          ],
+          "label": {
+            "x": 657,
+            "y": 207,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "open",
+          "events": ["CONTROLLED.OPEN", "INPUT.CLICK", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "INPUT.CLICK", "OPEN", "+1 more"],
+          "points": [
+            [916, 261],
+            [981, 261],
+            [981, 32],
+            [152, 32],
+            [152, 119],
+            [126, 119]
+          ],
+          "label": {
+            "x": 259,
+            "y": 39,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "closed.focused",
+          "events": ["INPUT.FOCUS", "VALUE.CLEAR"],
+          "lines": ["INPUT.FOCUS", "VALUE.CLEAR"],
+          "points": [
+            [838, 261],
+            [637, 261]
+          ],
+          "label": {
+            "x": 693,
+            "y": 264,
+            "w": 89,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "ITEM.CLICK",
+            "LAYER.ESCAPE",
+            "TRIGGER.CLICK",
+            "VALUE.CLEAR"
+          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INPUT.ENTER", "+4 more"],
+          "points": [
+            [126, 136],
+            [162, 136],
+            [162, 224],
+            [423, 224],
+            [423, 250],
+            [536, 250]
+          ],
+          "label": {
+            "x": 256,
+            "y": 231,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.idle",
+          "events": ["CONTROLLED.CLOSE", "LAYER.INTERACT_OUTSIDE"],
+          "lines": ["CONTROLLED.CLOSE", "LAYER.INTERACT_OUTSIDE"],
+          "points": [
+            [126, 145],
+            [152, 145],
+            [152, 320],
+            [423, 320],
+            [423, 315],
+            [828, 315],
+            [828, 272],
+            [838, 272]
+          ],
+          "label": {
+            "x": 236,
+            "y": 327,
+            "w": 161,
+            "h": 40
+          }
+        }
+      ]
+    },
+    "down": {
+      "width": 715,
+      "height": 682,
+      "states": {
+        "closed": {
+          "x": 338,
+          "y": 373,
+          "w": 345,
+          "h": 236
+        },
+        "closed.idle": {
+          "x": 517,
+          "y": 541,
+          "w": 78,
+          "h": 44
+        },
+        "closed.focused": {
+          "x": 486,
+          "y": 417,
+          "w": 101,
+          "h": 44
+        },
+        "open": {
+          "x": 283,
+          "y": 32,
+          "w": 78,
+          "h": 44
+        }
+      },
+      "edges": [
+        {
+          "from": "closed.focused",
+          "to": "open",
+          "events": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "INPUT.CHANGE",
+            "INPUT.CLICK",
+            "OPEN",
+            "TRIGGER.CLICK"
+          ],
+          "lines": [
+            "CONTROLLED.OPEN",
+            "INPUT.ARROW_DOWN",
+            "INPUT.ARROW_UP",
+            "+4 more"
+          ],
+          "points": [
+            [511, 461],
+            [511, 471],
+            [362, 471],
+            [362, 640],
+            [314, 640],
+            [314, 76]
+          ],
+          "label": {
+            "x": 186,
+            "y": 186,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.focused",
+          "to": "closed.idle",
+          "events": ["INPUT.BLUR", "LAYER.INTERACT_OUTSIDE"],
+          "lines": ["INPUT.BLUR", "LAYER.INTERACT_OUTSIDE"],
+          "points": [
+            [536, 461],
+            [536, 541]
+          ],
+          "label": {
+            "x": 373,
+            "y": 481,
+            "w": 161,
+            "h": 40
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "open",
+          "events": ["CONTROLLED.OPEN", "INPUT.CLICK", "OPEN", "TRIGGER.CLICK"],
+          "lines": ["CONTROLLED.OPEN", "INPUT.CLICK", "OPEN", "+1 more"],
+          "points": [
+            [556, 585],
+            [556, 614],
+            [556, 650],
+            [169, 650],
+            [169, 102],
+            [299, 102],
+            [299, 76]
+          ],
+          "label": {
+            "x": 48,
+            "y": 186,
+            "w": 115,
+            "h": 72
+          }
+        },
+        {
+          "from": "closed.idle",
+          "to": "closed.focused",
+          "events": ["INPUT.FOCUS", "VALUE.CLEAR"],
+          "lines": ["INPUT.FOCUS", "VALUE.CLEAR"],
+          "points": [
+            [556, 541],
+            [556, 471],
+            [561, 471],
+            [561, 461]
+          ],
+          "label": {
+            "x": 559,
+            "y": 481,
+            "w": 89,
+            "h": 40
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.focused",
+          "events": [
+            "CLOSE",
+            "CONTROLLED.CLOSE",
+            "INPUT.ENTER",
+            "ITEM.CLICK",
+            "LAYER.ESCAPE",
+            "TRIGGER.CLICK",
+            "VALUE.CLEAR"
+          ],
+          "lines": ["CLOSE", "CONTROLLED.CLOSE", "INPUT.ENTER", "+4 more"],
+          "points": [
+            [330, 76],
+            [330, 112],
+            [474, 112],
+            [474, 284],
+            [536, 284],
+            [536, 417]
+          ],
+          "label": {
+            "x": 346,
+            "y": 186,
+            "w": 122,
+            "h": 72
+          }
+        },
+        {
+          "from": "open",
+          "to": "closed.idle",
+          "events": ["CONTROLLED.CLOSE", "LAYER.INTERACT_OUTSIDE"],
+          "lines": ["CONTROLLED.CLOSE", "LAYER.INTERACT_OUTSIDE"],
+          "points": [
+            [345, 76],
+            [345, 102],
+            [658, 102],
+            [658, 368],
+            [658, 531],
+            [575, 531],
+            [575, 541]
+          ],
+          "label": {
+            "x": 491,
+            "y": 202,
+            "w": 161,
+            "h": 40
+          }
+        }
+      ]
+    }
+  }
+}

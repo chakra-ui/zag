@@ -9,7 +9,10 @@ import {
   trackScrollEnd,
 } from "@zag-js/dom-query"
 import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
+import { add, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils/array"
+import { callAll } from "@zag-js/utils/functions"
+import { isObject, ensureProps } from "@zag-js/utils/guard"
+import { clampValue } from "@zag-js/utils/number"
 import * as dom from "./carousel.dom"
 import {
   getPageForIndex,

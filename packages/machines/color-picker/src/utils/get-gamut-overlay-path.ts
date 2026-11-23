@@ -1,5 +1,5 @@
-import { isDisplayP3HsvInSrgbGamut, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
-import type { Color } from "@zag-js/color-utils"
+import { isDisplayP3HsvInSrgbGamut, type ColorChannel, type ColorFormat } from "@zag-js/utils/color"
+import type { Color } from "@zag-js/utils/color"
 
 interface GamutOverlayOptions {
   xChannel: ColorChannel

@@ -1,5 +1,5 @@
 import { DateFormatter } from "@internationalized/date"
-import type { DateGranularity } from "@zag-js/date-utils"
+import type { DateGranularity } from "@zag-js/utils/date"
 import type {
   DateSegment,
   EditableSegmentType,

@@ -8,7 +8,7 @@ import {
   isLeftClick,
 } from "@zag-js/dom-query"
 import type { JSX, Point } from "@zag-js/types"
-import { clampValue } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
 import type { ResolvedSnapPoint, SwipeDirection } from "../drawer.types"
 import { findClosestSnapPoint } from "./snap-point"
 import { SwipeSession, isNegativeSwipeDirection, isVerticalSwipeDirection } from "./session"

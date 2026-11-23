@@ -15,7 +15,8 @@ import {
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure, mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
+import { ensure } from "@zag-js/utils/guard"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
 import type {

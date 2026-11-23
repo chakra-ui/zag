@@ -1,6 +1,6 @@
 "use client"
 
-import { noop } from "@zag-js/utils"
+import { noop } from "@zag-js/utils/functions"
 import { useEffect, useRef } from "react"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {

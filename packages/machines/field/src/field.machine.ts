@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { AnimationFrame, observeChildren, trackFormControl } from "@zag-js/dom-query"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import * as dom from "./field.dom"
 import type { FieldParams, FieldSchema, ValidateResult, ValiditySnapshot } from "./field.types"
 import {

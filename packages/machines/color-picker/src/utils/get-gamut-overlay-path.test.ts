@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { parseColor } from "@zag-js/color-utils"
+import { parseColor } from "@zag-js/utils/color"
 import { gamutOverlayRowCount, getGamutOverlayData } from "./get-gamut-overlay-path"
 
 describe("get-gamut-overlay-path", () => {

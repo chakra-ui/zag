@@ -1,4 +1,5 @@
-import { isEqual, isFunction } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
+import { isFunction } from "@zag-js/utils/guard"
 import { createEffect, createSignal, untrack } from "solid-js"
 
 function access<T>(v: T | (() => T)): T {

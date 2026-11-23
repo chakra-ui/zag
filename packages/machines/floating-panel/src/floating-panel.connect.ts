@@ -1,6 +1,8 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { match, mergeWithDefault, toPx } from "@zag-js/utils"
+import { match } from "@zag-js/utils/functions"
+import { mergeWithDefault } from "@zag-js/utils/object"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
 import type {

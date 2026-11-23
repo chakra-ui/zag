@@ -14,7 +14,14 @@ import {
   trackFormControl,
 } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
-import { callAll, clampValue, decrementValue, incrementValue, isValueWithinRange } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils/functions"
+import {
+  clampValue,
+  decrementValue,
+  incrementValue,
+  isValueWithinRange,
+  snapValueToStepDirection,
+} from "@zag-js/utils/number"
 import * as dom from "./number-input.dom"
 import type { NumberInputSchema, Platform, StepDirection, ValueChangeReason } from "./number-input.types"
 import {
@@ -24,7 +31,6 @@ import {
   formatValue,
   getDefaultStep,
   parseValue,
-  snapToStep,
 } from "./number-input.utils"
 
 const { choose, guards, createMachine } = setup<NumberInputSchema>()
@@ -80,7 +86,7 @@ export const machine = createMachine({
       inputValue: bindable<string>(() => ({
         defaultValue: formatNumber(
           prop("value") ?? prop("defaultValue"),
-          createFormatter(prop("locale"), prop("formatOptions")),
+          createFormatter(prop("locale"), prop("formatOptions"), prop("step")),
           prop("formatOptions"),
         ),
       })),
@@ -121,8 +127,8 @@ export const machine = createMachine({
     canIncrement: ({ computed }) => !computed("isAtMax"),
     canDecrement: ({ computed }) => !computed("isAtMin"),
     formatter: memo(
-      ({ prop }) => [prop("locale"), prop("formatOptions")],
-      ([locale, formatOptions]) => createFormatter(locale, formatOptions),
+      ({ prop }) => [prop("locale"), prop("formatOptions"), prop("step")],
+      ([locale, formatOptions, step]) => createFormatter(locale, formatOptions, step),
     ),
     parser: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
@@ -606,7 +612,7 @@ function getStepValue(
   { prop, computed }: Omit<NumberParams, "context">,
 ) {
   // Snap before clamping, so a min or max off the step grid stays reachable
-  if (prop("snapOnStep")) value = snapToStep(value, prop("min") ?? 0, step, direction)
+  if (prop("snapOnStep")) value = snapValueToStepDirection(value, prop("min") ?? 0, step, direction)
   return clampValue(value, computed("min"), computed("max"))
 }
 

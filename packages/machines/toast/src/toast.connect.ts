@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./toast.anatomy"
 import * as dom from "./toast.dom"
 import type { IntlTranslations, RootState, ToastApi, ToastSchema } from "./toast.types"

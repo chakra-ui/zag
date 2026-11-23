@@ -1,9 +1,10 @@
 import { DateFormatter } from "@internationalized/date"
 import { memo } from "@zag-js/core"
-import type { DateValue } from "@zag-js/date-utils"
-import { getDecadeRange } from "@zag-js/date-utils"
+import type { DateValue } from "@zag-js/utils/date"
+import { getDecadeRange } from "@zag-js/utils/date"
 import type { Required } from "@zag-js/types"
-import { clampValue, match } from "@zag-js/utils"
+import { match } from "@zag-js/utils/functions"
+import { clampValue } from "@zag-js/utils/number"
 import type { DateView, IntlTranslations, SelectionMode, VisibleRangeText } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: Array<DateValue | null | undefined>): DateValue[] {

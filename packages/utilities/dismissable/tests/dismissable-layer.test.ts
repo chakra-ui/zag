@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { noop } from "@zag-js/utils"
+import { noop } from "@zag-js/utils/functions"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { trackDismissableElement } from "../src/dismissable-layer"
 import { layerStack } from "../src/layer-stack"

@@ -10,7 +10,7 @@ import {
   tryFocusElement,
 } from "@zag-js/dom-query"
 import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import { collection } from "./gridlist.collection"
 import * as dom from "./gridlist.dom"
 import type { GridListSchema } from "./gridlist.types"

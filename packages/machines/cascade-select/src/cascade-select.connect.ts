@@ -4,7 +4,7 @@ import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
 import type {

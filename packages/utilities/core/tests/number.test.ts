@@ -1,4 +1,11 @@
-import { decrementValue, incrementValue, snapValueToStep } from "../src"
+import {
+  decrementValue,
+  getValuePercent,
+  incrementValue,
+  roundToStepPrecision,
+  snapValueToStep,
+  snapValueToStepDirection,
+} from "../src"
 
 describe("number", () => {
   test("increment", () => {
@@ -34,5 +41,54 @@ describe("number", () => {
     expect(snapValueToStep(1.1, 0.1, 0.7, 0.2)).toBe(0.7)
 
     expect(snapValueToStep(0.4, 0, 0.2995, 0.1)).toBe(0.2)
+  })
+
+  test("step precision handles exponent steps", () => {
+    expect(roundToStepPrecision(0.1 + 0.2, 1e-7)).toBe(0.3)
+    expect(roundToStepPrecision(0.1 + 0.2, 0.1)).toBe(0.3)
+    expect(roundToStepPrecision(1.25, 1)).toBe(1.25)
+  })
+
+  test("snapping keeps an off-grid max", () => {
+    expect(snapValueToStep(0.97, 0, 0.95, 0.1)).toBe(0.9)
+    expect(snapValueToStep(0.95, 0.05, 0.95, 0.1)).toBe(0.95)
+  })
+
+  test("percent of an empty range is 0", () => {
+    expect(getValuePercent(5, 5, 5)).toBe(0)
+    expect(getValuePercent(5, 0, 10)).toBe(0.5)
+  })
+})
+
+describe("snapValueToStepDirection", () => {
+  test("rounds toward where the step came from", () => {
+    expect(snapValueToStepDirection(6.5, 0, 1, 1)).toBe(6)
+    expect(snapValueToStepDirection(4.5, 0, 1, -1)).toBe(5)
+  })
+
+  test("keeps a value already on the grid despite float noise", () => {
+    expect(snapValueToStepDirection(0.1 + 0.2, 0, 0.1, 1)).toBe(0.3)
+    expect(snapValueToStepDirection(0.7 - 0.1, 0, 0.1, -1)).toBe(0.6)
+  })
+
+  test("measures the grid from the base", () => {
+    expect(snapValueToStepDirection(2, 0.5, 1, 1)).toBe(1.5)
+  })
+})
+
+describe("snapValueToStep", () => {
+  test("returns clean values without float noise", () => {
+    expect(snapValueToStep(-0.537, -10, 0, 1)).toBe(-1)
+    expect(snapValueToStep(3.441, -10, 990, 5)).toBe(5)
+    expect(snapValueToStep(0.42, -10, 90, 1)).toBe(0)
+  })
+
+  test("keeps the largest on-grid value below an off-grid max", () => {
+    expect(snapValueToStep(100, -10, -9.05, 0.01)).toBe(-9.05)
+    expect(snapValueToStep(100, 0.05, 1, 2.5)).toBe(1)
+  })
+
+  test("rounds a midpoint up", () => {
+    expect(snapValueToStep(0.8, 0.05, 7.35, 0.1)).toBe(0.85)
   })
 })

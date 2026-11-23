@@ -1,4 +1,5 @@
-import { clampValue, getValuePercent, isNumber } from "@zag-js/utils"
+import { isNumber } from "@zag-js/utils/guard"
+import { clampValue, getValuePercent } from "@zag-js/utils/number"
 import type { MeterValueState } from "./meter.types"
 
 export interface MeterBounds {
@@ -72,5 +73,5 @@ export function getClampedValue(value: number, min: number, max: number) {
 }
 
 export function getPercent(value: number, min: number, max: number) {
-  return max === min ? 0 : getValuePercent(value, min, max) * 100
+  return getValuePercent(value, min, max) * 100
 }

@@ -1,4 +1,4 @@
-import { createStore } from "@zag-js/utils"
+import { createStore } from "@zag-js/utils/store"
 
 const store = createStore<{ stack: string[] }>({ stack: [] })
 

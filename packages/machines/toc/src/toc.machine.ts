@@ -9,7 +9,10 @@ import {
   trackScrollEnd,
 } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, first, isEqual, last, toArray, warn } from "@zag-js/utils"
+import { first, last, toArray } from "@zag-js/utils/array"
+import { isEqual } from "@zag-js/utils/object"
+import { callAll } from "@zag-js/utils/functions"
+import { warn } from "@zag-js/utils/guard"
 import * as dom from "./toc.dom"
 import type { TocSchema } from "./toc.types"
 import { findCurrentSection, findEndOfPageHeading, getVisibleIds } from "./utils/active-ids"

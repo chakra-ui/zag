@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { isHTMLElement, queryAll } from "@zag-js/dom-query"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { parts } from "./drawer.anatomy"
 
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `${ctx.id}:content`

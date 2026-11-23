@@ -1,5 +1,5 @@
 import { contains, nextTick } from "@zag-js/dom-query"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 

@@ -1,7 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import { getRelativeDirection, nextById, prevById } from "@zag-js/dom-query"
 import type { ActivationDirection, Orientation } from "@zag-js/types"
-import { first, last } from "@zag-js/utils"
+import { first, last } from "@zag-js/utils/array"
 import { parts } from "./tabs.anatomy"
 
 // ID generators — kept for ARIA attributes in connect

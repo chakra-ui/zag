@@ -1,4 +1,4 @@
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import * as query from "./query"
 import * as edit from "./edit"
 import { filterTree } from "./filter"

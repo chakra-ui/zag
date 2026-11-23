@@ -1,6 +1,6 @@
 import { createProps } from "@zag-js/types"
 import type { IndicatorProps, ClipboardProps } from "./clipboard.types"
-import { createSplitProps } from "@zag-js/utils"
+import { createSplitProps } from "@zag-js/utils/object"
 
 export const props = createProps<ClipboardProps>()([
   "getRootNode",

@@ -1,14 +1,7 @@
-import {
-  ariaAttr,
-  dataAttr,
-  getEventKey,
-  getEventPoint,
-  getEventStepValue,
-  isLeftClick,
-  isModifierKey,
-} from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { first, getPercentValue, getValuePercent, last } from "@zag-js/utils"
+import { ariaAttr, dataAttr, getEventMove, getEventPoint, isLeftClick, isModifierKey } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { first, last } from "@zag-js/utils/array"
+import { getPercentValue, getValuePercent } from "@zag-js/utils/number"
 import { parts } from "./slider.anatomy"
 import * as dom from "./slider.dom"
 import {
@@ -42,9 +35,6 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
   const disabled = computed("isDisabled")
   const invalid = !!prop("invalid")
   const interactive = computed("isInteractive")
-
-  const isHorizontal = prop("orientation") === "horizontal"
-  const isVertical = prop("orientation") === "vertical"
 
   function getValuePercentFn(value: number) {
     return getValuePercent(value, prop("min"), prop("max"))
@@ -254,50 +244,21 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (event.defaultPrevented) return
           if (!thumbInteractive) return
 
-          const step = getEventStepValue(event, { step: prop("step"), largeStep: prop("largeStep") })
-
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              if (isHorizontal) return
-              send({ type: "ARROW_INC", step, src: "keyboard" })
-            },
-            ArrowDown() {
-              if (isHorizontal) return
-              send({ type: "ARROW_DEC", step, src: "keyboard" })
-            },
-            ArrowLeft() {
-              if (isVertical) return
-              send({ type: "ARROW_DEC", step, src: "keyboard" })
-            },
-            ArrowRight() {
-              if (isVertical) return
-              send({ type: "ARROW_INC", step, src: "keyboard" })
-            },
-            PageUp() {
-              send({ type: "ARROW_INC", step, src: "keyboard" })
-            },
-            PageDown() {
-              send({ type: "ARROW_DEC", step, src: "keyboard" })
-            },
-            Home() {
-              send({ type: "HOME", src: "keyboard" })
-            },
-            End() {
-              send({ type: "END", src: "keyboard" })
-            },
-          }
-
-          const key = getEventKey(event, {
+          const move = getEventMove(event, {
             dir: prop("dir"),
             orientation: prop("orientation"),
+            arrows: prop("orientation"),
           })
-          const exec = keyMap[key]
+          if (!move) return
 
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-            event.stopPropagation()
+          if ("bound" in move) {
+            send({ type: move.bound === "min" ? "HOME" : "END", src: "keyboard" })
+          } else {
+            const step = move.size === "large" ? prop("largeStep") : prop("step")
+            send({ type: move.direction > 0 ? "ARROW_INC" : "ARROW_DEC", step, src: "keyboard" })
           }
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },

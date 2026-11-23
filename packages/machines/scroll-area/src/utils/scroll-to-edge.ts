@@ -1,5 +1,5 @@
 import type { Direction } from "@zag-js/types"
-import { compact } from "@zag-js/utils"
+import { compact } from "@zag-js/utils/object"
 import type { ScrollToEdge } from "../scroll-area.types"
 import { smoothScroll } from "./smooth-scroll"
 

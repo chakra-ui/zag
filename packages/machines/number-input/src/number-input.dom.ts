@@ -1,7 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import { dispatchInputValueEvent } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
-import { roundToDpr, wrap } from "@zag-js/utils"
+import { roundToDpr, wrap } from "@zag-js/utils/number"
 import { parts } from "./number-input.anatomy"
 import type { StepDirection } from "./number-input.types"
 

@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
 import type { ItemProps, ItemState, RootState, TagsInputApi, TagsInputSchema } from "./tags-input.types"

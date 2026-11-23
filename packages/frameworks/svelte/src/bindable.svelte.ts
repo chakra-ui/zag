@@ -1,5 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { identity, isFunction } from "@zag-js/utils"
+import { identity } from "@zag-js/utils/functions"
+import { isFunction } from "@zag-js/utils/guard"
 import { flushSync, onDestroy, untrack } from "svelte"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {

@@ -1,6 +1,8 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { AnimationFrame, observeChildren } from "@zag-js/dom-query"
-import { addOrRemove, ensureProps, isArray, isEqual } from "@zag-js/utils"
+import { addOrRemove } from "@zag-js/utils/array"
+import { isEqual } from "@zag-js/utils/object"
+import { isArray, ensureProps } from "@zag-js/utils/guard"
 import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
 

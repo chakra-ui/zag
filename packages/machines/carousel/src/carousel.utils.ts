@@ -1,4 +1,4 @@
-import { clampValue } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
 
 export const getSlidesPerMove = (slidesPerMove: number | "auto", slidesPerPage: number) =>
   slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove

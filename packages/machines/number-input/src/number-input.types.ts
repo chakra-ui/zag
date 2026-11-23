@@ -1,5 +1,5 @@
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { NumberParser } from "@internationalized/number"
+import type { NumberParser } from "./number-parser"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
 

@@ -24,7 +24,9 @@ import {
   type RectInit,
   type Size,
 } from "@zag-js/rect-utils"
-import { clampValue, ensureProps, pick } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
+import { pick } from "@zag-js/utils/object"
+import { ensureProps } from "@zag-js/utils/guard"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
 import type { FloatingPanelSchema, OpenChangeReason, Stage } from "./floating-panel.types"

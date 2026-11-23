@@ -1,7 +1,7 @@
 import { setup } from "@zag-js/core"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getFirstTabbable, raf } from "@zag-js/dom-query"
-import { ensureProps, warn } from "@zag-js/utils"
+import { ensureProps, warn } from "@zag-js/utils/guard"
 import * as dom from "./infinite-scroll.dom"
 import type { InfiniteScrollParams, InfiniteScrollSchema, LoadMoreReason } from "./infinite-scroll.types"
 import { getRootMargin, getScrollingElement, resolveScroller } from "./infinite-scroll.utils"

@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { match } from "@zag-js/utils"
+import { match } from "@zag-js/utils/functions"
 import { parts } from "./field.anatomy"
 import * as dom from "./field.dom"
 import type { ErrorTextProps, FieldApi, FieldSchema, IndicatorProps, ItemProps, RootState } from "./field.types"

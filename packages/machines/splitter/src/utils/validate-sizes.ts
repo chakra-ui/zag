@@ -1,4 +1,4 @@
-import { ensure } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils/guard"
 import type { NormalizedPanelData } from "../splitter.types"
 import { fuzzyNumbersEqual } from "./fuzzy"
 import { resizePanel } from "./resize-panel"

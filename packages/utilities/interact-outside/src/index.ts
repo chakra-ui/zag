@@ -11,7 +11,7 @@ import {
   isHTMLElement,
   raf,
 } from "@zag-js/dom-query"
-import { callAll } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils/functions"
 import { getParentWindow, getWindowFrames } from "./frame-utils"
 
 export interface InteractOutsideHandlers {

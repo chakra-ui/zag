@@ -28,12 +28,14 @@ import {
   isDateOutsideRange,
   isDateUnavailable,
   isValidCharacter,
-} from "@zag-js/date-utils"
+} from "@zag-js/utils/date"
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk, isValueWithinRange, mergeWithDefault } from "@zag-js/utils"
+import { chunk } from "@zag-js/utils/array"
+import { mergeWithDefault } from "@zag-js/utils/object"
+import { isValueWithinRange } from "@zag-js/utils/number"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {

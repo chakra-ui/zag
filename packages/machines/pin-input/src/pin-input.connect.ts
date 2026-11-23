@@ -12,7 +12,8 @@ import {
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { invariant, mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
+import { invariant } from "@zag-js/utils/guard"
 import { parts } from "./pin-input.anatomy"
 import * as dom from "./pin-input.dom"
 import type {

@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { parts } from "./tooltip.anatomy"
 
 // ID generators — kept for ARIA attributes in connect

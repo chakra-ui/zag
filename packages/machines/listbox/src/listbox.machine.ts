@@ -11,7 +11,7 @@ import {
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollToNearest } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import { collection } from "./listbox.collection"
 import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./listbox.dom"

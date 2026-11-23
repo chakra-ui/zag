@@ -97,11 +97,25 @@ function trackFormReset(el: HTMLElement | null | undefined, callback: VoidFuncti
 
 const fieldsetDisabledObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["disabled"] })
 
+/** A disabled fieldset disables its contents, except what's inside its first legend */
+function isDisabledByFieldset(el: HTMLElement) {
+  for (
+    let fieldset = el.closest("fieldset");
+    fieldset;
+    fieldset = fieldset.parentElement?.closest("fieldset") ?? null
+  ) {
+    if (!fieldset.disabled) continue
+    const legend = fieldset.querySelector(":scope > legend")
+    if (!legend?.contains(el)) return true
+  }
+  return false
+}
+
 export function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
   const fieldset = el?.closest("fieldset")
   if (!fieldset) return
-  // `:disabled` also covers fieldsets disabled further up the tree, so watch every ancestor
-  const sync = () => callback(fieldset.matches(":disabled"))
+  // Watch every ancestor, since a fieldset further up can disable this one
+  const sync = () => callback(isDisabledByFieldset(el!))
   sync()
   const cleanups: VoidFunction[] = []
   for (let node: HTMLFieldSetElement | null = fieldset; node; node = node.parentElement?.closest("fieldset") ?? null) {

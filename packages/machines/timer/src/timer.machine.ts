@@ -1,6 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
 import { AnimationFrameInterval, raf } from "@zag-js/dom-query"
-import { clampValue } from "@zag-js/utils"
+import { clampValue } from "@zag-js/utils/number"
 import type { Time, TimerProps, TimerSchema } from "./timer.types"
 
 export const machine = createMachine<TimerSchema>({

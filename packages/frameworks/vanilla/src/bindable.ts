@@ -1,5 +1,5 @@
 import type { Bindable, BindableFn, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 
 /**
  * Creates a `bindable` whose values are plain cells. Values are replaced, never mutated,

@@ -1,5 +1,5 @@
 import type { CalendarDateTime } from "@internationalized/date"
-import { getEndOfWeek, getStartOfWeek } from "@zag-js/date-utils"
+import { getEndOfWeek, getStartOfWeek } from "@zag-js/utils/date"
 
 /** Null for keys that don't move focus. */
 export function getFocusDateForKey(params: {

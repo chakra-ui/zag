@@ -1,4 +1,4 @@
-import { add } from "@zag-js/utils"
+import { add } from "@zag-js/utils/array"
 import { COMPLETE, type BlockReason } from "../steps.types"
 import { findItem, findItemIndex, isItemDisabled, isItemInvalid, isItemOptional } from "./item"
 import { findNavigableIndex, getReachability, isItemLocked, type NavContext } from "./reachability"

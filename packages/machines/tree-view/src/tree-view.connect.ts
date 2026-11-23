@@ -13,7 +13,9 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { add, isEqual, match, mergeWithDefault, uniq } from "@zag-js/utils"
+import { add, uniq } from "@zag-js/utils/array"
+import { isEqual, mergeWithDefault } from "@zag-js/utils/object"
+import { match } from "@zag-js/utils/functions"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type {

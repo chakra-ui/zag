@@ -4,7 +4,7 @@ import { AnimationFrame, contains, disableTextSelection, trackPointerMove } from
 import { createLiveRegion } from "@zag-js/live-region"
 import { createRect, distance as pointDistance, getElementRect } from "@zag-js/rect-utils"
 import type { Rect } from "@zag-js/rect-utils"
-import { nextIndex, prevIndex } from "@zag-js/utils"
+import { nextIndex, prevIndex } from "@zag-js/utils/array"
 import type { Point } from "@zag-js/types"
 import * as dom from "./dnd.dom"
 import type { DndSchema, DropPlacement, IntlTranslations } from "./dnd.types"

@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { getWindow, isHTMLElement, nextById, prevById } from "@zag-js/dom-query"
-import { first, last } from "@zag-js/utils"
+import { first, last } from "@zag-js/utils/array"
 import { parts } from "./menubar.anatomy"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `menubar:${ctx.id}`

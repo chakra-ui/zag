@@ -1,7 +1,7 @@
 import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes, Rect } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./radio-group.anatomy"
 import * as dom from "./radio-group.dom"
 import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService, RootState } from "./radio-group.types"

@@ -1,7 +1,7 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import { dataAttr, getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, toPx } from "@zag-js/utils"
+import { clampValue, toPx } from "@zag-js/utils/number"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"

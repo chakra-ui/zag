@@ -1,4 +1,4 @@
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import type { CollectionItem, CollectionOptions, CollectionSearchOptions } from "../types"
 
 const own = Object.prototype.hasOwnProperty

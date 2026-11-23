@@ -1,4 +1,4 @@
-import { createStore } from "@zag-js/utils"
+import { createStore } from "@zag-js/utils/store"
 
 const SKIP_DELAY_WINDOW = 400
 

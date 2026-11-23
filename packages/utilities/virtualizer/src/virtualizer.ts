@@ -1,6 +1,8 @@
 import { AnimationFrame, getComputedStyle, getWindow, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { createNormalizer, type NormalizeProps, type PropTypes } from "@zag-js/types"
-import { clampValue, ensure, isDev, isFunction, isNumber, isString, runIfFn } from "@zag-js/utils"
+import { runIfFn } from "@zag-js/utils/functions"
+import { isDev, isFunction, isNumber, isString, ensure } from "@zag-js/utils/guard"
+import { clampValue } from "@zag-js/utils/number"
 import type {
   CSSProperties,
   InitialMeasurements,

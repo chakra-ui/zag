@@ -1,4 +1,4 @@
-import { omit } from "@zag-js/utils"
+import { omit } from "@zag-js/utils/object"
 import { filePathToTree, flattenedToTree, createTreeCollection, type TreeCollection } from "../src"
 import { diagram } from "./tree-diagram"
 

@@ -1,31 +1,38 @@
-import { NumberParser } from "@internationalized/number"
-import { roundToStepPrecision } from "@zag-js/utils"
+import { decimalsOf } from "@zag-js/utils/number"
 import type { Params } from "@zag-js/core"
 import type { NumberInputSchema } from "./number-input.types"
+import { createNumberParser } from "./number-parser"
 
-export const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  return new Intl.NumberFormat(locale, options)
+/**
+ * Intl shows at most 3 decimals by default, so a 0.0001 step would show as 0. Without a maximum of
+ * your own, the step's decimals show, and never fewer than Intl would (yen stay whole, dollars show cents).
+ */
+export const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}, step = 1) => {
+  const formatter = new Intl.NumberFormat(locale, options)
+  if (options.maximumFractionDigits != null || options.maximumSignificantDigits != null) return formatter
+  const decimals = decimalsOf(step) - (options.style === "percent" ? 2 : 0)
+  const { maximumFractionDigits = 0, minimumFractionDigits = 0 } = formatter.resolvedOptions()
+  if (decimals <= maximumFractionDigits) return formatter
+  return new Intl.NumberFormat(locale, {
+    ...options,
+    maximumFractionDigits: Math.min(Math.max(decimals, minimumFractionDigits), 100),
+  })
 }
 
 export const createParser = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  return new NumberParser(locale, options)
+  return createNumberParser(locale, options)
 }
 
 type Ctx = Pick<Params<NumberInputSchema>, "prop" | "computed">
 
 const MINUS_SIGNS = /[\u2012\u2013\u2014\u2212\uFE63\uFF0D]/g
-const PERSIAN_DIGITS = /[\u06F0-\u06F9]/g
 
 // CJK keyboards type these in full-width mode
 const FULLWIDTH_DECIMAL = /\uFF0E/g
 const FULLWIDTH_GROUP = /\uFF0C/g
 
 export const normalizeNumberText = (value: string) =>
-  value
-    .replace(MINUS_SIGNS, "-")
-    .replace(PERSIAN_DIGITS, (d) => String(d.charCodeAt(0) - 0x06f0))
-    .replace(FULLWIDTH_DECIMAL, ".")
-    .replace(FULLWIDTH_GROUP, "")
+  value.replace(MINUS_SIGNS, "-").replace(FULLWIDTH_DECIMAL, ".").replace(FULLWIDTH_GROUP, "")
 
 export const parseValue = (input: string, params: Ctx) => {
   const { computed } = params
@@ -62,10 +69,3 @@ export const getDefaultStep = (step: number | undefined, formatOptions: Intl.Num
  * Snaps a stepped value onto the step grid, rounding toward where it came from,
  * so 5.5 + 1 lands on 6 rather than 7.
  */
-export function snapToStep(value: number, base: number, step: number, direction: number) {
-  // Absorbs float noise, so 0.1 + 0.2 still counts as on the grid
-  const tolerance = 1e-10
-  const steps = (value - base) / step
-  const snapped = direction > 0 ? Math.floor(steps + tolerance) : Math.ceil(steps - tolerance)
-  return roundToStepPrecision(base + snapped * step, step)
-}

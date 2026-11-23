@@ -1,4 +1,4 @@
-import { ensure, invariant, isDev } from "@zag-js/utils"
+import { isDev, ensure, invariant } from "@zag-js/utils/guard"
 import type { Machine, MachineSchema, MachineState, TransitionMatch, TransitionMap } from "./types"
 
 const STATE_DELIMITER = "."

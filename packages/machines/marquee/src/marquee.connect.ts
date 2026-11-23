@@ -1,6 +1,6 @@
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./marquee.anatomy"
 import { dom } from "./marquee.dom"
 import type {

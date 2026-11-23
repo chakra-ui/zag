@@ -1,0 +1,110 @@
+{
+  "replace": {
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.js"
+        }
+      },
+      "./array": {
+        "import": {
+          "types": "./dist/array.d.mts",
+          "default": "./dist/array.mjs"
+        },
+        "require": {
+          "types": "./dist/array.d.ts",
+          "default": "./dist/array.js"
+        }
+      },
+      "./functions": {
+        "import": {
+          "types": "./dist/functions.d.mts",
+          "default": "./dist/functions.mjs"
+        },
+        "require": {
+          "types": "./dist/functions.d.ts",
+          "default": "./dist/functions.js"
+        }
+      },
+      "./guard": {
+        "import": {
+          "types": "./dist/guard.d.mts",
+          "default": "./dist/guard.mjs"
+        },
+        "require": {
+          "types": "./dist/guard.d.ts",
+          "default": "./dist/guard.js"
+        }
+      },
+      "./number": {
+        "import": {
+          "types": "./dist/number.d.mts",
+          "default": "./dist/number.mjs"
+        },
+        "require": {
+          "types": "./dist/number.d.ts",
+          "default": "./dist/number.js"
+        }
+      },
+      "./object": {
+        "import": {
+          "types": "./dist/object.d.mts",
+          "default": "./dist/object.mjs"
+        },
+        "require": {
+          "types": "./dist/object.d.ts",
+          "default": "./dist/object.js"
+        }
+      },
+      "./store": {
+        "import": {
+          "types": "./dist/store.d.mts",
+          "default": "./dist/store.mjs"
+        },
+        "require": {
+          "types": "./dist/store.d.ts",
+          "default": "./dist/store.js"
+        }
+      },
+      "./color": {
+        "import": {
+          "types": "./dist/color/index.d.mts",
+          "default": "./dist/color/index.mjs"
+        },
+        "require": {
+          "types": "./dist/color/index.d.ts",
+          "default": "./dist/color/index.js"
+        }
+      },
+      "./file": {
+        "import": {
+          "types": "./dist/file/index.d.mts",
+          "default": "./dist/file/index.mjs"
+        },
+        "require": {
+          "types": "./dist/file/index.d.ts",
+          "default": "./dist/file/index.js"
+        }
+      },
+      "./date": {
+        "import": {
+          "types": "./dist/date/index.d.mts",
+          "default": "./dist/date/index.mjs"
+        },
+        "require": {
+          "types": "./dist/date/index.d.ts",
+          "default": "./dist/date/index.js"
+        }
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

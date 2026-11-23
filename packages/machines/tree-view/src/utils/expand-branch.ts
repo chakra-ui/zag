@@ -1,5 +1,6 @@
 import { type Params } from "@zag-js/core"
-import { add, ensure, partition, uniq } from "@zag-js/utils"
+import { add, partition, uniq } from "@zag-js/utils/array"
+import { ensure } from "@zag-js/utils/guard"
 import type { NodeWithError, TreeViewSchema } from "../tree-view.types"
 
 export function expandBranches(params: Params<TreeViewSchema>, values: string[]) {

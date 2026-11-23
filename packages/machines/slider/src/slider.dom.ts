@@ -1,7 +1,7 @@
 import type { Params, Scope } from "@zag-js/core"
 import { dispatchInputValueEvent } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
-import { clampPercent, getPercentValue } from "@zag-js/utils"
+import { clampPercent, getPercentValue } from "@zag-js/utils/number"
 import { parts } from "./slider.anatomy"
 import type { SliderSchema } from "./slider.types"
 import { getThumbExtent } from "./slider.utils"

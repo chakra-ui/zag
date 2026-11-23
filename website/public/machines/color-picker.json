@@ -283,25 +283,7 @@
     {
       "from": "open.idle",
       "to": null,
-      "event": "CHANNEL_SLIDER.ARROW_DOWN",
-      "guard": null
-    },
-    {
-      "from": "open.idle",
-      "to": null,
-      "event": "CHANNEL_SLIDER.ARROW_LEFT",
-      "guard": null
-    },
-    {
-      "from": "open.idle",
-      "to": null,
-      "event": "CHANNEL_SLIDER.ARROW_RIGHT",
-      "guard": null
-    },
-    {
-      "from": "open.idle",
-      "to": null,
-      "event": "CHANNEL_SLIDER.ARROW_UP",
+      "event": "CHANNEL_SLIDER.DECREMENT",
       "guard": null
     },
     {
@@ -325,13 +307,7 @@
     {
       "from": "open.idle",
       "to": null,
-      "event": "CHANNEL_SLIDER.PAGE_DOWN",
-      "guard": null
-    },
-    {
-      "from": "open.idle",
-      "to": null,
-      "event": "CHANNEL_SLIDER.PAGE_UP",
+      "event": "CHANNEL_SLIDER.INCREMENT",
       "guard": null
     },
     {

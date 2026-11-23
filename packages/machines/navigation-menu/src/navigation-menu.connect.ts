@@ -9,7 +9,7 @@ import {
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
 import type {

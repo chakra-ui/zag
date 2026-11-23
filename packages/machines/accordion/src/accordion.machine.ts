@@ -1,6 +1,7 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, AnimationFrame, getEventTarget, raf, Timeout } from "@zag-js/dom-query"
-import { add, remove, warn } from "@zag-js/utils"
+import { add, remove } from "@zag-js/utils/array"
+import { warn } from "@zag-js/utils/guard"
 import { parts } from "./accordion.anatomy"
 import * as dom from "./accordion.dom"
 import type { AccordionSchema, ValueChangeReason } from "./accordion.types"

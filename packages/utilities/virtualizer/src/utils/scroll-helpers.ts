@@ -1,4 +1,4 @@
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { isWindow } from "@zag-js/dom-query"
 
 export interface ScrollPosition {

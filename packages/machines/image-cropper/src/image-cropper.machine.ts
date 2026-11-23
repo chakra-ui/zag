@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, getEventPoint, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { addDomEvent, getEventTarget, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
   applyMove,
@@ -22,7 +22,8 @@ import {
   type RectInit,
 } from "@zag-js/rect-utils"
 import type { Point, Rect, Size } from "@zag-js/types"
-import { callAll, clampValue } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils/functions"
+import { clampValue } from "@zag-js/utils/number"
 import * as dom from "./image-cropper.dom"
 import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import {
@@ -826,20 +827,15 @@ export const machine = createMachine<ImageCropperSchema>({
 
     effects: {
       trackPointerMove({ scope, send }) {
-        function onPointerMove(event: PointerEvent) {
-          const point = getEventPoint(event)
-          const target = getEventTarget<Element>(event)
-          send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey, altKey: event.altKey })
-        }
-
-        function onPointerUp() {
-          send({ type: "POINTER_UP" })
-        }
-
-        return callAll(
-          addDomEvent(scope.getDoc(), "pointermove", onPointerMove),
-          addDomEvent(scope.getDoc(), "pointerup", onPointerUp),
-        )
+        return trackPointerMove(scope.getDoc(), {
+          onPointerMove({ point, event }) {
+            const target = getEventTarget<Element>(event)
+            send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey, altKey: event.altKey })
+          },
+          onPointerUp() {
+            send({ type: "POINTER_UP" })
+          },
+        })
       },
 
       trackViewportResize({ scope, send }) {

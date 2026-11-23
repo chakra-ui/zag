@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import type { Style } from "@zag-js/types"
 import type {
   Placement,

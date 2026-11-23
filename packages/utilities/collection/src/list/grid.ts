@@ -1,4 +1,4 @@
-import { chunk, nextIndex } from "@zag-js/utils"
+import { chunk, nextIndex } from "@zag-js/utils/array"
 import { ListCollection } from "./collection"
 import type { CollectionItem, CollectionOptions } from "../types"
 

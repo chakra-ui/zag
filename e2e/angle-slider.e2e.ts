@@ -26,6 +26,20 @@ test.describe("angle-slider", () => {
     await expect(I.page.locator("input[type='hidden']")).toBeEnabled()
   })
 
+  test("[keyboard] arrows and page keys step the angle", async () => {
+    await I.focusThumb()
+    await I.pressKey("ArrowUp")
+    await I.seeValueText("1deg")
+    await I.pressKey("ArrowRight")
+    await I.seeValueText("2deg")
+    await I.pressKey("PageUp")
+    await I.seeValueText("12deg")
+    await I.pressKey("PageDown")
+    await I.seeValueText("2deg")
+    await I.pressKey("ArrowDown")
+    await I.seeValueText("1deg")
+  })
+
   test("[pointer] should jump to clicked position on control", async () => {
     // Click directly on the control (not on thumb) should jump to that position
     await I.seeValueText("0deg")

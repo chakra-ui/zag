@@ -108,3 +108,5 @@ export * from "./prop-types"
 export * from "./create-props"
 
 export type { JSX }
+
+export type { Teardown, TeardownReason } from "./lifecycle"

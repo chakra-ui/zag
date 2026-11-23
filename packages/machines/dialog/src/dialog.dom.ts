@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { parts } from "./dialog.anatomy"
 
 // ID generators — only for parts referenced by ARIA attributes

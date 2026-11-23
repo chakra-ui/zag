@@ -1,4 +1,4 @@
-const { floor, abs, round, min, max, pow, sign } = Math
+const { floor, round, min, max } = Math
 
 export const isNaN = (v: number) => Number.isNaN(v)
 
@@ -6,110 +6,83 @@ export const nan = (v: number) => (isNaN(v) ? 0 : v)
 export const mod = (v: number, m: number) => ((v % m) + m) % m
 export const wrap = (v: number, vmax: number) => ((v % vmax) + vmax) % vmax
 
-export const getMinValueAtIndex = (i: number, v: number[], vmin: number) => (i === 0 ? vmin : v[i - 1])
-export const getMaxValueAtIndex = (i: number, v: number[], vmax: number) => (i === v.length - 1 ? vmax : v[i + 1])
-
-export const isValueAtMax = (v: number, vmax: number) => nan(v) >= vmax
-export const isValueAtMin = (v: number, vmin: number) => nan(v) <= vmin
 export const isValueWithinRange = (v: number, vmin: number | null | undefined, vmax: number | null | undefined) => {
   const value = nan(v)
-  const minCheck = vmin == null || value >= vmin
-  const maxCheck = vmax == null || value <= vmax
-  return minCheck && maxCheck
+  return (vmin == null || value >= vmin) && (vmax == null || value <= vmax)
 }
 
-export const roundValue = (v: number, vmin: number, step: number) => round((nan(v) - vmin) / step) * step + vmin
 export const clampValue = (v: number, vmin: number, vmax: number) => min(max(nan(v), vmin), vmax)
 export const clampPercent = (v: number) => clampValue(v, 0, 1)
 
-export const getValuePercent = (v: number, vmin: number, vmax: number) => (nan(v) - vmin) / (vmax - vmin)
+/** Where a value sits between bounds, from 0 to 1. An empty range is 0. */
+export const getValuePercent = (v: number, vmin: number, vmax: number) =>
+  vmax === vmin ? 0 : (nan(v) - vmin) / (vmax - vmin)
 
+/** The value at a fraction of the range, on the step grid. */
 export const getPercentValue = (p: number, vmin: number, vmax: number, step: number) =>
-  clampValue(roundValue(p * (vmax - vmin) + vmin, vmin, step), vmin, vmax)
+  clampValue(snapToGrid(p * (vmax - vmin) + vmin, vmin, step, round), vmin, vmax)
 
+/** Decimal places a number is written with, including exponent notation like `1e-7`. */
+export const decimalsOf = (v: number) => {
+  if (!Number.isFinite(v) || Number.isInteger(v)) return 0
+  const [mantissa, exponent = "0"] = String(v).toLowerCase().split("e")
+  return max(0, (mantissa.split(".")[1]?.length ?? 0) - Number(exponent))
+}
+
+export const toFixedNumber = (v: number, d = 0, b = 10) => {
+  const p = Math.pow(b, d)
+  return round(v * p) / p
+}
+
+const roundTo = (v: number, decimals: number) => {
+  const p = 10 ** decimals
+  return round(v * p) / p
+}
+
+/**
+ * A value on the step grid that starts at `base`, with `fn` choosing the step (round, floor or ceil).
+ * Counts steps in scaled integers so decimal steps don't drift, then trims leftover float noise.
+ */
+const snapToGrid = (v: number, base: number, step: number, fn: (steps: number) => number) => {
+  const decimals = max(decimalsOf(step), decimalsOf(base))
+  const scale = 10 ** decimals
+  const trim = (n: number) => Number(n.toPrecision(15))
+  const count = trim((trim(v * scale) - round(base * scale)) / round(step * scale))
+  return roundTo(base + fn(count) * step, decimals)
+}
+
+/** Rounds away float noise, keeping one decimal past the step for a min or max off the grid. */
 export const roundToStepPrecision = (v: number, step: number) => {
-  let rv = v
-  let ss = step.toString()
-  let pi = ss.indexOf(".")
-  let p = pi >= 0 ? ss.length - pi : 0
-  if (p > 0) {
-    let pw = pow(10, p)
-    rv = round(rv * pw) / pw
-  }
-  return rv
+  const decimals = decimalsOf(step)
+  return decimals === 0 ? v : roundTo(v, decimals + 1)
 }
 
 export const roundToDpr = (v: number, dpr: unknown) => (typeof dpr === "number" ? floor(v * dpr + 0.5) / dpr : round(v))
 
+/** The nearest value on the step grid (starting at `min`), within the bounds. */
 export const snapValueToStep = (v: number, vmin: number | undefined, vmax: number | undefined, step: number) => {
-  const min = vmin != null ? Number(vmin) : 0
-  const max = Number(vmax)
+  const lo = vmin != null ? Number(vmin) : 0
+  const hi = Number(vmax)
+  if (!(step > 0)) return clampValue(v, isNaN(lo) ? -Infinity : lo, isNaN(hi) ? Infinity : hi)
 
-  // Snap to nearest step
-  const remainder = (v - min) % step
-  let snapped = abs(remainder) * 2 >= step ? v + sign(remainder) * (step - abs(remainder)) : v - remainder
-
-  snapped = roundToStepPrecision(snapped, step)
-
-  // Clamp to bounds
-  if (!isNaN(min) && snapped < min) {
-    snapped = min
-  } else if (!isNaN(max) && snapped > max) {
-    const scale = pow(10, Math.max(countDecimals(min), countDecimals(max), countDecimals(step)))
-    const stepsInRange = floor((round(max * scale) - round(min * scale)) / round(step * scale))
-    const largestValidStep = min + stepsInRange * step
-    snapped = stepsInRange <= 0 || largestValidStep < min ? max : largestValidStep
+  const snapped = snapToGrid(v, lo, step, round)
+  if (!isNaN(lo) && snapped < lo) return lo
+  if (!isNaN(hi) && snapped > hi) {
+    // The largest value on the grid, or `max` when no whole step fits in the range
+    const top = snapToGrid(hi, lo, step, floor)
+    return top <= lo ? hi : top
   }
-
-  return roundToStepPrecision(snapped, step)
+  return snapped
 }
+
+/** The value on the step grid in a direction: down for -1, up for 1. Values on the grid stay. */
+export const snapValueToStepDirection = (v: number, base: number, step: number, direction: number) =>
+  snapToGrid(v, base, step, direction > 0 ? floor : Math.ceil)
 
 export const setValueAtIndex = <T>(vs: T[], i: number, v: T) => {
   if (vs[i] === v) return vs
   return [...vs.slice(0, i), v, ...vs.slice(i + 1)]
 }
-
-interface RangeContext {
-  min: number
-  max: number
-  step: number
-  values: number[]
-}
-
-export function getValueSetterAtIndex(index: number, ctx: RangeContext) {
-  const minValueAtIndex = getMinValueAtIndex(index, ctx.values, ctx.min)
-  const maxValueAtIndex = getMaxValueAtIndex(index, ctx.values, ctx.max)
-  let nextValues = ctx.values.slice()
-
-  return function setValue(value: number) {
-    let nextValue = snapValueToStep(value, minValueAtIndex, maxValueAtIndex, ctx.step)
-    nextValues = setValueAtIndex(nextValues, index, value)
-    nextValues[index] = nextValue
-    return nextValues
-  }
-}
-
-export function getNextStepValue(index: number, ctx: RangeContext) {
-  const nextValue = ctx.values[index] + ctx.step
-  return getValueSetterAtIndex(index, ctx)(nextValue)
-}
-
-export function getPreviousStepValue(index: number, ctx: RangeContext) {
-  const nextValue = ctx.values[index] - ctx.step
-  return getValueSetterAtIndex(index, ctx)(nextValue)
-}
-
-export const getClosestValueIndex = (vs: number[], t: number) => {
-  let i = vs.findIndex((v) => t - v < 0)
-  if (i === 0) return i
-  if (i === -1) return vs.length - 1
-  let vLeft = vs[i - 1]
-  let vRight = vs[i]
-  if (abs(vLeft - t) < abs(vRight - t)) return i - 1
-  return i
-}
-
-export const getClosestValue = (vs: number[], t: number) => vs[getClosestValueIndex(vs, t)]
 
 export const getValueRanges = (vs: number[], vmin: number, vmax: number, gap: number) =>
   vs.map((v, i) => ({
@@ -118,38 +91,10 @@ export const getValueRanges = (vs: number[], vmin: number, vmax: number, gap: nu
     value: v,
   }))
 
-export const getValueTransformer = (va: number[], vb: number[]) => {
-  const [a, b] = va
-  const [c, d] = vb
-  return (v: number) => (a === b || c === d ? c : c + ((d - c) / (b - a)) * (v - a))
-}
-
-export const toFixedNumber = (v: number, d = 0, b = 10) => {
-  const pow = Math.pow(b, d)
-  return round(v * pow) / pow
-}
-
-const countDecimals = (value: number) => {
-  if (!Number.isFinite(value)) return 0
-  let e = 1,
-    p = 0
-  while (Math.round(value * e) / e !== value) {
-    e *= 10
-    p += 1
-  }
-  return p
-}
-
 const decimalOp = (a: number, op: "-" | "+", b: number): number => {
-  let result = op === "+" ? a + b : a - b
-  if (a % 1 !== 0 || b % 1 !== 0) {
-    const multiplier = 10 ** Math.max(countDecimals(a), countDecimals(b))
-    a = Math.round(a * multiplier)
-    b = Math.round(b * multiplier)
-    result = op === "+" ? a + b : a - b
-    result /= multiplier
-  }
-  return result
+  if (Number.isInteger(a) && Number.isInteger(b)) return op === "+" ? a + b : a - b
+  const decimals = max(decimalsOf(a), decimalsOf(b))
+  return roundTo(op === "+" ? a + b : a - b, decimals)
 }
 
 export const incrementValue = (v: number, s: number) => decimalOp(nan(v), "+", s)

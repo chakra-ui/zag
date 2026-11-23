@@ -8,7 +8,7 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
-import type { DateGranularity } from "@zag-js/date-utils"
+import type { DateGranularity } from "@zag-js/utils/date"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"

@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { ensure, ensureProps } from "@zag-js/utils"
+import { ensure, ensureProps } from "@zag-js/utils/guard"
 import type { AsyncListSchema, LoadDependency } from "./async-list.types"
 
 export const machine = createMachine<AsyncListSchema<any, any, any, any>>({

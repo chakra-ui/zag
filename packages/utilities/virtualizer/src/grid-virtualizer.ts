@@ -1,4 +1,5 @@
-import { isFunction, isNumber, isString, runIfFn } from "@zag-js/utils"
+import { runIfFn } from "@zag-js/utils/functions"
+import { isFunction, isNumber, isString } from "@zag-js/utils/guard"
 import { AnimationFrame, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type {
   CSSProperties,

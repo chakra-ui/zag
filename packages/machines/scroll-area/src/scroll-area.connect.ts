@@ -1,6 +1,6 @@
 import { contains, dataAttr, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { toPx } from "@zag-js/utils/number"
 import { parts } from "./scroll-area.anatomy"
 import * as dom from "./scroll-area.dom"
 import type {

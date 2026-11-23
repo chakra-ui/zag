@@ -2,7 +2,7 @@ import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dism
 import { ariaAttr, dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
 import { getPlacementSide, getPlacementStyles, type PlacementSide } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./popover.anatomy"
 import * as dom from "./popover.dom"
 import { getViewportSizeStyle } from "./popover.style"

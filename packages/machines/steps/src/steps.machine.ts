@@ -1,6 +1,7 @@
 import { createMachine, memo, type Params } from "@zag-js/core"
 import { AnimationFrame } from "@zag-js/dom-query"
-import { isEqual, warn } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
+import { warn } from "@zag-js/utils/guard"
 import * as dom from "./steps.dom"
 import { COMPLETE, type StepsSchema } from "./steps.types"
 import {

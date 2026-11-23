@@ -1,6 +1,6 @@
 import type { HandlePosition } from "@zag-js/rect-utils"
 import { createProps } from "@zag-js/types"
-import { createSplitProps } from "@zag-js/utils"
+import { createSplitProps } from "@zag-js/utils/object"
 import type { FloatingPanelProps, ResizeTriggerProps } from "./floating-panel.types"
 
 export const props = createProps<FloatingPanelProps>()([

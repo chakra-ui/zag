@@ -1,7 +1,8 @@
 "use client"
 
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { identity, isFunction } from "@zag-js/utils"
+import { identity } from "@zag-js/utils/functions"
+import { isFunction } from "@zag-js/utils/guard"
 import { useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { useSafeLayoutEffect } from "./use-layout-effect"

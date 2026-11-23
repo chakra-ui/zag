@@ -1,4 +1,4 @@
-import { parseColor, type Color } from "@zag-js/color-utils"
+import { parseColor, type Color } from "@zag-js/utils/color"
 import { createGuards, createMachine, type Params, type Scope } from "@zag-js/core"
 import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
@@ -14,11 +14,10 @@ import {
 } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Orientation } from "@zag-js/types"
-import { tryCatch } from "@zag-js/utils"
+import { tryCatch } from "@zag-js/utils/functions"
 import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel, OpenChangeReason } from "./color-picker.types"
-import { getAreaFormat } from "./utils/get-area-format"
 import { getChannelValue } from "./utils/get-channel-input-value"
 import { prefixHex } from "./utils/is-valid-hex"
 
@@ -115,7 +114,8 @@ export const machine = createMachine<ColorPickerSchema>({
       const format = context.get("format")
       const editedColor = context.get("editedColor")
       if (editedColor?.toFormat(format).isEqual(value)) return editedColor
-      return value.toFormat(getAreaFormat(format))
+      // The area is drawn in HSL for HSL colors, and in HSB for every other format
+      return value.toFormat(format.startsWith("hsl") ? "hsla" : "hsba")
     },
   },
 
@@ -327,22 +327,10 @@ export const machine = createMachine<ColorPickerSchema>({
             "AREA.END": {
               actions: ["incrementAreaXChannel", "invokeOnChangeEnd"],
             },
-            "CHANNEL_SLIDER.ARROW_LEFT": {
-              actions: ["decrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.ARROW_RIGHT": {
+            "CHANNEL_SLIDER.INCREMENT": {
               actions: ["incrementChannel", "invokeOnChangeEnd"],
             },
-            "CHANNEL_SLIDER.ARROW_UP": {
-              actions: ["incrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.ARROW_DOWN": {
-              actions: ["decrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.PAGE_UP": {
-              actions: ["incrementChannel", "invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.PAGE_DOWN": {
+            "CHANNEL_SLIDER.DECREMENT": {
               actions: ["decrementChannel", "invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.HOME": {

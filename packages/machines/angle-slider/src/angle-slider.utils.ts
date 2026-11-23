@@ -1,6 +1,6 @@
 import { createRect, getPointAngle } from "@zag-js/rect-utils"
 import type { Point } from "@zag-js/types"
-import { mod, snapValueToStep } from "@zag-js/utils"
+import { mod, snapValueToStep } from "@zag-js/utils/number"
 
 export const MIN_VALUE = 0
 export const MAX_VALUE = 359

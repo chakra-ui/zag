@@ -1,4 +1,4 @@
-import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
+import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/utils/color"
 import type { GamutOverlayData } from "./utils/get-gamut-overlay-path"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"

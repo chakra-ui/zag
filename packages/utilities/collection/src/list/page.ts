@@ -1,4 +1,4 @@
-import { hasProp, isObject } from "@zag-js/utils"
+import { hasProp, isObject } from "@zag-js/utils/guard"
 import { ListCollection } from "./collection"
 import type { CollectionItem, CollectionOptions } from "../types"
 

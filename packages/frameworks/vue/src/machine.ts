@@ -26,7 +26,10 @@ import {
   resolveStateValue,
   watchEffect,
 } from "@zag-js/core"
-import { compact, ensure, isEqual, isFunction, isString, noop, toArray, warn } from "@zag-js/utils"
+import { toArray } from "@zag-js/utils/array"
+import { noop } from "@zag-js/utils/functions"
+import { ensure, isFunction, isString, warn } from "@zag-js/utils/guard"
+import { compact, isEqual } from "@zag-js/utils/object"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"

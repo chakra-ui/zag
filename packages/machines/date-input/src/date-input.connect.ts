@@ -19,7 +19,7 @@ import type {
   SegmentProps,
   SegmentState,
 } from "./date-input.types"
-import { getLocaleSeparator, isValidCharacter } from "@zag-js/date-utils"
+import { getLocaleSeparator, isValidCharacter } from "@zag-js/utils/date"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 import { getGroupOffset } from "./utils/validity"
 

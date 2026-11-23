@@ -1,6 +1,6 @@
 import { dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { ensure } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils/guard"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
 import type { ResizeTriggerProps, ResizeTriggerState, RootState, SplitterApi, SplitterService } from "./splitter.types"

@@ -12,7 +12,7 @@ import {
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
-import { ensureProps } from "@zag-js/utils"
+import { ensureProps } from "@zag-js/utils/guard"
 import * as dom from "./tooltip.dom"
 import { isWarm, store } from "./tooltip.store"
 import { getViewportSizeStyle } from "./tooltip.style"

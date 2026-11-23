@@ -1,4 +1,4 @@
-import { clampValue, getValuePercent } from "@zag-js/utils"
+import { clampValue, getValuePercent } from "@zag-js/utils/number"
 import type { ProgressState } from "./progress.types"
 
 export const isFiniteNumber = (value: number | null | undefined): value is number =>
@@ -9,7 +9,7 @@ export function getClampedValue(value: number | null | undefined, min: number, m
 }
 
 export function getPercent(value: number | null, min: number, max: number) {
-  if (value === null || max === min) return 0
+  if (value === null) return 0
   return getValuePercent(value, min, max) * 100
 }
 

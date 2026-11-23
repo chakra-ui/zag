@@ -1,4 +1,4 @@
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 
 type NoInfer<T> = [T][T extends any ? 0 : never]
 

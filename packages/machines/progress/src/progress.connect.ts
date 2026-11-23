@@ -1,5 +1,5 @@
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./progress.anatomy"
 import * as dom from "./progress.dom"
 import type { IntlTranslations, ProgressApi, ProgressService, RootState, ViewProps, ViewState } from "./progress.types"

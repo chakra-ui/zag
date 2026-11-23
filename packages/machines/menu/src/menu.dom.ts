@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { contains, getByTypeahead, getWindow, isHTMLElement, type TypeaheadState } from "@zag-js/dom-query"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { parts } from "./menu.anatomy"
 import type { MenuService } from "./menu.types"
 

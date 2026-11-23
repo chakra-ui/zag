@@ -36,12 +36,11 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/live-region": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
-    "@zag-js/types": "workspace:*",
-    "@zag-js/date-utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/live-region": "workspace:*",
     "@zag-js/popper": "workspace:*",
+    "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "peerDependencies": {

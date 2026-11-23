@@ -1,5 +1,5 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { computed as __computed, onUnmounted, shallowRef } from "vue"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {

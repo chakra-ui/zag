@@ -1,6 +1,6 @@
 import { dataAttr, getEventTarget, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
-import { mergeWithDefault } from "@zag-js/utils"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./signature-pad.anatomy"
 import * as dom from "./signature-pad.dom"
 import type { IntlTranslations, RootState, SignaturePadApi, SignaturePadService } from "./signature-pad.types"

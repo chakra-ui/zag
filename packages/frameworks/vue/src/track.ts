@@ -1,4 +1,4 @@
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import { shallowRef, toValue, watch, watchEffect } from "vue"
 
 export const useTrack = (deps: any[], effect: VoidFunction) => {

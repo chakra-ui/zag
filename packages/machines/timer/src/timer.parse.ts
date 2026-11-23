@@ -1,4 +1,4 @@
-import { isObject } from "@zag-js/utils"
+import { isObject } from "@zag-js/utils/guard"
 import type { TimePart, Time } from "./timer.types"
 
 const segments = new Set<TimePart>(["days", "hours", "minutes", "seconds"])

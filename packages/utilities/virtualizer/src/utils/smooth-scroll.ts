@@ -1,4 +1,4 @@
-import { isFunction } from "@zag-js/utils"
+import { isFunction } from "@zag-js/utils/guard"
 import { AnimationFrame } from "@zag-js/dom-query"
 import { getScrollPosition, setScrollPosition, type ScrollTarget } from "./scroll-helpers"
 

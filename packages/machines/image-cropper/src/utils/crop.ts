@@ -1,7 +1,7 @@
 import type { PropFn } from "@zag-js/core"
 import { applyResize, clampPointInRange, getCenterPoint, ZERO_POINT } from "@zag-js/rect-utils"
 import type { Point, Rect, Size } from "@zag-js/types"
-import { isBoolean } from "@zag-js/utils"
+import { isBoolean } from "@zag-js/utils/guard"
 import type { FlipState, ImageCropperProps, ImageCropperSchema } from "../image-cropper.types"
 
 const { max, abs, PI, cos, sin } = Math

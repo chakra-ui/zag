@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
 import { nextById, prevById, scrollToNearest } from "@zag-js/dom-query"
-import { first, last } from "@zag-js/utils"
+import { first, last } from "@zag-js/utils/array"
 import { parts } from "./toolbar.anatomy"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `toolbar:${ctx.id}`

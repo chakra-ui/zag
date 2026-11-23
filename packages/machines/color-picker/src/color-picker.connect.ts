@@ -1,7 +1,8 @@
-import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/color-utils"
+import { getColorAreaGradient, isInSrgbGamut, normalizeColor } from "@zag-js/utils/color"
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
 import {
   getEventKey,
+  getEventMove,
   getEventPoint,
   getEventStep,
   isComposingEvent,
@@ -600,49 +601,31 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event) * channelRange.step
-
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "CHANNEL_SLIDER.ARROW_UP", channel, format, step })
-            },
-            ArrowDown() {
-              send({ type: "CHANNEL_SLIDER.ARROW_DOWN", channel, format, step })
-            },
-            ArrowLeft() {
-              send({ type: "CHANNEL_SLIDER.ARROW_LEFT", channel, format, step })
-            },
-            ArrowRight() {
-              send({ type: "CHANNEL_SLIDER.ARROW_RIGHT", channel, format, step })
-            },
-            PageUp() {
-              send({ type: "CHANNEL_SLIDER.PAGE_UP", channel, format, step: channelRange.pageSize })
-            },
-            PageDown() {
-              send({ type: "CHANNEL_SLIDER.PAGE_DOWN", channel, format, step: channelRange.pageSize })
-            },
-            Home() {
-              send({ type: "CHANNEL_SLIDER.HOME", channel, format })
-            },
-            End() {
-              send({ type: "CHANNEL_SLIDER.END", channel, format })
-            },
-            Escape(event) {
-              event.stopPropagation()
-            },
+          if (event.key === "Escape") {
+            event.stopPropagation()
+            return
           }
 
-          const exec =
-            keyMap[
-              getEventKey(event, {
-                dir: prop("dir"),
-              })
-            ]
+          const move = getEventMove(event, { dir: prop("dir") })
+          if (!move) return
 
-          if (exec) {
-            exec(event)
-            event.preventDefault()
+          if ("bound" in move) {
+            send({ type: move.bound === "min" ? "CHANNEL_SLIDER.HOME" : "CHANNEL_SLIDER.END", channel, format })
+          } else {
+            // Page keys move a page; Shift moves ten steps
+            const step = event.key.startsWith("Page")
+              ? channelRange.pageSize
+              : move.size === "large"
+                ? channelRange.step * 10
+                : channelRange.step
+            send({
+              type: move.direction > 0 ? "CHANNEL_SLIDER.INCREMENT" : "CHANNEL_SLIDER.DECREMENT",
+              channel,
+              format,
+              step,
+            })
           }
+          event.preventDefault()
         },
       })
     },

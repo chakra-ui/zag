@@ -1,4 +1,4 @@
-import { hash } from "@zag-js/utils"
+import { hash } from "@zag-js/utils/functions"
 import type { Scope } from "@zag-js/core"
 import { parts } from "./file-upload.anatomy"
 import type { ItemType } from "./file-upload.types"

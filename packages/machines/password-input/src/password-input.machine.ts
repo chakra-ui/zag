@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { PasswordInputSchema } from "./password-input.types"
 import * as dom from "./password-input.dom"
-import { uuid } from "@zag-js/utils"
+import { uuid } from "@zag-js/utils/functions"
 
 export const machine = createMachine<PasswordInputSchema>({
   props({ props }) {

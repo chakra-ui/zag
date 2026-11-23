@@ -25,7 +25,7 @@ import {
   isPreviousRangeInvalid,
   parseDateString,
   type AdjustDateReturn,
-} from "@zag-js/date-utils"
+} from "@zag-js/utils/date"
 import { getDismissReason, trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import {
   AnimationFrame,
@@ -816,7 +816,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
-            context.set("restoreFocus", !event.detail.focusable)
+            context.set("restoreFocus", !(event.detail.focusable || event.detail.contextmenu))
           },
           onDismiss(event) {
             send({ type: "INTERACT_OUTSIDE", src: getDismissReason(event) })

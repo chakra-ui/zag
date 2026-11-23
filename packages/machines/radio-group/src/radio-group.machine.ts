@@ -2,7 +2,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { AnimationFrame, dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import type { Rect } from "@zag-js/types"
-import { isEqual } from "@zag-js/utils"
+import { isEqual } from "@zag-js/utils/object"
 import * as dom from "./radio-group.dom"
 import type { RadioGroupSchema } from "./radio-group.types"
 

@@ -3,8 +3,6 @@ export function toArray<T>(v: T | T[] | undefined | null): T[] {
   return Array.isArray(v) ? v : [v]
 }
 
-export const fromLength = (length: number) => Array.from(Array(length).keys())
-
 export const first = <T>(v: T[]): T | undefined => v[0]
 
 export const last = <T>(v: T[]): T | undefined => v[v.length - 1]
