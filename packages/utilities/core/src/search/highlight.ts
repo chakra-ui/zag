@@ -3,8 +3,10 @@ import type { HighlightChunk, HighlightRange, HighlightRangesProps, HighlightWor
 // `\b` only knows ASCII word characters, so treat any Unicode letter, mark, number or `_` as part of a word
 const WORD_CHAR = "[\\p{L}\\p{M}\\p{N}_]"
 
+const SPECIAL_CHARS = /[|\\{}()[\]^$+*?.]/g
 // `-` is written as `\x2d` because `\-` is a syntax error in regexes with the `u` flag
-const escapeRegex = (term: string) => term.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d")
+const HYPHEN = /-/g
+const escapeRegex = (term: string) => term.replace(SPECIAL_CHARS, "\\$&").replace(HYPHEN, "\\x2d")
 
 /**
  * Splits `text` into chunks, marking the given ranges as matches.

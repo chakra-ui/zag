@@ -24,4 +24,5 @@ export type {
   FloatingPanelService as Service,
   TriggerState,
 } from "./floating-panel.types"
-export type { HandlePosition, Rect, Point, Size } from "@zag-js/rect-utils"
+export type { Rect, Point, Size } from "@zag-js/utils/geometry"
+export type { HandlePosition } from "@zag-js/utils/interaction"

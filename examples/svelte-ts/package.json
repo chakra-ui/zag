@@ -77,7 +77,6 @@
     "@zag-js/qr-code": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
-    "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scheduler": "workspace:*",
     "@zag-js/scroll-area": "workspace:*",

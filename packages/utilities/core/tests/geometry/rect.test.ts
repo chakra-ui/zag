@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest"
-import { createRect, getRectCorners } from "../src"
-import { containsPoint } from "../src/contains"
-import { getRectFromPoints } from "../src/from-points"
-import { collisions, intersection, intersects } from "../src/intersection"
-import { inset } from "../src/operations"
-import { union } from "../src/union"
+import { createRect, getRectCorners } from "../../src/geometry"
+import { containsPoint } from "../../src/geometry"
+import { getRectFromPoints } from "../../src/geometry"
+import { collisions, intersection, intersects } from "../../src/geometry"
+import { inset } from "../../src/geometry"
+import { union } from "../../src/geometry"
 
-describe("@zag-js/rect-utils", () => {
+describe("geometry", () => {
   test("should create rect", () => {
     const r = createRect({ x: 0, y: 0, width: 100, height: 100 })
     expect(r).toMatchObject({ x: 0, y: 0, width: 100, height: 100 })

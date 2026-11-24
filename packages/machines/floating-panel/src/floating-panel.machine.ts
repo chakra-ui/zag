@@ -2,6 +2,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
+  getElementRect,
   getOverflowAncestors,
   isHTMLElement,
   raf,
@@ -9,21 +10,17 @@ import {
   trackPointerMove,
 } from "@zag-js/dom-query"
 import {
-  applyMove,
-  applyResize,
-  centerInRect,
   clampPoint,
   clampSize,
   constrainRect,
-  getDirectionDelta,
-  getElementRect,
   isPointEqual,
   isSizeEqual,
   subtractPoints,
   type Point,
   type RectInit,
   type Size,
-} from "@zag-js/rect-utils"
+} from "@zag-js/utils/geometry"
+import { applyMove, applyResize, centerInRect, getDirectionDelta } from "@zag-js/utils/interaction"
 import { clampValue } from "@zag-js/utils/number"
 import { pick } from "@zag-js/utils/object"
 import { ensureProps } from "@zag-js/utils/guard"

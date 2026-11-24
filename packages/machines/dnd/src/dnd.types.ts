@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { Point, Rect } from "@zag-js/rect-utils"
+import type { Point, Rect } from "@zag-js/utils/geometry"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------

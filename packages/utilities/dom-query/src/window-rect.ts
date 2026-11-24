@@ -1,5 +1,4 @@
-import { createRect } from "./rect"
-import type { Rect } from "./types"
+import { createRect, type Rect } from "@zag-js/utils/geometry"
 
 export type WindowRectOptions = {
   /**

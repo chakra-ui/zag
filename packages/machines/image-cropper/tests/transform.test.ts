@@ -1,9 +1,8 @@
 import type { Point, Rect, Size } from "@zag-js/types"
 import { describe, expect, test } from "vitest"
 import {
-  getCropOutputSize,
+  getCropRect,
   getCropSourcePoints,
-  getCropSourceRect,
   getImageTransformCss,
   getNaturalToViewportMatrix,
   viewportToNaturalPoint,
@@ -23,7 +22,7 @@ const sourceRect = (params: {
   flip?: FlipState
 }) => {
   const { viewportSize, ...rest } = params
-  return getCropSourceRect({
+  return getCropRect({
     zoom: 1,
     offset: ZERO,
     rotation: 0,
@@ -33,7 +32,7 @@ const sourceRect = (params: {
   })
 }
 
-describe("@zag-js/image-cropper getCropSourceRect", () => {
+describe("@zag-js/image-cropper getCropRect", () => {
   test("identity: natural size equals viewport size", () => {
     // When the image is painted at exactly the viewport size, the source rect
     // is identical to the crop rect (1:1 mapping).
@@ -167,32 +166,26 @@ describe("@zag-js/image-cropper getCropSourceRect", () => {
     expect(result).toEqual({ x: 0, y: 0, width: 100, height: 100 })
   })
 
-  test("horizontal flip mirrors the sampled source region (#3238)", () => {
-    // 1200×800 source in a 600×400 viewport; crop over the top-right of the viewport.
-    // After a horizontal flip the crop shows the top-left (red) quadrant, so the
-    // natural-space rect must sit in x ∈ [0, 600], not [600, 1200].
-    const result = sourceRect({
+  test("measures a flipped crop where it shows in the flipped image", () => {
+    // A top-right crop of a flipped image is top-right of the flipped image;
+    // `corners` still holds the mirrored source region (#3238).
+    const params = {
       crop: { x: 300, y: 40, width: 260, height: 180 },
-      flip: { horizontal: true, vertical: false },
       viewportSize: { width: 600, height: 400 },
       naturalSize: { width: 1200, height: 800 },
-    })
+    }
+    const expected = { x: 600, y: 80, width: 520, height: 360 }
 
-    expect(result.x + result.width).toBeLessThanOrEqual(600 + 1e-6)
-    expect(result.x).toBeGreaterThanOrEqual(-1e-6)
-  })
-
-  test("vertical flip mirrors the sampled source region (#3238)", () => {
-    const result = sourceRect({
-      crop: { x: 300, y: 40, width: 260, height: 180 },
-      flip: { horizontal: false, vertical: true },
-      viewportSize: { width: 600, height: 400 },
-      naturalSize: { width: 1200, height: 800 },
-    })
-
-    // Top-right crop flipped vertically samples the bottom-right quadrant.
-    const centerY = result.y + result.height / 2
-    expect(centerY).toBeGreaterThan(400)
+    for (const flip of [
+      { horizontal: true, vertical: false },
+      { horizontal: false, vertical: true },
+    ]) {
+      const result = sourceRect({ ...params, flip })
+      expect(result.x).toBeCloseTo(expected.x, 8)
+      expect(result.y).toBeCloseTo(expected.y, 8)
+      expect(result.width).toBeCloseTo(expected.width, 8)
+      expect(result.height).toBeCloseTo(expected.height, 8)
+    }
   })
 
   test("viewportToNaturalPoint round-trips a flipped source pixel (#3238)", () => {
@@ -250,47 +243,43 @@ describe("@zag-js/image-cropper getCropSourceRect", () => {
     expect(map(points.bottomRight).y).toBeCloseTo(params.crop.y + params.crop.height, 10)
   })
 
-  test("rotation expands the source rect to the oriented crop's AABB", () => {
-    const unrotated = sourceRect({
-      crop: { x: 250, y: 150, width: 100, height: 100 },
-      viewportSize: { width: 600, height: 400 },
-      naturalSize: { width: 1200, height: 800 },
-    })
-
-    const rotated = sourceRect({
-      crop: { x: 250, y: 150, width: 100, height: 100 },
-      rotation: 45,
-      viewportSize: { width: 600, height: 400 },
-      naturalSize: { width: 1200, height: 800 },
-    })
-
-    // A rotated square's AABB is larger than the axis-aligned square.
-    expect(rotated.width).toBeGreaterThan(unrotated.width)
-    expect(rotated.height).toBeGreaterThan(unrotated.height)
-  })
-
-  test("getCropOutputSize keeps natural resolution under zoom", () => {
-    // Viewport crop 260×180, natural/viewport scale 2, zoom 1 → 520×360.
-    const size = getCropOutputSize({
-      crop: { x: 300, y: 40, width: 260, height: 180 },
-      zoom: 1,
-      imageRect: { x: 0, y: 0, width: 600, height: 400 },
-      naturalSize: { width: 1200, height: 800 },
-    })
-
-    expect(size).toEqual({ width: 520, height: 360 })
-  })
-
-  test("getCropOutputSize respects the maximum dimensions", () => {
+  test("keeps the crop size exact under rotation", () => {
     const params = {
-      crop: { x: 0, y: 0, width: 600, height: 400 },
-      zoom: 1,
-      imageRect: { x: 0, y: 0, width: 600, height: 400 },
-      naturalSize: { width: 12000, height: 8000 },
+      crop: { x: 250, y: 150, width: 100, height: 60 },
+      viewportSize: { width: 600, height: 400 },
+      naturalSize: { width: 1200, height: 800 },
     }
+    const unrotated = sourceRect(params)
+    const rotated = sourceRect({ ...params, rotation: 45 })
 
-    expect(getCropOutputSize(params)).toEqual({ width: 12000, height: 8000 })
-    expect(getCropOutputSize(params, { width: 4096, height: 4096 })).toEqual({ width: 4096, height: 2731 })
+    expect(rotated.width).toBeCloseTo(unrotated.width, 8)
+    expect(rotated.height).toBeCloseTo(unrotated.height, 8)
+  })
+
+  test("measures the crop in the rotated image", () => {
+    // A 90° turn makes the 1200×800 image 800×1200, and the centered crop stays centered in it
+    const result = sourceRect({
+      crop: { x: 250, y: 150, width: 100, height: 100 },
+      rotation: 90,
+      viewportSize: { width: 600, height: 400 },
+      naturalSize: { width: 1200, height: 800 },
+    })
+
+    expect(result.x).toBeCloseTo(300, 8)
+    expect(result.y).toBeCloseTo(500, 8)
+    expect(result.width).toBeCloseTo(200, 8)
+  })
+
+  test("measures the crop in the flipped image", () => {
+    const result = sourceRect({
+      crop: { x: 0, y: 0, width: 100, height: 100 },
+      flip: { horizontal: true, vertical: false },
+      viewportSize: { width: 600, height: 400 },
+      naturalSize: { width: 600, height: 400 },
+    })
+
+    // the left of the view shows the right of the image, which is the left of the flipped image
+    expect(result).toEqual({ x: 0, y: 0, width: 100, height: 100 })
   })
 
   test("serializes the canonical preview transform as a CSS matrix", () => {

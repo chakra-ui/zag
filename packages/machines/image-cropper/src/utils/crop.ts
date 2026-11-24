@@ -1,5 +1,6 @@
 import type { PropFn } from "@zag-js/core"
-import { applyResize, clampPointInRange, getCenterPoint, ZERO_POINT } from "@zag-js/rect-utils"
+import { getCenterPoint, ZERO_POINT } from "@zag-js/utils/geometry"
+import { applyResize, clampPointInRange } from "@zag-js/utils/interaction"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { isBoolean } from "@zag-js/utils/guard"
 import type { FlipState, ImageCropperProps, ImageCropperSchema } from "../image-cropper.types"

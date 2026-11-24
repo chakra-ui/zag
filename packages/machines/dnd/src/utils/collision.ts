@@ -1,5 +1,4 @@
-import { containsPoint, distanceFromPoint } from "@zag-js/rect-utils"
-import type { Point, Rect } from "@zag-js/rect-utils"
+import { containsPoint, distanceFromPoint, type Point, type Rect } from "@zag-js/utils/geometry"
 import type { CollisionOptions, CollisionResult, DropEntry, DropPlacement } from "../dnd.types"
 
 /* -----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 import type { Point, Rect, Size } from "@zag-js/types"
 import type { CropSourcePoints, FlipState } from "../image-cropper.types"
 
-const { min, max, round, PI, cos, sin } = Math
+const { min, max, abs, PI, cos, sin } = Math
 
 export interface Matrix {
   a: number
@@ -117,75 +117,29 @@ export function getCropSourcePoints(params: CropExportParams): CropSourcePoints 
   }
 }
 
-export function getCropSourceRect(params: CropExportParams): Rect {
-  const points = Object.values(getCropSourcePoints(params))
-  let minX = points[0].x
-  let maxX = points[0].x
-  let minY = points[0].y
-  let maxY = points[0].y
+/**
+ * The crop in the image's own pixels, measured after the image is flipped and then rotated,
+ * so it stays an exact rectangle under any rotation.
+ */
+export function getCropRect(params: CropExportParams): Rect {
+  const { naturalSize, imageRect, rotation, flip } = params
+  const theta = ((rotation % 360) * PI) / 180
+  const c = cos(theta)
+  const s = sin(theta)
+  const width = naturalSize.width || imageRect.width
+  const height = naturalSize.height || imageRect.height
+  const turnedWidth = width * abs(c) + height * abs(s)
+  const turnedHeight = width * abs(s) + height * abs(c)
 
-  for (const point of points) {
-    minX = min(minX, point.x)
-    maxX = max(maxX, point.x)
-    minY = min(minY, point.y)
-    maxY = max(maxY, point.y)
-  }
+  const points = Object.values(getCropSourcePoints(params)).map((point) => {
+    const x = (point.x - width / 2) * (flip.horizontal ? -1 : 1)
+    const y = (point.y - height / 2) * (flip.vertical ? -1 : 1)
+    return { x: c * x - s * y + turnedWidth / 2, y: s * x + c * y + turnedHeight / 2 }
+  })
 
-  return {
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY,
-  }
-}
-
-export function getNaturalCropSize(
-  params: Pick<CropExportParams, "crop" | "zoom" | "imageRect" | "naturalSize">,
-): Size {
-  const { crop, zoom, imageRect, naturalSize } = params
-  const safeZoom = zoom > 0 ? zoom : 1
-  const imageWidth = imageRect.width > 0 ? imageRect.width : naturalSize.width || 1
-  const imageHeight = imageRect.height > 0 ? imageRect.height : naturalSize.height || 1
-  const scaleX = (naturalSize.width || imageWidth) / imageWidth / safeZoom
-  const scaleY = (naturalSize.height || imageHeight) / imageHeight / safeZoom
-
-  return {
-    width: max(1, round(crop.width * scaleX)),
-    height: max(1, round(crop.height * scaleY)),
-  }
-}
-
-export function getCropOutputSize(
-  params: Pick<CropExportParams, "crop" | "zoom" | "imageRect" | "naturalSize">,
-  maxSize?: Size,
-): Size {
-  const size = getNaturalCropSize(params)
-  if (!maxSize) return size
-
-  const scale = min(1, max(1, maxSize.width) / size.width, max(1, maxSize.height) / size.height)
-
-  return {
-    width: max(1, round(size.width * scale)),
-    height: max(1, round(size.height * scale)),
-  }
-}
-
-export function applyCropExportTransform(
-  ctx: CanvasRenderingContext2D,
-  params: CropExportParams,
-  outputSize: Size,
-): void {
-  const { crop } = params
-  const matrix = getNaturalToViewportMatrix(params)
-  const scaleX = outputSize.width / crop.width
-  const scaleY = outputSize.height / crop.height
-
-  ctx.setTransform(
-    matrix.a * scaleX,
-    matrix.b * scaleY,
-    matrix.c * scaleX,
-    matrix.d * scaleY,
-    (matrix.e - crop.x) * scaleX,
-    (matrix.f - crop.y) * scaleY,
-  )
+  const xs = points.map((point) => point.x)
+  const ys = points.map((point) => point.y)
+  const x = min(...xs)
+  const y = min(...ys)
+  return { x, y, width: max(...xs) - x, height: max(...ys) - y }
 }

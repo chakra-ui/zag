@@ -1,9 +1,10 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { isBottomHandle, isLeftHandle, isRightHandle, isTopHandle, isVisibleSize, roundRect } from "@zag-js/rect-utils"
+import { canvasToBlob, cropImageToCanvas } from "@zag-js/dom-query/image"
+import { isVisibleSize, roundRect } from "@zag-js/utils/geometry"
+import { getHandleStyle, isBottomHandle, isLeftHandle, isRightHandle, isTopHandle } from "@zag-js/utils/interaction"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { toPx } from "@zag-js/utils/number"
 import { mergeWithDefault } from "@zag-js/utils/object"
-import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type {
@@ -15,7 +16,7 @@ import type {
   SelectionState,
 } from "./image-cropper.types"
 import { isEqualFlip, isValidRect, normalizeFlipState } from "./utils/crop"
-import { getCropSourceRect, getCropSourcePoints, getImageTransformCss, getNaturalCropSize } from "./utils/transform"
+import { getCropRect, getCropSourcePoints, getImageTransformCss } from "./utils/transform"
 
 const defaultTranslations: Required<IntlTranslations> = {
   rootLabel: "Image cropper",
@@ -183,37 +184,39 @@ export function connect<T extends PropTypes>(
 
     getCropData() {
       const exportParams = dom.getCropExportParams(service)
-      const sourceRect = getCropSourceRect(exportParams)
+      const rect = getCropRect(exportParams)
+      const width = Math.round(rect.width)
+      const height = Math.round(rect.height)
 
       return {
-        x: Math.round(sourceRect.x),
-        y: Math.round(sourceRect.y),
-        width: Math.round(sourceRect.width),
-        height: Math.round(sourceRect.height),
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
+        width,
+        height,
         corners: getCropSourcePoints(exportParams),
-        outputSize: getNaturalCropSize(exportParams),
-        rotate: rotation,
+        outputSize: { width: Math.max(1, width), height: Math.max(1, height) },
+        rotation,
         flipX: flip.horizontal,
         flipY: flip.vertical,
       }
     },
 
     async getCroppedImage(options = {}) {
-      const { type = "image/png", quality = 1, output = "blob" } = options
-      if (!isVisibleSize(naturalSize)) return null
+      const { type = "image/png", quality = 1, output = "blob", maxSize } = options
+      const imageEl = dom.getImageEl(scope)
+      if (!imageEl || !isVisibleSize(naturalSize)) return null
 
-      const canvas = dom.drawCroppedImageToCanvas(service, options)
-      if (!canvas) return null
+      const exportParams = dom.getCropExportParams(service)
+      const crop = { ...getCropRect(exportParams), rotation, flipX: flip.horizontal, flipY: flip.vertical }
 
       try {
-        if (output === "dataUrl") {
-          const dataUrl = canvas.toDataURL(type, quality)
-          return dataUrl === "data:," ? null : dataUrl
-        }
-
-        return await new Promise<Blob | null>((resolve) => {
-          canvas.toBlob(resolve, type, quality)
+        const canvas = await cropImageToCanvas(imageEl, crop, {
+          maxSize,
+          shape: cropShape,
+          doc: imageEl.ownerDocument,
         })
+        if (output === "dataUrl") return canvas.toDataURL(type, quality)
+        return await canvasToBlob(canvas, type, quality)
       } catch {
         return null
       }
@@ -422,7 +425,7 @@ export function connect<T extends PropTypes>(
         "aria-hidden": "true",
         role: "presentation",
         "data-disabled": dataAttr(disabled),
-        style: getHandlePositionStyles(handlePosition),
+        style: getHandleStyle(handlePosition, { align: "center", edgeLength: "96%" }),
         onPointerDown(event) {
           if (disabled) {
             event.preventDefault()

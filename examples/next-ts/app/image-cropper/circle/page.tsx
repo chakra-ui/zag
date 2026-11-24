@@ -13,6 +13,7 @@ export default function Page() {
   const controls = useControls(imageCropperControls)
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [preview, setPreview] = useState<string | null>(null)
 
   const service = useMachine(imageCropper.machine, {
     id: useId(),
@@ -37,6 +38,7 @@ export default function Page() {
           <div {...api.getViewportProps()}>
             <img
               src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+              crossOrigin="anonymous"
               {...api.getImageProps()}
             />
             <div {...api.getSelectionProps()}>
@@ -72,6 +74,10 @@ export default function Page() {
             onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
           />
         </label>
+        <button onClick={() => api.getCroppedImage({ output: "dataUrl" }).then((url) => setPreview(url as string))}>
+          Export
+        </button>
+        {preview && <img src={preview} alt="Cropped result" width={120} />}
       </main>
 
       <Toolbar controls={controls.ui}>

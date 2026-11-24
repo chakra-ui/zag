@@ -899,6 +899,25 @@ test.describe("image-cropper / circle", () => {
     expect(newRect.width).toEqual(newRect.height)
   })
 
+  test("should export the circle with transparent corners", async () => {
+    await loadQuadrantImage()
+    await I.page.getByRole("button", { name: "Export" }).click()
+    const image = I.page.getByAltText("Cropped result")
+    await expect(image).toBeVisible()
+
+    const alpha = await image.evaluate((element: HTMLImageElement) => {
+      const canvas = document.createElement("canvas")
+      canvas.width = element.naturalWidth
+      canvas.height = element.naturalHeight
+      const ctx = canvas.getContext("2d")!
+      ctx.drawImage(element, 0, 0)
+      const at = (x: number, y: number) => ctx.getImageData(x, y, 1, 1).data[3]
+      return { corner: at(0, 0), center: at(canvas.width / 2, canvas.height / 2) }
+    })
+
+    expect(alpha).toEqual({ corner: 0, center: 255 })
+  })
+
   test("should keep the crop area in 1:1 aspect ratio when resizing with the keyboard", async () => {
     const initialRect = await I.getSelectionRect()
 

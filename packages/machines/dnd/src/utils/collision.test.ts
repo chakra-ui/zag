@@ -1,4 +1,4 @@
-import { createRect } from "@zag-js/rect-utils"
+import { createRect } from "@zag-js/utils/geometry"
 import { describe, expect, test } from "vitest"
 import { closestGrid, midpointPlacement } from "./collision"
 import type { DropEntry } from "../dnd.types"

@@ -1,7 +1,7 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { imageCropperControls } from "@zag-js/shared"
-import { For, createMemo, createSignal, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -11,6 +11,7 @@ export default function Page() {
   const controls = useControls(imageCropperControls)
   const [zoom, setZoom] = createSignal(1)
   const [rotation, setRotation] = createSignal(0)
+  const [preview, setPreview] = createSignal<string | null>(null)
 
   const id = createUniqueId()
   const service = useMachine(
@@ -38,6 +39,7 @@ export default function Page() {
           <div {...api().getViewportProps()}>
             <img
               src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+              crossorigin="anonymous"
               {...api().getImageProps()}
             />
             <div {...api().getSelectionProps()}>
@@ -75,6 +77,16 @@ export default function Page() {
             onInput={(e) => api().setRotation(Number(e.currentTarget.value))}
           />
         </label>
+        <button
+          onClick={() =>
+            api()
+              .getCroppedImage({ output: "dataUrl" })
+              .then((url) => setPreview(url as string))
+          }
+        >
+          Export
+        </button>
+        <Show when={preview()}>{(url) => <img src={url()} alt="Cropped result" width={120} />}</Show>
       </main>
 
       <Toolbar controls={controls}>

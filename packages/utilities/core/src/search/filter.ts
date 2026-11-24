@@ -1,5 +1,7 @@
 import { createCollator } from "../i18n/collator"
 
+const PUNCTUATION = /\p{P}/gu
+
 export interface FilterReturn {
   startsWith(string: string, substring: string): boolean
   endsWith(string: string, substring: string): boolean
@@ -21,7 +23,7 @@ export function createFilter(options?: FilterOptions): FilterReturn {
 
   function normalize(string: string) {
     string = string.normalize("NFC")
-    if (ignorePunctuation) string = string.replace(/\p{P}/gu, "")
+    if (ignorePunctuation) string = string.replace(PUNCTUATION, "")
     return string
   }
 

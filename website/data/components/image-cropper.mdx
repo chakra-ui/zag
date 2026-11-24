@@ -238,6 +238,26 @@ browser canvas limits, so use `maxSize` to constrain output dimensions when
 needed. Exports are never upscaled beyond natural resolution. The method
 resolves to `null` if the browser cannot create or encode the canvas.
 
+With `cropShape: "circle"`, the corners outside the circle are transparent in
+PNG and WebP.
+
+### Crop the original file
+
+To crop the full-size file later, like on submit, save `api.getCropData()` and
+pass it to `cropImage`:
+
+```tsx
+import { cropImage } from "@zag-js/dom-query/image"
+
+const cropData = api.getCropData()
+
+// later
+const blob = await cropImage(file, cropData, {
+  type: "image/webp",
+  shape: "circle",
+})
+```
+
 ### Coordinate systems
 
 The image cropper uses two different coordinate systems:
@@ -264,8 +284,8 @@ console.log(api.crop)
 
 #### Natural coordinates
 
-These are the absolute pixel bounds in the original image after inverting pan,
-zoom, flip, and rotation:
+These are pixel bounds in the original image, measured after it's flipped and
+then rotated, so the crop stays an exact rectangle at any angle:
 
 ```tsx
 const cropData = api.getCropData()
@@ -282,7 +302,7 @@ console.log(cropData)
 //     bottomLeft: { x: 250, y: 900 },
 //   },
 //   outputSize: { width: 1000, height: 750 },
-//   rotate: 0,
+//   rotation: 0,
 //   flipX: false,
 //   flipY: false
 // }
@@ -292,9 +312,8 @@ console.log(cropData)
 
 - Relative to the original image dimensions
 - Accounts for the rendered image size and inverts zoom, pan, flip, and rotation
-- Under rotation, `x/y/width/height` is an axis-aligned bounding box of the
-  oriented crop
-- `corners` preserves the exact source quad as fractional coordinates
+- `x/y/width/height` are measured in the flipped, then rotated image
+- `corners` holds the crop's corners in the original, unrotated image
 - `outputSize` is the crop size at natural resolution before export limits
 
 #### When to use each
@@ -325,9 +344,8 @@ await fetch("/api/crop-image", {
   }),
 })
 
-// Backend:
-// - Without rotation, crop with x/y/width/height, then apply flipX/flipY.
-// - With rotation, map corners to outputSize with an affine transform.
+// Backend: flip the image (flipX/flipY), rotate it by `rotation`, then extract
+// x/y/width/height.
 ```
 
 #### Transform example

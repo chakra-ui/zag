@@ -1,7 +1,5 @@
-import { createRect } from "./rect"
-import { getElementRect } from "./from-element"
-import { union } from "./union"
-import type { Rect } from "./types"
+import { createRect, union, type Rect } from "@zag-js/utils/geometry"
+import { getElementRect } from "./element-rect"
 
 export function fromRange(range: Range): Rect {
   let rs: Rect[] = []

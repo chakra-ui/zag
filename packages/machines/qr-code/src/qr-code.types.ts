@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { DataUrlType } from "@zag-js/dom-query"
+import type { DataUrlType } from "@zag-js/dom-query/image"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
 

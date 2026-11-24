@@ -1,6 +1,6 @@
 import type { ListCollection } from "@zag-js/collection"
 import type { Scope } from "@zag-js/core"
-import { isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import { isPointInPolygon, type Point } from "@zag-js/utils/geometry"
 import * as dom from "./menu.dom"
 import type { MenuService, OpenChangeReason } from "./menu.types"
 

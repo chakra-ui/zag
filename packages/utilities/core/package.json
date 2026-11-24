@@ -43,6 +43,8 @@
     "./date": "./src/date/index.ts",
     "./search": "./src/search/index.ts",
     "./i18n": "./src/i18n/index.ts",
+    "./geometry": "./src/geometry/index.ts",
+    "./interaction": "./src/interaction/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

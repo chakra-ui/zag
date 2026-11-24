@@ -1,4 +1,4 @@
-import { getDataUrl as dataUrl } from "@zag-js/dom-query"
+import { svgToDataUrl } from "@zag-js/dom-query/image"
 import type { DataUrlOptions } from "./signature-pad.types"
 import type { Scope } from "@zag-js/core"
 import { parts } from "./signature-pad.anatomy"
@@ -15,5 +15,5 @@ export const getSegmentEl = (ctx: Scope) => ctx.query<SVGSVGElement>(ctx.selecto
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById(getHiddenInputId(ctx))
 
 export const getDataUrl = (ctx: Scope, options: DataUrlOptions): Promise<string> => {
-  return dataUrl(getSegmentEl(ctx), options)
+  return svgToDataUrl(getSegmentEl(ctx), options)
 }

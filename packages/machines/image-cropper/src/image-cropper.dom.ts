@@ -1,7 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import { parts } from "./image-cropper.anatomy"
-import type { GetCroppedImageOptions, ImageCropperService } from "./image-cropper.types"
-import { applyCropExportTransform, type CropExportParams, getCropOutputSize } from "./utils/transform"
+import type { ImageCropperService } from "./image-cropper.types"
+import type { CropExportParams } from "./utils/transform"
 
 // ID generators — only for parts referenced by ARIA attributes
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `${ctx.id}`
@@ -67,32 +67,5 @@ export function getCropExportParams(params: ImageCropperService): CropExportPara
     flip: context.get("flip"),
     imageRect,
     naturalSize,
-  }
-}
-
-export function drawCroppedImageToCanvas(
-  params: ImageCropperService,
-  options: Pick<GetCroppedImageOptions, "maxSize"> = {},
-): HTMLCanvasElement | null {
-  const imageEl = getImageEl(params.scope)
-  if (!imageEl || !imageEl.complete) return null
-
-  const exportParams = getCropExportParams(params)
-  const outputSize = getCropOutputSize(exportParams, options.maxSize)
-
-  try {
-    const canvas = imageEl.ownerDocument.createElement("canvas")
-    canvas.width = outputSize.width
-    canvas.height = outputSize.height
-    if (canvas.width !== outputSize.width || canvas.height !== outputSize.height) return null
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return null
-
-    applyCropExportTransform(ctx, exportParams, outputSize)
-    ctx.drawImage(imageEl, 0, 0)
-    return canvas
-  } catch {
-    return null
   }
 }

@@ -1,6 +1,6 @@
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { IndexPath, TreeCollection, TreeNode } from "@zag-js/collection"
-import type { Point } from "@zag-js/rect-utils"
+import type { Point } from "@zag-js/utils/geometry"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"

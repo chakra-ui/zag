@@ -445,9 +445,6 @@ importers:
       '@zag-js/react':
         specifier: workspace:*
         version: link:../../packages/frameworks/react
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -752,9 +749,6 @@ importers:
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -1065,9 +1059,6 @@ importers:
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -1369,9 +1360,6 @@ importers:
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -1658,9 +1646,6 @@ importers:
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -1953,9 +1938,6 @@ importers:
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
@@ -2339,9 +2321,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2473,9 +2452,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2734,9 +2710,6 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../utilities/live-region
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2890,9 +2863,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2977,9 +2947,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3089,9 +3056,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -4063,12 +4027,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/rect:
     devDependencies:
       clean-package:
         specifier: 2.2.0

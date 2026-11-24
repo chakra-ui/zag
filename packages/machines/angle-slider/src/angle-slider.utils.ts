@@ -1,4 +1,4 @@
-import { createRect, getPointAngle } from "@zag-js/rect-utils"
+import { createRect, getPointAngle } from "@zag-js/utils/geometry"
 import type { Point } from "@zag-js/types"
 import { mod, snapValueToStep } from "@zag-js/utils/number"
 

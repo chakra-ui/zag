@@ -25,7 +25,7 @@ import {
 } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
-import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/utils/geometry"
 import { isEqual } from "@zag-js/utils/object"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"

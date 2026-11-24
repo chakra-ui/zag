@@ -124,6 +124,26 @@
           "default": "./dist/i18n/index.js"
         }
       },
+      "./geometry": {
+        "import": {
+          "types": "./dist/geometry/index.d.mts",
+          "default": "./dist/geometry/index.mjs"
+        },
+        "require": {
+          "types": "./dist/geometry/index.d.ts",
+          "default": "./dist/geometry/index.js"
+        }
+      },
+      "./interaction": {
+        "import": {
+          "types": "./dist/interaction/index.d.mts",
+          "default": "./dist/interaction/index.mjs"
+        },
+        "require": {
+          "types": "./dist/interaction/index.d.ts",
+          "default": "./dist/interaction/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

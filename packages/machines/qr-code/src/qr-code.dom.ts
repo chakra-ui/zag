@@ -1,10 +1,9 @@
 import type { Scope } from "@zag-js/core"
-import { getDataUrl as svgToDataUrl, getWindow, type DataUrlOptions } from "@zag-js/dom-query"
+import { getWindow } from "@zag-js/dom-query"
+import { createCanvas, loadImage, svgToDataUrl, type DataUrlOptions } from "@zag-js/dom-query/image"
 import { parts } from "./qr-code.anatomy"
 
 const SVG_NS = "http://www.w3.org/2000/svg"
-
-type Win = ReturnType<typeof getWindow>
 
 export const getRootId = (scope: Scope) => scope.ids?.root ?? `${scope.id}:root`
 export const getFrameId = (scope: Scope) => scope.ids?.frame ?? `${scope.id}:frame`
@@ -66,7 +65,7 @@ async function getOverlayHref(overlay: Element) {
     if (!src) return null
     if (src.startsWith("data:")) return src
     try {
-      return await imageToDataUrl(getWindow(overlay), src)
+      return await imageToDataUrl(overlay.ownerDocument, src)
     } catch {
       return null
     }
@@ -79,23 +78,9 @@ async function getOverlayHref(overlay: Element) {
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(clone))
 }
 
-function imageToDataUrl(win: Win, src: string) {
-  return new Promise<string>((resolve, reject) => {
-    const img = new win.Image()
-    img.crossOrigin = "anonymous"
-    img.onload = () => {
-      const canvas = win.document.createElement("canvas")
-      canvas.width = img.naturalWidth || img.width
-      canvas.height = img.naturalHeight || img.height
-      const context = canvas.getContext("2d")
-      if (!canvas.width || !context) {
-        reject()
-        return
-      }
-      context.drawImage(img, 0, 0)
-      resolve(canvas.toDataURL())
-    }
-    img.onerror = () => reject()
-    img.src = src
-  })
+async function imageToDataUrl(doc: Document, src: string) {
+  const image = await loadImage(src, { doc })
+  const { canvas, context } = createCanvas(doc, image.naturalWidth, image.naturalHeight)
+  context.drawImage(image, 0, 0)
+  return canvas.toDataURL()
 }

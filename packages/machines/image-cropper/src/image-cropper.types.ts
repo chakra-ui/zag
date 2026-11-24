@@ -1,7 +1,9 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, Size } from "@zag-js/types"
 
-export type HandlePosition = "n" | "e" | "s" | "w" | "ne" | "se" | "sw" | "nw"
+import type { HandlePosition } from "@zag-js/utils/interaction"
+
+export type { HandlePosition }
 
 export interface BoundingRect {
   width: number
@@ -332,21 +334,20 @@ export interface CropSourcePoints {
 
 export interface CropData {
   /**
-   * Axis-aligned bounds of the crop in natural image pixels, after inverting
-   * pan, zoom, flip, and rotation. Under rotation this is a bounding box of the
-   * oriented crop quad — use `getCroppedImage()` for pixel-exact output.
+   * The left edge of the crop in natural image pixels, measured after the image is
+   * flipped and then rotated. Pass the crop data to `cropImage` to crop the original file.
    */
   x: number
   /**
-   * The y coordinate of the crop bounds in natural image pixels
+   * The top edge of the crop in natural image pixels, after flip and rotation
    */
   y: number
   /**
-   * The width of the crop bounds in natural image pixels
+   * The width of the crop in natural image pixels
    */
   width: number
   /**
-   * The height of the crop bounds in natural image pixels
+   * The height of the crop in natural image pixels
    */
   height: number
   /**
@@ -360,7 +361,7 @@ export interface CropData {
   /**
    * The rotation of the preview image in degrees when the crop was taken
    */
-  rotate: number
+  rotation: number
   /**
    * Whether the preview image was flipped horizontally when the crop was taken
    */

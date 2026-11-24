@@ -1,28 +1,14 @@
-import type { CompassDirection } from "./compass"
-import type { Point, RectInit, Size } from "./types"
-
-export type HandlePosition = CompassDirection
-
-/* -----------------------------------------------------------------------------
- * Handle direction helpers
- * ---------------------------------------------------------------------------*/
-
-export const isLeftHandle = (h: HandlePosition): boolean => h === "w" || h === "nw" || h === "sw"
-
-export const isRightHandle = (h: HandlePosition): boolean => h === "e" || h === "ne" || h === "se"
-
-export const isTopHandle = (h: HandlePosition): boolean => h === "n" || h === "nw" || h === "ne"
-
-export const isBottomHandle = (h: HandlePosition): boolean => h === "s" || h === "sw" || h === "se"
-
-export const isCornerHandle = (h: HandlePosition): boolean =>
-  (isLeftHandle(h) || isRightHandle(h)) && (isTopHandle(h) || isBottomHandle(h))
-
-export const isHorizontalHandle = (h: HandlePosition): boolean =>
-  (isLeftHandle(h) || isRightHandle(h)) && !isTopHandle(h) && !isBottomHandle(h)
-
-export const isVerticalHandle = (h: HandlePosition): boolean =>
-  (isTopHandle(h) || isBottomHandle(h)) && !isLeftHandle(h) && !isRightHandle(h)
+import type { Point, RectInit, Size } from "../geometry/types"
+import {
+  isBottomHandle,
+  isCornerHandle,
+  isHorizontalHandle,
+  isLeftHandle,
+  isRightHandle,
+  isTopHandle,
+  isVerticalHandle,
+  type HandlePosition,
+} from "./handle"
 
 /* -----------------------------------------------------------------------------
  * Options
@@ -432,77 +418,4 @@ export function applyResize(
   }
 
   return { x: left, y: top, width: right - left, height: bottom - top }
-}
-
-/* -----------------------------------------------------------------------------
- * Public API: getDirectionDelta
- * ---------------------------------------------------------------------------*/
-
-/**
- * Convert an arrow-key direction and step into a Point delta.
- * Useful for keyboard-driven move/resize.
- */
-export function getDirectionDelta(direction: "left" | "right" | "up" | "down", step: number): Point {
-  switch (direction) {
-    case "left":
-      return { x: -step, y: 0 }
-    case "right":
-      return { x: step, y: 0 }
-    case "up":
-      return { x: 0, y: -step }
-    case "down":
-      return { x: 0, y: step }
-  }
-}
-
-/**
- * Convert an ArrowKey event key and step into a Point delta.
- * Like `getDirectionDelta` but accepts `"ArrowLeft"` / `"ArrowRight"` / etc.
- */
-export function getArrowKeyDelta(key: string, step: number): Point {
-  switch (key) {
-    case "ArrowLeft":
-      return { x: -step, y: 0 }
-    case "ArrowRight":
-      return { x: step, y: 0 }
-    case "ArrowUp":
-      return { x: 0, y: -step }
-    case "ArrowDown":
-      return { x: 0, y: step }
-    default:
-      return { x: 0, y: 0 }
-  }
-}
-
-/**
- * Compute the delta for a keyboard-driven resize given an arrow key and handle.
- *
- * The convention: pressing an arrow key in the handle's "outward" direction
- * expands the rect; pressing inward shrinks it. For corners, both axes move.
- */
-export function getKeyboardResizeDelta(key: string, handle: HandlePosition, step: number): Point {
-  let x = 0
-  let y = 0
-
-  if (isLeftHandle(handle)) {
-    if (key === "ArrowLeft") x = -step
-    else if (key === "ArrowRight") x = step
-  }
-
-  if (isRightHandle(handle)) {
-    if (key === "ArrowRight") x = step
-    else if (key === "ArrowLeft") x = -step
-  }
-
-  if (isTopHandle(handle)) {
-    if (key === "ArrowUp") y = -step
-    else if (key === "ArrowDown") y = step
-  }
-
-  if (isBottomHandle(handle)) {
-    if (key === "ArrowDown") y = step
-    else if (key === "ArrowUp") y = -step
-  }
-
-  return { x, y }
 }

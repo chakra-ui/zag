@@ -11,6 +11,7 @@
 
   let zoom = $state(1)
   let rotation = $state(0)
+  let preview = $state<string | null>(null)
 
   const id = $props.id()
   const service = useMachine(
@@ -41,6 +42,7 @@
     <div {...api.getViewportProps()}>
       <img
         src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+        crossorigin="anonymous"
         {...api.getImageProps()}
         alt="Cropper"
       />
@@ -77,6 +79,12 @@
       oninput={(e) => api.setRotation(Number(e.currentTarget.value))}
     />
   </label>
+  <button onclick={() => api.getCroppedImage({ output: "dataUrl" }).then((url) => (preview = url as string))}>
+    Export
+  </button>
+  {#if preview}
+    <img src={preview} alt="Cropped result" width="120" />
+  {/if}
 </main>
 
 <Toolbar {controls}>

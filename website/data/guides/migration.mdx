@@ -29,20 +29,23 @@ Some adapters need a newer framework:
 Some utility packages moved into `@zag-js/utils`, and collections are now
 created with functions.
 
-| v1                                       | v2                                         |
-| ---------------------------------------- | ------------------------------------------ |
-| `@zag-js/color-utils`                    | `@zag-js/utils/color`                      |
-| `@zag-js/file-utils`                     | `@zag-js/utils/file`                       |
-| `@zag-js/date-utils`                     | `@zag-js/utils/date`                       |
-| `@zag-js/fuzzy`                          | `@zag-js/utils/search`                     |
-| `@zag-js/highlight-word`                 | `@zag-js/utils/search`                     |
-| `@zag-js/i18n-utils`                     | `@zag-js/utils/i18n`                       |
-| `createFilter` from `@zag-js/i18n-utils` | `@zag-js/utils/search`                     |
-| Number helpers from `@zag-js/utils`      | `@zag-js/utils/number` (still in the root) |
-| `new ListCollection(options)`            | `createListCollection(options)`            |
-| `new GridCollection(options)`            | `createGridCollection(options)`            |
-| `new PageListCollection(options)`        | `createPageListCollection(options)`        |
-| `new TreeCollection(options)`            | `createTreeCollection(options)`            |
+| v1                                         | v2                                         |
+| ------------------------------------------ | ------------------------------------------ |
+| `@zag-js/color-utils`                      | `@zag-js/utils/color`                      |
+| `@zag-js/file-utils`                       | `@zag-js/utils/file`                       |
+| `@zag-js/date-utils`                       | `@zag-js/utils/date`                       |
+| `@zag-js/fuzzy`                            | `@zag-js/utils/search`                     |
+| `@zag-js/highlight-word`                   | `@zag-js/utils/search`                     |
+| `@zag-js/i18n-utils`                       | `@zag-js/utils/i18n`                       |
+| `@zag-js/rect-utils`                       | `@zag-js/utils/geometry`                   |
+| `applyMove`, `applyResize`, handle helpers | `@zag-js/utils/interaction`                |
+| `getElementRect`, `getWindowRect`          | `@zag-js/dom-query`                        |
+| `createFilter` from `@zag-js/i18n-utils`   | `@zag-js/utils/search`                     |
+| Number helpers from `@zag-js/utils`        | `@zag-js/utils/number` (still in the root) |
+| `new ListCollection(options)`              | `createListCollection(options)`            |
+| `new GridCollection(options)`              | `createGridCollection(options)`            |
+| `new PageListCollection(options)`          | `createPageListCollection(options)`        |
+| `new TreeCollection(options)`              | `createTreeCollection(options)`            |
 
 The collection class names are now types only.
 
@@ -105,6 +108,7 @@ than a rename.
 | Floating panel                                      | `ResizeTriggerAxis`                           | `HandlePosition`                                      |
 | Image cropper                                       | `handles` (export)                            | `placements`                                          |
 | Image cropper                                       | `HandleProps.position`, `data-position`       | `placement`, `data-placement`                         |
+| Image cropper                                       | `api.getCropData().rotate`                    | `api.getCropData().rotation`                          |
 | Listbox                                             | `api.highlightValue(v)`                       | `api.setHighlightedValue(v)`                          |
 | Pagination                                          | `api.goToPrevPage()`                          | `api.goToPreviousPage()`                              |
 | Pagination, scheduler                               | `translations.prevTriggerLabel`               | `translations.previousTriggerLabel`                   |
@@ -458,8 +462,11 @@ These compile without changes but behave differently.
 - `@zag-js/dismissable`: `trackDismissableElement` requires `onLayerChange`.
   Apply the emitted layer index, nesting and pointer-blocking state in your
   render output.
-- `@zag-js/rect-utils`: `resizeRect`, `AffineTransform`, `compassDirectionMap`,
-  `oppositeDirectionMap` and `ScalingOptions` are removed.
+- `@zag-js/utils/geometry` (was `@zag-js/rect-utils`): `resizeRect`,
+  `AffineTransform`, `compassDirectionMap`, `oppositeDirectionMap` and
+  `ScalingOptions` are removed.
+- `@zag-js/dom-query`: `getDataUrl` moved to `@zag-js/dom-query/image` as
+  `svgToDataUrl`.
 - `@zag-js/utils`: `isEqual` compares functions by reference and only reads an
   object's own properties.
 - `@zag-js/utils`: `fromLength`, `isValueAtMax`, `isValueAtMin`,

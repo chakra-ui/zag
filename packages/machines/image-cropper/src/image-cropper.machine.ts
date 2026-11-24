@@ -2,15 +2,8 @@ import { createMachine } from "@zag-js/core"
 import { addDomEvent, getEventTarget, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
-  applyMove,
-  applyResize,
-  centerOnPoint,
-  centerInRect,
-  clampPointInRange,
   distance as getPointDistance,
-  getArrowKeyDelta,
   getCenterPoint,
-  getKeyboardResizeDelta,
   getMidpoint,
   isRectEqual,
   isSizeEqual,
@@ -20,7 +13,16 @@ import {
   subtractPoints,
   ZERO_POINT,
   type RectInit,
-} from "@zag-js/rect-utils"
+} from "@zag-js/utils/geometry"
+import {
+  applyMove,
+  applyResize,
+  centerOnPoint,
+  centerInRect,
+  clampPointInRange,
+  getArrowKeyDelta,
+  getKeyboardResizeDelta,
+} from "@zag-js/utils/interaction"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll } from "@zag-js/utils/functions"
 import { clampValue } from "@zag-js/utils/number"

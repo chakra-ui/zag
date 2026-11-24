@@ -58,7 +58,6 @@
   "@zag-js/qr-code": "../../packages/machines/qr-code/src",
   "@zag-js/radio-group": "../../packages/machines/radio-group/src",
   "@zag-js/rating-group": "../../packages/machines/rating-group/src",
-  "@zag-js/rect-utils": "../../packages/utilities/rect/src",
   "@zag-js/remove-scroll": "../../packages/utilities/remove-scroll/src",
   "@zag-js/scheduler": "../../packages/machines/scheduler/src",
   "@zag-js/scroll-area": "../../packages/machines/scroll-area/src",

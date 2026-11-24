@@ -14,7 +14,7 @@ import {
   isTopHandle,
   isVerticalHandle,
   type HandlePosition,
-} from "../src/interact"
+} from "../../src/interaction"
 
 /* -------------------------------------------------------------------------- */
 /* Handle direction helpers                                                    */

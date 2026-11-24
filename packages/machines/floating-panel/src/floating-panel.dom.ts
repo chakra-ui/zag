@@ -1,6 +1,6 @@
 import type { Scope } from "@zag-js/core"
-import { isHTMLElement } from "@zag-js/dom-query"
-import { createRect, getElementRect, getWindowRect, type Point, type Rect } from "@zag-js/rect-utils"
+import { getElementRect, getWindowRect, isHTMLElement } from "@zag-js/dom-query"
+import { createRect, type Point, type Rect } from "@zag-js/utils/geometry"
 import { pick } from "@zag-js/utils/object"
 import { parts } from "./floating-panel.anatomy"
 

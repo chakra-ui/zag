@@ -17,7 +17,7 @@ import type {
   StageTriggerState,
   TriggerState,
 } from "./floating-panel.types"
-import { getResizePlacementStyle } from "./get-resize-placement-style"
+import { getHandleStyle } from "@zag-js/utils/interaction"
 
 const defaultTranslations: Required<IntlTranslations> = {
   minimize: "Minimize window",
@@ -294,9 +294,8 @@ export function connect<T extends PropTypes>(
           }
         },
         style: {
-          position: "absolute",
           touchAction: "none",
-          ...getResizePlacementStyle(props.placement),
+          ...getHandleStyle(props.placement),
         },
       })
     },

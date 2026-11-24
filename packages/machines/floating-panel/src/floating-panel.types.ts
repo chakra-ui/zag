@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { HandlePosition, Point, Size } from "@zag-js/rect-utils"
+import type { Point, Size } from "@zag-js/utils/geometry"
+import type { HandlePosition } from "@zag-js/utils/interaction"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------

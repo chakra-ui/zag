@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { getElementRect } from "@zag-js/rect-utils"
+import { getElementRect } from "@zag-js/dom-query"
 import { parts } from "./dnd.anatomy"
 import type { DropEntry, DropPlacement } from "./dnd.types"
 

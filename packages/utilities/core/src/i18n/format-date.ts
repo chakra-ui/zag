@@ -5,7 +5,10 @@ const getDateFormat = /*#__PURE__*/ cached<Intl.DateTimeFormatOptions, typeof In
 const TOKEN_SEPARATOR = "[\\s.\\-/\\\\,$!?:;<>]"
 
 // a run of one pattern letter, optionally ordinal ("Do"), between separators
-const DATE_TOKEN = new RegExp(`(?<=^|${TOKEN_SEPARATOR})([GyYQMEadDwsmhHzT])\\1*o?(?=$|${TOKEN_SEPARATOR})`, "g")
+const DATE_TOKEN = /*#__PURE__*/ new RegExp(
+  `(?<=^|${TOKEN_SEPARATOR})([GyYQMEadDwsmhHzT])\\1*o?(?=$|${TOKEN_SEPARATOR})`,
+  "g",
+)
 
 function ordinal(n: number) {
   let suffix = "th"

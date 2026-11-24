@@ -5,7 +5,7 @@ import {
   createRect,
   getRectCorners,
   closestSideToPoint,
-} from "@zag-js/rect-utils"
+} from "@zag-js/utils/geometry"
 
 export interface GraceAreaOptions {
   padding?: number

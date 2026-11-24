@@ -10,6 +10,7 @@ const id = useId()
 const controlProps = controls.mergeProps<imageCropper.Props>({})
 const zoom = ref(1)
 const rotation = ref(0)
+const preview = ref<string | null>(null)
 
 const service = useMachine(
   imageCropper.machine,
@@ -37,6 +38,7 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
       <div v-bind="api.getViewportProps()">
         <img
           src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&h=300&fit=crop"
+          crossorigin="anonymous"
           v-bind="api.getImageProps()"
         />
         <div v-bind="api.getSelectionProps()">
@@ -70,6 +72,8 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
         @input="(e) => api.setRotation(Number((e.target as HTMLInputElement).value))"
       />
     </label>
+    <button @click="api.getCroppedImage({ output: 'dataUrl' }).then((url) => (preview = url as string))">Export</button>
+    <img v-if="preview" :src="preview" alt="Cropped result" width="120" />
   </main>
 
   <Toolbar>

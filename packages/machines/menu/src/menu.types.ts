@@ -3,7 +3,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame, ModifierKeys, TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
-import type { Point } from "@zag-js/rect-utils"
+import type { Point } from "@zag-js/utils/geometry"
 import type {
   CommonProperties,
   DirectionProperty,
