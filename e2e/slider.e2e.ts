@@ -113,4 +113,26 @@ test.describe("slider", () => {
     await I.mouseup()
     await I.seeValueText("90")
   })
+
+  test("[pointer] should respect a lower max before the drag ends", async () => {
+    await I.mousedownAt({ x: 0.8 })
+    await I.mousemoveTo({ x: 0.9 })
+    await I.seeValueText("90")
+
+    await I.controls.num("max", "40")
+    await I.mouseup()
+
+    await I.seeValueText("40")
+  })
+
+  test("[pointer] should respect a higher min before the drag ends", async () => {
+    await I.mousedownAt({ x: 0.2 })
+    await I.mousemoveTo({ x: 0.1 })
+    await I.seeValueText("10")
+
+    await I.controls.num("min", "60")
+    await I.mouseup()
+
+    await I.seeValueText("60")
+  })
 })

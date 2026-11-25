@@ -4,8 +4,10 @@ import type { Size } from "@zag-js/types"
 import {
   callAll,
   clampValue,
+  decrementValue,
   getValuePercent,
   getValueRanges,
+  incrementValue,
   isEqual,
   isValueWithinRange,
   pick,
@@ -30,7 +32,19 @@ const isEqualSize = (a: Size | null, b: Size | null) => {
 }
 
 const normalize = (value: number[], min: number, max: number, step: number, minStepsBetweenThumbs: number) => {
-  const ranges = getValueRanges(value, min, max, minStepsBetweenThumbs * step)
+  const gap = minStepsBetweenThumbs * step
+  if (value.some((item) => !isValueWithinRange(item, min, max)) && incrementValue(min, gap * (value.length - 1)) <= max) {
+    // Reserve room for the remaining thumbs before placing each one in the new range.
+    let lower = min
+    return value.map((item, index) => {
+      const upper = decrementValue(max, gap * (value.length - 1 - index))
+      const next = clampValue(snapValueToStep(item, lower, upper, step), lower, upper)
+      lower = incrementValue(next, gap)
+      return next
+    })
+  }
+
+  const ranges = getValueRanges(value, min, max, gap)
   return ranges.map((range) => {
     const snapValue = snapValueToStep(range.value, range.min, range.max, step)
     const rangeValue = clampValue(snapValue, range.min, range.max)
@@ -120,7 +134,11 @@ export const machine = createMachine<SliderSchema>({
     ),
   },
 
-  watch({ track, action, context, computed, send }) {
+  watch({ track, action, context, computed, prop, send }) {
+    track([() => prop("min"), () => prop("max")], () => {
+      action(["constrainValueToBounds"])
+    })
+
     track([() => context.hash("value")], () => {
       action(["syncInputElements", "dispatchChangeEvent"])
     })
@@ -206,7 +224,7 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: ["invokeOnChangeEnd", "clearThumbDragOffset", "clearThumbDragStartValue"],
+          actions: ["constrainValueToBounds", "invokeOnChangeEnd", "clearThumbDragOffset", "clearThumbDragStartValue"],
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
@@ -267,6 +285,14 @@ export const machine = createMachine<SliderSchema>({
     },
 
     actions: {
+      constrainValueToBounds({ context, prop }) {
+        const value = context.get("value")
+        const min = prop("min")
+        const max = prop("max")
+        if (value.some((item) => !isValueWithinRange(item, min, max))) {
+          context.set("value", normalize(value, min, max, prop("step"), prop("minStepsBetweenThumbs")))
+        }
+      },
       dispatchChangeEvent({ context, scope }) {
         dom.dispatchChangeEvent(scope, context.get("value"))
       },
