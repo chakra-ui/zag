@@ -198,6 +198,7 @@ export const machine = createMachine<DialogSchema>({
               triggerValue: context.get("triggerValue"),
             }) ?? el,
           getShadowRoot: true,
+          getRootNode: scope.getRootNode,
         })
       },
 

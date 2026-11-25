@@ -802,6 +802,7 @@ export const machine = createMachine<DrawerSchema>({
               triggerValue: context.get("triggerValue"),
             }) ?? el,
           getShadowRoot: true,
+          getRootNode: scope.getRootNode,
         })
       },
 

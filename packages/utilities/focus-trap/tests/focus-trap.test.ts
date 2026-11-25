@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { FocusTrap } from "../src"
+import { FocusTrap, trapFocus } from "../src"
 
 function markVisible<T extends HTMLElement>(element: T): T {
   Object.defineProperty(element, "offsetWidth", { configurable: true, get: () => 1 })
@@ -902,6 +902,27 @@ describe("FocusTrap", () => {
       await new Promise((resolve) => setTimeout(resolve, 0))
 
       expect(document.activeElement).toBe(first)
+    })
+  })
+
+  describe("trapFocus", () => {
+    it("activates when the container is inserted, before the next frame", async () => {
+      const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation(() => 0)
+
+      const container = markVisible(document.createElement("div"))
+      const inside = createButton("Inside")
+      container.append(inside)
+
+      const destroy = trapFocus(() => (container.isConnected ? container : null), { getRootNode: () => document })
+      await Promise.resolve()
+
+      document.body.append(container)
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(document.activeElement).toBe(inside)
+
+      destroy()
+      rafSpy.mockRestore()
     })
   })
 })

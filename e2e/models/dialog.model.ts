@@ -30,6 +30,10 @@ export class DialogModel extends Model {
     return this.page.locator(`[data-testid='close-${this.id}']`)
   }
 
+  private get input() {
+    return this.page.locator(`[data-testid='input-${this.id}']`)
+  }
+
   clickTrigger(opts: { delay?: number } = {}) {
     return this.trigger.click(opts)
   }
@@ -40,6 +44,10 @@ export class DialogModel extends Model {
 
   seeCloseIsFocused() {
     return expect(this.closeTrigger).toBeFocused()
+  }
+
+  seeInputIsFocused() {
+    return expect(this.input).toBeFocused()
   }
 
   seeContent() {

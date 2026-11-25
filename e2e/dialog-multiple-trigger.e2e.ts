@@ -51,6 +51,12 @@ test.describe("dialog / multiple triggers", () => {
     await expect(page.locator(trigger(4))).toBeFocused()
   })
 
+  test("should focus the first input on open", async ({ page }) => {
+    await page.click(trigger(1))
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(`${content} input`).first()).toBeFocused()
+  })
+
   test("should open dialog with Enter key", async ({ page }) => {
     await page.locator(trigger(2)).focus()
     await page.keyboard.press("Enter")
