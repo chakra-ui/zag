@@ -254,6 +254,7 @@ export const machine = createMachine<PopoverSchema>({
             return el
           },
           getShadowRoot: true,
+          getRootNode: scope.getRootNode,
         })
       },
     },

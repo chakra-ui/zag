@@ -554,6 +554,7 @@ export const machine = createMachine<TourSchema>({
           preventScroll: true,
           returnFocusOnDeactivate: false,
           getShadowRoot: true,
+          getRootNode: scope.getRootNode,
         })
       },
 
