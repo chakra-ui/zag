@@ -109,8 +109,8 @@ export const layerStack = {
     this.syncLayers()
   },
   getParentNode(layer: Layer) {
-    const origins = layer.origins?.filter((origin) => origin?.isConnected)
-    if (!origins?.length) return this.layers[this.count() - 1]?.node
+    if (layer.origins === undefined) return this.layers[this.count() - 1]?.node
+    const origins = layer.origins.filter((origin) => origin?.isConnected)
     return [...this.layers].reverse().find(({ node }) => origins.some((origin) => contains(node, origin)))?.node
   },
   addBranch(node: HTMLElement) {

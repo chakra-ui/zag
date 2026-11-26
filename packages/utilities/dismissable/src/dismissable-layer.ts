@@ -91,9 +91,9 @@ function trackDismissableElementImpl(node: HTMLElement, options: DismissableElem
     return Array.isArray(containers) ? containers : [containers]
   }
 
-  // A layer nests in the layer its trigger is in, not in whichever layer is on top
-  const triggers = resolveContainers().filter(Boolean)
-  const origins = triggers.length ? [node, ...triggers] : undefined
+  // An explicit exclusion list opts into DOM-based nesting, even if it has no triggers.
+  // A triggerless layer can still nest inline, but not under an unrelated open layer.
+  const origins = excludeContainers === undefined ? undefined : [node, ...resolveContainers()]
 
   const layer: Layer = {
     dismiss: onDismiss,
