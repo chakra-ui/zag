@@ -121,6 +121,56 @@ describe("trackDismissableElement", () => {
     expect(layerStack.isTopMost(node)).toBe(false)
   })
 
+  test("does not dismiss a sibling layer with no trigger", () => {
+    const parent = mountNode()
+    const sibling = mountNode()
+    const dismissSibling = vi.fn()
+    const removeParent = trackDismissableElement(parent, { type: "popover", onDismiss: noop })
+    const removeSibling = trackDismissableElement(sibling, { exclude: [], onDismiss: dismissSibling })
+
+    try {
+      removeParent()
+
+      expect(dismissSibling).not.toHaveBeenCalled()
+      expect(layerStack.isTopMost(sibling)).toBe(true)
+    } finally {
+      removeSibling()
+    }
+  })
+
+  test("still dismisses a triggerless layer rendered inside the parent", () => {
+    const parent = mountNode()
+    const child = document.createElement("div")
+    parent.appendChild(child)
+    const dismissChild = vi.fn()
+    const removeParent = trackDismissableElement(parent, { type: "popover", onDismiss: noop })
+    const removeChild = trackDismissableElement(child, { exclude: [], onDismiss: dismissChild })
+
+    try {
+      removeParent()
+
+      expect(dismissChild).toHaveBeenCalledTimes(1)
+    } finally {
+      removeChild()
+    }
+  })
+
+  test("keeps stack-based nesting when no exclusions were supplied", () => {
+    const parent = mountNode()
+    const child = mountNode()
+    const dismissChild = vi.fn()
+    const removeParent = trackDismissableElement(parent, { type: "popover", onDismiss: noop })
+    const removeChild = trackDismissableElement(child, { onDismiss: dismissChild })
+
+    try {
+      removeParent()
+
+      expect(dismissChild).toHaveBeenCalledTimes(1)
+    } finally {
+      removeChild()
+    }
+  })
+
   test("cleanup removes the layer and unregisters escape", async () => {
     const node = mountNode()
     const onDismiss = vi.fn()
