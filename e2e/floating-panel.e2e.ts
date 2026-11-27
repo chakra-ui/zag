@@ -163,6 +163,62 @@ test.describe("floating-panel", () => {
     await I.seeContent()
   })
 
+  test("resizes from the keyboard grip", async () => {
+    await I.clickTrigger()
+    const { width, height } = await I.getContentSize()
+
+    await I.resizeGrip.focus()
+    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowDown")
+    await I.seeContentHasSize(width + 1, height + 1, 0.5)
+
+    await I.pressKey("Shift+ArrowLeft")
+    await I.seeContentHasSize(width - 9, height + 1, 0.5)
+    await I.seeAnnouncement(`Window resized to ${width - 9} by ${height + 1}`)
+  })
+
+  test("hides the pointer-only resize triggers from assistive tech", async ({ page }) => {
+    await I.clickTrigger()
+    await expect(I.resizeGrip).toHaveAttribute("tabindex", "0")
+    await expect(page.locator("[data-floating-panel-resize-trigger][aria-hidden=true]")).toHaveCount(7)
+  })
+
+  test("announces a keyboard move", async () => {
+    await I.clickTrigger()
+    await I.content.focus()
+    await I.pressKey("ArrowRight")
+    await expect(I.liveRegion()).toContainText("Window moved to")
+  })
+
+  test("doesn't announce a click on the drag trigger", async () => {
+    await I.clickTrigger()
+    // the title, clear of the header's buttons
+    await I.dragTrigger.click({ position: { x: 40, y: 10 } })
+    // read once after the region's posting delay; a retrying assertion would pass once it clears
+    await I.wait(500)
+    expect(await I.liveRegion().textContent()).toBe("")
+  })
+
+  test("keeps arrow keys physical in RTL", async () => {
+    await I.controls.select("dir", "rtl")
+    await I.clickTrigger()
+    const before = await I.getContentSize()
+
+    await I.content.focus()
+    await I.pressKey("ArrowRight")
+
+    expect((await I.getContentSize()).x).toBeGreaterThan(before.x)
+  })
+
+  test("snaps a pointer resize to the grid", async () => {
+    await I.controls.num("gridSize", "20")
+    await I.clickTrigger()
+    const { width, height } = await I.getContentSize()
+
+    await I.resizeBy("se", { x: 33, y: 47 })
+    await I.seeContentHasSize(width + 40, height + 40, 0.5)
+  })
+
   test("should revert position when pressing escape during drag", async () => {
     await I.clickTrigger()
     await I.seeContent()

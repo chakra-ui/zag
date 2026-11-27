@@ -194,7 +194,7 @@ export function connect<T extends PropTypes>(
             return
           }
           const point = getEventPoint(event)
-          send({ type: "scrollbar.pointerdown", orientation, point })
+          send({ type: "scrollbar.pointerdown", orientation, point, pointerId: event.pointerId })
           event.stopPropagation()
         },
         style: {
@@ -227,7 +227,7 @@ export function connect<T extends PropTypes>(
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
-          send({ type: "thumb.pointerdown", orientation, point })
+          send({ type: "thumb.pointerdown", orientation, point, pointerId: event.pointerId })
         },
         style: {
           ...(orientation === "vertical" && {

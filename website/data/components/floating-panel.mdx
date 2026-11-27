@@ -369,9 +369,21 @@ const service = useMachine(floatingPanel.machine, {
 
 </Example>
 
+### Keyboard resizing
+
+The `se` resize trigger is a focusable grip labeled "Resize window". Arrow keys
+resize the panel by `gridSize`, or ten times that with Shift. The other resize
+triggers are pointer-only and hidden from screen readers.
+
+Each move or resize is announced to screen readers.
+
+### Keyboard interactions
+
+<KeyboardTable name="floating-panel" />
+
 ### Accessibility labels
 
-Use `translations` to customize stage control labels.
+Use `translations` to customize the labels and announcements.
 
 <Example>
 
@@ -381,6 +393,9 @@ const service = useMachine(floatingPanel.machine, {
     minimize: "Minimize panel",
     maximize: "Maximize panel",
     restore: "Restore panel",
+    resizeTrigger: "Resize panel",
+    moved: ({ position }) => `Panel moved to ${position.x}, ${position.y}`,
+    resized: ({ size }) => `Panel resized to ${size.width} by ${size.height}`,
   },
 })
 ```

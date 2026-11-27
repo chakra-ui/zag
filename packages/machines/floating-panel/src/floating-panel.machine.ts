@@ -1,4 +1,4 @@
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
@@ -7,8 +7,8 @@ import {
   isHTMLElement,
   raf,
   resizeObserverBorderBox,
-  trackPointerMove,
 } from "@zag-js/dom-query"
+import { DRAG_DISTANCE, trackDrag } from "@zag-js/dom-query/drag"
 import {
   clampPoint,
   clampSize,
@@ -22,11 +22,14 @@ import {
 } from "@zag-js/utils/geometry"
 import { applyMove, applyResize, centerInRect, getDirectionDelta } from "@zag-js/utils/interaction"
 import { clampValue } from "@zag-js/utils/number"
-import { pick } from "@zag-js/utils/object"
+import { mergeWithDefault, pick } from "@zag-js/utils/object"
 import { ensureProps } from "@zag-js/utils/guard"
+import { createLiveRegion } from "@zag-js/live-region"
+import type { Required } from "@zag-js/types"
 import * as dom from "./floating-panel.dom"
+import { defaultTranslations } from "./floating-panel.translations"
 import { panelStack } from "./floating-panel.store"
-import type { FloatingPanelSchema, OpenChangeReason, Stage } from "./floating-panel.types"
+import type { FloatingPanelSchema, IntlTranslations, OpenChangeReason, Stage } from "./floating-panel.types"
 
 const { not, and } = createGuards<FloatingPanelSchema>()
 
@@ -107,6 +110,7 @@ export const machine = createMachine<FloatingPanelSchema>({
     return {
       offsetOriginFrame: AnimationFrame.create(),
       focusFrame: AnimationFrame.create(),
+      liveRegion: null,
     }
   },
 
@@ -185,6 +189,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
       exit: ["removeFromPanelStack"],
+      effects: ["trackLiveRegion"],
       initial: "idle",
       on: {
         "CONTROLLED.CLOSE": {
@@ -238,19 +243,22 @@ export const machine = createMachine<FloatingPanelSchema>({
               actions: ["setRestored"],
             },
             MOVE: {
-              actions: ["setPositionFromKeyboard"],
+              actions: ["setPositionFromKeyboard", "invokeOnDragEnd", "announcePosition"],
+            },
+            RESIZE: {
+              actions: ["setSizeFromKeyboard", "invokeOnResizeEnd", "announceSize"],
             },
           },
         },
         dragging: {
-          effects: ["trackPointerMove"],
+          effects: ["trackDrag"],
           on: {
             DRAG: {
               actions: ["setPositionFromDrag"],
             },
             DRAG_END: {
               target: "idle",
-              actions: ["invokeOnDragEnd", "clearPrevPosition"],
+              actions: ["invokeOnDragEnd", "announcePosition", "clearPrevPosition"],
             },
             ESCAPE: {
               target: "idle",
@@ -259,14 +267,14 @@ export const machine = createMachine<FloatingPanelSchema>({
           },
         },
         resizing: {
-          effects: ["trackPointerMove"],
+          effects: ["trackDrag"],
           on: {
             DRAG: {
               actions: ["setSizeFromDrag"],
             },
             DRAG_END: {
               target: "idle",
-              actions: ["invokeOnResizeEnd", "clearPrevSize"],
+              actions: ["invokeOnResizeEnd", "announceSize", "clearPrevSize"],
             },
             ESCAPE: {
               target: "idle",
@@ -287,19 +295,37 @@ export const machine = createMachine<FloatingPanelSchema>({
     },
 
     effects: {
-      trackPointerMove({ scope, send, event: evt, prop }) {
+      trackLiveRegion({ refs, scope }) {
+        const liveRegion = createLiveRegion({
+          level: "polite",
+          document: scope.getDoc(),
+          root: () => dom.getContentEl(scope),
+        })
+        refs.set("liveRegion", liveRegion)
+        return () => {
+          liveRegion.destroy()
+          refs.set("liveRegion", null)
+        }
+      },
+
+      trackDrag({ scope, send, event: evt, prop, state }) {
         const doc = scope.getDoc()
         const boundaryEl = prop("getBoundaryEl")?.()
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
-        return trackPointerMove(doc, {
-          onPointerMove({ point, event }) {
+        return trackDrag(doc, {
+          startPoint: evt.position,
+          pointerId: evt.pointerId,
+          threshold: state.matches("open.dragging") ? DRAG_DISTANCE : 0,
+          // capture after the threshold so a click keeps its target
+          capture: state.matches("open.dragging") ? dom.getDragTriggerEl(scope) : null,
+          onMove({ point, event }) {
             const { altKey, shiftKey } = event
             let x = clampValue(point.x, boundaryRect.x, boundaryRect.x + boundaryRect.width)
             let y = clampValue(point.y, boundaryRect.y, boundaryRect.y + boundaryRect.height)
             send({ type: "DRAG", position: { x, y }, placement: evt.placement, altKey, shiftKey })
           },
-          onPointerUp() {
-            send({ type: "DRAG_END" })
+          onEnd({ cancelled }) {
+            send({ type: cancelled ? "ESCAPE" : "DRAG_END" })
           },
         })
       },
@@ -513,6 +539,7 @@ export const machine = createMachine<FloatingPanelSchema>({
           maxSize: prop("maxSize"),
           aspectRatio,
           origin: event.altKey ? "center" : "extent",
+          gridSize: prop("gridSize"),
         })
 
         context.set("size", pick(result, ["width", "height"]))
@@ -617,6 +644,37 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("position", pick(result, ["x", "y"]))
       },
 
+      setSizeFromKeyboard({ context, event, prop, scope }) {
+        const size = context.get("size")
+        const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
+
+        const result = applyResize({ ...context.get("position"), ...size }, event.delta, event.placement, {
+          boundary: boundaryRect,
+          minSize: prop("minSize"),
+          maxSize: prop("maxSize"),
+          aspectRatio: prop("lockAspectRatio") ? size.width / size.height : undefined,
+        })
+
+        context.set("size", pick(result, ["width", "height"]))
+        context.set("position", pick(result, ["x", "y"]))
+      },
+
+      announcePosition(params) {
+        const { context } = params
+        const position = context.get("position")
+        const prevPosition = context.get("prevPosition")
+        if (prevPosition && isPointEqual(prevPosition, position)) return
+        announce(params, (t) => t.moved({ position }))
+      },
+
+      announceSize(params) {
+        const { context } = params
+        const size = context.get("size")
+        const prevSize = context.get("prevSize")
+        if (prevSize && isSizeEqual(prevSize, size)) return
+        announce(params, (t) => t.resized({ size }))
+      },
+
       bringToFrontOfPanelStack({ prop }) {
         panelStack.bringToFront(prop("id"))
       },
@@ -668,4 +726,13 @@ export const machine = createMachine<FloatingPanelSchema>({
 function getOpenChangeReason(event: FloatingPanelSchema["event"]): OpenChangeReason | undefined {
   if (event.type === "ESCAPE") return "escape-key"
   return event.src as OpenChangeReason | undefined
+}
+
+function announce(
+  params: Params<FloatingPanelSchema>,
+  getMessage: (translations: Required<IntlTranslations>) => string,
+) {
+  const translations = mergeWithDefault(defaultTranslations, params.prop("translations"))
+  const message = getMessage(translations)
+  if (message) params.refs.get("liveRegion")?.announce(message)
 }

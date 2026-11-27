@@ -1,11 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
-import {
-  AnimationFrame,
-  resizeObserverBorderBox,
-  setElementValue,
-  trackFormControl,
-  trackPointerMove,
-} from "@zag-js/dom-query"
+import { AnimationFrame, resizeObserverBorderBox, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { isEqual } from "@zag-js/utils/object"
 import { callAll } from "@zag-js/utils/functions"
 import {
@@ -208,7 +203,7 @@ export const machine = createMachine<SliderSchema>({
 
     dragging: {
       entry: ["focusActiveThumb"],
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_UP: {
           target: "focus",
@@ -242,12 +237,14 @@ export const machine = createMachine<SliderSchema>({
         })
       },
 
-      trackPointerMove({ scope, send }) {
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove(info) {
-            send({ type: "POINTER_MOVE", point: info.point, src: "drag" })
+      trackDrag({ scope, send, event }) {
+        return trackDrag(scope.getDoc(), {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
+            send({ type: "POINTER_MOVE", point, src: "drag" })
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "POINTER_UP" })
           },
         })

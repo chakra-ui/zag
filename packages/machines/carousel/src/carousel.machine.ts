@@ -1,26 +1,13 @@
 import { createMachine } from "@zag-js/core"
-import {
-  addDomEvent,
-  AnimationFrame,
-  raf,
-  resizeObserverBorderBox,
-  Timeout,
-  trackPointerMove,
-  trackScrollEnd,
-} from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, raf, resizeObserverBorderBox, Timeout, trackScrollEnd } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils/array"
 import { callAll } from "@zag-js/utils/functions"
 import { isObject, ensureProps } from "@zag-js/utils/guard"
 import { clampValue } from "@zag-js/utils/number"
 import * as dom from "./carousel.dom"
-import {
-  getPageForIndex,
-  getPageSnapPoints,
-  getReleaseVelocity,
-  getSlidesPerMove,
-  type DragSample,
-} from "./carousel.utils"
+import { getPageForIndex, getPageSnapPoints, getFlickVelocity, getSlidesPerMove } from "./carousel.utils"
 import type { CarouselSchema } from "./carousel.types"
 
 const DRIFT_THRESHOLD = 1
@@ -198,7 +185,7 @@ export const machine = createMachine<CarouselSchema>({
     },
 
     dragging: {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         DRAGGING: {
           actions: ["scrollSlides", "invokeDragging"],
@@ -377,22 +364,17 @@ export const machine = createMachine<CarouselSchema>({
         return addDomEvent(doc, "visibilitychange", onVisibilityChange)
       },
 
-      trackPointerMove({ scope, send, computed }) {
-        const samples: DragSample[] = []
-        let distance = 0
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove({ event }) {
-            const left = -event.movementX
-            const top = -event.movementY
-            const delta = computed("isHorizontal") ? left : top
-            distance += delta
-            samples.push({ time: event.timeStamp, delta })
-            send({ type: "DRAGGING", left, top })
+      trackDrag({ scope, send, computed, event: press }) {
+        // scrolling runs against the pointer
+        const axis = () => (computed("isHorizontal") ? "x" : "y")
+        return trackDrag(scope.getDoc(), {
+          startPoint: press.point,
+          onMove({ delta }) {
+            send({ type: "DRAGGING", left: -delta.x, top: -delta.y })
           },
-          onPointerUp({ event }) {
-            // A cancelled pointer never counts as a flick
-            const velocity = event.type === "pointerup" ? getReleaseVelocity(samples, event.timeStamp, distance) : 0
-            send({ type: "DRAGGING.END", velocity })
+          onEnd({ offset, velocity, cancelled }) {
+            const flick = cancelled ? 0 : getFlickVelocity(-velocity[axis()], -offset[axis()])
+            send({ type: "DRAGGING.END", velocity: flick })
           },
         })
       },

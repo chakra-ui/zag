@@ -10,8 +10,8 @@ import {
   isFocusOutside,
   setElementValue,
   trackFormControl,
-  trackPointerMove,
 } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Orientation } from "@zag-js/types"
 import { tryCatch } from "@zag-js/utils/functions"
@@ -298,7 +298,7 @@ export const machine = createMachine<ColorPickerSchema>({
         dragging: {
           tags: ["dragging"],
           exit: ["clearActiveChannel"],
-          effects: ["trackPointerMove", "disableTextSelection"],
+          effects: ["trackDrag", "disableTextSelection"],
           on: {
             POINTER_MOVE: {
               actions: ["setColorFromPoint", "focusThumb"],
@@ -375,12 +375,14 @@ export const machine = createMachine<ColorPickerSchema>({
           },
         })
       },
-      trackPointerMove({ scope, event, send }) {
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove({ point }) {
+      trackDrag({ scope, event, send }) {
+        return trackDrag(scope.getDoc(), {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
             send({ type: "POINTER_MOVE", point, format: event.format })
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "POINTER_UP" })
           },
         })

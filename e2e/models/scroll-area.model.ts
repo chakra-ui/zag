@@ -131,6 +131,7 @@ export class ScrollAreaModel extends Model {
       document.dispatchEvent(
         new PointerEvent("pointermove", {
           pointerType: "mouse",
+          pointerId: 1,
           buttons: 0,
           clientX: 300,
           clientY: 300,

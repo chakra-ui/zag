@@ -289,7 +289,7 @@ export function connect<T extends PropTypes>(
           if (handleEl && contains(rootEl, handleEl)) return
 
           const point = getEventPoint(event)
-          send({ type: "PAN_POINTER_DOWN", point })
+          send({ type: "PAN_POINTER_DOWN", point, pointerId: event.pointerId })
         },
       })
     },
@@ -364,13 +364,14 @@ export function connect<T extends PropTypes>(
           }
           if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
-          send({ type: "POINTER_DOWN", point })
+          send({ type: "POINTER_DOWN", point, pointerId: event.pointerId })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           const src = "selection"
           const { shiftKey, ctrlKey, metaKey, altKey } = event
-          const key = getEventKey(event, { dir: prop("dir") })
+          // physical arrows, even in RTL
+          const key = getEventKey(event)
 
           const isZoomInKey = key === "+" || key === "="
           const isZoomOutKey = key === "-" || key === "_"
@@ -434,7 +435,7 @@ export function connect<T extends PropTypes>(
           if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
 
-          send({ type: "POINTER_DOWN", point, handlePosition })
+          send({ type: "POINTER_DOWN", point, handlePosition, pointerId: event.pointerId })
         },
       })
     },

@@ -467,6 +467,9 @@ These compile without changes but behave differently.
   `ScalingOptions` are removed.
 - `@zag-js/dom-query`: `getDataUrl` moved to `@zag-js/dom-query/image` as
   `svgToDataUrl`.
+- `@zag-js/dom-query`: `trackPointerMove` is removed. Use `trackDrag` from
+  `@zag-js/dom-query/drag`, whose `onMove` and `onEnd` replace `onPointerMove`
+  and `onPointerUp`.
 - `@zag-js/utils`: `isEqual` compares functions by reference and only reads an
   object's own properties.
 - `@zag-js/utils`: `fromLength`, `isValueAtMax`, `isValueAtMin`,

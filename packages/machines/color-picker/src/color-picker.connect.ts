@@ -350,7 +350,7 @@ export function connect<T extends PropTypes>(
           const point = getEventPoint(event)
           const channel = { xChannel, yChannel }
 
-          send({ type: "POINTER_DOWN", point, channel, id: "area" })
+          send({ type: "POINTER_DOWN", point, channel, id: "area", pointerId: event.pointerId })
           event.preventDefault()
         },
         style: {
@@ -491,7 +491,7 @@ export function connect<T extends PropTypes>(
           if (isModifierKey(event)) return
 
           const point = getEventPoint(event)
-          send({ type: "POINTER_DOWN", channel, format, point, id: channel, orientation })
+          send({ type: "POINTER_DOWN", channel, format, point, id: channel, orientation, pointerId: event.pointerId })
 
           event.preventDefault()
         },

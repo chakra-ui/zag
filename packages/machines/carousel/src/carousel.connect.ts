@@ -1,4 +1,13 @@
-import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  contains,
+  dataAttr,
+  getEventKey,
+  getEventPoint,
+  getEventTarget,
+  isFocusable,
+  isLeftClick,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { throttle } from "@zag-js/utils/functions"
 import { mergeWithDefault } from "@zag-js/utils/object"
@@ -143,7 +152,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           if (isFocusable(target) && target !== event.currentTarget) return
 
           event.preventDefault()
-          send({ type: "DRAGGING.START" })
+          send({ type: "DRAGGING.START", point: getEventPoint(event) })
         },
         onWheel: throttle<any>((event: WheelEvent) => {
           const axis = prop("orientation") === "horizontal" ? "deltaX" : "deltaY"

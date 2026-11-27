@@ -55,6 +55,14 @@ export class FloatingPanelModel extends Model {
     return this.page.locator(`${part("stage-trigger")}[data-stage=default]`)
   }
 
+  get resizeGrip() {
+    return this.page.getByRole("button", { name: "Resize window" })
+  }
+
+  seeAnnouncement(text: string) {
+    return expect(this.liveRegion()).toHaveText(text)
+  }
+
   get closeTrigger() {
     return this.page.locator(part("close-trigger"))
   }

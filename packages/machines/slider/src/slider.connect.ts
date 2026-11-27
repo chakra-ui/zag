@@ -229,7 +229,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
             y: event.clientY - midpoint.y,
           }
 
-          send({ type: "THUMB_POINTER_DOWN", index, offset })
+          send({ type: "THUMB_POINTER_DOWN", index, offset, point: getEventPoint(event), pointerId: event.pointerId })
           event.stopPropagation()
         },
         onBlur() {
@@ -299,7 +299,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (!dom.getFirstEnabledThumbEl(scope)) return
 
           const point = getEventPoint(event)
-          send({ type: "POINTER_DOWN", point, src: "track-click" })
+          send({ type: "POINTER_DOWN", point, src: "track-click", pointerId: event.pointerId })
 
           event.preventDefault()
           event.stopPropagation()

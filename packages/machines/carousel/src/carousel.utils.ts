@@ -10,31 +10,12 @@ export const getPageForIndex = (index: number, perMove: number, pageCount: numbe
   return clampValue(Math.floor(index / perMove), 0, pageCount - 1)
 }
 
-export interface DragSample {
-  time: number
-  delta: number
-}
-
-const VELOCITY_WINDOW = 100
-// A pause this long before release reads as "place it here", not a flick
-const IDLE_TIMEOUT = 50
 const FLICK_VELOCITY = 0.3
 const FLICK_DISTANCE = 10
 
-// Release velocity in scroll units per ms, or 0 when the drag didn't end in a flick
-export const getReleaseVelocity = (samples: DragSample[], releaseTime: number, distance: number) => {
-  const last = samples[samples.length - 1]
-  if (!last || releaseTime - last.time > IDLE_TIMEOUT || Math.abs(distance) < FLICK_DISTANCE) return 0
-  let sum = 0
-  let start = releaseTime
-  for (const sample of samples) {
-    if (releaseTime - sample.time > VELOCITY_WINDOW) continue
-    sum += sample.delta
-    start = Math.min(start, sample.time)
-  }
-  const velocity = sum / Math.max(releaseTime - start, 16)
-  return Math.abs(velocity) < FLICK_VELOCITY ? 0 : velocity
-}
+// The release velocity in scroll units per ms, or 0 when the drag was too short or slow to be a flick
+export const getFlickVelocity = (velocity: number, distance: number) =>
+  Math.abs(distance) < FLICK_DISTANCE || Math.abs(velocity) < FLICK_VELOCITY ? 0 : velocity
 
 export function getPageSnapPoints(
   totalSlides: number | undefined,

@@ -1,6 +1,7 @@
 import { getLocalTimeZone, parseDateTime, type CalendarDateTime } from "@internationalized/date"
 import { createMachine, memo, type PropFn, type Scope } from "@zag-js/core"
-import { AnimationFrame, getNearestScrollableAncestor, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, getNearestScrollableAncestor } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
 import { createAutoScroller } from "./utils/auto-scroll"
@@ -154,7 +155,7 @@ export const machine = createMachine<SchedulerSchema>({
     },
 
     "slot-selecting": {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: { actions: ["updateSlotDragEnd"] },
         POINTER_UP: {
@@ -169,7 +170,7 @@ export const machine = createMachine<SchedulerSchema>({
     },
 
     "event-dragging": {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: { actions: ["updateEventDragPosition"] },
         POINTER_UP: {
@@ -184,7 +185,7 @@ export const machine = createMachine<SchedulerSchema>({
     },
 
     "event-resizing": {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: { actions: ["updateEventResizePosition"] },
         POINTER_UP: {
@@ -219,33 +220,20 @@ export const machine = createMachine<SchedulerSchema>({
     },
 
     effects: {
-      trackPointerMove({ scope, send }) {
-        let rafId: number | null = null
-        let latest: { x: number; y: number } | null = null
-        const win = scope.getWin()
-
+      trackDrag({ scope, send, event }) {
         const gridEl = dom.getGridEl(scope)
-        const autoScroll = createAutoScroller(gridEl ? getNearestScrollableAncestor(gridEl) : null, win)
+        const autoScroll = createAutoScroller(gridEl ? getNearestScrollableAncestor(gridEl) : null, scope.getWin())
 
-        const cleanupTracker = trackPointerMove(scope.getDoc(), {
-          onPointerMove(info) {
-            latest = info.point
-            autoScroll.update(info.point)
-            // coalesce to one move per frame
-            if (rafId != null) return
-            rafId = win.requestAnimationFrame(() => {
-              rafId = null
-              if (!latest) return
-              send({ type: "POINTER_MOVE", point: latest })
-            })
+        const cleanupTracker = trackDrag(scope.getDoc(), {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
+            autoScroll.update(point)
+            send({ type: "POINTER_MOVE", point })
           },
-          onPointerUp() {
-            if (rafId != null) {
-              win.cancelAnimationFrame(rafId)
-              rafId = null
-            }
+          onEnd({ cancelled }) {
             autoScroll.stop()
-            send({ type: "POINTER_UP" })
+            send({ type: cancelled ? "ESCAPE" : "POINTER_UP" })
           },
         })
 

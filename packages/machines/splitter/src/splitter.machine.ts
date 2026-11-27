@@ -1,5 +1,6 @@
 import { createMachine, type Params } from "@zag-js/core"
-import { observeChildren, resizeObserverBorderBox, Timeout, trackPointerMove } from "@zag-js/dom-query"
+import { observeChildren, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { next, prev } from "@zag-js/utils/array"
 import { isEqual } from "@zag-js/utils/object"
 import { ensure, ensureProps } from "@zag-js/utils/guard"
@@ -218,7 +219,7 @@ export const machine = createMachine<SplitterSchema>({
 
     dragging: {
       tags: ["focus"],
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       entry: ["invokeOnResizeStart"],
       on: {
         POINTER_MOVE: {
@@ -303,13 +304,15 @@ export const machine = createMachine<SplitterSchema>({
         timeout.start(250, () => send({ type: "HOVER_DELAY" }))
         return timeout.cancel
       },
-      trackPointerMove: ({ scope, send }) => {
+      trackDrag: ({ scope, send, event }) => {
         const doc = scope.getDoc()
-        return trackPointerMove(doc, {
-          onPointerMove(info) {
-            send({ type: "POINTER_MOVE", point: info.point })
+        return trackDrag(doc, {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
+            send({ type: "POINTER_MOVE", point })
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "POINTER_UP" })
           },
         })

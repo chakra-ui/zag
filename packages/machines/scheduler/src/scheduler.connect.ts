@@ -677,7 +677,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           const point = getEventPoint(event)
-          send({ type: "SLOT.POINTER_DOWN", start: props.start, end: props.end, point })
+          send({ type: "SLOT.POINTER_DOWN", start: props.start, end: props.end, point, pointerId: event.pointerId })
         },
       })
     },
@@ -751,7 +751,14 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           const target = getEventTarget<HTMLElement>(event)
           if (!target || target.closest(scope.selector(parts.event))) return
           const { start, end } = slotFromClientY(target, event.clientY)
-          send({ type: "SLOT.POINTER_DOWN", start, end, resource, point: getEventPoint(event) })
+          send({
+            type: "SLOT.POINTER_DOWN",
+            start,
+            end,
+            resource,
+            point: getEventPoint(event),
+            pointerId: event.pointerId,
+          })
         },
         onDoubleClick(event) {
           const target = getEventTarget<HTMLElement>(event)
@@ -965,7 +972,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           if (!isLeftClick(e) || event.disabled) return
           e.stopPropagation()
           const point = getEventPoint(e)
-          send({ type: "EVENT.POINTER_DOWN", eventId: event.id, point })
+          send({ type: "EVENT.POINTER_DOWN", eventId: event.id, point, pointerId: e.pointerId })
         },
         onKeyDown(e) {
           if (e.defaultPrevented) return
@@ -1000,7 +1007,7 @@ export function connect<T extends PropTypes, E extends SchedulerPayload = Schedu
           if (!isLeftClick(e) || event.disabled) return
           e.stopPropagation()
           const point = getEventPoint(e)
-          send({ type: "RESIZE_HANDLE.POINTER_DOWN", eventId: event.id, edge, point })
+          send({ type: "RESIZE_HANDLE.POINTER_DOWN", eventId: event.id, edge, point, pointerId: e.pointerId })
         },
       })
     },

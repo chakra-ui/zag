@@ -134,7 +134,7 @@ export function connect<T extends PropTypes>(
             angularOffset = clickAngle - value
           }
 
-          send({ type: "CONTROL.POINTER_DOWN", point, angularOffset })
+          send({ type: "CONTROL.POINTER_DOWN", point, angularOffset, pointerId: event.pointerId })
           event.stopPropagation()
         },
         style: {

@@ -1,5 +1,5 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes, Required } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { match } from "@zag-js/utils/functions"
 import { mergeWithDefault } from "@zag-js/utils/object"
 import { toPx } from "@zag-js/utils/number"
@@ -10,20 +10,14 @@ import type {
   ControlState,
   FloatingPanelApi,
   FloatingPanelService,
-  IntlTranslations,
   ResizeTriggerProps,
   ResizeTriggerState,
   StageTriggerProps,
   StageTriggerState,
   TriggerState,
 } from "./floating-panel.types"
-import { getHandleStyle } from "@zag-js/utils/interaction"
-
-const defaultTranslations: Required<IntlTranslations> = {
-  minimize: "Minimize window",
-  maximize: "Maximize window",
-  restore: "Restore window",
-}
+import { getHandleStyle, getKeyboardResizeDelta } from "@zag-js/utils/interaction"
+import { defaultTranslations } from "./floating-panel.translations"
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -210,7 +204,8 @@ export function connect<T extends PropTypes>(
             },
           }
 
-          const handler = keyMap[getEventKey(event, { dir: prop("dir") })]
+          // physical arrows, even in RTL
+          const handler = keyMap[getEventKey(event)]
 
           if (handler) {
             event.preventDefault()
@@ -268,11 +263,25 @@ export function connect<T extends PropTypes>(
     getResizeTriggerState,
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const resizeTriggerState = getResizeTriggerState(props)
+      const isGrip = props.placement === "se" && canResize
       return normalize.element({
         ...parts.resizeTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(resizeTriggerState.disabled),
         "data-placement": resizeTriggerState.placement,
+        role: isGrip ? "button" : undefined,
+        tabIndex: isGrip ? 0 : undefined,
+        "aria-label": isGrip ? translations.resizeTrigger : undefined,
+        "aria-hidden": isGrip ? undefined : true,
+        onKeyDown(event) {
+          if (!isGrip || event.defaultPrevented) return
+          if (event.altKey || event.ctrlKey || event.metaKey) return
+          const step = getEventStep(event) * prop("gridSize")
+          const delta = getKeyboardResizeDelta(event.key, props.placement, step)
+          if (!delta.x && !delta.y) return
+          event.preventDefault()
+          send({ type: "RESIZE", placement: props.placement, delta })
+        },
         onPointerDown(event) {
           if (!canResize) return
           if (!isLeftClick(event)) return
@@ -284,6 +293,7 @@ export function connect<T extends PropTypes>(
             type: "RESIZE_START",
             placement: props.placement,
             position: { x: event.clientX, y: event.clientY },
+            pointerId: event.pointerId,
           })
         },
         onPointerUp(event) {
@@ -314,7 +324,6 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          event.currentTarget.setPointerCapture(event.pointerId)
           event.stopPropagation()
 
           send({
@@ -322,13 +331,6 @@ export function connect<T extends PropTypes>(
             pointerId: event.pointerId,
             position: { x: event.clientX, y: event.clientY },
           })
-        },
-        onPointerUp(event) {
-          if (!canDrag) return
-          const node = event.currentTarget
-          if (node.hasPointerCapture(event.pointerId)) {
-            node.releasePointerCapture(event.pointerId)
-          }
         },
         onDoubleClick(event) {
           if (event.defaultPrevented) return

@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, getEventTarget, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import {
   addPoints,
   distance as getPointDistance,
@@ -247,7 +248,7 @@ export const machine = createMachine<ImageCropperSchema>({
     },
 
     dragging: {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: {
           actions: ["updateCrop"],
@@ -262,11 +263,22 @@ export const machine = createMachine<ImageCropperSchema>({
             "clearShiftRatio",
           ],
         },
+        ESCAPE: {
+          target: "idle",
+          actions: [
+            "restoreCropStart",
+            "clearPointerStart",
+            "clearCropStart",
+            "clearHandlePosition",
+            "clearOffsetStart",
+            "clearShiftRatio",
+          ],
+        },
       },
     },
 
     panning: {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: {
           actions: ["updatePanOffset"],
@@ -274,6 +286,10 @@ export const machine = createMachine<ImageCropperSchema>({
         POINTER_UP: {
           target: "idle",
           actions: ["clearPointerStart", "clearOffsetStart"],
+        },
+        ESCAPE: {
+          target: "idle",
+          actions: ["restoreOffsetStart", "clearPointerStart", "clearOffsetStart"],
         },
       },
     },
@@ -356,6 +372,16 @@ export const machine = createMachine<ImageCropperSchema>({
       setOffsetStart({ context }) {
         const offset = context.get("offset")
         context.set("offsetStart", { ...offset })
+      },
+
+      restoreCropStart({ context }) {
+        const cropStart = context.get("cropStart")
+        if (cropStart) context.set("crop", cropStart)
+      },
+
+      restoreOffsetStart({ context }) {
+        const offsetStart = context.get("offsetStart")
+        if (offsetStart) context.set("offset", offsetStart)
       },
 
       setCropStart({ context }) {
@@ -828,14 +854,17 @@ export const machine = createMachine<ImageCropperSchema>({
     },
 
     effects: {
-      trackPointerMove({ scope, send }) {
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove({ point, event }) {
+      trackDrag({ scope, send, event }) {
+        return trackDrag(scope.getDoc(), {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          cancelOnEscape: true,
+          onMove({ point, event }) {
             const target = getEventTarget<Element>(event)
             send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey, altKey: event.altKey })
           },
-          onPointerUp() {
-            send({ type: "POINTER_UP" })
+          onEnd({ cancelled }) {
+            send({ type: cancelled ? "ESCAPE" : "POINTER_UP" })
           },
         })
       },

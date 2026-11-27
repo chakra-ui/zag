@@ -16,6 +16,7 @@ export const getTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.trigger
 export const getPositionerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.positioner))
 export const getContentEl = (ctx: Scope) => ctx.query(ctx.selector(parts.content))
 export const getHeaderEl = (ctx: Scope) => ctx.query(ctx.selector(parts.header))
+export const getDragTriggerEl = (ctx: Scope) => ctx.query(ctx.selector(parts.dragTrigger))
 
 const NO_OFFSET: Point = { x: 0, y: 0 }
 

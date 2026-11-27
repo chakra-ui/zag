@@ -319,6 +319,7 @@ interface Refs {
   liveRegion: LiveRegion | null
   ariaHideCleanup: VoidFunction | null
   pointerOrigin: Point | null
+  pointerId: number | null
   announceTimer: ReturnType<typeof setTimeout> | null
   stickyTimer: ReturnType<typeof setTimeout> | null
   dragOverTimer: ReturnType<typeof setTimeout> | null

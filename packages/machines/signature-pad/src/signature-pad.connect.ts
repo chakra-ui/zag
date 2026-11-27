@@ -104,7 +104,13 @@ export function connect<T extends PropTypes>(
           if (!controlEl) return
 
           const { offset } = getRelativePoint(point, controlEl)
-          send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
+          send({
+            type: "POINTER_DOWN",
+            point: offset,
+            clientPoint: point,
+            pressure: event.pressure,
+            pointerId: event.pointerId,
+          })
         },
         onPointerUp(event) {
           if (!interactive) return

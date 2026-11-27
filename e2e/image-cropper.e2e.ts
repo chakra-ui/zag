@@ -1,4 +1,5 @@
 import { test, expect } from "./_test"
+import { rect } from "./_utils"
 import { ImageCropperModel } from "./models/image-cropper.model"
 
 let I: ImageCropperModel
@@ -113,6 +114,44 @@ test.describe("image-cropper / resizable", () => {
 
     expect(scaleX).toBe(1)
     expect(scaleY).toBe(1)
+  })
+
+  test("[escape] should restore the crop when pressing Escape during a drag", async () => {
+    const before = await I.getSelectionRect()
+    const box = await rect(I.selection)
+
+    await I.page.mouse.move(box.midX, box.midY)
+    await I.page.mouse.down()
+    await I.page.mouse.move(box.midX + 60, box.midY + 20, { steps: 5 })
+    await I.pressKey("Escape")
+    await I.page.mouse.up()
+
+    expect(await I.getSelectionRect()).toEqual(before)
+  })
+
+  test("[escape] should restore the pan when pressing Escape during a pan", async () => {
+    await I.zoomWithWheel(-100)
+    await I.wait(100)
+    const before = await I.getTranslateFromMatrix(await I.getImageTransform())
+    const viewport = await rect(I.viewport)
+
+    await I.page.mouse.move(viewport.x + 10, viewport.y + 10)
+    await I.page.mouse.down()
+    await I.page.mouse.move(viewport.x + 60, viewport.y + 40, { steps: 5 })
+    await I.pressKey("Escape")
+    await I.page.mouse.up()
+
+    expect(await I.getTranslateFromMatrix(await I.getImageTransform())).toEqual(before)
+  })
+
+  test("[rtl] should keep arrow keys physical", async () => {
+    await I.controls.select("dir", "rtl")
+    const before = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKey("ArrowRight")
+
+    expect((await I.getSelectionRect()).x).toBeGreaterThan(before.x)
   })
 
   test("[pan] should pan image when dragging overlay", async () => {

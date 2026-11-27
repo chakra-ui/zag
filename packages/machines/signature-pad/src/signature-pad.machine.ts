@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { getRelativePoint, trackPointerMove } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import getStroke from "perfect-freehand"
 import { getSvgPathFromStroke } from "./get-svg-path"
 import * as dom from "./signature-pad.dom"
@@ -65,7 +65,7 @@ export const machine = createMachine<SignaturePadSchema>({
       },
     },
     drawing: {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         POINTER_MOVE: {
           actions: ["addPoint", "invokeOnDraw"],
@@ -80,16 +80,20 @@ export const machine = createMachine<SignaturePadSchema>({
 
   implementations: {
     effects: {
-      trackPointerMove({ scope, send }) {
+      trackDrag({ scope, send, event }) {
         const doc = scope.getDoc()
-        return trackPointerMove(doc, {
-          onPointerMove({ event, point }) {
+        return trackDrag(doc, {
+          startPoint: event.clientPoint,
+          pointerId: event.pointerId,
+          onMove({ events }) {
             const controlEl = dom.getControlEl(scope)
             if (!controlEl) return
-            const { offset } = getRelativePoint(point, controlEl)
-            send({ type: "POINTER_MOVE", point: offset, pressure: event.pressure })
+            const { left, top } = controlEl.getBoundingClientRect()
+            for (const e of events) {
+              send({ type: "POINTER_MOVE", point: { x: e.clientX - left, y: e.clientY - top }, pressure: e.pressure })
+            }
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "POINTER_UP" })
           },
         })

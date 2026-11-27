@@ -281,7 +281,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           }
 
           const point = getEventPoint(event)
-          send({ type: "POINTER_DOWN", id, point })
+          send({ type: "POINTER_DOWN", id, point, pointerId: event.pointerId })
           event.currentTarget.setPointerCapture(event.pointerId)
 
           event.preventDefault()

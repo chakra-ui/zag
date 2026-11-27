@@ -99,6 +99,7 @@ export type AccessibilityDocKey =
   | "dialog"
   | "navigation-menu"
   | "menubar"
+  | "floating-panel"
 
 export type CssVarDocKey =
   | "angle-slider"

@@ -752,6 +752,10 @@
       {
         "keys": ["-"],
         "description": "Zooms out of the image. The `_` key performs the same action on keyboards where both symbols share a key."
+      },
+      {
+        "keys": ["Escape"],
+        "description": "During a drag or pan, puts the crop or image back where it started."
       }
     ]
   },
@@ -964,6 +968,22 @@
       {
         "keys": ["Esc"],
         "description": "Closes the open menu and returns focus to its trigger."
+      }
+    ]
+  },
+  "floating-panel": {
+    "keyboard": [
+      {
+        "keys": ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
+        "description": "When the content is focused, moves the panel by `gridSize`. Hold Shift to move ten times as far."
+      },
+      {
+        "keys": ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
+        "description": "When the resize grip is focused, resizes the panel by `gridSize`. Hold Shift to resize ten times as far."
+      },
+      {
+        "keys": ["Escape"],
+        "description": "During a drag or resize, puts the panel back where it started. Otherwise, closes the panel when `closeOnEscape` is set."
       }
     ]
   }

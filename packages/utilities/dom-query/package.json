@@ -33,6 +33,7 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./drag": "./src/drag/index.ts",
     "./image": "./src/image/index.ts",
     "./package.json": "./package.json"
   },

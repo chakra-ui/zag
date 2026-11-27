@@ -1,4 +1,5 @@
-import { AnimationFrame, setElementValue, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, setElementValue } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { createMachine } from "@zag-js/core"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderSchema } from "./angle-slider.types"
@@ -101,7 +102,7 @@ export const machine = createMachine<AngleSliderSchema>({
 
     dragging: {
       entry: ["focusThumb"],
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         "DOC.POINTER_UP": {
           target: "focused",
@@ -116,12 +117,14 @@ export const machine = createMachine<AngleSliderSchema>({
 
   implementations: {
     effects: {
-      trackPointerMove({ scope, send }) {
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove(info) {
-            send({ type: "DOC.POINTER_MOVE", point: info.point })
+      trackDrag({ scope, send, event }) {
+        return trackDrag(scope.getDoc(), {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
+            send({ type: "DOC.POINTER_MOVE", point })
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "DOC.POINTER_UP" })
           },
         })

@@ -32,6 +32,8 @@ export interface ResizeOptions {
   aspectRatio?: number | undefined
   /** Scale from the opposite corner ("extent") or center ("center"). Default: "extent". */
   origin?: "extent" | "center" | undefined
+  /** Snap-to-grid step size for the pointer delta. Default: 1 (no snapping). */
+  gridSize?: number | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -353,11 +355,14 @@ export function applyResize(
   handle: HandlePosition,
   options: ResizeOptions = {},
 ): RectInit {
-  const { boundary, aspectRatio, origin = "extent" } = options
+  const { boundary, aspectRatio, origin = "extent", gridSize = 1 } = options
 
   const baseLimits = resolveLimits(options)
 
-  const effectiveDelta = origin === "center" ? { x: delta.x * 2, y: delta.y * 2 } : delta
+  // only snap with a grid, so fractional pointer deltas pass through untouched
+  const snap = (value: number) => (gridSize > 1 ? round(value / gridSize) * gridSize : value)
+  const snapped = { x: snap(delta.x), y: snap(delta.y) }
+  const effectiveDelta = origin === "center" ? { x: snapped.x * 2, y: snapped.y * 2 } : snapped
 
   // Step 1: Apply delta to edges with size constraints
   let edges = applyDelta(

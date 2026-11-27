@@ -1,6 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, type Params } from "@zag-js/core"
-import { AnimationFrame, contains, disableTextSelection, getElementRect, trackPointerMove } from "@zag-js/dom-query"
+import { AnimationFrame, contains, disableTextSelection, getElementRect } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import { createLiveRegion } from "@zag-js/live-region"
 import { createRect, distance as pointDistance, type Rect } from "@zag-js/utils/geometry"
 import { nextIndex, prevIndex } from "@zag-js/utils/array"
@@ -127,6 +128,7 @@ export const machine = createMachine<DndSchema>({
       liveRegion: null,
       ariaHideCleanup: null,
       pointerOrigin: null,
+      pointerId: null,
       announceTimer: null,
       stickyTimer: null,
       dragOverTimer: null,
@@ -176,7 +178,7 @@ export const machine = createMachine<DndSchema>({
     },
 
     "pointer:pending": {
-      effects: ["trackPointerMove", "waitForActivationDelay", "trackEscapeKey"],
+      effects: ["trackDrag", "waitForActivationDelay", "trackEscapeKey"],
       on: {
         "POINTER.MOVE": {
           guard: "isActivationThresholdMet",
@@ -195,7 +197,7 @@ export const machine = createMachine<DndSchema>({
     },
 
     "pointer:dragging": {
-      effects: ["trackPointerMove", "setupAutoScroll", "trackEscapeKey", "disableTextSelection"],
+      effects: ["trackDrag", "setupAutoScroll", "trackEscapeKey", "disableTextSelection"],
       on: {
         "POINTER.MOVE": {
           actions: [
@@ -302,14 +304,18 @@ export const machine = createMachine<DndSchema>({
         return () => doc.removeEventListener("keydown", onKeyDown, true)
       },
 
-      trackPointerMove({ scope, send }) {
+      trackDrag({ scope, send, refs }) {
         const doc = scope.getDoc()
-        return trackPointerMove(doc, {
-          onPointerMove({ point }) {
+        return trackDrag(doc, {
+          startPoint: refs.get("pointerOrigin") ?? { x: 0, y: 0 },
+          pointerId: refs.get("pointerId") ?? undefined,
+          onMove({ point }) {
             send({ type: "POINTER.MOVE", point })
           },
-          onPointerUp({ point }) {
-            send({ type: "POINTER.UP", point })
+          onEnd({ point, cancelled }) {
+            // a cancel must not drop
+            if (cancelled) send({ type: "DRAG.CANCEL" })
+            else send({ type: "POINTER.UP", point })
           },
         })
       },
@@ -382,6 +388,7 @@ export const machine = createMachine<DndSchema>({
     actions: {
       setPendingSource({ event, refs }) {
         refs.set("pointerOrigin", event.point ?? null)
+        refs.set("pointerId", event.pointerId ?? null)
         // Store the pending value on pointerOrigin; dragSource stays null until activated
         refs.set("pendingValue", event.value)
 
@@ -397,6 +404,8 @@ export const machine = createMachine<DndSchema>({
         const origin = refs.get("pointerOrigin") ?? event.point ?? null
         context.set("dragSource", value)
         refs.set("pointerOrigin", origin)
+        // an activating move doesn't carry the pointer, so keep the press's
+        if (event.pointerId != null) refs.set("pointerId", event.pointerId)
         refs.set("dragOffset", getDragOffset(params, value, origin))
         refs.set("dragRect", getDragRect(params, value))
         refs.set("pendingValue", undefined)
@@ -412,6 +421,7 @@ export const machine = createMachine<DndSchema>({
         context.set("dropPlacement", null)
         context.set("pointerPosition", null)
         refs.set("pointerOrigin", null)
+        refs.set("pointerId", null)
         refs.set("pendingValue", undefined)
         refs.set("dragOffset", null)
         refs.set("dragRect", null)

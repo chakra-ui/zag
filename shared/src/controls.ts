@@ -429,12 +429,14 @@ export const tourControls = defineControls({
 })
 
 export const floatingPanelControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   disabled: { type: "boolean", defaultValue: false },
   resizable: { type: "boolean", defaultValue: true },
   draggable: { type: "boolean", defaultValue: true },
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
   persistRect: { type: "boolean", defaultValue: false },
+  gridSize: { type: "number", defaultValue: 1 },
 })
 
 export const signaturePadControls = defineControls({
@@ -500,6 +502,7 @@ export const scrollAreaControls = defineControls({
 })
 
 export const imageCropperControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   aspectRatio: { type: "number" },
   minWidth: { type: "number", defaultValue: 40 },
   minHeight: { type: "number", defaultValue: 40 },

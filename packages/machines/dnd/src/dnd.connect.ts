@@ -197,7 +197,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
           if (!isLeftClick(event)) return
 
           const point = getEventPoint(event)
-          send({ type: "DRAG.START", value, point })
+          send({ type: "DRAG.START", value, point, pointerId: event.pointerId })
         },
         onKeyDown(event) {
           if (draggableState.disabled) return
@@ -233,7 +233,7 @@ export function connect<T extends PropTypes>(service: DndService, normalize: Nor
           if (!isLeftClick(event)) return
 
           const point = getEventPoint(event)
-          send({ type: "DRAG.START", value, point })
+          send({ type: "DRAG.START", value, point, pointerId: event.pointerId })
         },
         onKeyDown(event) {
           if (handleState.disabled) return

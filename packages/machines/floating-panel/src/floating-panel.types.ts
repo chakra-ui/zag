@@ -1,5 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
+import type { LiveRegion } from "@zag-js/live-region"
 import type { Point, Size } from "@zag-js/utils/geometry"
 import type { HandlePosition } from "@zag-js/utils/interaction"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
@@ -56,6 +57,18 @@ export interface IntlTranslations {
   minimize?: string | undefined
   maximize?: string | undefined
   restore?: string | undefined
+  /**
+   * The label of the corner resize trigger, which resizes the panel with the arrow keys
+   */
+  resizeTrigger?: string | undefined
+  /**
+   * The message announced after the panel moves
+   */
+  moved?: ((details: PositionChangeDetails) => string) | undefined
+  /**
+   * The message announced after the panel resizes
+   */
+  resized?: ((details: SizeChangeDetails) => string) | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -257,6 +270,7 @@ export interface FloatingPanelSchema {
   refs: {
     offsetOriginFrame: AnimationFrame
     focusFrame: AnimationFrame
+    liveRegion: LiveRegion | null
   }
   tag: "open" | "closed"
   state: "open" | "open.idle" | "open.dragging" | "open.resizing" | "closed"

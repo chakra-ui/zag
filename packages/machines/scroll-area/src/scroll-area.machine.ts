@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, contains, getEventTarget, setStyleProperty, Timeout, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, contains, getEventTarget, setStyleProperty, Timeout } from "@zag-js/dom-query"
+import { trackDrag } from "@zag-js/dom-query/drag"
 import type { Size } from "@zag-js/types"
 import { isEqual } from "@zag-js/utils/object"
 import { ensureProps } from "@zag-js/utils/guard"
@@ -116,7 +117,7 @@ export const machine = createMachine<ScrollAreaSchema>({
     },
 
     dragging: {
-      effects: ["trackPointerMove"],
+      effects: ["trackDrag"],
       on: {
         "thumb.pointermove": {
           actions: ["setDraggingScroll"],
@@ -555,14 +556,16 @@ export const machine = createMachine<ScrollAreaSchema>({
         return addDomEvent(rootEl, "wheel", onWheel, { passive: false })
       },
 
-      trackPointerMove({ scope, send, refs }) {
+      trackDrag({ scope, send, refs, event }) {
         const doc = scope.getDoc()
         const orientation = refs.get("orientation")
-        return trackPointerMove(doc, {
-          onPointerMove({ point }) {
+        return trackDrag(doc, {
+          startPoint: event.point,
+          pointerId: event.pointerId,
+          onMove({ point }) {
             send({ type: "thumb.pointermove", orientation, point })
           },
-          onPointerUp() {
+          onEnd() {
             send({ type: "thumb.pointerup", orientation })
           },
         })

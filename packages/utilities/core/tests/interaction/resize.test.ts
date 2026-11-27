@@ -390,3 +390,21 @@ describe("applyResize", () => {
     })
   })
 })
+
+describe("applyResize gridSize", () => {
+  test("keeps fractional deltas without a grid", () => {
+    const rect = { x: 0, y: 0, width: 100, height: 100 }
+    expect(applyResize(rect, { x: 10.4, y: 2.6 }, "se")).toEqual({ x: 0, y: 0, width: 110.4, height: 102.6 })
+  })
+
+  test("snaps the pointer delta to the grid", () => {
+    const rect = { x: 0, y: 0, width: 100, height: 100 }
+    expect(applyResize(rect, { x: 13, y: 19 }, "se", { gridSize: 10 })).toEqual({ x: 0, y: 0, width: 110, height: 120 })
+    expect(applyResize(rect, { x: -13, y: 4 }, "nw", { gridSize: 10 })).toEqual({
+      x: -10,
+      y: 0,
+      width: 110,
+      height: 100,
+    })
+  })
+})
