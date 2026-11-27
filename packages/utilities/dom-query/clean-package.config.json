@@ -34,6 +34,16 @@
           "default": "./dist/image/index.js"
         }
       },
+      "./press": {
+        "import": {
+          "types": "./dist/press/index.d.mts",
+          "default": "./dist/press/index.mjs"
+        },
+        "require": {
+          "types": "./dist/press/index.d.ts",
+          "default": "./dist/press/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

@@ -1,3 +1,4 @@
+import { getWindow } from "../node"
 import { addGlobalEvent } from "../global-event"
 import { AnimationFrame } from "../raf"
 import { disableTextSelection } from "../text-selection"
@@ -22,7 +23,7 @@ export function trackDrag(doc: Document, options: TrackDragOptions): VoidFunctio
   const { startPoint, pointerId, threshold = 0, canStart, cancelOnEscape, capture, lock } = options
   const transform = options.transformPoint ?? identity
 
-  const win = doc.defaultView ?? window
+  const win = getWindow(doc)
   const frame = AnimationFrame.create()
   const velocity = createVelocity()
   const start = transform(startPoint)

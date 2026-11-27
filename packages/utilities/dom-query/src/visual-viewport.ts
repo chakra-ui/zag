@@ -1,3 +1,4 @@
+import { getWindow } from "./node"
 import { addDomEvent } from "./event"
 
 export interface ViewportSize {
@@ -6,7 +7,7 @@ export interface ViewportSize {
 }
 
 export function trackVisualViewport(doc: Document, fn: (data: ViewportSize) => void) {
-  const win = doc?.defaultView || window
+  const win = getWindow(doc)
   const onResize = () => {
     fn?.(getViewportSize(win))
   }

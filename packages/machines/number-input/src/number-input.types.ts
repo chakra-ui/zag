@@ -1,7 +1,7 @@
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { NumberParser } from "./number-parser"
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, Point, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -338,6 +338,7 @@ export interface NumberInputSchema {
     syncFrame: AnimationFrame
     focusFrame: AnimationFrame
     pressDirection: StepDirection
+    pressPointer: { id: number; type: string; point: Point } | null
     committedValue: number | null
   }
   computed: ComputedContext

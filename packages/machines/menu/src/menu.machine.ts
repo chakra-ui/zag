@@ -23,6 +23,7 @@ import {
   scrollToNearest,
   waitForAnimationEnd,
 } from "@zag-js/dom-query"
+import { trackLongPress } from "@zag-js/dom-query/press"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/utils/geometry"
@@ -212,6 +213,7 @@ export const machine = createMachine<MenuSchema>({
       syncHighlightFrame: AnimationFrame.create(),
       cancelTriggerSwitch: null,
       awaitingViewportSize: false,
+      longPress: null,
     }
   },
 
@@ -289,7 +291,7 @@ export const machine = createMachine<MenuSchema>({
         OPEN: openTransitions,
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue"],
+          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "setLongPress"],
         },
         CONTEXT_MENU: [
           {
@@ -324,7 +326,7 @@ export const machine = createMachine<MenuSchema>({
 
     "opening:contextmenu": {
       tags: ["closed"],
-      effects: ["waitForLongPress"],
+      effects: ["trackLongPress"],
       on: {
         OPEN: openTransitions,
         CLOSE: cancelOpenTransition,
@@ -335,11 +337,11 @@ export const machine = createMachine<MenuSchema>({
           {
             guard: "isOpenControlled",
             target: "opening:requested",
-            actions: ["setTriggerValue", "invokeOnOpen"],
+            actions: ["invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setTriggerValue", "invokeOnOpen", "reposition"],
+            actions: ["invokeOnOpen", "reposition"],
           },
         ],
       },
@@ -457,7 +459,7 @@ export const machine = createMachine<MenuSchema>({
         ],
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
-          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue"],
+          actions: ["setAnchorPoint", "setReturnFocusEl", "setTriggerValue", "setLongPress"],
         },
         CONTEXT_MENU: [
           {
@@ -770,11 +772,24 @@ export const machine = createMachine<MenuSchema>({
         }, 100)
         return () => clearTimeout(timer)
       },
-      waitForLongPress({ send }) {
-        const timer = setTimeout(() => {
-          send({ type: "LONG_PRESS.OPEN", src: "context-menu" })
-        }, 700)
-        return () => clearTimeout(timer)
+      trackLongPress({ scope, context, refs, send }) {
+        const press = refs.get("longPress")
+        const startPoint = context.get("anchorPoint")
+        if (!press || !startPoint) return
+
+        // opening ends the effect, so a press that reaches onEnd was never held
+        return trackLongPress(scope.getDoc(), {
+          startPoint,
+          pointerId: press.pointerId,
+          target: press.target,
+          delay: 700,
+          onHold() {
+            send({ type: "LONG_PRESS.OPEN", src: "context-menu" })
+          },
+          onEnd() {
+            send({ type: "CONTEXT_MENU_CANCEL", src: "context-menu" })
+          },
+        })
       },
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
@@ -970,6 +985,11 @@ export const machine = createMachine<MenuSchema>({
       },
       setAnchorPoint({ context, event }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
+      },
+      // the pressed trigger, read from the event: a controlled triggerValue may not have updated yet
+      setLongPress({ scope, refs, event }) {
+        const target = scope.getById(dom.getContextTriggerId(scope, event.value))
+        refs.set("longPress", { pointerId: event.pointerId, target })
       },
       setReturnFocusEl({ scope, refs }) {
         refs.set("returnFocusEl", scope.getActiveElement())

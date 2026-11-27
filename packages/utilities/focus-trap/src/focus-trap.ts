@@ -17,6 +17,7 @@ import {
   isDocument,
   isFocusable,
   isTabbable,
+  getWindow,
 } from "@zag-js/dom-query"
 import type {
   ActivateOptions,
@@ -458,7 +459,7 @@ export class FocusTrap {
   private _mutationObserver?: MutationObserver
 
   private setupMutationObserver = () => {
-    const win = this.doc.defaultView || window
+    const win = getWindow(this.doc)
     this._mutationObserver = new win.MutationObserver((mutations) => {
       const isFocusedNodeRemoved = mutations.some((mutation) => {
         const removedNodes = Array.from(mutation.removedNodes)

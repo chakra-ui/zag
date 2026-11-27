@@ -1,7 +1,7 @@
-import { addDomEvent, getEventPoint, getEventTarget } from "./event"
-import { contains, getWindow, isActiveElement } from "./node"
-import { noop, pipe } from "./shared"
-import type { Point } from "./types"
+import { addDomEvent, getEventPoint, getEventTarget } from "../event"
+import { contains, getWindow, isActiveElement } from "../node"
+import { noop, pipe } from "../shared"
+import type { Point } from "../types"
 
 export interface PressDetails {
   /**

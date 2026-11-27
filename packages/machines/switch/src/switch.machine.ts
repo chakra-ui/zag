@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, setElementChecked, trackFormControl } from "@zag-js/dom-query"
+import { trackPress } from "@zag-js/dom-query/press"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./switch.dom"
 import type { SwitchSchema } from "./switch.types"

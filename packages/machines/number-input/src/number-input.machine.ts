@@ -13,6 +13,7 @@ import {
   setElementValue,
   trackFormControl,
 } from "@zag-js/dom-query"
+import { trackLongPress } from "@zag-js/dom-query/press"
 import type { Point } from "@zag-js/types"
 import { callAll } from "@zag-js/utils/functions"
 import {
@@ -66,6 +67,7 @@ export const machine = createMachine({
     return {
       syncFrame: AnimationFrame.create(),
       pressDirection: 1,
+      pressPointer: null,
       focusFrame: AnimationFrame.create(),
       committedValue: prop("value") ?? prop("defaultValue") ?? null,
     }
@@ -247,7 +249,7 @@ export const machine = createMachine({
     pressed: {
       tags: ["focus"],
       initial: "waiting",
-      effects: ["trackButtonDisabled", "preventContextMenu"],
+      effects: ["trackButtonDisabled", "trackLongPress"],
       on: {
         "TRIGGER.PRESS_UP": [
           { guard: "isTouchPointer", target: "focused", actions: ["invokeOnValueCommit"] },
@@ -256,7 +258,6 @@ export const machine = createMachine({
       },
       states: {
         waiting: {
-          effects: ["waitForChangeDelay"],
           entry: choose([{ guard: not("isTouchPointer"), actions: ["step"] }]),
           on: {
             "TRIGGER.PRESS_UP": [
@@ -268,17 +269,17 @@ export const machine = createMachine({
               { guard: "isTouchPointer", target: "focused" },
               { target: "focused", actions: ["focusInput", "invokeOnValueCommit"] },
             ],
-            CHANGE_DELAY: {
+            HOLD: {
               target: "repeating",
               guard: and("isInRange", "spinOnPress"),
+              actions: ["step"],
             },
           },
         },
 
         repeating: {
-          effects: ["spinValue"],
           on: {
-            SPIN: {
+            HOLD: {
               actions: ["step"],
             },
           },
@@ -316,23 +317,28 @@ export const machine = createMachine({
     },
 
     effects: {
-      waitForChangeDelay({ send }) {
-        const id = setTimeout(() => {
-          send({ type: "CHANGE_DELAY" })
-        }, 400)
-        return () => clearTimeout(id)
-      },
+      trackLongPress({ scope, refs, send }) {
+        const pointer = refs.get("pressPointer")
+        if (!pointer) return
 
-      preventContextMenu({ scope }) {
-        // A touch can drift outside the button mid-hold and raise the context menu.
-        return addDomEvent(scope.getWin(), "contextmenu", (event) => event.preventDefault())
-      },
+        const direction = refs.get("pressDirection")
+        const src = getPressSource(direction)
 
-      spinValue({ send, refs }) {
-        const id = setInterval(() => {
-          send({ type: "SPIN", src: getPressSource(refs.get("pressDirection")) })
-        }, 60)
-        return () => clearInterval(id)
+        return trackLongPress(scope.getDoc(), {
+          startPoint: pointer.point,
+          pointerId: pointer.id,
+          target: dom.getTriggerEl(scope, direction),
+          delay: 400,
+          interval: 60,
+          // a mouse can wander inside the button; a finger that moves is scrolling
+          tolerance: pointer.type === "mouse" ? Infinity : 10,
+          onHold() {
+            send({ type: "HOLD", src })
+          },
+          onEnd({ cancelled }) {
+            send({ type: "TRIGGER.PRESS_UP", pointerType: pointer.type, cancelled, src })
+          },
+        })
       },
 
       detectPlatform({ context }) {
@@ -486,6 +492,7 @@ export const machine = createMachine({
       },
       setPressDirection({ refs, event }) {
         refs.set("pressDirection", event.direction)
+        refs.set("pressPointer", { id: event.pointerId, type: event.pointerType, point: event.point })
       },
       step({ event, refs, action }) {
         const direction = event.direction ?? refs.get("pressDirection")

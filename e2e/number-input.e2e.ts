@@ -213,6 +213,21 @@ test.describe("number input", () => {
     await I.seeInputValueIsApprox(21, 1)
   })
 
+  test("should pause spinning while the pointer is off the button and resume on return", async () => {
+    await I.type("10")
+    await I.mousedownInc()
+    await I.waitForTick(5)
+
+    await I.moveOffInc()
+    const paused = await I.readInputNumber()
+    await I.wait(300)
+    await I.seeInputHasValue(String(paused))
+
+    await I.moveOntoInc()
+    await I.seeInputHasValue(String(paused + 1))
+    await I.mouseup()
+  })
+
   test("dec longpress: should spin value downwards", async () => {
     await I.type("20")
     await I.seeInputHasValue("20")

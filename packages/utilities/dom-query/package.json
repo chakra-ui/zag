@@ -35,6 +35,7 @@
     ".": "./src/index.ts",
     "./drag": "./src/drag/index.ts",
     "./image": "./src/image/index.ts",
+    "./press": "./src/press/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

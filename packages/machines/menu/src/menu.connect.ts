@@ -18,6 +18,7 @@ import {
   contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
+import { LONG_PRESS_STYLE } from "@zag-js/dom-query/press"
 import { getInteractionModality } from "@zag-js/focus-visible"
 import { getPlacementSide, getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
@@ -264,19 +265,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
           const point = getEventPoint(event)
-          send({ type: "CONTEXT_MENU_START", point, value, src: "context-menu" })
-        },
-        onPointerCancel(event) {
-          if (event.pointerType === "mouse") return
-          send({ type: "CONTEXT_MENU_CANCEL", src: "context-menu" })
-        },
-        onPointerMove(event) {
-          if (event.pointerType === "mouse") return
-          send({ type: "CONTEXT_MENU_CANCEL", src: "context-menu" })
-        },
-        onPointerUp(event) {
-          if (event.pointerType === "mouse") return
-          send({ type: "CONTEXT_MENU_CANCEL", src: "context-menu" })
+          send({ type: "CONTEXT_MENU_START", point, value, pointerId: event.pointerId, src: "context-menu" })
         },
         onContextMenu(event) {
           const point = getEventPoint(event)
@@ -289,11 +278,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           })
           event.preventDefault()
         },
-        style: {
-          WebkitTouchCallout: "none",
-          WebkitUserSelect: "none",
-          userSelect: "none",
-        },
+        style: LONG_PRESS_STYLE,
       })
     },
 

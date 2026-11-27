@@ -53,6 +53,21 @@ test.describe("context menu", () => {
     await I.seeDropdown()
     await I.seeMenuIsPositionedNear(point)
   })
+
+  test("should keep a long-press through a small finger jitter", async () => {
+    const point = await I.getContextTriggerPoint()
+    await I.longPressContextTrigger(point)
+    await I.moveContextTouch({ x: point.x + 4, y: point.y + 3 })
+    await I.seeDropdown()
+  })
+
+  test("should not open when the finger moves away to scroll", async ({ page }) => {
+    const point = await I.getContextTriggerPoint()
+    await I.longPressContextTrigger(point)
+    await I.moveContextTouch({ x: point.x, y: point.y + 40 })
+    await page.waitForTimeout(1000)
+    await I.dontSeeDropdown()
+  })
 })
 
 test.describe("context menu / controlled", () => {

@@ -319,6 +319,7 @@ export interface MenuSchema {
     syncHighlightFrame: AnimationFrame
     cancelTriggerSwitch: VoidFunction | null
     awaitingViewportSize: boolean
+    longPress: { pointerId: number; target: HTMLElement | null } | null
   }
 
   action: string

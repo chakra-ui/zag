@@ -1,4 +1,4 @@
-import { contains, nextTick } from "@zag-js/dom-query"
+import { contains, nextTick, getWindow } from "@zag-js/dom-query"
 import { isEqual } from "@zag-js/utils/object"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
@@ -301,7 +301,7 @@ function publishSnapshot(layer: Layer, snapshot: LayerSnapshot) {
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, detail: LayerDismissEventDetail): LayerDismissEvent {
-  const win = el.ownerDocument.defaultView || window
+  const win = getWindow(el)
   const event = new win.CustomEvent(type, { cancelable: true, bubbles: true, detail })
   el.dispatchEvent(event)
   return event

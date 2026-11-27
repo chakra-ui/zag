@@ -1,5 +1,5 @@
 import { setElementValue } from "./form"
-import { getActiveElement, getDocument, isActiveElement } from "./node"
+import { getActiveElement, getDocument, getWindow, isActiveElement } from "./node"
 import type { HTMLElementWithValue } from "./types"
 
 export interface ScopeContext {
@@ -10,7 +10,7 @@ export function createScope<T>(methods: T) {
   const dom = {
     getRootNode: (ctx: ScopeContext) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
     getDoc: (ctx: ScopeContext) => getDocument(dom.getRootNode(ctx)),
-    getWin: (ctx: ScopeContext) => dom.getDoc(ctx).defaultView ?? window,
+    getWin: (ctx: ScopeContext) => getWindow(dom.getDoc(ctx)),
     getActiveElement: (ctx: ScopeContext) => getActiveElement(dom.getRootNode(ctx)),
     isActiveElement,
     getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>

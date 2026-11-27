@@ -243,6 +243,20 @@ export class NumberInputModel extends Model {
     await this.page.mouse.down()
   }
 
+  async moveOffInc() {
+    const box = await this.incButton.boundingBox()
+    if (!box) throw new Error("No increment button found")
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height + 60)
+  }
+
+  async moveOntoInc() {
+    await this.incButton.hover()
+  }
+
+  async readInputNumber() {
+    return Number(await this.input.inputValue())
+  }
+
   async mousedownDec() {
     await this.decButton.hover()
     await this.page.mouse.down()

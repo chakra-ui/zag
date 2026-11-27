@@ -8,6 +8,7 @@ import {
   isOverflowElement,
   setStyle,
   setStyleProperty,
+  getWindow,
 } from "@zag-js/dom-query"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
@@ -82,7 +83,7 @@ function preventTouchScroll(doc: Document): VoidFunction {
 }
 
 function applyLock(doc: Document): VoidFunction {
-  const win = doc.defaultView ?? window
+  const win = getWindow(doc)
   const { documentElement, body } = doc
   const scroller = getScrollContainer(doc)
 

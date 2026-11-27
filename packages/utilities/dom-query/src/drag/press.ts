@@ -22,10 +22,12 @@ export interface SuppressClickOptions {
   pointerId?: number | undefined
 }
 
+const CLICK_AFTER_RELEASE = 100
+
 /**
  * Swallows the click a drag's release sends, so the drag doesn't press what it ends on, like a link.
- * Call it on the release, or with `untilRelease` while the pointer is still down. It stops after the
- * release's task or at the next press, so a later click goes through.
+ * Call it on the release, or with `untilRelease` while the pointer is still down. It stops shortly after the
+ * release or at the next press, so a later click goes through.
  */
 export function suppressNextClick(doc: Document, options: SuppressClickOptions = {}) {
   const { untilRelease, pointerId } = options
@@ -48,8 +50,8 @@ export function suppressNextClick(doc: Document, options: SuppressClickOptions =
     addGlobalEvent(doc, "pointerdown", (event) => isOurs(event) && cleanup(), { capture: true }),
   ]
 
-  // the click fires in the release's task
-  const afterRelease = () => timeout.start(0, cleanup)
+  // a mouse clicks in the release's task, but a touch's click comes a few milliseconds later
+  const afterRelease = () => timeout.start(CLICK_AFTER_RELEASE, cleanup)
 
   if (untilRelease) {
     const onRelease = (event: Event) => isOurs(event) && afterRelease()

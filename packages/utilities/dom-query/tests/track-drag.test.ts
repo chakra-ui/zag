@@ -301,6 +301,25 @@ describe("isDragStart", () => {
 })
 
 describe("suppressNextClick", () => {
+  test("swallows a touch's click that comes a few milliseconds after the release, then lets clicks through", () => {
+    const onClick = vi.fn()
+    document.addEventListener("click", onClick)
+    vi.useFakeTimers()
+
+    suppressNextClick(document)
+    vi.advanceTimersByTime(5)
+    document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }))
+    expect(onClick).not.toHaveBeenCalled()
+
+    suppressNextClick(document)
+    vi.advanceTimersByTime(150)
+    document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }))
+    expect(onClick).toHaveBeenCalledTimes(1)
+
+    vi.useRealTimers()
+    document.removeEventListener("click", onClick)
+  })
+
   test("with untilRelease, waits for the release and leaves other pointers' clicks alone", () => {
     const onClick = vi.fn()
     document.addEventListener("click", onClick)

@@ -1,10 +1,11 @@
+import { getWindow } from "./node"
 import { createRect, type Rect } from "@zag-js/utils/geometry"
 
 const styleCache = new WeakMap<HTMLElement, any>()
 
 function getCacheComputedStyle(el: HTMLElement) {
   if (!styleCache.has(el)) {
-    const win = el.ownerDocument.defaultView || window
+    const win = getWindow(el)
     styleCache.set(el, win.getComputedStyle(el))
   }
   return styleCache.get(el)

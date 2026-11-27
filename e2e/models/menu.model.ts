@@ -196,7 +196,10 @@ export class MenuModel extends Model {
     return { x: Math.round(box.x + box.width / 2), y: Math.round(box.y + box.height / 2) }
   }
 
-  private dispatchContextTriggerTouch = async (type: "pointerdown" | "pointerup", point: { x: number; y: number }) => {
+  private dispatchContextTriggerTouch = async (
+    type: "pointerdown" | "pointermove" | "pointerup",
+    point: { x: number; y: number },
+  ) => {
     await this.contextTrigger.dispatchEvent(type, {
       pointerType: "touch",
       pointerId: 2,
@@ -209,6 +212,10 @@ export class MenuModel extends Model {
 
   longPressContextTrigger = async (point: { x: number; y: number }) => {
     await this.dispatchContextTriggerTouch("pointerdown", point)
+  }
+
+  moveContextTouch = async (point: { x: number; y: number }) => {
+    await this.dispatchContextTriggerTouch("pointermove", point)
   }
 
   tapContextTrigger = async (point: { x: number; y: number }) => {

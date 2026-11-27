@@ -15,6 +15,7 @@ import {
   setCaretToEnd,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
+import { LONG_PRESS_STYLE } from "@zag-js/dom-query/press"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { roundToDpr, toPx } from "@zag-js/utils/number"
 import { mergeWithDefault } from "@zag-js/utils/object"
@@ -295,6 +296,7 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
+        style: LONG_PRESS_STYLE,
         onClick(event) {
           // Pointer presses step on their own. This handles screen readers and `click()`.
           if (decrementTriggerState.disabled || event.detail !== 0) return
@@ -306,7 +308,9 @@ export function connect<T extends PropTypes>(
           send({
             type: "TRIGGER.PRESS_DOWN",
             direction: -1,
+            pointerId: event.pointerId,
             pointerType: event.pointerType,
+            point: getEventPoint(event),
             src: "decrement-trigger",
           })
           if (event.pointerType === "mouse") {
@@ -315,28 +319,6 @@ export function connect<T extends PropTypes>(
           if (event.pointerType === "touch") {
             event.currentTarget?.focus({ preventScroll: true })
           }
-        },
-        onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", direction: -1, pointerType: event.pointerType, src: "decrement-trigger" })
-        },
-        onPointerLeave(event) {
-          if (decrementTriggerState.disabled) return
-          send({
-            type: "TRIGGER.PRESS_UP",
-            direction: -1,
-            pointerType: event.pointerType,
-            cancelled: true,
-            src: "decrement-trigger",
-          })
-        },
-        onPointerCancel(event) {
-          send({
-            type: "TRIGGER.PRESS_UP",
-            direction: -1,
-            pointerType: event.pointerType,
-            cancelled: true,
-            src: "decrement-trigger",
-          })
         },
       })
     },
@@ -354,6 +336,7 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "data-scrubbing": dataAttr(scrubbing),
+        style: LONG_PRESS_STYLE,
         onClick(event) {
           // Pointer presses step on their own. This handles screen readers and `click()`.
           if (incrementTriggerState.disabled || event.detail !== 0) return
@@ -364,7 +347,9 @@ export function connect<T extends PropTypes>(
           send({
             type: "TRIGGER.PRESS_DOWN",
             direction: 1,
+            pointerId: event.pointerId,
             pointerType: event.pointerType,
+            point: getEventPoint(event),
             src: "increment-trigger",
           })
           if (event.pointerType === "mouse") {
@@ -373,27 +358,6 @@ export function connect<T extends PropTypes>(
           if (event.pointerType === "touch") {
             event.currentTarget?.focus({ preventScroll: true })
           }
-        },
-        onPointerUp(event) {
-          send({ type: "TRIGGER.PRESS_UP", direction: 1, pointerType: event.pointerType, src: "increment-trigger" })
-        },
-        onPointerLeave(event) {
-          send({
-            type: "TRIGGER.PRESS_UP",
-            direction: 1,
-            pointerType: event.pointerType,
-            cancelled: true,
-            src: "increment-trigger",
-          })
-        },
-        onPointerCancel(event) {
-          send({
-            type: "TRIGGER.PRESS_UP",
-            direction: 1,
-            pointerType: event.pointerType,
-            cancelled: true,
-            src: "increment-trigger",
-          })
         },
       })
     },

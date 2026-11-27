@@ -285,7 +285,7 @@ export function trackInteractOutside(nodeOrFn: NodeOrFn, options: InteractOutsid
 }
 
 function fireCustomEvent(el: HTMLElement, type: string, init?: CustomEventInit) {
-  const win = el.ownerDocument.defaultView || window
+  const win = getWindow(el)
   const event = new win.CustomEvent(type, init)
   return el.dispatchEvent(event)
 }

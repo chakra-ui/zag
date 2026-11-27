@@ -86,7 +86,7 @@ export interface ObserveAttributeOptions {
 function observeAttributesImpl(node: MaybeElement, options: ObserveAttributeOptions) {
   if (!node) return
   const { attributes, callback: fn } = options
-  const win = node.ownerDocument.defaultView || window
+  const win = getWindow(node)
   const obs = new win.MutationObserver((changes) => {
     for (const change of changes) {
       if (change.type === "attributes" && change.attributeName && attributes.includes(change.attributeName)) {
@@ -121,7 +121,7 @@ export interface ObserveChildrenOptions extends MutationObserverInit {
 function observeChildrenImpl(node: MaybeElement, options: ObserveChildrenOptions) {
   const { callback: fn, defer: _defer, ...observerInit } = options
   if (!node) return
-  const win = node.ownerDocument.defaultView || window
+  const win = getWindow(node)
   const obs = new win.MutationObserver(fn)
   obs.observe(node, { childList: true, subtree: true, ...observerInit })
   return () => obs.disconnect()
