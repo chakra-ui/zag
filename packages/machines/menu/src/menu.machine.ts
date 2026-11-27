@@ -20,9 +20,9 @@ import {
   observeAttributes,
   raf,
   resizeObserverBorderBox,
-  scrollToNearest,
   waitForAnimationEnd,
 } from "@zag-js/dom-query"
+import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { trackLongPress } from "@zag-js/dom-query/press"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"

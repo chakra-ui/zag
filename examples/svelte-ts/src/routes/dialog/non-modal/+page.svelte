@@ -27,9 +27,9 @@
   </div>
 
   <Portal>
-    <div {...api.getPositionerProps()}>
+    <div data-testid="positioner-1" {...api.getPositionerProps()}>
       <!-- The positioner spans the viewport, so e2e checks visibility on the content -->
-      <Presence data-testid="positioner-1" {...api.getContentProps()}>
+      <Presence {...api.getContentProps()}>
         <h2 {...api.getTitleProps()}>Non-modal dialog</h2>
         <p {...api.getDescriptionProps()}>
           No backdrop, no focus trap, no scroll lock. The page behind stays fully interactive. Close with the button or

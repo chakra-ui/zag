@@ -1,4 +1,4 @@
-import { getDocument, getParentNode, getWindow, isHTMLElement, isRootElement, isVisualViewport } from "./node"
+import { getDocument, getParentNode, getWindow, isHTMLElement, isRootElement } from "../node"
 
 export type OverflowAncestor = Array<VisualViewport | Window | HTMLElement | null>
 
@@ -19,24 +19,6 @@ export function getOverflowAncestors(el: HTMLElement, list: OverflowAncestor = [
     return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [])
   }
   return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, []))
-}
-
-const getElementRect = (el: HTMLElement | Window | VisualViewport) => {
-  if (isHTMLElement(el)) return el.getBoundingClientRect()
-  if (isVisualViewport(el)) return { top: 0, left: 0, bottom: el.height, right: el.width }
-  return { top: 0, left: 0, bottom: el.innerHeight, right: el.innerWidth }
-}
-
-export function isInView(el: HTMLElement | Window | VisualViewport, ancestor: HTMLElement | Window | VisualViewport) {
-  if (!isHTMLElement(el)) return true
-  const ancestorRect = getElementRect(ancestor)
-  const elRect = el.getBoundingClientRect()
-  return (
-    elRect.top >= ancestorRect.top &&
-    elRect.left >= ancestorRect.left &&
-    elRect.bottom <= ancestorRect.bottom &&
-    elRect.right <= ancestorRect.right
-  )
 }
 
 const OVERFLOW_RE = /auto|scroll|overlay|hidden|clip/
@@ -83,15 +65,22 @@ export function getScrollParent(el: Node, options: ScrollParentOptions = {}): HT
   return null
 }
 
-const SCROLLABLE_RE = /auto|scroll/
+const USER_SCROLL_RE = /auto|scroll|overlay/
 
-/** The nearest ancestor with `auto` or `scroll` overflow whose content overflows it */
+/** Whether the user can scroll `el` along `axis`: its overflow scrolls, whether or not its content overflows yet */
+export function canScrollAxis(el: HTMLElement, axis: "x" | "y"): boolean {
+  const style = getWindow(el).getComputedStyle(el)
+  return USER_SCROLL_RE.test(axis === "x" ? style.overflowX : style.overflowY)
+}
+
+/** The nearest ancestor the user can scroll and whose content overflows it */
 export function getNearestScrollableAncestor(el: Node): HTMLElement | null {
   const parent = getParentNode(el)
   if (isRootElement(parent)) return null
   if (isHTMLElement(parent)) {
-    const { overflow, overflowX, overflowY } = getWindow(parent).getComputedStyle(parent)
-    if (SCROLLABLE_RE.test(overflow + overflowX + overflowY) && isScrollable(parent)) return parent
+    const overflowsX = canScrollAxis(parent, "x") && parent.scrollWidth > parent.clientWidth
+    const overflowsY = canScrollAxis(parent, "y") && parent.scrollHeight > parent.clientHeight
+    if (overflowsX || overflowsY) return parent
   }
   return getNearestScrollableAncestor(parent)
 }

@@ -1,3 +1,4 @@
+import type { StickToBottomDetails } from "@zag-js/dom-query/scroll"
 import type { NormalizeProps } from "@zag-js/types"
 
 export interface VirtualItem {
@@ -266,6 +267,15 @@ export interface VirtualizerOptions {
 
   /** How many items before the end `onEndReached` fires (default: 0) */
   endReachedThreshold?: number
+
+  /**
+   * Keeps the end in view as items are added or grow, like a chat or a log, until the user scrolls up.
+   * Vertical lists only.
+   */
+  stickToEnd?: boolean
+
+  /** Called when following the end, being at the end, or having unseen items changes */
+  onStickToEndChange?: (details: StickToBottomDetails) => void
 }
 
 export interface ListVirtualizerOptions extends Omit<VirtualizerOptions, "estimatedItemSize"> {

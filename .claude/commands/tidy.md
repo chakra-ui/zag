@@ -48,6 +48,10 @@ In machines, prefer real states and named guards/actions over boolean context fl
 ### Placement and allocation
 
 - Static objects, maps and regexes go at module scope, not inside functions that run per call or per render
+- Use the shared native resources: `addGlobalEvent` for listeners, `resizeObserverBorderBox` /
+  `resizeObserverContentBox` for resize observation, a module-level `createSharedMutationObserver` for mutations,
+  `Timeout` and `AnimationFrame` for timers. Replace any `addEventListener`, `new ResizeObserver` or
+  `new MutationObserver` with them
 - Helpers that read better by name go at the bottom of the file as plain functions; pure machine helpers go in `utils/`
   when the component already has that folder
 - Types go at the bottom or in a separate `types.ts` when they crowd the logic

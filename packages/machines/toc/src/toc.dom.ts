@@ -1,5 +1,6 @@
 import type { Scope } from "@zag-js/core"
-import { contains, getScrollParent } from "@zag-js/dom-query"
+import { contains } from "@zag-js/dom-query"
+import { getScrollParent } from "@zag-js/dom-query/scroll"
 import { parts } from "./toc.anatomy"
 import type { TocItem } from "./toc.types"
 import type { Heading } from "./utils/active-ids"

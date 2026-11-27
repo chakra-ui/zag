@@ -2,14 +2,13 @@ import {
   addDomEvent,
   getComputedStyle,
   getEventTarget,
-  getNearestScrollableAncestor,
   isHTMLElement,
   isIos,
-  isOverflowElement,
   setStyle,
   setStyleProperty,
   getWindow,
 } from "@zag-js/dom-query"
+import { getNearestScrollableAncestor, isOverflowElement } from "@zag-js/dom-query/scroll"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
 

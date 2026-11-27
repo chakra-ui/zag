@@ -1,8 +1,8 @@
-import { getComputedStyle } from "./computed-style"
-import { addDomEvent } from "./event"
-import { getWindow, isHTMLElement } from "./node"
+import { getComputedStyle } from "../computed-style"
+import { addDomEvent } from "../event"
+import { getWindow } from "../node"
 import { isScrollable } from "./overflow"
-import { Timeout } from "./timeout"
+import { Timeout } from "../timeout"
 
 export interface ScrollOptions extends ScrollIntoViewOptions {
   rootEl: HTMLElement | null
@@ -41,25 +41,18 @@ export function getScrollTopToElement(el: HTMLElement, rootEl: HTMLElement): num
 export function scrollToElement(el: HTMLElement | null | undefined, options?: ScrollToElementOptions): boolean {
   const { rootEl, behavior } = options || {}
   if (!el || !rootEl || !rootEl.contains(el)) return false
-  rootEl.scrollTo({ top: getScrollTopToElement(el, rootEl), ...(behavior && { behavior }) })
+  rootEl.scrollTo({
+    top: getScrollTopToElement(el, rootEl),
+    ...(behavior && { behavior: getBehavior(rootEl, behavior) }),
+  })
   return true
 }
 
-export interface ScrollOffset {
-  top: number
-  left: number
-}
-
-export interface NearestScrollOffsetOptions {
-  rootEl: HTMLElement | null | undefined
-}
-
 /** The scroll position of `rootEl` that shows `el` with `nearest` alignment, or `null` if it's already visible */
-export function getNearestScrollOffset(
+function getNearestScrollOffset(
   el: HTMLElement | null | undefined,
-  options?: NearestScrollOffsetOptions,
-): ScrollOffset | null {
-  const { rootEl } = options || {}
+  rootEl: HTMLElement | null | undefined,
+): { top: number; left: number } | null {
   if (!el || !rootEl || !rootEl.contains(el)) return null
 
   const win = getWindow(rootEl)
@@ -93,13 +86,11 @@ export function getNearestScrollOffset(
 /** Like `scrollIntoView({ block: "nearest", inline: "nearest" })`, but only scrolls `rootEl` */
 export function scrollToNearest(el: HTMLElement | null | undefined, options?: ScrollToElementOptions): boolean {
   const { rootEl } = options || {}
-  const offset = getNearestScrollOffset(el, { rootEl })
+  const offset = getNearestScrollOffset(el, rootEl)
   if (!rootEl || !offset) return false
 
-  let behavior = options?.behavior
-  if (behavior === "smooth" && prefersReducedMotion(rootEl)) behavior = "instant"
-
-  rootEl.scrollTo({ ...offset, ...(behavior && { behavior }) })
+  const behavior = options?.behavior
+  rootEl.scrollTo({ ...offset, ...(behavior && { behavior: getBehavior(rootEl, behavior) }) })
   return true
 }
 
@@ -114,6 +105,10 @@ function alignNearest(viewStart: number, viewEnd: number, start: number, end: nu
 const prefersReducedMotion = (el: HTMLElement) =>
   !!getWindow(el).matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
+// smooth scrolling is motion; skip it for people who asked for less
+const getBehavior = (el: HTMLElement, behavior: ScrollBehavior): ScrollBehavior =>
+  behavior === "smooth" && prefersReducedMotion(el) ? "instant" : behavior
+
 const getNumericStyle = (value: string) => {
   const numericValue = Number.parseFloat(value)
   return Number.isNaN(numericValue) ? 0 : numericValue
@@ -122,18 +117,6 @@ const getNumericStyle = (value: string) => {
 const getLength = (value: string, basis: number) => {
   const numericValue = getNumericStyle(value)
   return value.trim().endsWith("%") ? (numericValue * basis) / 100 : numericValue
-}
-
-export interface ScrollPosition {
-  scrollLeft: number
-  scrollTop: number
-}
-
-export function getScrollPosition(element: HTMLElement | Window): ScrollPosition {
-  if (isHTMLElement(element)) {
-    return { scrollLeft: element.scrollLeft, scrollTop: element.scrollTop }
-  }
-  return { scrollLeft: element.scrollX, scrollTop: element.scrollY }
 }
 
 export interface ScrollEndOptions {

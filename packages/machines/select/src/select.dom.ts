@@ -1,6 +1,7 @@
 import { SELECT_ALL_VALUE } from "./utils/select-all"
 import type { Scope } from "@zag-js/core"
-import { contains, getComputedStyle, isOverflowElement } from "@zag-js/dom-query"
+import { contains, getComputedStyle } from "@zag-js/dom-query"
+import { isOverflowElement } from "@zag-js/dom-query/scroll"
 import { parts } from "./select.anatomy"
 
 // ID generators — kept for ARIA attributes in connect

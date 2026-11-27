@@ -1,6 +1,6 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createSignal, merge, onSettled, omit } from "solid-js"
+import { createMemo, createSignal, merge, omit } from "solid-js"
 import type { JSX } from "@solidjs/web"
 
 interface PresenceProps extends JSX.HTMLAttributes<HTMLDivElement> {
@@ -34,16 +34,9 @@ export function Presence(props: PresenceProps) {
     if (api().present) setWasEverPresent(true)
   })
 
-  let ref: HTMLDivElement | undefined
-
-  onSettled(() => {
-    if (ref) {
-      api().setNode(ref)
-    }
-  })
-
+  // the element can mount later than the component (lazyMount), so hand it over whenever it does
   const mergedRef = (el: HTMLDivElement) => {
-    ref = el
+    api().setNode(el)
     if (typeof props.ref === "function") {
       props.ref(el)
     } else if (props.ref) {

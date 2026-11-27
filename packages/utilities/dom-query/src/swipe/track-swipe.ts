@@ -1,7 +1,7 @@
 import { trackDrag } from "../drag/track-drag"
 import type { Point } from "../types"
 import { axisOf, crossAxisOf, directionOf, getSwipeDisplacement } from "./direction"
-import { canScrollWithFinger } from "./nested-scroll"
+import { canScrollWithFinger } from "../scroll/nested-scroll"
 import type { SwipeAxis, SwipeDirection, TrackSwipeOptions } from "./types"
 
 const SCROLL_CHECK_DISTANCE = 0.3

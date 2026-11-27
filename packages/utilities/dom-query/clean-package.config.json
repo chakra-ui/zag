@@ -54,6 +54,16 @@
           "default": "./dist/swipe/index.js"
         }
       },
+      "./scroll": {
+        "import": {
+          "types": "./dist/scroll/index.d.mts",
+          "default": "./dist/scroll/index.mjs"
+        },
+        "require": {
+          "types": "./dist/scroll/index.d.ts",
+          "default": "./dist/scroll/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

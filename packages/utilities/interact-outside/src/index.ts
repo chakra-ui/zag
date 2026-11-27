@@ -4,13 +4,13 @@ import {
   contains,
   getDocument,
   getEventTarget,
-  getNearestOverflowAncestor,
   getWindow,
   isControlledElement,
   isFocusable,
   isHTMLElement,
   raf,
 } from "@zag-js/dom-query"
+import { getNearestOverflowAncestor } from "@zag-js/dom-query/scroll"
 import { callAll } from "@zag-js/utils/functions"
 import { getParentWindow, getWindowFrames } from "./frame-utils"
 

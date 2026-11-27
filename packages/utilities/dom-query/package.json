@@ -37,6 +37,7 @@
     "./image": "./src/image/index.ts",
     "./press": "./src/press/index.ts",
     "./swipe": "./src/swipe/index.ts",
+    "./scroll": "./src/scroll/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

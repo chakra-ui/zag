@@ -9,15 +9,13 @@ import {
   getEventTarget,
   getInitialFocus,
   isApple,
-  isScrollable,
   markAsInternalChangeEvent,
   observeAttributes,
   raf,
   resizeObserverContentBox,
-  scrollIntoView,
-  scrollToNearest,
   trackFormControl,
 } from "@zag-js/dom-query"
+import { isScrollable, scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"

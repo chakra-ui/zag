@@ -129,9 +129,12 @@ describe("WindowVirtualizer", () => {
     virtualizer.init(rootElement)
     virtualizer.destroy()
 
-    expect(mockWindow.addEventListener).toHaveBeenCalledWith("resize", expect.any(Function), { passive: true })
-    expect(mockWindow.removeEventListener).toHaveBeenCalledWith("resize", expect.any(Function))
-    expect(rootElement.addEventListener).toHaveBeenCalledWith("scroll", expect.any(Function), { passive: true })
-    expect(rootElement.removeEventListener).toHaveBeenCalledWith("scroll", expect.any(Function))
+    // listeners go through the shared dispatcher, which removes with the same capture flag
+    const added = { capture: false, passive: true }
+    const removed = { capture: false }
+    expect(mockWindow.addEventListener).toHaveBeenCalledWith("resize", expect.any(Function), added)
+    expect(mockWindow.removeEventListener).toHaveBeenCalledWith("resize", expect.any(Function), removed)
+    expect(rootElement.addEventListener).toHaveBeenCalledWith("scroll", expect.any(Function), added)
+    expect(rootElement.removeEventListener).toHaveBeenCalledWith("scroll", expect.any(Function), removed)
   })
 })

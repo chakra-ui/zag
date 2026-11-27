@@ -1,5 +1,6 @@
 import type { Scope } from "@zag-js/core"
-import { nextById, prevById, scrollToNearest } from "@zag-js/dom-query"
+import { nextById, prevById } from "@zag-js/dom-query"
+import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { first, last } from "@zag-js/utils/array"
 import { parts } from "./toolbar.anatomy"
 

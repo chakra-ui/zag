@@ -3,11 +3,11 @@ import {
   addDomEvent,
   AnimationFrame,
   getElementRect,
-  getOverflowAncestors,
   isHTMLElement,
   raf,
   resizeObserverBorderBox,
 } from "@zag-js/dom-query"
+import { getOverflowAncestors } from "@zag-js/dom-query/scroll"
 import { DRAG_DISTANCE, trackDrag } from "@zag-js/dom-query/drag"
 import {
   clampPoint,

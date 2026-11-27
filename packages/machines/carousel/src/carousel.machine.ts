@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, raf, resizeObserverBorderBox, Timeout, trackScrollEnd } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, raf, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
+import { trackScrollEnd } from "@zag-js/dom-query/scroll"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils/array"

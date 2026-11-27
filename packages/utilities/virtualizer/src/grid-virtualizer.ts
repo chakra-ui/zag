@@ -1,6 +1,6 @@
 import { runIfFn } from "@zag-js/utils/functions"
 import { isFunction, isNumber, isString } from "@zag-js/utils/guard"
-import { AnimationFrame, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { addGlobalEvent, AnimationFrame, isHTMLElement, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
 import type {
   CSSProperties,
   GridScrollToOptions,
@@ -9,12 +9,13 @@ import type {
   RangeChangeReason,
   ScrollAlignment,
   ScrollState,
-  TimerId,
 } from "./types"
 import { createNormalizer, type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { isSameOption } from "./utils/options"
 import { CacheManager } from "./utils/cache-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
+
+const DIGITS_RE = /^\d+$/
 import { SizeTracker } from "./utils/size-tracker"
 import { partSelector, trackElements } from "./utils/track-elements"
 
@@ -97,7 +98,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   private scrollDirectionY: ScrollState["direction"]["y"] = "idle"
   private isScrolling = false
   private rtlScrollBehavior: RtlScrollBehavior | null = null
-  private scrollEndTimer: TimerId | null = null
+  private scrollEndTimeout = Timeout.create()
 
   // Viewport dimensions
   private viewportWidth = 0
@@ -136,7 +137,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
 
   // Auto-sizing cleanup
   private scrollElementResizeCleanup?: VoidFunction
-  private pendingInitialOffsetRaf: number | null = null
+  private initialOffsetFrame = AnimationFrame.create()
   private hasAppliedInitialOffset = false
   private isDestroyed = false
 
@@ -237,8 +238,8 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   }
 
   private detectRtlScrollBehavior(target: HTMLElement): RtlScrollBehavior {
-    const maxOffset = this.getMaxHorizontalOffset(target)
     const previous = target.scrollLeft
+    const maxOffset = this.getMaxHorizontalOffset(target)
     if (maxOffset > 0 && Math.abs(previous - maxOffset) <= 1) {
       return "positive-descending"
     }
@@ -270,12 +271,11 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   private toLogicalHorizontalOffset(rawOffset: number, target: HTMLElement | null): number {
     if (!this.isRtl) return rawOffset
     const mode = this.resolveRtlScrollBehavior(target)
-    const maxOffset = this.getMaxHorizontalOffset(target)
     switch (mode) {
       case "negative":
         return -rawOffset
       case "positive-descending":
-        return maxOffset - rawOffset
+        return this.getMaxHorizontalOffset(target) - rawOffset
       default:
         return rawOffset
     }
@@ -284,12 +284,11 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   private toRawHorizontalOffset(logicalOffset: number, target: HTMLElement | null): number {
     if (!this.isRtl) return logicalOffset
     const mode = this.resolveRtlScrollBehavior(target)
-    const maxOffset = this.getMaxHorizontalOffset(target)
     switch (mode) {
       case "negative":
         return -logicalOffset
       case "positive-descending":
-        return maxOffset - logicalOffset
+        return this.getMaxHorizontalOffset(target) - logicalOffset
       default:
         return logicalOffset
     }
@@ -362,7 +361,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
       return key
     }
 
-    if (isString(key) && /^\d+$/.test(key)) {
+    if (isString(key) && DIGITS_RE.test(key)) {
       const parsed = Number(key)
       if (parsed >= 0 && parsed < rowCount) {
         return parsed
@@ -649,8 +648,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     this.scrollCleanup?.()
     if (!isHTMLElement(element)) return
     const onScroll = (event: Event) => this.handleScrollEvent(event)
-    element.addEventListener("scroll", onScroll, { passive: true })
-    this.scrollCleanup = () => element.removeEventListener("scroll", onScroll)
+    this.scrollCleanup = addGlobalEvent(element, "scroll", onScroll, { passive: true })
   }
 
   private trackRows(root: HTMLElement): void {
@@ -865,16 +863,14 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
 
     this.calculateRange({ reason: "scroll" })
 
-    if (this.scrollEndTimer) clearTimeout(this.scrollEndTimer)
-    this.scrollEndTimer = setTimeout(() => {
+    this.scrollEndTimeout.start(this.options.scrollEndDelay, () => {
       if (this.isDestroyed) return
-      this.scrollEndTimer = null
       this.isScrolling = false
       this.observeUnobservedRows()
       this.options.onScroll?.(this.getScrollState())
       this.options.onScrollEnd?.(this.getScrollState())
       this.notifyStore()
-    }, this.options.scrollEndDelay)
+    })
 
     this.notifyStore()
   }
@@ -922,8 +918,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     const appliedOffset = (this.scrollElement as HTMLElement).scrollTop
     if (Math.abs(appliedOffset - targetOffset) < INITIAL_SCROLL_TOLERANCE) return
 
-    this.pendingInitialOffsetRaf = requestAnimationFrame(() => {
-      this.pendingInitialOffsetRaf = null
+    this.initialOffsetFrame.request(() => {
       if (this.isDestroyed || this.options.disableScrollOnInit) return
       this.writeInitialScrollOffset(targetOffset)
     })
@@ -1116,14 +1111,8 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     this.scrollCleanup = undefined
     this.trackCleanup = undefined
 
-    if (this.scrollEndTimer) {
-      clearTimeout(this.scrollEndTimer)
-      this.scrollEndTimer = null
-    }
-    if (this.pendingInitialOffsetRaf != null) {
-      cancelAnimationFrame(this.pendingInitialOffsetRaf)
-      this.pendingInitialOffsetRaf = null
-    }
+    this.scrollEndTimeout.cancel()
+    this.initialOffsetFrame.cancel()
     this.rowSizeUpdateFrame.cancel()
     this.scrollElementResizeCleanup?.()
     delete this.scrollElementResizeCleanup

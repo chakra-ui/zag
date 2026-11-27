@@ -9,9 +9,8 @@ import {
   isApple,
   isTypingAtEnd,
   raf,
-  scrollIntoView,
-  scrollToNearest,
 } from "@zag-js/dom-query"
+import { scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"

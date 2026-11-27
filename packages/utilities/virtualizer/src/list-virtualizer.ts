@@ -13,7 +13,6 @@ import type {
 } from "./types"
 import type { PropTypes } from "@zag-js/types"
 import { Virtualizer } from "./virtualizer"
-import { CacheManager } from "./utils/cache-manager"
 import { SizeTracker } from "./utils/size-tracker"
 
 type ResolvedListOptions = ListVirtualizerOptions & Pick<VirtualizerOptions, "estimatedItemSize">
@@ -33,7 +32,6 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
   declare private sizeTracker: SizeTracker | undefined
   declare private groups: ListVirtualizerOptions["groups"] | null
   declare private groupStarts: Map<number, number> | null
-  declare private rangeCache: CacheManager<string, Range>
   private refinedEstimate: number | undefined
   private refineFrame = AnimationFrame.create()
   private trailingSize = 0
@@ -61,27 +59,24 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
 
   protected resetMeasurements(): void {
     this.measureCache.clear()
-    this.rangeCache?.clear()
     this.groups = this.options.groups?.slice().sort((a, b) => a.startIndex - b.startIndex) ?? null
     this.groupStarts = this.groups ? new Map(this.groups.map((group, i) => [group.startIndex, i])) : null
     const count = this.options.count
 
-    // Initialize or reset size tracker
     if (this.options.itemSize !== undefined) {
       this.sizeTracker = undefined
     } else {
+      // seeded from the measured sizes, so an option change doesn't send measured items back to estimates
       this.sizeTracker = new SizeTracker(count, this.options.gap, (i) => this.getEstimatedSize(i))
-    }
-
-    if (!this.rangeCache) {
-      this.rangeCache = new CacheManager<string, Range>(50)
+      for (const [index, size] of this.itemSizeCache) {
+        if (index < count) this.sizeTracker.setMeasuredSize(index, size)
+      }
     }
   }
 
-  protected onItemsChanged(): void {
-    if (this.sizeTracker) {
-      this.sizeTracker.clearMeasurements()
-    }
+  // measured sizes survive a count change: by key when items have keys, else by index
+  protected onItemsChanged(sizesByKey?: Map<string | number, number> | null): void {
+    if (sizesByKey) this.itemSizeCache = this.getSizesByIndex(sizesByKey)
     this.resetMeasurements()
   }
 
@@ -143,7 +138,6 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
     const anchor = this.options.preserveScrollAnchor && this.scrollOffset > 0 ? this.getScrollAnchor() : null
     this.refinedEstimate = next
     this.sizeTracker.refreshEstimates()
-    this.rangeCache?.clear()
     this.invalidateMeasurements(0)
     this.calculateRange({ reason: "measurement" })
     if (anchor) this.restoreScrollAnchor(anchor)
@@ -160,9 +154,6 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
     if (!changed) return false
 
     this.itemSizeCache.set(index, size)
-    // Measured sizes change the mapping from viewport offset to visible range.
-    // Clear rangeCache so stale ranges aren't reused at the same scroll position.
-    this.rangeCache?.clear()
     return true
   }
 
@@ -215,30 +206,13 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
       }
     }
 
-    // Initialize cache if needed
-    if (!this.rangeCache) {
-      this.rangeCache = new CacheManager<string, Range>(50)
-    }
-
-    // Check range cache first
-    const cacheKey = `${viewportStart}:${viewportEnd}:${count}`
-    const cached = this.rangeCache.get(cacheKey)
-    if (cached) return cached
-
-    // List mode: use size tracker's optimized binary search
-    // Initialize size tracker if needed
     if (!this.sizeTracker) {
       this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     const startIndex = this.sizeTracker.findIndexAtOffset(viewportStart, paddingStart)
     const endIndex = this.sizeTracker.findIndexAtOffset(viewportEnd, paddingStart)
-    const range: Range = { startIndex, endIndex }
-
-    // Cache the result (CacheManager handles LRU eviction automatically)
-    this.rangeCache.set(cacheKey, range)
-
-    return range
+    return { startIndex, endIndex }
   }
 
   protected getItemStyle(virtualItem: VirtualItem): CSSProperties {
@@ -269,7 +243,6 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
 
   protected invalidateLayout(): void {
     this.measureCache.clear()
-    this.rangeCache?.clear()
     this.invalidateMeasurements(0)
   }
 
@@ -494,7 +467,6 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
 
     // Item starts/ends have changed; drop all cached measurements/ranges
     this.invalidateItemKeys()
-    this.rangeCache?.clear()
     this.invalidateMeasurements(0)
     this.calculateRange({ reason: "count" })
 

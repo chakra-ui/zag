@@ -7,10 +7,10 @@ import {
   Timeout,
   trackFormControl,
   observeAttributes,
-  scrollToNearest,
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
+import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/utils/geometry"

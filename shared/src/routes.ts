@@ -103,6 +103,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "nested", title: "Nested" },
       { slug: "column-reverse", title: "Column Reverse" },
       { slug: "dynamic", title: "Dynamic" },
+      { slug: "stick-to-bottom", title: "Stick to Bottom" },
     ],
   },
   {
@@ -965,6 +966,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "scroll-padding", title: "Scroll Padding" },
       { slug: "sticky", title: "Sticky Headers" },
       { slug: "infinite-scroll", title: "Infinite Scroll" },
+      { slug: "chat", title: "Chat (Stick to End)" },
       { slug: "table", title: "Table" },
       { slug: "window", title: "Window scroll" },
       { slug: "perf", title: "Perf: Fixed Height" },

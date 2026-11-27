@@ -1,13 +1,11 @@
-import { getComputedStyle } from "../computed-style"
 import { isHTMLElement } from "../node"
-import type { SwipeDirection } from "./types"
+import type { SwipeDirection } from "../swipe/types"
+import { canScrollAxis } from "./overflow"
 
 const SCROLL_SLACK = 0.5
 
 function canScrollOn(el: HTMLElement, vertical: boolean) {
-  const style = getComputedStyle(el)
-  const overflow = vertical ? style.overflowY : style.overflowX
-  if (overflow !== "auto" && overflow !== "scroll" && overflow !== "overlay") return false
+  if (!canScrollAxis(el, vertical ? "y" : "x")) return false
   return vertical ? el.scrollHeight > el.clientHeight + 1 : el.scrollWidth > el.clientWidth + 1
 }
 

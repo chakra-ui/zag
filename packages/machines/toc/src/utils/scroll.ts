@@ -1,4 +1,4 @@
-import { getScrollParent, getScrollTopToElement } from "@zag-js/dom-query"
+import { getScrollParent, getScrollTopToElement } from "@zag-js/dom-query/scroll"
 
 /** `scrollEl`, or the nearest ancestor of the heading that scrolls, or the page */
 export function getScrollContainer(scrollEl: HTMLElement | null | undefined, headingEl: HTMLElement) {

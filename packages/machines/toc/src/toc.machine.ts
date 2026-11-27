@@ -1,13 +1,6 @@
 import { setup, type Params } from "@zag-js/core"
-import {
-  addDomEvent,
-  AnimationFrame,
-  contains,
-  getEventTarget,
-  resizeObserverBorderBox,
-  scrollToNearest,
-  trackScrollEnd,
-} from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { scrollToNearest, trackScrollEnd } from "@zag-js/dom-query/scroll"
 import type { Rect } from "@zag-js/types"
 import { first, last, toArray } from "@zag-js/utils/array"
 import { isEqual } from "@zag-js/utils/object"

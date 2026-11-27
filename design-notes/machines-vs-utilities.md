@@ -45,6 +45,12 @@ forms.
 
 - Named `trackX`, takes the document or element first and an options object second
 - Callbacks receive a `details` object; units are px and px/ms
-- Every DOM listener goes through `addGlobalEvent`; timers through `Timeout` and `AnimationFrame`
+- Share native resources instead of creating them per call:
+  - DOM listeners through `addGlobalEvent`
+  - Resize observation through the shared observers (`resizeObserverBorderBox`, `resizeObserverContentBox`), never
+    `new ResizeObserver`
+  - Mutation observation through `createSharedMutationObserver`, created once at module scope, never
+    `new MutationObserver`
+  - Timers through `Timeout` and `AnimationFrame`
 - Its own entrypoint when it's a topic (`dom-query/drag`, `dom-query/swipe`, `dom-query/press`)
 - Pure decisions it needs live in `@zag-js/utils` and are unit tested without a DOM

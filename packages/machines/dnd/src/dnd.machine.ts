@@ -8,7 +8,7 @@ import { nextIndex, prevIndex } from "@zag-js/utils/array"
 import type { Point } from "@zag-js/types"
 import * as dom from "./dnd.dom"
 import type { DndSchema, DropPlacement, IntlTranslations } from "./dnd.types"
-import { createAutoScroll } from "./utils/auto-scroll"
+import { createAutoScroll } from "@zag-js/dom-query/scroll"
 import { closestEdge, closestGrid, midpointPlacement } from "./utils/collision"
 import { getMoveTarget } from "./utils/move-target"
 

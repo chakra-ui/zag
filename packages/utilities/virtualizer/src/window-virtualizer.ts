@@ -1,5 +1,11 @@
 import type { PropTypes } from "@zag-js/types"
-import { getComputedStyle, getDocumentElement, isHTMLElement, resizeObserverBorderBox } from "@zag-js/dom-query"
+import {
+  addGlobalEvent,
+  getComputedStyle,
+  getDocumentElement,
+  isHTMLElement,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import { ListVirtualizer } from "./list-virtualizer"
 import type {
   CSSProperties,
@@ -71,6 +77,8 @@ export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirt
   private windowResizeHandler?: VoidFunction
   /** Where we listen for scroll — `window` or a scrollable ancestor (e.g. `main` with overflow-y: auto). */
   private scrollListenerTarget: EventTarget | null = null
+  private scrollListenerCleanup: VoidFunction | undefined
+  private windowResizeCleanup: VoidFunction | undefined
   /** Cleanup for ResizeObserver on the scroll parent (when it is an HTMLElement, not `window`). */
   private scrollTargetResizeCleanup: VoidFunction | undefined
 
@@ -119,9 +127,7 @@ export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirt
     // Resize only — scroll is attached in `init()` once we know the scroll root (window vs overflow parent).
     const win = this.resolveWindow()
     if (typeof win !== "undefined") {
-      win.addEventListener("resize", this.windowResizeHandler, {
-        passive: true,
-      })
+      this.windowResizeCleanup = addGlobalEvent(win, "resize", this.windowResizeHandler, { passive: true })
     }
   }
 
@@ -135,9 +141,7 @@ export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirt
     this.scrollListenerTarget = target
 
     if (this.windowScrollHandler && target) {
-      target.addEventListener("scroll", this.windowScrollHandler, {
-        passive: true,
-      })
+      this.scrollListenerCleanup = addGlobalEvent(target, "scroll", this.windowScrollHandler, { passive: true })
     }
 
     this.observeScrollTarget(target)
@@ -176,9 +180,8 @@ export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirt
   }
 
   private detachScrollListener(): void {
-    if (this.windowScrollHandler && this.scrollListenerTarget) {
-      this.scrollListenerTarget.removeEventListener("scroll", this.windowScrollHandler)
-    }
+    this.scrollListenerCleanup?.()
+    this.scrollListenerCleanup = undefined
     this.scrollTargetResizeCleanup?.()
     this.scrollTargetResizeCleanup = undefined
     this.scrollListenerTarget = null
@@ -372,10 +375,8 @@ export class WindowVirtualizer<T extends PropTypes = PropTypes> extends ListVirt
   override destroy(): void {
     this.detachScrollListener()
 
-    const win = this.resolveWindow()
-    if (this.windowResizeHandler && typeof win !== "undefined") {
-      win.removeEventListener("resize", this.windowResizeHandler)
-    }
+    this.windowResizeCleanup?.()
+    this.windowResizeCleanup = undefined
     delete this.windowScrollHandler
     delete this.windowResizeHandler
     this.hasSetupWindowScrolling = false

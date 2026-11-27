@@ -2,13 +2,13 @@ import { createGuards, createMachine, type Params } from "@zag-js/core"
 import {
   addDomEvent,
   AnimationFrame,
-  getOverflowAncestors,
   getPopupActivationDirection,
   isComposingEvent,
   waitForAnimationEnd,
   raf,
   resizeObserverBorderBox,
 } from "@zag-js/dom-query"
+import { getOverflowAncestors } from "@zag-js/dom-query/scroll"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"

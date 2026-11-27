@@ -1,14 +1,8 @@
 import type { CollectionItem } from "@zag-js/collection"
 import { Selection, createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import {
-  AnimationFrame,
-  contains,
-  getByTypeahead,
-  observeAttributes,
-  scrollIntoView,
-  tryFocusElement,
-} from "@zag-js/dom-query"
+import { AnimationFrame, contains, getByTypeahead, observeAttributes, tryFocusElement } from "@zag-js/dom-query"
+import { scrollIntoView } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils/object"
 import { collection } from "./gridlist.collection"

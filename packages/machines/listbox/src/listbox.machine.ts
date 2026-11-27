@@ -9,7 +9,8 @@ import {
   toggleSelectAll,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { getByTypeahead, observeAttributes, raf, scrollToNearest } from "@zag-js/dom-query"
+import { getByTypeahead, observeAttributes, raf } from "@zag-js/dom-query"
+import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils/object"
 import { collection } from "./listbox.collection"

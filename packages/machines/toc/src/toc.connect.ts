@@ -1,5 +1,6 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, getWindow, isDownloadingEvent, isOpeningInNewTab, scrollToElement } from "@zag-js/dom-query"
+import { dataAttr, getWindow, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
+import { scrollToElement } from "@zag-js/dom-query/scroll"
 import type { NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { first, last } from "@zag-js/utils/array"
 import { toPx } from "@zag-js/utils/number"

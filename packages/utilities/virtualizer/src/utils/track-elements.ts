@@ -1,4 +1,13 @@
-import { isHTMLElement } from "@zag-js/dom-query"
+import { createSharedMutationObserver, isHTMLElement } from "@zag-js/dom-query"
+
+const SELECTOR_ESCAPE_RE = /["\\]/g
+
+const elementObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["data-index"],
+})
 
 export interface TrackElementsOptions {
   /** CSS selector for the elements to track */
@@ -31,7 +40,7 @@ export function trackElements(root: HTMLElement, options: TrackElementsOptions):
 
   scan(root)
 
-  const observer = new win.MutationObserver((records) => {
+  const stopObserving = elementObserver.observe(root, (records) => {
     let removed = false
     for (const record of records) {
       if (record.type === "attributes") {
@@ -53,15 +62,13 @@ export function trackElements(root: HTMLElement, options: TrackElementsOptions):
     }
   })
 
-  observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-index"] })
-
   return () => {
-    observer.disconnect()
+    stopObserving()
     tracked.clear()
   }
 }
 
 /** Attribute selector for an element of this virtualizer, safe for ids with `:` or quotes. */
 export function partSelector(part: string, id: string): string {
-  return `[data-virtualizer-${part}="${id.replace(/["\\]/g, "\\$&")}"]`
+  return `[data-virtualizer-${part}="${id.replace(SELECTOR_ESCAPE_RE, "\\$&")}"]`
 }

@@ -1,6 +1,7 @@
 import { getLocalTimeZone, parseDateTime, type CalendarDateTime } from "@internationalized/date"
 import { createMachine, memo, type PropFn, type Scope } from "@zag-js/core"
-import { AnimationFrame, getNearestScrollableAncestor } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
+import { getNearestScrollableAncestor } from "@zag-js/dom-query/scroll"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
