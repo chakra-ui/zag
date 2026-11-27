@@ -929,6 +929,7 @@
       "data-state": "\"open\" | \"closed\"",
       "data-expanded": "Present when expanded",
       "data-swipe-direction": "",
+      "data-snap-point": "The current snap point",
       "data-swiping": "",
       "data-dragging": "Present when in the dragging state",
       "data-nested-drawer-open": "",
@@ -955,6 +956,11 @@
       "data-swiping": "",
       "data-swipe-direction": "",
       "data-disabled": "Present when disabled"
+    },
+    "Grabber": {
+      "data-drawer-grabber": "<uid>",
+      "data-snap-point": "The current snap point",
+      "data-expanded": "Present at the largest snap point"
     }
   },
   "editable": {

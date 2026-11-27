@@ -99,7 +99,7 @@
   z-index: 1;
   min-height: 100%;
   background-color: #000;
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   transition-property: opacity;
   transition-duration: 0.45s;
   transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
@@ -110,7 +110,7 @@
 
   &[data-state="open"] {
     animation: fadeInBackdrop 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
 
   &[data-state="closed"] {
@@ -269,13 +269,13 @@
     opacity: 0;
   }
   to {
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
 }
 
 @keyframes fadeOutBackdrop {
   from {
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
   to {
     opacity: 0;

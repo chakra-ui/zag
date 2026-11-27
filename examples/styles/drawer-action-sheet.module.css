@@ -36,7 +36,7 @@
   min-height: 100dvh;
   inset: 0;
   background-color: black;
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   transition-duration: 450ms;
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
@@ -188,7 +188,7 @@
 
 @keyframes fadeOut {
   from {
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
   to {
     opacity: 0;

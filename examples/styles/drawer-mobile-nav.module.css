@@ -62,7 +62,7 @@
   transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   backdrop-filter: blur(1.5px);
   background-image: linear-gradient(to bottom, rgb(0 0 0 / 5%) 0, rgb(0 0 0 / 10%) 50%);
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
 
   &[data-state="open"] {
     animation: backdropIn 600ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -252,7 +252,7 @@
 @keyframes backdropOut {
   from {
     backdrop-filter: blur(1.5px);
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
   to {
     backdrop-filter: blur(0);

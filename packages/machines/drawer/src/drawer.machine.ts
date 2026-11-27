@@ -241,7 +241,7 @@ export const machine = createMachine<DrawerSchema>({
 
   on: {
     "SNAP_POINT.SET": {
-      actions: ["setSnapPoint"],
+      actions: ["resetSwipeStrength", "setSnapPoint"],
     },
   },
 
@@ -380,6 +380,7 @@ export const machine = createMachine<DrawerSchema>({
             "clearActiveSnapPoint",
             "clearResolvedActiveSnapPoint",
             "clearSizeMeasurements",
+            "resetSwipeStrength",
           ],
         },
       },

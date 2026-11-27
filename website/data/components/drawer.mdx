@@ -84,17 +84,16 @@ const service = useMachine(drawer.machine, {
 
 ### Snap points
 
-The drawer supports customizable snap points, which determine the heights at
-which the sheet can "snap" when dragged. Snap points can be defined as numbers
-(representing percentages of the content height, e.g., `0.5` for 50%) or pixel
-values (e.g., `"200px"`). By default, it snaps to full sheet height (`1`).
+Snap points set where the sheet can rest. A number up to `1` is a fraction of
+the viewport, a larger number is pixels, and strings take `px` or `rem`. Each is
+capped at the content's size, so the default `1` fits short content.
 
 <Example id="DrawerSnapPoints">
 
 ```tsx
 const service = useMachine(drawer.machine, {
   id: useId(),
-  snapPoints: [0.3, 0.5, 1], // 30%, 50%, and 100% of sheet height
+  snapPoints: [0.3, 0.5, 1], // 30%, 50%, and 100% of the viewport height
   defaultSnapPoint: 0.5, // Start at 50% height
   onSnapPointChange: ({ snapPoint }) => {
     console.log("Active snap point:", snapPoint)
@@ -103,6 +102,9 @@ const service = useMachine(drawer.machine, {
 ```
 
 </Example>
+
+With several snap points, the grabber steps between them on press or with the
+arrow keys, `Home`, and `End`. Label it with `translations.grabber`.
 
 ### Controlled snap point
 
@@ -129,9 +131,9 @@ The drawer can be dismissed by swiping it down quickly or dragging it below a
 threshold. Customize this behavior with the following properties:
 
 - `swipeVelocityThreshold`: The minimum velocity (in pixels per second) required
-  to dismiss on swipe (default: `700`).
+  to dismiss on swipe (default: `500`).
 - `closeThreshold`: The percentage of content height below which the sheet
-  closes when dragged (default: `0.25`).
+  closes when dragged (default: `0.5`).
 
 <Example id="DrawerSwipeDismiss">
 
@@ -450,12 +452,22 @@ The following CSS variables are set on the content element:
 | `--drawer-swipe-movement-y`    | Current swipe movement on y-axis |
 | `--drawer-swipe-strength`      | Numeric swipe strength           |
 
-The following CSS variables are set on the backdrop element:
+The content and backdrop also get these:
 
-| Variable                  | Description                                     |
-| ------------------------- | ----------------------------------------------- |
-| `--drawer-swipe-progress` | 0-1 progress value, useful for backdrop opacity |
-| `--drawer-swipe-strength` | Numeric swipe strength                          |
+| Variable                  | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| `--drawer-progress`       | 0 closed, 1 at the largest snap point                |
+| `--drawer-dim`            | Backdrop dimming: 1 at rest, 0 swiped closed         |
+| `--drawer-expand`         | 0 at the second-largest snap point, 1 at the largest |
+| `--drawer-stack`          | Drawers open on top of this one                      |
+| `--drawer-swipe-progress` | Swipe toward closed, 0 to 1 (backdrop only)          |
+| `--drawer-swipe-strength` | Release speed, scales animation length (backdrop)    |
+
+```css
+[data-drawer-backdrop] {
+  opacity: calc(0.5 * var(--drawer-dim, 1));
+}
+```
 
 ## Methods and Properties
 
@@ -487,3 +499,9 @@ physical direction: `up`, `down`, `left`, or `right`.
 ### CSS variables
 
 <CssVarTable name="drawer" />
+
+## Accessibility
+
+### Keyboard interactions
+
+<KeyboardTable name="drawer" />

@@ -986,5 +986,25 @@
         "description": "During a drag or resize, puts the panel back where it started. Otherwise, closes the panel when `closeOnEscape` is set."
       }
     ]
+  },
+  "drawer": {
+    "keyboard": [
+      {
+        "keys": ["Enter", "Space"],
+        "description": "<span>On the grabber, moves to the next snap point, wrapping around</span>"
+      },
+      {
+        "keys": ["ArrowUp", "ArrowDown"],
+        "description": "<span>On the grabber, expands or collapses one snap point (for a bottom drawer)</span>"
+      },
+      {
+        "keys": ["Home", "End"],
+        "description": "<span>On the grabber, moves to the smallest or largest snap point</span>"
+      },
+      {
+        "keys": ["Escape"],
+        "description": "<span>Closes the drawer</span>"
+      }
+    ]
   }
 }

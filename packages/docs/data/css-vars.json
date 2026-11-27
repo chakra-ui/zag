@@ -83,12 +83,20 @@
       "--drawer-height": "The height of the Content",
       "--drawer-frontmost-height": "The height of the Content",
       "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested drawers"
+      "--nested-layer-count": "The number of nested drawers",
+      "--drawer-progress": "0 closed, 1 at the largest snap point",
+      "--drawer-dim": "Backdrop dimming: 1 at rest, 0 swiped closed",
+      "--drawer-expand": "0 at the second-largest snap point, 1 at the largest",
+      "--drawer-stack": "Drawers open on top of this one"
     },
     "Backdrop": {
-      "--drawer-swipe-progress": "The drawer swipe progress value for the Backdrop",
+      "--drawer-swipe-progress": "Swipe toward closed, 0 to 1",
       "--drawer-swipe-strength": "The drawer swipe strength value for the Backdrop",
-      "--layer-index": "The index of the dismissable in the layer stack"
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--drawer-progress": "0 closed, 1 at the largest snap point",
+      "--drawer-dim": "Backdrop dimming: 1 at rest, 0 swiped closed",
+      "--drawer-expand": "0 at the second-largest snap point, 1 at the largest",
+      "--drawer-stack": "Drawers open on top of this one"
     }
   },
   "floating-panel": {

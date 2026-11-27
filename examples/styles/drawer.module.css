@@ -3,18 +3,18 @@
   position: fixed;
   inset: 0;
   background-color: black;
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   transition-property: opacity;
-  transition-duration: 0.5s;
+  transition-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
   transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 
   &[data-state="open"] {
-    animation: fadeInBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    animation: fadeInBackdrop calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
 
   &[data-state="closed"] {
-    animation: fadeOutBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    animation: fadeOutBackdrop calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
     opacity: 0;
   }
 
@@ -48,8 +48,8 @@
 
 .content {
   background: white;
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  animation-duration: 0.5s;
+  transition: transform calc(var(--drawer-swipe-strength, 1) * 0.5s) cubic-bezier(0.32, 0.72, 0, 1);
+  animation-duration: calc(var(--drawer-swipe-strength, 1) * 0.5s);
   animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
   flex-direction: column;
@@ -270,13 +270,13 @@
     opacity: 0;
   }
   to {
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
 }
 
 @keyframes fadeOutBackdrop {
   from {
-    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+    opacity: calc(var(--backdrop-opacity) * var(--drawer-dim, 1));
   }
   to {
     opacity: 0;

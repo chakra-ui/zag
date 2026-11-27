@@ -198,6 +198,24 @@ export class DrawerModel extends Model {
     return this.scrollable.evaluate((el) => el.scrollTop)
   }
 
+  focusGrabber() {
+    return this.grabber.focus()
+  }
+
+  clickGrabber() {
+    return this.grabber.click()
+  }
+
+  async seeSnapPoint(value: string) {
+    await expect(this.content).toHaveAttribute("data-snap-point", value)
+    await expect(this.grabber).toHaveAttribute("data-snap-point", value)
+  }
+
+  async seeGrabberIsButton() {
+    await expect(this.grabber).toHaveAttribute("role", "button")
+    await expect(this.grabber).toHaveAccessibleName("Resize drawer")
+  }
+
   async seeSide(direction: SwipeDirection) {
     await expect(this.content).toHaveAttribute("data-swipe-direction", direction)
   }

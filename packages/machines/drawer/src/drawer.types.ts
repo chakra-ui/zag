@@ -116,7 +116,18 @@ export interface ElementIds {
   swipeArea?: string | undefined
 }
 
+export interface IntlTranslations {
+  /**
+   * The grabber's label, when it steps through snap points
+   */
+  grabber?: string | undefined
+}
+
 export interface DrawerProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
+  /**
+   * Localized text
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the elements in the drawer. Useful for composition.
    */
@@ -190,8 +201,8 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
    */
   closeOnEscape?: boolean | undefined
   /**
-   * The snap points of the drawer.
-   * Array of numbers or strings representing the snap points.
+   * Where the drawer can rest: a viewport fraction up to 1, pixels above, or a `px`/`rem` string.
+   * Capped at the content's size.
    * @default [1]
    */
   snapPoints?: SnapPoint[] | undefined
@@ -207,12 +218,12 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
   snapToSequentialPoints?: boolean | undefined
   /**
    * The threshold velocity (in pixels/s) for closing the drawer.
-   * @default 700
+   * @default 500
    */
   swipeVelocityThreshold?: number
   /**
    * The threshold distance for dismissing the drawer.
-   * @default 0.25
+   * @default 0.5
    */
   closeThreshold?: number
   /**

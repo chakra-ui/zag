@@ -2,20 +2,42 @@ import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dism
 import { dataAttr, getEventPoint, getEventTarget, hasSelectionWithin, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, toPx } from "@zag-js/utils/number"
+import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
-import { isSwipeIgnored, oppositeDirection, resolveSwipeDirection } from "@zag-js/dom-query/swipe"
+import { defaultTranslations } from "./drawer.translations"
+import {
+  isSwipeIgnored,
+  oppositeDirection,
+  resolveSwipeDirection,
+  type SwipeDirection as PhysicalDirection,
+} from "@zag-js/dom-query/swipe"
 import type {
   BackdropState,
   ContentState,
   DrawerApi,
   DrawerService,
   PositionerState,
+  ResolvedSnapPoint,
   SwipeAreaProps,
   SwipeAreaState,
   TriggerProps,
   TriggerState,
 } from "./drawer.types"
+
+// the arrow pointing away from the closing edge expands
+const EXPAND_KEYS: Record<PhysicalDirection, string> = {
+  down: "ArrowUp",
+  up: "ArrowDown",
+  left: "ArrowRight",
+  right: "ArrowLeft",
+}
+const COLLAPSE_KEYS: Record<PhysicalDirection, string> = {
+  down: "ArrowDown",
+  up: "ArrowUp",
+  left: "ArrowLeft",
+  right: "ArrowRight",
+}
 
 const SWIPE_OPEN_HIDDEN_OFFSET = 9999
 
@@ -25,7 +47,8 @@ function getSwipeOpenOffset(swipingOpen: boolean, dragOffset: number | null, con
 }
 
 export function connect<T extends PropTypes>(service: DrawerService, normalize: NormalizeProps<T>): DrawerApi<T> {
-  const { state, send, context, scope, prop } = service
+  const { state, send, context, scope, prop, computed } = service
+  const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
@@ -34,7 +57,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const dragOffset = context.get("dragOffset")
   // the offset outlives the gesture, through a release's close or snap
-  const dragging = (state.matches("open.pressed") && dragOffset !== null) || swipingOpen
+  const dragging = state.matches("open.pressed") && dragOffset !== null
+  const swiping = dragging || swipingOpen
 
   const triggerValue = context.get("triggerValue")
   const snapPoint = context.get("snapPoint")
@@ -82,7 +106,6 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   }
 
   function getBackdropState(): BackdropState {
-    const swiping = dragging
     return {
       open,
       swiping,
@@ -107,7 +130,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       open,
       modal: !!prop("modal"),
       expanded: resolvedActiveSnapPoint?.offset === 0,
-      swiping: dragging,
+      swiping,
       dragging,
       swipeDirection: physicalDirection,
       nestedDrawerOpen: nestedMetrics.open,
@@ -153,6 +176,24 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   function onGrabberPointerDown(event: JSX.PointerEvent<HTMLElement>) {
     if (!canPress() || !isLeftClick(event) || isSwipeIgnored(event, swipeAxis)) return
     sendPointerDown(event, false)
+  }
+
+  const snapSteps = getSnapSteps(computed("resolvedSnapPoints"))
+  const currentStep = snapSteps.findIndex((point) => point.offset === snapPointOffset)
+  const expanded = snapSteps.length > 0 && currentStep === snapSteps.length - 1
+
+  const motionVars = getMotionVars({
+    snapSteps,
+    contentSize,
+    offset: currentOffset,
+    closed,
+    swipeProgress,
+    stack: nestedMetrics.count,
+  })
+
+  function setSnapStep(index: number) {
+    const point = snapSteps[index]
+    if (point) send({ type: "SNAP_POINT.SET", snapPoint: point.value })
   }
 
   return {
@@ -221,6 +262,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-state": contentState.open ? "open" : "closed",
         "data-expanded": contentState.expanded ? "" : undefined,
         "data-swipe-direction": contentState.swipeDirection,
+        "data-snap-point": snapPoint != null ? String(snapPoint) : undefined,
         "data-swiping": contentState.swiping ? "" : undefined,
         "data-dragging": contentState.dragging ? "" : undefined,
         "data-nested-drawer-open": contentState.nestedDrawerOpen ? "" : undefined,
@@ -230,7 +272,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           ...getDismissableLayerStyle(layer, { pointerEvents: true }),
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
-          transitionDuration: dragging ? "0s" : undefined,
+          transitionDuration: swiping ? "0s" : undefined,
           "--drawer-translate": toPx(translateY),
           "--drawer-translate-x": toPx(translateX),
           "--drawer-translate-y": toPx(translateY),
@@ -239,6 +281,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-swipe-movement-x": toPx(movementX),
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
+          ...motionVars,
           "--nested-drawers": `${nestedMetrics.count}`,
           "--drawer-height": nestedMetrics.height > 0 ? toPx(nestedMetrics.height) : undefined,
           "--drawer-frontmost-height":
@@ -312,15 +355,34 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           pointerEvents: closing ? "none" : undefined,
           "--drawer-swipe-progress": `${swipeProgress}`,
           "--drawer-swipe-strength": `${swipeStrength}`,
+          ...motionVars,
         },
       })
     },
 
     getGrabberProps() {
+      const steps = snapSteps.length > 1
       return normalize.element({
         ...parts.grabber.attrs(scope.id),
+        role: steps ? "button" : undefined,
+        tabIndex: steps ? 0 : undefined,
+        "aria-label": steps ? translations.grabber : undefined,
+        "aria-controls": steps ? dom.getContentId(scope) : undefined,
+        "data-snap-point": snapPoint != null ? String(snapPoint) : undefined,
+        "data-expanded": dataAttr(expanded),
         onPointerDown(event) {
           onGrabberPointerDown(event)
+        },
+        onClick(event) {
+          if (!steps || event.defaultPrevented) return
+          setSnapStep(getNextSnapStep(currentStep, 1, snapSteps.length, true))
+        },
+        onKeyDown(event) {
+          if (!steps || event.defaultPrevented) return
+          const index = getKeyboardSnapStep(event.key, physicalDirection, currentStep, snapSteps.length)
+          if (index === undefined) return
+          setSnapStep(index)
+          event.preventDefault()
         },
         style: {
           touchAction: "none",
@@ -383,5 +445,55 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         },
       })
     },
+  }
+}
+
+/** Snap points from least to most revealed */
+function getSnapSteps(points: ResolvedSnapPoint[]) {
+  return [...points].sort((a, b) => b.offset - a.offset)
+}
+
+function getNextSnapStep(current: number, delta: 1 | -1, count: number, wrap = false) {
+  const next = current + delta
+  if (next >= count) return wrap ? 0 : count - 1
+  return Math.max(next, 0)
+}
+
+function getKeyboardSnapStep(key: string, direction: PhysicalDirection, current: number, count: number) {
+  if (key === EXPAND_KEYS[direction]) return getNextSnapStep(current, 1, count)
+  if (key === COLLAPSE_KEYS[direction]) return getNextSnapStep(current, -1, count)
+  if (key === "Home") return 0
+  if (key === "End") return count - 1
+  return undefined
+}
+
+interface MotionVarsOptions {
+  snapSteps: ResolvedSnapPoint[]
+  contentSize: number | null
+  offset: number
+  closed: boolean
+  swipeProgress: number
+  stack: number
+}
+
+/** The drawer's motion as 0-1 values, so styles don't have to combine pixel offsets */
+function getMotionVars(options: MotionVarsOptions) {
+  const { snapSteps, offset, closed, swipeProgress, stack } = options
+  const contentSize = options.contentSize ?? 0
+  const largest = snapSteps.at(-1)
+  const second = snapSteps.at(-2)
+
+  const fullSize = contentSize - (largest?.offset ?? 0)
+  const progress = closed || fullSize <= 0 ? 0 : clampValue((contentSize - offset) / fullSize, 0, 1)
+  const expand =
+    largest && second && second.offset > largest.offset
+      ? clampValue((second.offset - offset) / (second.offset - largest.offset), 0, 1)
+      : progress
+
+  return {
+    "--drawer-progress": `${progress}`,
+    "--drawer-dim": `${closed ? 0 : 1 - swipeProgress}`,
+    "--drawer-expand": `${expand}`,
+    "--drawer-stack": `${stack}`,
   }
 }

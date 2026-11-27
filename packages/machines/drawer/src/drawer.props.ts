@@ -6,6 +6,7 @@ export const props = createProps<DrawerProps>()([
   "defaultTriggerValue",
   "id",
   "ids",
+  "translations",
   "dir",
   "modal",
   "initialFocusEl",

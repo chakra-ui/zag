@@ -13,6 +13,7 @@ export type {
   DrawerStackApi,
   DrawerStackSnapshot,
   ElementIds,
+  IntlTranslations,
   DrawerMachine as Machine,
   OpenChangeDetails,
   OpenChangeReason,
