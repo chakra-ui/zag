@@ -281,3 +281,8 @@ export function isTwoWay(directions: SwipeDirection[], direction: SwipeDirection
   const pair: SwipeDirection[] = direction === "left" || direction === "right" ? ["left", "right"] : ["up", "down"]
   return pair.every((each) => directions.includes(each))
 }
+
+/** What a screen reader reads for a toast: its title and description, when they're text */
+export function getAnnouncement(toast: { title?: unknown; description?: unknown }) {
+  return [toast.title, toast.description].filter((part) => typeof part === "string" && part.trim()).join(". ")
+}

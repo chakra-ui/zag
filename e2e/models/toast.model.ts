@@ -28,7 +28,7 @@ export class ToastModel extends Model {
   }
 
   getToast(num = 0) {
-    return this.page.getByRole("status").nth(num)
+    return this.page.locator("[data-toast-root]").nth(num)
   }
 
   async getToastHeight(num = 0) {
@@ -70,7 +70,7 @@ export class ToastModel extends Model {
   }
 
   mouseIntoRegion() {
-    return this.page.getByRole("status").first().hover()
+    return this.page.locator("[data-toast-root]").first().hover()
   }
 
   mouseOutOfRegion() {
@@ -99,7 +99,7 @@ export class ToastModel extends Model {
   }
 
   seeToastText(texts: string[]) {
-    return expect(this.page.getByRole("status")).toHaveText(texts.map((text) => new RegExp(text)))
+    return expect(this.page.locator("[data-toast-root]")).toHaveText(texts.map((text) => new RegExp(text)))
   }
 
   clickAction(name: string) {
@@ -111,14 +111,14 @@ export class ToastModel extends Model {
   }
 
   async seeToastArePaused() {
-    const toasts = await this.page.getByRole("status").all()
+    const toasts = await this.page.locator("[data-toast-root]").all()
     for (const toast of toasts) {
       await expect(toast).toHaveAttribute("data-paused", "")
     }
   }
 
   async seeToastsAreNotPaused() {
-    const toasts = await this.page.getByRole("status").all()
+    const toasts = await this.page.locator("[data-toast-root]").all()
     for (const toast of toasts) {
       await expect(toast).not.toHaveAttribute("data-paused")
     }
@@ -133,18 +133,18 @@ export class ToastModel extends Model {
   }
 
   async seeToast(title: string) {
-    const toast = this.page.locator(`[role="status"] >> text=${title}`).first()
+    const toast = this.page.locator("[data-toast-root]").filter({ hasText: title }).first()
     await expect(toast).toBeVisible()
     await expect(toast).toContainText(title)
   }
 
   async seeNumOfToasts(num: number) {
-    return expect(this.page.getByRole("status")).toHaveCount(num)
+    return expect(this.page.locator("[data-toast-root]")).toHaveCount(num)
   }
 
   // One locator, so a toast removed mid-check can't leave a stale handle behind
   async seeToastsOverlap() {
-    await expect(this.page.getByRole("status").first()).toBeVisible()
+    await expect(this.page.locator("[data-toast-root]").first()).toBeVisible()
     await expect(this.page.locator("[data-toast-root]:not([data-overlap])")).toHaveCount(0)
   }
 
@@ -257,7 +257,7 @@ export class ToastModel extends Model {
   }
 
   async seeToastsStacked() {
-    await expect(this.page.getByRole("status").first()).toBeVisible()
+    await expect(this.page.locator("[data-toast-root]").first()).toBeVisible()
     await expect(this.page.locator("[data-toast-root]:not([data-stack])")).toHaveCount(0)
   }
 

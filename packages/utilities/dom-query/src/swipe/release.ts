@@ -34,10 +34,15 @@ export interface DismissSwipeOptions {
    */
   distance?: number | undefined
   /**
-   * How fast a release dismisses however short it was, in px/ms
-   * @default 0.5
+   * How fast a release dismisses, in px/ms, once it went past `flickDistance`
+   * @default 0.3
    */
   flickVelocity?: number | undefined
+  /**
+   * How far a flick has to go, in px, so a twitch doesn't dismiss
+   * @default 8
+   */
+  flickDistance?: number | undefined
   /**
    * Pulling back this far from the furthest point changes the user's mind. `Infinity` never does, like when
    * pulling back may be a swipe the other way.
@@ -51,11 +56,11 @@ export interface DismissSwipeOptions {
  * flicked, and wasn't pulled back
  */
 export function isDismissSwipe(options: DismissSwipeOptions) {
-  const { displacement, velocity, distance = 40, flickVelocity = 0.5, pullBack = 10 } = options
+  const { displacement, velocity, distance = 40, flickVelocity = 0.3, flickDistance = 8, pullBack = 10 } = options
   const furthest = options.furthest ?? displacement
   if (displacement <= 0) return false
   if (furthest - displacement >= pullBack) return false
-  return displacement > distance || velocity >= flickVelocity
+  return displacement > distance || (displacement > flickDistance && velocity >= flickVelocity)
 }
 
 /* -----------------------------------------------------------------------------

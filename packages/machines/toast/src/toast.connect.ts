@@ -106,8 +106,7 @@ export function connect<T extends PropTypes, O>(
         "data-swiping": dataAttr(rootState.swiping),
         "data-swipe-direction": rootState.swipeDirection ?? undefined,
 
-        role: "status",
-        "aria-atomic": "true",
+        role: "group",
         "aria-describedby": description && rendered.description ? dom.getDescriptionId(scope) : undefined,
         "aria-labelledby": title && rendered.title ? dom.getTitleId(scope) : undefined,
         tabIndex: 0,

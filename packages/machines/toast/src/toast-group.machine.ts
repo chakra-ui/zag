@@ -1,11 +1,16 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, contains, getEventTarget, Timeout } from "@zag-js/dom-query"
+import { createLiveRegion } from "@zag-js/live-region"
 import { uuid } from "@zag-js/utils/functions"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
+import { getAnnouncement } from "./toast.utils"
 
 const { guards, createMachine } = setup<ToastGroupSchema>()
+
+// toasts arriving this close together are read as one announcement
+const ANNOUNCE_BATCH_MS = 100
 const { and } = guards
 
 export const groupMachine = createMachine({
@@ -52,7 +57,7 @@ export const groupMachine = createMachine({
     placement: ({ prop }) => prop("store").attrs.placement,
   },
 
-  effects: ["subscribeToStore", "subscribeToLayout", "trackDocumentVisibility", "trackHotKeyPress"],
+  effects: ["subscribeToStore", "subscribeToLayout", "trackDocumentVisibility", "trackHotKeyPress", "announceToasts"],
 
   watch({ track, context, action }) {
     track([() => context.hash("toasts")], () => {
@@ -155,6 +160,43 @@ export const groupMachine = createMachine({
     },
 
     effects: {
+      announceToasts({ prop, scope }) {
+        const doc = scope.getDoc()
+        const regions = {
+          polite: createLiveRegion({ level: "polite", document: doc }),
+          assertive: createLiveRegion({ level: "assertive", document: doc }),
+        }
+        const pending = { polite: [] as string[], assertive: [] as string[] }
+        const announced = new Map<string, string>()
+        const batch = Timeout.create()
+
+        const flush = () => {
+          for (const level of ["assertive", "polite"] as const) {
+            if (pending[level].length) regions[level].announce(pending[level].join(". "))
+            pending[level] = []
+          }
+        }
+
+        const unsubscribe = prop("store").subscribe((toast) => {
+          if (toast.dismiss) return void announced.delete(toast.id)
+
+          const text = getAnnouncement(toast)
+          if (!text || announced.get(toast.id) === text) return
+          announced.set(toast.id, text)
+
+          const level = toast.type === "error" ? "assertive" : "polite"
+          pending[level].push(text)
+          if (!batch.isActive()) batch.start(ANNOUNCE_BATCH_MS, flush)
+        })
+
+        return () => {
+          unsubscribe()
+          batch.cancel()
+          regions.polite.destroy()
+          regions.assertive.destroy()
+        }
+      },
+
       subscribeToStore({ context, prop }) {
         const store = prop("store")
         context.set("toasts", store.getVisibleToasts() as any)

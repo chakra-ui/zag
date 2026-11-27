@@ -6,11 +6,16 @@ import { isDismissSwipe, isSwipeIgnored, releaseStrength, resistPast, settleSwip
 describe("isDismissSwipe", () => {
   const swipe = (displacement: number, velocity = 0, furthest = displacement) => ({ displacement, velocity, furthest })
 
-  test("dismisses past the distance, or on a flick however short", () => {
+  test("dismisses past the distance, or on a flick past the flick distance", () => {
     expect(isDismissSwipe(swipe(41))).toBe(true)
     expect(isDismissSwipe(swipe(40))).toBe(false)
-    expect(isDismissSwipe(swipe(8, 0.6))).toBe(true)
-    expect(isDismissSwipe(swipe(8, 0.4))).toBe(false)
+    expect(isDismissSwipe(swipe(12, 0.3))).toBe(true)
+    expect(isDismissSwipe(swipe(12, 0.2))).toBe(false)
+  })
+
+  test("ignores a fast twitch shorter than the flick distance", () => {
+    expect(isDismissSwipe(swipe(8, 2))).toBe(false)
+    expect(isDismissSwipe({ ...swipe(4, 2), flickDistance: 2 })).toBe(true)
   })
 
   test("doesn't dismiss a swipe that ended the other way", () => {

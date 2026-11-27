@@ -28,10 +28,11 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/dom-query": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
-    "@zag-js/utils": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/live-region": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

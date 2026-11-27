@@ -99,7 +99,7 @@ test.describe("toast / overlap", () => {
     await page.waitForTimeout(500)
 
     const boxes = await page
-      .getByRole("status")
+      .locator("[data-toast-root]")
       .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().toJSON()).sort((a, b) => a.y - b.y))
 
     for (let i = 1; i < boxes.length; i++) {
@@ -246,7 +246,7 @@ test.describe("toast / duration", () => {
   test("auto-dismisses after its duration", async () => {
     await I.clickExact("2 seconds")
     await I.seeNumOfToasts(1)
-    await expect(I.page.getByRole("status")).toHaveCount(0, { timeout: 4000 })
+    await expect(I.page.locator("[data-toast-root]")).toHaveCount(0, { timeout: 4000 })
   })
 
   test("persistent toast stays", async ({ page }) => {

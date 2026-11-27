@@ -82,7 +82,7 @@ test.describe("toast / swipe / default directions", () => {
 
     await I.swipe({ x: 80 })
     await I.seeNumOfToasts(0)
-    await expect(page.getByRole("status")).toHaveCount(0)
+    await expect(page.locator("[data-toast-root]")).toHaveCount(0)
   })
 
   test("does not swipe with a non-primary button", async () => {

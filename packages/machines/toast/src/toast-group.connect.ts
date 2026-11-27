@@ -6,6 +6,9 @@ import * as dom from "./toast.dom"
 import type { GroupState, ToastGroupApi, ToastGroupSchema } from "./toast.types"
 import { getGroupPlacementStyle } from "./toast.utils"
 
+// `KeyT` and `Digit1` read as `T` and `1`
+const KEY_PREFIX_RE = /Key|Digit/g
+
 export function groupConnect<T extends PropTypes, O = any>(
   service: Service<ToastGroupSchema>,
   normalize: NormalizeProps<T>,
@@ -38,7 +41,7 @@ export function groupConnect<T extends PropTypes, O = any>(
     getGroupProps(options = {}) {
       const { label = "Notifications" } = options
       const { hotkey } = prop("store").attrs
-      const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "")
+      const hotkeyLabel = hotkey.join("+").replace(KEY_PREFIX_RE, "")
       const groupState = getGroupState()
       const { placement, side, align } = groupState
 
@@ -52,9 +55,6 @@ export function groupConnect<T extends PropTypes, O = any>(
         "data-placement": placement,
         "data-side": side,
         "data-align": align,
-        "aria-live": "polite",
-        "aria-relevant": "additions text",
-        "aria-atomic": "false",
         style: getGroupPlacementStyle(service, placement),
         onMouseEnter() {
           if (refs.get("ignoreMouseTimer").isActive()) return
