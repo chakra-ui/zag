@@ -99,9 +99,10 @@ export interface ActionOptions {
    */
   label: string
   /**
-   * The function to call when the action is clicked
+   * Called when the action is clicked. The toast then dismisses, unless this calls `event.preventDefault()`,
+   * like to keep it open while async work runs.
    */
-  onClick: VoidFunction
+  onClick: (event: MouseEvent) => void
 }
 
 /* -----------------------------------------------------------------------------

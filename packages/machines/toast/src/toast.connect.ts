@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, getEventTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, getNativeEvent } from "@zag-js/dom-query"
 import { isSwipeIgnored } from "@zag-js/dom-query/swipe"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils/object"
@@ -174,7 +174,9 @@ export function connect<T extends PropTypes, O>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          action?.onClick?.()
+          const nativeEvent = getNativeEvent(event)
+          action?.onClick?.(nativeEvent)
+          if (nativeEvent.defaultPrevented) return
           send({ type: "DISMISS", src: "user" })
         },
       })

@@ -841,6 +841,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "duration", title: "Duration" },
       { slug: "placement", title: "Placement" },
       { slug: "action", title: "Action" },
+      { slug: "action-async", title: "Async Action" },
       { slug: "promise", title: "Promise" },
       { slug: "update", title: "Update" },
       { slug: "max", title: "Max Visible" },

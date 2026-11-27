@@ -279,6 +279,31 @@ const result = toaster.promise(fetchData(), {
 await result?.unwrap()
 ```
 
+### Async actions
+
+An action dismisses its toast after `onClick`. Call `event.preventDefault()` to
+keep it open while async work runs, then dismiss or update it yourself.
+
+```tsx
+const id = toaster.create({
+  title: "Message archived",
+  action: {
+    label: "Undo",
+    onClick(event) {
+      event.preventDefault()
+      toaster.pause(id)
+      undoArchive().then(
+        () => toaster.dismiss(id),
+        () => {
+          toaster.update(id, { title: "Couldn't undo. Try again." })
+          toaster.resume(id)
+        },
+      )
+    },
+  },
+})
+```
+
 ### Pause toasts
 
 There are three scenarios that pause toast timeout:

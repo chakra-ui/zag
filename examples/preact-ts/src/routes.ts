@@ -551,6 +551,7 @@ export const routes: RouteDefinition[] = [
   { path: "/timer/stopwatch", component: lazy(() => import("./pages/timer/stopwatch")) },
   { path: "/timer/resend-code", component: lazy(() => import("./pages/timer/resend-code")) },
   { path: "/toast/action", component: lazy(() => import("./pages/toast/action")) },
+  { path: "/toast/action-async", component: lazy(() => import("./pages/toast/action-async")) },
   { path: "/toast/basic", component: lazy(() => import("./pages/toast/basic")) },
   { path: "/toast/conditional-content", component: lazy(() => import("./pages/toast/conditional-content")) },
   { path: "/toast/duration", component: lazy(() => import("./pages/toast/duration")) },
