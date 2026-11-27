@@ -9,7 +9,7 @@ All development is purely frontend/library work.
 
 ### Key commands
 
-See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
+See `CLAUDE.md` and `design-notes/commands.md` for the full reference. Summary:
 
 | Task                    | Command                         |
 | ----------------------- | ------------------------------- |
@@ -40,7 +40,7 @@ See `CLAUDE.md` and `.claude/docs/commands.md` for the full reference. Summary:
 - **Cancel deferred work on state exit**: If a machine action defers focus or state changes with `raf`/timers, store an
   `AnimationFrame` in `refs` and cancel it in the state's `exit` and the machine's top-level `exit`. Don't guard the
   callback with `state.hasTag(...)`. See "Cancel Deferred Work When the State Exits or the Machine Stops" in
-  `.claude/docs/state-machine-guide.md`.
+  `design-notes/state-machine-guide.md`.
 - **Regenerate the machine logic JSON**: The docs draw each component's state diagram from
   `website/public/machines/<machine>.json`, generated from the real machine config. After you add, rename or change any
   state, transition, event, guard or initial state in `packages/machines/*`, run `pnpm machine-logic` from `website/`

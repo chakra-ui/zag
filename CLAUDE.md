@@ -4,17 +4,18 @@
 
 For detailed information on specific topics, see:
 
-- `@.claude/docs/commands.md` - All available commands and workflows
-- `@.claude/docs/architecture.md` - Code organization and structure
-- `@.claude/docs/guidelines.md` - Development guidelines and best practices
-- `@.claude/docs/common-tasks.md` - Step-by-step guides for common tasks
-- `@.claude/docs/troubleshooting.md` - Debugging and problem-solving
-- `@.claude/docs/state-machine-guide.md` - State machine patterns and implementation
-- `@.claude/docs/framework-integration-guide.md` - Framework adapter development
-- `@.claude/docs/playwright-testing-guide.md` - E2E testing with Playwright
-- `@.claude/docs/documentation-structure-guide.md` - Documentation standards
-- `@.claude/docs/changelog-guide.md` - Changelog and changeset writing
-- `@.claude/docs/dismissable-layers.md` - Layer nesting decisions in the dismissable layer stack
+- `@design-notes/commands.md` - All available commands and workflows
+- `@design-notes/architecture.md` - Code organization and structure
+- `@design-notes/guidelines.md` - Development guidelines and best practices
+- `@design-notes/common-tasks.md` - Step-by-step guides for common tasks
+- `@design-notes/troubleshooting.md` - Debugging and problem-solving
+- `@design-notes/state-machine-guide.md` - State machine patterns and implementation
+- `@design-notes/framework-integration-guide.md` - Framework adapter development
+- `@design-notes/playwright-testing-guide.md` - E2E testing with Playwright
+- `@design-notes/documentation-structure-guide.md` - Documentation standards
+- `@design-notes/changelog-guide.md` - Changelog and changeset writing
+- `@design-notes/dismissable-layers.md` - Layer nesting decisions in the dismissable layer stack
+- `@design-notes/machines-vs-utilities.md` - When behavior is a machine, a DOM utility, or pure math
 
 ## Project Overview
 
@@ -56,7 +57,7 @@ pnpm lint               # Lint all packages (oxlint)
 pnpm typecheck          # TypeScript type checking
 ```
 
-See `.claude/docs/commands.md` for the complete list.
+See `design-notes/commands.md` for the complete list.
 
 ## Core Principles
 

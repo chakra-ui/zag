@@ -59,5 +59,5 @@ while focus is still in the open sibling menu, so the new menu would nest in it 
 ## Tests
 
 - `packages/utilities/dismissable/tests/layer-stack.test.ts`: siblings, survivors, metadata.
-- `e2e/popover-siblings.e2e.ts` with `examples/next-ts/pages/popover/siblings.tsx`: document, shadow and iframe ×
-  portal × mouse/touch, plus mixed page/shadow and popover-in-iframe-in-popover.
+- `e2e/popover-siblings.e2e.ts` with `examples/next-ts/pages/popover/siblings.tsx`: document, shadow and iframe × portal
+  × mouse/touch, plus mixed page/shadow and popover-in-iframe-in-popover.
