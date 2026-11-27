@@ -195,6 +195,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "with-rejections", title: "Multiple + Rejections" },
       { slug: "cover", title: "Cover" },
       { slug: "react-hook-form", title: "Hook Form" },
+      { slug: "form", title: "Form" },
       { slug: "transform", title: "Transform" },
     ],
   },

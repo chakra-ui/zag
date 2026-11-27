@@ -1,5 +1,6 @@
 import { test, expect } from "./_test"
 import path from "node:path"
+import { testid } from "./_utils"
 import { FileUploadModel } from "./models/file-upload.model"
 
 let I: FileUploadModel
@@ -108,5 +109,20 @@ test.describe("file-upload", () => {
     await I.waitForNextFrame()
 
     expect(tracker.count).toBe(1)
+  })
+
+  test.describe("in a form", () => {
+    test.skip(!!process.env.FRAMEWORK && process.env.FRAMEWORK !== "react", "React example")
+
+    test("the form holds the accepted files when onFileAccept runs", async ({ page }) => {
+      await page.goto("/file-upload/form")
+      const formFiles = page.locator(testid("form-files"))
+
+      await I.uploadFile(path.join(__dirname, "fixtures/text.txt"))
+      await expect(formFiles).toHaveText("[text.txt]")
+
+      await I.deleteFile()
+      await expect(formFiles).toHaveText("[]")
+    })
   })
 })
