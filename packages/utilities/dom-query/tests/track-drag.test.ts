@@ -284,6 +284,57 @@ describe("trackDrag / clicks", () => {
   })
 })
 
+function touch(type: string, points: Array<{ x: number; y: number }>, lifted = points) {
+  const list = (items: Array<{ x: number; y: number }>) =>
+    items.map(({ x, y }, identifier) => ({ clientX: x, clientY: y, identifier }))
+  const event = new Event(type, { bubbles: true, cancelable: true })
+  Object.defineProperties(event, {
+    touches: { value: type === "touchend" ? [] : list(points) },
+    changedTouches: { value: list(lifted) },
+  })
+  document.dispatchEvent(event)
+  return event
+}
+
+describe("trackDrag / touch input", () => {
+  test("follows touch events and ignores pointer events", () => {
+    const { moves, ends } = setup({ input: "touch" })
+    pointer("pointermove", { x: 90, y: 90 })
+    runFrame()
+    expect(moves).toHaveLength(0)
+
+    touch("touchmove", [{ x: 30, y: 10 }])
+    runFrame()
+    expect(moves[0]).toMatchObject({ point: { x: 30, y: 10 }, offset: { x: 20, y: 0 } })
+
+    touch("touchend", [], [{ x: 40, y: 10 }])
+    expect(ends[0]).toMatchObject({ point: { x: 40, y: 10 }, cancelled: false })
+  })
+
+  test("stops the scroll once dragging, not while it's still deciding", () => {
+    let ready: boolean | undefined
+    setup({ input: "touch", canStart: () => ready })
+
+    expect(touch("touchmove", [{ x: 10, y: 30 }]).defaultPrevented).toBe(false)
+    ready = true
+    expect(touch("touchmove", [{ x: 10, y: 40 }]).defaultPrevented).toBe(true)
+  })
+
+  test("ends when the last finger lifts, and cancels on touchcancel", () => {
+    const a = setup({ input: "touch" })
+    const lift = new Event("touchend", { bubbles: true })
+    Object.defineProperties(lift, { touches: { value: [{ clientX: 0, clientY: 0 }] }, changedTouches: { value: [{}] } })
+    document.dispatchEvent(lift)
+    expect(a.ends).toHaveLength(0)
+    touch("touchend", [], [{ x: 10, y: 10 }])
+    expect(a.ends).toHaveLength(1)
+
+    const b = setup({ input: "touch" })
+    document.dispatchEvent(new Event("touchcancel", { bubbles: true }))
+    expect(b.ends).toEqual([expect.objectContaining({ cancelled: true })])
+  })
+})
+
 describe("isDragStart", () => {
   const press = (init: Partial<PointerEvent>) =>
     isDragStart({ button: 0, isPrimary: true, pointerType: "mouse", defaultPrevented: false, ...init })

@@ -32,7 +32,6 @@ export function trackLongPress(doc: Document, options: TrackLongPressOptions): V
     phase: "pressed" as LongPressPhase,
     count: 0,
     held: false,
-    // `onHold` asked to stop repeating
     stopped: false,
   }
 
@@ -71,7 +70,6 @@ export function trackLongPress(doc: Document, options: TrackLongPressOptions): V
 
       case "ENTER":
         if (state.phase !== "paused") return
-        // coming back steps right away, then waits the delay again
         state.phase = "pressed"
         hold()
         if ((state.phase as LongPressPhase) !== "ended") timer.start(delay, () => send({ type: "TIMER" }))
@@ -149,7 +147,6 @@ export function trackLongPress(doc: Document, options: TrackLongPressOptions): V
 
     addGlobalEvent(win, "blur", (event) => send({ type: "CANCEL", event })),
 
-    // a scroll that moves the target means the press was the start of a scroll
     addGlobalEvent(
       doc,
       "scroll",

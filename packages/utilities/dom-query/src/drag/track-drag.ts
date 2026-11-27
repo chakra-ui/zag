@@ -20,7 +20,7 @@ const identity = (point: Point) => point
  * a frame. Returns a cleanup that stops following without calling `onEnd`.
  */
 export function trackDrag(doc: Document, options: TrackDragOptions): VoidFunction {
-  const { startPoint, pointerId, threshold = 0, canStart, cancelOnEscape, capture, lock } = options
+  const { startPoint, pointerId, threshold = 0, canStart, cancelOnEscape, capture, lock, input = "pointer" } = options
   const transform = options.transformPoint ?? identity
 
   const win = getWindow(doc)
@@ -220,7 +220,7 @@ export function trackDrag(doc: Document, options: TrackDragOptions): VoidFunctio
   // capture, so a descendant that stops propagation can't keep the drag from ending
   const capturePhase = { capture: true }
 
-  const cleanups = [
+  const pointerListeners = () => [
     addGlobalEvent<PointerEvent>(
       doc,
       "pointermove",
@@ -251,6 +251,38 @@ export function trackDrag(doc: Document, options: TrackDragOptions): VoidFunctio
       },
       capturePhase,
     ),
+  ]
+
+  // touch events outlive a native scroll, so a drag can take the gesture over
+  const touchListeners = () => [
+    addGlobalEvent<TouchEvent>(
+      doc,
+      "touchmove",
+      (event) => {
+        const touch = event.touches[0]
+        if (!touch) return
+        send({ type: "MOVE", event: fromTouch(event, touch, pointerId) })
+        if (state.phase === "dragging" && event.cancelable) event.preventDefault()
+      },
+      { capture: true, passive: false },
+    ),
+
+    addGlobalEvent<TouchEvent>(
+      doc,
+      "touchend",
+      (event) => {
+        const touch = event.changedTouches[0]
+        if (!touch || event.touches.length > 0) return
+        send({ type: "RELEASE", event: fromTouch(event, touch, pointerId) })
+      },
+      capturePhase,
+    ),
+
+    addGlobalEvent<TouchEvent>(doc, "touchcancel", cancel, capturePhase),
+  ]
+
+  const cleanups = [
+    ...(input === "touch" ? touchListeners() : pointerListeners()),
 
     // the release won't arrive
     addGlobalEvent(win, "blur", cancel),
@@ -267,6 +299,28 @@ export function trackDrag(doc: Document, options: TrackDragOptions): VoidFunctio
   if (state.phase === "dragging") begin(undefined)
 
   return stop
+}
+
+function fromTouch(event: TouchEvent, touch: Touch, pointerId: number | undefined): PointerEvent {
+  return {
+    type: event.type,
+    target: event.target,
+    timeStamp: event.timeStamp,
+    clientX: touch.clientX,
+    clientY: touch.clientY,
+    movementX: 0,
+    movementY: 0,
+    pointerId: pointerId ?? touch.identifier,
+    pointerType: "touch",
+    isPrimary: true,
+    buttons: event.type === "touchend" ? 0 : 1,
+    altKey: event.altKey,
+    ctrlKey: event.ctrlKey,
+    metaKey: event.metaKey,
+    shiftKey: event.shiftKey,
+    preventDefault: () => event.preventDefault(),
+    stopPropagation: () => event.stopPropagation(),
+  } as unknown as PointerEvent
 }
 
 // Safari can refuse the lock

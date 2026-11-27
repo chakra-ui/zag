@@ -1,6 +1,13 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, mouseSwipe, part, touchPointerSwipe, touchSwipe } from "../_utils"
+import { a11y, mouseSwipe, part, realTouchSwipe, touchPointerSwipe, touchSwipe, type SwipeDirection } from "../_utils"
 import { Model } from "./model"
+
+interface DragOptions {
+  direction: "up" | "down"
+  distance?: number | undefined
+  duration?: number | undefined
+  release?: boolean | undefined
+}
 
 const content = part("drawer", "content")
 const trigger = part("drawer", "trigger")
@@ -56,7 +63,7 @@ export class DrawerModel extends Model {
     return this.backdrop.click()
   }
 
-  mouseDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+  mouseDragGrabber({ direction, distance = 100, duration = 500, release = true }: DragOptions) {
     return mouseSwipe(this.page, this.grabber, direction, distance, duration, release)
   }
 
@@ -76,15 +83,15 @@ export class DrawerModel extends Model {
     await this.page.mouse.up()
   }
 
-  touchDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
+  touchDragGrabber({ direction, distance = 100, duration = 500 }: DragOptions) {
     return touchSwipe(this.page, this.grabber, direction, distance, duration)
   }
 
-  touchPointerDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
+  touchPointerDragGrabber({ direction, distance = 100, duration = 500 }: DragOptions) {
     return touchPointerSwipe(this.page, this.grabber, direction, distance, duration)
   }
 
-  dragContent(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+  dragContent({ direction, distance = 100, duration = 500, release = true }: DragOptions) {
     return mouseSwipe(this.page, this.content, direction, distance, duration, release)
   }
 
@@ -125,11 +132,11 @@ export class DrawerModel extends Model {
     return this.noDragArea.evaluate((el, value) => el.setAttribute("data-no-drag", value), axis)
   }
 
-  dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+  dragNoDragArea({ direction, distance = 100, duration = 500, release = true }: DragOptions) {
     return mouseSwipe(this.page, this.noDragArea, direction, distance, duration, release)
   }
 
-  swipeArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+  swipeArea({ direction, distance = 100, duration = 500, release = true }: DragOptions) {
     if (!release) {
       return mouseSwipe(this.page, this.swipeAreaEl, direction, distance, duration, release)
     }
@@ -179,6 +186,22 @@ export class DrawerModel extends Model {
     return this.content.evaluate((el) => el.clientHeight)
   }
 
+  mouseDragGrabberToward({ direction, distance = 300 }: { direction: SwipeDirection; distance?: number }) {
+    return mouseSwipe(this.page, this.grabber, direction, distance, 300)
+  }
+
+  realTouchDragList({ direction, distance, from = "center" }: DragOptions & { from?: "center" | "edge" }) {
+    return realTouchSwipe(this.page, this.scrollable, direction, distance, { from })
+  }
+
+  getListScrollTop() {
+    return this.scrollable.evaluate((el) => el.scrollTop)
+  }
+
+  async seeSide(direction: SwipeDirection) {
+    await expect(this.content).toHaveAttribute("data-swipe-direction", direction)
+  }
+
   scrollContent(distance: number) {
     return this.scrollable.evaluate((el, dist) => {
       el.scrollTop += dist
@@ -211,7 +234,15 @@ export class DrawerModel extends Model {
     )
   }
 
-  async waitForVisibleHeightNear(targetHeight: number, tolerance = 4, timeout = 2000) {
+  async waitForVisibleHeightNear({
+    height: targetHeight,
+    tolerance = 4,
+    timeout = 2000,
+  }: {
+    height: number
+    tolerance?: number
+    timeout?: number
+  }) {
     await expect
       .poll(async () => Math.abs((await this.getContentVisibleHeight()) - targetHeight), { timeout })
       .toBeLessThanOrEqual(tolerance)

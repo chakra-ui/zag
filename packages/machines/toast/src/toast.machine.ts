@@ -1,11 +1,11 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, AnimationFrame, AnimationFrameTimeout, contains, raf } from "@zag-js/dom-query"
+import { isDismissSwipe, trackSwipe } from "@zag-js/dom-query/swipe"
 import { callAll } from "@zag-js/utils/functions"
 import { ensureProps, warn } from "@zag-js/utils/guard"
 import * as dom from "./toast.dom"
 import type { ToastSchema } from "./toast.types"
-import { getToastDuration, setHeight } from "./toast.utils"
-import { createSwipeTracker, getDefaultSwipeDirections } from "./utils/swipe"
+import { getDefaultSwipeDirections, getToastDuration, isTwoWay, setHeight } from "./toast.utils"
 
 const { not, and } = createGuards<ToastSchema>()
 
@@ -307,46 +307,34 @@ export const machine = createMachine<ToastSchema>({
         const start = refs.get("swipeStart")
         if (!rootEl || !start) return
 
-        const doc = scope.getDoc()
-        const tracker = createSwipeTracker(computed("swipeDirections"), start.point)
-
-        try {
-          rootEl.setPointerCapture(start.pointerId)
-        } catch {}
-
-        const isActivePointer = (event: PointerEvent) => event.pointerId === start.pointerId
-
-        const onPointerMove = (event: PointerEvent) => {
-          if (!isActivePointer(event)) return
-          // Keeps Safari from selecting text during the drag
-          event.preventDefault()
-          const { offset, direction } = tracker.move({ x: event.clientX, y: event.clientY })
-          send({ type: "SWIPE.MOVE", offset, direction })
-        }
-
-        const onPointerUp = (event: PointerEvent) => {
-          if (!isActivePointer(event)) return
-          send({ type: "SWIPE.END", direction: tracker.end() })
-        }
-
-        const onPointerCancel = (event: PointerEvent) => {
-          if (!isActivePointer(event)) return
-          send({ type: "SWIPE.CANCEL" })
-        }
-
-        const onVisibilityChange = () => {
-          if (doc.visibilityState === "hidden") send({ type: "SWIPE.CANCEL" })
-        }
-
-        // `preventDefault` on pointermove doesn't stop iOS from scrolling the page
-        const onTouchMove = (event: TouchEvent) => event.preventDefault()
+        const directions = computed("swipeDirections")
 
         return callAll(
-          addDomEvent(doc, "pointermove", onPointerMove),
-          addDomEvent(doc, "pointerup", onPointerUp),
-          addDomEvent(doc, "pointercancel", onPointerCancel),
-          addDomEvent(doc, "visibilitychange", onVisibilityChange),
-          addDomEvent(rootEl, "touchmove", onTouchMove, { passive: false }),
+          trackSwipe(scope.getDoc(), {
+            startPoint: start.point,
+            pointerId: start.pointerId,
+            capture: rootEl,
+            threshold: 1,
+            directions,
+            onMove({ offset, direction }) {
+              send({ type: "SWIPE.MOVE", offset, direction })
+            },
+            onEnd({ direction, displacement, furthest, velocity, cancelled }) {
+              if (cancelled) return send({ type: "SWIPE.CANCEL" })
+              const dismiss =
+                direction != null &&
+                isDismissSwipe({
+                  displacement,
+                  furthest,
+                  velocity,
+                  // on a two-way axis, pulling back may be a swipe the other way
+                  pullBack: isTwoWay(directions, direction) ? Infinity : undefined,
+                })
+              send({ type: "SWIPE.END", direction: dismiss ? direction : null })
+            },
+          }),
+          // `preventDefault` on pointermove doesn't stop iOS from scrolling the page
+          addDomEvent(rootEl, "touchmove", (event) => event.preventDefault(), { passive: false }),
         )
       },
     },

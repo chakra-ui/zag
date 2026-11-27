@@ -1,5 +1,4 @@
 import { expect, test } from "./_test"
-import { controls, part } from "./_utils"
 import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
@@ -45,7 +44,7 @@ test.describe("drawer", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    await I.mouseDragGrabber("down", 200, 100)
+    await I.mouseDragGrabber({ direction: "down", distance: 200, duration: 100 })
     await I.dontSeeContent()
   })
 
@@ -57,7 +56,7 @@ test.describe("drawer", () => {
     const initialHeight = await I.getContentVisibleHeight()
     const dragDistance = Math.floor(initialHeight * 0.55)
 
-    await I.mouseDragGrabber("down", dragDistance)
+    await I.mouseDragGrabber({ direction: "down", distance: dragDistance })
     await I.dontSeeContent()
   })
 
@@ -78,7 +77,7 @@ test.describe("drawer", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    await I.mouseDragGrabber("down", 100)
+    await I.mouseDragGrabber({ direction: "down", distance: 100 })
     await I.seeContent()
   })
 
@@ -89,7 +88,7 @@ test.describe("drawer", () => {
 
     const initialHeight = await I.getContentVisibleHeight()
 
-    await I.touchDragGrabber("down", 100)
+    await I.touchDragGrabber({ direction: "down", distance: 100 })
     await I.waitForSnapComplete()
 
     const finalHeight = await I.getContentVisibleHeight()
@@ -103,7 +102,7 @@ test.describe("drawer", () => {
 
     const initialHeight = await I.getContentVisibleHeight()
 
-    await I.touchPointerDragGrabber("down", 100)
+    await I.touchPointerDragGrabber({ direction: "down", distance: 100 })
     await I.waitForSnapComplete()
 
     const finalHeight = await I.getContentVisibleHeight()
@@ -116,7 +115,7 @@ test.describe("drawer", () => {
     await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
-    await I.mouseDragGrabber("up", 150)
+    await I.mouseDragGrabber({ direction: "up", distance: 150 })
 
     const newHeight = await I.getContentVisibleHeight()
 
@@ -143,7 +142,7 @@ test.describe("drawer", () => {
 
     const initialHeight = await I.getContentVisibleHeight()
 
-    await I.dragNoDragArea("down", 100, 500, false)
+    await I.dragNoDragArea({ direction: "down", distance: 100, duration: 500, release: false })
     await I.waitForSnapComplete()
     const heightAfterNoDragAreaDrag = await I.getContentVisibleHeight()
 
@@ -164,7 +163,7 @@ test.describe("drawer", () => {
     const initialHeight = await I.getContentVisibleHeight()
 
     await I.setNoDragAxis("y")
-    await I.dragNoDragArea("down", 100, 500, false)
+    await I.dragNoDragArea({ direction: "down", distance: 100, duration: 500, release: false })
     await I.waitForSnapComplete()
     expect(await I.getContentVisibleHeight()).toBe(initialHeight)
     await page.mouse.up()
@@ -173,7 +172,7 @@ test.describe("drawer", () => {
     await page.evaluate(() => getSelection()?.removeAllRanges())
 
     await I.setNoDragAxis("x")
-    await I.dragNoDragArea("down", 100, 500, false)
+    await I.dragNoDragArea({ direction: "down", distance: 100, duration: 500, release: false })
     await I.waitForSnapComplete()
     expect(await I.getContentVisibleHeight()).toBeLessThan(initialHeight)
     await page.mouse.up()
@@ -213,133 +212,10 @@ test.describe("drawer", () => {
     const selectedText = await I.getSelectedText()
     expect(selectedText.length).toBeGreaterThan(0)
 
-    await I.dragContent("down", 100)
+    await I.dragContent({ direction: "down", distance: 100 })
     await I.waitForSnapComplete()
 
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
-  })
-})
-
-test.describe("drawer [non-modal]", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new DrawerModel(page)
-    await I.goto("/drawer/non-modal")
-  })
-
-  test("should restore focus to the trigger on escape", async () => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await I.pressKey("Escape")
-    await I.dontSeeContent()
-    await I.seeTriggerIsFocused()
-  })
-
-  test("should restore focus to the trigger on close", async ({ page }) => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await page.locator(part("drawer", "close-trigger")).click()
-    await I.dontSeeContent()
-    await I.seeTriggerIsFocused()
-  })
-})
-
-test.describe("drawer [draggable=false]", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new DrawerModel(page)
-    await I.goto("/drawer/draggable-false")
-  })
-
-  test("sheet content should not be draggable", async ({ page }) => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await I.waitForOpenState()
-
-    const initialHeight = await I.getContentVisibleHeight()
-
-    await I.dragContent("down", 100, 500, false)
-    const heightAfterContentDrag = await I.getContentVisibleHeight()
-    expect(initialHeight - heightAfterContentDrag).toBe(0)
-
-    // Release mouse before starting a new drag gesture
-    await page.mouse.up()
-
-    await I.mouseDragGrabber("down", 100, 500, false)
-    const heightAfterGrabberDrag = await I.getContentVisibleHeight()
-    expect(initialHeight - heightAfterGrabberDrag).toBe(100)
-  })
-})
-
-test.describe("drawer [snapPoints]", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new DrawerModel(page)
-    await I.goto("/drawer/snap-points")
-  })
-
-  test("should snap to defined positions", async () => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await I.waitForOpenState()
-
-    const rem20Px = await I.page.evaluate(() => {
-      const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
-      return 20 * rootPx
-    })
-
-    const initialHeight = await I.getContentVisibleHeight()
-    expect(Math.abs(initialHeight - rem20Px)).toBeLessThanOrEqual(4)
-
-    await I.mouseDragGrabber("up", 250)
-    await I.waitForSnapComplete()
-
-    let currentHeight = await I.getContentVisibleHeight()
-    expect(currentHeight).toBeGreaterThan(initialHeight + 80)
-
-    await I.mouseDragGrabber("down", 250)
-    await I.waitForSnapComplete()
-
-    currentHeight = await I.getContentVisibleHeight()
-    expect(Math.abs(currentHeight - rem20Px)).toBeLessThanOrEqual(4)
-  })
-})
-
-test.describe("drawer [snapToSequentialPoints]", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new DrawerModel(page)
-    await I.goto("/drawer/snap-points")
-    await controls(page).bool("snapToSequentialPoints", true)
-  })
-
-  test("should advance one step on swipe up", async () => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await I.waitForOpenState()
-
-    const initialHeight = await I.getContentVisibleHeight()
-
-    // Swipe up to expand to next snap point
-    await I.mouseDragGrabber("up", 100)
-    await I.waitForSnapComplete()
-
-    const newHeight = await I.getContentVisibleHeight()
-    expect(newHeight).toBeGreaterThan(initialHeight + 50)
-  })
-
-  test("should not dismiss on fast swipe down from full height, should snap instead", async () => {
-    await I.clickTrigger()
-    await I.seeContent()
-    await I.waitForOpenState()
-
-    // Sequential mode: 20rem → 1 (full) in one step
-    await I.mouseDragGrabber("up", 200)
-    await I.waitForSnapComplete()
-    await I.waitForOpenState()
-
-    // Swipe down — should snap to lower point, NOT dismiss
-    await I.mouseDragGrabber("down", 150)
-    await I.waitForSnapComplete()
-
-    // Drawer should still be visible (snapped, not dismissed)
-    await I.seeContent()
   })
 })

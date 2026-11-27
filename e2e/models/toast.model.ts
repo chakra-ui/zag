@@ -163,8 +163,11 @@ export class ToastModel extends Model {
   /**
    * Drags the toast with the mouse. `back` pulls the pointer back along x before releasing.
    */
-  async swipe(delta: { x?: number; y?: number }, options: { num?: number; back?: number; release?: boolean } = {}) {
-    const { num = 0, back = 0, release = true } = options
+  async swipe(
+    delta: { x?: number; y?: number },
+    options: { num?: number; back?: number; hold?: number; release?: boolean } = {},
+  ) {
+    const { num = 0, back = 0, hold = 0, release = true } = options
     const start = await this.pointAtToast(num)
     const end = { x: start.x + (delta.x ?? 0), y: start.y + (delta.y ?? 0) }
 
@@ -172,7 +175,18 @@ export class ToastModel extends Model {
     await this.page.mouse.down()
     await this.page.mouse.move(end.x, end.y, { steps: 10 })
     if (back) await this.page.mouse.move(end.x - back, end.y, { steps: 5 })
+    // holding still before the release takes the speed out of it, so it isn't a flick
+    if (hold) await this.page.waitForTimeout(hold)
     if (release) await this.page.mouse.up()
+  }
+
+  // Two quick steps, so the release is fast enough to count as a flick
+  async flick(delta: { x?: number; y?: number }, num = 0) {
+    const start = await this.pointAtToast(num)
+    await this.page.mouse.move(start.x, start.y)
+    await this.page.mouse.down()
+    await this.page.mouse.move(start.x + (delta.x ?? 0), start.y + (delta.y ?? 0), { steps: 2 })
+    await this.page.mouse.up()
   }
 
   // A small horizontal start locks the axis before the pointer turns vertical

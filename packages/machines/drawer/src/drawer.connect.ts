@@ -1,11 +1,10 @@
 import { getDismissableLayerAttrs, getDismissableLayerStyle } from "@zag-js/dismissable"
-import { dataAttr, getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventTarget, hasSelectionWithin, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { clampValue, toPx } from "@zag-js/utils/number"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
-import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
-import { isNegativeSwipeDirection, isVerticalSwipeDirection } from "./utils/session"
+import { isSwipeIgnored, oppositeDirection, resolveSwipeDirection } from "@zag-js/dom-query/swipe"
 import type {
   BackdropState,
   ContentState,
@@ -26,20 +25,23 @@ function getSwipeOpenOffset(swipingOpen: boolean, dragOffset: number | null, con
 }
 
 export function connect<T extends PropTypes>(service: DrawerService, normalize: NormalizeProps<T>): DrawerApi<T> {
-  const { state, send, context, scope, prop, refs } = service
+  const { state, send, context, scope, prop } = service
 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
   const closing = state.matches("closing")
-  const swipingOpen = state.matches("swiping-open")
+  const swipingOpen = state.matches("swipeOpen.dragging")
 
   const dragOffset = context.get("dragOffset")
-  const dragging = dragOffset !== null
+  // the offset outlives the gesture, through a release's close or snap
+  const dragging = (state.matches("open.pressed") && dragOffset !== null) || swipingOpen
 
   const triggerValue = context.get("triggerValue")
   const snapPoint = context.get("snapPoint")
   const swipeDirection = prop("swipeDirection")
   const physicalDirection = resolveSwipeDirection(swipeDirection, prop("dir"))
+  const vertical = physicalDirection === "up" || physicalDirection === "down"
+  const sign = physicalDirection === "up" || physicalDirection === "left" ? -1 : 1
   const contentSize = context.get("contentSize")
   const swipeStrength = context.get("swipeStrength")
 
@@ -51,21 +53,23 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const swipeOpenOffset = getSwipeOpenOffset(swipingOpen, dragOffset, contentSize)
   const currentOffset = swipeOpenOffset ?? dragOffset ?? snapPointOffset
-  const signedSnapPointOffset = isNegativeSwipeDirection(physicalDirection) ? -snapPointOffset : snapPointOffset
+  const signedSnapPointOffset = sign * snapPointOffset
 
-  const isActivelySwiping = dragging || swipingOpen
-  const swipeMovement = dragging || swipingOpen ? currentOffset - snapPointOffset : 0
-  const signedMovement = isNegativeSwipeDirection(physicalDirection) ? -swipeMovement : swipeMovement
+  const moved = dragOffset !== null || swipingOpen
+  const swipeMovement = moved ? currentOffset - snapPointOffset : 0
+  const signedMovement = sign * swipeMovement
+  // 0 at rest, 1 closed; pulling it further open doesn't count
+  const travelToClosed = (contentSize ?? 0) - snapPointOffset
   const swipeProgress =
-    isActivelySwiping && contentSize && contentSize > 0
-      ? clampValue(Math.abs(signedMovement) / contentSize, 0, 1)
+    moved && travelToClosed > 0
+      ? clampValue(Math.max(0, swipeMovement) / travelToClosed, 0, 1)
       : swipingOpen
         ? 1 // fully closed (transparent backdrop) until contentSize is measured
         : 0
 
-  const signedCurrentOffset = isNegativeSwipeDirection(physicalDirection) ? -currentOffset : currentOffset
-  const translateX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedCurrentOffset
-  const translateY = isVerticalSwipeDirection(physicalDirection) ? signedCurrentOffset : 0
+  const signedCurrentOffset = sign * currentOffset
+  const translateX = vertical ? 0 : signedCurrentOffset
+  const translateY = vertical ? signedCurrentOffset : 0
 
   // -----------------------------------------------------------------------------
   // State getters: pure, serializable per-part state, independent of `normalize`
@@ -78,7 +82,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   }
 
   function getBackdropState(): BackdropState {
-    const swiping = dragging || swipingOpen
+    const swiping = dragging
     return {
       open,
       swiping,
@@ -103,7 +107,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
       open,
       modal: !!prop("modal"),
       expanded: resolvedActiveSnapPoint?.offset === 0,
-      swiping: dragging || swipingOpen,
+      swiping: dragging,
       dragging,
       swipeDirection: physicalDirection,
       nestedDrawerOpen: nestedMetrics.open,
@@ -115,8 +119,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   function getSwipeAreaState(props: SwipeAreaProps = {}): SwipeAreaState {
     const disabled = props.disabled ?? false
-    const openDirection = props.swipeDirection ?? oppositeSwipeDirection[swipeDirection]
-    const direction = resolveSwipeDirection(openDirection, prop("dir"))
+    const direction = props.swipeDirection
+      ? resolveSwipeDirection(props.swipeDirection, prop("dir"))
+      : oppositeDirection(physicalDirection)
     return { direction, disabled, open, swiping: swipingOpen }
   }
 
@@ -124,30 +129,30 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   // Prop getters
   // -----------------------------------------------------------------------------
 
-  function onContentPointerDown(event: JSX.PointerEvent<HTMLElement>) {
-    refs.get("swipeSession").contentPointerDown({
-      event,
-      getDoc: () => scope.getDoc(),
-      getContentEl: () => dom.getContentEl(scope),
-      getWin: () => scope.getWin(),
-      swipeDirection: physicalDirection,
-      canCommit: () => state.hasTag("open") && !state.matches("closing"),
-      onCommit(point) {
-        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
-      },
+  const swipeAxis = vertical ? "y" : "x"
+  const canPress = () => state.hasTag("open") && !state.matches("closing")
+
+  function sendPointerDown(event: JSX.PointerEvent<HTMLElement>, defer: boolean) {
+    send({
+      type: "POINTER_DOWN",
+      point: getEventPoint(event),
+      target: getEventTarget(event),
+      pointerId: event.pointerId,
+      pointerType: event.pointerType,
+      defer,
     })
   }
 
+  function onContentPointerDown(event: JSX.PointerEvent<HTMLElement>) {
+    if (!canPress() || !isLeftClick(event) || isSwipeIgnored(event, swipeAxis)) return
+    if (hasSelectionWithin(scope.getDoc(), dom.getContentEl(scope))) return
+    // a mouse press may be a click or a text selection, so the drag waits for clear travel
+    sendPointerDown(event, event.pointerType !== "touch")
+  }
+
   function onGrabberPointerDown(event: JSX.PointerEvent<HTMLElement>) {
-    refs.get("swipeSession").grabberPointerDown({
-      event,
-      point: getEventPoint(event),
-      swipeDirection: physicalDirection,
-      canCommit: () => state.hasTag("open") && !state.matches("closing"),
-      onCommit(point) {
-        send({ type: "POINTER_DOWN", point, target: getEventTarget(event) })
-      },
-    })
+    if (!canPress() || !isLeftClick(event) || isSwipeIgnored(event, swipeAxis)) return
+    sendPointerDown(event, false)
   }
 
   return {
@@ -198,8 +203,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getContentState,
     getContentProps(props = { draggable: true }) {
-      const movementX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedMovement
-      const movementY = isVerticalSwipeDirection(physicalDirection) ? signedMovement : 0
+      const movementX = vertical ? 0 : signedMovement
+      const movementY = vertical ? signedMovement : 0
       const rendered = context.get("rendered")
       const contentState = getContentState()
 
@@ -225,16 +230,12 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           ...getDismissableLayerStyle(layer, { pointerEvents: true }),
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
-          transitionDuration: dragging || swipingOpen ? "0s" : undefined,
+          transitionDuration: dragging ? "0s" : undefined,
           "--drawer-translate": toPx(translateY),
           "--drawer-translate-x": toPx(translateX),
           "--drawer-translate-y": toPx(translateY),
-          "--drawer-snap-point-offset-x": isVerticalSwipeDirection(physicalDirection)
-            ? "0px"
-            : toPx(signedSnapPointOffset),
-          "--drawer-snap-point-offset-y": isVerticalSwipeDirection(physicalDirection)
-            ? toPx(signedSnapPointOffset)
-            : "0px",
+          "--drawer-snap-point-offset-x": vertical ? "0px" : toPx(signedSnapPointOffset),
+          "--drawer-snap-point-offset-y": vertical ? toPx(signedSnapPointOffset) : "0px",
           "--drawer-swipe-movement-x": toPx(movementX),
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
@@ -357,7 +358,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": physicalOpenDirection,
         "data-disabled": disabled ? "" : undefined,
         style: {
-          touchAction: isVerticalSwipeDirection(physicalOpenDirection) ? "pan-x" : "pan-y",
+          touchAction: physicalOpenDirection === "up" || physicalOpenDirection === "down" ? "pan-x" : "pan-y",
           pointerEvents: disabled || (open && !swipingOpen) ? "none" : undefined,
         },
         onPointerDown(event) {
@@ -365,7 +366,12 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           if (!isLeftClick(event)) return
           if (event.pointerType === "touch") return
           if (open && !swipingOpen) return
-          send({ type: "SWIPE_AREA.START", point: getEventPoint(event) })
+          send({
+            type: "SWIPE_AREA.START",
+            point: getEventPoint(event),
+            pointerId: event.pointerId,
+            pointerType: event.pointerType,
+          })
           if (event.cancelable) event.preventDefault()
         },
         onTouchStart(event) {
@@ -373,7 +379,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           if (open && !swipingOpen) return
           const touch = event.touches[0]
           if (!touch) return
-          send({ type: "SWIPE_AREA.START", point: { x: touch.clientX, y: touch.clientY } })
+          send({ type: "SWIPE_AREA.START", point: { x: touch.clientX, y: touch.clientY }, pointerType: "touch" })
         },
       })
     },

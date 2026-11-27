@@ -3,14 +3,14 @@ import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
 
-test.describe("drawer [swipe-area]", () => {
+test.describe("drawer / swipe area", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
     await I.goto("/drawer/swipe-area")
   })
 
   test("should open when swiped up from swipe area", async () => {
-    await I.swipeArea("up", 300)
+    await I.swipeArea({ direction: "up", distance: 300 })
     await I.seeContent()
     await I.seeBackdrop()
   })
@@ -29,12 +29,12 @@ test.describe("drawer [swipe-area]", () => {
   })
 
   test("should not open on small swipe", async () => {
-    await I.swipeArea("up", 3)
+    await I.swipeArea({ direction: "up", distance: 3 })
     await I.dontSeeContent()
   })
 
   test("should close when clicked outside after swipe open", async () => {
-    await I.swipeArea("up", 300)
+    await I.swipeArea({ direction: "up", distance: 300 })
     await I.waitForOpenState()
 
     await I.clickOutside()
@@ -44,7 +44,7 @@ test.describe("drawer [swipe-area]", () => {
   })
 
   test("should close on escape after swipe open", async () => {
-    await I.swipeArea("up", 300)
+    await I.swipeArea({ direction: "up", distance: 300 })
     await I.waitForOpenState()
 
     await I.pressKey("Escape")
@@ -53,19 +53,19 @@ test.describe("drawer [swipe-area]", () => {
   })
 
   test("should close when swiped down after swipe open", async () => {
-    await I.swipeArea("up", 300)
+    await I.swipeArea({ direction: "up", distance: 300 })
     await I.waitForOpenState()
 
     // Past the close threshold, so the result doesn't depend on release velocity
     const height = await I.getContentVisibleHeight()
-    await I.mouseDragGrabber("down", Math.floor(height * 0.6))
+    await I.mouseDragGrabber({ direction: "down", distance: Math.floor(height * 0.6) })
 
     await I.dontSeeContent()
     await I.dontSeeBackdrop()
   })
 
   test("should close via close button after swipe open", async ({ page }) => {
-    await I.swipeArea("up", 300)
+    await I.swipeArea({ direction: "up", distance: 300 })
     await I.waitForOpenState()
 
     await page.click("[data-drawer-close-trigger]")

@@ -122,6 +122,12 @@ export interface TrackDragOptions {
    */
   capture?: Element | null | undefined
   /**
+   * Which events to follow. `touch` reads touch events, which keep coming after the browser starts scrolling,
+   * so a drag can take a touch over from a scroll; once dragging, it stops the scroll.
+   * @default "pointer"
+   */
+  input?: "pointer" | "touch" | undefined
+  /**
    * The element to lock the pointer to once it moves past `DRAG_DISTANCE`, so a scrub can travel without
    * limit. Falls back to plain movement where the browser refuses.
    */

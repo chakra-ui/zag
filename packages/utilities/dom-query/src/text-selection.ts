@@ -1,3 +1,4 @@
+import { contains } from "./node"
 import { isIos } from "./platform"
 import { nextTick, raf } from "./raf"
 
@@ -87,5 +88,26 @@ export function disableTextSelection(options: DisableTextSelectionOptions<NodeOr
   )
   return () => {
     cleanups.forEach((fn) => fn?.())
+  }
+}
+
+/**
+ * Whether the user has text selected inside `el`, so a press there may be extending the selection
+ */
+export function hasSelectionWithin(doc: Document, el: Element | null): boolean {
+  if (!el) return false
+  const selection = doc.getSelection()
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false
+
+  try {
+    const range = selection.getRangeAt(0)
+    return (
+      contains(el, range.commonAncestorContainer) ||
+      contains(el, selection.anchorNode) ||
+      contains(el, selection.focusNode) ||
+      range.intersectsNode?.(el) === true
+    )
+  } catch {
+    return false
   }
 }

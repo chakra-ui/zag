@@ -1,5 +1,6 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr, getEventTarget } from "@zag-js/dom-query"
+import { isSwipeIgnored } from "@zag-js/dom-query/swipe"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { mergeWithDefault } from "@zag-js/utils/object"
 import { parts } from "./toast.anatomy"
@@ -12,7 +13,7 @@ const defaultTranslations: Required<IntlTranslations> = {
 }
 
 // Presses that start on controls never begin a swipe, so their clicks still work
-const SWIPE_IGNORE_SELECTOR = 'button,a,input,textarea,select,[role="button"],[data-swipe-ignore]'
+const CONTROL_SELECTOR = 'button,a,input,textarea,select,[role="button"]'
 
 export function connect<T extends PropTypes, O>(
   service: Service<ToastSchema<O>>,
@@ -120,8 +121,7 @@ export function connect<T extends PropTypes, O>(
         },
         onPointerDown(event) {
           if (event.defaultPrevented || event.button !== 0) return
-          const target = getEventTarget<Element>(event)
-          if (target?.closest(SWIPE_IGNORE_SELECTOR)) return
+          if (getEventTarget<Element>(event)?.closest(CONTROL_SELECTOR) || isSwipeIgnored(event)) return
           send({ type: "SWIPE.START", point: { x: event.clientX, y: event.clientY }, pointerId: event.pointerId })
         },
       })

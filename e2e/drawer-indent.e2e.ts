@@ -3,7 +3,7 @@ import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
 
-test.describe("drawer [indent-effect]", () => {
+test.describe("drawer / indent effect", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
     await I.goto("/drawer/indent-effect")
@@ -37,7 +37,7 @@ test.describe("drawer [indent-effect]", () => {
     expect(frontmostHeight.endsWith("px")).toBe(true)
     expect(Number.parseFloat(frontmostHeight)).toBeGreaterThan(0)
 
-    await I.mouseDragGrabber("down", 120, 300, false)
+    await I.mouseDragGrabber({ direction: "down", distance: 120, duration: 300, release: false })
 
     const swipingProgress = Number.parseFloat(await getVar("--drawer-swipe-progress"))
     const swipingTransform = await getIndentTransform()

@@ -494,6 +494,7 @@ export const drawerControls = defineControls({
   closeThreshold: { type: "number", defaultValue: 0.5 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
   swipeDirection: { type: "select", options: ["down", "up", "start", "end"] as const, defaultValue: "down" },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   snapToSequentialPoints: { type: "boolean", defaultValue: false },
 })
 

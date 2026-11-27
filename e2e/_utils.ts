@@ -291,6 +291,37 @@ export async function touchSwipe(
   )
 }
 
+// Through the browser's own input, so it scrolls like a finger
+export async function realTouchSwipe(
+  page: Page,
+  locator: Locator,
+  direction: SwipeDirection,
+  distance: number = 100,
+  options: { steps?: number; from?: "center" | "edge" } = {},
+): Promise<void> {
+  const { steps = 10, from = "center" } = options
+  await locator.waitFor({ state: "visible" })
+  const box = await rect(locator)
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: "touchStart" | "touchMove" | "touchEnd", x: number, y: number) =>
+    cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x, y, id: 1 }] })
+
+  const dx = direction === "left" ? -distance : direction === "right" ? distance : 0
+  const dy = direction === "up" ? -distance : direction === "down" ? distance : 0
+
+  const inset = 20
+  const startX = from === "edge" && dx ? (dx > 0 ? box.x + inset : box.x + box.width - inset) : box.midX
+  const startY = from === "edge" && dy ? (dy > 0 ? box.y + inset : box.y + box.height - inset) : box.midY
+
+  await touch("touchStart", startX, startY)
+  for (let index = 1; index <= steps; index++) {
+    await touch("touchMove", startX + (dx * index) / steps, startY + (dy * index) / steps)
+    await page.waitForTimeout(16)
+  }
+  await touch("touchEnd", startX + dx, startY + dy)
+  await cdp.detach()
+}
+
 export async function touchPointerSwipe(
   page: Page,
   locator: Locator,

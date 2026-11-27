@@ -1,9 +1,8 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
-import type { DrawerSwipeSession } from "./utils/drawer-session"
-import type { PhysicalSwipeDirection } from "./utils/session"
+import type { CommonProperties, DirectionProperty, MaybeElement, Point, PropTypes } from "@zag-js/types"
+import type { SwipeDirection as PhysicalSwipeDirection } from "@zag-js/dom-query/swipe"
 
 export type SwipeDirection = "up" | "down" | "start" | "end"
 export type SnapPoint = number | string
@@ -260,7 +259,15 @@ type PropsWithDefault =
 export interface DrawerSchema {
   props: DrawerProps
   defaultPropKey: PropsWithDefault
-  state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
+  state:
+    | "open"
+    | "open.idle"
+    | "open.pressed"
+    | "closed"
+    | "closing"
+    | "swipeOpen"
+    | "swipeOpen.pending"
+    | "swipeOpen.dragging"
   tag: "open" | "closed"
   context: {
     /**
@@ -279,7 +286,13 @@ export interface DrawerSchema {
     nestedMetrics: NestedDrawerMetrics
   }
   refs: {
-    swipeSession: DrawerSwipeSession
+    swipeStart: {
+      point: Point
+      target: EventTarget | null
+      pointerId: number | undefined
+      pointerType: string
+      defer: boolean
+    } | null
     snapBackFrame: AnimationFrame
     returnFocusFrame: AnimationFrame
     initialFocusFrame: AnimationFrame

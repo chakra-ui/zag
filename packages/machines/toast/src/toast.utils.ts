@@ -264,3 +264,20 @@ export function setHeight(parent: Service<ToastGroupSchema>, item: ToastHeight) 
     return [...prev.slice(0, insertAt), { id, height }, ...prev.slice(insertAt)]
   })
 }
+
+/** Swipe toward the nearest edges: the placement's side, plus the aligned edge */
+export function getDefaultSwipeDirections(placement: Placement, dir: "ltr" | "rtl" = "ltr"): SwipeDirection[] {
+  const [side, align] = placement.split("-")
+  const directions: SwipeDirection[] = [side === "top" ? "up" : "down"]
+  if (align) {
+    const towardEnd = align === "end"
+    directions.push(towardEnd !== (dir === "rtl") ? "right" : "left")
+  }
+  return directions
+}
+
+/** Whether both directions on `direction`'s axis can dismiss */
+export function isTwoWay(directions: SwipeDirection[], direction: SwipeDirection) {
+  const pair: SwipeDirection[] = direction === "left" || direction === "right" ? ["left", "right"] : ["up", "down"]
+  return pair.every((each) => directions.includes(each))
+}

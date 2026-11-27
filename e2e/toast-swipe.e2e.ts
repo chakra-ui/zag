@@ -44,9 +44,14 @@ test.describe("toast / swipe / default directions", () => {
     await I.seeNumOfToasts(0)
   })
 
-  test("a swipe below the threshold snaps back", async () => {
-    await I.swipe({ x: 25 })
+  test("a slow swipe below the threshold snaps back", async () => {
+    await I.swipe({ x: 25 }, { hold: 150 })
     await I.seeSwipeReset()
+  })
+
+  test("a quick flick below the threshold dismisses", async () => {
+    await I.flick({ x: 25 })
+    await I.seeNumOfToasts(0)
   })
 
   test("swiping in a direction that can't dismiss is damped and snaps back", async () => {
