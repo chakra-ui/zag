@@ -15,8 +15,7 @@ mobile applications to present additional content or actions
 
 **Features**
 
-- Supports modal and non-modal modes
-- Focus is trapped and scrolling is blocked in modal mode
+- Supports modal, focus-trapping, and non-modal modes
 - Supports customizable snap points for partial or full expansion
 - Allows dragging to adjust the sheet's height or swipe to dismiss
 - Provides screen reader announcements via rendered title
@@ -197,7 +196,8 @@ const service = useMachine(drawer.machine, {
 
 ### Non-modal drawer
 
-Set `modal` to `false` to allow interaction behind the drawer.
+Set `modal` to `false` to allow interaction behind the drawer, or to
+`"trap-focus"` to keep focus in the drawer while the page stays usable.
 
 <Example id="DrawerNonModal">
 
@@ -210,12 +210,11 @@ const service = useMachine(drawer.machine, {
 
 </Example>
 
-Use `api.modal` to skip the backdrop, since it would block interaction with the
-page.
+Render the backdrop only when the page is blocked:
 
 ```tsx
 {
-  api.modal && <div {...api.getBackdropProps()} />
+  api.modal === true && <div {...api.getBackdropProps()} />
 }
 ```
 

@@ -66,14 +66,13 @@ export const machine = createMachine<DrawerSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
     const initialFocusEl = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
-    const modal = typeof props.modal === "boolean" ? props.modal : true
     const snapPoints = props.snapPoints ?? DEFAULT_SNAP_POINTS
+
+    const modal = props.modal ?? true
 
     return {
       modal,
-      trapFocus: modal,
-      preventScroll: modal,
-      closeOnInteractOutside: true,
+      closeOnInteractOutside: modal !== false && !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
       role: "dialog",
@@ -504,7 +503,7 @@ export const machine = createMachine<DrawerSchema>({
 
       setFinalFocus({ event, prop, refs, scope, context }) {
         // A focus trap returns focus on its own
-        if (prop("trapFocus") || !prop("restoreFocus")) return
+        if (prop("modal") !== false || !prop("restoreFocus")) return
         const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
         if (restoreFocus === false) return
 
@@ -524,8 +523,8 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       setInitialFocus({ prop, scope, refs }) {
-        // In modal mode, trapFocus handles initial focus
-        if (prop("trapFocus")) return
+        // the focus trap handles initial focus
+        if (prop("modal") !== false) return
         refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),
@@ -757,7 +756,7 @@ export const machine = createMachine<DrawerSchema>({
             type: "drawer",
             defer: true,
             getRootNode: scope.getRootNode,
-            pointerBlocking: prop("modal"),
+            pointerBlocking: prop("modal") === true,
             onLayerChange(layer) {
               context.set("layer", layer)
             },
@@ -787,15 +786,15 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       preventScroll({ scope, prop, watchEffect }) {
-        return watchEffect([() => prop("preventScroll")], () => {
-          if (!prop("preventScroll")) return
+        return watchEffect([() => prop("modal")], () => {
+          if (prop("modal") !== true) return
           return preventBodyScroll(scope.getDoc())
         })
       },
 
       trapFocus({ scope, prop, context, watchEffect }) {
-        return watchEffect([() => prop("trapFocus")], () => {
-          if (!prop("trapFocus")) return
+        return watchEffect([() => prop("modal")], () => {
+          if (prop("modal") === false) return
           const contentEl = () => dom.getContentEl(scope)
           const destroy = trapFocus(contentEl, {
             preventScroll: true,
@@ -813,13 +812,13 @@ export const machine = createMachine<DrawerSchema>({
             getShadowRoot: true,
           })
 
-          return () => destroy({ returnFocus: !!prop("restoreFocus") && !!prop("trapFocus") })
+          return () => destroy({ returnFocus: !!prop("restoreFocus") })
         })
       },
 
       hideContentBelow({ scope, prop, watchEffect }) {
         return watchEffect([() => prop("modal")], () => {
-          if (!prop("modal")) return
+          if (prop("modal") !== true) return
           const getElements = () => [dom.getContentEl(scope)]
           return ariaHidden(getElements, { defer: true })
         })

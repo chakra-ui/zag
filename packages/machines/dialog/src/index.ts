@@ -18,3 +18,4 @@ export type {
   TriggerProps,
   TriggerState,
 } from "./dialog.types"
+export type { ModalMode } from "@zag-js/types"

@@ -4,9 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { XIcon } from "lucide-vue-next"
 import "@styles/dialog.css"
 
-const modal = ref(false)
-const trapFocus = ref(true)
-const preventScroll = ref(true)
+const modal = ref<boolean | "trap-focus">("trap-focus")
 
 const id = useId()
 const service = useMachine(
@@ -15,20 +13,19 @@ const service = useMachine(
     id,
     defaultOpen: true,
     modal: modal.value,
-    trapFocus: trapFocus.value,
-    preventScroll: preventScroll.value,
   })),
 )
 
 const api = computed(() => dialog.connect(service, normalizeProps))
 
-const minimized = computed(() => !trapFocus.value && !preventScroll.value)
+const minimized = computed(() => modal.value === false)
 
 function toggleMinimized() {
-  const next = minimized.value
-  trapFocus.value = next
-  preventScroll.value = next
+  modal.value = minimized.value ? "trap-focus" : false
 }
+
+const nextModal = (modal: boolean | "trap-focus") =>
+  modal === false ? "trap-focus" : modal === "trap-focus" ? true : false
 </script>
 
 <template>
@@ -37,22 +34,18 @@ function toggleMinimized() {
       <button data-testid="toggle-minimized" @click="toggleMinimized">
         {{ minimized ? "Maximize" : "Minimize" }}
       </button>
-      <button data-testid="toggle-trap" @click="trapFocus = !trapFocus">trapFocus: {{ String(trapFocus) }}</button>
-      <button data-testid="toggle-scroll" @click="preventScroll = !preventScroll">
-        preventScroll: {{ String(preventScroll) }}
-      </button>
-      <button data-testid="toggle-modal" @click="modal = !modal">modal: {{ String(modal) }}</button>
+      <button data-testid="toggle-modal" @click="modal = nextModal(modal)">modal: {{ String(modal) }}</button>
       <button v-bind="api.getTriggerProps()" data-testid="trigger">Open dialog</button>
     </div>
 
     <button data-testid="outside-button" style="margin-top: 16px">
-      Outside button (should be reachable by Tab only when trapFocus is off)
+      Outside button (reachable by Tab only when modal is false)
     </button>
 
     <div style="height: 150vh; padding-top: 16px">Long page, so body scroll lock is observable.</div>
 
     <Teleport v-if="api.open" to="body">
-      <div v-bind="api.getBackdropProps()" :style="{ display: modal ? undefined : 'none' }" />
+      <div v-bind="api.getBackdropProps()" :style="{ display: modal === true ? undefined : 'none' }" />
       <div v-bind="api.getPositionerProps()">
         <div v-bind="api.getContentProps()" data-testid="content">
           <h2 v-bind="api.getTitleProps()">Player</h2>

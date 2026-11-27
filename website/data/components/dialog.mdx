@@ -15,8 +15,7 @@ behind it is inert
 
 **Features**
 
-- Supports modal and non-modal modes
-- Focus is trapped and scrolling is blocked in the modal mode
+- Supports modal, focus-trapping, and non-modal modes
 - Provides screen reader announcements via rendered title and description
 - Pressing `Esc` closes the dialog
 - Supports multiple triggers sharing a single dialog instance
@@ -70,7 +69,11 @@ To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
 ### Modal vs non-modal
 
-Set `modal` to `false` to allow interaction with content behind the dialog.
+`modal` sets how much of the page the dialog blocks:
+
+- `true` (default): traps focus, locks scroll, and blocks and hides the page
+- `"trap-focus"`: traps focus, but the page stays scrollable and clickable
+- `false`: blocks nothing
 
 <Example id="DialogNonModal">
 
@@ -82,12 +85,11 @@ const service = useMachine(dialog.machine, {
 
 </Example>
 
-Use `api.modal` to skip the backdrop, since it would block interaction with the
-page.
+Render the backdrop only when the page is blocked:
 
 ```tsx
 {
-  api.modal && <div {...api.getBackdropProps()} />
+  api.modal === true && <div {...api.getBackdropProps()} />
 }
 ```
 
@@ -175,14 +177,14 @@ properties.
 
 ### Scroll behavior
 
-When the dialog is open, it prevents scrolling on the `body` element. To disable
-this behavior, set `preventScroll` to `false`.
+A modal dialog locks page scroll. To keep the page scrollable while focus stays
+in the dialog, set `modal` to `"trap-focus"`.
 
 <Example id="DialogScroll">
 
 ```tsx {2}
 const service = useMachine(dialog.machine, {
-  preventScroll: false,
+  modal: "trap-focus",
 })
 ```
 
@@ -281,9 +283,9 @@ const service = useMachine(dialog.machine, {
 
 ### Scrollbar width
 
-When `preventScroll` is enabled, Zag applies `--scrollbar-width` on the root
-element. Use this CSS variable to keep fixed or sticky elements aligned when the
-dialog opens and body scrolling is locked.
+When `modal` is `true`, Zag applies `--scrollbar-width` on the root element. Use
+this CSS variable to keep fixed or sticky elements aligned when the dialog opens
+and body scrolling is locked.
 
 ```css
 .app-header {

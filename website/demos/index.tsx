@@ -225,7 +225,7 @@ const components = {
       name="dialog"
       component={Dialog}
       defaultProps={{
-        preventScroll: true,
+        modal: true,
         closeOnInteractOutside: true,
         closeOnEscape: true,
         role: { options: ["dialog", "alertdialog"], default: "dialog" },

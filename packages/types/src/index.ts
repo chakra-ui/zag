@@ -25,6 +25,9 @@ export type PopupActivationDirection =
   | VerticalDirection
   | `${HorizontalDirection} ${VerticalDirection}`
 
+/** `true` traps focus and blocks the page, `"trap-focus"` only traps focus, `false` blocks nothing */
+export type ModalMode = boolean | "trap-focus"
+
 export type MaybeFn<T> = T | (() => T)
 
 export type MaybeElement<T extends HTMLElement = HTMLElement> = Nullable<T>

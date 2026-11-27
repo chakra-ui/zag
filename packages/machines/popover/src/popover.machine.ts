@@ -239,7 +239,7 @@ export const machine = createMachine<PopoverSchema>({
           let restoreFocus = true
           return trackDismissableElement(getLayerEl, {
             type: "popover",
-            pointerBlocking: prop("modal"),
+            pointerBlocking: prop("modal") === true,
             onLayerChange(layer) {
               context.set("layer", layer)
             },
@@ -278,7 +278,7 @@ export const machine = createMachine<PopoverSchema>({
 
       proxyTabFocus({ prop, scope, context, watchEffect }) {
         return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
-          if (prop("modal")) return
+          if (prop("modal") !== false) return
           const getContentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
           let cleanup: VoidFunction | undefined
           const rafCleanup = raf(() => {
@@ -303,7 +303,7 @@ export const machine = createMachine<PopoverSchema>({
 
       hideContentBelow({ prop, scope, context, watchEffect }) {
         return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
-          if (!prop("modal")) return
+          if (prop("modal") !== true) return
           const getElements = () => [
             dom.getLayerEl(scope, context.get("triggerValue")),
             dom.getTriggerEl(scope, context.get("triggerValue")),
@@ -314,14 +314,14 @@ export const machine = createMachine<PopoverSchema>({
 
       preventScroll({ prop, scope, watchEffect }) {
         return watchEffect([() => prop("modal")], () => {
-          if (!prop("modal")) return
+          if (prop("modal") !== true) return
           return preventBodyScroll(scope.getDoc())
         })
       },
 
       trapFocus({ prop, scope, context, watchEffect }) {
         return watchEffect([() => prop("modal"), () => context.get("triggerValue")], () => {
-          if (!prop("modal")) return
+          if (prop("modal") === false) return
           const getContentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
           const destroy = trapFocus(getContentEl, {
             preventScroll: true,
@@ -350,7 +350,7 @@ export const machine = createMachine<PopoverSchema>({
             getShadowRoot: true,
           })
 
-          return (reason) => destroy({ returnFocus: reason === "exit" && !!prop("restoreFocus") && !!prop("modal") })
+          return (reason) => destroy({ returnFocus: reason === "exit" && !!prop("restoreFocus") })
         })
       },
     },
@@ -439,7 +439,7 @@ export const machine = createMachine<PopoverSchema>({
 
       setInitialFocus({ prop, scope, refs, context }) {
         // handoff to `trapFocus` activity for initial focus
-        if (prop("modal")) return
+        if (prop("modal") !== false) return
         refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope, context.get("triggerValue")),

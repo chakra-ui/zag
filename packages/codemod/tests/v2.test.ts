@@ -169,6 +169,21 @@ useMachine(tabs.machine, { composite: false })
     expect(result).toContain(`useMachine(tabs.machine, { virtualFocus: true })`)
   })
 
+  test("folds trapFocus and preventScroll into modal", () => {
+    const code = `
+import * as dialog from "@zag-js/dialog"
+import * as drawer from "@zag-js/drawer"
+useMachine(dialog.machine, { modal: false, trapFocus: true, preventScroll: false })
+useMachine(drawer.machine, { trapFocus: true, preventScroll: true })
+useMachine(dialog.machine, { modal: true, preventScroll: false })
+`
+    const result = out(code)
+    expect(result).toContain(`useMachine(dialog.machine, { modal: "trap-focus" })`)
+    expect(result).toMatch(/useMachine\(drawer\.machine, \{\s*\}\)/)
+    expect(result).toContain(`preventScroll: false`)
+    expect(messages(code).some((m) => m.includes("`preventScroll` is removed"))).toBe(true)
+  })
+
   test("turns slider label arrays into functions", () => {
     const code = `
 import * as slider from "@zag-js/slider"

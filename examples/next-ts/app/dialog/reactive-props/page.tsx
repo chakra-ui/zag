@@ -22,26 +22,22 @@ function Uptime() {
   )
 }
 
+const nextModal = (modal: boolean | "trap-focus") =>
+  modal === false ? "trap-focus" : modal === "trap-focus" ? true : false
+
 export default function Page() {
-  const [modal, setModal] = useState(false)
-  const [trapFocus, setTrapFocus] = useState(true)
-  const [preventScroll, setPreventScroll] = useState(true)
+  const [modal, setModal] = useState<boolean | "trap-focus">("trap-focus")
 
   const service = useMachine(dialog.machine, {
     id: useId(),
     defaultOpen: true,
     modal,
-    trapFocus,
-    preventScroll,
   })
 
   const api = dialog.connect(service, normalizeProps)
 
-  const minimized = !trapFocus && !preventScroll
-  const toggleMinimized = () => {
-    setTrapFocus(minimized)
-    setPreventScroll(minimized)
-  }
+  const minimized = modal === false
+  const toggleMinimized = () => setModal(minimized ? "trap-focus" : false)
 
   return (
     <main className="dialog">
@@ -49,13 +45,7 @@ export default function Page() {
         <button data-testid="toggle-minimized" onClick={toggleMinimized}>
           {minimized ? "Maximize" : "Minimize"}
         </button>
-        <button data-testid="toggle-trap" onClick={() => setTrapFocus((v) => !v)}>
-          trapFocus: {String(trapFocus)}
-        </button>
-        <button data-testid="toggle-scroll" onClick={() => setPreventScroll((v) => !v)}>
-          preventScroll: {String(preventScroll)}
-        </button>
-        <button data-testid="toggle-modal" onClick={() => setModal((v) => !v)}>
+        <button data-testid="toggle-modal" onClick={() => setModal(nextModal)}>
           modal: {String(modal)}
         </button>
         <button {...api.getTriggerProps()} data-testid="trigger">
@@ -64,7 +54,7 @@ export default function Page() {
       </div>
 
       <button data-testid="outside-button" style={{ marginTop: "16px" }}>
-        Outside button (should be reachable by Tab only when trapFocus is off)
+        Outside button (reachable by Tab only when modal is false)
       </button>
 
       <div style={{ height: "150vh", paddingTop: "16px" }}>Long page, so body scroll lock is observable.</div>
@@ -73,7 +63,7 @@ export default function Page() {
         <Portal>
           {/* kept mounted: <Portal> gives each child its own createPortal, so a backdrop
               rendered later lands after the positioner and covers the content */}
-          <div {...api.getBackdropProps()} style={{ display: modal ? undefined : "none" }} />
+          <div {...api.getBackdropProps()} style={{ display: modal === true ? undefined : "none" }} />
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()} data-testid="content">
               <h2 {...api.getTitleProps()}>Player</h2>

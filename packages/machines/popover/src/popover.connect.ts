@@ -60,7 +60,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
     const { value } = props
     return {
       open: value == null ? open : triggerValue === value,
-      modal: !!prop("modal"),
+      modal: prop("modal"),
       nested: !!layer?.nested,
       hasNested: !!layer?.hasNested,
       placement: currentPlacement,
@@ -196,7 +196,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         id: dom.getContentId(scope, value),
         tabIndex: -1,
         role: "dialog",
-        "aria-modal": ariaAttr(contentState.modal),
+        "aria-modal": ariaAttr(contentState.modal === true),
         hidden: !contentState.open,
         "data-value": value,
         "data-state": contentState.open ? "open" : "closed",

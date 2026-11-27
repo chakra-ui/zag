@@ -27,7 +27,7 @@ function Content(props: {
   const { api } = props
   return (
     <Portal>
-      {api.modal && (
+      {api.modal === true && (
         <div className={styles.Backdrop} {...api.getBackdropProps()} />
       )}
       <div className={styles.Positioner} {...api.getPositionerProps()}>
@@ -145,13 +145,13 @@ export function DialogControlled() {
 }
 
 export function DialogScroll() {
-  const api = useDialog({ preventScroll: false })
+  const api = useDialog({ modal: "trap-focus" })
   return (
     <Stack>
       <Trigger api={api} />
       <Content
         api={api}
-        description="The page behind keeps scrolling while this dialog is open."
+        description="Focus stays in the dialog, but the page behind keeps scrolling."
       />
     </Stack>
   )

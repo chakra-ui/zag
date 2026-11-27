@@ -18,28 +18,23 @@ function Uptime() {
   )
 }
 
+const nextModal = (modal: boolean | "trap-focus") =>
+  modal === false ? "trap-focus" : modal === "trap-focus" ? true : false
+
 export default function Page() {
-  const [modal, setModal] = createSignal(false)
-  const [trapFocus, setTrapFocus] = createSignal(true)
-  const [preventScroll, setPreventScroll] = createSignal(true)
+  const [modal, setModal] = createSignal<boolean | "trap-focus">("trap-focus")
 
   const id = createUniqueId()
   const service = useMachine(dialog.machine, () => ({
     id,
     defaultOpen: true,
     modal: modal(),
-    trapFocus: trapFocus(),
-    preventScroll: preventScroll(),
   }))
 
   const api = createMemo(() => dialog.connect(service, normalizeProps))
 
-  const minimized = () => !trapFocus() && !preventScroll()
-  const toggleMinimized = () => {
-    const next = minimized()
-    setTrapFocus(next)
-    setPreventScroll(next)
-  }
+  const minimized = () => modal() === false
+  const toggleMinimized = () => setModal(minimized() ? "trap-focus" : false)
 
   return (
     <main class="dialog">
@@ -47,13 +42,7 @@ export default function Page() {
         <button data-testid="toggle-minimized" onClick={toggleMinimized}>
           {minimized() ? "Maximize" : "Minimize"}
         </button>
-        <button data-testid="toggle-trap" onClick={() => setTrapFocus((v) => !v)}>
-          trapFocus: {String(trapFocus())}
-        </button>
-        <button data-testid="toggle-scroll" onClick={() => setPreventScroll((v) => !v)}>
-          preventScroll: {String(preventScroll())}
-        </button>
-        <button data-testid="toggle-modal" onClick={() => setModal((v) => !v)}>
+        <button data-testid="toggle-modal" onClick={() => setModal(nextModal)}>
           modal: {String(modal())}
         </button>
         <button {...api().getTriggerProps()} data-testid="trigger">
@@ -62,7 +51,7 @@ export default function Page() {
       </div>
 
       <button data-testid="outside-button" style={{ "margin-top": "16px" }}>
-        Outside button (should be reachable by Tab only when trapFocus is off)
+        Outside button (reachable by Tab only when modal is false)
       </button>
 
       <div style={{ height: "150vh", "padding-top": "16px" }}>Long page, so body scroll lock is observable.</div>
@@ -70,7 +59,7 @@ export default function Page() {
       <Show when={api().open}>
         <Portal>
           {/* kept mounted so DOM order stays backdrop → positioner */}
-          <div {...api().getBackdropProps()} style={{ display: modal() ? undefined : "none" }} />
+          <div {...api().getBackdropProps()} style={{ display: modal() === true ? undefined : "none" }} />
           <div {...api().getPositionerProps()}>
             <div {...api().getContentProps()} data-testid="content">
               <h2 {...api().getTitleProps()}>Player</h2>

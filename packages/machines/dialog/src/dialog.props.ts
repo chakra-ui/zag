@@ -25,10 +25,8 @@ export const props = createProps<DialogProps>()([
   "onRequestDismiss",
   "open",
   "persistentElements",
-  "preventScroll",
   "restoreFocus",
   "role",
-  "trapFocus",
 ])
 
 export const splitProps = createSplitProps<Partial<DialogProps>>(props)

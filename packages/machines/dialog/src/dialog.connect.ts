@@ -52,7 +52,7 @@ export function connect<T extends PropTypes>(
 
   return {
     open,
-    modal: !!prop("modal"),
+    modal: prop("modal"),
     setOpen(nextOpen, reason = "script") {
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
     },
@@ -107,7 +107,7 @@ export function connect<T extends PropTypes>(
         ...getDismissableLayerAttrs(layer),
         style: {
           ...getDismissableLayerStyle(layer),
-          pointerEvents: !open || !prop("modal") ? "none" : undefined,
+          pointerEvents: !open || prop("modal") !== true ? "none" : undefined,
         },
       })
     },
@@ -124,7 +124,7 @@ export function connect<T extends PropTypes>(
         id: dom.getContentId(scope),
         tabIndex: -1,
         "data-state": contentState.open ? "open" : "closed",
-        "aria-modal": contentState.modal,
+        "aria-modal": contentState.modal === true,
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(scope),
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,

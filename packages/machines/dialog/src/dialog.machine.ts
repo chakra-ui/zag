@@ -11,13 +11,11 @@ export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
     const initialFocusEl = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
-    const modal = typeof props.modal === "boolean" ? props.modal : true
+    const modal = props.modal ?? true
     return {
       role: "dialog",
       modal,
-      trapFocus: modal,
-      preventScroll: modal,
-      closeOnInteractOutside: modal && !alertDialog,
+      closeOnInteractOutside: modal !== false && !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
       initialFocusEl,
@@ -151,7 +149,7 @@ export const machine = createMachine<DialogSchema>({
             type: "dialog",
             defer: true,
             getRootNode: scope.getRootNode,
-            pointerBlocking: prop("modal"),
+            pointerBlocking: prop("modal") === true,
             onLayerChange(layer) {
               context.set("layer", layer)
             },
@@ -182,15 +180,15 @@ export const machine = createMachine<DialogSchema>({
       },
 
       preventScroll({ scope, prop, watchEffect }) {
-        return watchEffect([() => prop("preventScroll")], () => {
-          if (!prop("preventScroll")) return
+        return watchEffect([() => prop("modal")], () => {
+          if (prop("modal") !== true) return
           return preventBodyScroll(scope.getDoc())
         })
       },
 
       trapFocus({ scope, prop, context, watchEffect }) {
-        return watchEffect([() => prop("trapFocus")], () => {
-          if (!prop("trapFocus")) return
+        return watchEffect([() => prop("modal")], () => {
+          if (prop("modal") === false) return
 
           const contentEl = () => dom.getContentEl(scope)
           const destroy = trapFocus(contentEl, {
@@ -209,13 +207,13 @@ export const machine = createMachine<DialogSchema>({
             getShadowRoot: true,
           })
 
-          return () => destroy({ returnFocus: !!prop("restoreFocus") && !!prop("trapFocus") })
+          return () => destroy({ returnFocus: !!prop("restoreFocus") })
         })
       },
 
       hideContentBelow({ scope, prop, watchEffect }) {
         return watchEffect([() => prop("modal")], () => {
-          if (!prop("modal")) return
+          if (prop("modal") !== true) return
           const getElements = () => [dom.getContentEl(scope)]
           return ariaHidden(getElements, { defer: true })
         })
@@ -230,7 +228,7 @@ export const machine = createMachine<DialogSchema>({
 
       setFinalFocus({ event, prop, refs, scope, context }) {
         // A focus trap returns focus on its own
-        if (prop("trapFocus") || !prop("restoreFocus")) return
+        if (prop("modal") !== false || !prop("restoreFocus")) return
         const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
         if (restoreFocus === false) return
 
@@ -250,7 +248,7 @@ export const machine = createMachine<DialogSchema>({
       },
 
       setInitialFocus({ prop, scope, refs }) {
-        if (prop("trapFocus")) return
+        if (prop("modal") !== false) return
         refs.get("initialFocusFrame").request(() => {
           const element = getInitialFocus({
             root: dom.getContentEl(scope),

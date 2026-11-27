@@ -1,7 +1,7 @@
 import type { Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { DismissableElementHandlers, LayerSnapshot, PersistentElementOptions } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, ModalMode, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -64,20 +64,13 @@ export interface DialogProps
    */
   ids?: ElementIds | undefined
   /**
-   * Whether to trap focus inside the dialog when it's opened
+   * How the dialog blocks the rest of the page while open:
+   * - `true`: traps focus, locks scroll, blocks outside pointers and hides the page from screen readers
+   * - `"trap-focus"`: traps focus, but the page stays usable
+   * - `false`: none of these
    * @default true
    */
-  trapFocus?: boolean | undefined
-  /**
-   * Whether to prevent scrolling behind the dialog when it's opened
-   * @default true
-   */
-  preventScroll?: boolean | undefined
-  /**
-   * Whether to prevent pointer interaction outside the element and hide all content below it
-   * @default true
-   */
-  modal?: boolean | undefined
+  modal?: ModalMode | undefined
   /**
    * Element to receive focus when the dialog is opened.
    * Return `false` to skip moving focus, or `null` to use the default.
@@ -93,7 +86,7 @@ export interface DialogProps
   restoreFocus?: boolean | undefined
   /**
    * Whether to close the dialog when the outside is clicked
-   * @default `true` for modal dialogs, `false` for non-modal dialogs
+   * @default `true`, or `false` when `modal` is `false` or the role is `alertdialog`
    */
   closeOnInteractOutside?: boolean | undefined
   /**
@@ -139,14 +132,7 @@ export interface DialogProps
   onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault =
-  | "closeOnInteractOutside"
-  | "closeOnEscape"
-  | "role"
-  | "modal"
-  | "trapFocus"
-  | "restoreFocus"
-  | "preventScroll"
+type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "role" | "modal" | "restoreFocus"
 
 export interface DialogSchema {
   props: DialogProps
@@ -252,7 +238,7 @@ export interface ContentState {
   /**
    * Whether the dialog is modal
    */
-  modal: boolean
+  modal: ModalMode
   /**
    * Whether the dialog is nested within another layered element
    */
@@ -271,7 +257,7 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is modal
    */
-  modal: boolean
+  modal: ModalMode
   /**
    * Function to open or close the dialog
    */

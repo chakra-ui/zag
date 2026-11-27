@@ -24,3 +24,4 @@ export type {
   TriggerValueChangeDetails,
   ViewportState,
 } from "./popover.types"
+export type { ModalMode } from "@zag-js/types"

@@ -1,7 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, MaybeElement, Point, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, ModalMode, Point, PropTypes } from "@zag-js/types"
 import type { SwipeDirection as PhysicalSwipeDirection } from "@zag-js/dom-query/swipe"
 
 export type SwipeDirection = "up" | "down" | "start" | "end"
@@ -133,20 +133,13 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
    */
   ids?: ElementIds
   /**
-   * Whether to trap focus inside the sheet when it's opened.
+   * How the drawer blocks the rest of the page while open:
+   * - `true`: traps focus, locks scroll, blocks outside pointers and hides the page from screen readers
+   * - `"trap-focus"`: traps focus, but the page stays usable
+   * - `false`: none of these
    * @default true
    */
-  trapFocus?: boolean | undefined
-  /**
-   * Whether to prevent scrolling behind the sheet when it's opened
-   * @default true
-   */
-  preventScroll?: boolean | undefined
-  /**
-   * Whether to prevent pointer interaction outside the element and hide all content below it.
-   * @default true
-   */
-  modal?: boolean | undefined
+  modal?: ModalMode | undefined
   /**
    * Element to receive focus when the sheet is opened.
    * Return `false` to skip moving focus, or `null` to use the default.
@@ -191,8 +184,8 @@ export interface DrawerProps extends DirectionProperty, CommonProperties, Dismis
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   * Whether to close the drawer when the outside is clicked.
-   * @default true
+   * Whether to close the drawer when the outside is clicked
+   * @default `true`, or `false` when `modal` is `false` or the role is `alertdialog`
    */
   closeOnInteractOutside?: boolean | undefined
   /**
@@ -256,9 +249,7 @@ type PropsWithDefault =
   | "closeOnInteractOutside"
   | "closeOnEscape"
   | "modal"
-  | "trapFocus"
   | "restoreFocus"
-  | "preventScroll"
   | "snapPoints"
   | "swipeDirection"
   | "snapToSequentialPoints"
@@ -417,7 +408,7 @@ export interface ContentState {
   /**
    * Whether the drawer is modal
    */
-  modal: boolean
+  modal: ModalMode
   /**
    * Whether the drawer is expanded to its full snap point (offset 0)
    */
@@ -479,7 +470,7 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the drawer is modal.
    */
-  modal: boolean
+  modal: ModalMode
   /**
    * Whether the drawer is currently being dragged.
    */

@@ -7,6 +7,7 @@ import type {
   CommonProperties,
   DirectionProperty,
   MaybeElement,
+  ModalMode,
   PopupActivationDirection,
   PropTypes,
 } from "@zag-js/types"
@@ -90,15 +91,13 @@ export interface PopoverProps
    */
   ids?: ElementIds | undefined
   /**
-   * Whether the popover should be modal. When set to `true`:
-   * - interaction with outside elements will be disabled
-   * - only popover content will be visible to screen readers
-   * - scrolling is blocked
-   * - focus is trapped within the popover
-   *
+   * How the popover blocks the rest of the page while open:
+   * - `true`: traps focus, locks scroll, blocks outside pointers and hides the page from screen readers
+   * - `"trap-focus"`: traps focus, but the page stays usable
+   * - `false`: none of these
    * @default false
    */
-  modal?: boolean | undefined
+  modal?: ModalMode | undefined
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
@@ -298,7 +297,7 @@ export interface ContentState {
   /**
    * Whether the popover is modal
    */
-  modal: boolean
+  modal: ModalMode
   /**
    * Whether the popover is nested within another layered element
    */

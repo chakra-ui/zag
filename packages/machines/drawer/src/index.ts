@@ -30,3 +30,4 @@ export type {
   TriggerState,
   TriggerValueChangeDetails,
 } from "./drawer.types"
+export type { ModalMode } from "@zag-js/types"

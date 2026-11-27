@@ -246,6 +246,20 @@ per value with `multiple`.
 + <input {...api.getHiddenInputProps()} />
 ```
 
+## Dialog and drawer
+
+`trapFocus` and `preventScroll` are removed. `modal` covers them, as in popover:
+`true` traps focus and locks scroll, `"trap-focus"` only traps focus, and
+`false` does neither.
+
+```diff
+  dialog.machine({
+-   modal: false,
+-   trapFocus: true,
++   modal: "trap-focus",
+  })
+```
+
 ## Listbox
 
 `role="listbox"` moves to a new `list` part, which is now the focus target and
@@ -444,6 +458,8 @@ to turn it off.
 
 These compile without changes but behave differently.
 
+- **Drawer:** a non-modal drawer no longer closes on an outside click, like
+  dialog. Pass `closeOnInteractOutside: true` for the v1 behavior.
 - **Hover card:** the `closing` state is now `open.closing`. `matches("open")`
   still works; only code matching `"closing"` needs updating.
 - **Number input:** `onValueInvalid` fires as the out-of-range value is entered,

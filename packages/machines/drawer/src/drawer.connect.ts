@@ -128,7 +128,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   function getContentState(): ContentState {
     return {
       open,
-      modal: !!prop("modal"),
+      modal: prop("modal"),
       expanded: resolvedActiveSnapPoint?.offset === 0,
       swiping,
       dragging,
@@ -198,7 +198,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   return {
     open,
-    modal: !!prop("modal"),
+    modal: prop("modal"),
     dragging,
     setOpen(nextOpen, reason = "script") {
       send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason, replaces: "open" })
@@ -237,7 +237,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         ...getDismissableLayerAttrs(layer),
         style: {
           ...getDismissableLayerStyle(layer),
-          pointerEvents: closing || !prop("modal") ? "none" : undefined,
+          pointerEvents: closing || prop("modal") !== true ? "none" : undefined,
         },
       })
     },
@@ -255,7 +255,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: prop("role"),
-        "aria-modal": contentState.modal,
+        "aria-modal": contentState.modal === true,
         "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
         hidden: !contentState.open,

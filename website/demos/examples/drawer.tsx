@@ -34,7 +34,7 @@ function Sheet(props: {
   const { api } = props
   return (
     <Portal>
-      {api.modal && (
+      {api.modal === true && (
         <Presence className={styles.backdrop} {...api.getBackdropProps()} />
       )}
       <div className={styles.positioner} {...api.getPositionerProps()}>

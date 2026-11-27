@@ -289,6 +289,7 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
   }
 
   const handledObjects = new Set<Node>()
+  const rewrittenModals = new Set<Node>()
 
   const removedProps = new Set<Node>()
   const removeProperty = (obj: Node, prop: Node) => {
@@ -373,6 +374,23 @@ export function transformScript(code: string, s: MagicString, options: ScriptOpt
           overwrite(prop.start, prop.end, `virtualFocus: !(${src(value)})`)
         } else {
           note(prop, `${pkg}: \`composite\` is replaced by \`popupType: "dialog"\` (when composite was false).`)
+        }
+        continue
+      }
+
+      if ((pkg === "dialog" || pkg === "drawer") && (name === "trapFocus" || name === "preventScroll")) {
+        const modal = byName.get("modal")
+        const modalValue = modal ? (modal.value?.type === "BooleanLiteral" ? modal.value.value : undefined) : true
+        const value = prop.value?.type === "BooleanLiteral" ? prop.value.value : undefined
+
+        if (name === "trapFocus" && value === true && modalValue === false && !rewrittenModals.has(modal)) {
+          rewrittenModals.add(modal)
+          overwrite(modal.value.start, modal.value.end, '"trap-focus"')
+          removeProperty(obj, prop)
+        } else if (value !== undefined && value === modalValue) {
+          removeProperty(obj, prop)
+        } else {
+          note(prop, `${pkg}: \`${name}\` is removed. Use \`modal\`: \`true\`, \`"trap-focus"\` or \`false\`.`)
         }
         continue
       }
