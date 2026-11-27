@@ -121,13 +121,18 @@ export class SizeTracker {
    */
   reindex(delta: number, newCount: number): void {
     if (delta === 0 && newCount === this.count) return
+    this.remap(newCount, (index) => index + delta)
+  }
 
+  /**
+   * Moves measured sizes to new indexes, as when items are inserted, removed or reordered, and re-reads the
+   * estimates. Sizes whose `nextIndex` is undefined or out of range are dropped.
+   */
+  remap(newCount: number, nextIndex: (index: number) => number | undefined): void {
     const nextMeasured = new Map<number, number>()
     for (const [index, size] of this.measuredSizes) {
-      const nextIndex = index + delta
-      if (nextIndex >= 0 && nextIndex < newCount) {
-        nextMeasured.set(nextIndex, size)
-      }
+      const next = nextIndex(index)
+      if (next !== undefined && next >= 0 && next < newCount) nextMeasured.set(next, size)
     }
 
     this.count = newCount

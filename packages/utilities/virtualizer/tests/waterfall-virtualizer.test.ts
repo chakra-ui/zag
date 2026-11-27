@@ -331,4 +331,24 @@ describe("WaterfallVirtualizer", () => {
     expect(internals.laneItemEnds).toEqual([[]])
     expect(internals.measuredSizeCache.size).toBe(0)
   })
+
+  test("measured sizes follow their items when the list reorders", () => {
+    let items = ["a", "b", "c"]
+    const virtualizer = new WaterfallVirtualizer({
+      count: items.length,
+      columnCount: 1,
+      estimatedItemSize: 10,
+      overscan: 0,
+      initialRect: { width: 100, height: 500 },
+      indexToKey: (index) => items[index]!,
+    })
+    virtualizer.measureItem(0, 30)
+    virtualizer.measureItem(1, 40)
+    virtualizer.measureItem(2, 50)
+
+    items = [...items].reverse()
+    virtualizer.updateOptions({ count: items.length, indexToKey: (index) => items[index]! })
+
+    expect(virtualizer.getVirtualItems().map((item) => item.size)).toEqual([50, 40, 30])
+  })
 })

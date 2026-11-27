@@ -25,13 +25,16 @@ const { virtualizer, ref: rootRef } = useListVirtualizer(() => ({
   keyToIndex: (key: string | number) => Number(key) - messages.value[0].id,
 }))
 
-watchEffect((onCleanup) => {
-  if (!streaming.value) return
-  const timer = setInterval(() => {
-    const last = messages.value[messages.value.length - 1]
-    messages.value = [...messages.value, createMessage(last.id + 1)]
-  }, 700)
-  onCleanup(() => clearInterval(timer))
+// the stream runs in the browser only, so it starts once mounted
+onMounted(() => {
+  watchEffect((onCleanup) => {
+    if (!streaming.value) return
+    const timer = setInterval(() => {
+      const last = messages.value[messages.value.length - 1]
+      messages.value = [...messages.value, createMessage(last.id + 1)]
+    }, 700)
+    onCleanup(() => clearInterval(timer))
+  })
 })
 
 function loadOlder() {

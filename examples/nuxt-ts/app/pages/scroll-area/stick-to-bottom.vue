@@ -16,15 +16,17 @@ const api = computed(() => scrollArea.connect(service, normalizeProps))
 const viewportEl = ref<HTMLElement | null>(null)
 const contentEl = ref<HTMLElement | null>(null)
 let tracker: StickToBottom | null = null
-let timer: ReturnType<typeof setInterval> | undefined
 
-watchEffect((onCleanup) => {
-  if (!streaming.value) return
-  timer = setInterval(() => {
-    const last = messages.value[messages.value.length - 1]
-    messages.value = [...messages.value, createMessage(last.id + 1)]
-  }, 800)
-  onCleanup(() => clearInterval(timer))
+// the stream runs in the browser only, so it starts once mounted
+onMounted(() => {
+  watchEffect((onCleanup) => {
+    if (!streaming.value) return
+    const timer = setInterval(() => {
+      const last = messages.value[messages.value.length - 1]
+      messages.value = [...messages.value, createMessage(last.id + 1)]
+    }, 800)
+    onCleanup(() => clearInterval(timer))
+  })
 })
 
 onMounted(() => {

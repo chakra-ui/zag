@@ -1,7 +1,7 @@
 import { trackStickToBottom, type StickToBottom, type StickToBottomDetails } from "@zag-js/dom-query/scroll"
 import * as scrollArea from "@zag-js/scroll-area"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createEffect, createMemo, createSignal, createUniqueId, For, onCleanup, onMount, Show } from "solid-js"
+import { createMemo, createSignal, createTrackedEffect, createUniqueId, For, onSettled, Show } from "solid-js"
 import { Toolbar } from "../../components/toolbar"
 import "@styles/scroll-area.css"
 
@@ -19,18 +19,18 @@ export default function Page() {
   let contentEl: HTMLDivElement | undefined
   let tracker: StickToBottom | null = null
 
-  onMount(() => {
+  onSettled(() => {
     if (!viewportEl) return
     tracker = trackStickToBottom(viewportEl, { content: contentEl, onChange: setSticky })
-    onCleanup(() => tracker?.cleanup())
+    return () => tracker?.cleanup()
   })
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!streaming()) return
     const timer = setInterval(() => {
       setMessages((prev) => [...prev, createMessage(prev[prev.length - 1].id + 1)])
     }, 800)
-    onCleanup(() => clearInterval(timer))
+    return () => clearInterval(timer)
   })
 
   const loadOlder = () => {

@@ -56,7 +56,15 @@ export class WaterfallVirtualizer<T extends PropTypes = PropTypes> extends Virtu
     this.recomputeColumns()
   }
 
-  protected onItemsChanged(): void {
+  // by key when items have keys, else by index
+  protected onItemsChanged(sizesByKey?: Map<string | number, number> | null): void {
+    if (sizesByKey) {
+      this.remapMeasuredSizes(sizesByKey)
+      this.measuredSizeCache = new Map(this.itemSizeCache)
+    } else if (this.itemSizeCache.size === 0) {
+      this.measuredKeys.clear()
+    }
+
     const { count } = this.options
     for (const index of this.itemSizeCache.keys()) {
       if (index >= count) this.itemSizeCache.delete(index)
@@ -72,6 +80,7 @@ export class WaterfallVirtualizer<T extends PropTypes = PropTypes> extends Virtu
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
+    this.recordMeasuredKey(index)
     const prevSize = this.measuredSizeCache.get(index)
     if (prevSize === size) return false
 

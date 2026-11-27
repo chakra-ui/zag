@@ -126,6 +126,8 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   private rowResizeCleanups = new Map<Element, VoidFunction>()
   private pendingRowSizeUpdates = new Map<number, { size: number; element: Element | undefined }>()
   private rowSizeUpdateFrame = AnimationFrame.create()
+  // the key each row was measured under, so sizes follow their rows through sorts
+  private rowKeys = new Map<number, string | number>()
 
   // Scroll element
   private scrollElement: Element | Window | null = null
@@ -399,12 +401,81 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     }
   }
 
-  private onItemsChanged(): void {
-    this.rowSizeTracker?.clearMeasurements()
-    this.columnSizeTracker?.clearMeasurements()
-    this.rangeCache?.clear()
-    this.resetMeasurements()
-    this.remeasureTrackedRows()
+  private getRowKey(index: number): string | number {
+    return isFunction(this.options.indexToKey) ? this.options.indexToKey(index) : index
+  }
+
+  // the rendered rows are enough to notice a reorder
+  private hasReorderedRows(): boolean {
+    if (!isFunction(this.options.indexToKey) || this.rowKeys.size === 0) return false
+    const { startRow, endRow } = this.range
+    for (let row = Math.max(0, startRow); row <= endRow; row++) {
+      const key = this.rowKeys.get(row)
+      if (key !== undefined && key !== this.getRowKey(row)) return true
+    }
+    return false
+  }
+
+  // by key when rows have keys, else by index; estimates are read again
+  private remapRows(): void {
+    const { rowCount } = this.options
+    if (!this.rowSizeTracker) return
+
+    if (!isFunction(this.options.indexToKey) || this.rowKeys.size === 0) {
+      this.rowSizeTracker.remap(rowCount, (index) => index)
+      return
+    }
+
+    const nextIndexByKey = this.findRowIndexes(new Set(this.rowKeys.values()))
+    this.rowSizeTracker.remap(rowCount, (index) => {
+      const key = this.rowKeys.get(index)
+      return key === undefined ? undefined : nextIndexByKey.get(key)
+    })
+
+    this.rowKeys = new Map()
+    for (const [key, index] of nextIndexByKey) this.rowKeys.set(index, key)
+  }
+
+  private findRowIndexes(keys: Set<string | number>): Map<string | number, number> {
+    const indexes = new Map<string | number, number>()
+    const { keyToIndex, rowCount } = this.options
+
+    if (keyToIndex) {
+      for (const key of keys) {
+        const index = keyToIndex(key)
+        if (index !== undefined && index >= 0 && index < rowCount) indexes.set(key, index)
+      }
+      return indexes
+    }
+
+    // one pass over the rows, not one per key
+    for (let index = 0; index < rowCount && indexes.size < keys.size; index++) {
+      const key = this.getRowKey(index)
+      if (keys.has(key)) indexes.set(key, index)
+    }
+    return indexes
+  }
+
+  // a row measured above the view would move it; the scroll moves by the same amount
+  private keepRowsInViewStill(measure: () => boolean): boolean {
+    const element = this.scrollElement
+    if (!this.options.preserveScrollAnchor || !isHTMLElement(element) || this.options.rowCount === 0) {
+      return measure()
+    }
+
+    const anchorRow = this.findRowIndexAtOffset(this.scrollTop + this.getScrollMargin())
+    const anchorStart = this.getPrefixRowSize(anchorRow - 1)
+    if (!measure()) return false
+
+    const delta = this.getPrefixRowSize(anchorRow - 1) - anchorStart
+    if (delta === 0) return true
+
+    // set the height now; a scroll written before the next render is clamped to the old one
+    const content = element.querySelector<HTMLElement>(partSelector("content", this.id))
+    if (content) content.style.height = `${this.getTotalHeight()}px`
+    element.scrollTop += delta
+    this.scrollTop += delta
+    return true
   }
 
   private onRowMeasured(index: number, size: number): boolean {
@@ -414,6 +485,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
       )
     }
 
+    if (isFunction(this.options.indexToKey)) this.rowKeys.set(index, this.getRowKey(index))
     const changed = this.rowSizeTracker.setMeasuredSize(index, size)
     if (changed) this.rangeCache?.clear()
     return changed
@@ -693,7 +765,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
   }
 
   private measureRowSync(rowIndex: number, size: number): void {
-    const changed = this.onRowMeasured(rowIndex, size)
+    const changed = this.keepRowsInViewStill(() => this.onRowMeasured(rowIndex, size))
     if (!changed) return
 
     // Notify also while scrolling, so rows mounted mid-scroll don't paint at estimated positions
@@ -750,16 +822,17 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
 
     if (this.pendingRowSizeUpdates.size === 0) return
 
-    let changed = false
-
-    for (const [rowIndex, { size, element }] of this.pendingRowSizeUpdates) {
-      if (element && this.rowElementsByIndex.get(rowIndex) !== element) continue
-      if (this.onRowMeasured(rowIndex, size)) {
-        changed = true
-      }
-    }
-
+    const updates = [...this.pendingRowSizeUpdates]
     this.pendingRowSizeUpdates.clear()
+
+    const changed = this.keepRowsInViewStill(() => {
+      let anyChanged = false
+      for (const [rowIndex, { size, element }] of updates) {
+        if (element && this.rowElementsByIndex.get(rowIndex) !== element) continue
+        if (this.onRowMeasured(rowIndex, size)) anyChanged = true
+      }
+      return anyChanged
+    })
 
     if (changed) {
       this.forceUpdate({ reason: "measurement" })
@@ -1084,19 +1157,25 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     const changed = Object.keys(options).some(
       (key) => !isSameOption(prevOptions[key as keyof ResolvedOptions], this.options[key as keyof ResolvedOptions]),
     )
-    if (!changed) return
+    const rowsChanged = this.options.rowCount !== prevOptions.rowCount
+    const columnsChanged = this.options.columnCount !== prevOptions.columnCount
+    // a sort keeps the count and reuses the callbacks, so only the row keys show it
+    const rowKeysMoved = this.hasReorderedRows()
+    const reordered = !rowsChanged && rowKeysMoved
+    if (!changed && !reordered) return
     if (options.dir !== undefined) {
       this.rtlScrollBehavior = null
     }
 
-    if (this.options.rowCount !== prevOptions.rowCount || this.options.columnCount !== prevOptions.columnCount) {
-      this.onItemsChanged()
+    if (rowsChanged || reordered) this.remapRows()
+    if (columnsChanged) this.columnSizeTracker?.reindex(0, this.options.columnCount)
+    if (rowsChanged || columnsChanged || reordered) {
+      this.rangeCache?.clear()
+      // rendered rows may still show the old order, so re-read them only when they kept their keys
+      if (!rowKeysMoved) this.remeasureTrackedRows()
     }
 
-    const reason: RangeChangeReason =
-      this.options.rowCount !== prevOptions.rowCount || this.options.columnCount !== prevOptions.columnCount
-        ? "count"
-        : "manual"
+    const reason: RangeChangeReason = rowsChanged || columnsChanged ? "count" : "manual"
 
     this.forceUpdate({ reason })
   }
@@ -1127,6 +1206,7 @@ export class GridVirtualizer<T extends PropTypes = PropTypes> {
     this.rangeCache.clear()
     this.rowSizeTracker.reset(0)
     this.columnSizeTracker.reset(0)
+    this.rowKeys.clear()
     this.storeListeners.clear()
   }
 }

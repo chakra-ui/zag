@@ -369,6 +369,49 @@ describe("GridVirtualizer", () => {
     expect(contexts.some((context) => context.orientation === "vertical")).toBe(true)
   })
 
+  test("keeps measured column widths when rows are added", () => {
+    const virtualizer = new GridVirtualizer({
+      rowCount: 3,
+      columnCount: 2,
+      estimatedRowSize: () => 20,
+      estimatedColumnSize: () => 50,
+      initialRect: { width: 200, height: 60 },
+    })
+    virtualizer.measureColumn(0, 80)
+    expect(virtualizer.getTotalWidth()).toBe(130)
+
+    virtualizer.updateOptions({ rowCount: 5 })
+
+    expect(virtualizer.getTotalWidth()).toBe(130)
+  })
+
+  test("row heights follow their rows when the rows are sorted", () => {
+    vi.spyOn(resizeObserverBorderBox, "observe").mockImplementation(() => vi.fn())
+    let rows = [
+      { id: "a", height: 10 },
+      { id: "b", height: 20 },
+      { id: "c", height: 30 },
+    ]
+    const virtualizer = new GridVirtualizer({
+      rowCount: rows.length,
+      columnCount: 1,
+      estimatedRowSize: (index) => rows[index]!.height,
+      estimatedColumnSize: () => 50,
+      overscan: 0,
+      initialRect: { width: 50, height: 100 },
+      indexToKey: (index) => rows[index]!.id,
+    })
+    for (const row of virtualizer.getVirtualRows()) mountRow(virtualizer, row.row, createElement(row.height))
+
+    rows = [...rows].reverse()
+    virtualizer.updateOptions({
+      estimatedRowSize: (index) => rows[index]!.height,
+      indexToKey: (index) => rows[index]!.id,
+    })
+
+    expect(virtualizer.getVirtualRows().map((row) => row.height)).toEqual([30, 20, 10])
+  })
+
   test("reports range change reasons", () => {
     const changes: Array<{
       range: { startIndex: number; endIndex: number }

@@ -205,6 +205,59 @@ describe("ListVirtualizer", () => {
     expect(virtualizer.getVirtualItems().map((item) => item.index)).toEqual([0])
   })
 
+  test("measured sizes follow their items when the list reorders at the same count", () => {
+    let items = ["a", "b", "c", "d", "e"]
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedItemSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(500),
+      indexToKey: (index) => items[index]!,
+    })
+    items.forEach((_, index) => virtualizer.measureItem(index, (index + 1) * 10))
+    expect(virtualizer.getVirtualItems().map((item) => item.size)).toEqual([10, 20, 30, 40, 50])
+
+    items = [...items].reverse()
+    virtualizer.updateOptions({ count: items.length, indexToKey: (index) => items[index]! })
+
+    expect(virtualizer.getVirtualItems().map((item) => item.size)).toEqual([50, 40, 30, 20, 10])
+    expect(virtualizer.getTotalSize()).toBe(150)
+  })
+
+  test("measured sizes follow their keys when items are added before them", () => {
+    let items = ["a", "b", "c"]
+    const virtualizer = new ListVirtualizer({
+      count: items.length,
+      estimatedItemSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(500),
+      indexToKey: (index) => items[index]!,
+    })
+    virtualizer.measureItem(0, 30)
+    virtualizer.measureItem(1, 40)
+    virtualizer.measureItem(2, 50)
+
+    items = ["new", ...items]
+    virtualizer.updateOptions({ count: items.length, indexToKey: (index) => items[index]! })
+
+    expect(virtualizer.getVirtualItems().map((item) => item.size)).toEqual([10, 30, 40, 50])
+  })
+
+  test("without keys, measured sizes stay by index when items are appended", () => {
+    const virtualizer = new ListVirtualizer({
+      count: 2,
+      estimatedItemSize: () => 10,
+      overscan: 0,
+      initialRect: initialRect(500),
+    })
+    virtualizer.measureItem(0, 30)
+    virtualizer.measureItem(1, 40)
+
+    virtualizer.updateOptions({ count: 3 })
+
+    expect(virtualizer.getVirtualItems().map((item) => item.size)).toEqual([30, 40, 10])
+  })
+
   test("measureItem overrides seeded initialMeasurements", () => {
     const virtualizer = new ListVirtualizer({
       count: 5,

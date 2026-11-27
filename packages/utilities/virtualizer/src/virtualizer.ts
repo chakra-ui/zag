@@ -115,6 +115,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   /** Size-tracker version the measureCache entries were computed from. */
   protected measureCacheVersion = -1
   protected itemSizeCache: Map<number, number> = new Map()
+  // the key each size was measured under, so sizes follow their items through reorders
+  protected measuredKeys = new Map<number, string | number>()
   protected measureCacheDirtyFrom = Infinity
 
   // Scroll state
@@ -639,11 +641,36 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   /** `sizesByKey` holds the measured sizes when the count changed and items have keys */
   protected onItemsChanged(_sizesByKey?: Map<string | number, number> | null): void {}
 
+  protected recordMeasuredKey(index: number): void {
+    if (isFunction(this.options.indexToKey)) this.measuredKeys.set(index, this.getItemKey(index))
+  }
+
+  /** Measured sizes by item key, when items have keys */
   protected getMeasuredSizesByKey(): Map<string | number, number> | null {
-    if (!this.options.indexToKey || this.itemSizeCache.size === 0) return null
+    if (this.measuredKeys.size === 0) return null
     const sizes = new Map<string | number, number>()
-    for (const [index, size] of this.itemSizeCache) sizes.set(this.getItemKey(index), size)
+    for (const [index, size] of this.itemSizeCache) {
+      const key = this.measuredKeys.get(index)
+      if (key !== undefined) sizes.set(key, size)
+    }
     return sizes
+  }
+
+  // the rendered items are enough to notice a reorder
+  protected hasReorderedItems(): boolean {
+    if (!isFunction(this.options.indexToKey) || this.measuredKeys.size === 0) return false
+    const { startIndex, endIndex } = this.range
+    for (let index = Math.max(0, startIndex); index <= endIndex; index++) {
+      const key = this.measuredKeys.get(index)
+      if (key !== undefined && key !== this.getItemKey(index)) return true
+    }
+    return false
+  }
+
+  protected remapMeasuredSizes(sizesByKey: Map<string | number, number>): void {
+    this.itemSizeCache = this.getSizesByIndex(sizesByKey)
+    this.measuredKeys = new Map()
+    for (const index of this.itemSizeCache.keys()) this.recordMeasuredKey(index)
   }
 
   protected getSizesByIndex(sizesByKey: Map<string | number, number>): Map<number, number> {
@@ -1022,11 +1049,16 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.isDestroyed) return
     if (!this.scrollElement) return
 
-    const rect = this.scrollElement.getBoundingClientRect()
+    const element = this.scrollElement
+    const rect = element.getBoundingClientRect()
     const horizontal = this.isHorizontal
 
+    // the items fill the client box, which leaves out the border and a scrollbar
+    const clientCross = isHTMLElement(element) ? (horizontal ? element.clientHeight : element.clientWidth) : 0
+    const rectCross = horizontal ? rect.height : rect.width
+
     this.setViewportSize(horizontal ? rect.width : rect.height)
-    this.setCrossAxisSize(horizontal ? rect.height : rect.width)
+    this.setCrossAxisSize(clientCross > 0 ? clientCross : rectCross)
 
     if (this.remeasureTrackedElements()) {
       this.calculateRange({ reason: "measurement" })
@@ -1621,7 +1653,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const viewportStart = this.scrollOffset + scrollMargin
     const anchorIndex = Math.min(count - 1, Math.max(0, this.findIndexAtOffset(viewportStart)))
     const measurement = this.getMeasurement(anchorIndex)
-    const key = this.getItemKey(anchorIndex)
+    // a key callback that reads live state may already describe the next items
+    const key = this.measuredKeys.get(anchorIndex) ?? this.getItemKey(anchorIndex)
 
     return { key, offset: viewportStart - measurement.start }
   }
@@ -1650,7 +1683,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return this.findVisibleRange(viewportStart, viewportStart + this.viewportSize)
   }
 
-  protected forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }): void {
+  /** `remeasure: false` when the rendered elements may still show the previous items */
+  protected forceUpdate({ reason }: RangeChangeReasonDetails = { reason: "manual" }, remeasure = true): void {
     if (this.isDestroyed) return
     this.lastCalculatedOffset = -1
     this.cachedRangeStart = -1
@@ -1667,7 +1701,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.pendingSizeUpdates.clear()
       this.sizeUpdateFrame.cancel()
     }
-    this.remeasureTrackedElements()
+    if (remeasure) this.remeasureTrackedElements()
     if (!this.isScrolling) this.observeUnobservedElements()
     this.calculateRange({ reason })
     this.notifyStore()
@@ -1718,6 +1752,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     const size = this.readMeasuredSizeFromElement(element, index)
     if (size > 0) {
+      this.recordMeasuredKey(index)
       const knownSize = this.getKnownItemSize(index)
       if (knownSize === undefined || knownSize !== size) {
         // Cached first, so the ResizeObserver's initial callback is a no-op
@@ -1831,8 +1866,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       preserveAnchor && !followingEnd && nextOptions.count !== undefined && nextOptions.count !== this.options.count
     const anchor = shouldRestoreAnchor ? this.getScrollAnchor() : null
     const countChanged = nextOptions.count !== undefined && nextOptions.count !== this.options.count
-    // read with the old keys, so the sizes can follow their items to new indexes
-    const sizesByKey = countChanged ? this.getMeasuredSizesByKey() : null
 
     Object.assign(this.options, nextOptions)
     if (nextOptions.dir !== undefined) {
@@ -1848,10 +1881,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       }
     }
 
-    if (!changed) return
+    // a reorder keeps the count and reuses the callbacks, so only the keys show it
+    const keysMoved = this.hasReorderedItems()
+    const reordered = !countChanged && keysMoved
+    if (!changed && !reordered) return
 
     // Retention isn't geometry: keep sizes measured outside the viewport.
-    if (Object.keys(nextOptions).every((key) => key === "retainedIndexes")) {
+    if (!reordered && Object.keys(nextOptions).every((key) => key === "retainedIndexes")) {
       this.notifyStore()
       return
     }
@@ -1861,12 +1897,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const reason: RangeChangeReason =
       nextOptions.count !== undefined && nextOptions.count !== prev.count ? "count" : "manual"
 
-    if (reason === "count") {
-      if (this.options.count > prev.count) this.endReachedArmed = true
-      this.onItemsChanged(sizesByKey)
-    }
+    if (reason === "count" && this.options.count > prev.count) this.endReachedArmed = true
+    if (reason === "count" || reordered) this.onItemsChanged(this.getMeasuredSizesByKey())
 
-    this.forceUpdate({ reason })
+    // options can arrive before the framework renders, while the DOM still shows the old items
+    this.forceUpdate({ reason }, !keysMoved)
 
     if (anchor) {
       this.restoreScrollAnchor(anchor)

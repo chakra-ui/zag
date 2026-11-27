@@ -74,9 +74,10 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
     }
   }
 
-  // measured sizes survive a count change: by key when items have keys, else by index
+  // by key when items have keys, else by index
   protected onItemsChanged(sizesByKey?: Map<string | number, number> | null): void {
-    if (sizesByKey) this.itemSizeCache = this.getSizesByIndex(sizesByKey)
+    if (sizesByKey) this.remapMeasuredSizes(sizesByKey)
+    else if (this.itemSizeCache.size === 0) this.measuredKeys.clear()
     this.resetMeasurements()
   }
 
@@ -150,6 +151,7 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
       this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
+    this.recordMeasuredKey(index)
     const changed = this.sizeTracker.setMeasuredSize(index, size)
     if (!changed) return false
 
@@ -502,6 +504,10 @@ export class ListVirtualizer<T extends PropTypes = PropTypes> extends Virtualize
       nextCache.set(index + shift, size)
     }
     this.itemSizeCache = nextCache
+
+    const nextKeys = new Map<number, string | number>()
+    for (const [index, key] of this.measuredKeys) nextKeys.set(index + shift, key)
+    this.measuredKeys = nextKeys
   }
 
   override updateOptions(nextOptions: Partial<ListVirtualizerOptions>): void {

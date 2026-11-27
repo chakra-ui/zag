@@ -1,6 +1,6 @@
 import type { StickToBottomDetails } from "@zag-js/dom-query/scroll"
 import { mergeProps } from "@zag-js/solid"
-import { createEffect, createSignal, For, onCleanup, Show } from "solid-js"
+import { createSignal, createTrackedEffect, For, Show } from "solid-js"
 import { useListVirtualizer } from "../../hooks/use-virtualizer"
 
 const lines = [
@@ -15,23 +15,27 @@ export default function Page() {
   const [streaming, setStreaming] = createSignal(true)
   const [sticky, setSticky] = createSignal<StickToBottomDetails | null>(null)
 
-  const { virtualizer, ref } = useListVirtualizer(() => ({
-    count: messages().length,
-    estimatedItemSize: 48,
-    overscan: 6,
-    preserveScrollAnchor: true,
-    stickToEnd: true,
-    onStickToEndChange: setSticky,
-    indexToKey: (index: number) => messages()[index].id,
-    keyToIndex: (key: string | number) => Number(key) - messages()[0].id,
-  }))
+  // read the list once here, where it's tracked; the callbacks close over the plain array
+  const { virtualizer, ref } = useListVirtualizer(() => {
+    const list = messages()
+    return {
+      count: list.length,
+      estimatedItemSize: 48,
+      overscan: 6,
+      preserveScrollAnchor: true,
+      stickToEnd: true,
+      onStickToEndChange: setSticky,
+      indexToKey: (index: number) => list[index].id,
+      keyToIndex: (key: string | number) => Number(key) - list[0].id,
+    }
+  })
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!streaming()) return
     const timer = setInterval(() => {
       setMessages((prev) => [...prev, createMessage(prev[prev.length - 1].id + 1)])
     }, 700)
-    onCleanup(() => clearInterval(timer))
+    return () => clearInterval(timer)
   })
 
   const loadOlder = () => {
