@@ -1,14 +1,9 @@
 import type { Point, RectInit, Size } from "../geometry/types"
-import {
-  isBottomHandle,
-  isCornerHandle,
-  isHorizontalHandle,
-  isLeftHandle,
-  isRightHandle,
-  isTopHandle,
-  isVerticalHandle,
-  type HandlePosition,
-} from "./handle"
+import { hasEdge, isCorner, type HandlePlacement } from "./handle"
+
+// a handle on the middle of a side, not a corner
+const isSideX = (h: HandlePlacement) => h === "e" || h === "w"
+const isSideY = (h: HandlePlacement) => h === "n" || h === "s"
 
 /* -----------------------------------------------------------------------------
  * Options
@@ -17,7 +12,7 @@ import {
 export interface MoveOptions {
   /** Containing boundary rect. Move is unconstrained if omitted. */
   boundary?: RectInit | undefined
-  /** Snap-to-grid step size. Default: 1 (no snapping). */
+  /** The grid the box's position lands on. Default: 1 (no snapping). */
   gridSize?: number | undefined
 }
 
@@ -32,7 +27,7 @@ export interface ResizeOptions {
   aspectRatio?: number | undefined
   /** Scale from the opposite corner ("extent") or center ("center"). Default: "extent". */
   origin?: "extent" | "center" | undefined
-  /** Snap-to-grid step size for the pointer delta. Default: 1 (no snapping). */
+  /** The grid the moving edges land on. Default: 1 (no snapping). */
   gridSize?: number | undefined
 }
 
@@ -42,6 +37,9 @@ export interface ResizeOptions {
 
 const { min, max, abs, round } = Math
 const clamp = (v: number, lo: number, hi: number): number => min(max(v, lo), hi)
+
+// without a grid, fractional positions pass through untouched
+const snapToGrid = (value: number, grid: number) => (grid > 1 ? round(value / grid) * grid : value)
 
 interface Edges {
   left: number
@@ -95,29 +93,29 @@ function resolveLimitsWithAspect(limits: Limits, boundary: RectInit | undefined,
   return { minW, minH, maxW, maxH }
 }
 
-function applyDelta(edges: Edges, delta: Point, handle: HandlePosition, limits: Limits, boundary?: RectInit): Edges {
+function applyDelta(edges: Edges, delta: Point, handle: HandlePlacement, limits: Limits, boundary?: RectInit): Edges {
   let { left, top, right, bottom } = edges
   const { minW, minH, maxW, maxH } = limits
 
-  if (isLeftHandle(handle)) {
+  if (hasEdge(handle, "w")) {
     const lo = boundary ? max(boundary.x, right - maxW) : right - maxW
     const hi = right - minW
     left = clamp(left + delta.x, lo, hi)
   }
 
-  if (isRightHandle(handle)) {
+  if (hasEdge(handle, "e")) {
     const lo = left + minW
     const hi = boundary ? min(boundary.x + boundary.width, left + maxW) : left + maxW
     right = clamp(right + delta.x, lo, hi)
   }
 
-  if (isTopHandle(handle)) {
+  if (hasEdge(handle, "n")) {
     const lo = boundary ? max(boundary.y, bottom - maxH) : bottom - maxH
     const hi = bottom - minH
     top = clamp(top + delta.y, lo, hi)
   }
 
-  if (isBottomHandle(handle)) {
+  if (hasEdge(handle, "s")) {
     const lo = top + minH
     const hi = boundary ? min(boundary.y + boundary.height, top + maxH) : top + maxH
     bottom = clamp(bottom + delta.y, lo, hi)
@@ -174,14 +172,14 @@ function clampAspectSize(wHint: number, hHint: number, ar: number, lim: Limits, 
   return dh < dw ? byH : byW
 }
 
-function enforceAspect(edges: Edges, handle: HandlePosition, ar: number, lim: Limits, boundary?: RectInit): Edges {
+function enforceAspect(edges: Edges, handle: HandlePlacement, ar: number, lim: Limits, boundary?: RectInit): Edges {
   const { left, top, right, bottom } = edges
   const bw = boundary?.width ?? Infinity
   const bh = boundary?.height ?? Infinity
   const bx = boundary?.x ?? 0
   const by = boundary?.y ?? 0
 
-  if (isCornerHandle(handle)) {
+  if (isCorner(handle)) {
     let w = right - left
     let h = w / ar
 
@@ -194,19 +192,19 @@ function enforceAspect(edges: Edges, handle: HandlePosition, ar: number, lim: Li
     w = s.width
     h = s.height
 
-    if (isRightHandle(handle) && isBottomHandle(handle)) {
+    if (hasEdge(handle, "e") && hasEdge(handle, "s")) {
       return { left, top, right: left + w, bottom: top + h }
     }
-    if (isRightHandle(handle) && isTopHandle(handle)) {
+    if (hasEdge(handle, "e") && hasEdge(handle, "n")) {
       return { left, top: bottom - h, right: left + w, bottom }
     }
-    if (isLeftHandle(handle) && isBottomHandle(handle)) {
+    if (hasEdge(handle, "w") && hasEdge(handle, "s")) {
       return { left: right - w, top, right, bottom: top + h }
     }
     return { left: right - w, top: bottom - h, right, bottom }
   }
 
-  if (isHorizontalHandle(handle)) {
+  if (isSideX(handle)) {
     const centerY = (top + bottom) / 2
     let w = right - left
     let h = w / ar
@@ -231,14 +229,14 @@ function enforceAspect(edges: Edges, handle: HandlePosition, ar: number, lim: Li
     }
 
     return {
-      left: isRightHandle(handle) ? left : right - w,
+      left: hasEdge(handle, "e") ? left : right - w,
       top: newTop,
-      right: isRightHandle(handle) ? left + w : right,
+      right: hasEdge(handle, "e") ? left + w : right,
       bottom: newBottom,
     }
   }
 
-  if (isVerticalHandle(handle)) {
+  if (isSideY(handle)) {
     const centerX = (left + right) / 2
     let h = bottom - top
     let w = h * ar
@@ -264,9 +262,9 @@ function enforceAspect(edges: Edges, handle: HandlePosition, ar: number, lim: Li
 
     return {
       left: newLeft,
-      top: isBottomHandle(handle) ? top : bottom - h,
+      top: hasEdge(handle, "s") ? top : bottom - h,
       right: newRight,
-      bottom: isBottomHandle(handle) ? top + h : bottom,
+      bottom: hasEdge(handle, "s") ? top + h : bottom,
     }
   }
 
@@ -274,13 +272,13 @@ function enforceAspect(edges: Edges, handle: HandlePosition, ar: number, lim: Li
 }
 
 /* -----------------------------------------------------------------------------
- * Public API: centerInRect / centerOnPoint
+ * Public API: centerIn / centerOn
  * ---------------------------------------------------------------------------*/
 
 /**
  * Compute the position that centers a `size` within a boundary rect.
  */
-export function centerInRect(size: Size, boundary: RectInit): Point {
+export function centerIn(size: Size, boundary: RectInit): Point {
   return {
     x: boundary.x + max(0, (boundary.width - size.width) / 2),
     y: boundary.y + max(0, (boundary.height - size.height) / 2),
@@ -290,7 +288,7 @@ export function centerInRect(size: Size, boundary: RectInit): Point {
 /**
  * Center a rect (given by size) on a point, then clamp within a boundary.
  */
-export function centerOnPoint(size: Size, center: Point, boundary: RectInit): Point {
+export function centerOn(size: Size, center: Point, boundary: RectInit): Point {
   const pos = {
     x: center.x - size.width / 2,
     y: center.y - size.height / 2,
@@ -302,14 +300,14 @@ export function centerOnPoint(size: Size, center: Point, boundary: RectInit): Po
 }
 
 /* -----------------------------------------------------------------------------
- * Public API: clampPointInRange
+ * Public API: clampBetween
  * ---------------------------------------------------------------------------*/
 
 /**
  * Clamp a point's x/y independently between a min and max point.
  * Useful for constraining offsets, positions, or pan values.
  */
-export function clampPointInRange(point: Point, minPoint: Point, maxPoint: Point): Point {
+export function clampBetween(point: Point, minPoint: Point, maxPoint: Point): Point {
   return {
     x: clamp(point.x, minPoint.x, maxPoint.x),
     y: clamp(point.y, minPoint.y, maxPoint.y),
@@ -317,21 +315,18 @@ export function clampPointInRange(point: Point, minPoint: Point, maxPoint: Point
 }
 
 /* -----------------------------------------------------------------------------
- * Public API: applyMove
+ * Public API: moveBox
  * ---------------------------------------------------------------------------*/
 
 /**
  * Compute a new rect after moving by a pointer delta.
- * Grid-snaps the delta and clamps within the boundary.
+ * Snaps the position to the grid and clamps it within the boundary.
  */
-export function applyMove(rect: RectInit, delta: Point, options: MoveOptions = {}): RectInit {
+export function moveBox(rect: RectInit, delta: Point, options: MoveOptions = {}): RectInit {
   const { boundary, gridSize = 1 } = options
 
-  const dx = round(delta.x / gridSize) * gridSize
-  const dy = round(delta.y / gridSize) * gridSize
-
-  let x = rect.x + dx
-  let y = rect.y + dy
+  let x = snapToGrid(rect.x + delta.x, gridSize)
+  let y = snapToGrid(rect.y + delta.y, gridSize)
 
   if (boundary) {
     x = clamp(x, boundary.x, boundary.x + boundary.width - rect.width)
@@ -342,26 +337,38 @@ export function applyMove(rect: RectInit, delta: Point, options: MoveOptions = {
 }
 
 /* -----------------------------------------------------------------------------
- * Public API: applyResize
+ * Public API: resizeBox
  * ---------------------------------------------------------------------------*/
 
 /**
  * Compute a new rect after resizing via a handle drag.
  * Handles size limits, boundary containment, aspect ratio, and scaling origin.
  */
-export function applyResize(
+export function resizeBox(
   rect: RectInit,
   delta: Point,
-  handle: HandlePosition,
+  handle: HandlePlacement,
   options: ResizeOptions = {},
 ): RectInit {
   const { boundary, aspectRatio, origin = "extent", gridSize = 1 } = options
 
   const baseLimits = resolveLimits(options)
 
-  // only snap with a grid, so fractional pointer deltas pass through untouched
-  const snap = (value: number) => (gridSize > 1 ? round(value / gridSize) * gridSize : value)
-  const snapped = { x: snap(delta.x), y: snap(delta.y) }
+  // the moving edges land on grid lines, not just move in whole steps
+  const rectRight = rect.x + rect.width
+  const rectBottom = rect.y + rect.height
+  const snapped = {
+    x: hasEdge(handle, "w")
+      ? snapToGrid(rect.x + delta.x, gridSize) - rect.x
+      : hasEdge(handle, "e")
+        ? snapToGrid(rectRight + delta.x, gridSize) - rectRight
+        : delta.x,
+    y: hasEdge(handle, "n")
+      ? snapToGrid(rect.y + delta.y, gridSize) - rect.y
+      : hasEdge(handle, "s")
+        ? snapToGrid(rectBottom + delta.y, gridSize) - rectBottom
+        : delta.y,
+  }
   const effectiveDelta = origin === "center" ? { x: snapped.x * 2, y: snapped.y * 2 } : snapped
 
   // Step 1: Apply delta to edges with size constraints

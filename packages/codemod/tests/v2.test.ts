@@ -400,13 +400,14 @@ function B() { const api = select.connect(s, n); return api.getItemProps(p) }
   test("renames module exports", () => {
     const code = `
 import * as floating from "@zag-js/floating-panel"
-import { handles } from "@zag-js/image-cropper"
+import { handles, type HandlePosition } from "@zag-js/image-cropper"
 const axes: floating.ResizeTriggerAxis[] = floating.resizeTriggerAxes
-handles.map((position) => position)
+handles.map((position: HandlePosition) => position)
 `
     const result = out(code)
-    expect(result).toContain(`import { placements as handles } from "@zag-js/image-cropper"`)
-    expect(result).toContain(`const axes: floating.HandlePosition[] = floating.resizeTriggerPlacements`)
+    expect(result).toContain(`placements as handles`)
+    expect(result).toContain(`HandlePlacement as HandlePosition`)
+    expect(result).toContain(`const axes: floating.HandlePlacement[] = floating.resizeTriggerPlacements`)
   })
 
   test("follows async-list wrapped in a useAsyncList hook", () => {

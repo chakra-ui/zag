@@ -1,24 +1,20 @@
 import type { CompassDirection } from "../geometry/compass"
 
-export type HandlePosition = CompassDirection
+export type HandlePlacement = CompassDirection
 
-export const isLeftHandle = (h: HandlePosition): boolean => h === "w" || h === "nw" || h === "sw"
+export type HandleEdge = "n" | "e" | "s" | "w"
 
-export const isRightHandle = (h: HandlePosition): boolean => h === "e" || h === "ne" || h === "se"
+/**
+ * Whether a handle moves the given edge, so `hasEdge("ne", "e")` is true
+ */
+export const hasEdge = (handle: HandlePlacement, edge: HandleEdge): boolean => handle.includes(edge)
 
-export const isTopHandle = (h: HandlePosition): boolean => h === "n" || h === "nw" || h === "ne"
+/**
+ * Whether a handle sits on a corner, so it moves two edges
+ */
+export const isCorner = (handle: HandlePlacement): boolean => handle.length === 2
 
-export const isBottomHandle = (h: HandlePosition): boolean => h === "s" || h === "sw" || h === "se"
-
-export const isCornerHandle = (h: HandlePosition): boolean =>
-  (isLeftHandle(h) || isRightHandle(h)) && (isTopHandle(h) || isBottomHandle(h))
-
-export const isHorizontalHandle = (h: HandlePosition): boolean =>
-  (isLeftHandle(h) || isRightHandle(h)) && !isTopHandle(h) && !isBottomHandle(h)
-
-export const isVerticalHandle = (h: HandlePosition): boolean =>
-  (isTopHandle(h) || isBottomHandle(h)) && !isLeftHandle(h) && !isRightHandle(h)
-const CURSORS: Record<HandlePosition, string> = {
+const CURSORS: Record<HandlePlacement, string> = {
   n: "ns-resize",
   s: "ns-resize",
   e: "ew-resize",
@@ -32,7 +28,7 @@ const CURSORS: Record<HandlePosition, string> = {
 /**
  * The resize cursor for a handle. It points both ways, since a handle can grow or shrink the box.
  */
-export const getHandleCursor = (handle: HandlePosition): string => CURSORS[handle]
+export const handleCursor = (handle: HandlePlacement): string => CURSORS[handle]
 
 export interface HandleStyleOptions {
   /**
@@ -63,18 +59,18 @@ export type HandleStyle = {
 /**
  * Places a resize handle on its edge or corner of a positioned box.
  */
-export function getHandleStyle(handle: HandlePosition, options: HandleStyleOptions = {}): HandleStyle {
+export function handleStyle(handle: HandlePlacement, options: HandleStyleOptions = {}): HandleStyle {
   const { align = "inside", edgeLength = "100%" } = options
   // a centered handle straddles its edge; an inside one sits against it
   const start = align === "center" ? "-50%" : "0"
   const end = align === "center" ? "50%" : "0"
-  const style: HandleStyle = { position: "absolute", cursor: getHandleCursor(handle) }
+  const style: HandleStyle = { position: "absolute", cursor: handleCursor(handle) }
 
   let x = "-50%"
-  if (isLeftHandle(handle)) {
+  if (hasEdge(handle, "w")) {
     style.left = 0
     x = start
-  } else if (isRightHandle(handle)) {
+  } else if (hasEdge(handle, "e")) {
     style.right = 0
     x = end
   } else {
@@ -83,10 +79,10 @@ export function getHandleStyle(handle: HandlePosition, options: HandleStyleOptio
   }
 
   let y = "-50%"
-  if (isTopHandle(handle)) {
+  if (hasEdge(handle, "n")) {
     style.top = 0
     y = start
-  } else if (isBottomHandle(handle)) {
+  } else if (hasEdge(handle, "s")) {
     style.bottom = 0
     y = end
   } else {

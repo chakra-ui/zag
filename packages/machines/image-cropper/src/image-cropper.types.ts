@@ -1,9 +1,9 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, Size } from "@zag-js/types"
 
-import type { HandlePosition } from "@zag-js/utils/interaction"
+import type { HandlePlacement } from "@zag-js/utils/interaction"
 
-export type { HandlePosition }
+export type { HandlePlacement }
 
 export interface BoundingRect {
   width: number
@@ -225,7 +225,7 @@ export interface ImageCropperSchema {
     crop: Rect
     pointerStart: Point | null
     cropStart: Rect | null
-    handlePosition: HandlePosition | null
+    handlePlacement: HandlePlacement | null
     shiftLockRatio: number | null
     pinchDistance: number | null
     pinchMidpoint: Point | null
@@ -315,7 +315,7 @@ export interface HandleProps {
   /**
    * The placement of the handle
    */
-  placement: HandlePosition
+  placement: HandlePlacement
 }
 
 export interface GridProps {
@@ -467,7 +467,7 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
   /**
    * Function to resize the crop area from a handle programmatically.
    */
-  resize: (handlePosition: HandlePosition, delta: number) => void
+  resize: (handlePlacement: HandlePlacement, delta: number) => void
   /**
    * Function to set the crop area in viewport coordinates, constrained like `initialCrop`
    * (min/max size, aspect ratio and viewport bounds). Zoom, rotation, flip and pan are kept.

@@ -9,7 +9,7 @@ export type {
   ImageCropperService as Service,
   ElementIds,
   HandleProps,
-  HandlePosition,
+  HandlePlacement,
   GridProps,
   CropChangeDetails,
   FlipChangeDetails,

@@ -1,7 +1,7 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { canvasToBlob, cropImageToCanvas } from "@zag-js/dom-query/image"
 import { isVisibleSize, roundRect } from "@zag-js/utils/geometry"
-import { getHandleStyle, isBottomHandle, isLeftHandle, isRightHandle, isTopHandle } from "@zag-js/utils/interaction"
+import { handleStyle, hasEdge } from "@zag-js/utils/interaction"
 import type { NormalizeProps, PropTypes, Required } from "@zag-js/types"
 import { toPx } from "@zag-js/utils/number"
 import { mergeWithDefault } from "@zag-js/utils/object"
@@ -150,26 +150,26 @@ export function connect<T extends PropTypes>(
       send({ type: "SET_FLIP", flip: { vertical: nextValue } })
     },
 
-    resize(handlePosition, delta) {
-      if (!handlePosition) return
+    resize(handlePlacement, delta) {
+      if (!handlePlacement) return
       if (fixedCropArea) return
 
       let deltaX = 0
       let deltaY = 0
 
-      if (isLeftHandle(handlePosition)) {
+      if (hasEdge(handlePlacement, "w")) {
         deltaX = -delta
-      } else if (isRightHandle(handlePosition)) {
+      } else if (hasEdge(handlePlacement, "e")) {
         deltaX = delta
       }
 
-      if (isTopHandle(handlePosition)) {
+      if (hasEdge(handlePlacement, "n")) {
         deltaY = -delta
-      } else if (isBottomHandle(handlePosition)) {
+      } else if (hasEdge(handlePlacement, "s")) {
         deltaY = delta
       }
 
-      send({ type: "RESIZE_CROP", handlePosition, delta: { x: deltaX, y: deltaY } })
+      send({ type: "RESIZE_CROP", handlePlacement, delta: { x: deltaX, y: deltaY } })
     },
 
     setCrop(nextCrop) {
@@ -396,10 +396,10 @@ export function connect<T extends PropTypes>(
           }
 
           if (altKey) {
-            const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
+            const handlePlacement = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
             send({
               type: "NUDGE_RESIZE_CROP",
-              handlePosition,
+              handlePlacement,
               key,
               src,
               shiftKey,
@@ -417,16 +417,16 @@ export function connect<T extends PropTypes>(
     },
 
     getHandleProps(props) {
-      const handlePosition = props.placement
+      const handlePlacement = props.placement
       const disabled = !!fixedCropArea
 
       return normalize.element({
         ...parts.handle.attrs(scope.id),
-        "data-placement": handlePosition,
+        "data-placement": handlePlacement,
         "aria-hidden": "true",
         role: "presentation",
         "data-disabled": dataAttr(disabled),
-        style: getHandleStyle(handlePosition, { align: "center", edgeLength: "96%" }),
+        style: handleStyle(handlePlacement, { align: "center", edgeLength: "96%" }),
         onPointerDown(event) {
           if (disabled) {
             event.preventDefault()
@@ -435,7 +435,7 @@ export function connect<T extends PropTypes>(
           if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
 
-          send({ type: "POINTER_DOWN", point, handlePosition, pointerId: event.pointerId })
+          send({ type: "POINTER_DOWN", point, handlePlacement, pointerId: event.pointerId })
         },
       })
     },

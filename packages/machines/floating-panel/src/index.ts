@@ -25,4 +25,4 @@ export type {
   TriggerState,
 } from "./floating-panel.types"
 export type { Rect, Point, Size } from "@zag-js/utils/geometry"
-export type { HandlePosition } from "@zag-js/utils/interaction"
+export type { HandlePlacement } from "@zag-js/utils/interaction"

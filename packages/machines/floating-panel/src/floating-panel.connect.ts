@@ -1,5 +1,5 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { match } from "@zag-js/utils/functions"
 import { mergeWithDefault } from "@zag-js/utils/object"
 import { toPx } from "@zag-js/utils/number"
@@ -16,7 +16,7 @@ import type {
   StageTriggerState,
   TriggerState,
 } from "./floating-panel.types"
-import { getHandleStyle, getKeyboardResizeDelta } from "@zag-js/utils/interaction"
+import { arrowDelta, handleStyle, resizeKeyDelta } from "@zag-js/utils/interaction"
 import { defaultTranslations } from "./floating-panel.translations"
 
 const validStages = new Set(["minimized", "maximized", "default"])
@@ -188,29 +188,12 @@ export function connect<T extends PropTypes>(
 
           if (event.currentTarget !== getEventTarget(event)) return
 
-          const step = getEventStep(event) * prop("gridSize")
-          const keyMap: EventKeyMap = {
-            ArrowLeft() {
-              send({ type: "MOVE", direction: "left", step })
-            },
-            ArrowRight() {
-              send({ type: "MOVE", direction: "right", step })
-            },
-            ArrowUp() {
-              send({ type: "MOVE", direction: "up", step })
-            },
-            ArrowDown() {
-              send({ type: "MOVE", direction: "down", step })
-            },
-          }
-
           // physical arrows, even in RTL
-          const handler = keyMap[getEventKey(event)]
+          const delta = arrowDelta(getEventKey(event), getEventStep(event) * prop("gridSize"))
+          if (!delta.x && !delta.y) return
 
-          if (handler) {
-            event.preventDefault()
-            handler(event)
-          }
+          event.preventDefault()
+          send({ type: "MOVE", delta })
         },
       })
     },
@@ -277,7 +260,7 @@ export function connect<T extends PropTypes>(
           if (!isGrip || event.defaultPrevented) return
           if (event.altKey || event.ctrlKey || event.metaKey) return
           const step = getEventStep(event) * prop("gridSize")
-          const delta = getKeyboardResizeDelta(event.key, props.placement, step)
+          const delta = resizeKeyDelta(event.key, props.placement, step)
           if (!delta.x && !delta.y) return
           event.preventDefault()
           send({ type: "RESIZE", placement: props.placement, delta })
@@ -305,7 +288,7 @@ export function connect<T extends PropTypes>(
         },
         style: {
           touchAction: "none",
-          ...getHandleStyle(props.placement),
+          ...handleStyle(props.placement),
         },
       })
     },

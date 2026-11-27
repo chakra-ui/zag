@@ -566,7 +566,9 @@ export const machine = createMachine<ScrollAreaSchema>({
             send({ type: "thumb.pointermove", orientation, point })
           },
           onEnd() {
-            send({ type: "thumb.pointerup", orientation })
+            // a track press keeps its scrolling state; a thumb drag clears it
+            const type = event.type === "scrollbar.pointerdown" ? "scrollbar.pointerup" : "thumb.pointerup"
+            send({ type, orientation })
           },
         })
       },

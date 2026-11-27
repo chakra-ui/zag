@@ -1,6 +1,6 @@
 import type { PropFn } from "@zag-js/core"
 import { getCenterPoint, ZERO_POINT } from "@zag-js/utils/geometry"
-import { applyResize, clampPointInRange } from "@zag-js/utils/interaction"
+import { resizeBox, clampBetween } from "@zag-js/utils/interaction"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { isBoolean } from "@zag-js/utils/guard"
 import type { FlipState, ImageCropperProps, ImageCropperSchema } from "../image-cropper.types"
@@ -22,13 +22,13 @@ interface ConstrainCropOptions {
 
 export function constrainCrop(options: ConstrainCropOptions): Rect {
   const { crop, viewportRect, minSize, maxSize, aspectRatio } = options
-  const { width, height } = applyResize({ x: 0, y: 0, width: crop.width, height: crop.height }, ZERO_POINT, "se", {
+  const { width, height } = resizeBox({ x: 0, y: 0, width: crop.width, height: crop.height }, ZERO_POINT, "se", {
     boundary: { x: 0, y: 0, width: viewportRect.width, height: viewportRect.height },
     minSize,
     maxSize,
     aspectRatio,
   })
-  const { x, y } = clampPointInRange(crop, ZERO_POINT, getMaxBounds({ width, height }, viewportRect))
+  const { x, y } = clampBetween(crop, ZERO_POINT, getMaxBounds({ width, height }, viewportRect))
   return { x, y, width, height }
 }
 
@@ -82,7 +82,7 @@ export function clampOffset(params: ClampOffsetParams): Point {
       y: crop.y - center.y + aabb.height / 2,
     }
 
-    return clampPointInRange(offset, minPoint, maxPoint)
+    return clampBetween(offset, minPoint, maxPoint)
   }
 
   const aabb = computeAABB(viewportSize, zoom, rot.cos, rot.sin)
@@ -93,7 +93,7 @@ export function clampOffset(params: ClampOffsetParams): Point {
   const minPoint = { x: -extraWidth / 2, y: -extraHeight / 2 }
   const maxPoint = { x: extraWidth / 2, y: extraHeight / 2 }
 
-  return clampPointInRange(offset, minPoint, maxPoint)
+  return clampBetween(offset, minPoint, maxPoint)
 }
 
 /* -----------------------------------------------------------------------------

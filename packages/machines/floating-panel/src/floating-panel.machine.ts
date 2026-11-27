@@ -20,7 +20,7 @@ import {
   type RectInit,
   type Size,
 } from "@zag-js/utils/geometry"
-import { applyMove, applyResize, centerInRect, getDirectionDelta } from "@zag-js/utils/interaction"
+import { centerIn, moveBox, resizeBox } from "@zag-js/utils/interaction"
 import { clampValue } from "@zag-js/utils/number"
 import { mergeWithDefault, pick } from "@zag-js/utils/object"
 import { ensureProps } from "@zag-js/utils/guard"
@@ -243,10 +243,10 @@ export const machine = createMachine<FloatingPanelSchema>({
               actions: ["setRestored"],
             },
             MOVE: {
-              actions: ["setPositionFromKeyboard", "invokeOnDragEnd", "announcePosition"],
+              actions: ["moveFromKeyboard"],
             },
             RESIZE: {
-              actions: ["setSizeFromKeyboard", "invokeOnResizeEnd", "announceSize"],
+              actions: ["resizeFromKeyboard"],
             },
           },
         },
@@ -433,7 +433,7 @@ export const machine = createMachine<FloatingPanelSchema>({
 
         // If no anchor position specified, center in boundary
         if (!anchorPosition) {
-          anchorPosition = centerInRect(context.get("size"), boundaryRect)
+          anchorPosition = centerIn(context.get("size"), boundaryRect)
         }
 
         if (!anchorPosition) return
@@ -464,7 +464,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, prop("allowOverflow"))
         const size = context.get("size")
 
-        const result = applyMove({ ...prevPosition, ...size }, delta, {
+        const result = moveBox({ ...prevPosition, ...size }, delta, {
           boundary: boundaryRect,
           gridSize: prop("gridSize"),
         })
@@ -533,7 +533,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const lockAspect = !!prop("lockAspectRatio") || event.shiftKey
         const aspectRatio = lockAspect ? prevSize.width / prevSize.height : undefined
 
-        const result = applyResize({ ...prevPosition, ...prevSize }, delta, event.placement, {
+        const result = resizeBox({ ...prevPosition, ...prevSize }, delta, event.placement, {
           boundary: boundaryRect,
           minSize: prop("minSize"),
           maxSize: prop("maxSize"),
@@ -632,31 +632,39 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("prevPosition", null)
       },
 
-      setPositionFromKeyboard({ context, event, prop, scope }) {
-        const size = context.get("size")
+      moveFromKeyboard(params) {
+        const { context, event, prop, scope } = params
         const position = context.get("position")
-        const boundaryEl = prop("getBoundaryEl")?.()
-        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
+        const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
-        const delta = getDirectionDelta(event.direction, event.step)
-        const result = applyMove({ ...position, ...size }, delta, { boundary: boundaryRect })
+        const result = moveBox({ ...position, ...context.get("size") }, event.delta, { boundary: boundaryRect })
+        const next = pick(result, ["x", "y"])
+        // blocked at the edge: nothing to report
+        if (isPointEqual(position, next)) return
 
-        context.set("position", pick(result, ["x", "y"]))
+        context.set("position", next)
+        prop("onPositionChangeEnd")?.({ position: next })
+        announce(params, (t) => t.moved({ position: next }))
       },
 
-      setSizeFromKeyboard({ context, event, prop, scope }) {
+      resizeFromKeyboard(params) {
+        const { context, event, prop, scope } = params
         const size = context.get("size")
         const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
-        const result = applyResize({ ...context.get("position"), ...size }, event.delta, event.placement, {
+        const result = resizeBox({ ...context.get("position"), ...size }, event.delta, event.placement, {
           boundary: boundaryRect,
           minSize: prop("minSize"),
           maxSize: prop("maxSize"),
           aspectRatio: prop("lockAspectRatio") ? size.width / size.height : undefined,
         })
+        const next = pick(result, ["width", "height"])
+        if (isSizeEqual(size, next)) return
 
-        context.set("size", pick(result, ["width", "height"]))
+        context.set("size", next)
         context.set("position", pick(result, ["x", "y"]))
+        prop("onSizeChangeEnd")?.({ size: next })
+        announce(params, (t) => t.resized({ size: next }))
       },
 
       announcePosition(params) {

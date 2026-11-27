@@ -12,7 +12,7 @@
   let zoom = $state(1)
   let rotation = $state(0)
   let flip = $state<imageCropper.FlipState>({ horizontal: false, vertical: false })
-  let selectedHandle = $state<imageCropper.HandlePosition>("e")
+  let selectedHandle = $state<imageCropper.HandlePlacement>("e")
   let resizeStep = $state(10)
   let croppedImageUrl = $state<string | null>(null)
   let isExporting = $state(false)
@@ -173,7 +173,7 @@
       <select
         data-testid="resize-handle-select"
         value={selectedHandle}
-        onchange={(event) => (selectedHandle = event.currentTarget.value as imageCropper.HandlePosition)}
+        onchange={(event) => (selectedHandle = event.currentTarget.value as imageCropper.HandlePlacement)}
       >
         {#each imageCropper.placements as placement (placement)}
           <option value={placement}>{placement}</option>

@@ -182,9 +182,12 @@ export const PROP_RENAMES: Record<string, PropRule[]> = {
 export const EXPORT_RENAMES: Record<string, PropRule[]> = {
   "floating-panel": [
     { from: "resizeTriggerAxes", to: "resizeTriggerPlacements" },
-    { from: "ResizeTriggerAxis", to: "HandlePosition" },
+    { from: "ResizeTriggerAxis", to: "HandlePlacement" },
   ],
-  "image-cropper": [{ from: "handles", to: "placements" }],
+  "image-cropper": [
+    { from: "handles", to: "placements" },
+    { from: "HandlePosition", to: "HandlePlacement" },
+  ],
 }
 
 /** Keys renamed inside the `ids` and `translations` props. */

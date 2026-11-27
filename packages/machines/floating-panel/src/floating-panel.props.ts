@@ -1,4 +1,4 @@
-import type { HandlePosition } from "@zag-js/utils/interaction"
+import type { HandlePlacement } from "@zag-js/utils/interaction"
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils/object"
 import type { FloatingPanelProps, ResizeTriggerProps } from "./floating-panel.types"
@@ -43,4 +43,4 @@ export const splitProps = createSplitProps<Partial<FloatingPanelProps>>(props)
 export const resizeTriggerProps = createProps<ResizeTriggerProps>()(["placement"])
 export const splitResizeTriggerProps = createSplitProps<Partial<ResizeTriggerProps>>(resizeTriggerProps)
 
-export const resizeTriggerPlacements: HandlePosition[] = ["n", "e", "s", "w", "ne", "nw", "se", "sw"]
+export const resizeTriggerPlacements: HandlePlacement[] = ["n", "e", "s", "w", "ne", "nw", "se", "sw"]

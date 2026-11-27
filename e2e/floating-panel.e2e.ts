@@ -213,10 +213,15 @@ test.describe("floating-panel", () => {
   test("snaps a pointer resize to the grid", async () => {
     await I.controls.num("gridSize", "20")
     await I.clickTrigger()
-    const { width, height } = await I.getContentSize()
+    const before = await I.getContentSize()
 
     await I.resizeBy("se", { x: 33, y: 47 })
-    await I.seeContentHasSize(width + 40, height + 40, 0.5)
+    const after = await I.getContentSize()
+
+    // the moved edges land on grid lines
+    expect(Math.round(after.x + after.width) % 20).toBe(0)
+    expect(Math.round(after.y + after.height) % 20).toBe(0)
+    expect(after.width).toBeGreaterThan(before.width)
   })
 
   test("should revert position when pressing escape during drag", async () => {

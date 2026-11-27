@@ -16,19 +16,19 @@ import {
   type RectInit,
 } from "@zag-js/utils/geometry"
 import {
-  applyMove,
-  applyResize,
-  centerOnPoint,
-  centerInRect,
-  clampPointInRange,
-  getArrowKeyDelta,
-  getKeyboardResizeDelta,
+  moveBox,
+  resizeBox,
+  centerOn,
+  centerIn,
+  clampBetween,
+  arrowDelta,
+  resizeKeyDelta,
 } from "@zag-js/utils/interaction"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll } from "@zag-js/utils/functions"
 import { clampValue } from "@zag-js/utils/number"
 import * as dom from "./image-cropper.dom"
-import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
+import type { BoundingRect, FlipState, HandlePlacement, ImageCropperSchema } from "./image-cropper.types"
 import {
   clampOffset,
   computeDefaultCropDimensions,
@@ -47,7 +47,7 @@ import {
 const toRectBoundary = (vr: Size): RectInit => ({ x: 0, y: 0, width: vr.width, height: vr.height })
 
 function constrainCropSize(rect: Rect, viewportRect: Size, minSize: Size, maxSize: Size, aspectRatio?: number): Size {
-  const result = applyResize(rect, ZERO_POINT, "se", {
+  const result = resizeBox(rect, ZERO_POINT, "se", {
     boundary: toRectBoundary(viewportRect),
     minSize,
     maxSize,
@@ -96,7 +96,7 @@ export const machine = createMachine<ImageCropperSchema>({
       cropStart: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
-      handlePosition: bindable<HandlePosition | null>(() => ({
+      handlePlacement: bindable<HandlePlacement | null>(() => ({
         defaultValue: null,
       })),
       shiftLockRatio: bindable<number | null>(() => ({
@@ -356,7 +356,7 @@ export const machine = createMachine<ImageCropperSchema>({
           aspectRatio,
         )
 
-        const { x, y } = centerInRect({ width, height }, { x: 0, y: 0, ...viewportRect })
+        const { x, y } = centerIn({ width, height }, { x: 0, y: 0, ...viewportRect })
 
         context.set("crop", { x, y, width, height })
         context.set("viewportRect", viewportRect)
@@ -390,7 +390,7 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateCrop({ context, event, prop }) {
-        const handlePosition = context.get("handlePosition")
+        const handlePlacement = context.get("handlePlacement")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
         const viewportRect = context.get("viewportRect")
@@ -408,7 +408,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         let nextCrop: Rect
 
-        if (handlePosition) {
+        if (handlePlacement) {
           const allowShiftLock = typeof aspectRatioProp === "undefined" && cropShape !== "circle"
           if (allowShiftLock) {
             if (event.shiftKey) {
@@ -429,7 +429,7 @@ export const machine = createMachine<ImageCropperSchema>({
             context.set("shiftLockRatio", null)
           }
 
-          nextCrop = applyResize(cropStart, delta, handlePosition, {
+          nextCrop = resizeBox(cropStart, delta, handlePlacement, {
             boundary,
             minSize,
             maxSize,
@@ -437,7 +437,7 @@ export const machine = createMachine<ImageCropperSchema>({
             origin: event.altKey ? "center" : "extent",
           })
         } else {
-          nextCrop = applyMove(cropStart, delta, { boundary })
+          nextCrop = moveBox(cropStart, delta, { boundary })
         }
 
         context.set("crop", nextCrop)
@@ -469,9 +469,9 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       setHandlePosition({ event, context }) {
-        const position = event.handlePosition
+        const position = event.handlePlacement
         if (!position) return
-        context.set("handlePosition", position)
+        context.set("handlePlacement", position)
       },
 
       setRotation({ context, event }) {
@@ -490,8 +490,8 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       resizeCrop({ context, event, prop }) {
-        const { handlePosition, delta } = event
-        if (!handlePosition) return
+        const { handlePlacement, delta } = event
+        if (!handlePlacement) return
 
         const viewportRect = context.get("viewportRect")
         if (!isVisibleSize(viewportRect)) return
@@ -501,7 +501,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const { minSize, maxSize } = getCropSizeLimits(prop)
 
         const crop = context.get("crop")
-        const nextCrop = applyResize(crop, delta, handlePosition, {
+        const nextCrop = resizeBox(crop, delta, handlePlacement, {
           boundary: toRectBoundary(viewportRect),
           minSize,
           maxSize,
@@ -520,7 +520,7 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       clearHandlePosition({ context }) {
-        context.set("handlePosition", null)
+        context.set("handlePlacement", null)
       },
 
       clearOffsetStart({ context }) {
@@ -695,7 +695,7 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       nudgeResizeCrop({ context, event, prop }) {
-        const { key, handlePosition, shiftKey, ctrlKey, metaKey } = event
+        const { key, handlePlacement, shiftKey, ctrlKey, metaKey } = event
         const crop = context.get("crop")
         const viewportRect = context.get("viewportRect")
 
@@ -704,8 +704,8 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const aspectRatio = resolveCropAspectRatio(prop("cropShape"), prop("aspectRatio"))
 
-        const delta = getKeyboardResizeDelta(key, handlePosition, step)
-        const nextCrop = applyResize(crop, delta, handlePosition, {
+        const delta = resizeKeyDelta(key, handlePlacement, step)
+        const nextCrop = resizeBox(crop, delta, handlePlacement, {
           boundary: toRectBoundary(viewportRect),
           minSize,
           maxSize,
@@ -732,8 +732,8 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportRect = context.get("viewportRect")
 
         const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
-        const delta = getArrowKeyDelta(key, step)
-        const nextCrop = applyMove(crop, delta, { boundary: toRectBoundary(viewportRect) })
+        const delta = arrowDelta(key, step)
+        const nextCrop = moveBox(crop, delta, { boundary: toRectBoundary(viewportRect) })
 
         context.set("crop", nextCrop)
       },
@@ -745,7 +745,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportRect = context.get("viewportRect")
 
         const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
-        const delta = getArrowKeyDelta(key, step)
+        const delta = arrowDelta(key, step)
 
         const nextOffset = clampOffset({
           zoom,
@@ -801,7 +801,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const constrainedCrop = constrainCropSize(newCrop, newViewportRect, minSize, maxSize, aspectRatio)
 
         const max = getMaxBounds(constrainedCrop, newViewportRect)
-        const { x, y } = clampPointInRange(newCrop, ZERO_POINT, max)
+        const { x, y } = clampBetween(newCrop, ZERO_POINT, max)
 
         context.set("crop", {
           x,
@@ -842,7 +842,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         // Re-center the constrained crop on the original center
         const center = getCenterPoint(crop)
-        const pos = centerOnPoint(constrainedCrop, center, { x: 0, y: 0, ...viewportRect })
+        const pos = centerOn(constrainedCrop, center, { x: 0, y: 0, ...viewportRect })
 
         context.set("crop", {
           x: pos.x,

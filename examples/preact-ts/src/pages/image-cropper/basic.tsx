@@ -12,7 +12,7 @@ export default function Page() {
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
   const [flip, setFlip] = useState<imageCropper.FlipState>({ horizontal: false, vertical: false })
-  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("e")
+  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePlacement>("e")
   const [resizeStep, setResizeStep] = useState(10)
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
@@ -178,7 +178,7 @@ export default function Page() {
             <select
               data-testid="resize-handle-select"
               value={selectedHandle}
-              onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePosition)}
+              onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePlacement)}
             >
               {imageCropper.placements.map((placement) => (
                 <option key={placement} value={placement}>

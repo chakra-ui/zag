@@ -2,7 +2,7 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { AnimationFrame } from "@zag-js/dom-query"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Point, Size } from "@zag-js/utils/geometry"
-import type { HandlePosition } from "@zag-js/utils/interaction"
+import type { HandlePlacement } from "@zag-js/utils/interaction"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -292,7 +292,7 @@ export interface ResizeTriggerProps {
   /**
    * The placement of the resize handle
    */
-  placement: HandlePosition
+  placement: HandlePlacement
 }
 
 export interface StageTriggerProps {
@@ -371,7 +371,7 @@ export interface ResizeTriggerState {
   /**
    * The placement of the resize handle
    */
-  placement: HandlePosition
+  placement: HandlePlacement
   /**
    * Whether the resize trigger is disabled
    */
