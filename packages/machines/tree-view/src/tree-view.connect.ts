@@ -572,6 +572,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         ...parts.nodeCheckbox.attrs(scope.id),
         tabIndex: -1,
         role: "checkbox",
+        "aria-label": collection.stringifyNode(props.node) || undefined,
         "aria-checked": checkedState === true ? "true" : checkedState === false ? "false" : "mixed",
         "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
         "data-disabled": dataAttr(nodeState.disabled),
