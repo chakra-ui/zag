@@ -169,7 +169,7 @@ export const machine = createMachine<TreeViewSchema>({
     "NODE.ARROW_DOWN": [
       {
         guard: and("isShiftKey", "isMultipleSelection"),
-        actions: ["focusTreeNextNode", "extendSelectionToNextNode"],
+        actions: ["extendSelectionToNextNode", "focusTreeNextNode"],
       },
       {
         actions: ["focusTreeNextNode"],
@@ -178,7 +178,7 @@ export const machine = createMachine<TreeViewSchema>({
     "NODE.ARROW_UP": [
       {
         guard: and("isShiftKey", "isMultipleSelection"),
-        actions: ["focusTreePrevNode", "extendSelectionToPrevNode"],
+        actions: ["extendSelectionToPrevNode", "focusTreePrevNode"],
       },
       {
         actions: ["focusTreePrevNode"],
