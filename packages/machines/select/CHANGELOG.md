@@ -1,5 +1,50 @@
 # @zag-js/select
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add a select-all option for `multiple` with
+  `getSelectAllProps` and `getSelectAllState`. It comes first in keyboard order and reads as checked, unchecked or
+  mixed. It renders with the item part and `data-type="select-all"`; regular items get `data-type="item"`.
+
+  ```tsx
+  <ul {...api.getListProps()}>
+    <li {...api.getSelectAllProps()}>Select all</li>
+    {items.map((item) => (
+      <li key={item.value} {...api.getItemProps({ item })}>
+        {item.label}
+      </li>
+    ))}
+  </ul>
+  ```
+
+  - Add Page Up and Page Down to move the highlight by `pageSize` items (default `10`).
+
+  - Fix `selectAll()` and `Ctrl/Cmd+A` selecting disabled items.
+
+  - Scroll the items' own scrolling element when it sits inside the list, so a select-all option above it stays in view.
+
+  - Speed up rendering with many selected items: 10k selected items render in ~3ms instead of ~465ms.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

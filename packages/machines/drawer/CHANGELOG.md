@@ -1,5 +1,63 @@
 # @zag-js/drawer
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Replace `trapFocus` and `preventScroll`
+  with `modal`. `modal: "trap-focus"` traps focus without locking scroll or blocking the page.
+
+  ```diff
+  - trapFocus: true, preventScroll: false
+  + modal: "trap-focus"
+  ```
+
+  - Keep a non-modal drawer open on outside click by default, like dialog.
+
+  - Add keyboard support to the grabber when there are several snap points: press to step, arrow keys, Home and End,
+    with a `translations.grabber` label.
+
+  - Add CSS variables to the content and backdrop for motion tied to the drawer's position, and `data-snap-point` on the
+    content and grabber.
+
+    | Variable            | Value                                                          |
+    | ------------------- | -------------------------------------------------------------- |
+    | `--drawer-progress` | 0 to 1 as the drawer opens                                     |
+    | `--drawer-dim`      | 0 to 1 for the backdrop, easing off during a swipe to close    |
+    | `--drawer-expand`   | 0 to 1 as the drawer moves between its two largest snap points |
+    | `--drawer-stack`    | how many drawers are open on top of this one                   |
+
+    ```css
+    [data-drawer-backdrop] {
+      opacity: var(--drawer-dim);
+    }
+    ```
+
+  - Let `data-swipe-ignore` keep a drawer from swiping, alongside `data-no-drag`.
+
+  - Fix the backdrop clearing at once when a swipe closes the drawer, and lightening when it's pulled further open.
+
+  - Fix a fast swipe's speed carrying over to the next open or snap, and the documented defaults of
+    `swipeVelocityThreshold` (500) and `closeThreshold` (0.5).
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/aria-hidden@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-trap@2.0.0-next.5
+  - @zag-js/remove-scroll@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

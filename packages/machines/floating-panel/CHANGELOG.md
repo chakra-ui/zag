@@ -1,5 +1,38 @@
 # @zag-js/floating-panel
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Resize the panel with the arrow keys from its `se`
+  resize trigger; Shift resizes ten times as far.
+
+  - Announce moves and resizes, with the `resizeTrigger`, `moved` and `resized` translations, and hide the other resize
+    triggers from screen readers.
+
+  - Call `onPositionChangeEnd` and `onSizeChangeEnd` after keyboard moves and resizes, but not when one is blocked.
+
+  - Snap `gridSize` to grid lines in pointer resizes too.
+
+  - Undo a cancelled drag, and use two-way resize cursors on handles.
+
+  - Fix arrow keys moving the panel the wrong way in RTL, and a click on the title bar nudging the panel.
+
+  - Follow only the pointer that started a drag.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

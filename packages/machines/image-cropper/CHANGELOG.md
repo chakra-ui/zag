@@ -1,5 +1,43 @@
 # @zag-js/image-cropper
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Measure `getCropData()` in the flipped,
+  then rotated image, so `x`, `y`, `width` and `height` stay exact under rotation and can be passed to `cropImage`.
+  Rename its `rotate` to `rotation`.
+
+  ```diff
+  - const { rotate } = api.getCropData()
+  + const { rotation } = api.getCropData()
+  ```
+
+  - **Breaking:** Rename the `HandlePosition` type to `HandlePlacement`.
+
+  - Restore the crop or pan on Escape, and undo a cancelled drag instead of committing it.
+
+  - Use two-way resize cursors on handles, like `ew-resize`.
+
+  - Fix `getCroppedImage` exporting a rectangle when `cropShape` is `"circle"`.
+
+  - Fix arrow keys moving the selection the wrong way in RTL, and a canceled pointer leaving the cropper mid-drag.
+
+  - Follow only the pointer that started a drag.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Patch Changes

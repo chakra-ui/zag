@@ -1,5 +1,44 @@
 # @zag-js/toast
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Announce toasts through shared live regions: errors
+  assertively, others politely, a burst as one announcement, and an update only when its text changes. The group no
+  longer has `aria-live`, and each toast is a `group` instead of a `status`.
+
+  - Pass the click event to `action.onClick`; call `event.preventDefault()` to keep the toast open.
+
+    ```ts
+    const id = toaster.create({
+      title: "Message archived",
+      action: {
+        label: "Undo",
+        onClick(event) {
+          event.preventDefault() // stays open while the request runs
+          undoArchive().then(() => toaster.dismiss(id))
+        },
+      },
+    })
+    ```
+
+  - Dismiss a toast with a quick flick, even a short one: it must travel more than 8px at 0.3 px/ms or faster.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes
