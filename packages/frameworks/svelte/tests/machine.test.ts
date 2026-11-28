@@ -1119,3 +1119,41 @@ describe("edge cases", () => {
     await cleanup()
   })
 })
+
+describe("nested send", () => {
+  test("an event sent from an action runs after the current transition", async () => {
+    const seen: string[] = []
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      on: {
+        NESTED: { actions: ["recordNested"] },
+      },
+      states: {
+        idle: {
+          on: { OUTER: { actions: ["sendNested", "recordOuter"] } },
+        },
+      },
+      implementations: {
+        actions: {
+          sendNested({ send }) {
+            send({ type: "NESTED" })
+          },
+          recordOuter({ event }) {
+            seen.push(`outer:${event.type}`)
+          },
+          recordNested({ event }) {
+            seen.push(`nested:${event.type}`)
+          },
+        },
+      },
+    })
+
+    const { send, cleanup } = renderMachine(machine)
+    await send({ type: "OUTER" })
+
+    expect(seen).toEqual(["outer:OUTER", "nested:NESTED"])
+    await cleanup()
+  })
+})

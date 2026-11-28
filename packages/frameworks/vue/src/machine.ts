@@ -339,14 +339,32 @@ export function useMachine<T extends MachineSchema>(
 
   const replaceTracker = createReplaceTracker()
 
+  let processing = false
+  const queue: any[] = []
+
+  // An event sent while another is being processed waits for it to finish, so actions keep reading their own event
+  const dispatch = (event: any) => {
+    if (processing) {
+      queue.push(event)
+      return
+    }
+    processing = true
+    try {
+      processEvent(event)
+      while (queue.length) processEvent(queue.shift())
+    } finally {
+      processing = false
+    }
+  }
+
   const send = (event: any) => {
     const key = event.replaces
-    if (!key) return processEvent(event)
+    if (!key) return dispatch(event)
     // A later event with the same key replaces this one if it hasn't run yet
     const token = replaceTracker.claim(key)
     queueMicrotask(() => {
       if (replaceTracker.isReplaced(key, token)) return
-      processEvent(event)
+      dispatch(event)
     })
   }
 
