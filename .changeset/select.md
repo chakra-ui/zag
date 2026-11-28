@@ -24,3 +24,5 @@
 - Scroll the items' own scrolling element when it sits inside the list, so a select-all option above it stays in view.
 
 - Speed up rendering with many selected items: 10k selected items render in ~3ms instead of ~465ms.
+
+- Fix `aria-labelledby` pointing to a missing element when the label part isn't rendered.

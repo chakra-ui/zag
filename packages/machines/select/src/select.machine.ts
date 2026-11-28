@@ -14,7 +14,7 @@ import {
   trackFormControl,
   whenNode,
 } from "@zag-js/dom-query"
-import { createSharedMutationObserver, resizeObserverContentBox } from "@zag-js/dom-query/observe"
+import { createSharedMutationObserver, resizeObserverContentBox, trackRenderedParts } from "@zag-js/dom-query/observe"
 import { isScrollable, scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/dom-query/live-region"
@@ -62,6 +62,9 @@ export const machine = createMachine<SelectSchema>({
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
       layer: bindable<LayerSnapshot | null>(() => ({
         defaultValue: null,
       })),
@@ -221,7 +224,7 @@ export const machine = createMachine<SelectSchema>({
     },
   },
 
-  effects: ["trackFormControlState"],
+  effects: ["trackFormControlState", "trackRenderedElements"],
 
   states: {
     idle: {
@@ -584,6 +587,15 @@ export const machine = createMachine<SelectSchema>({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },

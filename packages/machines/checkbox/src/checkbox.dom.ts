@@ -7,3 +7,4 @@ export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `${ctx.id}:contr
 export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `${ctx.id}:input`
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

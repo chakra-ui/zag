@@ -270,6 +270,7 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
      * The computed layer stack state used for declarative styles and attributes.
      */
     layer: LayerSnapshot | null
+    rendered: { label: boolean }
     currentPlacement: Placement | undefined
     value: string[]
     highlightedValue: string | null

@@ -424,6 +424,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
      * The computed layer stack state used for declarative styles and attributes.
      */
     layer: LayerSnapshot | null
+    rendered: { label: boolean }
     value: string[]
     inputValue: string
     highlightedValue: string | null

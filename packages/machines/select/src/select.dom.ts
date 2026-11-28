@@ -194,3 +194,5 @@ export const getItemEl = (ctx: Scope, id: string | number | null) => {
 
 /** Whether a pinned option is rendered and showing, so the keyboard can reach it */
 export const isShown = (el: HTMLElement | null) => !!el && !el.hidden
+export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))
