@@ -74,6 +74,16 @@
           "default": "./dist/observe/index.js"
         }
       },
+      "./live-region": {
+        "import": {
+          "types": "./dist/live-region/index.d.mts",
+          "default": "./dist/live-region/index.mjs"
+        },
+        "require": {
+          "types": "./dist/live-region/index.d.ts",
+          "default": "./dist/live-region/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

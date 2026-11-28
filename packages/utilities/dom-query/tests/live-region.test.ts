@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
-import { createLiveRegion } from "../src"
+import { createLiveRegion } from "../src/live-region"
 
 const regions = () => Array.from(document.querySelectorAll("[data-live-announcer]"))
 

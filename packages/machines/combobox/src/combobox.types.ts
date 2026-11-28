@@ -4,7 +4,7 @@ import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable
 import type { AnimationFrame, ModifierKeys } from "@zag-js/dom-query"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
-import type { LiveRegion } from "@zag-js/live-region"
+import type { LiveRegion } from "@zag-js/dom-query/live-region"
 
 /* -----------------------------------------------------------------------------
  * Callback details

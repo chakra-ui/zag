@@ -17,7 +17,7 @@ import {
 import { createSharedMutationObserver, resizeObserverContentBox } from "@zag-js/dom-query/observe"
 import { isScrollable, scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove } from "@zag-js/utils/array"
 import { isEqual } from "@zag-js/utils/object"

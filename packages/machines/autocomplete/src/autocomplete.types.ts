@@ -2,7 +2,7 @@ import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers, LayerSnapshot } from "@zag-js/dismissable"
 import type { AnimationFrame, ModifierKeys } from "@zag-js/dom-query"
-import type { LiveRegion } from "@zag-js/live-region"
+import type { LiveRegion } from "@zag-js/dom-query/live-region"
 import type { Placement, PlacementSide, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 

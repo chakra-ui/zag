@@ -39,6 +39,7 @@
     "./swipe": "./src/swipe/index.ts",
     "./scroll": "./src/scroll/index.ts",
     "./observe": "./src/observe/index.ts",
+    "./live-region": "./src/live-region/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Params, Service } from "@zag-js/core"
-import type { LiveRegion } from "@zag-js/live-region"
+import type { LiveRegion } from "@zag-js/dom-query/live-region"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------

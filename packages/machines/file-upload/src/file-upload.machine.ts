@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, AnimationFrame, contains, getEventTarget } from "@zag-js/dom-query"
 import { getAcceptAttrString, isAcceptedDragType, isFileEqual } from "@zag-js/utils/file"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { callAll } from "@zag-js/utils/functions"
 import { warn } from "@zag-js/utils/guard"
 import * as dom from "./file-upload.dom"

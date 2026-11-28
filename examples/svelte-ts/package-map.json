@@ -40,7 +40,6 @@
   "@zag-js/interact-outside": "../../packages/utilities/interact-outside/src",
   "@zag-js/json-tree-utils": "../../packages/utilities/json-tree-utils/src",
   "@zag-js/listbox": "../../packages/machines/listbox/src",
-  "@zag-js/live-region": "../../packages/utilities/live-region/src",
   "@zag-js/marquee": "../../packages/machines/marquee/src",
   "@zag-js/menu": "../../packages/machines/menu/src",
   "@zag-js/menubar": "../../packages/machines/menubar/src",

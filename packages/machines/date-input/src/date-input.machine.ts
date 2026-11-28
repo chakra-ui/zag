@@ -3,7 +3,7 @@ import { createMachine, memo, type Params } from "@zag-js/core"
 import { mergeWithDefault } from "@zag-js/utils/object"
 import { constrainSegments, getTodayDate, isDateEqual } from "@zag-js/utils/date"
 import { AnimationFrame } from "@zag-js/dom-query"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
 import {

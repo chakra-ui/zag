@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { getFirstTabbable, raf } from "@zag-js/dom-query"
 import { createSharedIntersectionObserver } from "@zag-js/dom-query/observe"
 import { ensureProps, warn } from "@zag-js/utils/guard"

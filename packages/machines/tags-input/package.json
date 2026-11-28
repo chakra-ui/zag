@@ -30,7 +30,6 @@
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
-    "@zag-js/live-region": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"

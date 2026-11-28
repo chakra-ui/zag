@@ -10,7 +10,7 @@ import type {
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/utils/date"
 import type { AnimationFrame } from "@zag-js/dom-query"
-import type { LiveRegion } from "@zag-js/live-region"
+import type { LiveRegion } from "@zag-js/dom-query/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 import type { IncompleteDate } from "./utils/incomplete-date"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"

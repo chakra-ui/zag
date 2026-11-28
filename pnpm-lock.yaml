@@ -388,9 +388,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -692,9 +689,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -996,9 +990,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -1297,9 +1288,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -1580,9 +1568,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -1872,9 +1857,6 @@ importers:
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
       '@zag-js/marquee':
         specifier: workspace:*
         version: link:../../packages/machines/marquee
@@ -2347,9 +2329,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2562,9 +2541,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2590,9 +2566,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2621,9 +2594,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2689,9 +2659,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2817,9 +2784,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2845,9 +2809,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2954,9 +2915,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3451,9 +3409,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -3623,9 +3578,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3673,9 +3625,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3993,12 +3942,6 @@ importers:
         version: 2.2.0
 
   packages/utilities/json-tree-utils:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/live-region:
     devDependencies:
       clean-package:
         specifier: 2.2.0

@@ -34,7 +34,7 @@ import {
   restoreTextSelection,
   setElementValue,
 } from "@zag-js/dom-query"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
 import type { DatePickerSchema, DateValue, DateView, OpenChangeReason } from "./date-picker.types"

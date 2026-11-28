@@ -32,7 +32,6 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/live-region": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },

@@ -1,7 +1,7 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent, AnimationFrame, contains, getEventTarget, Timeout } from "@zag-js/dom-query"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { uuid } from "@zag-js/utils/functions"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"

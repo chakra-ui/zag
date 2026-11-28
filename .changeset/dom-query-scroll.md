@@ -11,6 +11,8 @@
 - Add the `@zag-js/dom-query/scroll` entrypoint and move the scroll and overflow helpers there.
 - Add the `@zag-js/dom-query/observe` entrypoint, move the shared resize and mutation observers there, and add
   `createSharedIntersectionObserver`.
+- Move `createLiveRegion` from `@zag-js/live-region` to the `@zag-js/dom-query/live-region` entrypoint, and fix
+  `destroy()` removing a shared region that other components still announce into.
 - Add `trackStickToBottom` to keep a growing scroller's end in view until the user scrolls away.
 - End `trackScrollEnd` on the native `scrollend` event, and never while a finger is down.
 - Make `createAutoScroll` ramp up at an edge, keep scrolling past it, and handle reversed flex layouts. Its default

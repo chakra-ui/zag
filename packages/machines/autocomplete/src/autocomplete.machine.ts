@@ -12,7 +12,7 @@ import {
 import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
-import { createLiveRegion } from "@zag-js/live-region"
+import { createLiveRegion } from "@zag-js/dom-query/live-region"
 import { getPlacement } from "@zag-js/popper"
 import { isBoolean } from "@zag-js/utils/guard"
 import { mergeWithDefault } from "@zag-js/utils/object"
