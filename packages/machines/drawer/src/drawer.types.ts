@@ -25,6 +25,7 @@ export type OpenChangeReason =
   | "focus-outside"
   | "swipe"
   | "script"
+  | "agent"
 
 export interface OpenChangeDetails {
   open: boolean

@@ -16,7 +16,8 @@ export type OpenChangeReason =
   | "trigger-blur" // Focus left the trigger
   | "interact-outside" // User pressed outside
   | "escape-key" // User pressed escape
-  | "script" // Programmatically changed
+  | "script"
+  | "agent" // Programmatically changed
 
 export type InstantType = "focus" | "dismiss" | null
 

@@ -35,6 +35,7 @@ export type ValueChangeReason =
   | "interact-outside"
   | "focus-outside"
   | "script"
+  | "agent"
 
 export interface ValueChangeDetails {
   value: string

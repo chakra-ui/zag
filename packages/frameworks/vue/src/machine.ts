@@ -20,6 +20,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -313,11 +314,20 @@ export function useMachine<T extends MachineSchema>(
   let status = MachineStatus.NotStarted
   let pendingEvents: T["event"][] = []
 
+  // What listeners like an agent bridge hold, reported once the machine starts.
+  const record = {
+    machine,
+    get service() {
+      return service
+    },
+  }
+
   onMounted(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
     debug(started ? "rehydrating..." : "initializing...")
     state.invoke(state.initial!, INIT_STATE)
+    reportMachine(record, true)
 
     // Replay events buffered before machine started (child mounts before parent in Vue)
     const events = pendingEvents
@@ -328,6 +338,7 @@ export function useMachine<T extends MachineSchema>(
   })
 
   onBeforeUnmount(() => {
+    if (status === MachineStatus.Started) reportMachine(record, false)
     status = MachineStatus.Stopped
     pendingEvents = []
     debug("unmounting...")
@@ -388,7 +399,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = useEffectSync(reconcileEffects)
 
-  return {
+  const service = {
     state: getState(),
     send,
     context: ctx,
@@ -401,6 +412,8 @@ export function useMachine<T extends MachineSchema>(
     event: getEvent(),
     getStatus: () => status,
   } as Service<T>
+
+  return service
 }
 
 function useProp<T>(valueRef: Ref<T>) {

@@ -41,6 +41,7 @@ export type OpenChangeReason =
   | "interact-outside"
   | "focus-outside"
   | "script"
+  | "agent"
 
 export interface OpenChangeDetails {
   open: boolean

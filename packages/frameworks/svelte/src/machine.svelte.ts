@@ -20,6 +20,7 @@ import {
   getExitEnterStates,
   hasTag,
   INIT_STATE,
+  reportMachine,
   isWatchEffect,
   MachineStatus,
   matchesState,
@@ -292,15 +293,25 @@ export function useMachine<T extends MachineSchema>(
     },
   }))
 
+  // What listeners like an agent bridge hold, reported once the machine starts.
+  const record = {
+    machine,
+    get service() {
+      return service
+    },
+  }
+
   onMount(() => {
     const started = status === MachineStatus.Started
     status = MachineStatus.Started
     debug(started ? "rehydrating..." : "initializing...")
     state.invoke(state.initial!, INIT_STATE)
+    reportMachine(record, true)
   })
 
   onDestroy(() => {
     if (status !== MachineStatus.Started) return
+    reportMachine(record, false)
 
     debug("unmounting...")
     status = MachineStatus.Stopped
@@ -360,7 +371,7 @@ export function useMachine<T extends MachineSchema>(
 
   notify = effectSync(reconcileEffects)
 
-  return {
+  const service = {
     get state() {
       return getState()
     },
@@ -377,6 +388,8 @@ export function useMachine<T extends MachineSchema>(
     },
     getStatus: () => status,
   } as Service<T>
+
+  return service
 }
 
 // Deriveds owned by a root outlive the component, so deferred reads after unmount stay valid
