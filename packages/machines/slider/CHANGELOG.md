@@ -1,5 +1,34 @@
 # @zag-js/slider
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `scale` for log and custom scales. `"log"` gives
+  each ratio the same length, for volume, frequency or zoom.
+
+  ```ts
+  scale: "log" // needs a positive min
+  scale: { to: Math.sqrt, from: (position) => position ** 2 } // your own curve
+  ```
+
+  - Fix `Home` and `End` landing off the step grid when `max - min` isn't a multiple of `step`.
+
+  - Follow only the pointer that started a drag, and end drags when the window loses focus or a context menu opens.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

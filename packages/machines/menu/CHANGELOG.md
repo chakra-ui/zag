@@ -1,5 +1,53 @@
 # @zag-js/menu
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Render the items inside
+  `api.getListProps()`, like select and combobox. The list is what scrolls, so a filter input, header or footer stays in
+  place outside it. With one content per trigger, pass the same `value` to `getListProps({ value })` as to
+  `getContentProps({ value })`.
+
+  ```diff
+    <div {...api.getContentProps()}>
+  -   {items.map((item) => <div {...api.getItemProps(item)} />)}
+  +   <div {...api.getListProps()}>
+  +     {items.map((item) => <div {...api.getItemProps(item)} />)}
+  +   </div>
+    </div>
+  ```
+
+  - Add `api.removeChild(child)` to unregister a submenu when it unmounts.
+
+  - Add Page Up and Page Down to move the highlight by `pageSize` items (default `10`).
+
+  - Keep a touch long-press on a context menu trigger going through small finger movement.
+
+  - Fix the release after a long-press selecting the item under the finger.
+
+  - Fix focus not returning to the parent menu when a submenu that isn't portalled closes.
+
+  - Fix the highlighted item not scrolling into view when navigating from a filter input.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/collection@2.0.0-next.5
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/focus-visible@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

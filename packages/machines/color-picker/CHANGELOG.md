@@ -1,5 +1,43 @@
 # @zag-js/color-picker
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add `gamut` to keep the value inside sRGB or Display
+  P3.
+
+  ```ts
+  gamut: "srgb" // or "p3"; false allows any color (default)
+  ```
+
+  - Add `translations` for the accessible labels.
+
+  - Disable the eye dropper trigger, with `data-unsupported`, where the browser has no EyeDropper API.
+
+  - Keep a channel slider's thumb under the pointer while dragging, then settle on the value.
+
+  - Follow only the pointer that started a drag, and end drags when the window loses focus or a context menu opens.
+
+  - Fix the trigger's accessible name ignoring its own label, and the saturation input throwing for OKLab and OKLCH.
+
+  - Fix values losing precision and showing float noise.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/dismissable@2.0.0-next.5
+  - @zag-js/popper@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

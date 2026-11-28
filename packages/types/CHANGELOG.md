@@ -1,5 +1,16 @@
 # @zag-js/types
 
+## 2.0.0-next.5
+
+### Minor Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - Add the `ModalMode` type and `aria-description` to the
+  typed ARIA attributes.
+
+  - Add the `Teardown` and `TeardownReason` types, moved from `@zag-js/utils`.
+
 ## 2.0.0-next.4
 
 No changes in this release.

@@ -1,5 +1,49 @@
 # @zag-js/file-upload
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [#3648](https://github.com/chakra-ui/zag/pull/3648)
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6) Thanks
+  [@github-actions](https://github.com/apps/github-actions)! - - **Breaking:** Rename the delete trigger to a remove
+  trigger, since removing a file only takes it off the list. `npx @zag-js/codemod v2` makes these changes for you.
+
+  ```diff
+  - <button {...api.getItemDeleteTriggerProps({ file })}>Delete</button>
+  + <button {...api.getItemRemoveTriggerProps({ file })}>Remove</button>
+  - api.deleteFile(file)
+  + api.removeFile(file)
+  ```
+
+  The part is now `data-file-upload-item-remove-trigger`, `ids.itemDeleteTrigger` is `ids.itemRemoveTrigger`, and the
+  `deleteFile` and `fileDeleted` translations are `removeFile` and `fileRemoved`.
+
+  - Add `data-drag-accept` and `data-drag-reject` to the root and dropzone while files are dragged over, and
+    `dragAccept` and `dragReject` to their state.
+
+    ```css
+    [data-file-upload-dropzone][data-drag-accept] {
+      border-color: green;
+    }
+    [data-file-upload-dropzone][data-drag-reject] {
+      border-color: red;
+    }
+    ```
+
+  - Fix file types with parameters, like `text/plain;charset=utf-8`, failing the `accept` check.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Major Changes

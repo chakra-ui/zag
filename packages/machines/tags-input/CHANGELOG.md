@@ -1,5 +1,37 @@
 # @zag-js/tags-input
 
+## 2.0.0-next.5
+
+### Major Changes
+
+- [`e552ca4`](https://github.com/chakra-ui/zag/commit/e552ca41c081fcbb112d7fc070afb28f5df495f5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Breaking:** Rename the delete trigger to a remove trigger,
+  since a removed tag can be added again. `npx @zag-js/codemod v2` makes these changes for you.
+
+  ```diff
+  - <button {...api.getItemDeleteTriggerProps(item)}>×</button>
+  + <button {...api.getItemRemoveTriggerProps(item)}>×</button>
+  ```
+
+  The part is now `data-tags-input-item-remove-trigger`, `ids.itemDeleteTrigger` is `ids.itemRemoveTrigger`, and the
+  `deleteTagTriggerLabel` and `tagDeleted` translations are `removeTagTriggerLabel` and `tagRemoved`.
+
+  - **Breaking:** Rename `data-delete-intent`, set on a tag while its remove trigger is hovered, to
+    `data-remove-intent`.
+
+### Patch Changes
+
+- Updated dependencies [[`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6),
+  [`3193852`](https://github.com/chakra-ui/zag/commit/3193852eb312d15617838f053e37783a5bf194f6)]:
+  - @zag-js/dom-query@2.0.0-next.5
+  - @zag-js/types@2.0.0-next.5
+  - @zag-js/utils@2.0.0-next.5
+  - @zag-js/core@2.0.0-next.5
+  - @zag-js/auto-resize@2.0.0-next.5
+  - @zag-js/interact-outside@2.0.0-next.5
+  - @zag-js/anatomy@2.0.0-next.5
+
 ## 2.0.0-next.4
 
 ### Minor Changes
