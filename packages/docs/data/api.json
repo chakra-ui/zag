@@ -2599,8 +2599,8 @@
       },
       "scrollMaxSpeed": {
         "type": "number | undefined",
-        "description": "Maximum auto-scroll speed in pixels per animation frame.",
-        "defaultValue": "4"
+        "description": "Auto-scroll speed at the container's edge, in pixels per 60Hz frame. Dragging past the edge scrolls up to\n3 times faster.",
+        "defaultValue": "6"
       },
       "columnCount": {
         "type": "number | undefined",

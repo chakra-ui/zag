@@ -102,7 +102,7 @@ export const machine = createMachine<DndSchema>({
       dropPlacements: ["before", "after"],
       edgeThreshold: 5,
       scrollThreshold: 20,
-      scrollMaxSpeed: 4,
+      scrollMaxSpeed: 6,
       stickyDelay: 150,
       dragOverDelay: 500,
       isActivationKey: (event) => event.key === "Enter" || event.key === " ",

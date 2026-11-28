@@ -229,8 +229,9 @@ export interface DndProps extends DirectionProperty, CommonProperties {
    */
   scrollThreshold?: number | undefined
   /**
-   * Maximum auto-scroll speed in pixels per animation frame.
-   * @default 4
+   * Auto-scroll speed at the container's edge, in pixels per 60Hz frame. Dragging past the edge scrolls up to
+   * 3 times faster.
+   * @default 6
    */
   scrollMaxSpeed?: number | undefined
   /**

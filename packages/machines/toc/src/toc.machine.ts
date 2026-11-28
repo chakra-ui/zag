@@ -125,10 +125,11 @@ export const machine = createMachine({
             // e.g. a heading near the end that can't scroll to the top
             guard: "isTargetReached",
             target: "idle",
+            actions: ["recordVisibility"],
           },
           {
             target: "idle",
-            actions: ["syncActiveIds"],
+            actions: ["recordVisibility", "syncActiveIds"],
           },
         ],
       },
@@ -164,6 +165,12 @@ export const machine = createMachine({
         const scrollEl = dom.getScrollEl(tocItemEl, contentEl)
         if (!scrollEl) return
         scrollToNearest(tocItemEl, { rootEl: scrollEl, behavior: prop("scrollBehavior") })
+      },
+
+      // the jump's visibility changes are still queued; taking them keeps them from overriding the click
+      recordVisibility({ refs }) {
+        const records = refs.get("headingObserver")?.takeRecords()
+        if (records?.length) recordVisibility(refs, records)
       },
 
       setActiveIdsToTarget({ context, event }) {
@@ -334,15 +341,11 @@ function restartHeadingObserver(params: Params<TocSchema>) {
 function createHeadingObserver(params: Params<TocSchema>): IntersectionObserver | null {
   const { scope, prop, refs, send } = params
   const win = scope.getWin()
-  const visibilityMap = refs.get("visibilityMap")
   try {
     const observer = new win.IntersectionObserver(
       (entries) => {
         if (refs.get("headingObserver") !== observer) return
-        for (const entry of entries) {
-          visibilityMap.set(entry.target.id, entry.isIntersecting)
-        }
-        refs.set("rootBounds", entries[0]?.rootBounds ?? null)
+        recordVisibility(refs, entries)
         send({ type: "VISIBILITY.CHANGE" })
       },
       { root: getScrollEl(params), rootMargin: prop("rootMargin"), threshold: prop("threshold") },
@@ -352,6 +355,14 @@ function createHeadingObserver(params: Params<TocSchema>): IntersectionObserver 
     warn(`[toc] Invalid observer options: ${error}`)
     return null
   }
+}
+
+function recordVisibility(refs: Params<TocSchema>["refs"], entries: IntersectionObserverEntry[]) {
+  const visibilityMap = refs.get("visibilityMap")
+  for (const entry of entries) {
+    visibilityMap.set(entry.target.id, entry.isIntersecting)
+  }
+  refs.set("rootBounds", entries[0]?.rootBounds ?? null)
 }
 
 /** Whether `scrollEl` now returns a different element, e.g. one that mounted after the toc */

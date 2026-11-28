@@ -1,11 +1,10 @@
 import { getLocalTimeZone, parseDateTime, type CalendarDateTime } from "@internationalized/date"
 import { createMachine, memo, type PropFn, type Scope } from "@zag-js/core"
 import { AnimationFrame } from "@zag-js/dom-query"
-import { getNearestScrollableAncestor } from "@zag-js/dom-query/scroll"
+import { createAutoScroll, getNearestScrollableAncestor } from "@zag-js/dom-query/scroll"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import * as dom from "./scheduler.dom"
 import type { SchedulerSchema } from "./scheduler.types"
-import { createAutoScroller } from "./utils/auto-scroll"
 import { getDropDelta, pointToDateTime, pointToTimeOnDay } from "./utils/drag"
 import { createDayCellLabels, createFormatters, createHourRange } from "./utils/formatter"
 import { getFocusDateForKey } from "./utils/focus-date"
@@ -223,23 +222,33 @@ export const machine = createMachine<SchedulerSchema>({
     effects: {
       trackDrag({ scope, send, event }) {
         const gridEl = dom.getGridEl(scope)
-        const autoScroll = createAutoScroller(gridEl ? getNearestScrollableAncestor(gridEl) : null, scope.getWin())
+        const scrollEl = gridEl ? getNearestScrollableAncestor(gridEl) : null
+        let lastPoint = event.point
+
+        // scrolling moves the grid under a still pointer, so the drop time has to follow
+        const autoScroll = scrollEl
+          ? createAutoScroll(scrollEl, {
+              threshold: 50,
+              onScroll: () => send({ type: "POINTER_MOVE", point: lastPoint }),
+            })
+          : null
 
         const cleanupTracker = trackDrag(scope.getDoc(), {
           startPoint: event.point,
           pointerId: event.pointerId,
           onMove({ point }) {
-            autoScroll.update(point)
+            lastPoint = point
+            autoScroll?.move(point.x, point.y)
             send({ type: "POINTER_MOVE", point })
           },
           onEnd({ cancelled }) {
-            autoScroll.stop()
+            autoScroll?.stop()
             send({ type: cancelled ? "ESCAPE" : "POINTER_UP" })
           },
         })
 
         return () => {
-          autoScroll.stop()
+          autoScroll?.stop()
           cleanupTracker()
         }
       },
@@ -351,10 +360,10 @@ export const machine = createMachine<SchedulerSchema>({
         context.set("liveSlot", null)
       },
 
-      initEventDrag({ refs, context, event, prop }) {
+      initEventDrag({ refs, context, event, prop, scope }) {
         const evt = findEvent(prop("events"), event.eventId)
         if (!evt) return
-        refs.set("dragOrigin", event.point)
+        refs.set("dragOrigin", toGridPoint(scope, event.point))
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
         context.set("liveDrag", {
           eventId: event.eventId,
@@ -382,7 +391,7 @@ export const machine = createMachine<SchedulerSchema>({
           slotInterval: prop("slotInterval"),
         }
         const cursorTime = pointToDateTime({ point: event.point, ...dragParams })
-        const dragOrigin = refs.get("dragOrigin")
+        const dragOrigin = fromGridPoint(scope, refs.get("dragOrigin"))
 
         // the region under the pointer decides what the event becomes. Reported, never applied.
         const allDay = dom.isPointInAllDayRow(scope, event.point)
@@ -435,10 +444,10 @@ export const machine = createMachine<SchedulerSchema>({
         })
       },
 
-      initEventResize({ refs, context, event, prop }) {
+      initEventResize({ refs, context, event, prop, scope }) {
         const evt = findEvent(prop("events"), event.eventId)
         if (!evt) return
-        refs.set("dragOrigin", event.point)
+        refs.set("dragOrigin", toGridPoint(scope, event.point))
         refs.set("dragStartSnapshot", { start: evt.start, end: evt.end })
         context.set("liveDrag", {
           eventId: event.eventId,
@@ -528,6 +537,17 @@ interface PointParams {
 }
 
 /** The day under a point. */
+// the drag origin is kept relative to the grid, so it moves with the content when the grid scrolls
+function toGridPoint(scope: Scope, point: { x: number; y: number }) {
+  const rect = dom.getGridEl(scope)?.getBoundingClientRect()
+  return rect ? { x: point.x - rect.left, y: point.y - rect.top } : point
+}
+
+function fromGridPoint(scope: Scope, point: { x: number; y: number } | null) {
+  const rect = dom.getGridEl(scope)?.getBoundingClientRect()
+  return point && rect ? { x: point.x + rect.left, y: point.y + rect.top } : point
+}
+
 function dayAtPoint(scope: Scope, point: { x: number; y: number }, params: PointParams) {
   const cellDate = dom.getAllDayCellDateAt(scope, point)
   return cellDate ? parseDateTime(cellDate) : pointToDateTime({ point, ...params })

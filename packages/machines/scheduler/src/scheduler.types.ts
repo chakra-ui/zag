@@ -418,6 +418,7 @@ export interface SchedulerSchema<T extends SchedulerPayload = SchedulerPayload> 
   defaultPropKey: PropsWithDefault
   context: SchedulerContext
   refs: {
+    /** relative to the grid */
     dragOrigin: { x: number; y: number } | null
     dragStartSnapshot: { start: CalendarDateTime; end: CalendarDateTime } | null
     slotAnchor: CalendarDateTime | null
