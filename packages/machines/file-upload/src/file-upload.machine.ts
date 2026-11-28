@@ -161,7 +161,11 @@ export const machine = createMachine<FileUploadSchema>({
         queueMicrotask(() => {
           const inputEl = dom.getHiddenInputEl(scope)
           if (!inputEl) return
-          setInputFiles(inputEl, context.get("acceptedFiles"))
+          // `onChange` already set them, unless `acceptedFiles` was changed from the outside
+          const files = context.get("acceptedFiles")
+          const current = Array.from(inputEl.files ?? [])
+          const inSync = current.length === files.length && current.every((file, i) => isFileEqual(file, files[i]))
+          if (!inSync) setInputFiles(inputEl, files)
           const win = scope.getWin()
           inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
         })
