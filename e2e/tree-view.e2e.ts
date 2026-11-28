@@ -1,4 +1,4 @@
-import { test } from "./_test"
+import { expect, test } from "./_test"
 import { TreeViewModel } from "./models/tree-view.model"
 
 let I: TreeViewModel
@@ -297,5 +297,17 @@ test.describe("tree-view / list view", () => {
     await I.focusButton("List")
     await I.pressKey("Tab")
     await I.seeItemIsFocused("package.json")
+  })
+})
+
+test.describe("tree view / checkbox", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto("/tree-view/checkbox")
+  })
+
+  test("each node checkbox is named by its node", async ({ page }) => {
+    await expect(page.getByRole("checkbox", { name: "node_modules" })).toBeVisible()
+    await expect(page.getByRole("checkbox", { name: "package.json" })).toBeVisible()
   })
 })
