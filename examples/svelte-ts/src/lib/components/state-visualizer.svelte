@@ -1,5 +1,5 @@
 <script lang="ts" generics="T extends MachineSchema">
-  import { highlightState } from "@zag-js/stringify-state"
+  import { highlightState } from "@zag-js/shared"
   import type { MachineSchema, Service } from "@zag-js/core"
 
   interface StateVisualizerProps<T extends MachineSchema> {

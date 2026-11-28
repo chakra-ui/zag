@@ -68,7 +68,6 @@
   "@zag-js/slider": "../../packages/machines/slider/src",
   "@zag-js/splitter": "../../packages/machines/splitter/src",
   "@zag-js/steps": "../../packages/machines/steps/src",
-  "@zag-js/stringify-state": "../../packages/utilities/stringify-state/src",
   "@zag-js/svelte": "../../packages/frameworks/svelte/src",
   "@zag-js/switch": "../../packages/machines/switch/src",
   "@zag-js/tabs": "../../packages/machines/tabs/src",

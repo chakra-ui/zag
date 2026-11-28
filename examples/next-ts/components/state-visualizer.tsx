@@ -1,5 +1,5 @@
 import { MachineSchema, Service } from "@zag-js/core"
-import { highlightState } from "@zag-js/stringify-state"
+import { highlightState } from "@zag-js/shared"
 
 type StateVisualizerProps<T extends MachineSchema> = {
   state: Service<T>

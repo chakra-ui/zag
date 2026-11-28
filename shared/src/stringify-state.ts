@@ -1,5 +1,4 @@
-// @ts-ignore
-import formatHighlight from "json-format-highlight"
+import { highlightJson } from "./highlight-json"
 
 interface Dict {
   [key: string]: any
@@ -81,5 +80,5 @@ export function stringifyState(state: Dict, omit?: string[]) {
 }
 
 export function highlightState(state: Dict, omit?: string[]) {
-  return formatHighlight(stringifyState(state, omit))
+  return highlightJson(stringifyState(state, omit))
 }

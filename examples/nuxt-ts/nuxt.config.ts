@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@internationalized/date", "@zag-js/stringify-state > json-format-highlight"],
+      include: ["@internationalized/date"],
     },
   },
 })

@@ -1,5 +1,5 @@
 import type { MachineSchema, Service } from "@zag-js/core"
-import { highlightState } from "@zag-js/stringify-state"
+import { highlightState } from "@zag-js/shared"
 import { createMemo } from "solid-js"
 
 interface StateVisualizerProps<T extends MachineSchema> {

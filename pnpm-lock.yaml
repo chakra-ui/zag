@@ -475,9 +475,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -779,9 +776,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1089,9 +1083,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1393,9 +1384,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1676,9 +1664,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/svelte':
         specifier: workspace:*
         version: link:../../packages/frameworks/svelte
@@ -1968,9 +1953,6 @@ importers:
       '@zag-js/steps':
         specifier: workspace:*
         version: link:../../packages/machines/steps
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -4063,16 +4045,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/stringify-state:
-    dependencies:
-      json-format-highlight:
-        specifier: 1.0.4
-        version: 1.0.4
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -9874,9 +9846,6 @@ packages:
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
-
-  json-format-highlight@1.0.4:
-    resolution: {integrity: sha512-RqenIjKr1I99XfXPAml9G7YlEZg/GnsH7emWyWJh2yuGXqHW8spN7qx6/ME+MoIBb35/fxrMC9Jauj6nvGe4Mg==}
 
   json-parse-better-errors@1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
@@ -17957,8 +17926,6 @@ snapshots:
 
   json-buffer@3.0.1:
     optional: true
-
-  json-format-highlight@1.0.4: {}
 
   json-parse-better-errors@1.0.2: {}
 
