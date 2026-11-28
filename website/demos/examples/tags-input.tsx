@@ -32,8 +32,8 @@ function Field(props: { api: tagsInput.Api; clearable?: boolean }) {
               >
                 <span {...api.getItemTextProps(item)}>{value}</span>
                 <button
-                  className={styles.ItemDeleteTrigger}
-                  {...api.getItemDeleteTriggerProps(item)}
+                  className={styles.ItemRemoveTrigger}
+                  {...api.getItemRemoveTriggerProps(item)}
                 >
                   ✕
                 </button>

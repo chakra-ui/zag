@@ -59,7 +59,7 @@ export default function Page() {
                       </span>
                       <button
                         data-testid={`${toDashCase(value)}-close-button`}
-                        {...api().getItemDeleteTriggerProps({ index: index(), value })}
+                        {...api().getItemRemoveTriggerProps({ index: index(), value })}
                       >
                         <XIcon />
                       </button>

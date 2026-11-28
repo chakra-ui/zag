@@ -73,7 +73,7 @@ export class FileUpload extends Component<fileUpload.Props, fileUpload.Api> {
       if (typeEl) typeEl.textContent = file.type
 
       const deleteBtn = itemEl.querySelector<HTMLElement>(".file-upload-item-delete")
-      if (deleteBtn) this.spreadProps(deleteBtn, this.api.getItemDeleteTriggerProps({ file }))
+      if (deleteBtn) this.spreadProps(deleteBtn, this.api.getItemRemoveTriggerProps({ file }))
     })
   }
 

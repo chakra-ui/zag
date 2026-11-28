@@ -62,7 +62,7 @@ export default function Page() {
                     <div {...dndApi().getDropIndicatorProps({ value, placement: "before" })} />
                     <div {...tagsApi().getItemPreviewProps({ index: index(), value })}>
                       <span {...tagsApi().getItemTextProps({ index: index(), value })}>{value}</span>
-                      <button {...tagsApi().getItemDeleteTriggerProps({ index: index(), value })}>
+                      <button {...tagsApi().getItemRemoveTriggerProps({ index: index(), value })}>
                         <XIcon />
                       </button>
                     </div>

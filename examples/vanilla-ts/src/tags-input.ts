@@ -45,10 +45,10 @@ export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
         itemText.textContent = value
         itemPreview.appendChild(itemText)
 
-        const itemDeleteBtn = this.doc.createElement("button")
-        itemDeleteBtn.className = "tags-input-item-delete"
-        itemDeleteBtn.textContent = "×"
-        itemPreview.appendChild(itemDeleteBtn)
+        const itemRemoveBtn = this.doc.createElement("button")
+        itemRemoveBtn.className = "tags-input-item-remove"
+        itemRemoveBtn.textContent = "×"
+        itemPreview.appendChild(itemRemoveBtn)
 
         itemEl.appendChild(itemPreview)
 
@@ -80,8 +80,8 @@ export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
       const itemInput = itemEl.querySelector<HTMLInputElement>(".tags-input-item-input")
       if (itemInput) this.spreadProps(itemInput, this.api.getItemInputProps(itemProps))
 
-      const itemDeleteBtn = itemEl.querySelector<HTMLElement>(".tags-input-item-delete")
-      if (itemDeleteBtn) this.spreadProps(itemDeleteBtn, this.api.getItemDeleteTriggerProps(itemProps))
+      const itemRemoveBtn = itemEl.querySelector<HTMLElement>(".tags-input-item-remove")
+      if (itemRemoveBtn) this.spreadProps(itemRemoveBtn, this.api.getItemRemoveTriggerProps(itemProps))
     })
   }
 

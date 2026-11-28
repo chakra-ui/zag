@@ -60,7 +60,7 @@
             <div {...dndApi.getDropIndicatorProps({ value, placement: "before" })}></div>
             <div {...tagsApi.getItemPreviewProps({ index, value })}>
               <span {...tagsApi.getItemTextProps({ index, value })}>{value}</span>
-              <button {...tagsApi.getItemDeleteTriggerProps({ index, value })}>
+              <button {...tagsApi.getItemRemoveTriggerProps({ index, value })}>
                 <XIcon />
               </button>
             </div>

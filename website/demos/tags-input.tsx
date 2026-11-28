@@ -28,8 +28,8 @@ export function TagsInput(props: TagsInputProps) {
               >
                 <span>{value}</span>
                 <button
-                  className={styles.ItemDeleteTrigger}
-                  {...api.getItemDeleteTriggerProps(opt)}
+                  className={styles.ItemRemoveTrigger}
+                  {...api.getItemRemoveTriggerProps(opt)}
                 >
                   &#x2715;
                 </button>

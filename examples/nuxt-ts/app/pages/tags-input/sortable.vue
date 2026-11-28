@@ -66,7 +66,7 @@ function onInputKeyDown(event: KeyboardEvent) {
             <div v-bind="dndApi.getDropIndicatorProps({ value, placement: 'before' })" />
             <div v-bind="tagsApi.getItemPreviewProps({ index, value })">
               <span v-bind="tagsApi.getItemTextProps({ index, value })">{{ value }}</span>
-              <button v-bind="tagsApi.getItemDeleteTriggerProps({ index, value })">
+              <button v-bind="tagsApi.getItemRemoveTriggerProps({ index, value })">
                 <XIcon />
               </button>
             </div>

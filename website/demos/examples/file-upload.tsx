@@ -57,7 +57,7 @@ function Files(props: { api: fileUpload.Api }) {
           </span>
           <button
             className={styles.ItemDelete}
-            {...api.getItemDeleteTriggerProps({ file })}
+            {...api.getItemRemoveTriggerProps({ file })}
           >
             <HiX />
           </button>

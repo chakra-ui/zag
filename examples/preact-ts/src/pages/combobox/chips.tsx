@@ -46,7 +46,7 @@ export default function Page() {
               {api.selectedItems.map((item) => (
                 <span key={item.code} {...api.getChipProps({ item })}>
                   {item.label}
-                  <button {...api.getChipDeleteTriggerProps({ item })}>
+                  <button {...api.getChipRemoveTriggerProps({ item })}>
                     <XIcon />
                   </button>
                 </span>

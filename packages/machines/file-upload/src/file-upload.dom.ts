@@ -13,8 +13,8 @@ export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `${c
 export const getItemNameId = (ctx: Scope, id: string) => ctx.ids?.itemName?.(id) ?? `${ctx.id}:item-name:${id}`
 export const getItemSizeTextId = (ctx: Scope, id: string) => ctx.ids?.itemSizeText?.(id) ?? `${ctx.id}:item-size:${id}`
 export const getItemPreviewId = (ctx: Scope, id: string) => ctx.ids?.itemPreview?.(id) ?? `${ctx.id}:item-preview:${id}`
-export const getItemDeleteTriggerId = (ctx: Scope, id: string) =>
-  ctx.ids?.itemDeleteTrigger?.(id) ?? `${ctx.id}:item-delete:${id}`
+export const getItemRemoveTriggerId = (ctx: Scope, id: string) =>
+  ctx.ids?.itemRemoveTrigger?.(id) ?? `${ctx.id}:item-remove:${id}`
 
 export const getFileId = (file: File) => hash(`${file.name}-${file.size}`)
 
@@ -24,7 +24,7 @@ export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(ge
 export const getDropzoneEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.dropzone))
 export const getTriggerEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.trigger))
 export const getClearTriggerEl = (ctx: Scope) => ctx.query<HTMLElement>(ctx.selector(parts.clearTrigger))
-export const getItemDeleteTriggerEls = (ctx: Scope, type: ItemType) =>
-  ctx.queryAll<HTMLElement>(`${ctx.selector(parts.itemDeleteTrigger)}[data-type="${type}"]`)
+export const getItemRemoveTriggerEls = (ctx: Scope, type: ItemType) =>
+  ctx.queryAll<HTMLElement>(`${ctx.selector(parts.itemRemoveTrigger)}[data-type="${type}"]`)
 
 export const getFallbackFocusEl = (ctx: Scope) => getTriggerEl(ctx) || getDropzoneEl(ctx)

@@ -319,17 +319,17 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemDeleteTriggerProps(props) {
+    getItemRemoveTriggerProps(props) {
       const itemState = getItemState(props)
       return normalize.button({
-        ...parts.itemDeleteTrigger.attrs(scope.id),
+        ...parts.itemRemoveTrigger.attrs(scope.id),
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "aria-disabled": itemState.disabled,
         "data-highlighted": dataAttr(itemState.highlighted),
         type: "button",
         disabled: itemState.disabled,
-        "aria-label": translations.deleteTagTriggerLabel(props.value),
+        "aria-label": translations.removeTagTriggerLabel(props.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isLeftClick(event)) return
@@ -348,7 +348,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "CLICK_DELETE_TAG", id: itemState.id })
+          send({ type: "CLICK_REMOVE_TAG", id: itemState.id })
         },
       })
     },

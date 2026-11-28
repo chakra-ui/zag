@@ -20,7 +20,7 @@
     {#each api.acceptedFiles as file}
       <li {...api.getItemProps({ file })}>
         <div {...api.getItemNameProps({ file })}>{file.name}</div>
-        <button {...api.getItemDeleteTriggerProps({ file })}>Delete</button>
+        <button {...api.getItemRemoveTriggerProps({ file })}>Remove</button>
       </li>
     {/each}
   </ul>

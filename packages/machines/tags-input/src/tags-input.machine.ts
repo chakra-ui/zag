@@ -134,9 +134,9 @@ export const machine = createMachine<TagsInputSchema>({
       target: "navigating:tag",
       actions: ["highlightTag", "focusInput"],
     },
-    CLICK_DELETE_TAG: {
+    CLICK_REMOVE_TAG: {
       target: "focused:input",
-      actions: ["deleteTag"],
+      actions: ["removeTag"],
     },
     SET_INPUT_VALUE: {
       actions: ["setInputValue"],
@@ -145,7 +145,7 @@ export const machine = createMachine<TagsInputSchema>({
       actions: ["setValue"],
     },
     CLEAR_TAG: {
-      actions: ["deleteTag"],
+      actions: ["removeTag"],
     },
     SET_VALUE_AT_INDEX: {
       actions: ["setValueAtIndex"],
@@ -220,7 +220,7 @@ export const machine = createMachine<TagsInputSchema>({
         },
         DELETE: {
           guard: "hasHighlightedTag",
-          actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
+          actions: ["removeHighlightedTag", "highlightTagAtIndex"],
         },
         PASTE: [
           {
@@ -281,11 +281,11 @@ export const machine = createMachine<TagsInputSchema>({
           },
           {
             guard: "isFirstTagHighlighted",
-            actions: ["deleteHighlightedTag", "highlightFirstTag"],
+            actions: ["removeHighlightedTag", "highlightFirstTag"],
           },
           {
             guard: "hasHighlightedTag",
-            actions: ["deleteHighlightedTag", "highlightPrevTag"],
+            actions: ["removeHighlightedTag", "highlightPrevTag"],
           },
           {
             actions: ["highlightLastTag"],
@@ -298,7 +298,7 @@ export const machine = createMachine<TagsInputSchema>({
           },
           {
             target: "focused:input",
-            actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
+            actions: ["removeHighlightedTag", "highlightTagAtIndex"],
           },
         ],
         PASTE: [
@@ -342,7 +342,7 @@ export const machine = createMachine<TagsInputSchema>({
           {
             guard: "isEditedTagEmpty",
             target: "navigating:tag",
-            actions: ["deleteHighlightedTag", "focusInput", "clearEditedId", "highlightTagAtIndex"],
+            actions: ["removeHighlightedTag", "focusInput", "clearEditedId", "highlightTagAtIndex"],
           },
           {
             target: "navigating:tag",
@@ -488,7 +488,7 @@ export const machine = createMachine<TagsInputSchema>({
           context.set("editedTagIndex", null)
         })
       },
-      deleteTag({ context, scope, event, refs }) {
+      removeTag({ context, scope, event, refs }) {
         const index = dom.getIndexOfId(scope, event.id)
         const value = context.get("value")[index]
 
@@ -496,13 +496,13 @@ export const machine = createMachine<TagsInputSchema>({
         const prevLog = refs.get("log")
         refs.set("log", {
           prev: prevLog.current,
-          current: { type: "delete", value },
+          current: { type: "remove", value },
         })
 
         context.set("value", (prev) => removeAt(prev, index))
       },
 
-      deleteHighlightedTag({ context, scope, refs }) {
+      removeHighlightedTag({ context, scope, refs }) {
         const highlightedTagId = context.get("highlightedTagId")
         if (highlightedTagId == null) return
 
@@ -514,7 +514,7 @@ export const machine = createMachine<TagsInputSchema>({
         const prevLog = refs.get("log")
         refs.set("log", {
           prev: prevLog.current,
-          current: { type: "delete", value: value[index] },
+          current: { type: "remove", value: value[index] },
         })
 
         context.set("value", (prev) => removeAt(prev, index))
@@ -746,8 +746,8 @@ export const machine = createMachine<TagsInputSchema>({
           case "add":
             msg = translations.tagAdded(current.value)
             break
-          case "delete":
-            msg = translations.tagDeleted(current.value)
+          case "remove":
+            msg = translations.tagRemoved(current.value)
             break
           case "update":
             msg = translations.tagUpdated(current.value)
@@ -757,8 +757,8 @@ export const machine = createMachine<TagsInputSchema>({
             break
           case "select":
             msg = translations.tagSelected(current.value)
-            if (prev?.type === "delete") {
-              msg = `${translations.tagDeleted(prev.value)}. ${msg}`
+            if (prev?.type === "remove") {
+              msg = `${translations.tagRemoved(prev.value)}. ${msg}`
             } else if (prev?.type === "update") {
               msg = `${translations.tagUpdated(prev.value)}. ${msg}`
             }

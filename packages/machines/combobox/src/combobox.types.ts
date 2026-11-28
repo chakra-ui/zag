@@ -19,7 +19,7 @@ import type { LiveRegion } from "@zag-js/dom-query/live-region"
 export type ValueChangeReason =
   | "item-select"
   | "clear-trigger"
-  | "chip-delete"
+  | "chip-remove"
   | "input-clear" // Emptying the text cleared a single selection
   | "escape-key" // Escape brought back a value cleared by emptying the text
   | "script"
@@ -133,14 +133,14 @@ export interface IntlTranslations {
   triggerLabel?: string | undefined
   clearTriggerLabel?: string | undefined
   /**
-   * The label of a chip's delete trigger
+   * The label of a chip's remove trigger
    */
-  deleteChipTriggerLabel?: ((label: string) => string) | undefined
+  removeChipTriggerLabel?: ((label: string) => string) | undefined
   /**
-   * The message announced when a chip is deleted.
+   * The message announced when a chip is removed.
    * Return an empty string to disable the announcement.
    */
-  chipDeleted?: ((label: string) => string) | undefined
+  chipRemoved?: ((label: string) => string) | undefined
   /**
    * The message announced to screen readers when the results settle after typing.
    * Return an empty string to disable the announcement.
@@ -589,7 +589,7 @@ export interface ChipState {
    */
   value: string
   /**
-   * Whether the chip can't be deleted
+   * Whether the chip can't be removed
    */
   disabled: boolean
 }
@@ -809,9 +809,9 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   getChipProps: (props: ChipProps) => T["element"]
   /**
-   * Props for the button that deletes a chip
+   * Props for the button that removes a chip
    */
-  getChipDeleteTriggerProps: (props: ChipProps) => T["button"]
+  getChipRemoveTriggerProps: (props: ChipProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

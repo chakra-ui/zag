@@ -48,7 +48,7 @@
         {#each api.selectedItems as item (item.code)}
           <span {...api.getChipProps({ item })}>
             {item.label}
-            <button {...api.getChipDeleteTriggerProps({ item })}>
+            <button {...api.getChipRemoveTriggerProps({ item })}>
               <XIcon />
             </button>
           </span>

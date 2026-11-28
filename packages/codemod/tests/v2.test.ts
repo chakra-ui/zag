@@ -547,3 +547,57 @@ const s = '[data-scope="menu"][data-part="item"]'
   const once = out(code)
   expect(out(once)).toBe(once)
 })
+
+describe("delete triggers become remove triggers", () => {
+  test("renames the part in selectors", () => {
+    expect(out(`[data-scope="tags-input"][data-part="item-delete-trigger"] {}`, "a.css")).toMatchInlineSnapshot(
+      `"[data-tags-input-item-remove-trigger] {}"`,
+    )
+    expect(out(`[data-scope="file-upload"][data-part="item-delete-trigger"] {}`, "a.css")).toMatchInlineSnapshot(
+      `"[data-file-upload-item-remove-trigger] {}"`,
+    )
+  })
+
+  test("renames the prop getter and removeFile", () => {
+    const code = `
+import * as fileUpload from "@zag-js/file-upload"
+const api = fileUpload.connect(service, normalizeProps)
+const remove = <button {...api.getItemDeleteTriggerProps({ file })} onClick={() => api.deleteFile(file)} />
+`
+    expect(out(code)).toMatchInlineSnapshot(`
+      "
+      import * as fileUpload from "@zag-js/file-upload"
+      const api = fileUpload.connect(service, normalizeProps)
+      const remove = <button {...api.getItemRemoveTriggerProps({ file })} onClick={() => api.removeFile(file)} />
+      "
+    `)
+  })
+
+  test("leaves an app's own deleteFile alone", () => {
+    const code = `
+import * as fileUpload from "@zag-js/file-upload"
+const api = fileUpload.connect(service, normalizeProps)
+storage.deleteFile(path)
+`
+    expect(out(code)).toContain("storage.deleteFile(path)")
+  })
+
+  test("renames nested ids and translations", () => {
+    const code = `
+import * as tagsInput from "@zag-js/tags-input"
+useMachine(tagsInput.machine, {
+  ids: { itemDeleteTrigger: (opts) => opts.value },
+  translations: { deleteTagTriggerLabel: (value) => value, tagDeleted: (value) => value },
+})
+`
+    expect(out(code)).toMatchInlineSnapshot(`
+      "
+      import * as tagsInput from "@zag-js/tags-input"
+      useMachine(tagsInput.machine, {
+        ids: { itemRemoveTrigger: (opts) => opts.value },
+        translations: { removeTagTriggerLabel: (value) => value, tagRemoved: (value) => value },
+      })
+      "
+    `)
+  })
+})

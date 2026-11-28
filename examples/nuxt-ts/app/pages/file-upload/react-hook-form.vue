@@ -31,7 +31,7 @@ function onSubmit() {
         <div>
           <div v-for="file in api.acceptedFiles" :key="file.name" v-bind="api.getItemProps({ file })">
             <div>{{ file.name }} {{ api.getFileSize(file) }}</div>
-            <button v-bind="api.getItemDeleteTriggerProps({ file })"><XIcon /></button>
+            <button v-bind="api.getItemRemoveTriggerProps({ file })"><XIcon /></button>
           </div>
         </div>
 

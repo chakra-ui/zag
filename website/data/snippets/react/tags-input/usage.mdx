@@ -17,7 +17,7 @@ export function TagsInput() {
         <span key={index} {...api.getItemProps({ index, value })}>
           <div {...api.getItemPreviewProps({ index, value })}>
             <span>{value} </span>
-            <button {...api.getItemDeleteTriggerProps({ index, value })}>
+            <button {...api.getItemRemoveTriggerProps({ index, value })}>
               &#x2715;
             </button>
           </div>

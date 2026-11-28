@@ -43,7 +43,7 @@ test.describe("file-upload", () => {
     await fileChooser.setFiles(path.join(__dirname, "fixtures/text.txt"))
 
     await I.seeItem("text.txt")
-    await I.seeDeleteTrigger()
+    await I.seeRemoveTrigger()
   })
 
   test("should upload file via trigger click", async () => {
@@ -51,7 +51,7 @@ test.describe("file-upload", () => {
     await I.uploadFile(filePath)
 
     await I.seeFileDetails("text.txt")
-    await I.seeDeleteTrigger()
+    await I.seeRemoveTrigger()
   })
 
   test("should upload file via dropzone click", async () => {
@@ -59,7 +59,7 @@ test.describe("file-upload", () => {
     await I.uploadFileViaDropzone(filePath)
 
     await I.seeFileDetails("text.txt")
-    await I.seeDeleteTrigger()
+    await I.seeRemoveTrigger()
   })
 
   test("should upload file via drag and drop", async () => {
@@ -67,39 +67,39 @@ test.describe("file-upload", () => {
     await I.uploadFileViaDragAndDrop(filePath)
 
     await I.seeFileDetails("text.txt")
-    await I.seeDeleteTrigger()
+    await I.seeRemoveTrigger()
   })
 
-  test("should delete uploaded file", async () => {
+  test("should remove an uploaded file", async () => {
     const filePath = path.join(__dirname, "fixtures/text.txt")
     await I.uploadFile(filePath)
 
     await I.seeFileDetails("text.txt")
-    await I.deleteFile()
+    await I.removeFile()
     await I.seeNoFiles()
   })
 
-  test("should focus the next item's delete trigger after deleting an item", async () => {
+  test("should focus the next item's remove trigger after removing an item", async () => {
     await I.controls.num("maxFiles", "3")
     await I.uploadFiles(["a.txt", "b.txt", "c.txt"])
 
-    await I.deleteFileAt(0)
-    await I.seeDeleteTriggerIsFocused(0)
+    await I.removeFileAt(0)
+    await I.seeRemoveTriggerIsFocused(0)
     await expect(I.getItem()).toContainText("b.txt")
   })
 
-  test("should focus the previous item's delete trigger after deleting the last item", async () => {
+  test("should focus the previous item's remove trigger after removing the last item", async () => {
     await I.controls.num("maxFiles", "3")
     await I.uploadFiles(["a.txt", "b.txt"])
 
-    await I.deleteFileAt(1)
-    await I.seeDeleteTriggerIsFocused(0)
+    await I.removeFileAt(1)
+    await I.seeRemoveTriggerIsFocused(0)
   })
 
   test("should focus the trigger after deleting the only item", async () => {
     await I.uploadFile(path.join(__dirname, "fixtures/text.txt"))
 
-    await I.deleteFile()
+    await I.removeFile()
     await I.seeNoFiles()
     await I.seeTriggerIsFocused()
   })
@@ -111,12 +111,12 @@ test.describe("file-upload", () => {
     await I.seeAnnouncement("a.txt, b.txt, c.txt added")
   })
 
-  test("should announce the deleted file", async () => {
+  test("should announce the removed file", async () => {
     await I.controls.num("maxFiles", "3")
     await I.uploadFiles(["a.txt", "b.txt", "c.txt"])
 
-    await I.deleteFileAt(0)
-    await I.seeAnnouncement("a.txt deleted")
+    await I.removeFileAt(0)
+    await I.seeAnnouncement("a.txt removed")
   })
 
   test("should have disabled attributes when disabled", async () => {

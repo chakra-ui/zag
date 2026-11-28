@@ -93,9 +93,9 @@ export function connect<T extends PropTypes>(
       if (disabled || readOnly) return
       send({ type: "OPEN" })
     },
-    deleteFile(file, type = DEFAULT_ITEM_TYPE) {
+    removeFile(file, type = DEFAULT_ITEM_TYPE) {
       if (disabled || readOnly) return
-      send({ type: "FILE.DELETE", file, itemType: type })
+      send({ type: "FILE.REMOVE", file, itemType: type })
     },
     acceptedFiles,
     rejectedFiles: context.get("rejectedFiles"),
@@ -360,21 +360,21 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemDeleteTriggerProps(props) {
+    getItemRemoveTriggerProps(props) {
       const { file } = props
       const itemState = getItemState(props)
       return normalize.button({
-        ...parts.itemDeleteTrigger.attrs(scope.id),
+        ...parts.itemRemoveTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         disabled: itemState.disabled || itemState.readOnly,
         "data-disabled": dataAttr(itemState.disabled),
         "data-readonly": dataAttr(itemState.readOnly),
         "data-type": itemState.type,
-        "aria-label": translations.deleteFile?.(file),
+        "aria-label": translations.removeFile?.(file),
         onClick() {
           if (itemState.disabled || itemState.readOnly) return
-          send({ type: "FILE.DELETE", file, itemType: itemState.type })
+          send({ type: "FILE.REMOVE", file, itemType: itemState.type })
         },
       })
     },

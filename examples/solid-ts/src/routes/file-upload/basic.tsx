@@ -33,7 +33,7 @@ export default function Page() {
                     </div>
                     <div {...api().getItemSizeTextProps({ file: file() })}>{api().getFileSize(file())}</div>
                     <div>{file().type}</div>
-                    <button {...api().getItemDeleteTriggerProps({ file: file() })}>X</button>
+                    <button {...api().getItemRemoveTriggerProps({ file: file() })}>X</button>
                   </li>
                 )
               }}

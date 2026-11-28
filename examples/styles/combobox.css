@@ -88,7 +88,7 @@
   }
 }
 
-[data-combobox-chip-delete-trigger] {
+[data-combobox-chip-remove-trigger] {
   display: inline-flex;
   padding: 2px;
   border: none;

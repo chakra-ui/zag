@@ -47,15 +47,15 @@ export interface ElementIds {
   itemName?: ((id: string) => string) | undefined
   itemSizeText?: ((id: string) => string) | undefined
   itemPreview?: ((id: string) => string) | undefined
-  itemDeleteTrigger?: ((id: string) => string) | undefined
+  itemRemoveTrigger?: ((id: string) => string) | undefined
 }
 
 export interface IntlTranslations {
   dropzone?: string | undefined
   itemPreview?: ((file: File) => string) | undefined
-  deleteFile?: ((file: File) => string) | undefined
+  removeFile?: ((file: File) => string) | undefined
   filesAdded?: ((files: File[]) => string) | undefined
-  fileDeleted?: ((file: File) => string) | undefined
+  fileRemoved?: ((file: File) => string) | undefined
 }
 
 export interface FileUploadProps extends LocaleProperties, CommonProperties {
@@ -362,9 +362,9 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   openFilePicker: VoidFunction
   /**
-   * Function to delete the file from the list
+   * Removes the file from the list. The file itself is untouched.
    */
-  deleteFile: (file: File, type?: ItemType | undefined) => void
+  removeFile: (file: File, type?: ItemType | undefined) => void
   /**
    * The accepted files that have been dropped or selected
    */
@@ -431,7 +431,7 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
   getItemPreviewProps: (props: ItemProps) => T["element"]
   getItemPreviewImageProps: (props: ItemPreviewImageProps) => T["img"]
   getItemSizeTextProps: (props: ItemProps) => T["element"]
-  getItemDeleteTriggerProps: (props: ItemProps) => T["button"]
+  getItemRemoveTriggerProps: (props: ItemProps) => T["button"]
   getClearTriggerProps: () => T["button"]
 }
 

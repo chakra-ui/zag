@@ -26,8 +26,8 @@ export function FileUpload() {
               <div {...api().getItemNameProps({ file: file() })}>
                 {file().name}
               </div>
-              <button {...api().getItemDeleteTriggerProps({ file: file() })}>
-                Delete
+              <button {...api().getItemRemoveTriggerProps({ file: file() })}>
+                Remove
               </button>
             </li>
           )}

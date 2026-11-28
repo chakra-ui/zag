@@ -10,7 +10,7 @@ export const anatomy = createAnatomy("tagsInput").parts(
   "itemPreview",
   "itemInput",
   "itemText",
-  "itemDeleteTrigger",
+  "itemRemoveTrigger",
 )
 
 export const parts = anatomy.build()

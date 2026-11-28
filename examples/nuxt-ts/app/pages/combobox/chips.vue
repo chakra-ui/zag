@@ -49,7 +49,7 @@ const api = computed(() => combobox.connect(service, normalizeProps))
         <div v-bind="api.getChipGroupProps()">
           <span v-for="item in api.selectedItems" :key="item.code" v-bind="api.getChipProps({ item })">
             {{ item.label }}
-            <button v-bind="api.getChipDeleteTriggerProps({ item })">
+            <button v-bind="api.getChipRemoveTriggerProps({ item })">
               <XIcon />
             </button>
           </span>

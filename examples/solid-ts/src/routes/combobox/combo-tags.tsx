@@ -106,7 +106,7 @@ export default function Page() {
               <span {...tagApi().getItemProps({ index: index(), value })}>
                 <div {...tagApi().getItemPreviewProps({ index: index(), value })}>
                   <span {...tagApi().getItemTextProps({ index: index(), value })}>{value} </span>
-                  <button {...tagApi().getItemDeleteTriggerProps({ index: index(), value })}>&#x2715;</button>
+                  <button {...tagApi().getItemRemoveTriggerProps({ index: index(), value })}>&#x2715;</button>
                 </div>
                 <input {...tagApi().getItemInputProps({ index: index(), value })} />
               </span>

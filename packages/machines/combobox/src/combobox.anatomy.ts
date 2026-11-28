@@ -19,6 +19,6 @@ export const anatomy = createAnatomy("combobox").parts(
   "trigger",
   "chipGroup",
   "chip",
-  "chipDeleteTrigger",
+  "chipRemoveTrigger",
 )
 export const parts = anatomy.build()

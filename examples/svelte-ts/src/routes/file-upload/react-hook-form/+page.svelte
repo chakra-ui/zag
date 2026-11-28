@@ -36,7 +36,7 @@
               {file.name}
               {api.getFileSize(file)}
             </div>
-            <button {...api.getItemDeleteTriggerProps({ file })}>
+            <button {...api.getItemRemoveTriggerProps({ file })}>
               <XIcon />
             </button>
           </div>

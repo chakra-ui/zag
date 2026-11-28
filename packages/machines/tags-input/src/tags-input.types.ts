@@ -41,19 +41,19 @@ export interface ValidateArgs {
 
 export interface IntlTranslations {
   clearTriggerLabel?: string | undefined
-  deleteTagTriggerLabel?: ((value: string) => string) | undefined
+  removeTagTriggerLabel?: ((value: string) => string) | undefined
   tagSelected?: ((value: string) => string) | undefined
   tagAdded?: ((value: string) => string) | undefined
   tagsPasted?: ((value: string[]) => string) | undefined
   tagEdited?: ((value: string) => string) | undefined
   tagUpdated?: ((value: string) => string) | undefined
-  tagDeleted?: ((value: string) => string) | undefined
+  tagRemoved?: ((value: string) => string) | undefined
   noTagsSelected?: string | undefined
   inputLabel?: ((count: number) => string) | undefined
 }
 
 type Log =
-  | { type: "add" | "update" | "delete" | "select"; value: string }
+  | { type: "add" | "update" | "remove" | "select"; value: string }
   | { type: "clear" }
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
@@ -66,7 +66,7 @@ export interface ElementIds {
   label?: string | undefined
   control?: string | undefined
   item?: ((opts: ItemProps) => string) | undefined
-  itemDeleteTrigger?: ((opts: ItemProps) => string) | undefined
+  itemRemoveTrigger?: ((opts: ItemProps) => string) | undefined
   itemInput?: ((opts: ItemProps) => string) | undefined
 }
 
@@ -385,5 +385,5 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
   getItemPreviewProps: (props: ItemProps) => T["element"]
   getItemTextProps: (props: ItemProps) => T["element"]
   getItemInputProps: (props: ItemProps) => T["input"]
-  getItemDeleteTriggerProps: (props: ItemProps) => T["button"]
+  getItemRemoveTriggerProps: (props: ItemProps) => T["button"]
 }

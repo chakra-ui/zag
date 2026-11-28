@@ -185,8 +185,8 @@ export class ComboboxModel extends Model {
     await this.page.locator("[data-combobox-chip-group]").click({ position: { x: 2, y: 2 } })
   }
 
-  clickChipDeleteTrigger = async (label: string) => {
-    await this.page.getByRole("button", { name: `Delete ${label}` }).click()
+  clickChipRemoveTrigger = async (label: string) => {
+    await this.page.getByRole("button", { name: `Remove ${label}` }).click()
   }
 
   clickLabel = async () => {

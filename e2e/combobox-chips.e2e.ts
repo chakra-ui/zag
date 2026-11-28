@@ -69,7 +69,7 @@ test.describe("combobox / chips", () => {
     await I.seeChipIsFocused("Canada")
   })
 
-  test("Backspace on a chip should delete it and focus the previous chip", async () => {
+  test("Backspace on a chip should remove it and focus the previous chip", async () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft")
     await I.pressKey("Backspace")
@@ -83,7 +83,7 @@ test.describe("combobox / chips", () => {
     await I.seeInputIsFocused()
   })
 
-  test("Delete on a chip should delete it and focus the next chip", async () => {
+  test("Delete on a chip should remove it and focus the next chip", async () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft", 2)
     await I.pressKey("Delete")
@@ -92,7 +92,7 @@ test.describe("combobox / chips", () => {
     await I.seeChipIsFocused("Canada")
   })
 
-  test("Backspace in an empty input should focus the last chip, then delete it", async () => {
+  test("Backspace in an empty input should focus the last chip, then remove it", async () => {
     await I.focusInput()
     await I.pressKey("Backspace")
 
@@ -105,9 +105,9 @@ test.describe("combobox / chips", () => {
   })
 
   test("deleting a chip should announce it", async () => {
-    await I.clickChipDeleteTrigger("Canada")
+    await I.clickChipRemoveTrigger("Canada")
     await I.seeChips(["United States"])
-    await expect(I.liveRegion("polite")).toContainText("Canada deleted")
+    await expect(I.liveRegion("polite")).toContainText("Canada removed")
   })
 
   test("Backspace in an input with text should edit the text", async () => {
@@ -118,8 +118,8 @@ test.describe("combobox / chips", () => {
     await I.seeChips(["United States", "Canada"])
   })
 
-  test("clicking a delete trigger should delete its chip", async () => {
-    await I.clickChipDeleteTrigger("United States")
+  test("clicking a remove trigger should remove its chip", async () => {
+    await I.clickChipRemoveTrigger("United States")
 
     await I.seeChips(["Canada"])
     await I.seeInputIsFocused()

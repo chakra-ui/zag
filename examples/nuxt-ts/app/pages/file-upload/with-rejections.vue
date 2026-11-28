@@ -30,7 +30,7 @@ const api = computed(() => fileUpload.connect(service, normalizeProps))
           </div>
           <div v-bind="api.getItemSizeTextProps({ file })">{{ api.getFileSize(file) }}</div>
           <div>{{ file.type }}</div>
-          <button v-bind="api.getItemDeleteTriggerProps({ file })">X</button>
+          <button v-bind="api.getItemRemoveTriggerProps({ file })">X</button>
         </li>
       </ul>
 
@@ -48,7 +48,7 @@ const api = computed(() => fileUpload.connect(service, normalizeProps))
           </div>
           <div v-bind="api.getItemSizeTextProps({ file, type: 'rejected' })">{{ api.getFileSize(file) }}</div>
           <div>{{ file.type }}</div>
-          <button v-bind="api.getItemDeleteTriggerProps({ file, type: 'rejected' })">X</button>
+          <button v-bind="api.getItemRemoveTriggerProps({ file, type: 'rejected' })">X</button>
         </li>
       </ul>
     </div>

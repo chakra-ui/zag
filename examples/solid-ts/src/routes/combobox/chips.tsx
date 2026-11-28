@@ -51,7 +51,7 @@ export default function Page() {
                 {(item) => (
                   <span {...api().getChipProps({ item })}>
                     {item.label}
-                    <button {...api().getChipDeleteTriggerProps({ item })}>
+                    <button {...api().getChipRemoveTriggerProps({ item })}>
                       <XIcon />
                     </button>
                   </span>

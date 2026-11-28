@@ -34,7 +34,7 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
         >
           <div v-bind="api.getItemPreviewProps({ index, value })">
             <span v-bind="api.getItemTextProps({ index, value })">{{ value }} </span>
-            <button v-bind="api.getItemDeleteTriggerProps({ index, value })">
+            <button v-bind="api.getItemRemoveTriggerProps({ index, value })">
               <XIcon />
             </button>
           </div>

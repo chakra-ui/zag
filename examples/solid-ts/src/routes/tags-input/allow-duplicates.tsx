@@ -27,7 +27,7 @@ export default function Page() {
                 <span {...api().getItemProps({ index, value: value() })}>
                   <div {...api().getItemPreviewProps({ index, value: value() })}>
                     <span {...api().getItemTextProps({ index, value: value() })}>{value()} </span>
-                    <button {...api().getItemDeleteTriggerProps({ index, value: value() })}>
+                    <button {...api().getItemRemoveTriggerProps({ index, value: value() })}>
                       <XIcon />
                     </button>
                   </div>

@@ -25,7 +25,7 @@
     {
       "from": "*",
       "to": null,
-      "event": "FILE.DELETE",
+      "event": "FILE.REMOVE",
       "guard": null
     },
     {
@@ -141,31 +141,13 @@
         {
           "from": "dragging",
           "to": "idle",
-          "events": [
-            "DROPZONE.DRAG_LEAVE",
-            "DROPZONE.DROP"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_LEAVE",
-            "DROPZONE.DROP"
-          ],
+          "events": ["DROPZONE.DRAG_LEAVE", "DROPZONE.DROP"],
+          "lines": ["DROPZONE.DRAG_LEAVE", "DROPZONE.DROP"],
           "points": [
-            [
-              973,
-              85
-            ],
-            [
-              889,
-              85
-            ],
-            [
-              889,
-              79
-            ],
-            [
-              584,
-              79
-            ]
+            [973, 85],
+            [889, 85],
+            [889, 79],
+            [584, 79]
           ],
           "label": {
             "x": 722,
@@ -177,29 +159,13 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "DROPZONE.BLUR"
-          ],
-          "lines": [
-            "DROPZONE.BLUR"
-          ],
+          "events": ["DROPZONE.BLUR"],
+          "lines": ["DROPZONE.BLUR"],
           "points": [
-            [
-              149,
-              85
-            ],
-            [
-              175,
-              85
-            ],
-            [
-              175,
-              79
-            ],
-            [
-              506,
-              79
-            ]
+            [149, 85],
+            [175, 85],
+            [175, 79],
+            [506, 79]
           ],
           "label": {
             "x": 262,
@@ -211,37 +177,15 @@
         {
           "from": "focused",
           "to": "dragging",
-          "events": [
-            "DROPZONE.DRAG_OVER"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_OVER"
-          ],
+          "events": ["DROPZONE.DRAG_OVER"],
+          "lines": ["DROPZONE.DRAG_OVER"],
           "points": [
-            [
-              149,
-              107
-            ],
-            [
-              175,
-              107
-            ],
-            [
-              175,
-              164
-            ],
-            [
-              889,
-              164
-            ],
-            [
-              889,
-              107
-            ],
-            [
-              973,
-              107
-            ]
+            [149, 107],
+            [175, 107],
+            [175, 164],
+            [889, 164],
+            [889, 107],
+            [973, 107]
           ],
           "label": {
             "x": 477,
@@ -253,29 +197,13 @@
         {
           "from": "idle",
           "to": "dragging",
-          "events": [
-            "DROPZONE.DRAG_OVER"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_OVER"
-          ],
+          "events": ["DROPZONE.DRAG_OVER"],
+          "lines": ["DROPZONE.DRAG_OVER"],
           "points": [
-            [
-              584,
-              93
-            ],
-            [
-              638,
-              93
-            ],
-            [
-              638,
-              96
-            ],
-            [
-              973,
-              96
-            ]
+            [584, 93],
+            [638, 93],
+            [638, 96],
+            [973, 96]
           ],
           "label": {
             "x": 725,
@@ -287,29 +215,13 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "DROPZONE.FOCUS"
-          ],
-          "lines": [
-            "DROPZONE.FOCUS"
-          ],
+          "events": ["DROPZONE.FOCUS"],
+          "lines": ["DROPZONE.FOCUS"],
           "points": [
-            [
-              506,
-              93
-            ],
-            [
-              393,
-              93
-            ],
-            [
-              393,
-              96
-            ],
-            [
-              149,
-              96
-            ]
+            [506, 93],
+            [393, 93],
+            [393, 96],
+            [149, 96]
           ],
           "label": {
             "x": 259,
@@ -347,23 +259,11 @@
         {
           "from": "dragging",
           "to": "idle",
-          "events": [
-            "DROPZONE.DRAG_LEAVE",
-            "DROPZONE.DROP"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_LEAVE",
-            "DROPZONE.DROP"
-          ],
+          "events": ["DROPZONE.DRAG_LEAVE", "DROPZONE.DROP"],
+          "lines": ["DROPZONE.DRAG_LEAVE", "DROPZONE.DROP"],
           "points": [
-            [
-              195,
-              624
-            ],
-            [
-              195,
-              364
-            ]
+            [195, 624],
+            [195, 364]
           ],
           "label": {
             "x": 48,
@@ -375,21 +275,11 @@
         {
           "from": "focused",
           "to": "idle",
-          "events": [
-            "DROPZONE.BLUR"
-          ],
-          "lines": [
-            "DROPZONE.BLUR"
-          ],
+          "events": ["DROPZONE.BLUR"],
+          "lines": ["DROPZONE.BLUR"],
           "points": [
-            [
-              195,
-              76
-            ],
-            [
-              195,
-              320
-            ]
+            [195, 76],
+            [195, 320]
           ],
           "label": {
             "x": 87,
@@ -401,37 +291,15 @@
         {
           "from": "focused",
           "to": "dragging",
-          "events": [
-            "DROPZONE.DRAG_OVER"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_OVER"
-          ],
+          "events": ["DROPZONE.DRAG_OVER"],
+          "lines": ["DROPZONE.DRAG_OVER"],
           "points": [
-            [
-              246,
-              76
-            ],
-            [
-              246,
-              102
-            ],
-            [
-              378,
-              102
-            ],
-            [
-              378,
-              540
-            ],
-            [
-              250,
-              540
-            ],
-            [
-              250,
-              624
-            ]
+            [246, 76],
+            [246, 102],
+            [378, 102],
+            [378, 540],
+            [250, 540],
+            [250, 624]
           ],
           "label": {
             "x": 385,
@@ -443,37 +311,15 @@
         {
           "from": "idle",
           "to": "dragging",
-          "events": [
-            "DROPZONE.DRAG_OVER"
-          ],
-          "lines": [
-            "DROPZONE.DRAG_OVER"
-          ],
+          "events": ["DROPZONE.DRAG_OVER"],
+          "lines": ["DROPZONE.DRAG_OVER"],
           "points": [
-            [
-              221,
-              364
-            ],
-            [
-              221,
-              390
-            ],
-            [
-              212,
-              390
-            ],
-            [
-              212,
-              540
-            ],
-            [
-              223,
-              540
-            ],
-            [
-              223,
-              624
-            ]
+            [221, 364],
+            [221, 390],
+            [212, 390],
+            [212, 540],
+            [223, 540],
+            [223, 624]
           ],
           "label": {
             "x": 219,
@@ -485,21 +331,11 @@
         {
           "from": "idle",
           "to": "focused",
-          "events": [
-            "DROPZONE.FOCUS"
-          ],
-          "lines": [
-            "DROPZONE.FOCUS"
-          ],
+          "events": ["DROPZONE.FOCUS"],
+          "lines": ["DROPZONE.FOCUS"],
           "points": [
-            [
-              221,
-              320
-            ],
-            [
-              221,
-              76
-            ]
+            [221, 320],
+            [221, 76]
           ],
           "label": {
             "x": 228,

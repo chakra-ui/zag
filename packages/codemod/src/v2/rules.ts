@@ -62,6 +62,9 @@ export const PART_RENAMES: Array<{ scope: string; from: string; to: string }> = 
   { scope: "tree-view", from: "item-indicator", to: "node-indicator" },
   { scope: "tree-view", from: "item-text", to: "node-text" },
   { scope: "tree-view", from: "item", to: "node" },
+  // removing an item leaves the value or file intact, so the trigger removes rather than deletes
+  { scope: "tags-input", from: "item-delete-trigger", to: "item-remove-trigger" },
+  { scope: "file-upload", from: "item-delete-trigger", to: "item-remove-trigger" },
 ]
 
 export interface MemberRule {
@@ -85,6 +88,13 @@ const TREE_VIEW = ["tree-view"]
 const HIGHLIGHT = ["combobox", "select", "cascade-select"]
 
 export const MEMBER_RULES: MemberRule[] = [
+  {
+    pkgs: ["tags-input", "file-upload"],
+    from: "getItemDeleteTriggerProps",
+    to: "getItemRemoveTriggerProps",
+    unique: true,
+  },
+  { pkgs: ["file-upload"], from: "deleteFile", to: "removeFile", generic: true },
   { pkgs: PREVIOUS_TRIGGER_SCOPES, from: "getPrevTriggerProps", to: "getPreviousTriggerProps", unique: true },
   { pkgs: ["carousel"], from: "scrollPrev", to: "scrollPrevious" },
   { pkgs: ["carousel"], from: "canScrollPrev", to: "canScrollPrevious" },
@@ -219,6 +229,17 @@ export const NESTED_RENAMES: Record<string, { ids?: PropRule[]; translations?: P
     translations: [{ from: "prevTrigger", to: "previousTrigger" }],
   },
   tour: { translations: [{ from: "prevStep", to: "previousStep" }] },
+  "tags-input": {
+    ids: [{ from: "itemDeleteTrigger", to: "itemRemoveTrigger" }],
+    translations: [
+      { from: "deleteTagTriggerLabel", to: "removeTagTriggerLabel" },
+      { from: "tagDeleted", to: "tagRemoved" },
+    ],
+  },
+  "file-upload": {
+    ids: [{ from: "itemDeleteTrigger", to: "itemRemoveTrigger" }],
+    translations: [{ from: "deleteFile", to: "removeFile" }],
+  },
 }
 
 /** Props removed without replacement. */

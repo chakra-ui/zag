@@ -89,9 +89,9 @@ export const machine = createMachine<FileUploadSchema>({
     "FILE.SELECT": {
       actions: ["setEventFiles"],
     },
-    // focus first: the delete trigger unmounts with its item
-    "FILE.DELETE": {
-      actions: ["restoreFocusAfterDelete", "removeFile", "announceFileDeleted"],
+    // focus first: the remove trigger unmounts with its item
+    "FILE.REMOVE": {
+      actions: ["restoreFocusAfterRemove", "removeFile", "announceFileRemoved"],
     },
     "FILES.CLEAR": {
       actions: ["restoreFocusAfterClear", "clearFiles"],
@@ -263,20 +263,20 @@ export const machine = createMachine<FileUploadSchema>({
           context.set("acceptedFiles", (prev) => prev.filter((file) => !isFileEqual(file, event.file)))
         }
       },
-      announceFileDeleted(params) {
-        announce(params, (t) => t.fileDeleted(params.event.file))
+      announceFileRemoved(params) {
+        announce(params, (t) => t.fileRemoved(params.event.file))
       },
-      restoreFocusAfterDelete({ context, event, scope, refs }) {
+      restoreFocusAfterRemove({ context, event, scope, refs }) {
         const itemType = event.itemType === "rejected" ? "rejected" : "accepted"
         const files =
           itemType === "rejected" ? context.get("rejectedFiles").map((item) => item.file) : context.get("acceptedFiles")
         const index = files.findIndex((file) => isFileEqual(file, event.file))
-        // skip programmatic deletes
-        const triggerEl = dom.getItemDeleteTriggerEls(scope, itemType)[index]
+        // skip programmatic removals
+        const triggerEl = dom.getItemRemoveTriggerEls(scope, itemType)[index]
         if (index === -1 || !contains(triggerEl, scope.getActiveElement())) return
         // next item, or the previous one if the last was removed
         refs.get("focusFrame").request(() => {
-          const remaining = dom.getItemDeleteTriggerEls(scope, itemType)
+          const remaining = dom.getItemRemoveTriggerEls(scope, itemType)
           const target = remaining[Math.min(index, remaining.length - 1)] ?? dom.getFallbackFocusEl(scope)
           target?.focus()
         })

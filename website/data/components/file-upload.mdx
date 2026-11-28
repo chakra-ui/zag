@@ -453,9 +453,9 @@ messages announced to screen readers when files are added or removed.
 const service = useMachine(fileUpload.machine, {
   translations: {
     dropzone: "Drop files here",
-    deleteFile: (file) => `Remove ${file.name}`,
+    removeFile: (file) => `Remove ${file.name}`,
     filesAdded: (files) => `${files.length} files added`,
-    fileDeleted: (file) => `${file.name} removed`,
+    fileRemoved: (file) => `${file.name} removed`,
   },
 })
 ```

@@ -90,8 +90,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     return dom.getChipEls(scope).map((el) => el.dataset.value!)
   }
 
-  function deleteChip(value: string, focusValue: string | null) {
-    send({ type: "CHIP.DELETE", value, focusValue, src: "chip-delete" })
+  function removeChip(value: string, focusValue: string | null) {
+    send({ type: "CHIP.REMOVE", value, focusValue, src: "chip-remove" })
   }
 
   // Each part of an item asks for its state, so compute it once per item per render
@@ -381,7 +381,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               event.preventDefault()
               focusChip(chipValues[chipValues.length - 1])
             },
-            // In an empty input, focus the last chip; Backspace again deletes it
+            // In an empty input, focus the last chip; Backspace again removes it
             Backspace(event) {
               const inputEl = event.currentTarget as HTMLInputElement
               if (inputEl.value) return
@@ -789,10 +789,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               focusChip(chipValues[chipValues.length - 1])
             },
             Backspace() {
-              if (!chipState.disabled) deleteChip(value, prev ?? next)
+              if (!chipState.disabled) removeChip(value, prev ?? next)
             },
             Delete() {
-              if (!chipState.disabled) deleteChip(value, next ?? prev)
+              if (!chipState.disabled) removeChip(value, next ?? prev)
             },
             Enter() {
               focusChip(null)
@@ -828,17 +828,17 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
-    getChipDeleteTriggerProps(props) {
+    getChipRemoveTriggerProps(props) {
       const chipState = getChipState(props)
       const { value } = chipState
       const label = collection.stringifyItem(props.item) ?? value
       return normalize.button({
-        ...parts.chipDeleteTrigger.attrs(scope.id),
+        ...parts.chipRemoveTrigger.attrs(scope.id),
         dir: prop("dir"),
         type: "button",
         tabIndex: -1,
         disabled: chipState.disabled,
-        "aria-label": translations.deleteChipTriggerLabel(label),
+        "aria-label": translations.removeChipTriggerLabel(label),
         "data-value": value,
         "data-disabled": dataAttr(chipState.disabled),
         onPointerDown(event) {
@@ -847,7 +847,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         },
         onClick(event) {
           if (event.defaultPrevented || chipState.disabled) return
-          deleteChip(value, null)
+          removeChip(value, null)
         },
       })
     },

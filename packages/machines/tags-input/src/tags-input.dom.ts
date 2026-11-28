@@ -12,8 +12,8 @@ export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `${ctx.id}:label`
 export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `${ctx.id}:control`
 export const getItemId = (ctx: Scope, opt: ItemProps) =>
   ctx.ids?.item?.(opt) ?? `${ctx.id}:tag:${opt.value}:${opt.index}`
-export const getItemDeleteTriggerId = (ctx: Scope, opt: ItemProps) =>
-  ctx.ids?.itemDeleteTrigger?.(opt) ?? `${getItemId(ctx, opt)}-delete-btn`
+export const getItemRemoveTriggerId = (ctx: Scope, opt: ItemProps) =>
+  ctx.ids?.itemRemoveTrigger?.(opt) ?? `${getItemId(ctx, opt)}-remove-trigger`
 export const getItemInputId = (ctx: Scope, opt: ItemProps) =>
   ctx.ids?.itemInput?.(opt) ?? `${getItemId(ctx, opt)}-input`
 
@@ -51,13 +51,13 @@ export const getTagValue = (ctx: Scope, id: string | null) => {
 export const setHoverIntent = (el: Element) => {
   const tagEl = el.closest<HTMLElement>("[data-tags-input-item-preview]")
   if (!tagEl) return
-  tagEl.dataset.deleteIntent = ""
+  tagEl.dataset.removeIntent = ""
 }
 
 export const clearHoverIntent = (el: Element) => {
   const tagEl = el.closest<HTMLElement>("[data-tags-input-item-preview]")
   if (!tagEl) return
-  delete tagEl.dataset.deleteIntent
+  delete tagEl.dataset.removeIntent
 }
 
 export const dispatchInputEvent = (ctx: Scope, value: string) => {

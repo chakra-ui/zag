@@ -635,8 +635,8 @@
       "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     },
-    "ChipDeleteTrigger": {
-      "data-combobox-chip-delete-trigger": "<uid>",
+    "ChipRemoveTrigger": {
+      "data-combobox-chip-remove-trigger": "<uid>",
       "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     }
@@ -1072,8 +1072,8 @@
       "data-disabled": "Present when disabled",
       "data-type": "The type of the item"
     },
-    "ItemDeleteTrigger": {
-      "data-file-upload-item-delete-trigger": "<uid>",
+    "ItemRemoveTrigger": {
+      "data-file-upload-item-remove-trigger": "<uid>",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
       "data-type": "The type of the item"
@@ -2531,8 +2531,8 @@
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
-    "ItemDeleteTrigger": {
-      "data-tags-input-item-delete-trigger": "<uid>",
+    "ItemRemoveTrigger": {
+      "data-tags-input-item-remove-trigger": "<uid>",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },

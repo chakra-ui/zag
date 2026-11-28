@@ -34,7 +34,7 @@ export function FileUpload(props: FileUploadProps) {
             <div>
               {file.name} {api.getFileSize(file)}
             </div>
-            <button {...api.getItemDeleteTriggerProps({ file })}>
+            <button {...api.getItemRemoveTriggerProps({ file })}>
               <HiX />
             </button>
           </div>

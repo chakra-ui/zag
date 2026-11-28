@@ -4,8 +4,8 @@ import type { IntlTranslations } from "./combobox.types"
 export const defaultTranslations: Required<IntlTranslations> = {
   triggerLabel: "Toggle suggestions",
   clearTriggerLabel: "Clear value",
-  deleteChipTriggerLabel: (label) => `Delete ${label}`,
-  chipDeleted: (label) => `${label} deleted`,
+  removeChipTriggerLabel: (label) => `Remove ${label}`,
+  chipRemoved: (label) => `${label} removed`,
   resultsCount: (count) => (count === 1 ? "1 result" : `${count} results`),
   noResults: "No results",
   loading: "Loading results",

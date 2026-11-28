@@ -25,7 +25,7 @@
         v-bind="api.getItemProps({ file })"
       >
         <div v-bind="api.getItemNameProps({ file })">{{ file.name }}</div>
-        <button v-bind="api.getItemDeleteTriggerProps({ file })">Delete</button>
+        <button v-bind="api.getItemRemoveTriggerProps({ file })">Remove</button>
       </li>
     </ul>
   </div>

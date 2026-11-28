@@ -49,7 +49,7 @@ const onSubmit = (e: Event) => {
               </span>
               <button
                 :data-testid="`${toDashCase(value)}-close-button`"
-                v-bind="api.getItemDeleteTriggerProps({ index, value })"
+                v-bind="api.getItemRemoveTriggerProps({ index, value })"
               >
                 <XIcon />
               </button>

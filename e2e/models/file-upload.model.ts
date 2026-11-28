@@ -29,12 +29,12 @@ export class FileUploadModel extends Model {
     return this.page.locator(part("file-upload", "item")).first()
   }
 
-  getDeleteTrigger() {
-    return this.page.locator(part("file-upload", "item-delete-trigger")).first()
+  getRemoveTrigger() {
+    return this.page.locator(part("file-upload", "item-remove-trigger")).first()
   }
 
-  getDeleteTriggers() {
-    return this.page.locator(part("file-upload", "item-delete-trigger"))
+  getRemoveTriggers() {
+    return this.page.locator(part("file-upload", "item-remove-trigger"))
   }
 
   getLiveRegion() {
@@ -63,8 +63,8 @@ export class FileUploadModel extends Model {
     await expect(item).toContainText(fileName)
   }
 
-  async seeDeleteTrigger() {
-    await expect(this.getDeleteTrigger()).toBeVisible()
+  async seeRemoveTrigger() {
+    await expect(this.getRemoveTrigger()).toBeVisible()
   }
 
   async seeTriggerIsDisabled() {
@@ -141,12 +141,12 @@ export class FileUploadModel extends Model {
     await fileChooser.setFiles(names.map((name) => ({ name, mimeType: "text/plain", buffer: Buffer.from(name) })))
   }
 
-  async deleteFileAt(index: number) {
-    await this.getDeleteTriggers().nth(index).click()
+  async removeFileAt(index: number) {
+    await this.getRemoveTriggers().nth(index).click()
   }
 
-  async seeDeleteTriggerIsFocused(index: number) {
-    await expect(this.getDeleteTriggers().nth(index)).toBeFocused()
+  async seeRemoveTriggerIsFocused(index: number) {
+    await expect(this.getRemoveTriggers().nth(index)).toBeFocused()
   }
 
   async seeTriggerIsFocused() {
@@ -219,8 +219,8 @@ export class FileUploadModel extends Model {
     }
   }
 
-  async deleteFile() {
-    await this.getDeleteTrigger().click()
+  async removeFile() {
+    await this.getRemoveTrigger().click()
   }
 
   async seeNoFiles() {

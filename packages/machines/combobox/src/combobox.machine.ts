@@ -276,8 +276,8 @@ export const machine = createMachine({
     "ITEM.CLEAR": {
       actions: ["clearItem"],
     },
-    "CHIP.DELETE": {
-      actions: ["deleteChip", "focusChip"],
+    "CHIP.REMOVE": {
+      actions: ["removeChip", "focusChip"],
     },
     "VALUE.SET": {
       actions: ["setValue"],
@@ -787,7 +787,7 @@ export const machine = createMachine({
           },
         })
       },
-      // Chips can be deleted while the list is closed, so their region lives as long as the combobox
+      // Chips can be removed while the list is closed, so their region lives as long as the combobox
       trackChipRegion({ refs, scope }) {
         const chipRegion = createLiveRegion({ level: "polite", document: scope.getDoc() })
         refs.set("chipRegion", chipRegion)
@@ -981,12 +981,12 @@ export const machine = createMachine({
           context.set("inputValue", inputValue)
         })
       },
-      deleteChip({ context, prop, refs, event }) {
+      removeChip({ context, prop, refs, event }) {
         const item = context.get("selectedItemMap").get(event.value)
         const label = (item && prop("collection").stringifyItem(item)) || event.value
         context.set("value", remove(context.get("value"), event.value))
         const translations = mergeWithDefault(defaultTranslations, prop("translations"))
-        announce(refs.get("chipRegion"), translations.chipDeleted(label))
+        announce(refs.get("chipRegion"), translations.chipRemoved(label))
       },
       // After the chip is gone, focus the one beside it, or the input
       focusChip({ refs, scope, event }) {

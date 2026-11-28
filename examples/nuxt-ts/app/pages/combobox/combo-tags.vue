@@ -108,7 +108,7 @@ const inputProps = computed(() =>
         <span v-for="(tag, index) in tagApi.value" :key="tag" v-bind="tagApi.getItemProps({ index, value: tag })">
           <div v-bind="tagApi.getItemPreviewProps({ index, value: tag })">
             <span v-bind="tagApi.getItemTextProps({ index, value: tag })">{{ tag }} </span>
-            <button v-bind="tagApi.getItemDeleteTriggerProps({ index, value: tag })">&#x2715;</button>
+            <button v-bind="tagApi.getItemRemoveTriggerProps({ index, value: tag })">&#x2715;</button>
           </div>
           <input v-bind="tagApi.getItemInputProps({ index, value: tag })" />
         </span>

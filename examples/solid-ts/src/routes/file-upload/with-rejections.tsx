@@ -36,7 +36,7 @@ export default function Page() {
                   </div>
                   <div {...api().getItemSizeTextProps({ file: file() })}>{api().getFileSize(file())}</div>
                   <div>{file().type}</div>
-                  <button {...api().getItemDeleteTriggerProps({ file: file() })}>X</button>
+                  <button {...api().getItemRemoveTriggerProps({ file: file() })}>X</button>
                 </li>
               )}
             </For>
@@ -57,7 +57,7 @@ export default function Page() {
                     {api().getFileSize(item().file)}
                   </div>
                   <div>{item().file.type}</div>
-                  <button {...api().getItemDeleteTriggerProps({ file: item().file, type: "rejected" })}>X</button>
+                  <button {...api().getItemRemoveTriggerProps({ file: item().file, type: "rejected" })}>X</button>
                 </li>
               )}
             </For>

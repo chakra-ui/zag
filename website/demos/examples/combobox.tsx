@@ -637,8 +637,8 @@ function ChipsField(props: { api: combobox.Api; label?: string }) {
             >
               {item.label}
               <button
-                className={styles.ChipDeleteTrigger}
-                {...api.getChipDeleteTriggerProps({ item })}
+                className={styles.ChipRemoveTrigger}
+                {...api.getChipRemoveTriggerProps({ item })}
               >
                 ×
               </button>

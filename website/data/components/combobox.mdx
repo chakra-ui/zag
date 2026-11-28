@@ -336,7 +336,7 @@ the input inside `getChipGroupProps`.
     {api.selectedItems.map((item) => (
       <span key={item.value} {...api.getChipProps({ item })}>
         {item.label}
-        <button {...api.getChipDeleteTriggerProps({ item })}>✕</button>
+        <button {...api.getChipRemoveTriggerProps({ item })}>✕</button>
       </span>
     ))}
     <input {...api.getInputProps()} />
@@ -346,16 +346,16 @@ the input inside `getChipGroupProps`.
 
 </Example>
 
-Deleting a chip calls `onValueChange` with `reason: "chip-delete"`. Clicking the
+Removing a chip calls `onValueChange` with `reason: "chip-remove"`. Clicking the
 empty space in the chip group focuses the input.
 
 | Key                                | Action                                       |
 | ---------------------------------- | -------------------------------------------- |
 | `ArrowLeft` at the start of input  | Focuses the last chip                        |
-| `Backspace` in an empty input      | Focuses the last chip; press again to delete |
+| `Backspace` in an empty input      | Focuses the last chip; press again to remove |
 | `ArrowLeft` / `ArrowRight`         | Moves between chips                          |
 | `Home` / `End`                     | Focuses the first or last chip               |
-| `Backspace` / `Delete` on a chip   | Deletes it and focuses a neighbor            |
+| `Backspace` / `Delete` on a chip   | Removes it and focuses a neighbor            |
 | `Escape`, `Enter`, `Space`, typing | Returns to the input                         |
 | `ArrowDown` / `ArrowUp` on a chip  | Returns to the input and opens the list      |
 
@@ -655,7 +655,7 @@ const service = useMachine(combobox.machine, {
 | --------------- | ------------------------------------------------------------ |
 | `item-select`   | An item was clicked or selected with `Enter`                 |
 | `clear-trigger` | The clear trigger was pressed                                |
-| `chip-delete`   | A chip was deleted                                           |
+| `chip-remove`   | A chip was removed                                           |
 | `input-clear`   | The text of a single selection was emptied                   |
 | `escape-key`    | `Escape` brought back the value emptying the text cleared    |
 | `script`        | Changed programmatically, such as `setValue` or `clearValue` |
@@ -909,7 +909,7 @@ virtualized rows; they scroll like any other element.
 ### Accessibility labels
 
 Use `translations` to customize the labels of the trigger, clear trigger, and
-chip delete triggers.
+chip remove triggers.
 
 ```tsx
 const service = useMachine(combobox.machine, {
@@ -918,7 +918,7 @@ const service = useMachine(combobox.machine, {
   translations: {
     triggerLabel: "Open countries",
     clearTriggerLabel: "Clear selection",
-    deleteChipTriggerLabel: (label) => `Remove ${label}`,
+    removeChipTriggerLabel: (label) => `Remove ${label}`,
   },
 })
 ```
@@ -948,7 +948,7 @@ const service = useMachine(combobox.machine, {
 
 Other messages you can customize:
 
-- `chipDeleted(label)` — when a chip is deleted
+- `chipRemoved(label)` — when a chip is removed
 - `creatingItem(inputValue)` — when an async create starts
 - `createItemFailed({ inputValue, error })` — when an async create fails
 - `highlightedItem({ label, selected })` — when an option is highlighted, on

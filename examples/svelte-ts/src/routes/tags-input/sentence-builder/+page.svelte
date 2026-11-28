@@ -33,7 +33,7 @@
         <span {...api.getItemProps({ index, value })}>
           <div {...api.getItemPreviewProps({ index, value })}>
             <span {...api.getItemTextProps({ index, value })}>{value} </span>
-            <button {...api.getItemDeleteTriggerProps({ index, value })}>
+            <button {...api.getItemRemoveTriggerProps({ index, value })}>
               <XIcon />
             </button>
           </div>

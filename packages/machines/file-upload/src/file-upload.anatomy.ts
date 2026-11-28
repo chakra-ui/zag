@@ -4,7 +4,7 @@ export const anatomy = createAnatomy("file-upload").parts(
   "root",
   "dropzone",
   "item",
-  "itemDeleteTrigger",
+  "itemRemoveTrigger",
   "itemGroup",
   "itemName",
   "itemPreview",

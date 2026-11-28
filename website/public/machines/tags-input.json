@@ -49,7 +49,7 @@
     {
       "from": "*",
       "to": "focused:input",
-      "event": "CLICK_DELETE_TAG",
+      "event": "CLICK_REMOVE_TAG",
       "guard": null
     },
     {
@@ -351,33 +351,13 @@
         {
           "from": "editing:tag",
           "to": "navigating:tag",
-          "events": [
-            "TAG_INPUT_BLUR",
-            "TAG_INPUT_ENTER",
-            "TAG_INPUT_ESCAPE"
-          ],
-          "lines": [
-            "TAG_INPUT_BLUR",
-            "TAG_INPUT_ENTER",
-            "TAG_INPUT_ESCAPE"
-          ],
+          "events": ["TAG_INPUT_BLUR", "TAG_INPUT_ENTER", "TAG_INPUT_ESCAPE"],
+          "lines": ["TAG_INPUT_BLUR", "TAG_INPUT_ENTER", "TAG_INPUT_ESCAPE"],
           "points": [
-            [
-              180,
-              101
-            ],
-            [
-              206,
-              101
-            ],
-            [
-              206,
-              95
-            ],
-            [
-              522,
-              95
-            ]
+            [180, 101],
+            [206, 101],
+            [206, 95],
+            [522, 95]
           ],
           "label": {
             "x": 290,
@@ -389,37 +369,15 @@
         {
           "from": "editing:tag",
           "to": "idle",
-          "events": [
-            "TAG_INPUT_BLUR"
-          ],
-          "lines": [
-            "TAG_INPUT_BLUR"
-          ],
+          "events": ["TAG_INPUT_BLUR"],
+          "lines": ["TAG_INPUT_BLUR"],
           "points": [
-            [
-              180,
-              123
-            ],
-            [
-              206,
-              123
-            ],
-            [
-              206,
-              183
-            ],
-            [
-              854,
-              183
-            ],
-            [
-              854,
-              267
-            ],
-            [
-              944,
-              267
-            ]
+            [180, 123],
+            [206, 123],
+            [206, 183],
+            [854, 183],
+            [854, 267],
+            [944, 267]
           ],
           "label": {
             "x": 545,
@@ -431,39 +389,15 @@
         {
           "from": "focused:input",
           "to": "navigating:tag",
-          "events": [
-            "ARROW_LEFT",
-            "BACKSPACE"
-          ],
-          "lines": [
-            "ARROW_LEFT",
-            "BACKSPACE"
-          ],
+          "events": ["ARROW_LEFT", "BACKSPACE"],
+          "lines": ["ARROW_LEFT", "BACKSPACE"],
           "points": [
-            [
-              1342,
-              93
-            ],
-            [
-              1258,
-              93
-            ],
-            [
-              1258,
-              85
-            ],
-            [
-              702,
-              85
-            ],
-            [
-              702,
-              91
-            ],
-            [
-              676,
-              91
-            ]
+            [1342, 93],
+            [1258, 93],
+            [1258, 85],
+            [702, 85],
+            [702, 91],
+            [676, 91]
           ],
           "label": {
             "x": 942,
@@ -475,37 +409,15 @@
         {
           "from": "focused:input",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              1342,
-              110
-            ],
-            [
-              1258,
-              110
-            ],
-            [
-              1258,
-              158
-            ],
-            [
-              1053,
-              158
-            ],
-            [
-              1053,
-              253
-            ],
-            [
-              1022,
-              253
-            ]
+            [1342, 110],
+            [1258, 110],
+            [1258, 158],
+            [1053, 158],
+            [1053, 253],
+            [1022, 253]
           ],
           "label": {
             "x": 1164,
@@ -517,31 +429,13 @@
         {
           "from": "idle",
           "to": "focused:input",
-          "events": [
-            "FOCUS",
-            "POINTER_DOWN"
-          ],
-          "lines": [
-            "FOCUS",
-            "POINTER_DOWN"
-          ],
+          "events": ["FOCUS", "POINTER_DOWN"],
+          "lines": ["FOCUS", "POINTER_DOWN"],
           "points": [
-            [
-              1022,
-              267
-            ],
-            [
-              1268,
-              267
-            ],
-            [
-              1268,
-              119
-            ],
-            [
-              1342,
-              119
-            ]
+            [1022, 267],
+            [1268, 267],
+            [1268, 119],
+            [1342, 119]
           ],
           "label": {
             "x": 1137,
@@ -563,21 +457,10 @@
             "PASTE",
             "TYPE"
           ],
-          "lines": [
-            "ARROW_DOWN",
-            "ARROW_LEFT",
-            "ARROW_RIGHT",
-            "+5 more"
-          ],
+          "lines": ["ARROW_DOWN", "ARROW_LEFT", "ARROW_RIGHT", "+5 more"],
           "points": [
-            [
-              676,
-              102
-            ],
-            [
-              1342,
-              102
-            ]
+            [676, 102],
+            [1342, 102]
           ],
           "label": {
             "x": 938,
@@ -589,37 +472,15 @@
         {
           "from": "navigating:tag",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              676,
-              113
-            ],
-            [
-              702,
-              113
-            ],
-            [
-              702,
-              127
-            ],
-            [
-              864,
-              127
-            ],
-            [
-              864,
-              253
-            ],
-            [
-              944,
-              253
-            ]
+            [676, 113],
+            [702, 113],
+            [702, 127],
+            [864, 127],
+            [864, 253],
+            [944, 253]
           ],
           "label": {
             "x": 786,
@@ -631,29 +492,13 @@
         {
           "from": "navigating:tag",
           "to": "editing:tag",
-          "events": [
-            "ENTER"
-          ],
-          "lines": [
-            "ENTER"
-          ],
+          "events": ["ENTER"],
+          "lines": ["ENTER"],
           "points": [
-            [
-              522,
-              109
-            ],
-            [
-              438,
-              109
-            ],
-            [
-              438,
-              112
-            ],
-            [
-              180,
-              112
-            ]
+            [522, 109],
+            [438, 109],
+            [438, 112],
+            [180, 112]
           ],
           "label": {
             "x": 327,
@@ -697,33 +542,13 @@
         {
           "from": "editing:tag",
           "to": "navigating:tag",
-          "events": [
-            "TAG_INPUT_BLUR",
-            "TAG_INPUT_ENTER",
-            "TAG_INPUT_ESCAPE"
-          ],
-          "lines": [
-            "TAG_INPUT_BLUR",
-            "TAG_INPUT_ENTER",
-            "TAG_INPUT_ESCAPE"
-          ],
+          "events": ["TAG_INPUT_BLUR", "TAG_INPUT_ENTER", "TAG_INPUT_ESCAPE"],
+          "lines": ["TAG_INPUT_BLUR", "TAG_INPUT_ENTER", "TAG_INPUT_ESCAPE"],
           "points": [
-            [
-              195,
-              76
-            ],
-            [
-              195,
-              102
-            ],
-            [
-              176,
-              102
-            ],
-            [
-              176,
-              352
-            ]
+            [195, 76],
+            [195, 102],
+            [176, 102],
+            [176, 352]
           ],
           "label": {
             "x": 48,
@@ -735,37 +560,15 @@
         {
           "from": "editing:tag",
           "to": "idle",
-          "events": [
-            "TAG_INPUT_BLUR"
-          ],
-          "lines": [
-            "TAG_INPUT_BLUR"
-          ],
+          "events": ["TAG_INPUT_BLUR"],
+          "lines": ["TAG_INPUT_BLUR"],
           "points": [
-            [
-              261,
-              76
-            ],
-            [
-              261,
-              102
-            ],
-            [
-              335,
-              102
-            ],
-            [
-              335,
-              556
-            ],
-            [
-              385,
-              556
-            ],
-            [
-              385,
-              654
-            ]
+            [261, 76],
+            [261, 102],
+            [335, 102],
+            [335, 556],
+            [385, 556],
+            [385, 654]
           ],
           "label": {
             "x": 342,
@@ -777,23 +580,11 @@
         {
           "from": "focused:input",
           "to": "navigating:tag",
-          "events": [
-            "ARROW_LEFT",
-            "BACKSPACE"
-          ],
-          "lines": [
-            "ARROW_LEFT",
-            "BACKSPACE"
-          ],
+          "events": ["ARROW_LEFT", "BACKSPACE"],
+          "lines": ["ARROW_LEFT", "BACKSPACE"],
           "points": [
-            [
-              164,
-              972
-            ],
-            [
-              164,
-              396
-            ]
+            [164, 972],
+            [164, 396]
           ],
           "label": {
             "x": 76,
@@ -805,29 +596,13 @@
         {
           "from": "focused:input",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              223,
-              972
-            ],
-            [
-              223,
-              888
-            ],
-            [
-              359,
-              888
-            ],
-            [
-              359,
-              698
-            ]
+            [223, 972],
+            [223, 888],
+            [359, 888],
+            [359, 698]
           ],
           "label": {
             "x": 311,
@@ -839,31 +614,13 @@
         {
           "from": "idle",
           "to": "focused:input",
-          "events": [
-            "FOCUS",
-            "POINTER_DOWN"
-          ],
-          "lines": [
-            "FOCUS",
-            "POINTER_DOWN"
-          ],
+          "events": ["FOCUS", "POINTER_DOWN"],
+          "lines": ["FOCUS", "POINTER_DOWN"],
           "points": [
-            [
-              385,
-              698
-            ],
-            [
-              385,
-              898
-            ],
-            [
-              253,
-              898
-            ],
-            [
-              253,
-              972
-            ]
+            [385, 698],
+            [385, 898],
+            [253, 898],
+            [253, 972]
           ],
           "label": {
             "x": 392,
@@ -885,37 +642,14 @@
             "PASTE",
             "TYPE"
           ],
-          "lines": [
-            "ARROW_DOWN",
-            "ARROW_LEFT",
-            "ARROW_RIGHT",
-            "+5 more"
-          ],
+          "lines": ["ARROW_DOWN", "ARROW_LEFT", "ARROW_RIGHT", "+5 more"],
           "points": [
-            [
-              202,
-              396
-            ],
-            [
-              202,
-              422
-            ],
-            [
-              181,
-              422
-            ],
-            [
-              181,
-              888
-            ],
-            [
-              194,
-              888
-            ],
-            [
-              194,
-              972
-            ]
+            [202, 396],
+            [202, 422],
+            [181, 422],
+            [181, 888],
+            [194, 888],
+            [194, 972]
           ],
           "label": {
             "x": 188,
@@ -927,37 +661,15 @@
         {
           "from": "navigating:tag",
           "to": "idle",
-          "events": [
-            "BLUR"
-          ],
-          "lines": [
-            "BLUR"
-          ],
+          "events": ["BLUR"],
+          "lines": ["BLUR"],
           "points": [
-            [
-              241,
-              396
-            ],
-            [
-              241,
-              422
-            ],
-            [
-              310,
-              422
-            ],
-            [
-              310,
-              566
-            ],
-            [
-              359,
-              566
-            ],
-            [
-              359,
-              654
-            ]
+            [241, 396],
+            [241, 422],
+            [310, 422],
+            [310, 566],
+            [359, 566],
+            [359, 654]
           ],
           "label": {
             "x": 262,
@@ -969,21 +681,11 @@
         {
           "from": "navigating:tag",
           "to": "editing:tag",
-          "events": [
-            "ENTER"
-          ],
-          "lines": [
-            "ENTER"
-          ],
+          "events": ["ENTER"],
+          "lines": ["ENTER"],
           "points": [
-            [
-              228,
-              352
-            ],
-            [
-              228,
-              76
-            ]
+            [228, 352],
+            [228, 76]
           ],
           "label": {
             "x": 235,

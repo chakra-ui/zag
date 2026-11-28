@@ -1550,7 +1550,7 @@
         "type": "(props: ChipProps) => T[\"element\"]",
         "description": "Props for a chip showing a selected item"
       },
-      "getChipDeleteTriggerProps": {
+      "getChipRemoveTriggerProps": {
         "type": "(props: ChipProps) => T[\"button\"]",
         "description": "Props for the button that deletes a chip"
       }
@@ -3283,7 +3283,7 @@
         "type": "VoidFunction",
         "description": "Function to open the file dialog"
       },
-      "deleteFile": {
+      "removeFile": {
         "type": "(file: File, type?: ItemType | undefined) => void",
         "description": "Function to delete the file from the list"
       },

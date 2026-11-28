@@ -21,7 +21,7 @@
 - **Breaking:** Clear a single selection when its text is emptied. `Escape` brings it back while the list is open, and
   `onValueChange` reports `"input-clear"` and `"escape-key"`.
 
-- Add chips for `multiple` with `getChipGroupProps`, `getChipProps` and `getChipDeleteTriggerProps`.
+- Add chips for `multiple` with `getChipGroupProps`, `getChipProps` and `getChipRemoveTriggerProps`.
 
 - Add a create option with `onCreate` and `getCreateItemProps`. It shows when the text matches no item, and selects the
   value `onCreate` returns. Return a Promise to create on a server; `signal` aborts when the list closes or the text

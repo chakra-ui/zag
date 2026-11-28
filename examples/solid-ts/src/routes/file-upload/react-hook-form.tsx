@@ -37,7 +37,7 @@ export default function Page() {
                   <div>
                     {file().name} {api().getFileSize(file())}
                   </div>
-                  <button {...api().getItemDeleteTriggerProps({ file: file() })}>
+                  <button {...api().getItemRemoveTriggerProps({ file: file() })}>
                     <XIcon />
                   </button>
                 </div>
