@@ -21,7 +21,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "csstype": "3.2.3"
+    "csstype": "3.2.4"
   },
   "scripts": {
     "build": "tsdown",
