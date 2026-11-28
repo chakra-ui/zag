@@ -2,20 +2,20 @@ import { createRect, type Rect } from "@zag-js/utils/geometry"
 
 export type WindowRectOptions = {
   /**
-   * Whether to exclude the element's scrollbar size from the calculation.
+   * Leaves the page's scrollbars out of the size
    */
   excludeScrollbar?: boolean | undefined
 }
 
 /**
- * Creates a rectangle from window object
+ * The window's visible area as a rect
  */
 export function getWindowRect(win: Window, opts: WindowRectOptions = {}): Rect {
   return createRect(getViewportRect(win, opts))
 }
 
 /**
- * Get the rect of the window with the option to exclude the scrollbar
+ * The window's visible area, using the visual viewport where there is one
  */
 export function getViewportRect(win: Window, opts: WindowRectOptions) {
   const { excludeScrollbar = false } = opts

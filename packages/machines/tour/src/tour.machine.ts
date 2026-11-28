@@ -1,6 +1,7 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { AnimationFrame, contains, isFocusOutside, isHTMLElement } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { trapFocus } from "@zag-js/focus-trap"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
@@ -13,6 +14,12 @@ import { isEventInRect, offset, type Point, type Rect, type Size } from "./utils
 import { findStep, findStepIndex, getEffectiveSteps, getProgress, isTooltipStep, isWaitStep } from "./utils/step"
 
 const { and } = createGuards<TourSchema>()
+
+const targetObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  characterData: true,
+})
 
 export const machine = createMachine<TourSchema>({
   props({ props }) {
@@ -443,26 +450,14 @@ export const machine = createMachine<TourSchema>({
 
         const targetEl = step.target
 
-        const win = scope.getWin()
-        const rootNode = scope.getRootNode()
-
-        const observer = new win.MutationObserver(() => {
+        const stop = targetObserver.observe(scope.getRootNode(), () => {
           const node = targetEl?.()
-          if (node) {
-            send({ type: "TARGET.RESOLVED", node })
-            observer.disconnect()
-          }
+          if (!node) return
+          send({ type: "TARGET.RESOLVED", node })
+          stop()
         })
 
-        observer.observe(rootNode, {
-          childList: true,
-          subtree: true,
-          characterData: true,
-        })
-
-        return () => {
-          observer.disconnect()
-        }
+        return stop
       },
 
       trackBoundarySize({ context, scope, computed }) {

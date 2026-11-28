@@ -1,7 +1,7 @@
 import { trackDrag } from "../drag/track-drag"
+import { canScrollWithFinger } from "../scroll/nested-scroll"
 import type { Point } from "../types"
 import { axisOf, crossAxisOf, directionOf, getSwipeDisplacement } from "./direction"
-import { canScrollWithFinger } from "../scroll/nested-scroll"
 import type { SwipeAxis, SwipeDirection, TrackSwipeOptions } from "./types"
 
 const SCROLL_CHECK_DISTANCE = 0.3
@@ -50,11 +50,11 @@ export function trackSwipe(doc: Document, options: TrackSwipeOptions): VoidFunct
   }
 
   function waitsForScroll(offset: Point, axis: SwipeAxis) {
+    const crossAxis = crossAxisOf(axis)
     const main = offset[axis]
-    const cross = offset[crossAxisOf(axis)]
+    const cross = offset[crossAxis]
     if (Math.abs(main) < SCROLL_CHECK_DISTANCE) return true
 
-    const crossAxis = crossAxisOf(axis)
     if (Math.abs(cross) > Math.abs(main) * CROSS_SCROLL_BIAS) {
       const either = [directionOf(crossAxis, 1), directionOf(crossAxis, -1)]
       if (either.some((direction) => canScrollWithFinger(target ?? null, scrollContainer!, direction))) return true

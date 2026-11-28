@@ -1,12 +1,5 @@
-import {
-  addGlobalEvent,
-  AnimationFrame,
-  getComputedStyle,
-  getWindow,
-  isHTMLElement,
-  resizeObserverBorderBox,
-  Timeout,
-} from "@zag-js/dom-query"
+import { addGlobalEvent, AnimationFrame, getComputedStyle, getWindow, isHTMLElement, Timeout } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackStickToBottom, type StickToBottom, type StickToBottomDetails } from "@zag-js/dom-query/scroll"
 import { createNormalizer, type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { runIfFn } from "@zag-js/utils/functions"

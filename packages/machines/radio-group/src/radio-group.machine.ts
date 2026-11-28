@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { AnimationFrame, dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, dispatchInputCheckedEvent, trackFormControl } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import type { Rect } from "@zag-js/types"
 import { isEqual } from "@zag-js/utils/object"

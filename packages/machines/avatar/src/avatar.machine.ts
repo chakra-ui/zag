@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { createSharedMutationObserver } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import type { AvatarSchema } from "./avatar.types"
 import * as dom from "./avatar.dom"
 

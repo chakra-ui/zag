@@ -1,6 +1,7 @@
 import { setup } from "@zag-js/core"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getFirstTabbable, raf } from "@zag-js/dom-query"
+import { createSharedIntersectionObserver } from "@zag-js/dom-query/observe"
 import { ensureProps, warn } from "@zag-js/utils/guard"
 import * as dom from "./infinite-scroll.dom"
 import type { InfiniteScrollParams, InfiniteScrollSchema, LoadMoreReason } from "./infinite-scroll.types"
@@ -270,34 +271,21 @@ function observeSentinel({ scope, prop, send }: InfiniteScrollParams) {
   const sentinelEl = dom.getSentinelEl(scope)
   if (!sentinelEl) return
 
-  const win = scope.getWin()
-  if (!win.IntersectionObserver) return
-
   const root = getObserverRoot(scope, prop("scrollEl"))
   const scrollerEl = getScrollingElement(root, scope.getDoc())
   warnIfUnreachable(root)
 
-  const observer = new win.IntersectionObserver(
-    (entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return
-      send({
-        type: "SENTINEL.INTERSECT",
-        reason: getLoadReason(prop, scrollerEl),
-      })
-    },
-    {
-      root,
-      rootMargin: getRootMargin({
-        offset: prop("offset"),
-        orientation: prop("orientation"),
-        edge: prop("edge"),
-        dir: prop("dir"),
-      }),
-    },
-  )
+  const rootMargin = getRootMargin({
+    offset: prop("offset"),
+    orientation: prop("orientation"),
+    edge: prop("edge"),
+    dir: prop("dir"),
+  })
 
-  observer.observe(sentinelEl)
-  return () => observer.disconnect()
+  return createSharedIntersectionObserver({ root, rootMargin }).observe(sentinelEl, (entry) => {
+    if (!entry.isIntersecting) return
+    send({ type: "SENTINEL.INTERSECT", reason: getLoadReason(prop, scrollerEl) })
+  })
 }
 
 /* -----------------------------------------------------------------------------

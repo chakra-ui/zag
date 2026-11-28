@@ -17,11 +17,11 @@ import {
   isEditableElement,
   isOpeningInNewTab,
   isWebKit,
-  observeAttributes,
   raf,
-  resizeObserverBorderBox,
   waitForAnimationEnd,
+  whenNode,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { trackLongPress } from "@zag-js/dom-query/press"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -115,6 +115,10 @@ const cancelOpenTransition: Transition<MenuSchema> = {
   target: "closed",
   actions: ["invokeOnClose", "releaseParentRoutingLock", "focusTrigger"],
 }
+
+const activeDescendantObserver = /* @__PURE__ */ createSharedMutationObserver({
+  attributeFilter: ["aria-activedescendant"],
+})
 
 export const machine = createMachine<MenuSchema>({
   props({ props }) {
@@ -949,11 +953,11 @@ export const machine = createMachine<MenuSchema>({
         })
 
         const contentEl = () => dom.getContentEl(scope, context.get("triggerValue"))
-        const options = { defer: true, attributes: ["aria-activedescendant"], callback: exec }
+        const observe = (el: HTMLElement) => activeDescendantObserver.observe(el, exec)
         // A filter input holds the active descendant in dialog mode
         const cleanups = [
-          observeAttributes(contentEl, options),
-          observeAttributes(() => dom.getInputEl(scope), options),
+          whenNode(contentEl, observe, { defer: true }),
+          whenNode(() => dom.getInputEl(scope), observe, { defer: true }),
         ]
 
         return () => {

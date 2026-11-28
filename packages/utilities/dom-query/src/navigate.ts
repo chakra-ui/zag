@@ -31,21 +31,13 @@ export function navigate<T extends HTMLElement>(
   const idx = items.indexOf(current)
   if (idx === -1) return null
 
-  let isForward: boolean
-  if (orientation === "both") {
-    // When orientation is both, treat ArrowDown/Right as forward and ArrowUp/Left as backward
-    isForward = key === "ArrowDown" || (dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft")
-  } else {
-    isForward = isVertical ? key === "ArrowDown" : dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft"
-  }
+  // down, and the reading direction, go forward
+  const isForward = isVertical ? key === "ArrowDown" : dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft"
 
-  const nextIdx = isForward
-    ? loop
-      ? (idx + 1) % items.length
-      : Math.min(idx + 1, items.length - 1)
-    : loop
-      ? (idx - 1 + items.length) % items.length
-      : Math.max(0, idx - 1)
+  const last = items.length - 1
+  let nextIdx: number
+  if (isForward) nextIdx = loop ? (idx + 1) % items.length : Math.min(idx + 1, last)
+  else nextIdx = loop ? (idx - 1 + items.length) % items.length : Math.max(0, idx - 1)
 
   return items[nextIdx] || null
 }

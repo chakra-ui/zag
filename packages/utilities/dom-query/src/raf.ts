@@ -4,13 +4,13 @@ export class AnimationFrame {
   }
 
   private id: number | null = null
-  private fn_cleanup: VoidFunction | undefined | void
+  private cleanupFn: VoidFunction | undefined | void
 
   request(fn?: VoidFunction | (() => VoidFunction)) {
     this.cancel()
     this.id = globalThis.requestAnimationFrame(() => {
       this.id = null
-      this.fn_cleanup = fn?.()
+      this.cleanupFn = fn?.()
     })
   }
 
@@ -19,8 +19,8 @@ export class AnimationFrame {
       globalThis.cancelAnimationFrame(this.id)
       this.id = null
     }
-    this.fn_cleanup?.()
-    this.fn_cleanup = undefined
+    this.cleanupFn?.()
+    this.cleanupFn = undefined
   }
 
   isActive() {
@@ -38,15 +38,16 @@ export function raf(fn: VoidFunction | (() => VoidFunction)) {
   return frame.cleanup
 }
 
+/** Calls `fn` two frames from now, after the next paint */
 export function nextTick(fn: VoidFunction) {
-  const set = new Set<VoidFunction>()
-  function raf(fn: VoidFunction) {
-    const id = globalThis.requestAnimationFrame(fn)
-    set.add(() => globalThis.cancelAnimationFrame(id))
+  const cancels = new Set<VoidFunction>()
+  const request = (callback: VoidFunction) => {
+    const id = globalThis.requestAnimationFrame(callback)
+    cancels.add(() => globalThis.cancelAnimationFrame(id))
   }
-  raf(() => raf(fn))
+  request(() => request(fn))
   return function cleanup() {
-    set.forEach((fn) => fn())
+    cancels.forEach((cancel) => cancel())
   }
 }
 

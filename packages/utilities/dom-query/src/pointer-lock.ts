@@ -22,14 +22,13 @@ export function requestPointerLock(doc: Document, fn?: (locked: boolean) => void
     body.requestPointerLock()
   } catch {}
 
-  // prettier-ignore
-  const cleanup = [
+  const cleanups = [
     addDomEvent(doc, "pointerlockchange", onPointerChange, false),
-    addDomEvent(doc, "pointerlockerror", onPointerError, false)
+    addDomEvent(doc, "pointerlockerror", onPointerError, false),
   ]
 
   return () => {
-    cleanup.forEach((cleanup) => cleanup())
+    cleanups.forEach((cleanup) => cleanup())
     doc.exitPointerLock()
   }
 }

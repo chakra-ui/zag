@@ -1,6 +1,7 @@
 import { runIfFn } from "@zag-js/utils/functions"
 import { isFunction, isNumber, isString } from "@zag-js/utils/guard"
-import { addGlobalEvent, AnimationFrame, isHTMLElement, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
+import { addGlobalEvent, AnimationFrame, isHTMLElement, Timeout } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import type {
   CSSProperties,
   GridScrollToOptions,

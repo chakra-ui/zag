@@ -38,6 +38,7 @@
     "./press": "./src/press/index.ts",
     "./swipe": "./src/swipe/index.ts",
     "./scroll": "./src/scroll/index.ts",
+    "./observe": "./src/observe/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

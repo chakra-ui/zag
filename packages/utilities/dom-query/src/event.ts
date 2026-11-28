@@ -60,16 +60,8 @@ export function isPrintableKey(e: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaK
   return e.key.length === 1 && !e.ctrlKey && !e.metaKey
 }
 
-export function isVirtualPointerEvent(e: PointerEvent) {
-  return (
-    (e.width === 0 && e.height === 0) ||
-    (e.width === 1 && e.height === 1 && e.pressure === 0 && e.detail === 0 && e.pointerType === "mouse")
-  )
-}
-
 export function isVirtualClick(e: MouseEvent | PointerEvent): boolean {
-  // Firefox used to expose `mozInputSource === 0` for virtual clicks.
-  // Modern, safer check: in Firefox, PointerEvent.pointerType can be an empty string for virtual clicks.
+  // Firefox gives virtual clicks an empty `pointerType`
   if ((e as PointerEvent).pointerType === "" && (e as any).isTrusted) return true
   if (isAndroid() && (e as PointerEvent).pointerType) {
     return e.type === "click" && (e as MouseEvent).buttons === 1

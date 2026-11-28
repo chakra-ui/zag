@@ -1,11 +1,6 @@
 import type { PropTypes } from "@zag-js/types"
-import {
-  addGlobalEvent,
-  getComputedStyle,
-  getDocumentElement,
-  isHTMLElement,
-  resizeObserverBorderBox,
-} from "@zag-js/dom-query"
+import { addGlobalEvent, getComputedStyle, getDocumentElement, isHTMLElement } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { ListVirtualizer } from "./list-virtualizer"
 import type {
   CSSProperties,

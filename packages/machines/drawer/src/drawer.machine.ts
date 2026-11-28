@@ -8,9 +8,9 @@ import {
   getInitialFocus,
   isFocusOutside,
   raf,
-  resizeObserverBorderBox,
   whenNode,
 } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import {
   getSwipeDisplacement,
   isDismissSwipe,

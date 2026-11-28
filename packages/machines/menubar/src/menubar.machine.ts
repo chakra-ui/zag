@@ -1,8 +1,11 @@
 import type { Params, Scope } from "@zag-js/core"
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, getByTypeahead, observeChildren, raf } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getByTypeahead, raf } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import * as dom from "./menubar.dom"
 import type { MenubarSchema } from "./menubar.types"
+
+const triggerListObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 export const machine = createMachine<MenubarSchema>({
   props({ props }) {
@@ -127,7 +130,7 @@ export const machine = createMachine<MenubarSchema>({
         if (!rootEl) return
         const reconcile = () => reconcileActiveId(context, scope)
         const cancelFrame = raf(reconcile)
-        const stopObserver = observeChildren(rootEl, { callback: reconcile })
+        const stopObserver = triggerListObserver.observe(rootEl, reconcile)
         return () => {
           cancelFrame()
           stopObserver()

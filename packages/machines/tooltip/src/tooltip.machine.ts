@@ -6,8 +6,8 @@ import {
   isComposingEvent,
   waitForAnimationEnd,
   raf,
-  resizeObserverBorderBox,
 } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { getOverflowAncestors } from "@zag-js/dom-query/scroll"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"

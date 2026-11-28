@@ -64,6 +64,16 @@
           "default": "./dist/scroll/index.js"
         }
       },
+      "./observe": {
+        "import": {
+          "types": "./dist/observe/index.d.mts",
+          "default": "./dist/observe/index.mjs"
+        },
+        "require": {
+          "types": "./dist/observe/index.d.ts",
+          "default": "./dist/observe/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

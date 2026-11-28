@@ -10,11 +10,11 @@ import {
   getInitialFocus,
   isApple,
   markAsInternalChangeEvent,
-  observeAttributes,
   raf,
-  resizeObserverContentBox,
   trackFormControl,
+  whenNode,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverContentBox } from "@zag-js/dom-query/observe"
 import { isScrollable, scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -34,6 +34,10 @@ const MAX_SCROLL_ATTEMPTS = 10
 // An item can open under the pointer, so only a deliberate drag or hold selects on release
 const RELEASE_DELAY = 400
 const RELEASE_DISTANCE = 8
+
+const activeDescendantObserver = /* @__PURE__ */ createSharedMutationObserver({
+  attributeFilter: ["data-activedescendant"],
+})
 
 export const machine = createMachine<SelectSchema>({
   props({ props }) {
@@ -769,12 +773,8 @@ export const machine = createMachine<SelectSchema>({
         cleanupRaf = raf(scrollWhenScrollable)
 
         const listEl = () => dom.getListEl(scope)
-        const cleanupObserver = observeAttributes(listEl, {
+        const cleanupObserver = whenNode(listEl, (el) => activeDescendantObserver.observe(el, () => exec(false)), {
           defer: true,
-          attributes: ["data-activedescendant"],
-          callback() {
-            exec(false)
-          },
         })
 
         return () => {

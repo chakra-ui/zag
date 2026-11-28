@@ -1,15 +1,5 @@
-import { getWindow } from "./node"
 import { createRect, type Rect } from "@zag-js/utils/geometry"
-
-const styleCache = new WeakMap<HTMLElement, any>()
-
-function getCacheComputedStyle(el: HTMLElement) {
-  if (!styleCache.has(el)) {
-    const win = getWindow(el)
-    styleCache.set(el, win.getComputedStyle(el))
-  }
-  return styleCache.get(el)
-}
+import { getComputedStyle } from "./computed-style"
 
 export function getElementRect(el: HTMLElement, opts: ElementRectOptions = {}): Rect {
   return createRect(getClientRect(el, opts))
@@ -17,11 +7,11 @@ export function getElementRect(el: HTMLElement, opts: ElementRectOptions = {}): 
 
 export type ElementRectOptions = {
   /**
-   * Whether to exclude the element's scrollbar size from the calculation.
+   * Leaves the element's scrollbars out of its size
    */
   excludeScrollbar?: boolean | undefined
   /**
-   * Whether to exclude the element's borders from the calculation.
+   * Leaves the element's borders out of its size and position
    */
   excludeBorders?: boolean | undefined
 }
@@ -32,7 +22,7 @@ function getClientRect(el: HTMLElement, opts: ElementRectOptions = {}) {
   const { x, y, width, height } = el.getBoundingClientRect()
   const r = { x, y, width, height }
 
-  const style = getCacheComputedStyle(el)
+  const style = getComputedStyle(el)
 
   const { borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth } = style
 

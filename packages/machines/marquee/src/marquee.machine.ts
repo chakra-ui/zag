@@ -1,4 +1,5 @@
 import { createMachine } from "@zag-js/core"
+import { resizeObserverContentBox } from "@zag-js/dom-query/observe"
 import { dom } from "./marquee.dom"
 import { calculateDuration } from "./marquee.utils"
 import type { MarqueeSchema } from "./marquee.types"
@@ -183,23 +184,25 @@ export const machine = createMachine<MarqueeSchema>({
 
         // Use RAF to throttle resize updates
         let rafId: number | null = null
-        const observer = new win.ResizeObserver(() => {
+        const onResize = () => {
           if (rafId !== null) return
           rafId = win.requestAnimationFrame(() => {
             const { rootSize, contentSize } = measureDimensions()
             refs.set("dimensions", { rootSize, contentSize })
             rafId = null
           })
-        })
+        }
 
-        observer.observe(rootEl)
-        observer.observe(contentEl)
+        const stopObserving = [
+          resizeObserverContentBox.observe(rootEl, onResize),
+          resizeObserverContentBox.observe(contentEl, onResize),
+        ]
 
         // Initial measurement
         exec()
 
         return () => {
-          observer.disconnect()
+          stopObserving.forEach((stop) => stop())
           if (rafId !== null) win.cancelAnimationFrame(rafId)
         }
       },

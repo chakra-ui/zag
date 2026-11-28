@@ -6,22 +6,20 @@ export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
 
 export interface DataUrlOptions {
   /**
-   * The type of the image
+   * The image type to encode
    */
   type: DataUrlType
   /**
-   * The quality of the image
+   * The quality from 0 to 1, for JPEG
    * @default 0.92
    */
   quality?: number | undefined
   /**
-   * The background color of the canvas.
-   * Useful when type is `image/jpeg`
+   * The color drawn behind the SVG. JPEG has no transparency, so it defaults to white there.
    */
   background?: string | undefined
   /**
-   * Explicit size to use instead of the element's bounding box.
-   * Useful when the svg is not in the document.
+   * The size to draw at instead of the element's box, like for an SVG that isn't in the document
    */
   size?: { width: number; height: number } | undefined
 }

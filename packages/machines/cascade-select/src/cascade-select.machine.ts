@@ -6,10 +6,10 @@ import {
   raf,
   Timeout,
   trackFormControl,
-  observeAttributes,
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
@@ -22,6 +22,10 @@ import type { CascadeSelectSchema, IndexPath, OpenChangeReason, TreeNode } from 
 import { collection as cascadeSelectCollection } from "./cascade-select.collection"
 
 const { or, and, not } = createGuards<CascadeSelectSchema>()
+
+const activeDescendantObserver = /* @__PURE__ */ createSharedMutationObserver({
+  attributeFilter: ["data-activedescendant"],
+})
 
 export const machine = createMachine<CascadeSelectSchema>({
   props({ props }) {
@@ -679,11 +683,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         const contentEl = dom.getContentEl(scope)
 
-        const observerCleanup = observeAttributes(contentEl, {
-          attributes: ["data-activedescendant"],
-          callback: () => exec(false),
-        })
-        cleanups.push(observerCleanup)
+        if (contentEl) cleanups.push(activeDescendantObserver.observe(contentEl, () => exec(false)))
 
         return () => {
           cleanups.forEach((cleanup) => cleanup())

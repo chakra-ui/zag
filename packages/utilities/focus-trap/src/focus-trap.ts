@@ -17,8 +17,8 @@ import {
   isDocument,
   isFocusable,
   isTabbable,
-  getWindow,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import type {
   ActivateOptions,
   DeactivateOptions,
@@ -28,6 +28,13 @@ import type {
   PauseOptions,
   UnpauseOptions,
 } from "./types"
+
+const containerObserver = /* @__PURE__ */ createSharedMutationObserver({
+  subtree: true,
+  childList: true,
+  attributes: true,
+  attributeFilter: ["aria-controls", "aria-expanded"],
+})
 
 const activeFocusTraps = {
   activateTrap(trapStack: FocusTrap[], trap: FocusTrap) {
@@ -99,12 +106,7 @@ export class FocusTrap {
   }
 
   private observePortalContainer(portalContainer: HTMLElement) {
-    this._mutationObserver?.observe(portalContainer, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ["aria-controls", "aria-expanded"],
-    })
+    this.stopObserving.push(containerObserver.observe(portalContainer, this.handleMutations))
   }
 
   private updatePortalContainers() {
@@ -144,7 +146,6 @@ export class FocusTrap {
     this.config = config
 
     this.updateContainerElements(elements)
-    this.setupMutationObserver()
   }
 
   private findContainerIndex(element: HTMLElement, event?: Event): number {
@@ -456,75 +457,67 @@ export class FocusTrap {
     }
   }
 
-  private _mutationObserver?: MutationObserver
+  private stopObserving: VoidFunction[] = []
 
-  private setupMutationObserver = () => {
-    const win = getWindow(this.doc)
-    this._mutationObserver = new win.MutationObserver((mutations) => {
-      const isFocusedNodeRemoved = mutations.some((mutation) => {
-        const removedNodes = Array.from(mutation.removedNodes)
-        return removedNodes.some((node) => node === this.state.mostRecentlyFocusedNode)
-      })
-
-      if (isFocusedNodeRemoved) {
-        this.tryFocus(this.getInitialFocusNode())
-      }
-
-      // Check if any controlled elements were added or if aria-controls/aria-expanded was modified
-      const hasControlledChanges = mutations.some((mutation) => {
-        // Check for aria-controls or aria-expanded attribute changes
-        if (
-          mutation.type === "attributes" &&
-          (mutation.attributeName === "aria-controls" || mutation.attributeName === "aria-expanded")
-        ) {
-          return true
-        }
-
-        // Check if any added nodes have controllers or might be controlled elements
-        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-          return Array.from(mutation.addedNodes).some((node) => {
-            if (node.nodeType !== Node.ELEMENT_NODE) return false
-            const element = node as Element
-
-            // Check if this element or its descendants have controllers
-            if (hasControllerElements(element)) {
-              return true
-            }
-
-            // If this element has an ID and is not inside our containers,
-            // it might be a controlled element (portalled content)
-            if (element.id && !this.state.containers.some((c) => c.contains(element))) {
-              return isControlledByExpandedController(element)
-            }
-
-            return false
-          })
-        }
-
-        return false
-      })
-
-      if (hasControlledChanges && this.state.active && !this.state.paused) {
-        // Update tabbable nodes when controlled elements change
-        this.updateTabbableNodes()
-        // Update portal containers when controlled elements change
-        this.updatePortalContainers()
-      }
+  private handleMutations = (mutations: readonly MutationRecord[]) => {
+    const isFocusedNodeRemoved = mutations.some((mutation) => {
+      const removedNodes = Array.from(mutation.removedNodes)
+      return removedNodes.some((node) => node === this.state.mostRecentlyFocusedNode)
     })
+
+    if (isFocusedNodeRemoved) {
+      this.tryFocus(this.getInitialFocusNode())
+    }
+
+    // Check if any controlled elements were added or if aria-controls/aria-expanded was modified
+    const hasControlledChanges = mutations.some((mutation) => {
+      // Check for aria-controls or aria-expanded attribute changes
+      if (
+        mutation.type === "attributes" &&
+        (mutation.attributeName === "aria-controls" || mutation.attributeName === "aria-expanded")
+      ) {
+        return true
+      }
+
+      // Check if any added nodes have controllers or might be controlled elements
+      if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+        return Array.from(mutation.addedNodes).some((node) => {
+          if (node.nodeType !== Node.ELEMENT_NODE) return false
+          const element = node as Element
+
+          // Check if this element or its descendants have controllers
+          if (hasControllerElements(element)) {
+            return true
+          }
+
+          // If this element has an ID and is not inside our containers,
+          // it might be a controlled element (portalled content)
+          if (element.id && !this.state.containers.some((c) => c.contains(element))) {
+            return isControlledByExpandedController(element)
+          }
+
+          return false
+        })
+      }
+
+      return false
+    })
+
+    if (hasControlledChanges && this.state.active && !this.state.paused) {
+      // Update tabbable nodes when controlled elements change
+      this.updateTabbableNodes()
+      // Update portal containers when controlled elements change
+      this.updatePortalContainers()
+    }
   }
 
   private updateObservedNodes = () => {
-    this._mutationObserver?.disconnect()
+    this.stopObserving.forEach((stop) => stop())
+    this.stopObserving = []
 
     if (this.state.active && !this.state.paused) {
-      // Observe containers for changes
-      this.state.containers.map((container) => {
-        this._mutationObserver?.observe(container, {
-          subtree: true,
-          childList: true,
-          attributes: true,
-          attributeFilter: ["aria-controls", "aria-expanded"],
-        })
+      this.state.containers.forEach((container) => {
+        this.stopObserving.push(containerObserver.observe(container, this.handleMutations))
       })
 
       // Observe discovered portal containers

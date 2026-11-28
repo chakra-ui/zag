@@ -1,5 +1,6 @@
 import { setup } from "@zag-js/core"
-import { AnimationFrame, observeChildren, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, trackFormControl, whenNode } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { isEqual } from "@zag-js/utils/object"
 import * as dom from "./field.dom"
 import type { FieldParams, FieldSchema, ValidateResult, ValiditySnapshot } from "./field.types"
@@ -12,6 +13,12 @@ import {
   suppressValueMissing,
   toErrorArray,
 } from "./field.utils"
+
+const partsObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["hidden"],
+})
 
 const { createMachine } = setup<FieldSchema>()
 
@@ -185,12 +192,7 @@ export const machine = createMachine({
           sync()
           return dom.getRootEl(scope)
         }
-        return observeChildren(getRootEl, {
-          defer: true,
-          callback: sync,
-          attributes: true,
-          attributeFilter: ["hidden"],
-        })
+        return whenNode(getRootEl, (el) => partsObserver.observe(el, sync), { defer: true })
       },
 
       trackFieldsetError({ context, scope }) {
@@ -204,12 +206,7 @@ export const machine = createMachine({
           sync()
           return getFieldsetEl()
         }
-        return observeChildren(getObservedEl, {
-          defer: true,
-          callback: sync,
-          attributes: true,
-          attributeFilter: ["hidden"],
-        })
+        return whenNode(getObservedEl, (el) => partsObserver.observe(el, sync), { defer: true })
       },
     },
 

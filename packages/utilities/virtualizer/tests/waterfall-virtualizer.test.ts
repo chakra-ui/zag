@@ -1,4 +1,4 @@
-import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { WaterfallVirtualizer } from "../src/waterfall-virtualizer"
 import { createMeasuredElement, mountItem } from "./test-utils"

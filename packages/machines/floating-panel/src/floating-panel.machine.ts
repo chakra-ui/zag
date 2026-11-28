@@ -1,12 +1,6 @@
 import { createGuards, createMachine, type Params } from "@zag-js/core"
-import {
-  addDomEvent,
-  AnimationFrame,
-  getElementRect,
-  isHTMLElement,
-  raf,
-  resizeObserverBorderBox,
-} from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getElementRect, isHTMLElement, raf } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { getOverflowAncestors } from "@zag-js/dom-query/scroll"
 import { DRAG_DISTANCE, trackDrag } from "@zag-js/dom-query/drag"
 import {

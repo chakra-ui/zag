@@ -9,8 +9,8 @@ import {
   waitForAnimationEnd,
   proxyTabFocus,
   raf,
-  resizeObserverBorderBox,
 } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"

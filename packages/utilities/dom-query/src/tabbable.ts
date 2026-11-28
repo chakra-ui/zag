@@ -1,6 +1,5 @@
 import {
   contains,
-  getActiveElement,
   getParentElement,
   isEditableElement,
   isElement,
@@ -14,11 +13,6 @@ export type GetShadowRootOption = boolean | ((node: HTMLElement) => ShadowRoot |
 
 export interface TabbableOptions {
   includeContainer?: IncludeContainerType
-  getShadowRoot?: GetShadowRootOption
-}
-
-export interface NextTabbableOptions {
-  current?: HTMLElement | undefined | null
   getShadowRoot?: GetShadowRootOption
 }
 
@@ -184,11 +178,6 @@ export function getFocusTarget(root: HTMLElement, target: HTMLElement | null): H
   return null
 }
 
-export function getFirstFocusable(container: HTMLElement | null, options: TabbableOptions = {}): HTMLElement | null {
-  const [first] = getFocusables(container, options)
-  return first || null
-}
-
 export function getTabbables(container: HTMLElement | null, options: TabbableOptions = {}) {
   if (!container) return []
   const { includeContainer, getShadowRoot } = options
@@ -253,11 +242,6 @@ export function getFirstTabbable(container: HTMLElement | null, options: Tabbabl
   return first || null
 }
 
-export function getLastTabbable(container: HTMLElement | null, options: TabbableOptions = {}): HTMLElement | null {
-  const elements = getTabbables(container, options)
-  return elements[elements.length - 1] || null
-}
-
 export function getTabbableEdges(
   container: HTMLElement | null,
   options: TabbableOptions = {},
@@ -266,16 +250,6 @@ export function getTabbableEdges(
   const first = elements[0] || null
   const last = elements[elements.length - 1] || null
   return [first, last]
-}
-
-export function getNextTabbable(container: HTMLElement | null, options: NextTabbableOptions = {}): HTMLElement | null {
-  const { current, getShadowRoot } = options
-  const tabbables = getTabbables(container, { getShadowRoot })
-  const doc = container?.ownerDocument || document
-  const currentElement = current ?? getActiveElement(doc)
-  if (!currentElement) return null
-  const index = tabbables.indexOf(currentElement)
-  return tabbables[index + 1] || null
 }
 
 export interface AdjacentTabbableOptions {

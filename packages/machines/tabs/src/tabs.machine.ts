@@ -1,12 +1,6 @@
 import { setup } from "@zag-js/core"
-import {
-  addDomEvent,
-  AnimationFrame,
-  getFocusables,
-  isAnchorElement,
-  observeChildren,
-  resizeObserverBorderBox,
-} from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, getFocusables, isAnchorElement, whenNode } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import type { Rect } from "@zag-js/types"
 import { isEqual } from "@zag-js/utils/object"
 import { callAll } from "@zag-js/utils/functions"
@@ -14,6 +8,12 @@ import * as dom from "./tabs.dom"
 import type { Params } from "@zag-js/core"
 import type { ActivationDirection } from "@zag-js/types"
 import type { TabsSchema, ValueChangeReason } from "./tabs.types"
+
+const triggerObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["disabled"],
+})
 
 const { createMachine } = setup<TabsSchema>()
 
@@ -337,13 +337,10 @@ export const machine = createMachine({
 
     effects: {
       trackTriggers({ scope, send }) {
-        return observeChildren(() => dom.getListEl(scope), {
-          attributes: true,
-          attributeFilter: ["disabled"],
-          callback() {
-            send({ type: "TRIGGERS.CHANGE" })
-          },
-        })
+        return whenNode(
+          () => dom.getListEl(scope),
+          (el) => triggerObserver.observe(el, () => send({ type: "TRIGGERS.CHANGE" })),
+        )
       },
     },
   },

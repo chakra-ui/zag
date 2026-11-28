@@ -1,9 +1,16 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { AnimationFrame, observeChildren } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import * as dom from "./toolbar.dom"
 import type { ToolbarSchema } from "./toolbar.types"
 
 const { not } = createGuards<ToolbarSchema>()
+
+const itemObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["disabled", "data-disabled"],
+})
 
 export const machine = createMachine<ToolbarSchema>({
   props({ props }) {
@@ -161,13 +168,7 @@ export const machine = createMachine<ToolbarSchema>({
       trackItemMutations({ scope, send }) {
         const root = dom.getRootEl(scope)
         if (!root) return
-        return observeChildren(root, {
-          attributes: true,
-          attributeFilter: ["disabled", "data-disabled"],
-          callback() {
-            send({ type: "ITEMS.CHANGE" })
-          },
-        })
+        return itemObserver.observe(root, () => send({ type: "ITEMS.CHANGE" }))
       },
     },
   },

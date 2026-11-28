@@ -7,16 +7,8 @@ import {
 } from "@zag-js/collection"
 import { setup, type Params, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
-import {
-  AnimationFrame,
-  clickIfLink,
-  createSharedMutationObserver,
-  getModifierKeys,
-  isApple,
-  nextTick,
-  raf,
-  setCaretToEnd,
-} from "@zag-js/dom-query"
+import { AnimationFrame, clickIfLink, getModifierKeys, isApple, nextTick, raf, setCaretToEnd } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion, type LiveRegion } from "@zag-js/live-region"

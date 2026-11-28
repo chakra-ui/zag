@@ -1,6 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, contains, getEventTarget, setStyleProperty, Timeout } from "@zag-js/dom-query"
 import { trackDrag } from "@zag-js/dom-query/drag"
+import { createSharedIntersectionObserver, resizeObserverContentBox } from "@zag-js/dom-query/observe"
 import type { Size } from "@zag-js/types"
 import { isEqual } from "@zag-js/utils/object"
 import { ensureProps } from "@zag-js/utils/guard"
@@ -10,6 +11,8 @@ import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scr
 import { getScrollOffset } from "./utils/scroll-offset"
 import { getScrollSides } from "./utils/scroll-sides"
 import { markUserScroll, resetUserScroll } from "./utils/user-scroll"
+
+const viewportObserver = /* @__PURE__ */ createSharedIntersectionObserver()
 
 const MIN_THUMB_SIZE = 16
 const SCROLL_TIMEOUT = 500
@@ -479,41 +482,31 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         if (!contentEl || !rootEl) return
 
-        const win = scope.getWin()
         const measureTimeout = Timeout.create()
-        const obs = new win.ResizeObserver(() => {
-          // Use a small timeout to ensure scroll events are processed before resize adjustments
-          // This prevents conflicts between scroll events and resize observer events
-          measureTimeout.start(1, () => {
-            send({ type: "thumb.measure" })
-          })
-        })
+        // after pending scroll events, so a resize doesn't measure against a stale scroll position
+        const onResize = () => measureTimeout.start(1, () => send({ type: "thumb.measure" }))
 
-        obs.observe(contentEl)
-        obs.observe(rootEl)
+        const stopObserving = [
+          resizeObserverContentBox.observe(contentEl, onResize),
+          resizeObserverContentBox.observe(rootEl, onResize),
+        ]
 
         return () => {
-          obs.disconnect()
+          stopObserving.forEach((stop) => stop())
           measureTimeout.cancel()
         }
       },
 
       trackViewportVisibility({ scope, send }) {
-        const win = scope.getWin()
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
-        const observer = new win.IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.intersectionRatio > 0) {
-              send({ type: "thumb.measure" })
-              observer.disconnect()
-            }
-          })
+        // measured once it first shows, like after a hidden tab or collapsed panel opens
+        const stop = viewportObserver.observe(viewportEl, (entry) => {
+          if (entry.intersectionRatio <= 0) return
+          send({ type: "thumb.measure" })
+          stop()
         })
-        observer.observe(viewportEl)
-        return () => {
-          observer.disconnect()
-        }
+        return stop
       },
 
       trackWheelEvent({ scope, refs }) {

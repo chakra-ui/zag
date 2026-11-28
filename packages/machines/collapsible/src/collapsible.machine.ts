@@ -6,14 +6,16 @@ import {
   getEventTarget,
   getTabbables,
   nextTick,
-  observeChildren,
   raf,
   setAttribute,
   setStyle,
   Timeout,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import * as dom from "./collapsible.dom"
 import type { CollapsibleSchema, OpenChangeReason } from "./collapsible.types"
+
+const contentObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 export const machine = createMachine<CollapsibleSchema>({
   initialState({ prop }) {
@@ -267,11 +269,9 @@ export const machine = createMachine<CollapsibleSchema>({
 
         let restoreInert = applyInertToTabbables()
 
-        const observerCleanup = observeChildren(contentEl, {
-          callback() {
-            restoreInert()
-            restoreInert = applyInertToTabbables()
-          },
+        const observerCleanup = contentObserver.observe(contentEl, () => {
+          restoreInert()
+          restoreInert = applyInertToTabbables()
         })
 
         return () => {

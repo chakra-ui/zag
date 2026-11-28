@@ -1,5 +1,10 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, AnimationFrame, raf, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame, raf, Timeout } from "@zag-js/dom-query"
+import {
+  createSharedIntersectionObserver,
+  createSharedMutationObserver,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query/observe"
 import { trackScrollEnd } from "@zag-js/dom-query/scroll"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import { findSnapPoint, getClosestSnapIndex, getReleaseSnapIndex, getScrollSnapPositions } from "@zag-js/scroll-snap"
@@ -10,6 +15,8 @@ import { clampValue } from "@zag-js/utils/number"
 import * as dom from "./carousel.dom"
 import { getPageForIndex, getPageSnapPoints, getFlickVelocity, getSlidesPerMove } from "./carousel.utils"
 import type { CarouselSchema } from "./carousel.types"
+
+const slideListObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 const DRIFT_THRESHOLD = 1
 
@@ -279,14 +286,11 @@ export const machine = createMachine<CarouselSchema>({
       trackSlideMutation({ scope, send }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
-        const win = scope.getWin()
-        const observer = new win.MutationObserver(() => {
+        dom.syncTabIndex(scope)
+        return slideListObserver.observe(el, () => {
           send({ type: "SNAP.REFRESH", src: "slide.mutation" })
           dom.syncTabIndex(scope)
         })
-        dom.syncTabIndex(scope)
-        observer.observe(el, { childList: true, subtree: true })
-        return () => observer.disconnect()
       },
 
       trackSlideResize({ scope, send }) {
@@ -315,27 +319,20 @@ export const machine = createMachine<CarouselSchema>({
 
       trackSlideIntersections({ scope, prop, context }) {
         const el = dom.getItemGroupEl(scope)
-        const win = scope.getWin()
+        const slideObserver = createSharedIntersectionObserver({ root: el, threshold: prop("inViewThreshold") })
 
-        const observer = new win.IntersectionObserver(
-          (entries) => {
-            const slidesInView = entries.reduce((acc, entry) => {
-              const target = entry.target as HTMLElement
-              const index = Number(target.dataset.index ?? "-1")
-              if (index == null || Number.isNaN(index) || index === -1) return acc
-              return entry.isIntersecting ? add(acc, index) : remove(acc, index)
-            }, context.get("slidesInView"))
+        const onChange = (entry: IntersectionObserverEntry) => {
+          const index = Number((entry.target as HTMLElement).dataset.index ?? "-1")
+          if (Number.isNaN(index) || index === -1) return
+          const slidesInView = context.get("slidesInView")
+          context.set(
+            "slidesInView",
+            uniq(entry.isIntersecting ? add(slidesInView, index) : remove(slidesInView, index)),
+          )
+        }
 
-            context.set("slidesInView", uniq(slidesInView))
-          },
-          {
-            root: el,
-            threshold: prop("inViewThreshold"),
-          },
-        )
-
-        dom.getItemEls(scope).forEach((slide) => observer.observe(slide))
-        return () => observer.disconnect()
+        const cleanups = dom.getItemEls(scope).map((slide) => slideObserver.observe(slide, onChange))
+        return callAll(...cleanups)
       },
 
       trackScroll({ send, refs, scope }) {

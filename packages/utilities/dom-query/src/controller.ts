@@ -1,18 +1,11 @@
 import { getRootNode } from "./node"
 
-// Roles that represent interactive containers that should be included in controlled element detection
+// a controlled element with one of these roles counts as part of its controller's component
 const INTERACTIVE_CONTAINER_ROLE = new Set(["menu", "listbox", "dialog", "grid", "tree", "region", "application"])
 
 const isInteractiveContainerRole = (role: string) => INTERACTIVE_CONTAINER_ROLE.has(role)
 
 const getAriaControls = (element: HTMLElement) => element.getAttribute("aria-controls")?.split(" ") || []
-
-export interface ControlledElementOptions {
-  /**
-   * If false, controlled element following is disabled
-   */
-  followControlledElements?: boolean | undefined
-}
 
 /**
  * Checks if an element is within a controlled element that should be considered "inside"
@@ -23,11 +16,9 @@ export function isControlledElement(container: HTMLElement, element: HTMLElement
   const rootNode = getRootNode(container)
 
   const checkElement = (searchRoot: HTMLElement): boolean => {
-    // Find all elements with aria-controls within the search root
     const controllingElements = searchRoot.querySelectorAll<HTMLElement>("[aria-controls]")
 
     for (const controller of controllingElements) {
-      // Only follow aria-controls if the controller is expanded
       if (controller.getAttribute("aria-expanded") !== "true") continue
 
       const controlledIds = getAriaControls(controller)
@@ -36,11 +27,9 @@ export function isControlledElement(container: HTMLElement, element: HTMLElement
         if (!id || visitedIds.has(id)) continue
         visitedIds.add(id)
 
-        // Check if the element is the controlled element or a descendant of it
         const controlledElement = rootNode.getElementById(id)
         if (controlledElement) {
-          // Only consider if the controlled element has an interactive container role
-          // and is not a modal (which manages its own interactions)
+          // a modal manages its own interactions
           const role = controlledElement.getAttribute("role")
           const modal = controlledElement.getAttribute("aria-modal") === "true"
 
@@ -48,7 +37,6 @@ export function isControlledElement(container: HTMLElement, element: HTMLElement
             if (controlledElement === element || controlledElement.contains(element)) {
               return true
             }
-            // Recursively check within the controlled element
             if (checkElement(controlledElement)) {
               return true
             }
@@ -78,7 +66,6 @@ export function findControlledElements(
     const controllingElements = root.querySelectorAll<HTMLElement>("[aria-controls]")
 
     for (const controller of controllingElements) {
-      // Only follow aria-controls if the controller is expanded
       if (controller.getAttribute("aria-expanded") !== "true") continue
 
       const controlledIds = getAriaControls(controller)
@@ -89,15 +76,12 @@ export function findControlledElements(
 
         const controlledElement = rootNode.getElementById(id)
         if (controlledElement) {
-          // Only include if the controlled element has an interactive container role
-          // and is not a modal (which manages its own interactions/focus)
+          // a modal manages its own interactions and focus
           const role = controlledElement.getAttribute("role")
           const modal = controlledElement.getAttribute("aria-modal") === "true"
 
           if (role && INTERACTIVE_CONTAINER_ROLE.has(role) && !modal) {
             callback(controlledElement)
-
-            // Recursively search within the controlled element for more aria-controls
             findRecursive(controlledElement)
           }
         }
@@ -116,7 +100,6 @@ export function getControlledElements(container: HTMLElement): HTMLElement[] {
   const controlledElements: Set<HTMLElement> = new Set()
 
   findControlledElements(container, (controlledElement) => {
-    // Only collect elements that are outside the container
     if (!container.contains(controlledElement)) {
       controlledElements.add(controlledElement)
     }

@@ -27,6 +27,10 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
   const { delay = 150, immediate = false, capture = false, timeout = Timeout.create() } = options
   const native = "onscrollend" in getWindow(target as Node)
 
+  /* -----------------------------------------------------------------------------
+   * State
+   * -----------------------------------------------------------------------------*/
+
   const state = {
     touching: false,
     // an end that arrived while a finger was down, reported once it lifts
@@ -34,6 +38,10 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
     // with `capture`, several scrollers can move at once; it ends when the last one does
     scrolling: new Set<EventTarget>(),
   }
+
+  /* -----------------------------------------------------------------------------
+   * Transitions: every input goes through here
+   * -----------------------------------------------------------------------------*/
 
   function send(input: ScrollEndInput) {
     switch (input.type) {
@@ -70,6 +78,10 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
     }
   }
 
+  /* -----------------------------------------------------------------------------
+   * Steps
+   * -----------------------------------------------------------------------------*/
+
   // a scroller removed mid-scroll never sends its end
   function isStillScrolling() {
     for (const scroller of state.scrolling) {
@@ -86,6 +98,10 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
   function report() {
     timeout.start(0, fn)
   }
+
+  /* -----------------------------------------------------------------------------
+   * Listeners: they only turn DOM events into inputs
+   * -----------------------------------------------------------------------------*/
 
   const doc = getDocument(target as Node)
   const touchEnd = (event: TouchEvent) => {
@@ -106,7 +122,6 @@ export function trackScrollEnd(target: EventTarget, fn: VoidFunction, options: S
     cleanups.push(addGlobalEvent(target, "scrollend", onEnd, { capture }))
   }
 
-  // also reports when nothing scrolls at all
   if (immediate) wait()
 
   return () => {

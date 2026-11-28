@@ -14,16 +14,15 @@ export const isDocument = (el: any): el is Document => isObject(el) && el.nodeTy
 
 export const isWindow = (el: any): el is Window => isObject(el) && el === el.window
 
-export const isVisualViewport = (el: any): el is VisualViewport =>
-  isObject(el) && el.constructor.name === "VisualViewport"
-
 export const getNodeName = (node: Node | Window): string => {
   if (isHTMLElement(node)) return node.localName || ""
   return "#document"
 }
 
+const ROOT_NODE_NAMES = new Set(["html", "body", "#document"])
+
 export function isRootElement(node: Node): boolean {
-  return ["html", "body", "#document"].includes(getNodeName(node))
+  return ROOT_NODE_NAMES.has(getNodeName(node))
 }
 
 export const isNode = (el: any): el is Node => isObject(el) && el.nodeType !== undefined
@@ -66,7 +65,7 @@ export function isEditableElement(el: HTMLElement | EventTarget | null) {
 
 type Target = HTMLElement | EventTarget | null | undefined
 
-/** Whether `parent` contains `child` in the light tree, or `child` is inside a shadow tree hosted under `parent`. */
+/** The parent element, crossing out of a shadow root to its host */
 export function getParentElement(node: Element): Element | null {
   const parentNode = node.parentNode
   if (isShadowRoot(parentNode)) return parentNode.host
@@ -82,6 +81,10 @@ export function getAncestorElements(node: Element | null): Element[] {
   return ancestors
 }
 
+/**
+ * Whether `parent` contains `child` in the light tree, inside a shadow tree hosted under `parent`, or inside a
+ * same-origin iframe under it
+ */
 export function contains(parent: Target, child: Target) {
   if (!parent || !child) return false
   if (!isHTMLElement(parent) || !isNode(child)) return false
@@ -96,7 +99,6 @@ export function contains(parent: Target, child: Target) {
       next = next.parentNode || next.host
     }
   }
-  // Same-origin iframe inside the parent
   const frameEl = child.ownerDocument?.defaultView?.frameElement
   if (frameEl && child.ownerDocument !== parent.ownerDocument) return contains(parent, frameEl)
   return false

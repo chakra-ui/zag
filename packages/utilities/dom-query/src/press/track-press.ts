@@ -5,42 +5,48 @@ import type { Point } from "../types"
 
 export interface PressDetails {
   /**
-   * The current position of the pointer.
+   * Where the pointer is
    */
   point: Point
   /**
-   * The event that triggered the move.
+   * The event behind this report
    */
   event: PointerEvent
 }
 
 export interface TrackPressOptions {
   /**
-   * The element that will be used to track the pointer events.
+   * The element pressed with a pointer
    */
   pointerNode: Element | null
   /**
-   * The element that will be used to track the keyboard focus events.
+   * The element pressed with a key while focused
+   * @default pointerNode
    */
   keyboardNode?: Element | null | undefined
   /**
-   * A function that determines if the key is valid for the press event.
+   * Which keys press it
+   * @default Enter
    */
   isValidKey?(event: KeyboardEvent): boolean
   /**
-   * A function that will be called when the pointer is pressed.
+   * Called when a press ends on the element
    */
   onPress?(details: PressDetails): void
   /**
-   * A function that will be called when the pointer is pressed down.
+   * Called when a press starts
    */
   onPressStart?(details: PressDetails): void
   /**
-   * A function that will be called when the pointer is pressed up or cancelled.
+   * Called when a press ends off the element or is cancelled
    */
   onPressEnd?(details: PressDetails): void
 }
 
+/**
+ * Follows presses on an element by pointer or key, reporting the start, the end, and whether it ended on the
+ * element. Returns a cleanup.
+ */
 export function trackPress(options: TrackPressOptions) {
   const {
     pointerNode,

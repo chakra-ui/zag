@@ -1,13 +1,16 @@
 import type { CollectionItem } from "@zag-js/collection"
 import { Selection, createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { AnimationFrame, contains, getByTypeahead, observeAttributes, tryFocusElement } from "@zag-js/dom-query"
+import { AnimationFrame, contains, getByTypeahead, tryFocusElement, whenNode } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollIntoView } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils/object"
 import { collection } from "./gridlist.collection"
 import * as dom from "./gridlist.dom"
 import type { GridListSchema } from "./gridlist.types"
+
+const focusedValueObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["data-focusedvalue"] })
 
 const { createMachine } = setup<GridListSchema>()
 
@@ -258,11 +261,7 @@ export const machine = createMachine({
         schedule()
 
         const contentEl = () => dom.getContentEl(scope)
-        const stopObserver = observeAttributes(contentEl, {
-          defer: true,
-          attributes: ["data-focusedvalue"],
-          callback: schedule,
-        })
+        const stopObserver = whenNode(contentEl, (el) => focusedValueObserver.observe(el, schedule), { defer: true })
 
         return () => {
           cancelPendingFocus?.()

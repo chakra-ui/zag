@@ -1,7 +1,5 @@
-import { getWindow } from "./node"
-import { raf } from "./raf"
-import { noop } from "./shared"
-import type { MaybeElement, MaybeElementOrFn } from "./types"
+import { getWindow } from "../node"
+import { noop } from "../shared"
 
 export type MutationObserverListener = (records: readonly MutationRecord[]) => void
 
@@ -74,70 +72,5 @@ export function createSharedMutationObserver(options: MutationObserverInit): Sha
         if (configurations.size === 0) targets.delete(target)
       }
     },
-  }
-}
-
-export interface ObserveAttributeOptions {
-  attributes: string[]
-  callback(record: MutationRecord): void
-  defer?: boolean | undefined
-}
-
-function observeAttributesImpl(node: MaybeElement, options: ObserveAttributeOptions) {
-  if (!node) return
-  const { attributes, callback: fn } = options
-  const win = getWindow(node)
-  const obs = new win.MutationObserver((changes) => {
-    for (const change of changes) {
-      if (change.type === "attributes" && change.attributeName && attributes.includes(change.attributeName)) {
-        fn(change)
-      }
-    }
-  })
-  obs.observe(node, { attributes: true, attributeFilter: attributes })
-  return () => obs.disconnect()
-}
-
-export function observeAttributes(nodeOrFn: MaybeElementOrFn, options: ObserveAttributeOptions) {
-  const { defer } = options
-  const func = defer ? raf : (v: any) => v()
-  const cleanups: (VoidFunction | undefined)[] = []
-  cleanups.push(
-    func(() => {
-      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
-      cleanups.push(observeAttributesImpl(node, options))
-    }),
-  )
-  return () => {
-    cleanups.forEach((fn) => fn?.())
-  }
-}
-
-export interface ObserveChildrenOptions extends MutationObserverInit {
-  callback: MutationCallback
-  defer?: boolean | undefined
-}
-
-function observeChildrenImpl(node: MaybeElement, options: ObserveChildrenOptions) {
-  const { callback: fn, defer: _defer, ...observerInit } = options
-  if (!node) return
-  const win = getWindow(node)
-  const obs = new win.MutationObserver(fn)
-  obs.observe(node, { childList: true, subtree: true, ...observerInit })
-  return () => obs.disconnect()
-}
-
-export function observeChildren(nodeOrFn: MaybeElementOrFn, options: ObserveChildrenOptions) {
-  const { defer } = options
-  const func = defer ? raf : (v: any) => v()
-  const cleanups: (VoidFunction | undefined)[] = []
-  cleanups.push(
-    func(() => {
-      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
-      cleanups.push(observeChildrenImpl(node, options))
-    }),
-  )
-  return () => {
-    cleanups.forEach((fn) => fn?.())
   }
 }

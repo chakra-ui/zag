@@ -9,7 +9,8 @@ import {
   toggleSelectAll,
 } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
-import { getByTypeahead, observeAttributes, raf } from "@zag-js/dom-query"
+import { getByTypeahead, raf, whenNode } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils/object"
@@ -17,6 +18,10 @@ import { collection } from "./listbox.collection"
 import { SELECT_ALL_VALUE } from "./utils/select-all"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
+
+const activeDescendantObserver = /* @__PURE__ */ createSharedMutationObserver({
+  attributeFilter: ["data-activedescendant"],
+})
 
 const { createMachine } = setup<ListboxSchema>()
 
@@ -272,12 +277,8 @@ export const machine = createMachine({
         })
 
         const listEl = () => dom.getListEl(scope)
-        const observerCleanup = observeAttributes(listEl, {
+        const observerCleanup = whenNode(listEl, (el) => activeDescendantObserver.observe(el, () => exec(false)), {
           defer: true,
-          attributes: ["data-activedescendant"],
-          callback() {
-            exec(false)
-          },
         })
 
         return () => {

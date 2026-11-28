@@ -1,8 +1,8 @@
 import { addGlobalEvent } from "../global-event"
-import { createSharedMutationObserver } from "../mutation-observer"
+import { createSharedMutationObserver } from "../observe/mutation-observer"
 import { getDocument, isEditableElement } from "../node"
 import { AnimationFrame } from "../raf"
-import { resizeObserverBorderBox } from "../resize-observer"
+import { resizeObserverBorderBox } from "../observe/resize-observer"
 import { hasSelectionWithin } from "../text-selection"
 
 export interface StickToBottomDetails {

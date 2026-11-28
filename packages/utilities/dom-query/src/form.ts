@@ -1,4 +1,5 @@
-import { createSharedMutationObserver } from "./mutation-observer"
+import { addGlobalEvent } from "./global-event"
+import { createSharedMutationObserver } from "./observe/mutation-observer"
 import { getWindow } from "./node"
 import type { HTMLElementWithValue } from "./types"
 
@@ -37,8 +38,7 @@ export function setElementChecked(el: HTMLInputElement | null, checked: boolean)
   if (!el) return
   const descriptor = getDescriptor(el, { type: "HTMLInputElement", property: "checked" })
   descriptor.set?.call(el, checked)
-  // react applies the `checked` automatically when we call the descriptor
-  // but for consistency with vanilla JS, we need to do it manually as well
+  // React mirrors the descriptor into the attribute; plain DOM doesn't, so do it here too
   if (checked) el.setAttribute("checked", "")
   else el.removeAttribute("checked")
 }
@@ -87,12 +87,15 @@ function isFormElement(el: HTMLElement): el is HTMLElementWithValue {
 function trackFormReset(el: HTMLElement | null | undefined, callback: VoidFunction) {
   if (!el) return
   const form = isFormElement(el) ? el.form : el.closest("form")
-  const onReset = (e: Event) => {
-    if (e.defaultPrevented) return
-    callback()
-  }
-  form?.addEventListener("reset", onReset, { passive: true })
-  return () => form?.removeEventListener("reset", onReset)
+  if (!form) return
+  return addGlobalEvent(
+    form,
+    "reset",
+    (event) => {
+      if (!event.defaultPrevented) callback()
+    },
+    { passive: true },
+  )
 }
 
 const fieldsetDisabledObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["disabled"] })
@@ -114,7 +117,7 @@ function isDisabledByFieldset(el: HTMLElement) {
 export function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (disabled: boolean) => void) {
   const fieldset = el?.closest("fieldset")
   if (!fieldset) return
-  // Watch every ancestor, since a fieldset further up can disable this one
+  // a fieldset further up can disable this one too
   const sync = () => callback(isDisabledByFieldset(el!))
   sync()
   const cleanups: VoidFunction[] = []
@@ -136,7 +139,9 @@ export function trackFormControl(el: HTMLElement | null, options: TrackFormContr
   return () => cleanups.forEach((cleanup) => cleanup?.())
 }
 
-//////////////// INTERNAL CHANGE EVENT ////////////////
+/* -----------------------------------------------------------------------------
+ * Internal change events: changes made by a machine, not the user
+ * -----------------------------------------------------------------------------*/
 
 const INTERNAL_CHANGE_EVENT = Symbol.for("zag.changeEvent")
 

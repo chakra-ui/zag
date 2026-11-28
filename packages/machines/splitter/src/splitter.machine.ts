@@ -1,5 +1,6 @@
 import { createMachine, type Params } from "@zag-js/core"
-import { observeChildren, resizeObserverBorderBox, Timeout } from "@zag-js/dom-query"
+import { Timeout } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import { next, prev } from "@zag-js/utils/array"
 import { isEqual } from "@zag-js/utils/object"
@@ -21,6 +22,12 @@ import { preserveFixedPanelSizes } from "./utils/preserve-fixed-panel-sizes"
 import { resizeByDelta } from "./utils/resize-by-delta"
 import { getGroupSize, normalizePanels, parsePanelSize, resolvePanelSizes } from "./utils/size"
 import { validateSizes } from "./utils/validate-sizes"
+
+const panelObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["data-disabled"],
+})
 
 export const machine = createMachine<SplitterSchema>({
   props({ props }) {
@@ -280,11 +287,8 @@ export const machine = createMachine<SplitterSchema>({
         exec()
 
         // Re-register when panels change (DOM updates)
-        const observeCleanup = observeChildren(dom.getRootEl(scope), {
-          callback: exec,
-          attributes: true,
-          attributeFilter: ["data-disabled"],
-        })
+        const rootEl = dom.getRootEl(scope)
+        const observeCleanup = rootEl ? panelObserver.observe(rootEl, exec) : undefined
 
         return () => {
           cleanups.forEach((fn) => fn())

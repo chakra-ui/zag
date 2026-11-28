@@ -103,6 +103,8 @@ function getMirrorStyle(
   return style.join(";")
 }
 
+const WHITESPACE_RE = /\s/g
+
 interface MirrorEntry {
   mirror: HTMLDivElement
   textNode: Text
@@ -148,7 +150,7 @@ export function getCaretPosition(
 
   let textBeforeCaret = element.value.substring(0, position)
   // inputs collapse whitespace; use non-breaking spaces so the mirror measures it
-  if (isInput) textBeforeCaret = textBeforeCaret.replace(/\s/g, "\u00a0")
+  if (isInput) textBeforeCaret = textBeforeCaret.replace(WHITESPACE_RE, "\u00a0")
   textNode.data = textBeforeCaret
 
   // the rest of the value must be in the marker so word wrapping is replicated exactly;

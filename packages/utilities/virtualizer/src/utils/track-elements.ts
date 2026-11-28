@@ -1,4 +1,5 @@
-import { createSharedMutationObserver, isHTMLElement } from "@zag-js/dom-query"
+import { isHTMLElement } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 
 const SELECTOR_ESCAPE_RE = /["\\]/g
 

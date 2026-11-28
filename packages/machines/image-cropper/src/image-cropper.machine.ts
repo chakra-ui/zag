@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { addDomEvent, getEventTarget } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import {
   addPoints,

@@ -1,5 +1,5 @@
 import type { MaybeFn } from "@zag-js/types"
-import { createSharedMutationObserver } from "./mutation-observer"
+import { createSharedMutationObserver } from "./observe/mutation-observer"
 import { raf } from "./raf"
 import { noop } from "./shared"
 

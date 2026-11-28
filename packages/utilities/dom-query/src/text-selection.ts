@@ -4,6 +4,10 @@ import { nextTick, raf } from "./raf"
 
 type State = "default" | "disabled" | "restoring"
 
+type MaybeElement = HTMLElement | null | undefined
+
+type NodeOrFn = MaybeElement | (() => MaybeElement)
+
 let state: State = "default"
 let userSelect = ""
 const elementMap = new WeakMap<HTMLElement, string>()
@@ -56,25 +60,19 @@ export function restoreTextSelection(options: DisableTextSelectionOptions = {}) 
         }
       })
     }, 300)
-  } else {
-    if (target && elementMap.has(target)) {
-      const prevUserSelect = elementMap.get(target)
+  } else if (target && elementMap.has(target)) {
+    const prevUserSelect = elementMap.get(target)
 
-      if (target.style.userSelect === "none") {
-        target.style.userSelect = prevUserSelect ?? ""
-      }
-
-      if (target.getAttribute("style") === "") {
-        target.removeAttribute("style")
-      }
-      elementMap.delete(target)
+    if (target.style.userSelect === "none") {
+      target.style.userSelect = prevUserSelect ?? ""
     }
+
+    if (target.getAttribute("style") === "") {
+      target.removeAttribute("style")
+    }
+    elementMap.delete(target)
   }
 }
-
-type MaybeElement = HTMLElement | null | undefined
-
-type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 export function disableTextSelection(options: DisableTextSelectionOptions<NodeOrFn> = {}) {
   const { defer, target, ...restOptions } = options

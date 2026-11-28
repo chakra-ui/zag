@@ -1,7 +1,10 @@
 import { setup } from "@zag-js/core"
-import { observeChildren, trackFieldsetDisabled } from "@zag-js/dom-query"
+import { trackFieldsetDisabled, whenNode } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import * as dom from "./fieldset.dom"
 import type { FieldsetSchema } from "./fieldset.types"
+
+const partsObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 const { createMachine } = setup<FieldsetSchema>()
 
@@ -51,7 +54,7 @@ export const machine = createMachine({
           sync()
           return dom.getRootEl(scope)
         }
-        return observeChildren(getRootEl, { defer: true, callback: sync })
+        return whenNode(getRootEl, (el) => partsObserver.observe(el, sync), { defer: true })
       },
 
       trackAncestorDisabled({ context, scope }) {

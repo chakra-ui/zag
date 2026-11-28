@@ -1,5 +1,6 @@
 import { createMachine, memo } from "@zag-js/core"
-import { AnimationFrame, resizeObserverBorderBox, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { AnimationFrame, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackDrag } from "@zag-js/dom-query/drag"
 import { isEqual } from "@zag-js/utils/object"
 import { callAll } from "@zag-js/utils/functions"

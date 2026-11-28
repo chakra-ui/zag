@@ -1,11 +1,13 @@
-import { getComputedStyle, getDocument, getWindow } from "@zag-js/dom-query"
+import { getComputedStyle, getDocument } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverContentBox } from "@zag-js/dom-query/observe"
+
+const attributeObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["rows", "placeholder"] })
 
 export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
   if (!el) return
 
   const style = getComputedStyle(el)
 
-  const win = getWindow(el)
   const doc = getDocument(el)
 
   const resize = () => {
@@ -51,13 +53,8 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
     })
   }
 
-  const resizeObserver = new win.ResizeObserver(() => {
-    requestAnimationFrame(() => resize())
-  })
-  resizeObserver.observe(el)
-
-  const attrObserver = new win.MutationObserver(() => resize())
-  attrObserver.observe(el, { attributes: true, attributeFilter: ["rows", "placeholder"] })
+  const stopResizeObserver = resizeObserverContentBox.observe(el, () => requestAnimationFrame(() => resize()))
+  const stopAttributeObserver = attributeObserver.observe(el, () => resize())
 
   doc.fonts?.addEventListener("loadingdone", resize)
 
@@ -65,7 +62,7 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
     el.removeEventListener("input", resize)
     el.form?.removeEventListener("reset", resize)
     doc.fonts?.removeEventListener("loadingdone", resize)
-    resizeObserver.disconnect()
-    attrObserver.disconnect()
+    stopResizeObserver()
+    stopAttributeObserver()
   }
 }

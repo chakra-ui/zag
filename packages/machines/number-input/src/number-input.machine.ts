@@ -6,13 +6,13 @@ import {
   isIPhone,
   isIos,
   isSafari,
-  observeAttributes,
   recordCursor,
   requestPointerLock,
   restoreCursor,
   setElementValue,
   trackFormControl,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { trackLongPress } from "@zag-js/dom-query/press"
 import type { Point } from "@zag-js/types"
 import { callAll } from "@zag-js/utils/functions"
@@ -33,6 +33,8 @@ import {
   getDefaultStep,
   parseValue,
 } from "./number-input.utils"
+
+const disabledObserver = /* @__PURE__ */ createSharedMutationObserver({ attributeFilter: ["disabled"] })
 
 const { choose, guards, createMachine } = setup<NumberInputSchema>()
 
@@ -361,11 +363,9 @@ export const machine = createMachine({
       trackButtonDisabled({ refs, scope, send }) {
         const direction = refs.get("pressDirection")
         const btn = dom.getTriggerEl(scope, direction)
-        return observeAttributes(btn, {
-          attributes: ["disabled"],
-          callback() {
-            send({ type: "TRIGGER.PRESS_UP", src: getPressSource(direction) })
-          },
+        if (!btn) return
+        return disabledObserver.observe(btn, () => {
+          send({ type: "TRIGGER.PRESS_UP", src: getPressSource(direction) })
         })
       },
       attachWheelListener({ scope, send, prop }) {

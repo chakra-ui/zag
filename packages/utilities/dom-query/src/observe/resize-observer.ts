@@ -1,5 +1,5 @@
-import { getWindow } from "./node"
-import { noop } from "./shared"
+import { getWindow } from "../node"
+import { noop } from "../shared"
 
 type Subscriber<T> = (entry: T) => void
 
@@ -74,8 +74,4 @@ export const resizeObserverContentBox = /* @__PURE__ */ createSharedResizeObserv
 
 export const resizeObserverBorderBox = /* @__PURE__ */ createSharedResizeObserver({
   box: "border-box",
-})
-
-export const resizeObserverDevicePixelContentBox = /* @__PURE__ */ createSharedResizeObserver({
-  box: "device-pixel-content-box",
 })

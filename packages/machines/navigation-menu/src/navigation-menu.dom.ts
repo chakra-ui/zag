@@ -1,5 +1,6 @@
 import type { Scope } from "@zag-js/core"
-import { getRelativeDirection, getTabbables, getWindow } from "@zag-js/dom-query"
+import { getRelativeDirection, getTabbables } from "@zag-js/dom-query"
+import { resizeObserverContentBox } from "@zag-js/dom-query/observe"
 import type { ActivationDirection, Orientation } from "@zag-js/types"
 import { parts } from "./navigation-menu.anatomy"
 
@@ -55,21 +56,16 @@ export const getElements = (ctx: Scope) => {
 export function trackResizeObserver(element: Array<HTMLElement | null>, onResize: () => void) {
   if (!element.length) return
   let frame = 0
-  const win = getWindow(element[0])
-  const obs = new win.ResizeObserver(() => {
+  const schedule = () => {
     cancelAnimationFrame(frame)
     frame = requestAnimationFrame(onResize)
-  })
+  }
 
-  element.forEach((el) => {
-    if (el) obs.observe(el)
-  })
+  const stopObserving = element.map((el) => (el ? resizeObserverContentBox.observe(el, schedule) : undefined))
 
   return () => {
     cancelAnimationFrame(frame)
-    element.forEach((el) => {
-      if (el) obs.unobserve(el)
-    })
+    stopObserving.forEach((stop) => stop?.())
   }
 }
 

@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { AnimationFrame, observeChildren } from "@zag-js/dom-query"
+import { AnimationFrame } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { addOrRemove } from "@zag-js/utils/array"
 import { isEqual } from "@zag-js/utils/object"
 import { isArray, ensureProps } from "@zag-js/utils/guard"
@@ -7,6 +8,12 @@ import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
 
 const { not } = createGuards<ToggleGroupSchema>()
+
+const itemObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  attributeFilter: ["disabled", "data-disabled"],
+})
 
 export const machine = createMachine<ToggleGroupSchema>({
   props({ props }) {
@@ -204,13 +211,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       trackItemMutations({ scope, send }) {
         const root = dom.getRootEl(scope)
         if (!root) return
-        return observeChildren(root, {
-          attributes: true,
-          attributeFilter: ["disabled", "data-disabled"],
-          callback() {
-            send({ type: "ITEMS.CHANGE" })
-          },
-        })
+        return itemObserver.observe(root, () => send({ type: "ITEMS.CHANGE" }))
       },
     },
   },

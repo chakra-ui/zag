@@ -4,11 +4,11 @@ import {
   AnimationFrame,
   getPopupActivationDirection,
   isShadowRoot,
-  observeChildren,
   raf,
-  resizeObserverBorderBox,
   waitForAnimationEnd,
+  whenNode,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { inline, getPlacement } from "@zag-js/popper"
 import { trackSafeArea } from "@zag-js/safe-area"
@@ -18,6 +18,8 @@ import type { HoverCardSchema, InstantType, OpenChangeReason, Placement, Viewpor
 import type { PopupActivationDirection } from "@zag-js/types"
 
 const { not, and } = createGuards<HoverCardSchema>()
+
+const treeObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 export const machine = createMachine<HoverCardSchema>({
   props({ props }) {
@@ -347,12 +349,14 @@ export const machine = createMachine<HoverCardSchema>({
         const getTriggerEl = () => dom.getTriggerEl(scope, context.get("triggerValue"))
         const root = scope.getRootNode()
         const node = (isShadowRoot(root) ? root : scope.getDoc().body) as HTMLElement
-        return observeChildren(() => (getTriggerEl() ? node : null), {
-          defer: true,
-          callback() {
-            if (!getTriggerEl()) send({ type: "CLOSE" })
-          },
-        })
+        const onChange = () => {
+          if (!getTriggerEl()) send({ type: "CLOSE" })
+        }
+        return whenNode(
+          () => (getTriggerEl() ? node : null),
+          (el) => treeObserver.observe(el, onChange),
+          { defer: true },
+        )
       },
 
       trackPositioning({ context, prop, refs, scope }) {

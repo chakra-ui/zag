@@ -3,13 +3,13 @@ import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable
 import {
   AnimationFrame,
   clickIfLink,
-  createSharedMutationObserver,
   getModifierKeys,
   type ModifierKeys,
   isApple,
   isTypingAtEnd,
   raf,
 } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 import { scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion } from "@zag-js/live-region"

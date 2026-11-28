@@ -1,12 +1,18 @@
 // Based on https://github.com/theKashey/aria-hidden/blob/master/src/index.ts
 // Licensed under MIT
 
-import { findControlledElements, getWindow, isElement, isHTMLElement, isShadowRoot } from "@zag-js/dom-query"
+import { findControlledElements, isElement, isHTMLElement, isShadowRoot } from "@zag-js/dom-query"
+import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
 
 let counterMap = new WeakMap<Element, number>()
 let uncontrolledNodes = new WeakMap<Element, boolean>()
 let markerMap: Record<string, WeakMap<Element, number>> = {}
 let lockCount = 0
+
+const expandedObserver = /* @__PURE__ */ createSharedMutationObserver({
+  attributeFilter: ["aria-expanded"],
+  subtree: true,
+})
 
 const getHost = (node: Element): Element | null => {
   const root = node.getRootNode()
@@ -239,7 +245,7 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
   const hiddenSelector = attribute === "aria-hidden" ? '[aria-hidden="true"]' : "[inert]"
 
   let undo: VoidFunction | undefined
-  let observer: MutationObserver | undefined
+  let stopObserving: VoidFunction[] = []
 
   const apply = () => {
     // Apply before undoing, so nodes hidden by both walks keep their attribute
@@ -259,24 +265,20 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
 
   const lock: Lock = {
     pause() {
-      observer?.disconnect()
-      observer = undefined
+      stopObserving.forEach((stop) => stop())
+      stopObserving = []
       release()
     },
     resume() {
       apply()
       if (!followControlledElements) return
 
-      const win = getWindow(parentNode)
-
-      // Sync controlled popups when their controllers expand or collapse.
-      observer = new win.MutationObserver((records) => {
-        // A controller inside hidden content can't reveal anything.
+      // Sync controlled popups when their controllers expand or collapse
+      const onChange = (records: readonly MutationRecord[]) => {
+        // a controller inside hidden content can't reveal anything
         if (records.some(({ target }) => isElement(target) && !target.closest(hiddenSelector))) apply()
-      })
-      roots.forEach((root) =>
-        observer!.observe(root, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true }),
-      )
+      }
+      stopObserving = roots.map((root) => expandedObserver.observe(root, onChange))
     },
   }
 

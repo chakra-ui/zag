@@ -1,7 +1,14 @@
 import type { Scope } from "@zag-js/core"
-import { AnimationFrame, getWindow, queryAll, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { AnimationFrame, queryAll } from "@zag-js/dom-query"
+import { createSharedMutationObserver, resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import type { Placement } from "./toast.types"
 import { parts } from "./toast.anatomy"
+
+const contentObserver = /* @__PURE__ */ createSharedMutationObserver({
+  childList: true,
+  subtree: true,
+  characterData: true,
+})
 
 // ID generators — kept for ARIA attributes in connect
 export const getRegionId = (placement: Placement) => `toast-group-${placement}`
@@ -30,22 +37,19 @@ interface ObserveContentOptions {
 export function observeContent(contentEl: HTMLElement, options: ObserveContentOptions) {
   const { onChange, onMutate } = options
 
-  const win = getWindow(contentEl)
   const frame = AnimationFrame.create()
 
   const stopResizeObserver = resizeObserverBorderBox.observe(contentEl, () => frame.request(onChange))
 
   // Content changes run before paint, so report them right away; resizes are deferred to avoid loops
-  const mutationObserver = new win.MutationObserver(() => {
+  const stopMutationObserver = contentObserver.observe(contentEl, () => {
     frame.cancel()
     onChange()
     onMutate?.()
   })
 
-  mutationObserver.observe(contentEl, { childList: true, subtree: true, characterData: true })
-
   return () => {
-    mutationObserver.disconnect()
+    stopMutationObserver()
     stopResizeObserver()
     frame.cancel()
   }

@@ -1,4 +1,4 @@
-import { resizeObserverBorderBox } from "@zag-js/dom-query"
+import { resizeObserverBorderBox } from "@zag-js/dom-query/observe"
 import { afterEach, describe, expect, test, vi } from "vitest"
 import { ListVirtualizer } from "../src/list-virtualizer"
 import { WindowVirtualizer } from "../src/window-virtualizer"

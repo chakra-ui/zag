@@ -1,4 +1,7 @@
+import { createSharedMutationObserver } from "./observe/mutation-observer"
 import { getDocument, getWindow } from "./node"
+
+const subtreeObserver = /* @__PURE__ */ createSharedMutationObserver({ childList: true, subtree: true })
 
 export interface WaitForOptions {
   timeout: number
@@ -54,7 +57,7 @@ export function waitForElement(
   const doc = getDocument(rootNode)
   const controller = new win.AbortController()
 
-  let observer: MutationObserver | undefined
+  let stopObserving: VoidFunction | undefined
 
   const result = waitForPromise(
     new Promise<HTMLElement>((resolve) => {
@@ -65,27 +68,22 @@ export function waitForElement(
         return
       }
 
-      observer = new win.MutationObserver(() => {
+      stopObserving = subtreeObserver.observe(doc.body, () => {
         const el = target()
 
         if (el && el.isConnected) {
-          observer?.disconnect()
+          stopObserving?.()
           resolve(el)
         }
-      })
-
-      observer.observe(doc.body, {
-        childList: true,
-        subtree: true,
       })
     }),
     controller,
     timeout,
   )
 
-  // Stop observing once the wait settles, including on abort or timeout
-  const disconnect = () => observer?.disconnect()
-  result[0].then(disconnect, disconnect)
+  // also on abort or timeout
+  const stop = () => stopObserving?.()
+  result[0].then(stop, stop)
 
   return result
 }
