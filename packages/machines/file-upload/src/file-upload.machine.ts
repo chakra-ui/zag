@@ -23,7 +23,7 @@ export const machine = createMachine<FileUploadSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, scope }) {
     return {
       acceptedFiles: bindable<File[]>(() => ({
         defaultValue: prop("defaultAcceptedFiles"),
@@ -34,6 +34,9 @@ export const machine = createMachine<FileUploadSchema>({
         },
         onChange(value) {
           const ctx = getContext()
+          // Update the hidden input before the callbacks, so a form read from them has the files
+          const inputEl = dom.getHiddenInputEl(scope)
+          if (inputEl) setInputFiles(inputEl, value)
           prop("onFileAccept")?.({ files: value })
           prop("onFileChange")?.({ acceptedFiles: value, rejectedFiles: ctx.get("rejectedFiles") })
         },
@@ -158,7 +161,11 @@ export const machine = createMachine<FileUploadSchema>({
         queueMicrotask(() => {
           const inputEl = dom.getHiddenInputEl(scope)
           if (!inputEl) return
-          setInputFiles(inputEl, context.get("acceptedFiles"))
+          // `onChange` already set them, unless `acceptedFiles` was changed from the outside
+          const files = context.get("acceptedFiles")
+          const current = Array.from(inputEl.files ?? [])
+          const inSync = current.length === files.length && current.every((file, i) => isFileEqual(file, files[i]))
+          if (!inSync) setInputFiles(inputEl, files)
           const win = scope.getWin()
           inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
         })
