@@ -1178,7 +1178,7 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         }
         // wait a frame if the content is not mounted yet
-        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        if (dom.getContentEl(scope) || dom.getListEl(scope)) queueMicrotask(fn)
         else refs.get("highlightFrame").request(fn)
       },
       // runs after the collection changes; an explicit highlight before it runs cancels it
@@ -1192,7 +1192,7 @@ export const machine = createMachine({
           const value = navigate(params, { selectAll: false }).first
           if (value) context.set("highlightedValue", value)
         }
-        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        if (dom.getContentEl(scope) || dom.getListEl(scope)) queueMicrotask(fn)
         else refs.get("highlightFrame").request(fn)
       },
       cancelAutoHighlight({ refs }) {
@@ -1209,7 +1209,7 @@ export const machine = createMachine({
           if (value) context.set("highlightedValue", value)
         }
         // wait a frame if the content is not mounted yet
-        if (dom.getContentEl(scope)) queueMicrotask(fn)
+        if (dom.getContentEl(scope) || dom.getListEl(scope)) queueMicrotask(fn)
         else refs.get("highlightFrame").request(fn)
       },
       highlightNextItem(params) {

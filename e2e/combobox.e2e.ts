@@ -519,3 +519,20 @@ test.describe("combobox [highlight frame]", () => {
     await I.dontSeeHighlightedItem()
   })
 })
+
+test.describe("inline list without content", () => {
+  test("[keyboard] Enter right after typing selects the first match", async ({ page }) => {
+    await page.goto("/combobox/inline-list")
+    const input = page.getByTestId("input")
+    await input.focus()
+
+    // hold animation frames so the keys land before the next one, like a fast typist
+    await page.evaluate(() => {
+      window.requestAnimationFrame = () => 0
+    })
+    await page.keyboard.insertText("Japan")
+    await page.keyboard.press("Enter")
+
+    await expect(page.getByTestId("selected")).toHaveText("Selected: Japan")
+  })
+})
