@@ -59,7 +59,7 @@ export type JsonNodeSyntaxKind =
   | "operator"
   | "error-stack"
 
-// Hast-compatible element interface
+/** A preview element, shaped like a hast element so it can render with any hast renderer */
 export interface JsonNodeElement {
   type: "element"
   tagName: "span" | "div" | "a"
@@ -72,13 +72,12 @@ export interface JsonNodeElement {
   children: Array<JsonNodeElement | JsonNodeText>
 }
 
-// Hast-compatible text node interface
+/** A preview text node, shaped like a hast text node */
 export interface JsonNodeText {
   type: "text"
   value: string | number | boolean | null | undefined
 }
 
-// Union type for all node types
 export type JsonNodeHastElement = JsonNodeElement | JsonNodeText
 
 export interface JsonNode<T = any> {

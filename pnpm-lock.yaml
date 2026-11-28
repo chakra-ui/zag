@@ -382,9 +382,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -683,9 +680,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -984,9 +978,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1282,9 +1273,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1562,9 +1550,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1851,9 +1836,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
-      '@zag-js/json-tree-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -3936,12 +3918,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/json-tree-utils:
     devDependencies:
       clean-package:
         specifier: 2.2.0

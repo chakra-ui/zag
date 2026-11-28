@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
-import { dataTypes, getPreviewOptions, jsonNodeToElement, jsonToTree, type JsonNode } from "../src"
-import { elementText } from "./test-utils"
+import { dataTypes, getPreviewOptions, jsonNodeToElement, jsonToTree, type JsonNode } from "../../src/json-tree"
+import { elementText, printTree } from "./test-utils"
 
 const childKeys = (node: JsonNode) => node.children?.map((child) => child.keyPath.at(-1))
 
@@ -12,12 +12,30 @@ describe("JSON tree conversion", () => {
 
     const node = jsonToTree(value)
 
-    expect(childKeys(node)).toEqual(["first", "second", "[[secret]]"])
-    expect(node.children?.at(-1)).toMatchObject({
-      value: 42,
-      isNonEnumerable: true,
-      propertyDescriptor: { value: 42, writable: false, configurable: true, enumerable: false },
-    })
+    expect(childKeys(node)).toMatchInlineSnapshot(`
+      [
+        "first",
+        "second",
+        "[[secret]]",
+      ]
+    `)
+    expect(node.children?.at(-1)).toMatchInlineSnapshot(`
+      {
+        "isNonEnumerable": true,
+        "keyPath": [
+          "$",
+          "[[secret]]",
+        ],
+        "propertyDescriptor": {
+          "configurable": true,
+          "enumerable": false,
+          "value": 42,
+          "writable": false,
+        },
+        "type": "number",
+        "value": 42,
+      }
+    `)
   })
 
   test("preserves property order and hidden descriptors on wide objects", () => {
@@ -28,11 +46,23 @@ describe("JSON tree conversion", () => {
     const node = jsonToTree(value)
 
     expect(childKeys(node)).toEqual([...Object.keys(value), "[[secret]]"])
-    expect(node.children?.at(-1)).toMatchObject({
-      value: 42,
-      isNonEnumerable: true,
-      propertyDescriptor: { value: 42, writable: false, configurable: false, enumerable: false },
-    })
+    expect(node.children?.at(-1)).toMatchInlineSnapshot(`
+      {
+        "isNonEnumerable": true,
+        "keyPath": [
+          "$",
+          "[[secret]]",
+        ],
+        "propertyDescriptor": {
+          "configurable": false,
+          "enumerable": false,
+          "value": 42,
+          "writable": false,
+        },
+        "type": "number",
+        "value": 42,
+      }
+    `)
   })
 
   test("omits hidden properties when disabled", () => {
@@ -41,7 +71,11 @@ describe("JSON tree conversion", () => {
 
     const node = jsonToTree(value, { options })
 
-    expect(childKeys(node)).toEqual(["a"])
+    expect(childKeys(node)).toMatchInlineSnapshot(`
+      [
+        "a",
+      ]
+    `)
   })
 
   test("skips hidden-key enumeration when hidden properties are disabled", () => {
@@ -71,13 +105,11 @@ describe("JSON tree conversion", () => {
 
     const node = jsonToTree(value)
 
-    expect(node).toMatchObject({
-      constructorName: "Example",
-      children: [
-        { value: 1, keyPath: ["$", "a"] },
-        { value: 2, keyPath: ["$", "[[secret]]"], isNonEnumerable: true },
-      ],
-    })
+    expect(printTree(node)).toMatchInlineSnapshot(`
+      "$: object  Example { a: 1, [[secret]]: 2 }
+        a: number  1
+        [[secret]]: number (hidden)  2"
+    `)
   })
 
   test("groups sparse arrays while preserving index paths", () => {
@@ -91,11 +123,20 @@ describe("JSON tree conversion", () => {
 
     const node = jsonToTree(value, { options })
 
-    expect(childKeys(node)).toEqual(["[3…100]", "[1000000…1000000]", "length", "secret"])
-    expect(node.children?.[0].children?.map((child) => child.keyPath)).toEqual([
-      ["$", "3"],
-      ["$", "100"],
-    ])
+    expect(childKeys(node)).toMatchInlineSnapshot(`
+      [
+        "[3…100]",
+        "[1000000…1000000]",
+        "length",
+        "secret",
+      ]
+    `)
+    expect(node.children?.[0].children?.map((child) => child.keyPath.join("."))).toMatchInlineSnapshot(`
+      [
+        "$.3",
+        "$.100",
+      ]
+    `)
     expect(node.children?.[2].value).toBe(1_000_001)
     expect(node.children?.at(-1)?.propertyDescriptor?.enumerable).toBe(false)
   })
@@ -107,13 +148,30 @@ describe("JSON tree conversion", () => {
 
     const node = jsonToTree(value)
 
-    expect(node.children?.[1]).toMatchObject({ type: "circular", keyPath: ["$", "self"] })
+    expect(node.children?.[1]).toMatchInlineSnapshot(`
+      {
+        "keyPath": [
+          "$",
+          "self",
+        ],
+        "type": "circular",
+        "value": "[Circular Reference]",
+      }
+    `)
   })
 
   test("limits conversion depth", () => {
     const node = jsonToTree({ a: 1 }, { depth: 21 })
 
-    expect(node).toMatchObject({ value: "[Max Depth Reached]", type: "string" })
+    expect(node).toMatchInlineSnapshot(`
+      {
+        "keyPath": [
+          "$",
+        ],
+        "type": "string",
+        "value": "[Max Depth Reached]",
+      }
+    `)
   })
 
   test("honors custom type registry entries in conversion and previews", () => {

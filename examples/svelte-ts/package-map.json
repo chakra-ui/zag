@@ -38,7 +38,6 @@
   "@zag-js/image-cropper": "../../packages/machines/image-cropper/src",
   "@zag-js/infinite-scroll": "../../packages/machines/infinite-scroll/src",
   "@zag-js/interact-outside": "../../packages/utilities/interact-outside/src",
-  "@zag-js/json-tree-utils": "../../packages/utilities/json-tree-utils/src",
   "@zag-js/listbox": "../../packages/machines/listbox/src",
   "@zag-js/marquee": "../../packages/machines/marquee/src",
   "@zag-js/menu": "../../packages/machines/menu/src",

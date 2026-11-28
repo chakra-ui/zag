@@ -7,7 +7,7 @@ import {
   getRootNode,
   nodeToString,
   nodeToValue,
-} from "@zag-js/json-tree-utils"
+} from "@zag-js/utils/json-tree"
 import * as tree from "@zag-js/tree-view"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/vue"
 import styles from "@styles/json-tree-view.module.css"

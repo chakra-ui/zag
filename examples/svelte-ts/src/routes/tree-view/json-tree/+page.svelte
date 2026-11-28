@@ -12,7 +12,7 @@
     keyPathToKey,
     nodeToString,
     nodeToValue,
-  } from "@zag-js/json-tree-utils"
+  } from "@zag-js/utils/json-tree"
   import { jsonTreeData } from "@zag-js/shared"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
@@ -116,7 +116,7 @@
     <div class={styles.header}>
       <h3 {...api.getLabelProps()}>JSON Tree</h3>
       <p>
-        Tree view wired to <code>@zag-js/json-tree-utils</code> for parsing, previews, and accessible labels.
+        Tree view wired to <code>@zag-js/utils/json-tree</code> for parsing, previews, and accessible labels.
       </p>
     </div>
 

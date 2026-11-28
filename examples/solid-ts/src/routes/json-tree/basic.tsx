@@ -7,7 +7,7 @@ import {
   jsonToTree,
   keyPathToId,
   keyPathToKey,
-} from "@zag-js/json-tree-utils"
+} from "@zag-js/utils/json-tree"
 import { jsonTreeData } from "@zag-js/shared"
 import { Key } from "@zag-js/solid"
 import { For } from "solid-js"

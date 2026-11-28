@@ -144,6 +144,16 @@
           "default": "./dist/interaction/index.js"
         }
       },
+      "./json-tree": {
+        "import": {
+          "types": "./dist/json-tree/index.d.mts",
+          "default": "./dist/json-tree/index.mjs"
+        },
+        "require": {
+          "types": "./dist/json-tree/index.d.ts",
+          "default": "./dist/json-tree/index.js"
+        }
+      },
       "./package.json": "./package.json"
     }
   }

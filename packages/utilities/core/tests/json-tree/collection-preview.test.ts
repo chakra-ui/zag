@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { jsonNodeToElement, jsonToTree, type JsonNode } from "../src"
+import { jsonNodeToElement, jsonToTree, type JsonNode } from "../../src/json-tree"
 import { elementText } from "./test-utils"
 
 const setPreview = (maxPreviewItems: number) => {
@@ -26,7 +26,7 @@ describe("bounded collection previews", () => {
 
     const preview = elementText(jsonNodeToElement(node))
 
-    expect(preview).toContain("0, 1, 2, …")
+    expect(preview).toMatchInlineSnapshot(`"Set(1000) { 0, 1, 2, … }"`)
     expect(reads).toBe(3)
 
     jsonNodeToElement(node, { maxPreviewItems: 0 })
@@ -51,7 +51,7 @@ describe("bounded collection previews", () => {
 
     const preview = elementText(jsonNodeToElement(node))
 
-    expect(preview).toContain("0 => 0, 1 => 1, 2 => 2, …")
+    expect(preview).toMatchInlineSnapshot(`"Map(1000) { 0 => 0, 1 => 1, 2 => 2, … }"`)
     expect(reads).toBe(3)
 
     jsonNodeToElement(node, { maxPreviewItems: 0 })
@@ -60,11 +60,11 @@ describe("bounded collection previews", () => {
   })
 
   test("shows an ellipsis when the preview is truncated", () => {
-    expect(setPreview(3)).toBe("Set(4) { 0, 1, 2, … }")
+    expect(setPreview(3)).toMatchInlineSnapshot(`"Set(4) { 0, 1, 2, … }"`)
   })
 
   test("omits the ellipsis when the limit covers the collection", () => {
-    expect(setPreview(10)).toBe("Set(4) { 0, 1, 2, 3 }")
+    expect(setPreview(10)).toMatchInlineSnapshot(`"Set(4) { 0, 1, 2, 3 }"`)
   })
 
   test("preserves previews for generic iterables", () => {
@@ -80,7 +80,7 @@ describe("bounded collection previews", () => {
     const node = jsonToTree(value)
     const preview = elementText(jsonNodeToElement(node))
 
-    expect(preview).toBe("Iterable(4) { 1, 2, 3, … }")
+    expect(preview).toMatchInlineSnapshot(`"Iterable(4) { 1, 2, 3, … }"`)
   })
 
   test("samples typed arrays without iterating the full input", () => {
@@ -97,7 +97,7 @@ describe("bounded collection previews", () => {
     const valuesNode = node.children?.find((child) => child.keyPath.at(-1) === "[[Values]]")
 
     expect(valuesNode?.value).toHaveLength(100)
-    expect(elementText(jsonNodeToElement(node))).toContain("1, 2, 3, 4, 5, …")
+    expect(elementText(jsonNodeToElement(node))).toMatchInlineSnapshot(`"Uint32Array(10000) [ 1, 2, 3, 4, 5, … ]"`)
   })
 
   test("materializes Map entries once and preserves object keys and values", () => {
@@ -118,6 +118,15 @@ describe("bounded collection previews", () => {
 
     expect(reads).toBe(1)
     expect(entries.value).toEqual([[key, { a: 2 }]])
-    expect(entries.children![0].children?.map((child) => child.value)).toEqual([key, { a: 2 }])
+    expect(entries.children![0].children?.map((child) => child.value)).toMatchInlineSnapshot(`
+      [
+        {
+          "id": 1,
+        },
+        {
+          "a": 2,
+        },
+      ]
+    `)
   })
 })

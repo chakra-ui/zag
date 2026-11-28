@@ -45,6 +45,7 @@
     "./i18n": "./src/i18n/index.ts",
     "./geometry": "./src/geometry/index.ts",
     "./interaction": "./src/interaction/index.ts",
+    "./json-tree": "./src/json-tree/index.ts",
     "./package.json": "./package.json"
   },
   "devDependencies": {

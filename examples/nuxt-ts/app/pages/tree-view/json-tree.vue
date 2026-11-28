@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TreeCollection } from "@zag-js/collection"
-import { type JsonNode, getPreviewOptions, getRootNode, nodeToString, nodeToValue } from "@zag-js/json-tree-utils"
+import { type JsonNode, getPreviewOptions, getRootNode, nodeToString, nodeToValue } from "@zag-js/utils/json-tree"
 import { jsonTreeData } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -44,7 +44,7 @@ const api = computed(() => tree.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()">
       <div :class="styles.header">
         <h3 v-bind="api.getLabelProps()">JSON Tree</h3>
-        <p>Tree view wired to <code>@zag-js/json-tree-utils</code> for parsing, previews, and accessible labels.</p>
+        <p>Tree view wired to <code>@zag-js/utils/json-tree</code> for parsing, previews, and accessible labels.</p>
       </div>
 
       <div :class="styles.toolbar">

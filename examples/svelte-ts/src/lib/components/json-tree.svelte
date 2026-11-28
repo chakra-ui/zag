@@ -13,7 +13,7 @@
     keyPathToKey,
     nodeToString,
     nodeToValue,
-  } from "@zag-js/json-tree-utils"
+  } from "@zag-js/utils/json-tree"
   import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte"
   import * as tree from "@zag-js/tree-view"
   import styles from "@styles/json-tree-view.module.css"

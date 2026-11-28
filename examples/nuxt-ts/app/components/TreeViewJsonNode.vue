@@ -7,7 +7,7 @@ import {
   jsonNodeToElement,
   keyPathToKey,
   nodeToValue,
-} from "@zag-js/json-tree-utils"
+} from "@zag-js/utils/json-tree"
 import type { Api } from "@zag-js/tree-view"
 import { mergeProps } from "@zag-js/vue"
 import { ChevronRightIcon } from "lucide-vue-next"

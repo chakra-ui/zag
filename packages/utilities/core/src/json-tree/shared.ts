@@ -1,19 +1,10 @@
-const regexReturnCharacters = /\r/g
-
-export function hash(str: string) {
-  const v = str.replace(regexReturnCharacters, "")
-  let hash = 5381
-  let i = v.length
-  while (i--) hash = ((hash << 5) - hash) ^ v.charCodeAt(i)
-  return (hash >>> 0).toString(36)
-}
-
-export function hasProp(value: any, key: string): boolean {
-  return Object.prototype.hasOwnProperty.call(value, key)
-}
-
+// a getter that throws shows its error instead of breaking the whole tree
 export function getProp(value: object, key: string): unknown {
-  return value[key as keyof typeof value]
+  try {
+    return value[key as keyof typeof value]
+  } catch (error) {
+    return error
+  }
 }
 
 export function defu<T>(a: T, b: Partial<T>): T {

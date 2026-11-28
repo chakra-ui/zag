@@ -8,7 +8,7 @@
     jsonToTree,
     keyPathToId,
     keyPathToKey,
-  } from "@zag-js/json-tree-utils"
+  } from "@zag-js/utils/json-tree"
   import { jsonTreeData } from "@zag-js/shared"
 
   const treeData = jsonToTree(jsonTreeData)
