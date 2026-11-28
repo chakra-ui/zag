@@ -1,5 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, setElementChecked, trackFormControl } from "@zag-js/dom-query"
+import { trackRenderedParts } from "@zag-js/dom-query/observe"
 import { trackPress } from "@zag-js/dom-query/press"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import * as dom from "./switch.dom"
@@ -45,6 +46,9 @@ export const machine = createMachine<SwitchSchema>({
       hovered: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
     }
   },
 
@@ -61,7 +65,7 @@ export const machine = createMachine<SwitchSchema>({
     })
   },
 
-  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible", "trackRenderedElements"],
 
   on: {
     "CHECKED.TOGGLE": [
@@ -120,6 +124,14 @@ export const machine = createMachine<SwitchSchema>({
             const checked = context.initial("checked")
             send({ type: "CHECKED.SET", checked: !!checked, src: "form-reset" })
           },
+        })
+      },
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
         })
       },
     },

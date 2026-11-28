@@ -50,6 +50,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send, refs } = service
+  const rendered = context.get("rendered")
   const layer = context.get("layer")
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
 
@@ -263,7 +264,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-state": triggerState.open ? "open" : "closed",
         "aria-invalid": triggerState.invalid,
         "aria-required": triggerState.required,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         ...parts.trigger.attrs(scope.id),
         "data-disabled": dataAttr(triggerState.disabled),
         "data-invalid": dataAttr(triggerState.invalid),
@@ -577,7 +578,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onFocus() {
           dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
       })
     },
 
@@ -608,7 +609,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-placement": contentState.placement,
         "data-align-with-trigger": dataAttr(aligned),
         "data-side": contentState.side,
-        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
+        "aria-labelledby": isDialogPopup && rendered.label ? dom.getLabelId(scope) : undefined,
         ...getDismissableLayerAttrs(layer),
         style: getDismissableLayerStyle(layer, { pointerEvents: true }),
         onKeyDown(event) {
@@ -751,7 +752,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         role: "listbox",
         tabIndex: inputFocused ? -1 : 0,
         dir: prop("dir"),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-activedescendant": inputFocused ? undefined : ariaActiveDescendant,
         "aria-multiselectable": prop("multiple") ? true : undefined,
         "data-activedescendant": ariaActiveDescendant,

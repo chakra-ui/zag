@@ -64,6 +64,8 @@
 
 - Add `addGlobalEvent` to share one native listener per target and event.
 
+- Add `trackRenderedParts` to `observe`, which reports which parts are in the DOM as they mount and unmount.
+
 - Add `getElementRect`, `getWindowRect` and `getViewportRect`, moved from `@zag-js/rect-utils`.
 
 - Add `selectTextFrom`, `isTypingAtEnd` and `hasSelectionWithin`, and export the public types, like

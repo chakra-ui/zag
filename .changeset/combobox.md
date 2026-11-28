@@ -48,3 +48,5 @@
   would be rejected.
 
 - Speed up rendering with many selected items: 10k selected items render in ~3ms instead of ~465ms.
+
+- Fix `aria-labelledby` pointing to a missing element when the label part isn't rendered.

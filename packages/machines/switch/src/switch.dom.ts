@@ -11,3 +11,4 @@ export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `${ctx.i
 // Element lookups — use querySelector with merged data attributes
 export const getRootEl = (ctx: Scope) => ctx.query(ctx.selector(parts.root))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

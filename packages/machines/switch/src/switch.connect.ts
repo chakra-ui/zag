@@ -7,6 +7,7 @@ import type { RootState, SwitchApi, SwitchService } from "./switch.types"
 
 export function connect<T extends PropTypes>(service: SwitchService, normalize: NormalizeProps<T>): SwitchApi<T> {
   const { context, send, prop, scope, computed } = service
+  const rendered = context.get("rendered")
 
   const disabled = !!computed("isDisabled")
   const readOnly = !!prop("readOnly")
@@ -118,7 +119,7 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
         required: prop("required"),
         defaultChecked: rootState.checked,
         disabled: rootState.disabled,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-invalid": rootState.invalid,
         name: prop("name"),
         form: prop("form"),

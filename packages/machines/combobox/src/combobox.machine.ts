@@ -8,7 +8,7 @@ import {
 import { setup, type Params, type Transition } from "@zag-js/core"
 import { trackDismissableElement, type LayerSnapshot } from "@zag-js/dismissable"
 import { AnimationFrame, clickIfLink, getModifierKeys, isApple, nextTick, raf, setCaretToEnd } from "@zag-js/dom-query"
-import { createSharedMutationObserver } from "@zag-js/dom-query/observe"
+import { createSharedMutationObserver, trackRenderedParts } from "@zag-js/dom-query/observe"
 import { scrollIntoView, scrollToNearest } from "@zag-js/dom-query/scroll"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { createLiveRegion, type LiveRegion } from "@zag-js/dom-query/live-region"
@@ -106,13 +106,16 @@ export const machine = createMachine({
 
   exit: ["cancelFinalFocus", "cancelHighlightFrame", "cancelAutoHighlight", "cancelFrames", "cancelCreate"],
 
-  effects: ["trackChipRegion"],
+  effects: ["trackChipRegion", "trackRenderedElements"],
 
   context({ prop, bindable, getContext, getEvent }) {
     const initialValue = prop("value") ?? prop("defaultValue") ?? []
     const initialSelectedItems = prop("collection").findMany(initialValue)
 
     return {
+      rendered: bindable<{ label: boolean }>(() => ({
+        defaultValue: { label: true },
+      })),
       layer: bindable<LayerSnapshot | null>(() => ({
         defaultValue: null,
       })),
@@ -750,6 +753,15 @@ export const machine = createMachine({
     },
 
     effects: {
+      trackRenderedElements({ context, scope }) {
+        return trackRenderedParts({
+          getContainerEl: () => dom.getRootEl(scope),
+          getRootNode: () => scope.getRootNode(),
+          parts: { label: () => dom.getLabelEl(scope) },
+          onChange: (rendered) => context.set("rendered", rendered),
+        })
+      },
+
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },

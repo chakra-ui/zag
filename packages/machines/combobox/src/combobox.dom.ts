@@ -63,3 +63,4 @@ export const setHiddenInputValue = (ctx: Scope, value: string) => {
   const inputEl = getHiddenInputEl(ctx)
   if (inputEl && inputEl.value !== value) setElementValue(inputEl, value)
 }
+export const getLabelEl = (ctx: Scope) => ctx.getById(getLabelId(ctx))

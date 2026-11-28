@@ -43,6 +43,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   normalize: NormalizeProps<T>,
 ): ComboboxApi<T, V> {
   const { context, prop, state, send, scope, computed } = service
+  const rendered = context.get("rendered")
   const layer = context.get("layer")
 
   const translations = mergeWithDefault(defaultTranslations, prop("translations"))
@@ -536,7 +537,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-state": contentState.open ? "open" : "closed",
         "data-placement": contentState.placement,
         "data-side": contentState.side,
-        "aria-labelledby": isDialogPopup ? dom.getLabelId(scope) : undefined,
+        "aria-labelledby": isDialogPopup && rendered.label ? dom.getLabelId(scope) : undefined,
         "data-empty": dataAttr(contentState.empty),
         "data-inline": dataAttr(contentState.inline),
         "data-loading": dataAttr(contentState.loading),
@@ -568,7 +569,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         role: "listbox",
         tabIndex: -1,
         "data-empty": dataAttr(contentState.empty),
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "aria-multiselectable": prop("multiple") ? true : undefined,
         "aria-busy": ariaAttr(contentState.loading),
         "data-loading": dataAttr(contentState.loading),
@@ -745,7 +746,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         // A toolbar keeps screen readers in focus mode while arrowing between chips
         role: context.get("value").length ? "toolbar" : undefined,
-        "aria-labelledby": dom.getLabelId(scope),
+        "aria-labelledby": rendered.label ? dom.getLabelId(scope) : undefined,
         "data-disabled": dataAttr(disabled),
         onMouseDown(event) {
           // Pressing the space around the chips focuses the input
